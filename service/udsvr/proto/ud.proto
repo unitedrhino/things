@@ -98,7 +98,7 @@ message SceneInfo{
   string desc = 4;//描述
   string tag =12;//标签 admin: 管理员 normal: 普通
   int64 createdTime = 5;//创建时间 秒级时间戳 只读
-  string trigger = 6;//多种触发方式
+  string if = 6;//多种触发方式
   string when = 7;//手动触发模式不生效
   string then = 8; //触发后执行的动作
   int64 status = 9;// 状态（1启用 2禁用）

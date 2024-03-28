@@ -15,10 +15,10 @@ type UdSceneInfo struct {
 	Name       string            `gorm:"column:name;type:varchar(100);NOT NULL"`               // 名称
 	Desc       string            `gorm:"column:desc;type:varchar(200);NOT NULL"`               // 描述
 	//LastRunTime    time.Time         `gorm:"column:last_run_time;index;default:CURRENT_TIMESTAMP;NOT NULL"`
-	Status         int64 `gorm:"column:status;type:BIGINT;default:1"` //状态
-	UdSceneTrigger `gorm:"embedded;embeddedPrefix:trigger_"`
-	UdSceneWhen    `gorm:"embedded;embeddedPrefix:when_"`
-	UdSceneThen    `gorm:"embedded;embeddedPrefix:then_"`
+	Status      int64 `gorm:"column:status;type:BIGINT;default:1"` //状态
+	UdSceneIf   `gorm:"embedded;embeddedPrefix:if_"`
+	UdSceneWhen `gorm:"embedded;embeddedPrefix:when_"`
+	UdSceneThen `gorm:"embedded;embeddedPrefix:then_"`
 	stores.SoftTime
 }
 
@@ -26,30 +26,33 @@ func (m *UdSceneInfo) TableName() string {
 	return "ud_scene_info"
 }
 
-type UdSceneTrigger struct {
-	Type    string                  `gorm:"column:type;type:VARCHAR(25);NOT NULL"` //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
-	Devices []*UdSceneTriggerDevice `gorm:"foreignKey:SceneID;references:ID"`
-	Timers  []*UdSceneTriggerTimer  `gorm:"foreignKey:SceneID;references:ID"`
+type UdSceneIf struct {
+	Type     string              `gorm:"column:type;type:VARCHAR(25);NOT NULL"` //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
+	Triggers []*UdSceneIfTrigger `gorm:"foreignKey:SceneID;references:ID"`
+}
+
+type UdSceneIfTrigger struct {
+	ID          int64                 `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"` // id编号
+	Type        string                `gorm:"column:type;type:VARCHAR(25);NOT NULL"`            //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
+	SceneID     int64                 `gorm:"column:scene_id;index;type:bigint"`                // 场景id编号
+	Order       int64                 `gorm:"column:order;type:BIGINT;default:1;NOT NULL"`      // 排序序号
+	Status      int64                 `gorm:"column:status;type:BIGINT;default:1"`              //状态 同步场景联动的status
+	LastRunTime time.Time             `gorm:"column:last_run_time;index;default:CURRENT_TIMESTAMP;NOT NULL"`
+	Device      *UdSceneTriggerDevice `gorm:"embedded;embeddedPrefix:device_"`
+	Timer       *UdSceneTriggerTimer  `gorm:"embedded;embeddedPrefix:timer_"`
+	SceneInfo   *UdSceneInfo          `gorm:"foreignKey:ID;references:SceneID"`
+}
+
+func (m *UdSceneIfTrigger) TableName() string {
+	return "ud_scene_if_trigger"
 }
 
 type UdSceneTriggerTimer struct {
-	ID          int64        `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`       // id编号
-	SceneID     int64        `gorm:"column:scene_id;index;type:bigint"`                      // 场景id编号
-	ExecAt      int64        `gorm:"column:exec_at;index;type:bigint;NOT NULL"`              //执行时间 从0点加起来的秒数 如 1点就是 1*60*60
-	ExecRepeat  int64        `gorm:"column:exec_repeat;index;type:bigint;default:0b1111111"` //重复 二进制周日到周六 11111111 这个参数只有定时触发才有
-	LastRunTime time.Time    `gorm:"column:last_run_time;index;default:CURRENT_TIMESTAMP;NOT NULL"`
-	SceneInfo   *UdSceneInfo `gorm:"foreignKey:ID;references:SceneID"`
-	Status      int64        `gorm:"column:status;type:BIGINT;default:1"` //状态 同步场景联动的status
-	stores.Time
-}
-
-func (m *UdSceneTriggerTimer) TableName() string {
-	return "ud_scene_trigger_timer"
+	ExecAt     int64 `gorm:"column:exec_at;index;type:bigint;NOT NULL"`              //执行时间 从0点加起来的秒数 如 1点就是 1*60*60
+	ExecRepeat int64 `gorm:"column:exec_repeat;index;type:bigint;default:0b1111111"` //重复 二进制周日到周六 11111111 这个参数只有定时触发才有
 }
 
 type UdSceneTriggerDevice struct {
-	ID          int64                       `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`  // id编号
-	SceneID     int64                       `gorm:"column:scene_id;index;type:bigint"`                 // 场景id编号
 	ProductID   string                      `gorm:"column:product_id;index;type:VARCHAR(25);NOT NULL"` //产品id
 	SelectType  scene.SelectType            `gorm:"column:select_type;type:VARCHAR(25);NOT NULL"`      //设备选择方式  all: 全部 fixed:指定的设备
 	GroupID     int64                       `gorm:"column:group_id;index;type:bigint"`                 //group类型传GroupID
@@ -57,12 +60,6 @@ type UdSceneTriggerDevice struct {
 	DeviceAlias string                      `gorm:"column:device_alias;type:VARCHAR(255);"`            //设备别名
 	Type        string                      `gorm:"column:type;type:VARCHAR(25);NOT NULL"`             //触发类型  connected:上线 disConnected:下线 reportProperty:属性上报 reportEvent: 事件上报
 	Schema      *UdSceneTriggerDeviceSchema `gorm:"embedded;embeddedPrefix:schema_"`                   //物模型类型的具体操作 reportProperty:属性上报 reportEvent: 事件上报
-	SceneInfo   *UdSceneInfo                `gorm:"foreignKey:ID;references:SceneID"`
-	stores.Time
-}
-
-func (m *UdSceneTriggerDevice) TableName() string {
-	return "ud_scene_trigger_device"
 }
 
 type UdSceneTriggerDeviceSchema struct {
@@ -86,6 +83,7 @@ type UdSceneThenAction struct {
 	ID          int64                   `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"` // id编号
 	TenantCode  stores.TenantCode       `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`     // 租户编码
 	SceneID     int64                   `gorm:"column:scene_id;index;type:bigint"`                // 场景id编号
+	Order       int64                   `gorm:"column:order;type:BIGINT;default:1;NOT NULL"`      // 排序序号
 	ExecuteType scene.ActionExecuteType `gorm:"column:execute_type;type:VARCHAR(25);NOT NULL"`
 	Delay       int64                   `gorm:"column:delay;type:bigint"`
 	Device      *UdSceneActionDevice    `gorm:"embedded;embeddedPrefix:device_"`

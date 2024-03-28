@@ -524,7 +524,7 @@ message StatusLogIndexResp{
 /*设备的日志数据*/
 message StatusLogInfo{
   int64 timestamp = 1;//发生时间戳(毫秒时间戳)
-  int64 status = 2;//过滤请求ID
+  int64 status = 2;//设备状态
   string  productID = 3; //产品id
   string  deviceName = 4; //设备名
 }

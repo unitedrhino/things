@@ -122,10 +122,12 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 		}
 	}
 
+	if len(insertList) == 0 && len(removeList) == 0 {
+		return nil
+	}
 	//入库异步处理
 	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
 		var ( //这里是最后更新数据库状态的设备列表
-			OnlineDevices  []*devices.Core
 			OffLineDevices []*devices.Core
 		)
 		var log = logx.WithContext(ctx)
@@ -157,10 +159,25 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 				Timestamp: msg.Timestamp.UnixMilli(),
 			}
 			if status == def.ConnectedStatus {
-				OnlineDevices = append(OnlineDevices, &devices.Core{
-					ProductID:  ld.ProductID,
-					DeviceName: ld.DeviceName,
-				})
+				di, err := l.svcCtx.DeviceCache.GetData(ctx, dmExport.GenDeviceInfoKey(ld.ProductID, ld.DeviceName))
+				if err != nil {
+					log.Error(err)
+					continue
+				}
+				var updates = map[string]any{"is_online": def.True, "last_login": msg.Timestamp}
+				if di.FirstLogin == 0 {
+					updates["first_login"] = msg.Timestamp
+				}
+				err = relationDB.NewDeviceInfoRepo(ctx).UpdateWithField(ctx,
+					relationDB.DeviceFilter{Cores: []*devices.Core{{ProductID: ld.ProductID, DeviceName: ld.DeviceName}}}, updates)
+				if err != nil {
+					log.Error(err)
+				}
+				err = l.svcCtx.DeviceCache.SetData(ctx, dmExport.GenDeviceInfoKey(ld.ProductID, ld.DeviceName), nil)
+				if err != nil {
+					log.Error(err)
+				}
+
 				err = l.svcCtx.PubApp.DeviceStatusConnected(ctx, appMsg)
 			} else {
 				OffLineDevices = append(OffLineDevices, &devices.Core{
@@ -175,20 +192,8 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 			}
 		}
 		diDB := relationDB.NewDeviceInfoRepo(ctx)
-		if len(OnlineDevices) > 0 {
-			err = diDB.UpdateOnlineStatus(ctx, relationDB.DeviceFilter{Cores: OnlineDevices}, def.True)
-			if err != nil {
-				log.Error(err)
-			}
-			for _, v := range OnlineDevices { //清除缓存
-				err := l.svcCtx.DeviceCache.SetData(ctx, dmExport.GenDeviceInfoKey(v.ProductID, v.DeviceName), nil)
-				if err != nil {
-					log.Error(err)
-				}
-			}
-		}
 		if len(OffLineDevices) > 0 {
-			err = diDB.UpdateOnlineStatus(ctx, relationDB.DeviceFilter{Cores: OffLineDevices}, def.False)
+			err = diDB.UpdateOfflineStatus(ctx, relationDB.DeviceFilter{Cores: OffLineDevices})
 			if err != nil {
 				log.Error(err)
 			}

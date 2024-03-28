@@ -63,7 +63,7 @@ type SceneInfo  {
     Tag         string  `json:"tag,optional"`//标签 admin: 管理员 normal: 普通
     Desc        string  `json:"desc,optional"`
     CreatedTime int64   `json:"createdTime,optional"`
-    Trigger     string  `json:"trigger,optional"`
+    If     string  `json:"if,optional"`
     When        string  `json:"when,optional"`
     Then      string `json:"then,optional"`
     HeadImg  string `json:"headImg,optional"`        // 用户头像

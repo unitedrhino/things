@@ -89,8 +89,6 @@ func MultiImportHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			result.Http(w, r, nil, errors.Parameter.WithMsgf("最多只能导入%s条数据", cast.ToString(limitCnt)))
 			return
 		}
-
-		req.File = fb
 		l := info.NewMultiImportLogic(r.Context(), svcCtx)
 		resp, err := l.MultiImport(&req, rows)
 		result.Http(w, r, resp, err)

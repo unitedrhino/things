@@ -16,7 +16,7 @@ import "context"
 type InfoFilter struct {
 	Name        string `json:"name"`
 	Status      int64
-	TriggerType TriggerType
+	TriggerType IfType
 	AlarmID     int64 //绑定的告警id
 }
 

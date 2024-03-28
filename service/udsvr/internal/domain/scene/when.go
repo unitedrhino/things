@@ -20,6 +20,7 @@ const (
 )
 
 type WhenRange struct {
+	Order     int64     `json:"order"`
 	Type      string    `json:"type"` //范围类型 date: 日期范围 time: 时间范围
 	DateRange DateRange `json:"dateRange"`
 	TimeRange TimeRange `json:"timeRange"`

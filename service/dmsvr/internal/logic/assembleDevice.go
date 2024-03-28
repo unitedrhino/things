@@ -12,6 +12,9 @@ import (
 )
 
 func ToDeviceInfo(in *relationDB.DmDeviceInfo) *dm.DeviceInfo {
+	if in == nil {
+		return nil
+	}
 	if in.IsOnline == def.Unknown {
 		in.IsOnline = def.False
 	}

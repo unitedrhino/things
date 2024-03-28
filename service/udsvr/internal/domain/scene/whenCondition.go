@@ -20,9 +20,9 @@ const (
 )
 
 type Term struct {
+	Order      int64          `json:"order"`
 	ColumnType TermColumnType `json:"columnType"` //字段类型 property:属性 weather:天气
-
-	Property *TermProperty `json:"property"` //属性类型
+	Property   *TermProperty  `json:"property"`   //属性类型
 	//todo 天气状态处于xxx
 	Weather any `json:"weather"`
 }

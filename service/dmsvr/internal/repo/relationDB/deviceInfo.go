@@ -129,10 +129,15 @@ func (d DeviceInfoRepo) Update(ctx context.Context, data *DmDeviceInfo) error {
 	err := d.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
-
-func (d DeviceInfoRepo) UpdateOnlineStatus(ctx context.Context, f DeviceFilter, isOnline int64) error {
+func (d DeviceInfoRepo) UpdateWithField(ctx context.Context, f DeviceFilter, updates map[string]any) error {
 	db := d.fmtFilter(ctx, f)
-	err := db.Model(&DmDeviceInfo{}).Update("is_online", isOnline).Error
+	err := db.Model(&DmDeviceInfo{}).Updates(updates).Error
+	return stores.ErrFmt(err)
+}
+
+func (d DeviceInfoRepo) UpdateOfflineStatus(ctx context.Context, f DeviceFilter) error {
+	db := d.fmtFilter(ctx, f)
+	err := db.Model(&DmDeviceInfo{}).Update("is_online", def.False).Error
 	return stores.ErrFmt(err)
 }
 

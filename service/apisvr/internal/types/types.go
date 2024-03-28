@@ -182,7 +182,7 @@ type DeviceInfoDeleteReq struct {
 
 type DeviceInfoIndexReq struct {
 	Page              *PageInfo `json:"page,optional"` //分页信息 只获取一个则不填
-	TenantCode        string    `json:tenantCode,optional`
+	TenantCode        string    `json:"tenantCode,optional"`
 	ProductID         string    `json:"productID,optional"`            //产品id 为空时获取所有产品
 	DeviceName        string    `json:"deviceName,optional"`           //过滤条件:模糊查询 设备名
 	DeviceAlias       string    `json:"deviceAlias,optional"`          //过滤条件:模糊查询 设备别名
@@ -484,7 +484,6 @@ type DeviceMultiImportErrdata struct {
 }
 
 type DeviceMultiImportReq struct {
-	File []byte `form:"file,optional"` //csv文件(实际必填)
 }
 
 type DeviceMultiImportResp struct {
@@ -807,7 +806,6 @@ type OtaFirmwareJobInfo struct {
 	Target           string   `json:"target,optional"`                      // 分组升级和区域升级填写对应的id
 	TargetSelection  int64    `json:"targetSelection,optional,range=[0:4]"` //升级范围。 1：全量升级。 2：定向升级。 3：灰度升级。 4：分组升级(不做) 5: 区域升级(不做)
 	TenantCodes      []string `json:"tenantCodes"`                          //指定租户
-	GrayPercent      int64    `json:"grayPercent"`                          //灰度的范围,小数点后两位, 1.23%为 123
 	OtaFirmwareJobDynamic
 	OtaFirmwareJobStatic
 }
@@ -1079,7 +1077,7 @@ type SceneInfo struct {
 	Tag             string `json:"tag,optional"`    //标签 admin: 管理员 normal: 普通
 	Desc            string `json:"desc,optional"`
 	CreatedTime     int64  `json:"createdTime,optional"`
-	Trigger         string `json:"trigger,optional"`
+	If              string `json:"if,optional"`
 	When            string `json:"when,optional"`
 	Then            string `json:"then,optional"`
 	HeadImg         string `json:"headImg,optional"`                   // 用户头像

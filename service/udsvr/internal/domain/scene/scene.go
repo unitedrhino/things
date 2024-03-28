@@ -15,15 +15,15 @@ type Info struct {
 	Name        string    `json:"name"`
 	Desc        string    `json:"desc"`
 	CreatedTime time.Time `json:"createdTime"`
-	Trigger     Trigger   `json:"trigger"` //多种触发方式
-	When        When      `json:"when"`    //手动触发模式不生效
-	Then        Then      `json:"then"`    //触发后执行的动作
-	Status      int64     `json:"status"`  // 状态（1启用 2禁用）
+	If          If        `json:"if"`     //多种触发方式
+	When        When      `json:"when"`   //手动触发模式不生效
+	Then        Then      `json:"then"`   //触发后执行的动作
+	Status      int64     `json:"status"` // 状态（1启用 2禁用）
 }
 
 func (i *Info) Validate(repo ValidateRepo) error {
 
-	err := i.Trigger.Validate(repo)
+	err := i.If.Validate(repo)
 	if err != nil {
 		return err
 	}

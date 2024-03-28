@@ -21,9 +21,10 @@ func (l *TimerHandle) SceneTiming() error {
 		defer func() {
 			ctxs.GetUserCtx(ctx).AllProject = false
 		}()
-		db := stores.WithNoDebug(ctx, relationDB.NewSceneTriggerTimerRepo)
-		//db := relationDB.NewSceneTriggerTimerRepo(ctx)
-		list, err := db.FindByFilter(ctx, relationDB.SceneTriggerTimerFilter{Status: def.True,
+		db := stores.WithNoDebug(ctx, relationDB.NewSceneIfTriggerRepo)
+		//db := relationDB.NewSceneIfTriggerRepo(ctx)
+		list, err := db.FindByFilter(ctx, relationDB.SceneIfTriggerFilter{Status: def.True,
+			Type:        scene.TriggerTypeTimer,
 			ExecAt:      stores.CmpLte(utils.TimeToDaySec(now)),                                  //小于等于当前时间点(需要执行的)
 			LastRunTime: stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)),                 //当天未执行的
 			Repeat:      stores.CmpOr(stores.CmpBinEq(int64(now.Weekday()), 1), stores.CmpEq(0)), //当天需要执行或只需要执行一次的
@@ -50,7 +51,7 @@ func (l *TimerHandle) SceneTiming() error {
 				func() {
 					defer f() //数据库执行完成后就可以释放锁了
 					po.LastRunTime = utils.GetEndTime(now)
-					if po.ExecRepeat == 0 { //不重复执行的只执行一次
+					if po.Timer.ExecRepeat == 0 { //不重复执行的只执行一次
 						po.Status = def.False
 					}
 					err = db.Update(ctx, po)

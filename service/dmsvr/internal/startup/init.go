@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
 	"gitee.com/i-Things/share/caches"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
@@ -70,10 +71,14 @@ func InitCache(svcCtx *svc.ServiceContext) {
 		KeyType:   eventBus.ServerCacheKeyDmDevice,
 		FastEvent: svcCtx.FastEvent,
 		GetData: func(ctx context.Context, key string) (*dm.DeviceInfo, error) {
+			ctx = ctxs.WithRoot(ctx)
 			db := relationDB.NewDeviceInfoRepo(ctx)
 			productID, deviceName, _ := strings.Cut(key, ":")
 			di, err := db.FindOneByFilter(ctx, relationDB.DeviceFilter{
-				ProductID: productID, DeviceName: deviceName})
+				ProductID: productID, DeviceNames: []string{deviceName}})
+			if err != nil {
+				return nil, err
+			}
 			pb := logic.ToDeviceInfo(di)
 			return pb, err
 		},
@@ -90,6 +95,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		if err != nil {
 			return err
 		}
+		ctx = ctxs.WithRoot(ctx)
 		err = relationDB.NewGroupDeviceRepo(ctx).DeleteByFilter(ctx, relationDB.GroupDeviceFilter{
 			ProductID:  value.ProductID,
 			DeviceName: value.DeviceName,
@@ -99,11 +105,11 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 	})
 	logx.Must(err)
 	err = svcCtx.FastEvent.Subscribe(eventBus.DmOtaJobDelayRun, func(ctx context.Context, t time.Time, body []byte) error {
-		return otaEvent.NewOtaEvent(svcCtx, ctx).JobDelayRun(cast.ToInt64(string(body)))
+		return otaEvent.NewOtaEvent(svcCtx, ctxs.WithRoot(ctx)).JobDelayRun(cast.ToInt64(string(body)))
 	})
 	logx.Must(err)
 	err = svcCtx.FastEvent.Subscribe(eventBus.DmOtaDeviceUpgradePush, func(ctx context.Context, t time.Time, body []byte) error {
-		return otaEvent.NewOtaEvent(svcCtx, ctx).DeviceUpgradePush()
+		return otaEvent.NewOtaEvent(svcCtx, ctxs.WithRoot(ctx)).DeviceUpgradePush()
 	})
 	logx.Must(err)
 	err = svcCtx.FastEvent.QueueSubscribe(eventBus.DmDeviceOnlineStatusChange, func(ctx context.Context, t time.Time, body []byte) error {
@@ -111,7 +117,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		if now.Before(t) {
 			return nil
 		}
-		return serverEvent.NewServerHandle(ctx, svcCtx).OnlineStatusHandle()
+		return serverEvent.NewServerHandle(ctxs.WithRoot(ctx), svcCtx).OnlineStatusHandle()
 	})
 	logx.Must(err)
 	err = svcCtx.FastEvent.Start()

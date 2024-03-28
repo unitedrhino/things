@@ -41,8 +41,8 @@ func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *ud.SceneInfo) (*ud.Empty, err
 	if in.Desc != "" {
 		old.Desc = in.Desc
 	}
-	if in.Trigger != "" {
-		old.UdSceneTrigger = newPo.UdSceneTrigger
+	if in.If != "" {
+		old.UdSceneIf = newPo.UdSceneIf
 	}
 	if in.When != "" {
 		old.UdSceneWhen = newPo.UdSceneWhen
