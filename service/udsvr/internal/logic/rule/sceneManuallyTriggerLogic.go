@@ -32,7 +32,7 @@ func (l *SceneManuallyTriggerLogic) SceneManuallyTrigger(in *ud.WithID) (*ud.Emp
 	if err != nil {
 		return nil, err
 	}
-	if si.UdSceneIf.Type != string(scene.IfTypeManual) {
+	if si.Type != string(scene.SceneTypeManual) {
 		return nil, errors.TriggerType.AddMsg("该场景不是手动触发类型,无法执行")
 	}
 	do := PoToSceneInfoDo(si)

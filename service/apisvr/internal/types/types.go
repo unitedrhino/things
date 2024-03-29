@@ -1075,6 +1075,7 @@ type SceneInfo struct {
 	Name            string `json:"name,optional"`
 	Status          int64  `json:"status,optional"` //状态: 1启用 2禁用
 	Tag             string `json:"tag,optional"`    //标签 admin: 管理员 normal: 普通
+	Type            string `json:"type,optional"`
 	Desc            string `json:"desc,optional"`
 	CreatedTime     int64  `json:"createdTime,optional"`
 	If              string `json:"if,optional"`
@@ -1089,13 +1090,13 @@ type SceneInfoCreateReq struct {
 }
 
 type SceneInfoIndexReq struct {
-	Page        *PageInfo `json:"page,optional"` //分页信息 只获取一个则不填
-	Name        string    `json:"name,optional"` //场景名模糊查询
-	Tag         string    `json:"tag,optional"`  //标签 admin: 管理员 normal: 普通
-	AreaID      int64     `json:"areaID,optional"`
-	TriggerType string    `json:"triggerType,optional"` //触发类型 device: 设备触发 timer: 定时触发 manual:手动触发
-	Status      int64     `json:"status,optional"`      //状态: 1启用 2禁用
-	AlarmID     int64     `json:"alarmID,optional"`     //告警id
+	Page    *PageInfo `json:"page,optional"` //分页信息 只获取一个则不填
+	Name    string    `json:"name,optional"` //场景名模糊查询
+	Tag     string    `json:"tag,optional"`  //标签 admin: 管理员 normal: 普通
+	AreaID  int64     `json:"areaID,optional"`
+	Type    string    `json:"type,optional"`    //触发类型 auto manual:手动触发
+	Status  int64     `json:"status,optional"`  //状态: 1启用 2禁用
+	AlarmID int64     `json:"alarmID,optional"` //告警id
 }
 
 type SceneInfoIndexResp struct {

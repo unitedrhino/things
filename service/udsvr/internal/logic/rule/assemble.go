@@ -21,6 +21,7 @@ func ToSceneInfoDo(in *ud.SceneInfo) *scene.Info {
 		HeadImg: in.HeadImg,
 		Tag:     in.Tag,
 		Desc:    in.Desc,
+		Type:    in.Type,
 		If:      utils.UnmarshalNoErr[scene.If](in.If),
 		When:    utils.UnmarshalNoErr[scene.When](in.When),
 		Then:    utils.UnmarshalNoErr[scene.Then](in.Then),
@@ -37,7 +38,6 @@ func ToSceneInfoPo(in *scene.Info) *relationDB.UdSceneInfo {
 		Tag:     in.Tag,
 		HeadImg: in.HeadImg,
 		UdSceneIf: relationDB.UdSceneIf{
-			Type:     string(in.If.Type),
 			Triggers: ToSceneTriggersPo(in, in.If.Triggers),
 		},
 		UdSceneWhen: relationDB.UdSceneWhen{
@@ -98,7 +98,10 @@ func ToSceneTriggerDevicePo(in *scene.TriggerDevice) (ret *relationDB.UdSceneTri
 		DeviceName:  in.DeviceName,
 		DeviceAlias: in.DeviceAlias,
 		Type:        string(in.Type),
-		Schema:      utils.Copy[relationDB.UdSceneTriggerDeviceSchema](in.Schema),
+		DataID:      in.DataID,
+		DataName:    in.DataName,
+		TermType:    string(in.TermType),
+		Values:      in.Values,
 	}
 }
 
@@ -113,8 +116,8 @@ func PoToSceneInfoDo(in *relationDB.UdSceneInfo) *scene.Info {
 		HeadImg:     in.HeadImg,
 		Desc:        in.Desc,
 		CreatedTime: in.CreatedTime,
+		Type:        in.Type,
 		If: scene.If{
-			Type:     scene.IfType(in.UdSceneIf.Type),
 			Triggers: ToSceneTriggersDo(in.Triggers),
 		},
 		When: scene.When{
@@ -143,7 +146,7 @@ func ToSceneActionPo(s *scene.Info, in *scene.Action) *relationDB.UdSceneThenAct
 	po := &relationDB.UdSceneThenAction{
 		ID:          in.ID,
 		SceneID:     s.ID,
-		ExecuteType: in.ExecuteType,
+		ExecuteType: in.Type,
 		Delay:       in.Delay,
 	}
 	if in.Device != nil {
@@ -176,10 +179,10 @@ func ToSceneActionDo(in *relationDB.UdSceneThenAction) *scene.Action {
 		return nil
 	}
 	do := &scene.Action{
-		ID:          in.ID,
-		Order:       in.Order,
-		ExecuteType: in.ExecuteType,
-		Delay:       in.Delay,
+		ID:    in.ID,
+		Order: in.Order,
+		Type:  in.ExecuteType,
+		Delay: in.Delay,
 	}
 	if in.Device != nil {
 		do.Device = &scene.ActionDevice{
@@ -241,18 +244,10 @@ func ToSceneTriggerDeviceDo(in *relationDB.UdSceneTriggerDevice) (ret *scene.Tri
 		DeviceName:  in.DeviceName,
 		DeviceAlias: in.DeviceAlias,
 		Type:        scene.TriggerDeviceType(in.Type),
-		Schema:      ToSceneTriggerDeviceSchemaDo(in.Schema),
-	}
-}
-func ToSceneTriggerDeviceSchemaDo(in *relationDB.UdSceneTriggerDeviceSchema) *scene.TriggerDeviceSchema {
-	if in == nil {
-		return nil
-	}
-	return &scene.TriggerDeviceSchema{
-		DataID:   in.DataID,
-		DataName: in.DataName,
-		TermType: scene.CmpType(in.TermType),
-		Values:   in.Values,
+		DataID:      in.DataID,
+		DataName:    in.DataName,
+		TermType:    scene.CmpType(in.TermType),
+		Values:      in.Values,
 	}
 }
 
@@ -266,6 +261,7 @@ func PoToSceneInfoPb(in *relationDB.UdSceneInfo) *ud.SceneInfo {
 		Name:    in.Name,
 		Desc:    in.Desc,
 		Tag:     in.Tag,
+		Type:    in.Type,
 		HeadImg: in.HeadImg,
 		//AreaIDs: in.AreaIDs,
 		If:     utils.MarshalNoErr(do.If),

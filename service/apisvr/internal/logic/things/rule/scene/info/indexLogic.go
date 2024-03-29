@@ -4,7 +4,6 @@ import (
 	"context"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/apisvr/internal/logic"
 	"github.com/i-Things/things/service/udsvr/pb/ud"
 
 	"github.com/i-Things/things/service/apisvr/internal/svc"
@@ -28,16 +27,7 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 }
 
 func (l *IndexLogic) Index(req *types.SceneInfoIndexReq) (resp *types.SceneInfoIndexResp, err error) {
-	pbReq := &ud.SceneInfoIndexReq{
-		Page:        logic.ToUdPageRpc(req.Page),
-		AreaID:      req.AreaID,
-		Tag:         req.Tag,
-		Name:        req.Name,
-		Status:      req.Status,
-		TriggerType: req.TriggerType,
-		AlarmID:     req.AlarmID,
-	}
-	ruleResp, err := l.svcCtx.Rule.SceneInfoIndex(l.ctx, pbReq)
+	ruleResp, err := l.svcCtx.Rule.SceneInfoIndex(l.ctx, utils.Copy[ud.SceneInfoIndexReq](req))
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.SceneInfoIndexReq req=%v err=%+v", utils.FuncName(), req, er)

@@ -62,7 +62,7 @@ func (a *ActionAlarm) Execute(ctx context.Context, repo ActionRepo) error {
 	//	err := repo.Alarm.AlarmTrigger(ctx, TriggerSerial{
 	//		SceneID:     repo.Scene.ID,
 	//		SceneName:   repo.Scene.Name,
-	//		IfType: 1,
+	//		SceneType: 1,
 	//		Serial:      serial,
 	//		Desc:        "",
 	//	})

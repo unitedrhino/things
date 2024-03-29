@@ -3,10 +3,21 @@ package scene
 import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
+	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/utils"
 	"time"
 )
 
 type Infos []*Info
+
+type SceneType = string
+
+const (
+	//TriggerTypeDevice SceneType = "device"
+	//TriggerTypeTimer  SceneType = "timer"
+	SceneTypeManual SceneType = "manual" //手动触发 场景
+	SceneTypeAuto   SceneType = "auto"   //自动化
+)
 
 type Info struct {
 	ID          int64     `json:"id"`
@@ -15,6 +26,7 @@ type Info struct {
 	Name        string    `json:"name"`
 	Desc        string    `json:"desc"`
 	CreatedTime time.Time `json:"createdTime"`
+	Type        SceneType `json:"type"`
 	If          If        `json:"if"`     //多种触发方式
 	When        When      `json:"when"`   //手动触发模式不生效
 	Then        Then      `json:"then"`   //触发后执行的动作
@@ -22,8 +34,10 @@ type Info struct {
 }
 
 func (i *Info) Validate(repo ValidateRepo) error {
-
-	err := i.If.Validate(repo)
+	if !utils.SliceIn(i.Type, SceneTypeAuto, SceneTypeManual) {
+		return errors.Parameter.AddMsg("场景类型不支持的类型:" + string(i.Type))
+	}
+	err := i.If.Validate(i.Type, repo)
 	if err != nil {
 		return err
 	}

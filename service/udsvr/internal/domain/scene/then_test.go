@@ -9,10 +9,10 @@ import (
 func TestThen(t1 *testing.T) {
 	do := Then{
 		Actions: Actions{&Action{
-			ExecuteType: ActionExecutorDelay,
-			Delay:       5,
+			Type:  ActionExecutorDelay,
+			Delay: 5,
 		}, &Action{
-			ExecuteType: ActionExecutorDevice,
+			Type: ActionExecutorDevice,
 			Device: &ActionDevice{
 				ProductID:  "28c6O38q2K4",
 				SelectType: SelectorDeviceAll,

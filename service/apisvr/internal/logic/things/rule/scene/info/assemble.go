@@ -12,6 +12,7 @@ func ToSceneTypes(in *ud.SceneInfo) *types.SceneInfo {
 		Tag:             in.Tag,
 		Desc:            in.Desc,
 		If:              in.If,
+		Type:            in.Type,
 		When:            in.When,
 		Then:            in.Then,
 		Status:          in.Status,

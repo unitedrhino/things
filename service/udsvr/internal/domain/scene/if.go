@@ -6,18 +6,8 @@ import (
 	"gitee.com/i-Things/share/utils"
 )
 
-type IfType string
-
-const (
-	//TriggerTypeDevice IfType = "device"
-	//TriggerTypeTimer  IfType = "timer"
-	IfTypeManual IfType = "manual"
-	IfTypeAuto   IfType = "auto"
-)
-
 type If struct {
-	Type     IfType `json:"type"` //触发类型 auto: 自动触发 manual:手动触发
-	Triggers Triggers
+	Triggers Triggers `json:"triggers"`
 }
 
 type TriggerType = string
@@ -63,21 +53,15 @@ func (t *Trigger) Validate(repo ValidateRepo) error {
 	return nil
 }
 
-func (t *If) Validate(repo ValidateRepo) error {
-	if t == nil {
-		return errors.Parameter.AddMsg("需要填写触发内容")
-	}
-	if !utils.SliceIn(t.Type, IfTypeAuto, IfTypeManual) {
-		return errors.Parameter.AddMsg("if不支持的类型:" + string(t.Type))
-	}
-	switch t.Type {
-	case IfTypeManual:
+func (i *If) Validate(t SceneType, repo ValidateRepo) error {
+	switch t {
+	case SceneTypeManual:
 		return nil
-	case IfTypeAuto:
-		if len(t.Triggers) == 0 {
+	case SceneTypeAuto:
+		if len(i.Triggers) == 0 {
 			return errors.Parameter.AddMsg("自动触发类型需要填写至少一项设备触发或者定时触发")
 		}
-		err := t.Triggers.Validate(repo)
+		err := i.Triggers.Validate(repo)
 		if err != nil {
 			return err
 		}

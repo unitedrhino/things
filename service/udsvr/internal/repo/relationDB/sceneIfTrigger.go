@@ -41,7 +41,7 @@ func (p SceneIfTriggerRepo) fmtFilter(ctx context.Context, f SceneIfTriggerFilte
 		db = db.Where("status = ?", f.Status)
 	}
 	if f.Type != "" {
-		db = db.Where("type = ?", f.Status)
+		db = db.Where("type = ?", f.Type)
 	}
 	if f.SceneID != 0 {
 		db = db.Where("scene_id = ?", f.SceneID)
