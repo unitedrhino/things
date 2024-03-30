@@ -7,7 +7,7 @@ import (
 )
 
 type If struct {
-	Triggers Triggers `json:"triggers"`
+	Triggers Triggers `json:"triggers,omitempty"`
 }
 
 type TriggerType = string

@@ -28,10 +28,11 @@ type TriggerDevice struct {
 	DeviceAlias string            `json:"deviceAlias,omitempty"` //设备别名,只读
 	Type        TriggerDeviceType `json:"type,omitempty"`        //触发类型  connected:上线 disConnected:下线 reportProperty:属性上报 reportEvent: 事件上报
 	//Schema      *TriggerDeviceSchema `json:"schema,omitempty"`      //物模型类型的具体操作 reportProperty:属性上报 reportEvent: 事件上报
-	DataID   string   `json:"dataID"`   //选择为属性或事件时需要填该字段 属性的id及事件的id aa.bb.cc
-	DataName string   `json:"dataName"` //对应的物模型定义,只读
-	TermType CmpType  `json:"termType"` //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
-	Values   []string `json:"values"`   //比较条件列表
+	DataID           string   `json:"dataID"`           //选择为属性或事件时需要填该字段 属性的id及事件的id aa.bb.cc
+	SchemaAffordance string   `json:"schemaAffordance"` //只读,返回物模型定义
+	DataName         string   `json:"dataName"`         //对应的物模型定义,只读
+	TermType         CmpType  `json:"termType"`         //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
+	Values           []string `json:"values"`           //比较条件列表
 }
 
 type TriggerDeviceType string
@@ -68,6 +69,7 @@ func (t *TriggerDevice) Validate(repo ValidateRepo) error {
 			return errors.Parameter.AddMsg("dataID不存在")
 		}
 		t.DataName = p.Name
+		t.SchemaAffordance = schema.DoToAffordanceStr(p)
 		if err := t.TermType.Validate(t.Values); err != nil {
 			return err
 		}

@@ -2,6 +2,9 @@ package rulelogic
 
 import (
 	"context"
+	"fmt"
+	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/oss"
 	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 
@@ -49,6 +52,14 @@ func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *ud.SceneInfo) (*ud.Empty, err
 	}
 	if in.Then != "" {
 		old.UdSceneThen = newPo.UdSceneThen
+	}
+	if in.HeadImg != "" && in.IsUpdateHeadImg { //如果填了参数且不等于原来的,说明修改头像,需要处理
+		nwePath := oss.GenFilePath(l.ctx, l.svcCtx.Config.Name, oss.BusinessScene, oss.SceneHeadIng, fmt.Sprintf("%d/%s", old.ID, oss.GetFileNameWithPath(in.HeadImg)))
+		path, err := l.svcCtx.OssClient.PrivateBucket().CopyFromTempBucket(in.HeadImg, nwePath)
+		if err != nil {
+			return nil, errors.System.AddDetail(err)
+		}
+		old.HeadImg = path
 	}
 	err = PoToSceneInfoDo(old).Validate(scene.ValidateRepo{Ctx: l.ctx, DeviceCache: l.svcCtx.DeviceCache, ProductSchemaCache: l.svcCtx.ProductSchemaCache})
 	if err != nil {

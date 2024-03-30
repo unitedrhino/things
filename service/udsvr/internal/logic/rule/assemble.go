@@ -1,12 +1,16 @@
 package rulelogic
 
 import (
+	"context"
+	"gitee.com/i-Things/share/oss/common"
 	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/udsvr/internal/domain"
 	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
+	"github.com/i-Things/things/service/udsvr/internal/svc"
 	"github.com/i-Things/things/service/udsvr/pb/ud"
+	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
 
@@ -31,7 +35,8 @@ func ToSceneInfoDo(in *ud.SceneInfo) *scene.Info {
 
 func ToSceneInfoPo(in *scene.Info) *relationDB.UdSceneInfo {
 	return &relationDB.UdSceneInfo{
-		ID: in.ID,
+		ID:   in.ID,
+		Type: in.Type,
 		//AreaIDs: in.AreaIDs,
 		Name:    in.Name,
 		Desc:    in.Desc,
@@ -144,24 +149,25 @@ func ToSceneActionPo(s *scene.Info, in *scene.Action) *relationDB.UdSceneThenAct
 		return nil
 	}
 	po := &relationDB.UdSceneThenAction{
-		ID:          in.ID,
-		SceneID:     s.ID,
-		ExecuteType: in.Type,
-		Delay:       in.Delay,
+		ID:      in.ID,
+		SceneID: s.ID,
+		Type:    in.Type,
+		Delay:   in.Delay,
 	}
 	if in.Device != nil {
 		po.Device = &relationDB.UdSceneActionDevice{
-			ProjectID:   stores.ProjectID(in.Device.ProjectID),
-			AreaID:      stores.AreaID(in.Device.AreaID),
-			ProductID:   in.Device.ProductID,
-			SelectType:  in.Device.SelectType,
-			DeviceName:  in.Device.DeviceName,
-			DeviceAlias: in.Device.DeviceAlias,
-			DataName:    in.Device.DataName,
-			GroupID:     in.Device.GroupID,
-			Type:        in.Device.Type,
-			DataID:      in.Device.DataID,
-			Value:       in.Device.Value,
+			ProjectID:        stores.ProjectID(in.Device.ProjectID),
+			AreaID:           stores.AreaID(in.Device.AreaID),
+			ProductID:        in.Device.ProductID,
+			SelectType:       in.Device.SelectType,
+			DeviceName:       in.Device.DeviceName,
+			DeviceAlias:      in.Device.DeviceAlias,
+			DataName:         in.Device.DataName,
+			GroupID:          in.Device.GroupID,
+			Type:             in.Device.Type,
+			DataID:           in.Device.DataID,
+			Value:            in.Device.Value,
+			SchemaAffordance: in.Device.SchemaAffordance,
 		}
 	}
 	return po
@@ -181,22 +187,23 @@ func ToSceneActionDo(in *relationDB.UdSceneThenAction) *scene.Action {
 	do := &scene.Action{
 		ID:    in.ID,
 		Order: in.Order,
-		Type:  in.ExecuteType,
+		Type:  in.Type,
 		Delay: in.Delay,
 	}
 	if in.Device != nil {
 		do.Device = &scene.ActionDevice{
-			ProjectID:   int64(in.Device.ProjectID),
-			AreaID:      int64(in.Device.AreaID),
-			ProductID:   in.Device.ProductID,
-			SelectType:  in.Device.SelectType,
-			DeviceName:  in.Device.DeviceName,
-			DeviceAlias: in.Device.DeviceAlias,
-			GroupID:     in.Device.GroupID,
-			Type:        in.Device.Type,
-			DataID:      in.Device.DataID,
-			DataName:    in.Device.DataName,
-			Value:       in.Device.Value,
+			ProjectID:        int64(in.Device.ProjectID),
+			AreaID:           int64(in.Device.AreaID),
+			ProductID:        in.Device.ProductID,
+			SelectType:       in.Device.SelectType,
+			DeviceName:       in.Device.DeviceName,
+			DeviceAlias:      in.Device.DeviceAlias,
+			GroupID:          in.Device.GroupID,
+			Type:             in.Device.Type,
+			DataID:           in.Device.DataID,
+			DataName:         in.Device.DataName,
+			Value:            in.Device.Value,
+			SchemaAffordance: in.Device.SchemaAffordance,
 		}
 	}
 	return do
@@ -251,11 +258,18 @@ func ToSceneTriggerDeviceDo(in *relationDB.UdSceneTriggerDevice) (ret *scene.Tri
 	}
 }
 
-func PoToSceneInfoPb(in *relationDB.UdSceneInfo) *ud.SceneInfo {
+func PoToSceneInfoPb(ctx context.Context, svcCtx *svc.ServiceContext, in *relationDB.UdSceneInfo) *ud.SceneInfo {
 	if in == nil {
 		return nil
 	}
 	do := PoToSceneInfoDo(in)
+	if in.HeadImg != "" {
+		var err error
+		in.HeadImg, err = svcCtx.OssClient.PrivateBucket().SignedGetUrl(ctx, in.HeadImg, 24*60*60, common.OptionKv{})
+		if err != nil {
+			logx.WithContext(ctx).Errorf("%s.SignedGetUrl err:%v", utils.FuncName(), err)
+		}
+	}
 	return &ud.SceneInfo{
 		Id:      in.ID,
 		Name:    in.Name,
@@ -271,12 +285,12 @@ func PoToSceneInfoPb(in *relationDB.UdSceneInfo) *ud.SceneInfo {
 	}
 }
 
-func PoToSceneInfoPbs(in []*relationDB.UdSceneInfo) (ret []*ud.SceneInfo) {
+func PoToSceneInfoPbs(ctx context.Context, svcCtx *svc.ServiceContext, in []*relationDB.UdSceneInfo) (ret []*ud.SceneInfo) {
 	if in == nil {
 		return nil
 	}
 	for _, v := range in {
-		ret = append(ret, PoToSceneInfoPb(v))
+		ret = append(ret, PoToSceneInfoPb(ctx, svcCtx, v))
 	}
 	return ret
 }

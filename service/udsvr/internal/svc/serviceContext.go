@@ -8,6 +8,7 @@ import (
 	"gitee.com/i-Things/share/conf"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/eventBus"
+	"gitee.com/i-Things/share/oss"
 	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/client/devicegroup"
 	"github.com/i-Things/things/service/dmsvr/client/deviceinteract"
@@ -22,6 +23,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 	"github.com/zeromicro/go-zero/zrpc"
+	"os"
 )
 
 type SvrClient struct {
@@ -41,6 +43,7 @@ type ServiceContext struct {
 	Config    config.Config
 	FastEvent *eventBus.FastEvent
 	Store     kv.Store
+	OssClient *oss.Client
 	SvrClient
 }
 
@@ -80,10 +83,16 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	logx.Must(err)
 	psc, err := dmExport.NewSchemaInfoCache(productM, serverMsg)
 	logx.Must(err)
+	ossClient, err := oss.NewOssClient(c.OssConf)
+	if err != nil {
+		logx.Errorf("NewOss err err:%v", err)
+		os.Exit(-1)
+	}
 	return &ServiceContext{
 		Config:    c,
 		FastEvent: serverMsg,
 		Store:     kv.NewStore(c.CacheRedis),
+		OssClient: ossClient,
 		SvrClient: SvrClient{
 			TimedM:             timedM,
 			AreaM:              areaM,

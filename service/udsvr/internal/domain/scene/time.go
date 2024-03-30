@@ -47,8 +47,8 @@ type Timers []*Timer
 
 // Timer 定时器类型
 type Timer struct {
-	ExecAt     int64 `json:"execAt"`     //执行的时间点 从0点加起来的秒数 如 1点就是 1*60*60
-	ExecRepeat int64 `json:"execRepeat"` //二进制周一到周日 11111111
+	ExecAt     int64 `json:"execAt"`            //执行的时间点 从0点加起来的秒数 如 1点就是 1*60*60
+	ExecRepeat int64 `json:"execRepeat,string"` //二进制周一到周日 11111111
 }
 
 type TimeUnit string

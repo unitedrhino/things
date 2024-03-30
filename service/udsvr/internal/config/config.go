@@ -14,4 +14,5 @@ type Config struct {
 	SysRpc      conf.RpcClientConf `json:",optional"`
 	DmRpc       conf.RpcClientConf `json:",optional"`
 	Event       conf.EventConf     //和things内部交互的设置
+	OssConf     conf.OssConf       `json:",optional"`
 }

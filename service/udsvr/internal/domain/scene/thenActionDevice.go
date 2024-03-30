@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"gitee.com/i-Things/share/devices"
+	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
 	deviceinteract "github.com/i-Things/things/service/dmsvr/client/deviceinteract"
@@ -21,17 +22,18 @@ const (
 )
 
 type ActionDevice struct {
-	ProjectID   int64            `json:"-"`                     //项目id
-	AreaID      int64            `json:"areaID,string"`         //涉及到的区域ID
-	ProductID   string           `json:"productID"`             //产品id
-	SelectType  SelectType       `json:"selector"`              //设备选择方式   fixed:指定的设备
-	DeviceName  string           `json:"deviceName"`            //选择的设备列表 指定设备的时候才需要填写(如果设备换到其他区域里,这里删除该设备)
-	DeviceAlias string           `json:"deviceAlias,omitempty"` //设备别名,只读
-	GroupID     int64            `json:"groupID"`               //分组id
-	Type        ActionDeviceType `json:"type"`                  // 云端向设备发起属性控制: propertyControl  应用调用设备行为:action  todo:通知设备上报
-	DataID      string           `json:"dataID"`                // 属性的id及事件的id
-	DataName    string           `json:"dataName"`              //对应的物模型定义,只读
-	Value       string           `json:"value"`                 //传的值
+	ProjectID        int64            `json:"-"`                     //项目id
+	AreaID           int64            `json:"areaID,string"`         //涉及到的区域ID
+	ProductID        string           `json:"productID"`             //产品id
+	SelectType       SelectType       `json:"selector"`              //设备选择方式   fixed:指定的设备
+	DeviceName       string           `json:"deviceName"`            //选择的设备列表 指定设备的时候才需要填写(如果设备换到其他区域里,这里删除该设备)
+	DeviceAlias      string           `json:"deviceAlias,omitempty"` //设备别名,只读
+	GroupID          int64            `json:"groupID"`               //分组id
+	Type             ActionDeviceType `json:"type"`                  // 云端向设备发起属性控制: propertyControl  应用调用设备行为:action  todo:通知设备上报
+	DataID           string           `json:"dataID"`                // 属性的id及事件的id
+	DataName         string           `json:"dataName"`              //对应的物模型定义,只读
+	SchemaAffordance string           `json:"schemaAffordance"`      //只读,返回物模型定义
+	Value            string           `json:"value"`                 //传的值
 }
 
 func (a *ActionDevice) Validate(repo ValidateRepo) error {
@@ -57,6 +59,7 @@ func (a *ActionDevice) Validate(repo ValidateRepo) error {
 		return errors.Parameter.AddMsg("dataID不存在")
 	}
 	a.DataName = p.Name
+	a.SchemaAffordance = schema.DoToAffordanceStr(p)
 	if a.Value == "" {
 		return errors.Parameter.AddMsg("传的值不能为空:%v")
 	}

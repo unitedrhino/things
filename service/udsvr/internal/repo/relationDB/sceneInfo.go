@@ -24,11 +24,11 @@ func NewSceneInfoRepo(in any) *SceneInfoRepo {
 }
 
 type SceneInfoFilter struct {
-	Name        string `json:"name"`
-	Status      int64
-	TriggerType string
-	Tag         string
-	AreaID      int64
+	Name   string `json:"name"`
+	Status int64
+	Type   string
+	Tag    string
+	AreaID int64
 }
 
 func (p SceneInfoRepo) fmtFilter(ctx context.Context, f SceneInfoFilter) *gorm.DB {
@@ -42,8 +42,8 @@ func (p SceneInfoRepo) fmtFilter(ctx context.Context, f SceneInfoFilter) *gorm.D
 	if f.Name != "" {
 		db = db.Where("name like ?", "%"+f.Name+"%")
 	}
-	if f.TriggerType != "" {
-		db = db.Where("trigger_type = ?", f.TriggerType)
+	if f.Type != "" {
+		db = db.Where("type = ?", f.Type)
 	}
 	if f.Status != 0 {
 		db = db.Where("status = ?", f.Status)
@@ -68,7 +68,7 @@ func (p SceneInfoRepo) FindOneByFilter(ctx context.Context, f SceneInfoFilter) (
 
 func (p SceneInfoRepo) FindByFilter(ctx context.Context, f SceneInfoFilter, page *def.PageInfo) ([]*UdSceneInfo, error) {
 	var results []*UdSceneInfo
-	db := p.fmtFilter(ctx, f).Preload("Actions").Preload("Device").Preload("Timer").Model(&UdSceneInfo{})
+	db := p.fmtFilter(ctx, f).Preload("Actions").Preload("Triggers").Model(&UdSceneInfo{})
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
@@ -144,7 +144,7 @@ func (p SceneInfoRepo) Delete(ctx context.Context, id int64) error {
 }
 func (p SceneInfoRepo) FindOne(ctx context.Context, id int64) (*UdSceneInfo, error) {
 	var result UdSceneInfo
-	err := p.db.WithContext(ctx).Preload("Actions").Preload("Device").Preload("Timer").Where("id = ?", id).First(&result).Error
+	err := p.db.WithContext(ctx).Preload("Actions").Preload("Triggers").Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}

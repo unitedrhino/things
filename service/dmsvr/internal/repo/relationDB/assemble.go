@@ -8,7 +8,7 @@ import (
 )
 
 func ToPropertyPo(productID string, in *schema.Property) *DmProductSchema {
-	define := PropertyDef{
+	define := schema.PropertyAffordance{
 		Define:      in.Define,
 		Mode:        in.Mode,
 		IsUseShadow: in.IsUseShadow,
@@ -41,7 +41,7 @@ func ToCommonParam(in *DmSchemaCore) schema.CommonParam {
 }
 
 func ToPropertyDo(in *DmSchemaCore) *schema.Property {
-	affordance := PropertyDef{}
+	affordance := schema.PropertyAffordance{}
 	_ = json.Unmarshal([]byte(in.Affordance), &affordance)
 	do := &schema.Property{
 		CommonParam: ToCommonParam(in),
@@ -57,7 +57,7 @@ func ToPropertyDo(in *DmSchemaCore) *schema.Property {
 }
 
 func ToEventPo(productID string, in *schema.Event) *DmProductSchema {
-	define := EventDef{
+	define := schema.EventAffordance{
 		Type:   in.Type,
 		Params: in.Params,
 	}
@@ -78,7 +78,7 @@ func ToEventPo(productID string, in *schema.Event) *DmProductSchema {
 }
 
 func ToEventDo(in *DmSchemaCore) *schema.Event {
-	affordance := EventDef{}
+	affordance := schema.EventAffordance{}
 	_ = json.Unmarshal([]byte(in.Affordance), &affordance)
 	do := &schema.Event{
 		CommonParam: ToCommonParam(in),
@@ -92,7 +92,7 @@ func ToEventDo(in *DmSchemaCore) *schema.Event {
 }
 
 func ToActionPo(productID string, in *schema.Action) *DmProductSchema {
-	define := ActionDef{
+	define := schema.ActionAffordance{
 		Input:  in.Input,
 		Output: in.Output,
 	}
@@ -117,21 +117,21 @@ func ToAffordancePo(in any) string {
 	switch in.(type) {
 	case *schema.Event:
 		af := in.(*schema.Event)
-		define := EventDef{
+		define := schema.EventAffordance{
 			Type:   af.Type,
 			Params: af.Params,
 		}
 		defineStr, _ = json.Marshal(define)
 	case *schema.Action:
 		af := in.(*schema.Action)
-		define := ActionDef{
+		define := schema.ActionAffordance{
 			Input:  af.Input,
 			Output: af.Output,
 		}
 		defineStr, _ = json.Marshal(define)
 	case *schema.Property:
 		af := in.(*schema.Property)
-		define := PropertyDef{
+		define := schema.PropertyAffordance{
 			Define:      af.Define,
 			Mode:        af.Mode,
 			IsUseShadow: af.IsUseShadow,
@@ -143,7 +143,7 @@ func ToAffordancePo(in any) string {
 }
 
 func ToActionDo(in *DmSchemaCore) *schema.Action {
-	affordance := ActionDef{}
+	affordance := schema.ActionAffordance{}
 	_ = json.Unmarshal([]byte(in.Affordance), &affordance)
 	do := &schema.Action{
 		CommonParam: ToCommonParam(in),

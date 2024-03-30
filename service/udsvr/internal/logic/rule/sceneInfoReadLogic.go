@@ -26,5 +26,5 @@ func NewSceneInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Sce
 
 func (l *SceneInfoReadLogic) SceneInfoRead(in *ud.WithID) (*ud.SceneInfo, error) {
 	po, err := relationDB.NewSceneInfoRepo(l.ctx).FindOne(l.ctx, in.Id)
-	return PoToSceneInfoPb(po), err
+	return PoToSceneInfoPb(l.ctx, l.svcCtx, po), err
 }
