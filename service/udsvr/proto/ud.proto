@@ -91,11 +91,17 @@ message SceneInfoIndexResp{
   int64  total = 2;//总数(只有分页的时候会返回)
 }
 
+message SceneFlowInfo{
+  string type =1;//if then
+  string subType =2;//timer:定时触发 notify: 通知 delay:延迟  device:设备输出或设备触发
+  string info =3;//内容
+}
 
 message SceneInfo{
   int64 id = 1;//场景id
   string name =3;//场景名
   string desc = 4;//描述
+  repeated SceneFlowInfo FlowPath =15; //执行的流程
   string tag =12;//标签 admin: 管理员 normal: 普通
   int64 createdTime = 5;//创建时间 秒级时间戳 只读
   string type = 14;//auto:自动化 manual:手动触发

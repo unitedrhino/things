@@ -23,6 +23,7 @@ type (
 	OpsWorkOrderIndexReq  = ud.OpsWorkOrderIndexReq
 	OpsWorkOrderIndexResp = ud.OpsWorkOrderIndexResp
 	PageInfo              = ud.PageInfo
+	SceneFlowInfo         = ud.SceneFlowInfo
 	SceneInfo             = ud.SceneInfo
 	SceneInfoIndexReq     = ud.SceneInfoIndexReq
 	SceneInfoIndexResp    = ud.SceneInfoIndexResp

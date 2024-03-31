@@ -31,6 +31,13 @@ type Action struct {
 	Device *ActionDevice `json:"device,omitempty"`
 }
 
+func (t *Action) GetFlowInfo() (ret *FlowInfo) {
+	return &FlowInfo{
+		Type:    "then",
+		SubType: t.Type,
+	}
+}
+
 func (a Actions) Validate(repo ValidateRepo) error {
 	if a == nil {
 		return nil

@@ -10,6 +10,7 @@ type UdSceneInfo struct {
 	ID         int64             `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`     // id编号
 	TenantCode stores.TenantCode `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`         // 租户编码
 	ProjectID  stores.ProjectID  `gorm:"column:project_id;type:bigint;default:0;NOT NULL"`     // 项目ID(雪花ID)
+	FlowPath   []*scene.FlowInfo `gorm:"column:flow_path;type:json;serializer:json;"`          //执行路径
 	Tag        string            `gorm:"column:tag;type:VARCHAR(128);NOT NULL;default:normal"` //标签 admin: 管理员 normal: 普通
 	HeadImg    string            `gorm:"column:head_img;type:VARCHAR(256);NOT NULL"`           // 头像
 	Name       string            `gorm:"column:name;type:varchar(100);NOT NULL"`               // 名称

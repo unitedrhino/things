@@ -61,10 +61,12 @@ func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *ud.SceneInfo) (*ud.Empty, err
 		}
 		old.HeadImg = path
 	}
-	err = PoToSceneInfoDo(old).Validate(scene.ValidateRepo{Ctx: l.ctx, DeviceCache: l.svcCtx.DeviceCache, ProductSchemaCache: l.svcCtx.ProductSchemaCache})
+	do := PoToSceneInfoDo(old)
+	err = do.Validate(scene.ValidateRepo{Ctx: l.ctx, DeviceCache: l.svcCtx.DeviceCache, ProductSchemaCache: l.svcCtx.ProductSchemaCache})
 	if err != nil {
 		return nil, err
 	}
-	err = db.Update(l.ctx, old)
+	po := ToSceneInfoPo(do)
+	err = db.Update(l.ctx, po)
 	return &ud.Empty{}, err
 }

@@ -5,13 +5,13 @@ go 1.21
 toolchain go1.21.4
 
 replace (
-	gitee.com/i-Things/core => ../core
+	gitee.com/i-Things/core => codeup.aliyun.com/642f7dca8b47795dae985084/core/core
 	github.com/Masterminds/squirrel => github.com/i-Things/squirrel v1.20.2
 	github.com/taosdata/driver-go/v3 => github.com/i-Things/driver-go/v3 v3.10.5
 )
 
 require (
-	gitee.com/i-Things/core v0.0.0-00010101000000-000000000000
+	gitee.com/i-Things/core v0.0.1
 	gitee.com/i-Things/share v0.1.9
 	github.com/Masterminds/squirrel v1.20.1
 	github.com/dgraph-io/ristretto v0.1.0

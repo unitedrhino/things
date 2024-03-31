@@ -107,7 +107,7 @@ func (p SceneInfoRepo) Update(ctx context.Context, data *UdSceneInfo) error {
 				return err
 			}
 		}
-		if len(data.Actions) != 0 {
+		if len(actions) != 0 {
 			err = NewSceneActionRepo(tx).MultiInsert(ctx, actions)
 			if err != nil {
 				return err

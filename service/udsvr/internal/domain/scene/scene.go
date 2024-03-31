@@ -20,17 +20,18 @@ const (
 )
 
 type Info struct {
-	ID          int64     `json:"id"`
-	HeadImg     string    `json:"headImg"` // 头像
-	Tag         string    `json:"tag"`
-	Name        string    `json:"name"`
-	Desc        string    `json:"desc"`
-	CreatedTime time.Time `json:"createdTime"`
-	Type        SceneType `json:"type"`
-	If          If        `json:"if"`     //多种触发方式
-	When        When      `json:"when"`   //手动触发模式不生效
-	Then        Then      `json:"then"`   //触发后执行的动作
-	Status      int64     `json:"status"` // 状态（1启用 2禁用）
+	ID          int64       `json:"id"`
+	HeadImg     string      `json:"headImg"`  // 头像
+	FlowPath    []*FlowInfo `json:"flowPath"` //执行路径
+	Tag         string      `json:"tag"`
+	Name        string      `json:"name"`
+	Desc        string      `json:"desc"`
+	CreatedTime time.Time   `json:"createdTime"`
+	Type        SceneType   `json:"type"`
+	If          If          `json:"if"`     //多种触发方式
+	When        When        `json:"when"`   //手动触发模式不生效
+	Then        Then        `json:"then"`   //触发后执行的动作
+	Status      int64       `json:"status"` // 状态（1启用 2禁用）
 }
 
 func (i *Info) Validate(repo ValidateRepo) error {
@@ -52,7 +53,14 @@ func (i *Info) Validate(repo ValidateRepo) error {
 	if i.Status == 0 {
 		i.Status = def.Enable
 	}
+	i.FlowPath = i.Then.GetFlowPath()
 	return nil
+}
+
+type FlowInfo struct {
+	Type    string `json:"type"`    //流程类型 then
+	SubType string `json:"subType"` //子类型 设备执行
+	Info    string `json:"info"`    //设备执行类型为产品id
 }
 
 type FindWithTriggerDto struct {

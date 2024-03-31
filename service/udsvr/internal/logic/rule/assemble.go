@@ -18,19 +18,11 @@ func ToSceneInfoDo(in *ud.SceneInfo) *scene.Info {
 	if in == nil {
 		return nil
 	}
-
-	return &scene.Info{
-		ID:      in.Id,
-		Name:    in.Name,
-		HeadImg: in.HeadImg,
-		Tag:     in.Tag,
-		Desc:    in.Desc,
-		Type:    in.Type,
-		If:      utils.UnmarshalNoErr[scene.If](in.If),
-		When:    utils.UnmarshalNoErr[scene.When](in.When),
-		Then:    utils.UnmarshalNoErr[scene.Then](in.Then),
-		Status:  in.Status,
-	}
+	do := utils.Copy[scene.Info](in)
+	do.If = utils.UnmarshalNoErr[scene.If](in.If)
+	do.When = utils.UnmarshalNoErr[scene.When](in.When)
+	do.Then = utils.UnmarshalNoErr[scene.Then](in.Then)
+	return do
 }
 
 func ToSceneInfoPo(in *scene.Info) *relationDB.UdSceneInfo {
@@ -38,10 +30,11 @@ func ToSceneInfoPo(in *scene.Info) *relationDB.UdSceneInfo {
 		ID:   in.ID,
 		Type: in.Type,
 		//AreaIDs: in.AreaIDs,
-		Name:    in.Name,
-		Desc:    in.Desc,
-		Tag:     in.Tag,
-		HeadImg: in.HeadImg,
+		FlowPath: in.FlowPath,
+		Name:     in.Name,
+		Desc:     in.Desc,
+		Tag:      in.Tag,
+		HeadImg:  in.HeadImg,
 		UdSceneIf: relationDB.UdSceneIf{
 			Triggers: ToSceneTriggersPo(in, in.If.Triggers),
 		},
@@ -119,6 +112,7 @@ func PoToSceneInfoDo(in *relationDB.UdSceneInfo) *scene.Info {
 		Name:        in.Name,
 		Tag:         in.Tag,
 		HeadImg:     in.HeadImg,
+		FlowPath:    in.FlowPath,
 		Desc:        in.Desc,
 		CreatedTime: in.CreatedTime,
 		Type:        in.Type,
@@ -270,19 +264,11 @@ func PoToSceneInfoPb(ctx context.Context, svcCtx *svc.ServiceContext, in *relati
 			logx.WithContext(ctx).Errorf("%s.SignedGetUrl err:%v", utils.FuncName(), err)
 		}
 	}
-	return &ud.SceneInfo{
-		Id:      in.ID,
-		Name:    in.Name,
-		Desc:    in.Desc,
-		Tag:     in.Tag,
-		Type:    in.Type,
-		HeadImg: in.HeadImg,
-		//AreaIDs: in.AreaIDs,
-		If:     utils.MarshalNoErr(do.If),
-		When:   utils.MarshalNoErr(do.When),
-		Then:   utils.MarshalNoErr(do.Then),
-		Status: in.Status,
-	}
+	pb := utils.Copy[ud.SceneInfo](in)
+	pb.If = utils.MarshalNoErr(do.If)
+	pb.When = utils.MarshalNoErr(do.When)
+	pb.Then = utils.MarshalNoErr(do.Then)
+	return pb
 }
 
 func PoToSceneInfoPbs(ctx context.Context, svcCtx *svc.ServiceContext, in []*relationDB.UdSceneInfo) (ret []*ud.SceneInfo) {

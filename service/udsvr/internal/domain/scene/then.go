@@ -10,6 +10,16 @@ type Then struct {
 	Actions Actions `json:"actions"` //执行内容
 }
 
+func (t *Then) GetFlowPath() (ret []*FlowInfo) {
+	if t == nil {
+		return nil
+	}
+	for _, v := range t.Actions {
+		ret = append(ret, v.GetFlowInfo())
+	}
+	return ret
+}
+
 func (t *Then) Validate(repo ValidateRepo) error {
 	if t == nil || len(t.Actions) == 0 {
 		return errors.Parameter.AddMsg("需要填写执行内容")

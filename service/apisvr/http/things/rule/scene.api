@@ -56,17 +56,26 @@ type (
     }
 )
 
-type SceneInfo  {
-    ID          int64   `json:"id,optional"`
-    Name        string  `json:"name,optional"`
-    Status      int64   `json:"status,optional"` //状态: 1启用 2禁用
-    Tag         string  `json:"tag,optional"`//标签 admin: 管理员 normal: 普通
-    Type string  `json:"type,optional"`
-    Desc        string  `json:"desc,optional"`
-    CreatedTime int64   `json:"createdTime,optional"`
-    If     string  `json:"if,optional"`
-    When        string  `json:"when,optional"`
-    Then      string `json:"then,optional"`
-    HeadImg  string `json:"headImg,optional"`        // 用户头像
-    IsUpdateHeadImg  bool `json:"isUpdateHeadImg,omitempty,optional"`        // 用户头像
-}
+type (
+    SceneFlowInfo {
+        Type    string `json:"type"`    //流程类型 then
+        SubType string `json:"subType"` //子类型 设备执行
+        Info    string `json:"info,omitempty"`    //设备执行类型为产品id
+    }
+    SceneInfo  {
+        ID          int64   `json:"id,optional"`
+        Name        string  `json:"name,optional"`
+        Status      int64   `json:"status,optional"` //状态: 1启用 2禁用
+        Tag         string  `json:"tag,optional"`//标签 admin: 管理员 normal: 普通
+        Type string  `json:"type,optional"`
+        FlowPath    []*SceneFlowInfo `json:"flowPath,optional"` //执行路径
+        Desc        string  `json:"desc,optional"`
+        CreatedTime int64   `json:"createdTime,optional"`
+        If     string  `json:"if,optional"`
+        When        string  `json:"when,optional"`
+        Then      string `json:"then,optional"`
+        HeadImg  string `json:"headImg,optional"`        // 用户头像
+        IsUpdateHeadImg  bool `json:"isUpdateHeadImg,omitempty,optional"`        // 用户头像
+    }
+
+)
