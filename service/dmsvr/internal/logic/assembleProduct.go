@@ -66,7 +66,6 @@ func ToProductSchemaRpc(info *relationDB.DmProductSchema) *dm.ProductSchemaInfo 
 func ToProductSchemaPo(info *dm.ProductSchemaInfo) *relationDB.DmProductSchema {
 	db := &relationDB.DmProductSchema{
 		ProductID: info.ProductID,
-		Tag:       info.Tag,
 		DmSchemaCore: relationDB.DmSchemaCore{
 			Type:              info.Type,
 			Identifier:        info.Identifier,
@@ -79,6 +78,7 @@ func ToProductSchemaPo(info *dm.ProductSchemaInfo) *relationDB.DmProductSchema {
 			IsHistory:         info.IsHistory,
 			Order:             info.Order,
 			Affordance:        info.Affordance.GetValue(),
+			Tag:               info.Tag,
 		},
 	}
 	return db

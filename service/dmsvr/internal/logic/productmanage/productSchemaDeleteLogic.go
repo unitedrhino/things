@@ -42,7 +42,15 @@ func (l *ProductSchemaDeleteLogic) ProductSchemaDelete(in *dm.ProductSchemaDelet
 		return nil, err
 	}
 	if schema.AffordanceType(po.Type) == schema.AffordanceTypeProperty {
-		if err := l.svcCtx.SchemaManaRepo.DeleteProperty(l.ctx, in.ProductID, in.Identifier); err != nil {
+		t, err := l.svcCtx.SchemaRepo.GetData(l.ctx, in.ProductID)
+		if err != nil {
+			return nil, err
+		}
+		p, ok := t.Property[in.Identifier]
+		if !ok {
+			return nil, errors.Parameter.AddMsg("标识符未找到")
+		}
+		if err := l.svcCtx.SchemaManaRepo.DeleteProperty(l.ctx, p, in.ProductID, in.Identifier); err != nil {
 			l.Errorf("%s.DeleteProperty failure,err:%v", utils.FuncName(), err)
 			return nil, errors.Database.AddDetail(err)
 		}

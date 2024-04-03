@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-func (d *DeviceDataRepo) InsertPropertyData(ctx context.Context, t *schema.Model, productID string, deviceName string, property *msgThing.PropertyData) error {
+func (d *DeviceDataRepo) InsertPropertyData(ctx context.Context, t *schema.Property, productID string, deviceName string, property *msgThing.PropertyData) error {
 	sql, args, err := d.GenInsertPropertySql(ctx, t, productID, deviceName, property)
 	if err != nil {
 		return err
@@ -24,7 +24,8 @@ func (d *DeviceDataRepo) InsertPropertyData(ctx context.Context, t *schema.Model
 	return nil
 }
 
-func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, t *schema.Model, productID string, deviceName string, property *msgThing.PropertyData) (sql string, args []any, err error) {
+func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Property, productID string, deviceName string, property *msgThing.PropertyData) (sql string, args []any, err error) {
+
 	switch property.Param.(type) {
 	case map[string]any:
 		paramPlaceholder, paramIds, paramValList, err := stores.GenParams(property.Param.(map[string]any))
@@ -33,7 +34,7 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, t *schema.Mod
 		}
 		sql = fmt.Sprintf(" %s using %s tags('%s','%s','%s') (`ts`, %s) values (?,%s) ",
 			d.GetPropertyTableName(productID, deviceName, property.Identifier),
-			d.GetPropertyStableName(productID, property.Identifier), productID, deviceName, t.Property[property.Identifier].Define.Type,
+			d.GetPropertyStableName(p.Tag, productID, property.Identifier), productID, deviceName, p.Define.Type,
 			paramIds, paramPlaceholder)
 		args = append([]any{property.TimeStamp}, paramValList...)
 	default:
@@ -49,8 +50,8 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, t *schema.Mod
 		}
 		sql = fmt.Sprintf(" %s using %s tags('%s','%s','%s')(`ts`, `param`) values (?,?) ",
 			d.GetPropertyTableName(productID, deviceName, property.Identifier),
-			d.GetPropertyStableName(productID, property.Identifier),
-			productID, deviceName, t.Property[property.Identifier].Define.Type)
+			d.GetPropertyStableName(p.Tag, productID, property.Identifier),
+			productID, deviceName, p.Define.Type)
 		args = append(args, property.TimeStamp, param)
 	}
 	return
@@ -59,7 +60,7 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, t *schema.Mod
 func (d *DeviceDataRepo) genRedisPropertyKey(productID string, deviceName, identifier string) string {
 	return fmt.Sprintf("device:thing:property:%s:%s:%s", productID, deviceName, identifier)
 }
-func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, filter msgThing.LatestFilter) (*msgThing.PropertyData, error) {
+func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schema.Property, filter msgThing.LatestFilter) (*msgThing.PropertyData, error) {
 	retStr, err := d.kv.GetCtx(ctx, d.genRedisPropertyKey(filter.ProductID, filter.DeviceName, filter.DataID))
 	if err != nil {
 		return nil, errors.Database.AddDetailf(
@@ -67,7 +68,7 @@ func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, filter m
 			filter, err)
 	}
 	if retStr == "" { //如果缓存里没有查到,需要从db里查
-		dds, err := d.GetPropertyDataByID(ctx,
+		dds, err := d.GetPropertyDataByID(ctx, p,
 			msgThing.FilterOpt{
 				Page:        def.PageInfo2{Size: 1},
 				ProductID:   filter.ProductID,
@@ -107,8 +108,9 @@ func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Mod
 				"DeviceDataRepo.InsertPropertiesData.SetCtx identifier:%v param:%v err:%v",
 				identifier, param, err)
 		}
+		p := t.Property[identifier]
 		//入库
-		sql1, args1, err := d.GenInsertPropertySql(ctx, t, productID, deviceName, &data)
+		sql1, args1, err := d.GenInsertPropertySql(ctx, p, productID, deviceName, &data)
 		if err != nil {
 			return errors.Database.AddDetailf(
 				"DeviceDataRepo.InsertPropertiesData.InsertPropertyData identifier:%v param:%v err:%v",
@@ -120,7 +122,7 @@ func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Mod
 }
 
 func (d *DeviceDataRepo) GetPropertyDataByID(
-	ctx context.Context,
+	ctx context.Context, p *schema.Property,
 	filter msgThing.FilterOpt) ([]*msgThing.PropertyData, error) {
 	if err := filter.Check(); err != nil {
 		return nil, err
@@ -143,7 +145,7 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 		}
 		filter.Page.Size = 0
 	}
-	sql = sql.From(d.GetPropertyStableName(filter.ProductID, filter.DataID))
+	sql = sql.From(d.GetPropertyStableName(p.Tag, filter.ProductID, filter.DataID))
 	sql = d.fillFilter(sql, filter)
 	sql = filter.Page.FmtSql(sql)
 
@@ -202,10 +204,10 @@ func (d *DeviceDataRepo) fillFilter(
 }
 
 func (d *DeviceDataRepo) GetPropertyCountByID(
-	ctx context.Context,
+	ctx context.Context, p *schema.Property,
 	filter msgThing.FilterOpt) (int64, error) {
 
-	sqlData := sq.Select("count(1)").From(d.GetPropertyStableName(filter.ProductID, filter.DataID))
+	sqlData := sq.Select("count(1)").From(d.GetPropertyStableName(p.Tag, filter.ProductID, filter.DataID))
 	sqlData = d.fillFilter(sqlData, filter)
 	sqlData = filter.Page.FmtWhere(sqlData)
 	sqlStr, value, err := sqlData.ToSql()

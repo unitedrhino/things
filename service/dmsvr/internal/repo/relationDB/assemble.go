@@ -25,18 +25,22 @@ func ToPropertyPo(productID string, in *schema.Property) *DmProductSchema {
 			Desc:         in.Desc,
 			Required:     def.ToIntBool[int64](in.Required),
 			Affordance:   string(defineStr),
+			Tag:          in.Tag,
 		},
-		Tag: int64(schema.TagCustom),
 	}
 }
 
 func ToCommonParam(in *DmSchemaCore) schema.CommonParam {
 	return schema.CommonParam{
-		Identifier:   in.Identifier,
-		Name:         in.Name,
-		Desc:         in.Desc,
-		ExtendConfig: in.ExtendConfig,
-		Required:     def.ToBool(in.Required),
+		Identifier:        in.Identifier,
+		Name:              in.Name,
+		Desc:              in.Desc,
+		ExtendConfig:      in.ExtendConfig,
+		Required:          def.ToBool(in.Required),
+		IsHistory:         in.IsHistory,
+		IsCanSceneLinkage: in.IsCanSceneLinkage,
+		IsShareAuthPerm:   in.IsShareAuthPerm,
+		Tag:               in.Tag,
 	}
 }
 
@@ -65,15 +69,18 @@ func ToEventPo(productID string, in *schema.Event) *DmProductSchema {
 	return &DmProductSchema{
 		ProductID: productID,
 		DmSchemaCore: DmSchemaCore{
-			Type:         int64(schema.AffordanceTypeEvent),
-			Identifier:   in.Identifier,
-			Name:         in.Name,
-			Desc:         in.Desc,
-			ExtendConfig: in.ExtendConfig,
-			Required:     def.ToIntBool[int64](in.Required),
-			Affordance:   string(defineStr),
+			Type:              int64(schema.AffordanceTypeEvent),
+			Identifier:        in.Identifier,
+			Name:              in.Name,
+			Desc:              in.Desc,
+			ExtendConfig:      in.ExtendConfig,
+			Required:          def.ToIntBool[int64](in.Required),
+			Affordance:        string(defineStr),
+			IsHistory:         in.IsHistory,
+			IsCanSceneLinkage: in.IsCanSceneLinkage,
+			IsShareAuthPerm:   in.IsShareAuthPerm,
+			Tag:               in.Tag,
 		},
-		Tag: int64(schema.TagCustom),
 	}
 }
 
@@ -99,15 +106,18 @@ func ToActionPo(productID string, in *schema.Action) *DmProductSchema {
 	defineStr, _ := json.Marshal(define)
 	return &DmProductSchema{
 		ProductID: productID,
-		Tag:       int64(schema.TagCustom),
 		DmSchemaCore: DmSchemaCore{
-			Identifier:   in.Identifier,
-			Type:         int64(schema.AffordanceTypeAction),
-			Name:         in.Name,
-			ExtendConfig: in.ExtendConfig,
-			Desc:         in.Desc,
-			Required:     def.ToIntBool[int64](in.Required),
-			Affordance:   string(defineStr),
+			Identifier:        in.Identifier,
+			Type:              int64(schema.AffordanceTypeAction),
+			Name:              in.Name,
+			ExtendConfig:      in.ExtendConfig,
+			Desc:              in.Desc,
+			Required:          def.ToIntBool[int64](in.Required),
+			Affordance:        string(defineStr),
+			IsHistory:         in.IsHistory,
+			IsCanSceneLinkage: in.IsCanSceneLinkage,
+			IsShareAuthPerm:   in.IsShareAuthPerm,
+			Tag:               in.Tag,
 		},
 	}
 }

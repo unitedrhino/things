@@ -54,40 +54,35 @@ func (l *ProductSchemaUpdateLogic) ruleCheck(in *dm.ProductSchemaUpdateReq) (*re
 		return nil, nil, errors.Parameter.AddMsg("功能标签不支持修改")
 	}
 	newPo := logic.ToProductSchemaPo(in.Info)
-	newPo.ID = po.ID
-	newPo.Tag = po.Tag
-	if in.Info.Affordance == nil {
-		newPo.Affordance = po.Affordance
+	if in.Info.Affordance != nil && po.Tag == schema.TagCustom {
+		po.Affordance = newPo.Affordance
 	}
-	if in.Info.Name == nil {
-		newPo.Name = po.Name
+	if in.Info.Name != nil {
+		po.Name = newPo.Name
 	}
-	if in.Info.Desc == nil {
-		newPo.Desc = po.Desc
+	if in.Info.Desc != nil {
+		po.Desc = newPo.Desc
 	}
-	if in.Info.Required == 0 {
-		newPo.Required = po.Required
+	if in.Info.Required != 0 {
+		po.Required = newPo.Required
 	}
-	if in.Info.IsCanSceneLinkage == 0 {
-		newPo.IsCanSceneLinkage = po.IsCanSceneLinkage
+	if in.Info.IsCanSceneLinkage != 0 && po.Tag == schema.TagCustom {
+		po.IsCanSceneLinkage = newPo.IsCanSceneLinkage
 	}
-	if in.Info.IsShareAuthPerm == 0 {
-		newPo.IsShareAuthPerm = po.IsShareAuthPerm
+	if in.Info.IsShareAuthPerm != 0 && po.Tag == schema.TagCustom {
+		po.IsShareAuthPerm = newPo.IsShareAuthPerm
 	}
 
-	if in.Info.IsHistory == 0 {
-		newPo.IsHistory = po.IsHistory
+	if in.Info.IsHistory != 0 && po.Tag == schema.TagCustom {
+		po.IsHistory = newPo.IsHistory
 	}
 
-	if in.Info.Order == 0 {
-		newPo.Order = po.Order
+	if in.Info.Order != 0 {
+		po.Order = newPo.Order
 	}
 
-	if in.Info.ExtendConfig == "" {
-		newPo.ExtendConfig = po.ExtendConfig
-		if newPo.ExtendConfig == "" {
-			newPo.ExtendConfig = "{}"
-		}
+	if in.Info.ExtendConfig != "" {
+		po.ExtendConfig = newPo.ExtendConfig
 	}
 	if err := commonschemalogic.CheckAffordance(&newPo.DmSchemaCore); err != nil {
 		return nil, nil, err
@@ -103,7 +98,7 @@ func (l *ProductSchemaUpdateLogic) ProductSchemaUpdate(in *dm.ProductSchemaUpdat
 	}
 	if schema.AffordanceType(po.Type) == schema.AffordanceTypeProperty {
 		if err := l.svcCtx.SchemaManaRepo.DeleteProperty(
-			l.ctx, in.Info.ProductID, in.Info.Identifier); err != nil {
+			l.ctx, relationDB.ToPropertyDo(&po.DmSchemaCore), in.Info.ProductID, in.Info.Identifier); err != nil {
 			l.Errorf("%s.DeleteProperty failure,err:%v", utils.FuncName(), err)
 			return nil, errors.Database.AddDetail(err)
 		}

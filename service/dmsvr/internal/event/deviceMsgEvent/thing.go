@@ -193,7 +193,7 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 		propertyMap = l.schema.Property
 	}
 	for id, v := range propertyMap {
-		data, err := l.repo.GetLatestPropertyDataByID(l.ctx, msgThing.LatestFilter{
+		data, err := l.repo.GetLatestPropertyDataByID(l.ctx, v, msgThing.LatestFilter{
 			ProductID:  msg.ProductID,
 			DeviceName: msg.DeviceName,
 			DataID:     id,

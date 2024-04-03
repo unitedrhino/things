@@ -85,7 +85,7 @@ func (l *CommonSchemaUpdateLogic) CommonSchemaUpdate(in *dm.CommonSchemaUpdateRe
 	}
 	if schema.AffordanceType(po.Type) == schema.AffordanceTypeProperty {
 		if err := l.svcCtx.SchemaManaRepo.DeleteProperty(
-			l.ctx, "", in.Info.Identifier); err != nil {
+			l.ctx, nil, "", in.Info.Identifier); err != nil {
 			l.Errorf("%s.DeleteProperty failure,err:%v", utils.FuncName(), err)
 			return nil, errors.Database.AddDetail(err)
 		}
@@ -98,6 +98,10 @@ func (l *CommonSchemaUpdateLogic) CommonSchemaUpdate(in *dm.CommonSchemaUpdateRe
 		}
 	}
 	err = l.PsDB.Update(l.ctx, newPo)
+	if err != nil {
+		return nil, err
+	}
+	err = relationDB.NewProductSchemaRepo(l.ctx).UpdateWithCommon(l.ctx, newPo)
 	if err != nil {
 		return nil, err
 	}

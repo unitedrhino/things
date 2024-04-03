@@ -37,7 +37,15 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 	if in.Interval != 0 && in.ArgFunc == "" {
 		return nil, errors.Parameter.AddMsg("填写了间隔就必须填写聚合函数")
 	}
-	dds, err := dd.GetPropertyDataByID(l.ctx, msgThing.FilterOpt{
+	t, err := l.svcCtx.SchemaRepo.GetData(l.ctx, in.ProductID)
+	if err != nil {
+		return nil, err
+	}
+	p, ok := t.Property[in.DataID]
+	if !ok {
+		return nil, errors.Parameter.AddMsg("标识符未找到")
+	}
+	dds, err := dd.GetPropertyDataByID(l.ctx, p, msgThing.FilterOpt{
 		Page: def.PageInfo2{
 			TimeStart: in.TimeStart,
 			TimeEnd:   in.TimeEnd,
@@ -70,7 +78,7 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 		diDatas = append(diDatas, &diData)
 	}
 	if in.ArgFunc == "" && in.Interval == 0 {
-		total, err = dd.GetPropertyCountByID(l.ctx, msgThing.FilterOpt{
+		total, err = dd.GetPropertyCountByID(l.ctx, p, msgThing.FilterOpt{
 			Page: def.PageInfo2{
 				TimeStart: in.TimeStart,
 				TimeEnd:   in.TimeEnd,

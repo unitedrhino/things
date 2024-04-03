@@ -2,6 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
 	"golang.org/x/sync/errgroup"
@@ -33,6 +34,7 @@ func (l *ProductSchemaMultiCreateLogic) ProductSchemaMultiCreate(in *dm.ProductS
 	for _, v := range in.List {
 		info := v
 		info.ProductID = in.ProductID
+		info.Tag = schema.TagOptional
 		errGroup.Go(func() error {
 			defer utils.Recover(l.ctx)
 			_, err := createLogic.ProductSchemaCreate(&dm.ProductSchemaCreateReq{Info: info})

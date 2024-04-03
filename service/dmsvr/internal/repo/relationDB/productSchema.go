@@ -74,6 +74,23 @@ func (p ProductSchemaRepo) Update(ctx context.Context, data *DmProductSchema) er
 	return stores.ErrFmt(err)
 }
 
+func (p ProductSchemaRepo) UpdateWithCommon(ctx context.Context, common *DmCommonSchema) error {
+	data := DmProductSchema{
+		DmSchemaCore: DmSchemaCore{
+			ExtendConfig:      common.ExtendConfig,
+			Required:          common.Required,
+			IsCanSceneLinkage: common.IsCanSceneLinkage,
+			IsShareAuthPerm:   common.IsShareAuthPerm,
+			IsHistory:         common.IsHistory,
+			Affordance:        common.Affordance,
+		},
+	}
+	err := p.db.WithContext(ctx).Select("ExtendConfig", "Required", "IsCanSceneLinkage",
+		"IsShareAuthPerm", "IsHistory", "Affordance").Where("identifier = ? tag=?",
+		common.Identifier, schema.TagOptional).Updates(data).Error
+	return stores.ErrFmt(err)
+}
+
 func (p ProductSchemaRepo) DeleteByFilter(ctx context.Context, f ProductSchemaFilter) error {
 	db := p.fmtFilter(ctx, f)
 	err := db.Delete(&DmProductSchema{}).Error
