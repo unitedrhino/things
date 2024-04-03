@@ -82,6 +82,9 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 	if data.Tags != nil {
 		old.Tags = data.Tags
 	}
+	if data.ProtocolConf != nil {
+		old.ProtocolConf = data.ProtocolConf
+	}
 	if data.SchemaAlias != nil {
 		old.SchemaAlias = data.SchemaAlias
 	}

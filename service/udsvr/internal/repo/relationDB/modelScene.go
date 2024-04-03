@@ -42,6 +42,7 @@ type UdSceneIfTrigger struct {
 	Device      *UdSceneTriggerDevice `gorm:"embedded;embeddedPrefix:device_"`
 	Timer       *UdSceneTriggerTimer  `gorm:"embedded;embeddedPrefix:timer_"`
 	SceneInfo   *UdSceneInfo          `gorm:"foreignKey:ID;references:SceneID"`
+	stores.SoftTime
 }
 
 func (m *UdSceneIfTrigger) TableName() string {

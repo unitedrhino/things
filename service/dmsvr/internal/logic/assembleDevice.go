@@ -6,7 +6,6 @@ import (
 	"gitee.com/i-Things/share/domain/deviceMsg/msgGateway"
 	"gitee.com/i-Things/share/events"
 	"gitee.com/i-Things/share/utils"
-	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 )
@@ -21,35 +20,36 @@ func ToDeviceInfo(in *relationDB.DmDeviceInfo) *dm.DeviceInfo {
 	if in.LogLevel == def.Unknown {
 		in.LogLevel = def.LogClose
 	}
+	return utils.Copy[dm.DeviceInfo](in)
 
-	return &dm.DeviceInfo{
-		TenantCode:     string(in.TenantCode),
-		ProductID:      in.ProductID,
-		DeviceName:     in.DeviceName,
-		ProjectID:      int64(in.ProjectID),
-		AreaID:         int64(in.AreaID),
-		DeviceAlias:    &wrappers.StringValue{Value: in.DeviceAlias},
-		MobileOperator: in.MobileOperator,
-		Phone:          utils.ToRpcNullString(in.Phone),
-		Iccid:          utils.ToRpcNullString(in.Iccid),
-		Secret:         in.Secret,
-		Cert:           in.Cert,
-		Imei:           in.Imei,
-		Mac:            in.Mac,
-		Version:        &wrappers.StringValue{Value: in.Version},
-		HardInfo:       in.HardInfo,
-		SoftInfo:       in.SoftInfo,
-		Position:       ToDmPoint(&in.Position),
-		Address:        &wrappers.StringValue{Value: in.Address},
-		Rssi:           &wrappers.Int64Value{Value: in.Rssi},
-		Tags:           in.Tags,
-		SchemaAlias:    in.SchemaAlias,
-		IsOnline:       in.IsOnline,
-		FirstLogin:     utils.GetNullTime(in.FirstLogin),
-		LastLogin:      utils.GetNullTime(in.LastLogin),
-		LogLevel:       in.LogLevel,
-		CreatedTime:    in.CreatedTime.Unix(),
-	}
+	//return &dm.DeviceInfo{
+	//	TenantCode:     string(in.TenantCode),
+	//	ProductID:      in.ProductID,
+	//	DeviceName:     in.DeviceName,
+	//	ProjectID:      int64(in.ProjectID),
+	//	AreaID:         int64(in.AreaID),
+	//	DeviceAlias:    &wrappers.StringValue{Value: in.DeviceAlias},
+	//	MobileOperator: in.MobileOperator,
+	//	Phone:          utils.ToRpcNullString(in.Phone),
+	//	Iccid:          utils.ToRpcNullString(in.Iccid),
+	//	Secret:         in.Secret,
+	//	Cert:           in.Cert,
+	//	Imei:           in.Imei,
+	//	Mac:            in.Mac,
+	//	Version:        &wrappers.StringValue{Value: in.Version},
+	//	HardInfo:       in.HardInfo,
+	//	SoftInfo:       in.SoftInfo,
+	//	Position:       ToDmPoint(&in.Position),
+	//	Address:        &wrappers.StringValue{Value: in.Address},
+	//	Rssi:           &wrappers.Int64Value{Value: in.Rssi},
+	//	Tags:           in.Tags,
+	//	SchemaAlias:    in.SchemaAlias,
+	//	IsOnline:       in.IsOnline,
+	//	FirstLogin:     utils.GetNullTime(in.FirstLogin),
+	//	LastLogin:      utils.GetNullTime(in.LastLogin),
+	//	LogLevel:       in.LogLevel,
+	//	CreatedTime:    in.CreatedTime.Unix(),
+	//}
 }
 
 func BindToDeviceCoreDos(in []*dm.DeviceGatewayBindDevice) (ret []*devices.Core) {

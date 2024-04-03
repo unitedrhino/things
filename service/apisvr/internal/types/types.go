@@ -173,6 +173,7 @@ type DeviceInfo struct {
 	LogLevel       int64                              `json:"logLevel,optional,range=[0:5]"`       // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
 	CreatedTime    int64                              `json:"createdTime,optional,string"`         //创建时间 只读
 	WithProperties map[string]*DeviceInfoWithProperty `json:"withProperties,optional,omitempty"`   //获取的属性列表,如果不传withProperty,则不会返回
+	ProtocolConf   map[string]string                  `json:"protocolConf,optional,omitempty"`     //协议配置
 }
 
 type DeviceInfoDeleteReq struct {
@@ -888,22 +889,23 @@ type ProductCustomTopic struct {
 }
 
 type ProductInfo struct {
-	CreatedTime        int64            `json:"createdTime,optional,string"`           //创建时间 只读
-	ProductID          string           `json:"productID,optional"`                    //产品id 只读
-	ProductName        string           `json:"productName,optional"`                  //产品名称
-	ProductImg         string           `json:"productImg,optional"`                   //产品图片
-	IsUpdateProductImg bool             `json:"isUpdateProductImg,omitempty,optional"` //只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
-	AuthMode           int64            `json:"authMode,optional,range=[0:2]"`         //认证方式:1:账密认证,2:秘钥认证
-	DeviceType         int64            `json:"deviceType,optional,range=[0:3]"`       //设备类型:1:设备,2:网关,3:子设备
-	CategoryID         int64            `json:"categoryID,optional"`                   //产品品类
-	NetType            int64            `json:"netType,optional,range=[0:6]"`          //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
-	ProtocolCode       string           `json:"protocolCode,optional"`                 //协议code,默认iThings  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
-	AutoRegister       int64            `json:"autoRegister,optional,range=[0:3]"`     //动态注册:1:关闭,2:打开,3:打开并自动创建设备
-	Secret             string           `json:"secret,optional"`                       //动态注册产品秘钥 只读
-	Desc               *string          `json:"desc,optional"`                         //描述
-	Tags               []*Tag           `json:"tags,optional"`                         // 产品tag
-	Protocol           *ProtocolInfo    `json:"protocol,omitempty"`
-	Category           *ProductCategory `json:"category,omitempty"`
+	CreatedTime        int64             `json:"createdTime,optional,string"`           //创建时间 只读
+	ProductID          string            `json:"productID,optional"`                    //产品id 只读
+	ProductName        string            `json:"productName,optional"`                  //产品名称
+	ProductImg         string            `json:"productImg,optional"`                   //产品图片
+	IsUpdateProductImg bool              `json:"isUpdateProductImg,omitempty,optional"` //只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
+	AuthMode           int64             `json:"authMode,optional,range=[0:2]"`         //认证方式:1:账密认证,2:秘钥认证
+	DeviceType         int64             `json:"deviceType,optional,range=[0:3]"`       //设备类型:1:设备,2:网关,3:子设备
+	CategoryID         int64             `json:"categoryID,optional"`                   //产品品类
+	NetType            int64             `json:"netType,optional,range=[0:6]"`          //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
+	ProtocolCode       string            `json:"protocolCode,optional"`                 //协议code,默认iThings  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
+	AutoRegister       int64             `json:"autoRegister,optional,range=[0:3]"`     //动态注册:1:关闭,2:打开,3:打开并自动创建设备
+	Secret             string            `json:"secret,optional"`                       //动态注册产品秘钥 只读
+	Desc               *string           `json:"desc,optional"`                         //描述
+	Tags               []*Tag            `json:"tags,optional"`                         // 产品tag
+	ProtocolConf       map[string]string `json:"protocolConf,optional,omitempty"`       //协议配置
+	Protocol           *ProtocolInfo     `json:"protocol,omitempty"`
+	Category           *ProductCategory  `json:"category,omitempty"`
 }
 
 type ProductInfoDeleteReq struct {

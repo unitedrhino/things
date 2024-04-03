@@ -27,7 +27,9 @@ func init() {
 		}},
 		utils.TypeConverter{SrcType: TagMap, DstType: TagsTypes, Fn: func(src interface{}) (dst interface{}, err error) {
 			return logic.ToTagsType(src.(map[string]string)), nil
-		}})
+		}},
+	)
+
 }
 
 func FileChanWalk(s *svc.ServiceContext) {

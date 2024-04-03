@@ -28,11 +28,14 @@ type ProtocolInfoFilter struct {
 	Name          string
 	Code          string //  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
 	TransProtocol string // 传输协议: mqtt,tcp,udp
+	NotCodes      []string
 }
 
 func (p ProtocolInfoRepo) fmtFilter(ctx context.Context, f ProtocolInfoFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
-
+	if len(f.NotCodes) != 0 {
+		db = db.Where("code not in ?", f.NotCodes)
+	}
 	if f.Name != "" {
 		db = db.Where("name like ?", "%"+f.Name+"%")
 	}

@@ -343,6 +343,7 @@ message ProtocolInfoIndexReq{
   string  name = 2;
   string  code =3;//  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
   string  transProtocol = 5;// 传输协议: mqtt,tcp,udp
+  repeated string notCodes =6;//排除的协议包
 }
 
 message ProtocolInfoIndexResp{
@@ -880,6 +881,7 @@ message DeviceInfo {
   map<string,string> schemaAlias = 25;//设备物模型别名,如果是结构体类型则key为xxx.xxx
   google.protobuf.Int64Value  rssi = 27; // 设备信号（信号极好[-55— 0]，信号好[-70— -55]，信号一般[-85— -70]，信号差[-100— -85]）
   int64  ratedPower =28;// 额定功率:单位k/wh
+  map<string,string>protocolConf =29;
 }
 
 message ProductInfo{
@@ -900,6 +902,7 @@ message ProductInfo{
   bool isUpdateProductImg = 15;//只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
   ProtocolInfo protocol = 16;
   ProductCategory category = 17;
+  map<string,string>protocolConf =18;
 }
 
 message ProductInfoDeleteReq{
