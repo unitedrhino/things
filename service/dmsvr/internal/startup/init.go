@@ -33,6 +33,23 @@ func Init(svcCtx *svc.ServiceContext) {
 	InitSubscribe(svcCtx)
 	InitEventBus(svcCtx)
 }
+
+func init() {
+	//var (
+	//	TagsTypes []*types.Tag
+	//	TagMap    map[string]string
+	//)
+	//utils.AddConverter(
+	//	utils.TypeConverter{SrcType: TagsTypes, DstType: TagMap, Fn: func(src interface{}) (dst interface{}, err error) {
+	//		return logic.ToTagsMap(src.([]*types.Tag)), nil
+	//	}},
+	//	utils.TypeConverter{SrcType: TagMap, DstType: TagsTypes, Fn: func(src interface{}) (dst interface{}, err error) {
+	//		return logic.ToTagsType(src.(map[string]string)), nil
+	//	}},
+	//)
+
+}
+
 func InitSubscribe(svcCtx *svc.ServiceContext) {
 	{
 		cli, err := subDev.NewSubDev(svcCtx.Config.Event)

@@ -8,6 +8,7 @@ import (
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -193,6 +194,10 @@ func (l *DeviceInfoCreateLogic) InitDevice(in devices.Info) error {
 	err = l.svcCtx.SendRepo.InitDevice(l.ctx, in)
 	if err != nil {
 		return errors.Database.AddDetail(err)
+	}
+	err = l.svcCtx.DeviceCache.SetData(l.ctx, dmExport.GenDeviceInfoKey(in.ProductID, in.DeviceName), nil)
+	if err != nil {
+		l.Error(err)
 	}
 	return nil
 }
