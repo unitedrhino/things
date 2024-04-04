@@ -16,6 +16,7 @@ import (
 	thingsotafirmwaredevice "github.com/i-Things/things/service/apisvr/internal/handler/things/ota/firmware/device"
 	thingsotafirmwareinfo "github.com/i-Things/things/service/apisvr/internal/handler/things/ota/firmware/info"
 	thingsotafirmwarejob "github.com/i-Things/things/service/apisvr/internal/handler/things/ota/firmware/job"
+	thingsotamoduleinfo "github.com/i-Things/things/service/apisvr/internal/handler/things/ota/module/info"
 	thingsproductcategory "github.com/i-Things/things/service/apisvr/internal/handler/things/product/category"
 	thingsproductcustom "github.com/i-Things/things/service/apisvr/internal/handler/things/product/custom"
 	thingsproductinfo "github.com/i-Things/things/service/apisvr/internal/handler/things/product/info"
@@ -440,6 +441,40 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/firmware/job"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckTokenWare, serverCtx.InitCtxsWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsotamoduleinfo.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsotamoduleinfo.DeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsotamoduleinfo.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/read",
+					Handler: thingsotamoduleinfo.ReadHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsotamoduleinfo.UpdateHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/ota/module/info"),
 	)
 
 	server.AddRoutes(

@@ -91,6 +91,9 @@ type (
 	OtaJobByDeviceIndexReq       = dm.OtaJobByDeviceIndexReq
 	OtaJobDynamicInfo            = dm.OtaJobDynamicInfo
 	OtaJobStaticInfo             = dm.OtaJobStaticInfo
+	OtaModuleInfo                = dm.OtaModuleInfo
+	OtaModuleInfoIndexReq        = dm.OtaModuleInfoIndexReq
+	OtaModuleInfoIndexResp       = dm.OtaModuleInfoIndexResp
 	OtaPromptIndexReq            = dm.OtaPromptIndexReq
 	OtaPromptIndexResp           = dm.OtaPromptIndexResp
 	PageInfo                     = dm.PageInfo
@@ -191,6 +194,11 @@ type (
 		OtaFirmwareDeviceCancel(ctx context.Context, in *OtaFirmwareDeviceCancelReq, opts ...grpc.CallOption) (*Empty, error)
 		// 重新升级指定批次下升级失败或升级取消的设备升级作业
 		OtaFirmwareDeviceRetry(ctx context.Context, in *OtaFirmwareDeviceRetryReq, opts ...grpc.CallOption) (*Empty, error)
+		OtaModuleInfoCreate(ctx context.Context, in *OtaModuleInfo, opts ...grpc.CallOption) (*WithID, error)
+		OtaModuleInfoUpdate(ctx context.Context, in *OtaModuleInfo, opts ...grpc.CallOption) (*Empty, error)
+		OtaModuleInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
+		OtaModuleInfoIndex(ctx context.Context, in *OtaModuleInfoIndexReq, opts ...grpc.CallOption) (*OtaModuleInfoIndexResp, error)
+		OtaModuleInfoRead(ctx context.Context, in *WithIDCode, opts ...grpc.CallOption) (*OtaModuleInfo, error)
 	}
 
 	defaultOtaManage struct {
@@ -346,4 +354,49 @@ func (m *defaultOtaManage) OtaFirmwareDeviceRetry(ctx context.Context, in *OtaFi
 // 重新升级指定批次下升级失败或升级取消的设备升级作业
 func (d *directOtaManage) OtaFirmwareDeviceRetry(ctx context.Context, in *OtaFirmwareDeviceRetryReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.OtaFirmwareDeviceRetry(ctx, in)
+}
+
+func (m *defaultOtaManage) OtaModuleInfoCreate(ctx context.Context, in *OtaModuleInfo, opts ...grpc.CallOption) (*WithID, error) {
+	client := dm.NewOtaManageClient(m.cli.Conn())
+	return client.OtaModuleInfoCreate(ctx, in, opts...)
+}
+
+func (d *directOtaManage) OtaModuleInfoCreate(ctx context.Context, in *OtaModuleInfo, opts ...grpc.CallOption) (*WithID, error) {
+	return d.svr.OtaModuleInfoCreate(ctx, in)
+}
+
+func (m *defaultOtaManage) OtaModuleInfoUpdate(ctx context.Context, in *OtaModuleInfo, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewOtaManageClient(m.cli.Conn())
+	return client.OtaModuleInfoUpdate(ctx, in, opts...)
+}
+
+func (d *directOtaManage) OtaModuleInfoUpdate(ctx context.Context, in *OtaModuleInfo, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.OtaModuleInfoUpdate(ctx, in)
+}
+
+func (m *defaultOtaManage) OtaModuleInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewOtaManageClient(m.cli.Conn())
+	return client.OtaModuleInfoDelete(ctx, in, opts...)
+}
+
+func (d *directOtaManage) OtaModuleInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.OtaModuleInfoDelete(ctx, in)
+}
+
+func (m *defaultOtaManage) OtaModuleInfoIndex(ctx context.Context, in *OtaModuleInfoIndexReq, opts ...grpc.CallOption) (*OtaModuleInfoIndexResp, error) {
+	client := dm.NewOtaManageClient(m.cli.Conn())
+	return client.OtaModuleInfoIndex(ctx, in, opts...)
+}
+
+func (d *directOtaManage) OtaModuleInfoIndex(ctx context.Context, in *OtaModuleInfoIndexReq, opts ...grpc.CallOption) (*OtaModuleInfoIndexResp, error) {
+	return d.svr.OtaModuleInfoIndex(ctx, in)
+}
+
+func (m *defaultOtaManage) OtaModuleInfoRead(ctx context.Context, in *WithIDCode, opts ...grpc.CallOption) (*OtaModuleInfo, error) {
+	client := dm.NewOtaManageClient(m.cli.Conn())
+	return client.OtaModuleInfoRead(ctx, in, opts...)
+}
+
+func (d *directOtaManage) OtaModuleInfoRead(ctx context.Context, in *WithIDCode, opts ...grpc.CallOption) (*OtaModuleInfo, error) {
+	return d.svr.OtaModuleInfoRead(ctx, in)
 }

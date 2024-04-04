@@ -15,7 +15,9 @@ import (
 )
 
 func ToProductInfo(ctx context.Context, svcCtx *svc.ServiceContext, pi *relationDB.DmProductInfo) *dm.ProductInfo {
-
+	if pi == nil {
+		return nil
+	}
 	if pi.DeviceType == def.Unknown {
 		pi.DeviceType = def.DeviceTypeDevice
 	}

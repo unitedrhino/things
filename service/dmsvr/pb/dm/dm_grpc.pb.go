@@ -3247,6 +3247,11 @@ const (
 	OtaManage_OtaFirmwareDeviceIndex_FullMethodName  = "/dm.OtaManage/otaFirmwareDeviceIndex"
 	OtaManage_OtaFirmwareDeviceCancel_FullMethodName = "/dm.OtaManage/otaFirmwareDeviceCancel"
 	OtaManage_OtaFirmwareDeviceRetry_FullMethodName  = "/dm.OtaManage/otaFirmwareDeviceRetry"
+	OtaManage_OtaModuleInfoCreate_FullMethodName     = "/dm.OtaManage/otaModuleInfoCreate"
+	OtaManage_OtaModuleInfoUpdate_FullMethodName     = "/dm.OtaManage/otaModuleInfoUpdate"
+	OtaManage_OtaModuleInfoDelete_FullMethodName     = "/dm.OtaManage/otaModuleInfoDelete"
+	OtaManage_OtaModuleInfoIndex_FullMethodName      = "/dm.OtaManage/otaModuleInfoIndex"
+	OtaManage_OtaModuleInfoRead_FullMethodName       = "/dm.OtaManage/otaModuleInfoRead"
 )
 
 // OtaManageClient is the client API for OtaManage service.
@@ -3280,6 +3285,11 @@ type OtaManageClient interface {
 	OtaFirmwareDeviceCancel(ctx context.Context, in *OtaFirmwareDeviceCancelReq, opts ...grpc.CallOption) (*Empty, error)
 	// 重新升级指定批次下升级失败或升级取消的设备升级作业
 	OtaFirmwareDeviceRetry(ctx context.Context, in *OtaFirmwareDeviceRetryReq, opts ...grpc.CallOption) (*Empty, error)
+	OtaModuleInfoCreate(ctx context.Context, in *OtaModuleInfo, opts ...grpc.CallOption) (*WithID, error)
+	OtaModuleInfoUpdate(ctx context.Context, in *OtaModuleInfo, opts ...grpc.CallOption) (*Empty, error)
+	OtaModuleInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
+	OtaModuleInfoIndex(ctx context.Context, in *OtaModuleInfoIndexReq, opts ...grpc.CallOption) (*OtaModuleInfoIndexResp, error)
+	OtaModuleInfoRead(ctx context.Context, in *WithIDCode, opts ...grpc.CallOption) (*OtaModuleInfo, error)
 }
 
 type otaManageClient struct {
@@ -3398,6 +3408,51 @@ func (c *otaManageClient) OtaFirmwareDeviceRetry(ctx context.Context, in *OtaFir
 	return out, nil
 }
 
+func (c *otaManageClient) OtaModuleInfoCreate(ctx context.Context, in *OtaModuleInfo, opts ...grpc.CallOption) (*WithID, error) {
+	out := new(WithID)
+	err := c.cc.Invoke(ctx, OtaManage_OtaModuleInfoCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *otaManageClient) OtaModuleInfoUpdate(ctx context.Context, in *OtaModuleInfo, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, OtaManage_OtaModuleInfoUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *otaManageClient) OtaModuleInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, OtaManage_OtaModuleInfoDelete_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *otaManageClient) OtaModuleInfoIndex(ctx context.Context, in *OtaModuleInfoIndexReq, opts ...grpc.CallOption) (*OtaModuleInfoIndexResp, error) {
+	out := new(OtaModuleInfoIndexResp)
+	err := c.cc.Invoke(ctx, OtaManage_OtaModuleInfoIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *otaManageClient) OtaModuleInfoRead(ctx context.Context, in *WithIDCode, opts ...grpc.CallOption) (*OtaModuleInfo, error) {
+	out := new(OtaModuleInfo)
+	err := c.cc.Invoke(ctx, OtaManage_OtaModuleInfoRead_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OtaManageServer is the server API for OtaManage service.
 // All implementations must embed UnimplementedOtaManageServer
 // for forward compatibility
@@ -3429,6 +3484,11 @@ type OtaManageServer interface {
 	OtaFirmwareDeviceCancel(context.Context, *OtaFirmwareDeviceCancelReq) (*Empty, error)
 	// 重新升级指定批次下升级失败或升级取消的设备升级作业
 	OtaFirmwareDeviceRetry(context.Context, *OtaFirmwareDeviceRetryReq) (*Empty, error)
+	OtaModuleInfoCreate(context.Context, *OtaModuleInfo) (*WithID, error)
+	OtaModuleInfoUpdate(context.Context, *OtaModuleInfo) (*Empty, error)
+	OtaModuleInfoDelete(context.Context, *WithID) (*Empty, error)
+	OtaModuleInfoIndex(context.Context, *OtaModuleInfoIndexReq) (*OtaModuleInfoIndexResp, error)
+	OtaModuleInfoRead(context.Context, *WithIDCode) (*OtaModuleInfo, error)
 	mustEmbedUnimplementedOtaManageServer()
 }
 
@@ -3471,6 +3531,21 @@ func (UnimplementedOtaManageServer) OtaFirmwareDeviceCancel(context.Context, *Ot
 }
 func (UnimplementedOtaManageServer) OtaFirmwareDeviceRetry(context.Context, *OtaFirmwareDeviceRetryReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OtaFirmwareDeviceRetry not implemented")
+}
+func (UnimplementedOtaManageServer) OtaModuleInfoCreate(context.Context, *OtaModuleInfo) (*WithID, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OtaModuleInfoCreate not implemented")
+}
+func (UnimplementedOtaManageServer) OtaModuleInfoUpdate(context.Context, *OtaModuleInfo) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OtaModuleInfoUpdate not implemented")
+}
+func (UnimplementedOtaManageServer) OtaModuleInfoDelete(context.Context, *WithID) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OtaModuleInfoDelete not implemented")
+}
+func (UnimplementedOtaManageServer) OtaModuleInfoIndex(context.Context, *OtaModuleInfoIndexReq) (*OtaModuleInfoIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OtaModuleInfoIndex not implemented")
+}
+func (UnimplementedOtaManageServer) OtaModuleInfoRead(context.Context, *WithIDCode) (*OtaModuleInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OtaModuleInfoRead not implemented")
 }
 func (UnimplementedOtaManageServer) mustEmbedUnimplementedOtaManageServer() {}
 
@@ -3701,6 +3776,96 @@ func _OtaManage_OtaFirmwareDeviceRetry_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OtaManage_OtaModuleInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OtaModuleInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OtaManageServer).OtaModuleInfoCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OtaManage_OtaModuleInfoCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OtaManageServer).OtaModuleInfoCreate(ctx, req.(*OtaModuleInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OtaManage_OtaModuleInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OtaModuleInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OtaManageServer).OtaModuleInfoUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OtaManage_OtaModuleInfoUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OtaManageServer).OtaModuleInfoUpdate(ctx, req.(*OtaModuleInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OtaManage_OtaModuleInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WithID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OtaManageServer).OtaModuleInfoDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OtaManage_OtaModuleInfoDelete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OtaManageServer).OtaModuleInfoDelete(ctx, req.(*WithID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OtaManage_OtaModuleInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OtaModuleInfoIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OtaManageServer).OtaModuleInfoIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OtaManage_OtaModuleInfoIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OtaManageServer).OtaModuleInfoIndex(ctx, req.(*OtaModuleInfoIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OtaManage_OtaModuleInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WithIDCode)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OtaManageServer).OtaModuleInfoRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OtaManage_OtaModuleInfoRead_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OtaManageServer).OtaModuleInfoRead(ctx, req.(*WithIDCode))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // OtaManage_ServiceDesc is the grpc.ServiceDesc for OtaManage service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -3755,6 +3920,26 @@ var OtaManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "otaFirmwareDeviceRetry",
 			Handler:    _OtaManage_OtaFirmwareDeviceRetry_Handler,
+		},
+		{
+			MethodName: "otaModuleInfoCreate",
+			Handler:    _OtaManage_OtaModuleInfoCreate_Handler,
+		},
+		{
+			MethodName: "otaModuleInfoUpdate",
+			Handler:    _OtaManage_OtaModuleInfoUpdate_Handler,
+		},
+		{
+			MethodName: "otaModuleInfoDelete",
+			Handler:    _OtaManage_OtaModuleInfoDelete_Handler,
+		},
+		{
+			MethodName: "otaModuleInfoIndex",
+			Handler:    _OtaManage_OtaModuleInfoIndex_Handler,
+		},
+		{
+			MethodName: "otaModuleInfoRead",
+			Handler:    _OtaManage_OtaModuleInfoRead_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

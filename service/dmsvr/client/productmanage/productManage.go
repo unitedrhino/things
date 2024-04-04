@@ -91,6 +91,9 @@ type (
 	OtaJobByDeviceIndexReq       = dm.OtaJobByDeviceIndexReq
 	OtaJobDynamicInfo            = dm.OtaJobDynamicInfo
 	OtaJobStaticInfo             = dm.OtaJobStaticInfo
+	OtaModuleInfo                = dm.OtaModuleInfo
+	OtaModuleInfoIndexReq        = dm.OtaModuleInfoIndexReq
+	OtaModuleInfoIndexResp       = dm.OtaModuleInfoIndexResp
 	OtaPromptIndexReq            = dm.OtaPromptIndexReq
 	OtaPromptIndexResp           = dm.OtaPromptIndexResp
 	PageInfo                     = dm.PageInfo

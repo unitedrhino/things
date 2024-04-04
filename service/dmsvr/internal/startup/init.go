@@ -77,6 +77,9 @@ func InitCache(svcCtx *svc.ServiceContext) {
 			db := relationDB.NewProductInfoRepo(ctx)
 			pi, err := db.FindOneByFilter(ctx, relationDB.ProductFilter{
 				ProductIDs: []string{key}, WithProtocol: true, WithCategory: true})
+			if err != nil {
+				return nil, err
+			}
 			pb := logic.ToProductInfo(ctx, svcCtx, pi)
 			return pb, err
 		},

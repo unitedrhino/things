@@ -254,6 +254,12 @@ service OtaManage{
   rpc otaFirmwareDeviceCancel(OtaFirmwareDeviceCancelReq) returns(Empty);
   //重新升级指定批次下升级失败或升级取消的设备升级作业
   rpc otaFirmwareDeviceRetry(OtaFirmwareDeviceRetryReq) returns(Empty);
+
+  rpc otaModuleInfoCreate(OtaModuleInfo)returns(WithID);
+  rpc otaModuleInfoUpdate(OtaModuleInfo)returns(Empty);
+  rpc otaModuleInfoDelete(WithID)returns(Empty);
+  rpc otaModuleInfoIndex(OtaModuleInfoIndexReq)returns(OtaModuleInfoIndexResp);
+  rpc otaModuleInfoRead(WithIDCode)returns(OtaModuleInfo);
 }
 
 
@@ -275,6 +281,27 @@ service userDevice{
   //获取设备分享的详情
   rpc userDeviceShareRead(UserDeviceShareReadReq)returns(UserDeviceShareInfo);
 }
+
+
+message OtaModuleInfoIndexReq{
+  PageInfo page = 1;
+  string name = 2;
+  string productID = 3;
+}
+
+message OtaModuleInfoIndexResp{
+  int64 total = 1;
+  repeated OtaModuleInfo list = 2;
+}
+
+message OtaModuleInfo{
+  int64 id = 1;
+  string code = 2;
+  string name = 3;
+  string desc = 4;
+  string productID = 5;
+}
+
 
 message ProductInitReq{
 //  repeated string initType =1;//thing:物模型
@@ -1297,6 +1324,7 @@ message OtaFirmwareInfoCreateReq {
   int64 isNeedToVerify = 13;//是否需要验证
   google.protobuf.StringValue extra = 14;//自定义数据
   repeated string filePaths = 15;
+  string moduleCode =16;//模块编码
 }
 
 
@@ -1336,6 +1364,7 @@ message OtaFirmwareInfo{
   repeated FirmwareFile fileList = 11; //文件列表
   int64 isDiff = 12; //整包or差包
   int64 isNeedToVerify = 13;//是否需要验证
+  string moduleCode = 14;//模块编码
 }
 
 

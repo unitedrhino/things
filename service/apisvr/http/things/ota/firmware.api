@@ -58,6 +58,7 @@ type FirmwareCreateReq  {
     SrcVersion string `json:"srcVersion"`
     IsNeedToVerify int64 `json:"isNeedToVerify"`
     Extra string `json:"extra"`
+    ModuleCode string  `json:"moduleCode,optional"`
     FilePaths []string `json:"filePaths"`
 }
 
@@ -101,6 +102,7 @@ type FirmwareInfo  {
     IsNeedToVerify int64 `json:"isNeedToVerify"`
     Desc string `json:"desc"`
     Extra string `json:"extra"`
+    ModuleCode string  `json:"moduleCode"`
     FileList []*FirmwareFile `json:"fileList"`
 }
 type (

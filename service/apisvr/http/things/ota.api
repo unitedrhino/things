@@ -12,3 +12,4 @@ import "ota/firmware.api" //ota附件接口
 //import "ota/otaTask.api" //ota升级作业任务接口
 import "ota/job.api" //ota升级批次接口
 import "ota/device.api" //ota升级模块接口
+import "ota/module.api"

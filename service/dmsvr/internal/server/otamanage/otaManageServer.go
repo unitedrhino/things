@@ -93,3 +93,28 @@ func (s *OtaManageServer) OtaFirmwareDeviceRetry(ctx context.Context, in *dm.Ota
 	l := otamanagelogic.NewOtaFirmwareDeviceRetryLogic(ctx, s.svcCtx)
 	return l.OtaFirmwareDeviceRetry(in)
 }
+
+func (s *OtaManageServer) OtaModuleInfoCreate(ctx context.Context, in *dm.OtaModuleInfo) (*dm.WithID, error) {
+	l := otamanagelogic.NewOtaModuleInfoCreateLogic(ctx, s.svcCtx)
+	return l.OtaModuleInfoCreate(in)
+}
+
+func (s *OtaManageServer) OtaModuleInfoUpdate(ctx context.Context, in *dm.OtaModuleInfo) (*dm.Empty, error) {
+	l := otamanagelogic.NewOtaModuleInfoUpdateLogic(ctx, s.svcCtx)
+	return l.OtaModuleInfoUpdate(in)
+}
+
+func (s *OtaManageServer) OtaModuleInfoDelete(ctx context.Context, in *dm.WithID) (*dm.Empty, error) {
+	l := otamanagelogic.NewOtaModuleInfoDeleteLogic(ctx, s.svcCtx)
+	return l.OtaModuleInfoDelete(in)
+}
+
+func (s *OtaManageServer) OtaModuleInfoIndex(ctx context.Context, in *dm.OtaModuleInfoIndexReq) (*dm.OtaModuleInfoIndexResp, error) {
+	l := otamanagelogic.NewOtaModuleInfoIndexLogic(ctx, s.svcCtx)
+	return l.OtaModuleInfoIndex(in)
+}
+
+func (s *OtaManageServer) OtaModuleInfoRead(ctx context.Context, in *dm.WithIDCode) (*dm.OtaModuleInfo, error) {
+	l := otamanagelogic.NewOtaModuleInfoReadLogic(ctx, s.svcCtx)
+	return l.OtaModuleInfoRead(in)
+}

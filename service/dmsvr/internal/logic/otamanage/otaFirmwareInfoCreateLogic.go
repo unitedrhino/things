@@ -52,6 +52,18 @@ func (l *OtaFirmwareInfoCreateLogic) CheckOtaFirmwareInfo(in *dm.OtaFirmwareInfo
 	} else if err != nil {
 		return true, err
 	}
+	if in.ModuleCode != "" && in.ModuleCode != msgOta.ModuleCodeDefault {
+		module, err := relationDB.NewOtaModuleInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.OtaModuleInfoFilter{Code: in.ModuleCode})
+		if err != nil {
+			return false, err
+		}
+		if module.ProductID != in.ProductID {
+			return false, errors.Parameter.AddMsg("选择的模块产品和升级包的产品不一致")
+		}
+	} else {
+		in.ModuleCode = msgOta.ModuleCodeDefault
+	}
+
 	return true, errors.Parameter.WithMsg(fmt.Sprintf("%s版本的升级包已经存在", in.Version))
 }
 
@@ -66,7 +78,7 @@ func (l *OtaFirmwareInfoCreateLogic) OtaFirmwareInfoCreate(in *dm.OtaFirmwareInf
 		return nil, err
 	} else if err != nil {
 		l.Errorf("AddDevice|CheckProduct|in=%v\n", in)
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	} else if find == false {
 		return nil, err
 	}
@@ -84,7 +96,7 @@ func (l *OtaFirmwareInfoCreateLogic) OtaFirmwareInfoCreate(in *dm.OtaFirmwareInf
 			OtaFirmwareInfoFileInfo, err := l.svcCtx.OssClient.PrivateBucket().GetObjectInfo(l.ctx, path)
 			if err != nil {
 				logx.Error(err)
-				return nil, errors.System.AddDetail(err)
+				return nil, err
 			}
 			totalSize += OtaFirmwareInfoFileInfo.Size
 			files = append(files, &relationDB.DmOtaFirmwareFile{
@@ -107,6 +119,7 @@ func (l *OtaFirmwareInfoCreateLogic) OtaFirmwareInfoCreate(in *dm.OtaFirmwareInf
 		Extra:          in.Extra.GetValue(),
 		TotalSize:      totalSize,
 		IsNeedToVerify: in.IsNeedToVerify,
+		ModuleCode:     in.ModuleCode,
 	}
 	//是否需要平台验证
 	di.Status = msgOta.OtaFirmwareStatusNotVerified

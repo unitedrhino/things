@@ -555,6 +555,7 @@ type FirmwareCreateReq struct {
 	SrcVersion     string   `json:"srcVersion"`
 	IsNeedToVerify int64    `json:"isNeedToVerify"`
 	Extra          string   `json:"extra"`
+	ModuleCode     string   `json:"moduleCode,optional"`
 	FilePaths      []string `json:"filePaths"`
 }
 
@@ -588,6 +589,7 @@ type FirmwareInfo struct {
 	IsNeedToVerify int64           `json:"isNeedToVerify"`
 	Desc           string          `json:"desc"`
 	Extra          string          `json:"extra"`
+	ModuleCode     string          `json:"moduleCode"`
 	FileList       []*FirmwareFile `json:"fileList"`
 }
 
@@ -836,6 +838,25 @@ type OtaFirmwareReadResp struct {
 	Desc           *string                `json:"desc"`        //描述
 	ExtData        *string                `json:"extData"`     //自定义数据
 	Files          []*OtaFirmwareFileInfo `json:"files"`
+}
+
+type OtaModuleInfo struct {
+	ID        int64  `json:"id,optional"`
+	Code      string `json:"code,optional"`
+	Name      string `json:"name,optional"`
+	Desc      string `json:"desc,optional"`
+	ProductID string `json:"productID,optional"`
+}
+
+type OtaModuleInfoIndexReq struct {
+	Page      *PageInfo `json:"page,optional"` // 分页信息
+	Name      string    `json:"name,optional"`
+	ProductID string    `json:"productID,optional"`
+}
+
+type OtaModuleInfoIndexResp struct {
+	List  []*OtaModuleInfo `json:"list"`  // OTA作业信息列表
+	Total int64            `json:"total"` // 总数
 }
 
 type PageInfo struct {
