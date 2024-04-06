@@ -108,6 +108,7 @@ func (a *Action) Execute(ctx context.Context, repo ActionRepo) error {
 	}
 	return nil
 }
+
 func (a Actions) Execute(ctx context.Context, repo ActionRepo) error {
 	for _, v := range a {
 		err := v.Execute(ctx, repo)
