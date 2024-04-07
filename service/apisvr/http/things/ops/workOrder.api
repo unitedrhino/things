@@ -30,11 +30,12 @@ type (
         RaiseUserID int64  `json:"raiseUserID,string,optional"`  //问题提出的用户
         AreaID      int64  `json:"areaID,string,optional"`            //项目区域id
         Type        string  `json:"type,optional,options=[deviceMaintenance]"`//工单类型: deviceMaintenance:设备维修工单
-        Params      string  `json:"params,optional"`//参数 json格式
+        Params      map[string]string `json:"params,optional"`//参数 json格式
         IssueDesc   string `json:"issueDesc,optional"`       //问题描述
         Status      int64  `json:"status,optional,range=[0:3]"`           // 状态（1 待处理 2:处理中 3:已完成）
         CreatedTime int64  `json:"createdTime,optional"` //创建时间
-
+        HandleTime   int64  `json:"handleTime,optional"` //处理时间
+        FinishedTime int64  `json:"finishedTime,optional"`//处理完成时间
     }
     OpsWorkOrderIndexReq  {
         Page *PageInfo `json:"page,optional"`                   // 分页信息,只获取一个则不填

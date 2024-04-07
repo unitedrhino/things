@@ -2,6 +2,7 @@ package opslogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/udsvr/internal/logic"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 
@@ -35,20 +36,5 @@ func (l *OpsWorkOrderIndexLogic) OpsWorkOrderIndex(in *ud.OpsWorkOrderIndexReq) 
 	if err != nil {
 		return nil, err
 	}
-	var retList []*ud.OpsWorkOrder
-	for _, v := range list {
-		retList = append(retList, &ud.OpsWorkOrder{
-			Id:          v.ID,
-			Number:      v.Number,
-			RaiseUserID: v.RaiseUserID,
-			Type:        v.Type,
-			AreaID:      int64(v.AreaID),
-			Params:      v.Params,
-			IssueDesc:   v.IssueDesc,
-			Status:      v.Status,
-			CreatedTime: v.CreatedTime.Unix(),
-		})
-	}
-
-	return &ud.OpsWorkOrderIndexResp{List: retList, Total: total}, nil
+	return &ud.OpsWorkOrderIndexResp{List: utils.CopySlice[ud.OpsWorkOrder](list), Total: total}, nil
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"gitee.com/i-Things/share/ctxs"
+	"github.com/i-Things/things/service/udsvr/internal/domain/ops"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 	"time"
 
@@ -31,6 +32,7 @@ func NewOpsWorkOrderCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 func (l *OpsWorkOrderCreateLogic) OpsWorkOrderCreate(in *ud.OpsWorkOrder) (*ud.WithID, error) {
 	po := ToOpsWorkOrderPo(in)
 	po.ID = 0
+	po.Status = ops.WorkOrderStatusWait
 	po.RaiseUserID = ctxs.GetUserCtx(l.ctx).UserID
 	now := time.Now()
 	f := relationDB.OpsWorkOrderFilter{

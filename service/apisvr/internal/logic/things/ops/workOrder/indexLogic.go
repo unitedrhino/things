@@ -2,6 +2,7 @@ package workOrder
 
 import (
 	"context"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/logic"
 	"github.com/i-Things/things/service/udsvr/pb/ud"
 
@@ -33,22 +34,8 @@ func (l *IndexLogic) Index(req *types.OpsWorkOrderIndexReq) (resp *types.OpsWork
 	if err != nil {
 		return nil, err
 	}
-	var list []*types.OpsWorkOrder
-	for _, v := range ret.List {
-		list = append(list, &types.OpsWorkOrder{
-			ID:          v.Id,
-			AreaID:      v.AreaID,
-			RaiseUserID: v.RaiseUserID,
-			IssueDesc:   v.IssueDesc,
-			Number:      v.Number,
-			Type:        v.Type,
-			Params:      v.Params,
-			Status:      v.Status,
-			CreatedTime: v.CreatedTime,
-		})
-	}
 	return &types.OpsWorkOrderIndexResp{
 		Total: ret.Total,
-		List:  list,
+		List:  utils.CopySlice[types.OpsWorkOrder](ret.List),
 	}, nil
 }
