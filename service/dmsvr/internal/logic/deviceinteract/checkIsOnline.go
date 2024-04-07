@@ -5,6 +5,7 @@ import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
+	"github.com/i-Things/things/service/dmsvr/dmExport"
 	devicemanage "github.com/i-Things/things/service/dmsvr/internal/server/devicemanage"
 	productmanage "github.com/i-Things/things/service/dmsvr/internal/server/productmanage"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -12,10 +13,7 @@ import (
 )
 
 func CheckIsOnline(ctx context.Context, svcCtx *svc.ServiceContext, core devices.Core) (protocolCode string, err error) {
-	dev, err := devicemanage.NewDeviceManageServer(svcCtx).DeviceInfoRead(ctx, &dm.DeviceInfoReadReq{
-		ProductID:  core.ProductID,
-		DeviceName: core.DeviceName,
-	})
+	dev, err := svcCtx.DeviceCache.GetData(ctx, dmExport.GenDeviceInfoKey(core.ProductID, core.DeviceName))
 	if err != nil {
 		return "", err
 	}

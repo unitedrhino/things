@@ -26,6 +26,10 @@ type ConfigInfo struct {
 	Desc   string            `json:"desc"`   // 描述
 }
 
+/*
+
+ */
+
 func Check(fields ConfigFields, infos ConfigInfos) error {
 	if len(fields) == 0 {
 		return nil

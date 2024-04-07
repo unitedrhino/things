@@ -6,6 +6,7 @@ import (
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
 	"gitee.com/i-Things/share/caches"
 	"gitee.com/i-Things/share/conf"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/schema"
@@ -21,6 +22,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/zrpc"
+	"sync"
 	"time"
 )
 
@@ -33,13 +35,18 @@ type LightSvrClient struct {
 	DeviceM        devicemanage.DeviceManage
 	DeviceInteract deviceinteract.DeviceInteract
 	TimedM         timedmanage.TimedManage
+	TimerHandles   []func(ctx context.Context, t time.Time) error
 }
 
 type LightProtocol struct {
-	FastEvent  *eventBus.FastEvent
-	Pi         *dm.ProtocolInfo
-	ServerName string
+	FastEvent         *eventBus.FastEvent
+	Pi                *dm.ProtocolInfo
+	ServerName        string
+	ProductIDMap      map[string]string
+	ProductIDMapMutex sync.RWMutex
 	LightSvrClient
+	ThirdProductIDFieldName string
+	taskCreateOnce          sync.Once
 }
 
 type LightProtocolConf struct {
@@ -96,15 +103,20 @@ func (p *LightProtocol) Start() error {
 		logx.Must(err)
 	}
 
-	_, err = p.ProtocolM.ProtocolInfoRead(ctx, &dm.WithIDCode{Code: p.Pi.Code})
-	if err != nil {
-		return err
-	}
 	err = p.FastEvent.Start()
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+func (p *LightProtocol) RunTimerHandles() {
+	for _, f := range p.TimerHandles {
+		err := f(ctxs.WithRoot(context.Background()), time.Now())
+		if err != nil {
+			logx.Error(err)
+		}
+	}
 }
 
 func (p *LightProtocol) RegisterDeviceMsgDownHandler(
@@ -144,23 +156,56 @@ func (p *LightProtocol) RegisterTimerHandler(f func(ctx context.Context, t time.
 		return errors.Panic.AddMsg("timed not init")
 	}
 	ctx := context.Background()
-	_, err := p.TimedM.TaskInfoCreate(ctx, &timedmanage.TaskInfo{
-		GroupCode: def.TimedIThingsQueueGroupCode,                                //组编码
-		Type:      1,                                                             //任务类型 1 定时任务 2 延时任务
-		Name:      fmt.Sprintf("自定义协议-%s-定时任务-数据同步", p.Pi.Name),                  // 任务名称
-		Code:      p.genCode(),                                                   //任务编码
-		Params:    fmt.Sprintf(`{"topic":"%s","payload":""}`, p.genTimerTopic()), // 任务参数,延时任务如果没有传任务参数会拿数据库的参数来执行
-		CronExpr:  "@every 10m",                                                  // cron执行表达式
-		Status:    def.StatusWaitRun,                                             // 状态
-		Priority:  3,                                                             //优先级: 10:critical 最高优先级  3: default 普通优先级 1:low 低优先级
+	p.taskCreateOnce.Do(func() {
+		_, err := p.TimedM.TaskInfoCreate(ctx, &timedmanage.TaskInfo{
+			GroupCode: def.TimedIThingsQueueGroupCode,                                //组编码
+			Type:      1,                                                             //任务类型 1 定时任务 2 延时任务
+			Name:      fmt.Sprintf("自定义协议-%s-定时任务-数据同步", p.Pi.Name),                  // 任务名称
+			Code:      p.genCode(),                                                   //任务编码
+			Params:    fmt.Sprintf(`{"topic":"%s","payload":""}`, p.genTimerTopic()), // 任务参数,延时任务如果没有传任务参数会拿数据库的参数来执行
+			CronExpr:  "@every 10m",                                                  // cron执行表达式
+			Status:    def.StatusWaitRun,                                             // 状态
+			Priority:  3,                                                             //优先级: 10:critical 最高优先级  3: default 普通优先级 1:low 低优先级
+		})
+		if err != nil && !errors.Cmp(errors.Fmt(err), errors.Duplicate) {
+			logx.Must(err)
+		}
 	})
-	if err != nil && !errors.Cmp(errors.Fmt(err), errors.Duplicate) {
-		logx.Must(err)
-	}
-	f(ctx, time.Now()) //先运行一遍
-	err = p.FastEvent.Subscribe(p.genTimerTopic(), func(ctx context.Context, t time.Time, body []byte) error {
-		err = f(ctx, t)
+	p.TimerHandles = append(p.TimerHandles, f)
+	err := p.FastEvent.Subscribe(p.genTimerTopic(), func(ctx context.Context, t time.Time, body []byte) error {
+		if t.Before(time.Now().Add(time.Second * 10)) { //10秒之前的跳过
+			return nil
+		}
+		err := f(ctxs.WithRoot(context.Background()), t)
 		return err
 	})
 	return err
+}
+func (p *LightProtocol) RegisterProductIDSync(fieldName string /*自定义协议的产品ID的字段名*/) error {
+	p.ThirdProductIDFieldName = fieldName
+	err := p.RegisterTimerHandler(func(ctx context.Context, t time.Time) error {
+		pis, err := p.ProductM.ProductInfoIndex(ctx, &dm.ProductInfoIndexReq{
+			ProtocolCode: p.Pi.Code,
+		})
+		if err != nil {
+			return err
+		}
+		p.ProductIDMapMutex.Lock()
+		defer p.ProductIDMapMutex.Unlock()
+		p.ProductIDMap = map[string]string{}
+		for _, pi := range pis.List {
+			id := pi.ProtocolConf[fieldName]
+			if id == "" {
+				continue
+			}
+			p.ProductIDMap[id] = pi.ProductID
+		}
+		return nil
+	})
+	return err
+}
+func (p *LightProtocol) GetProductID(productID string) string {
+	p.ProductIDMapMutex.RLock()
+	defer p.ProductIDMapMutex.RUnlock()
+	return p.ProductIDMap[productID]
 }

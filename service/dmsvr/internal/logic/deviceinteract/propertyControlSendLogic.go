@@ -63,7 +63,6 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 			return nil, err
 		}
 	}
-
 	err = l.initMsg(in.ProductID)
 	if err != nil {
 		return nil, err
