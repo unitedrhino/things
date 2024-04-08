@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"gitee.com/i-Things/share/interceptors"
 	"github.com/i-Things/things/service/udsvr/internal/config"
-	opsServer "github.com/i-Things/things/service/udsvr/internal/server/ops"
 	ruleServer "github.com/i-Things/things/service/udsvr/internal/server/rule"
 	"github.com/i-Things/things/service/udsvr/internal/startup"
 	"github.com/i-Things/things/service/udsvr/internal/svc"
@@ -48,7 +47,6 @@ func Run(svcCtx *svc.ServiceContext) {
 	c := svcCtx.Config
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		ud.RegisterRuleServer(grpcServer, ruleServer.NewRuleServer(svcCtx))
-		ud.RegisterOpsServer(grpcServer, opsServer.NewOpsServer(svcCtx))
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
 		}

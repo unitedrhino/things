@@ -13,7 +13,6 @@ import (
 	thingsdevicemsg "github.com/i-Things/things/service/apisvr/internal/handler/things/device/msg"
 	thingsgroupdevice "github.com/i-Things/things/service/apisvr/internal/handler/things/group/device"
 	thingsgroupinfo "github.com/i-Things/things/service/apisvr/internal/handler/things/group/info"
-	thingsopsworkOrder "github.com/i-Things/things/service/apisvr/internal/handler/things/ops/workOrder"
 	thingsotafirmwaredevice "github.com/i-Things/things/service/apisvr/internal/handler/things/ota/firmware/device"
 	thingsotafirmwareinfo "github.com/i-Things/things/service/apisvr/internal/handler/things/ota/firmware/info"
 	thingsotafirmwarejob "github.com/i-Things/things/service/apisvr/internal/handler/things/ota/firmware/job"
@@ -331,30 +330,6 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		ws.WithPrefix("/api/v1/things/group/info"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.CheckTokenWare, serverCtx.InitCtxsWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
-			[]rest.Route{
-				{
-					Method:  http.MethodPost,
-					Path:    "/work-order/create",
-					Handler: thingsopsworkOrder.CreateHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/work-order/index",
-					Handler: thingsopsworkOrder.IndexHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/work-order/update",
-					Handler: thingsopsworkOrder.UpdateHandler(serverCtx),
-				},
-			}...,
-		),
-		ws.WithPrefix("/api/v1/things/ops"),
 	)
 
 	server.AddRoutes(

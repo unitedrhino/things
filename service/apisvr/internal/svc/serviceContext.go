@@ -30,7 +30,6 @@ import (
 	"github.com/i-Things/things/service/dmsvr/dmdirect"
 	"github.com/i-Things/things/service/rulesvr/client/alarmcenter"
 	"github.com/i-Things/things/service/rulesvr/client/scenelinkage"
-	"github.com/i-Things/things/service/udsvr/client/ops"
 	"github.com/i-Things/things/service/udsvr/client/rule"
 	"github.com/i-Things/things/service/udsvr/uddirect"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -54,7 +53,6 @@ type SvrClient struct {
 	RemoteConfig remoteconfig.RemoteConfig
 
 	Rule       rule.Rule
-	Ops        ops.Ops
 	UserDevice userdevice.UserDevice
 	Scene      scenelinkage.SceneLinkage
 	Alarm      alarmcenter.AlarmCenter
@@ -80,7 +78,6 @@ type ServiceContext struct {
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	var (
-		Ops     ops.Ops
 		schemaM schemamanage.SchemaManage
 
 		protocolM protocolmanage.ProtocolManage
@@ -144,10 +141,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if c.UdRpc.Enable {
 		if c.UdRpc.Mode == conf.ClientModeGrpc {
 			Rule = rule.NewRule(zrpc.MustNewClient(c.UdRpc.Conf))
-			Ops = ops.NewOps(zrpc.MustNewClient(c.UdRpc.Conf))
 		} else {
 			Rule = uddirect.NewRule(c.UdRpc.RunProxy)
-			Ops = uddirect.NewOps(c.UdRpc.RunProxy)
 		}
 	}
 	if c.SysRpc.Enable {
@@ -215,7 +210,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			RemoteConfig:   remoteConfig,
 			Rule:           Rule,
 			UserDevice:     UserDevice,
-			Ops:            Ops,
 		},
 		//OSS:        ossClient,
 	}

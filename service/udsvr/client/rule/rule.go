@@ -14,21 +14,18 @@ import (
 )
 
 type (
-	DeviceCore            = ud.DeviceCore
-	DeviceTimerIndexReq   = ud.DeviceTimerIndexReq
-	DeviceTimerIndexResp  = ud.DeviceTimerIndexResp
-	DeviceTimerInfo       = ud.DeviceTimerInfo
-	Empty                 = ud.Empty
-	OpsWorkOrder          = ud.OpsWorkOrder
-	OpsWorkOrderIndexReq  = ud.OpsWorkOrderIndexReq
-	OpsWorkOrderIndexResp = ud.OpsWorkOrderIndexResp
-	PageInfo              = ud.PageInfo
-	SceneFlowInfo         = ud.SceneFlowInfo
-	SceneInfo             = ud.SceneInfo
-	SceneInfoIndexReq     = ud.SceneInfoIndexReq
-	SceneInfoIndexResp    = ud.SceneInfoIndexResp
-	TimeRange             = ud.TimeRange
-	WithID                = ud.WithID
+	DeviceCore           = ud.DeviceCore
+	DeviceTimerIndexReq  = ud.DeviceTimerIndexReq
+	DeviceTimerIndexResp = ud.DeviceTimerIndexResp
+	DeviceTimerInfo      = ud.DeviceTimerInfo
+	Empty                = ud.Empty
+	PageInfo             = ud.PageInfo
+	SceneFlowInfo        = ud.SceneFlowInfo
+	SceneInfo            = ud.SceneInfo
+	SceneInfoIndexReq    = ud.SceneInfoIndexReq
+	SceneInfoIndexResp   = ud.SceneInfoIndexResp
+	TimeRange            = ud.TimeRange
+	WithID               = ud.WithID
 
 	Rule interface {
 		// 场景

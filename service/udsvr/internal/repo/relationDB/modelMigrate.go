@@ -16,6 +16,5 @@ func Migrate(c conf.Database) error {
 		&UdSceneThenAction{},
 		&UdDeviceTimerInfo{},
 		&UdSceneIfTrigger{},
-		&UdOpsWorkOrder{},
 	)
 }
