@@ -50,7 +50,7 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 		wait.Add(1)
 		go func(dataID string) {
 			defer wait.Done()
-			data, err := dd.GetLatestPropertyDataByID(l.ctx, temp.Property[v], msgThing.LatestFilter{
+			data, err := dd.GetLatestPropertyDataByID(l.ctx, temp.Property[dataID], msgThing.LatestFilter{
 				ProductID:  in.ProductID,
 				DeviceName: in.DeviceName,
 				DataID:     dataID,
