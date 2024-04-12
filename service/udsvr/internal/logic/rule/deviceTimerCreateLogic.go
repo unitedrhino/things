@@ -2,6 +2,7 @@ package rulelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
 	"github.com/i-Things/things/service/udsvr/internal/domain"
@@ -43,6 +44,9 @@ func (l *DeviceTimerCreateLogic) DeviceTimerCreate(in *ud.DeviceTimerInfo) (*ud.
 		Name:        in.Name,
 		LastRunTime: domain.GenLastRunTime(time.Now(), in.ExecAt),
 		Status:      in.Status,
+	}
+	if po.Status == 0 {
+		po.Status = def.Enable
 	}
 	err := DeviceTimerCheck(l.ctx, &po)
 	if err != nil {

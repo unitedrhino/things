@@ -35,6 +35,7 @@ func ToSceneInfoPo(in *scene.Info) *relationDB.UdSceneInfo {
 		Desc:     in.Desc,
 		Tag:      in.Tag,
 		HeadImg:  in.HeadImg,
+		Status:   in.Status,
 		UdSceneIf: relationDB.UdSceneIf{
 			Triggers: ToSceneTriggersPo(in, in.If.Triggers),
 		},

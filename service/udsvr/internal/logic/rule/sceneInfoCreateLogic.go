@@ -3,6 +3,7 @@ package rulelogic
 import (
 	"context"
 	"fmt"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/oss"
 	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
@@ -31,6 +32,9 @@ func NewSceneInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *S
 // 场景
 func (l *SceneInfoCreateLogic) SceneInfoCreate(in *ud.SceneInfo) (*ud.WithID, error) {
 	do := ToSceneInfoDo(in)
+	if do.Status == 0 {
+		do.Status = def.True
+	}
 	err := do.Validate(scene.ValidateRepo{Ctx: l.ctx, DeviceCache: l.svcCtx.DeviceCache, ProductSchemaCache: l.svcCtx.ProductSchemaCache})
 	if err != nil {
 		return nil, err
