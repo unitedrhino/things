@@ -83,6 +83,11 @@ func (p SceneInfoRepo) CountByFilter(ctx context.Context, f SceneInfoFilter) (si
 	return size, stores.ErrFmt(err)
 }
 
+func (p SceneInfoRepo) UpdateHeadImg(ctx context.Context, data *UdSceneInfo) error {
+	err := p.db.WithContext(ctx).Select("head_img").Where("id=?", data.ID).Save(data).Error
+	return stores.ErrFmt(err)
+}
+
 func (p SceneInfoRepo) Update(ctx context.Context, data *UdSceneInfo) error {
 	err := p.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		err := NewSceneIfTriggerRepo(tx).DeleteByFilter(ctx, SceneIfTriggerFilter{SceneID: data.ID})

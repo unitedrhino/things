@@ -3,7 +3,6 @@ package rulelogic
 import (
 	"context"
 	"gitee.com/i-Things/share/oss/common"
-	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/udsvr/internal/domain"
 	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
@@ -151,8 +150,8 @@ func ToSceneActionPo(s *scene.Info, in *scene.Action) *relationDB.UdSceneThenAct
 	}
 	if in.Device != nil {
 		po.Device = &relationDB.UdSceneActionDevice{
-			ProjectID:        stores.ProjectID(in.Device.ProjectID),
-			AreaID:           stores.AreaID(in.Device.AreaID),
+			ProjectID:        int64(in.Device.ProjectID),
+			AreaID:           int64(in.Device.AreaID),
 			ProductID:        in.Device.ProductID,
 			SelectType:       in.Device.SelectType,
 			DeviceName:       in.Device.DeviceName,

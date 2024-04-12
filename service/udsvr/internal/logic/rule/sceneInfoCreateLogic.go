@@ -48,7 +48,7 @@ func (l *SceneInfoCreateLogic) SceneInfoCreate(in *ud.SceneInfo) (*ud.WithID, er
 			return nil, errors.System.AddDetail(err)
 		}
 		po.HeadImg = path
-		err = relationDB.NewSceneInfoRepo(l.ctx).Update(l.ctx, po)
+		err = relationDB.NewSceneInfoRepo(l.ctx).UpdateHeadImg(l.ctx, po)
 		if err != nil {
 			l.Error(err)
 		}

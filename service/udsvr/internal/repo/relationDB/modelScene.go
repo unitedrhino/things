@@ -93,8 +93,8 @@ func (m *UdSceneThenAction) TableName() string {
 }
 
 type UdSceneActionDevice struct {
-	ProjectID        stores.ProjectID       `gorm:"column:project_id;type:bigint;default:2;NOT NULL"`  // 项目ID(雪花ID)
-	AreaID           stores.AreaID          `gorm:"column:area_id;type:bigint;default:2;NOT NULL"`     // 项目区域ID(雪花ID)
+	ProjectID        int64                  `gorm:"column:project_id;type:bigint;default:2;NOT NULL"`  // 项目ID(雪花ID)
+	AreaID           int64                  `gorm:"column:area_id;type:bigint;default:2;NOT NULL"`     // 项目区域ID(雪花ID)
 	ProductID        string                 `gorm:"column:product_id;index;type:VARCHAR(25);NOT NULL"` //产品id
 	SelectType       scene.SelectType       `gorm:"column:select_type;type:VARCHAR(25);NOT NULL"`      //设备选择方式
 	DeviceName       string                 `gorm:"column:device_name;type:VARCHAR(255);"`             //选择的列表  选择的列表, fixed类型是设备名列表
