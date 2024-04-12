@@ -25,7 +25,7 @@ type ActionDevice struct {
 	ProjectID        int64            `json:"-"`                     //项目id
 	AreaID           int64            `json:"areaID,string"`         //涉及到的区域ID
 	ProductID        string           `json:"productID"`             //产品id
-	SelectType       SelectType       `json:"selector"`              //设备选择方式   fixed:指定的设备
+	SelectType       SelectType       `json:"selectType"`            //设备选择方式   fixed:指定的设备
 	DeviceName       string           `json:"deviceName"`            //选择的设备列表 指定设备的时候才需要填写(如果设备换到其他区域里,这里删除该设备)
 	DeviceAlias      string           `json:"deviceAlias,omitempty"` //设备别名,只读
 	GroupID          int64            `json:"groupID"`               //分组id
