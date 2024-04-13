@@ -106,7 +106,7 @@ func (t *Timer) Validate() error {
 	if t.ExecAt < 0 || t.ExecAt > 24*60*60 {
 		return errors.Parameter.AddMsg("时间执行时间范围只能在0到24小时之间")
 	}
-	if t.ExecRepeat > 0b1111111 {
+	if t.ExecRepeat > 1111111 {
 		return errors.Parameter.AddMsg("时间重复模式只能在0 7个二进制为高位")
 	}
 	return nil
