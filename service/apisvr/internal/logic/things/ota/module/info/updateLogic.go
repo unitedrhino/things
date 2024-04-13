@@ -26,6 +26,6 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 }
 
 func (l *UpdateLogic) Update(req *types.OtaModuleInfo) error {
-	_, err := l.svcCtx.OtaM.OtaModuleInfoCreate(l.ctx, utils.Copy[dm.OtaModuleInfo](req))
+	_, err := l.svcCtx.OtaM.OtaModuleInfoUpdate(l.ctx, utils.Copy[dm.OtaModuleInfo](req))
 	return err
 }
