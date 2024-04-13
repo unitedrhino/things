@@ -56,6 +56,12 @@ func (s *UserDeviceServer) UserDeviceShareDelete(ctx context.Context, in *dm.Wit
 	return l.UserDeviceShareDelete(in)
 }
 
+// 取消分享设备
+func (s *UserDeviceServer) UserDeviceShareMultiDelete(ctx context.Context, in *dm.UserDeviceShareMultiDeleteReq) (*dm.Empty, error) {
+	l := userdevicelogic.NewUserDeviceShareMultiDeleteLogic(ctx, s.svcCtx)
+	return l.UserDeviceShareMultiDelete(in)
+}
+
 // 获取设备分享列表(只有设备的所有者才能获取)
 func (s *UserDeviceServer) UserDeviceShareIndex(ctx context.Context, in *dm.UserDeviceShareIndexReq) (*dm.UserDeviceShareIndexResp, error) {
 	l := userdevicelogic.NewUserDeviceShareIndexLogic(ctx, s.svcCtx)

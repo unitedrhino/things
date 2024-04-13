@@ -276,6 +276,8 @@ service userDevice{
   rpc userDeviceShareUpdate(UserDeviceShareInfo)returns(Empty);
   //取消分享设备
   rpc userDeviceShareDelete(WithID)returns(Empty);
+  //取消分享设备
+  rpc userDeviceShareMultiDelete(UserDeviceShareMultiDeleteReq)returns(Empty);
   //获取设备分享列表(只有设备的所有者才能获取)
   rpc userDeviceShareIndex(UserDeviceShareIndexReq)returns(UserDeviceShareIndexResp);
   //获取设备分享的详情
@@ -323,12 +325,19 @@ message UserDeviceShareIndexResp{
   int64 total = 2;
 }
 
+
+message UserDeviceShareMultiDeleteReq{
+    repeated int64 ids =1;
+    int64 projectID =2;//指定项目的情况下删除分享的所有设备
+}
+
 message UserDeviceShareInfo{
   int64 id = 1;
   DeviceCore device = 2;//设备信息
-  int64 userID = 3;//分享的对象
+  int64 sharedUserID = 3;//分享的对象
   repeated string schemaPerm = 4;//物模型权限,只需要填写需要授权并授权的物模型id
   repeated string accessPerm = 5;//操作权限 hubLog:设备消息记录,ota:ota升级权限,deviceTiming:设备定时
+  int64 projectID =6;//设备归属的项目
 }
 
 

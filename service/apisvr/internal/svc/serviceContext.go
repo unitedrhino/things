@@ -5,6 +5,7 @@ import (
 	"gitee.com/i-Things/core/service/syssvr/client/areamanage"
 	"gitee.com/i-Things/core/service/syssvr/client/log"
 	role "gitee.com/i-Things/core/service/syssvr/client/rolemanage"
+	tenant "gitee.com/i-Things/core/service/syssvr/client/tenantmanage"
 	user "gitee.com/i-Things/core/service/syssvr/client/usermanage"
 	"gitee.com/i-Things/core/service/syssvr/sysdirect"
 	"gitee.com/i-Things/share/caches"
@@ -97,6 +98,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	)
 	var ur user.UserManage
 	var ro role.RoleManage
+	var tm tenant.TenantManage
 	var lo log.Log
 
 	caches.InitStore(c.CacheRedis)
@@ -151,12 +153,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			ro = role.NewRoleManage(zrpc.MustNewClient(c.SysRpc.Conf))
 			lo = log.NewLog(zrpc.MustNewClient(c.SysRpc.Conf))
 			areaM = areamanage.NewAreaManage(zrpc.MustNewClient(c.SysRpc.Conf))
-
+			tm = tenant.NewTenantManage(zrpc.MustNewClient(c.SysRpc.Conf))
 		} else {
 			ur = sysdirect.NewUser(c.SysRpc.RunProxy)
 			ro = sysdirect.NewRole(c.SysRpc.RunProxy)
 			lo = sysdirect.NewLog(c.SysRpc.RunProxy)
 			areaM = sysdirect.NewAreaManage(c.SysRpc.RunProxy)
+			tm = sysdirect.NewTenantManage(c.SysRpc.RunProxy)
 		}
 	}
 
@@ -186,7 +189,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config:         c,
 		SetupWare:      middleware.NewSetupWareMiddleware(c, lo).Handle,
-		CheckTokenWare: export.NewCheckTokenWareMiddleware(ur, ro).Handle,
+		CheckTokenWare: export.NewCheckTokenWareMiddleware(ur, ro, tm).Handle,
 		InitCtxsWare:   ctxs.InitMiddleware,
 		DataAuthWare:   middleware.NewDataAuthWareMiddleware(c).Handle,
 		TeardownWare:   middleware.NewTeardownWareMiddleware(c, lo).Handle,

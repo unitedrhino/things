@@ -34,12 +34,8 @@ func (l *UserDeviceShareDeleteLogic) UserDeviceShareDelete(in *dm.WithID) (*dm.E
 		return nil, err
 	}
 	uc := ctxs.GetUserCtx(l.ctx)
-	if uds.UserID != uc.UserID {
-		di, err := relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: uds.ProductID, DeviceName: uds.DeviceName})
-		if err != nil {
-			return nil, err
-		}
-		pi, err := l.svcCtx.ProjectM.ProjectInfoRead(l.ctx, &sys.ProjectWithID{ProjectID: int64(di.ProjectID)})
+	if uds.SharedUserID != uc.UserID { //如果不是分享的对象取消分享,需要判断是否是设备的所有者,只有设备的所有者才有权取消分享
+		pi, err := l.svcCtx.ProjectM.ProjectInfoRead(l.ctx, &sys.ProjectWithID{ProjectID: int64(uds.ProjectID)})
 		if err != nil {
 			return nil, err
 		}

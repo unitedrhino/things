@@ -2,11 +2,14 @@ package svc
 
 import (
 	"context"
+	"gitee.com/i-Things/core/sdk/tenantOpenWebhook"
 	"gitee.com/i-Things/core/service/syssvr/client/areamanage"
 	"gitee.com/i-Things/core/service/syssvr/client/projectmanage"
 	"gitee.com/i-Things/core/service/syssvr/client/tenantmanage"
 	"gitee.com/i-Things/core/service/syssvr/sysExport"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
+	"gitee.com/i-Things/share/ctxs"
+	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/domain/tenant"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
@@ -64,6 +67,7 @@ type ServiceContext struct {
 	ProductCache   *caches.Cache[dm.ProductInfo]
 	DeviceCache    *caches.Cache[dm.DeviceInfo]
 	TenantCache    *caches.Cache[tenant.Info]
+	WebHook        *tenantOpenWebhook.Info
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -134,6 +138,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	projectM = projectmanage.NewProjectManage(zrpc.MustNewClient(c.SysRpc.Conf))
 	tenantCache, err := sysExport.NewTenantInfoCache(tenantmanage.NewTenantManage(zrpc.MustNewClient(c.SysRpc.Conf)), serverMsg)
 	logx.Must(err)
+	webHook, err := tenantOpenWebhook.NewTenantOpenWebhook(tenantmanage.NewTenantManage(zrpc.MustNewClient(c.SysRpc.Conf)), serverMsg)
+	logx.Must(err)
+	//webHook.Publish(ctxs.BindTenantCode(context.Background(), "default"),
+	//	tenantOpenWebhook.CodeDmDeviceConn, application.ConnectMsg{Device: devices.Core{
+	//		ProductID:  "123",
+	//		DeviceName: "123",
+	//	}, Timestamp: time.Now().UnixMilli()})
 	return &ServiceContext{
 		FastEvent:      serverMsg,
 		TenantCache:    tenantCache,
@@ -157,5 +168,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		SDKLogRepo:     sdkLogR,
 		StatusRepo:     statusR,
 		SendRepo:       sendR,
+		WebHook:        webHook,
 	}
+}
+
+func (s *ServiceContext) WithDeviceTenant(ctx context.Context, dev devices.Core) context.Context {
+	di, err := s.DeviceCache.GetData(ctx, dev.ProductID+":"+dev.DeviceName)
+	if err != nil {
+		return ctx
+	}
+	return ctxs.BindTenantCode(ctx, di.TenantCode)
 }

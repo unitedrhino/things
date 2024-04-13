@@ -42,11 +42,12 @@ func (l *UserDeviceShareCreateLogic) UserDeviceShareCreate(in *dm.UserDeviceShar
 		return nil, errors.Permissions.AddMsg("只有所有者才能分享设备")
 	}
 	po := relationDB.DmUserDeviceShare{
-		UserID:     in.UserID,
-		ProductID:  in.Device.ProductID,
-		DeviceName: in.Device.DeviceName,
-		AccessPerm: in.AccessPerm,
-		SchemaPerm: in.SchemaPerm,
+		ProjectID:    pi.ProjectID,
+		SharedUserID: in.SharedUserID,
+		ProductID:    in.Device.ProductID,
+		DeviceName:   in.Device.DeviceName,
+		AccessPerm:   in.AccessPerm,
+		SchemaPerm:   in.SchemaPerm,
 	}
 	err = relationDB.NewUserDeviceShareRepo(l.ctx).Insert(l.ctx, &po)
 	if err != nil {

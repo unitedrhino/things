@@ -38,7 +38,7 @@ func (l *UserDeviceShareReadLogic) UserDeviceShareRead(in *dm.UserDeviceShareRea
 		return nil, err
 	}
 	uc := ctxs.GetUserCtx(l.ctx)
-	if uds.UserID != uc.UserID {
+	if uds.SharedUserID != uc.UserID {
 		di, err := relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: uds.ProductID, DeviceName: uds.DeviceName})
 		if err != nil {
 			return nil, err

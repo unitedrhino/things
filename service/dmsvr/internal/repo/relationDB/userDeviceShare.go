@@ -24,16 +24,25 @@ func NewUserDeviceShareRepo(in any) *UserDeviceShareRepo {
 }
 
 type UserDeviceShareFilter struct {
-	ProductID  string
-	DeviceName string
-	UserID     int64
-	ID         int64
+	ProjectID     int64
+	SharedUserIDs []int64
+	ProductID     string
+	DeviceName    string
+	SharedUserID  int64
+	ID            int64
+	IDs           []int64
 }
 
 func (p UserDeviceShareRepo) fmtFilter(ctx context.Context, f UserDeviceShareFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
-	if f.UserID != 0 {
-		db = db.Where("user_id = ?", f.UserID)
+	if f.SharedUserID != 0 {
+		db = db.Where("shared_user_id = ?", f.SharedUserID)
+	}
+	if len(f.IDs) != 0 {
+		db = db.Where("id in ?", f.IDs)
+	}
+	if f.ProjectID != 0 {
+		db = db.Where("project_id=?", f.ProjectID)
 	}
 	if f.ID != 0 {
 		db = db.Where("id = ?", f.ID)

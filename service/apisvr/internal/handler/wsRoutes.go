@@ -818,6 +818,11 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/multi-delete",
+					Handler: thingsuserdeviceshare.MultiDeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/read",
 					Handler: thingsuserdeviceshare.ReadHandler(serverCtx),
 				},

@@ -2,6 +2,7 @@ package deviceMsgEvent
 
 import (
 	"context"
+	"gitee.com/i-Things/core/sdk/tenantOpenWebhook"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
@@ -106,17 +107,23 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 	utils.Go(ctx, func() {
 		startTime := time.Now()
 		for identifier, param := range paramValues {
-			//应用事件通知-设备物模型属性上报通知 ↓↓↓
-			err := l.svcCtx.PubApp.DeviceThingPropertyReport(ctx, application.PropertyReport{
+			appMsg := application.PropertyReport{
 				Device: core, Timestamp: timeStamp.UnixMilli(),
 				Identifier: identifier, Param: param,
-			})
+			}
+			//应用事件通知-设备物模型属性上报通知 ↓↓↓
+			err := l.svcCtx.PubApp.DeviceThingPropertyReport(ctx, appMsg)
 			if err != nil {
 				logx.WithContext(ctx).Errorf("%s.DeviceThingPropertyReport  identifier:%v, param:%v,err:%v", utils.FuncName(), identifier, param, err)
+			}
+			err = l.svcCtx.WebHook.Publish(l.svcCtx.WithDeviceTenant(l.ctx, core), tenantOpenWebhook.CodeDmDevicePropertyUpdate, appMsg)
+			if err != nil {
+				l.Error(err)
 			}
 		}
 		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).Infof("%s.DeviceThingPropertyReport startTime:%v",
 			utils.FuncName(), startTime)
+
 	})
 
 	//插入多条设备物模型属性数据

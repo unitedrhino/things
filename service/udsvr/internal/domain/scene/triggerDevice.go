@@ -12,9 +12,9 @@ import (
 type SelectType = string
 
 const (
-	SelectorDeviceAll SelectType = "allDevice"   //产品下的所有设备
-	SelectDeviceFixed SelectType = "fixedDevice" //产品下的指定设备
-	SelectGroup       SelectType = "group"       //某个设备组的设备(支持不同产品的设备,但是需要有共同的公共物模型)
+	SelectorDeviceAll SelectType = "all"   //产品下的所有设备
+	SelectDeviceFixed SelectType = "fixed" //产品下的指定设备
+	SelectGroup       SelectType = "group" //某个设备组的设备(支持不同产品的设备,但是需要有共同的公共物模型)
 )
 
 type TriggerDevices []*TriggerDevice
