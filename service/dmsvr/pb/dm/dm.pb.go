@@ -10228,7 +10228,7 @@ type OtaFirmwareInfo struct {
 	ProductName    string          `protobuf:"bytes,5,opt,name=productName,proto3" json:"productName,omitempty"`         //产品名称
 	Status         int64           `protobuf:"varint,6,opt,name=status,proto3" json:"status,omitempty"`                  //状态
 	CreatedTime    int64           `protobuf:"varint,7,opt,name=createdTime,proto3" json:"createdTime,omitempty"`        //添加时间
-	SignMethod     string          `protobuf:"bytes,8,opt,name=signMethod,proto3" json:"signMethod,omitempty"`           //签名方法
+	SignMethod     string          `protobuf:"bytes,8,opt,name=signMethod,proto3" json:"signMethod,omitempty"`           //签名方式:MD5/SHA256
 	Desc           string          `protobuf:"bytes,9,opt,name=desc,proto3" json:"desc,omitempty"`                       //文件描述
 	Extra          string          `protobuf:"bytes,10,opt,name=extra,proto3" json:"extra,omitempty"`                    //推给设备端端消息
 	FileList       []*FirmwareFile `protobuf:"bytes,11,rep,name=fileList,proto3" json:"fileList,omitempty"`              //文件列表

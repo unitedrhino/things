@@ -578,19 +578,20 @@ type FirmwareIndexResp struct {
 }
 
 type FirmwareInfo struct {
-	ID             int64           `json:"id"`
-	Name           string          `json:"name"`
-	Version        string          `json:"version"`
-	ProductID      string          `json:"productID"`
-	ProductName    string          `json:"productName"`
-	Status         int             `json:"status"`
-	CreatedTime    int64           `json:"createdTime,string"`
-	SignMethod     string          `json:"signMethod"`
-	IsNeedToVerify int64           `json:"isNeedToVerify"`
-	Desc           string          `json:"desc"`
-	Extra          string          `json:"extra"`
-	ModuleCode     string          `json:"moduleCode"`
-	FileList       []*FirmwareFile `json:"fileList"`
+	ID             int64           `json:"id"`             //固件id
+	Name           string          `json:"name"`           //固件升级包名称
+	Version        string          `json:"version"`        //版本号
+	ProductID      string          `json:"productID"`      //产品id
+	ProductName    string          `json:"productName"`    //产品名称
+	Status         int64           `json:"status"`         //状态
+	CreatedTime    int64           `json:"createdTime"`    //添加时间
+	SignMethod     string          `json:"signMethod"`     //签名方式:MD5/SHA256
+	Desc           string          `json:"desc"`           //文件描述
+	Extra          string          `json:"extra"`          //推给设备端端消息
+	IsDiff         int64           `json:"isDiff"`         //整包or差包
+	IsNeedToVerify int64           `json:"isNeedToVerify"` //是否需要验证
+	ModuleCode     string          `json:"moduleCode"`     //模块编码
+	FileList       []*FirmwareFile `json:"fileList"`       //文件列表
 }
 
 type FirmwareUpdateReq struct {

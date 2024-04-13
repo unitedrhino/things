@@ -40,7 +40,10 @@ func (l *SceneInfoCreateLogic) SceneInfoCreate(in *ud.SceneInfo) (*ud.WithID, er
 		return nil, err
 	}
 	po := ToSceneInfoPo(do)
-	relationDB.NewSceneInfoRepo(l.ctx).Insert(l.ctx, po)
+	err = relationDB.NewSceneInfoRepo(l.ctx).Insert(l.ctx, po)
+	if err != nil {
+		return nil, err
+	}
 	if in.HeadImg != "" && in.IsUpdateHeadImg { //如果填了参数且不等于原来的,说明修改头像,需要处理
 		nwePath := oss.GenFilePath(l.ctx, l.svcCtx.Config.Name, oss.BusinessScene, oss.SceneHeadIng, fmt.Sprintf("%d/%s", po.ID, oss.GetFileNameWithPath(in.HeadImg)))
 		path, err := l.svcCtx.OssClient.PrivateBucket().CopyFromTempBucket(in.HeadImg, nwePath)

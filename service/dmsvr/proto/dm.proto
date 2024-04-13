@@ -1368,7 +1368,7 @@ message OtaFirmwareInfo{
   string productName = 5; //产品名称
   int64 status = 6; //状态
   int64 createdTime = 7; //添加时间
-  string signMethod = 8; //签名方法
+  string signMethod = 8; //签名方式:MD5/SHA256
   string desc = 9; //文件描述
   string extra = 10; //推给设备端端消息
   repeated FirmwareFile fileList = 11; //文件列表

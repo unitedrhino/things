@@ -76,21 +76,21 @@ func ToSceneTriggerPo(si *scene.Info, in *scene.Trigger) *relationDB.UdSceneIfTr
 	}
 }
 
-func ToSceneTriggerTimerPo(si *scene.Info, in *scene.Timer) (ret *relationDB.UdSceneTriggerTimer) {
+func ToSceneTriggerTimerPo(si *scene.Info, in *scene.Timer) (ret relationDB.UdSceneTriggerTimer) {
 	if in == nil {
-		return nil
+		return relationDB.UdSceneTriggerTimer{}
 	}
-	return &relationDB.UdSceneTriggerTimer{
+	return relationDB.UdSceneTriggerTimer{
 		ExecAt:     in.ExecAt,
 		ExecRepeat: in.ExecRepeat,
 	}
 }
 
-func ToSceneTriggerDevicePo(in *scene.TriggerDevice) (ret *relationDB.UdSceneTriggerDevice) {
+func ToSceneTriggerDevicePo(in *scene.TriggerDevice) (ret relationDB.UdSceneTriggerDevice) {
 	if in == nil {
-		return nil
+		return relationDB.UdSceneTriggerDevice{}
 	}
-	return &relationDB.UdSceneTriggerDevice{
+	return relationDB.UdSceneTriggerDevice{
 		ProductID:   in.ProductID,
 		SelectType:  in.SelectType,
 		DeviceName:  in.DeviceName,
@@ -149,9 +149,9 @@ func ToSceneActionPo(s *scene.Info, in *scene.Action) *relationDB.UdSceneThenAct
 		Delay:   in.Delay,
 	}
 	if in.Device != nil {
-		po.Device = &relationDB.UdSceneActionDevice{
-			ProjectID:        int64(in.Device.ProjectID),
-			AreaID:           int64(in.Device.AreaID),
+		po.Device = relationDB.UdSceneActionDevice{
+			//ProjectID:        int64(in.Device.ProjectID),
+			//AreaID:           int64(in.Device.AreaID),
 			ProductID:        in.Device.ProductID,
 			SelectType:       in.Device.SelectType,
 			DeviceName:       in.Device.DeviceName,
@@ -184,22 +184,21 @@ func ToSceneActionDo(in *relationDB.UdSceneThenAction) *scene.Action {
 		Type:  in.Type,
 		Delay: in.Delay,
 	}
-	if in.Device != nil {
-		do.Device = &scene.ActionDevice{
-			ProjectID:        int64(in.Device.ProjectID),
-			AreaID:           int64(in.Device.AreaID),
-			ProductID:        in.Device.ProductID,
-			SelectType:       in.Device.SelectType,
-			DeviceName:       in.Device.DeviceName,
-			DeviceAlias:      in.Device.DeviceAlias,
-			GroupID:          in.Device.GroupID,
-			Type:             in.Device.Type,
-			DataID:           in.Device.DataID,
-			DataName:         in.Device.DataName,
-			Value:            in.Device.Value,
-			SchemaAffordance: in.Device.SchemaAffordance,
-		}
+	do.Device = &scene.ActionDevice{
+		//ProjectID:        int64(in.Device.ProjectID),
+		//AreaID:           int64(in.Device.AreaID),
+		ProductID:        in.Device.ProductID,
+		SelectType:       in.Device.SelectType,
+		DeviceName:       in.Device.DeviceName,
+		DeviceAlias:      in.Device.DeviceAlias,
+		GroupID:          in.Device.GroupID,
+		Type:             in.Device.Type,
+		DataID:           in.Device.DataID,
+		DataName:         in.Device.DataName,
+		Value:            in.Device.Value,
+		SchemaAffordance: in.Device.SchemaAffordance,
 	}
+
 	return do
 }
 
@@ -225,20 +224,14 @@ func ToSceneTriggerDo(in *relationDB.UdSceneIfTrigger) *scene.Trigger {
 	}
 }
 
-func ToSceneTriggerTimerDo(in *relationDB.UdSceneTriggerTimer) (ret *scene.Timer) {
-	if in == nil {
-		return nil
-	}
+func ToSceneTriggerTimerDo(in relationDB.UdSceneTriggerTimer) (ret *scene.Timer) {
 	return &scene.Timer{
 		ExecAt:     in.ExecAt,
 		ExecRepeat: in.ExecRepeat,
 	}
 }
 
-func ToSceneTriggerDeviceDo(in *relationDB.UdSceneTriggerDevice) (ret *scene.TriggerDevice) {
-	if in == nil {
-		return nil
-	}
+func ToSceneTriggerDeviceDo(in relationDB.UdSceneTriggerDevice) (ret *scene.TriggerDevice) {
 	return &scene.TriggerDevice{
 		ProductID:   in.ProductID,
 		SelectType:  scene.SelectType(in.SelectType),
