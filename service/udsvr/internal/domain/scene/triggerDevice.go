@@ -40,7 +40,7 @@ type TriggerDeviceType string
 const (
 	TriggerDeviceTypeConnected      TriggerDeviceType = "connected"
 	TriggerDeviceTypeDisConnected   TriggerDeviceType = "disConnected"
-	TriggerDeviceTypeReportProperty TriggerDeviceType = "reportProperty"
+	TriggerDeviceTypePropertyReport TriggerDeviceType = "propertyReport"
 )
 
 func (t *TriggerDevice) Validate(repo ValidateRepo) error {
@@ -53,10 +53,10 @@ func (t *TriggerDevice) Validate(repo ValidateRepo) error {
 	if !utils.SliceIn(t.SelectType, SelectorDeviceAll, SelectDeviceFixed) {
 		return errors.Parameter.AddMsg("设备触发类型设备选择方式不支持:" + string(t.SelectType))
 	}
-	if !utils.SliceIn(t.Type, TriggerDeviceTypeConnected, TriggerDeviceTypeDisConnected, TriggerDeviceTypeReportProperty) {
+	if !utils.SliceIn(t.Type, TriggerDeviceTypeConnected, TriggerDeviceTypeDisConnected, TriggerDeviceTypePropertyReport) {
 		return errors.Parameter.AddMsgf("设备触发的触发类型不支持:%s", string(t.Type))
 	}
-	if t.Type == TriggerDeviceTypeReportProperty {
+	if t.Type == TriggerDeviceTypePropertyReport {
 		if len(t.DataID) == 0 {
 			return errors.Parameter.AddMsg("触发设备类型中的标识符需要填写")
 		}
@@ -112,7 +112,7 @@ func (t TriggerDevices) IsTriggerWithConn(device devices.Core, operator TriggerD
 func (t TriggerDevices) IsTriggerWithProperty(reportInfo *application.PropertyReport) bool {
 	for _, d := range t {
 		//需要排除不是该设备的触发类型
-		if d.Type != TriggerDeviceTypeReportProperty {
+		if d.Type != TriggerDeviceTypePropertyReport {
 			continue
 		}
 		//判断设备是否命中
