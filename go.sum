@@ -498,6 +498,10 @@ github.com/stretchr/testify v1.9.0 h1:HtqpIVDClZ4nwg75+f6Lvsy/wHu+3BoSGCbBAcpTsT
 github.com/stretchr/testify v1.9.0/go.mod h1:r2ic/lqez/lEtzL7wO/rwa5dbSLXVDPFyf8C91i36aY=
 github.com/suifengtec/gocoord v0.0.0-20210116135606-a0cd8c71c959 h1:2wBuejoTiP4H4rdxG5MjOTrH8mp0lDXsH80kZK1ogco=
 github.com/suifengtec/gocoord v0.0.0-20210116135606-a0cd8c71c959/go.mod h1:YDNVjvVwAevSbvIIoWQ6kZup578YkHhcS+NAamNzOt8=
+github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.898 h1:ERwcXqhc94L9cFxtiI0pvt7IJtlHl/p/Jayl3mLw+ms=
+github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.898/go.mod h1:r5r4xbfxSaeR04b166HGsBa/R4U3SueirEUpXGuw+Q0=
+github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms v1.0.898 h1:W0jSebvHZrb0tDZ1UZYguXWpS3EFyuAjPmJnB+x229o=
+github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms v1.0.898/go.mod h1:K0u+OcABD+oZbj9keiRbaQ5lhjwTiVCAQZncbWIxYm0=
 github.com/tidwall/gjson v1.14.1 h1:iymTbGkQBhveq21bEvAQ81I0LEBork8BFe1CUZXdyuo=
 github.com/tidwall/gjson v1.14.1/go.mod h1:/wbyibRr2FHMks5tjHJ5F8dMZh3AcwJEMf5vlfC0lxk=
 github.com/tidwall/match v1.1.1 h1:+Ho715JplO36QYgwN9PGYNhgZvoUSc9X2c80KVTi+GA=
