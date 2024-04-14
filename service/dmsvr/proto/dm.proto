@@ -58,6 +58,7 @@ service DeviceManage {
   rpc DeviceInfoMultiUpdate(DeviceInfoMultiUpdateReq)     returns (Empty);
   //获取设备信息详情
   rpc deviceInfoRead(DeviceInfoReadReq)     returns (DeviceInfo);
+  rpc deviceInfoBind(DeviceInfoBindReq)returns(Empty);
 
   //绑定网关下子设备设备
   rpc deviceGatewayMultiCreate(DeviceGatewayMultiCreateReq)     returns (Empty);
@@ -76,7 +77,6 @@ service DeviceManage {
   rpc deviceProfileRead(DeviceProfileReadReq)returns(DeviceProfile);
   rpc deviceProfileUpdate(DeviceProfile)returns(Empty);
   rpc deviceProfileIndex(DeviceProfileIndexReq)returns(DeviceProfileIndexResp);
-  rpc deviceBind(DeviceBindReq)returns(Empty);
 }
 
 //产品管理
@@ -1162,9 +1162,10 @@ message DeviceProfileReadReq{
   string code=2;
 }
 
-message DeviceBindReq{
+message DeviceInfoBindReq{
   DeviceCore device =1;
   int64 areaID =2;
+  string protocolCode =3;//如果是iThings协议则不需要填写
 }
 
 message DeviceProfileIndexReq{

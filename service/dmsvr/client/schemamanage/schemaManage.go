@@ -23,7 +23,6 @@ type (
 	CommonSchemaInfo              = dm.CommonSchemaInfo
 	CommonSchemaUpdateReq         = dm.CommonSchemaUpdateReq
 	CustomTopic                   = dm.CustomTopic
-	DeviceBindReq                 = dm.DeviceBindReq
 	DeviceCore                    = dm.DeviceCore
 	DeviceCountInfo               = dm.DeviceCountInfo
 	DeviceCountReq                = dm.DeviceCountReq
@@ -35,6 +34,7 @@ type (
 	DeviceGatewayMultiDeleteReq   = dm.DeviceGatewayMultiDeleteReq
 	DeviceGatewaySign             = dm.DeviceGatewaySign
 	DeviceInfo                    = dm.DeviceInfo
+	DeviceInfoBindReq             = dm.DeviceInfoBindReq
 	DeviceInfoCount               = dm.DeviceInfoCount
 	DeviceInfoCountReq            = dm.DeviceInfoCountReq
 	DeviceInfoDeleteReq           = dm.DeviceInfoDeleteReq

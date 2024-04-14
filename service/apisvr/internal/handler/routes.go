@@ -113,6 +113,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
+					Path:    "/bind",
+					Handler: thingsdeviceinfo.BindHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/count",
 					Handler: thingsdeviceinfo.CountHandler(serverCtx),
 				},

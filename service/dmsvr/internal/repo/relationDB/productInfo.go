@@ -17,6 +17,7 @@ type ProductFilter struct {
 	ProductIDs   []string
 	ProductNames []string
 	Tags         map[string]string
+	ProtocolConf map[string]string
 	WithProtocol bool
 	WithCategory bool
 	ProtocolCode string
@@ -48,6 +49,12 @@ func (p ProductInfoRepo) fmtFilter(ctx context.Context, f ProductFilter) *gorm.D
 	}
 	if len(f.ProductNames) != 0 {
 		db = db.Where("product_name in ?", f.ProductNames)
+	}
+	if f.ProtocolConf != nil {
+		for k, v := range f.ProtocolConf {
+			db = db.Where("JSON_CONTAINS(protocol_conf, JSON_OBJECT(?,?))",
+				k, v)
+		}
 	}
 	if f.Tags != nil {
 		for k, v := range f.Tags {

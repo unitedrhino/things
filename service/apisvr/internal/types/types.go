@@ -177,6 +177,12 @@ type DeviceInfo struct {
 	Profiles       map[string]string                  `json:"profiles,optional,omitempty"`
 }
 
+type DeviceInfoBindReq struct {
+	Device       DeviceCore `json:"device"`
+	AreaID       int64      `json:"areaID,optional,string"`
+	ProtocolCode string     `json:"protocolCode,optional"`
+}
+
 type DeviceInfoDeleteReq struct {
 	ProductID  string `json:"productID"`  //产品id 只读
 	DeviceName string `json:"deviceName"` //设备名称 读写

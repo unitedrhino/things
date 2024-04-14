@@ -64,6 +64,11 @@ func (s *DeviceManageServer) DeviceInfoRead(ctx context.Context, in *dm.DeviceIn
 	return l.DeviceInfoRead(in)
 }
 
+func (s *DeviceManageServer) DeviceInfoBind(ctx context.Context, in *dm.DeviceInfoBindReq) (*dm.Empty, error) {
+	l := devicemanagelogic.NewDeviceInfoBindLogic(ctx, s.svcCtx)
+	return l.DeviceInfoBind(in)
+}
+
 // 绑定网关下子设备设备
 func (s *DeviceManageServer) DeviceGatewayMultiCreate(ctx context.Context, in *dm.DeviceGatewayMultiCreateReq) (*dm.Empty, error) {
 	l := devicemanagelogic.NewDeviceGatewayMultiCreateLogic(ctx, s.svcCtx)
@@ -112,9 +117,4 @@ func (s *DeviceManageServer) DeviceProfileUpdate(ctx context.Context, in *dm.Dev
 func (s *DeviceManageServer) DeviceProfileIndex(ctx context.Context, in *dm.DeviceProfileIndexReq) (*dm.DeviceProfileIndexResp, error) {
 	l := devicemanagelogic.NewDeviceProfileIndexLogic(ctx, s.svcCtx)
 	return l.DeviceProfileIndex(in)
-}
-
-func (s *DeviceManageServer) DeviceBind(ctx context.Context, in *dm.DeviceBindReq) (*dm.Empty, error) {
-	l := devicemanagelogic.NewDeviceBindLogic(ctx, s.svcCtx)
-	return l.DeviceBind(in)
 }

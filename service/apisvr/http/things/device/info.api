@@ -41,6 +41,9 @@ service api {
     )
     @handler multiImport
     post /multi-import (DeviceMultiImportReq) returns (DeviceMultiImportResp)
+    @doc "绑定"
+    @handler bind
+    post /bind (DeviceInfoBindReq) returns ()
 }
 
 type (
@@ -77,6 +80,11 @@ type (
     DeviceInfoWithProperty {
         Value string `json:"value"`             //获取到的值
         Timestamp int64 `json:"timestamp,string"`               //发生时间戳
+    }
+    DeviceInfoBindReq{
+        Device DeviceCore `json:"device"`
+        AreaID int64  `json:"areaID,optional,string"`
+        ProtocolCode   string  `json:"protocolCode,optional"`
     }
     DeviceInfoSaveReq  {
         ProductID string `json:"productID"`                                              //产品id 只读

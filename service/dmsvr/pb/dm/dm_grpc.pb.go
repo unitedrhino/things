@@ -28,6 +28,7 @@ const (
 	DeviceManage_DeviceInfoIndex_FullMethodName          = "/dm.DeviceManage/deviceInfoIndex"
 	DeviceManage_DeviceInfoMultiUpdate_FullMethodName    = "/dm.DeviceManage/DeviceInfoMultiUpdate"
 	DeviceManage_DeviceInfoRead_FullMethodName           = "/dm.DeviceManage/deviceInfoRead"
+	DeviceManage_DeviceInfoBind_FullMethodName           = "/dm.DeviceManage/deviceInfoBind"
 	DeviceManage_DeviceGatewayMultiCreate_FullMethodName = "/dm.DeviceManage/deviceGatewayMultiCreate"
 	DeviceManage_DeviceGatewayIndex_FullMethodName       = "/dm.DeviceManage/deviceGatewayIndex"
 	DeviceManage_DeviceGatewayMultiDelete_FullMethodName = "/dm.DeviceManage/deviceGatewayMultiDelete"
@@ -37,7 +38,6 @@ const (
 	DeviceManage_DeviceProfileRead_FullMethodName        = "/dm.DeviceManage/deviceProfileRead"
 	DeviceManage_DeviceProfileUpdate_FullMethodName      = "/dm.DeviceManage/deviceProfileUpdate"
 	DeviceManage_DeviceProfileIndex_FullMethodName       = "/dm.DeviceManage/deviceProfileIndex"
-	DeviceManage_DeviceBind_FullMethodName               = "/dm.DeviceManage/deviceBind"
 )
 
 // DeviceManageClient is the client API for DeviceManage service.
@@ -58,6 +58,7 @@ type DeviceManageClient interface {
 	DeviceInfoMultiUpdate(ctx context.Context, in *DeviceInfoMultiUpdateReq, opts ...grpc.CallOption) (*Empty, error)
 	// 获取设备信息详情
 	DeviceInfoRead(ctx context.Context, in *DeviceInfoReadReq, opts ...grpc.CallOption) (*DeviceInfo, error)
+	DeviceInfoBind(ctx context.Context, in *DeviceInfoBindReq, opts ...grpc.CallOption) (*Empty, error)
 	// 绑定网关下子设备设备
 	DeviceGatewayMultiCreate(ctx context.Context, in *DeviceGatewayMultiCreateReq, opts ...grpc.CallOption) (*Empty, error)
 	// 获取绑定信息的设备信息列表
@@ -72,7 +73,6 @@ type DeviceManageClient interface {
 	DeviceProfileRead(ctx context.Context, in *DeviceProfileReadReq, opts ...grpc.CallOption) (*DeviceProfile, error)
 	DeviceProfileUpdate(ctx context.Context, in *DeviceProfile, opts ...grpc.CallOption) (*Empty, error)
 	DeviceProfileIndex(ctx context.Context, in *DeviceProfileIndexReq, opts ...grpc.CallOption) (*DeviceProfileIndexResp, error)
-	DeviceBind(ctx context.Context, in *DeviceBindReq, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type deviceManageClient struct {
@@ -140,6 +140,15 @@ func (c *deviceManageClient) DeviceInfoMultiUpdate(ctx context.Context, in *Devi
 func (c *deviceManageClient) DeviceInfoRead(ctx context.Context, in *DeviceInfoReadReq, opts ...grpc.CallOption) (*DeviceInfo, error) {
 	out := new(DeviceInfo)
 	err := c.cc.Invoke(ctx, DeviceManage_DeviceInfoRead_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceManageClient) DeviceInfoBind(ctx context.Context, in *DeviceInfoBindReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceInfoBind_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -227,15 +236,6 @@ func (c *deviceManageClient) DeviceProfileIndex(ctx context.Context, in *DeviceP
 	return out, nil
 }
 
-func (c *deviceManageClient) DeviceBind(ctx context.Context, in *DeviceBindReq, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
-	err := c.cc.Invoke(ctx, DeviceManage_DeviceBind_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // DeviceManageServer is the server API for DeviceManage service.
 // All implementations must embed UnimplementedDeviceManageServer
 // for forward compatibility
@@ -254,6 +254,7 @@ type DeviceManageServer interface {
 	DeviceInfoMultiUpdate(context.Context, *DeviceInfoMultiUpdateReq) (*Empty, error)
 	// 获取设备信息详情
 	DeviceInfoRead(context.Context, *DeviceInfoReadReq) (*DeviceInfo, error)
+	DeviceInfoBind(context.Context, *DeviceInfoBindReq) (*Empty, error)
 	// 绑定网关下子设备设备
 	DeviceGatewayMultiCreate(context.Context, *DeviceGatewayMultiCreateReq) (*Empty, error)
 	// 获取绑定信息的设备信息列表
@@ -268,7 +269,6 @@ type DeviceManageServer interface {
 	DeviceProfileRead(context.Context, *DeviceProfileReadReq) (*DeviceProfile, error)
 	DeviceProfileUpdate(context.Context, *DeviceProfile) (*Empty, error)
 	DeviceProfileIndex(context.Context, *DeviceProfileIndexReq) (*DeviceProfileIndexResp, error)
-	DeviceBind(context.Context, *DeviceBindReq) (*Empty, error)
 	mustEmbedUnimplementedDeviceManageServer()
 }
 
@@ -297,6 +297,9 @@ func (UnimplementedDeviceManageServer) DeviceInfoMultiUpdate(context.Context, *D
 func (UnimplementedDeviceManageServer) DeviceInfoRead(context.Context, *DeviceInfoReadReq) (*DeviceInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoRead not implemented")
 }
+func (UnimplementedDeviceManageServer) DeviceInfoBind(context.Context, *DeviceInfoBindReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoBind not implemented")
+}
 func (UnimplementedDeviceManageServer) DeviceGatewayMultiCreate(context.Context, *DeviceGatewayMultiCreateReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceGatewayMultiCreate not implemented")
 }
@@ -323,9 +326,6 @@ func (UnimplementedDeviceManageServer) DeviceProfileUpdate(context.Context, *Dev
 }
 func (UnimplementedDeviceManageServer) DeviceProfileIndex(context.Context, *DeviceProfileIndexReq) (*DeviceProfileIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceProfileIndex not implemented")
-}
-func (UnimplementedDeviceManageServer) DeviceBind(context.Context, *DeviceBindReq) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeviceBind not implemented")
 }
 func (UnimplementedDeviceManageServer) mustEmbedUnimplementedDeviceManageServer() {}
 
@@ -462,6 +462,24 @@ func _DeviceManage_DeviceInfoRead_Handler(srv interface{}, ctx context.Context, 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceManageServer).DeviceInfoRead(ctx, req.(*DeviceInfoReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceManage_DeviceInfoBind_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceInfoBindReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceInfoBind(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceInfoBind_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceInfoBind(ctx, req.(*DeviceInfoBindReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -628,24 +646,6 @@ func _DeviceManage_DeviceProfileIndex_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DeviceManage_DeviceBind_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeviceBindReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DeviceManageServer).DeviceBind(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DeviceManage_DeviceBind_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceManageServer).DeviceBind(ctx, req.(*DeviceBindReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // DeviceManage_ServiceDesc is the grpc.ServiceDesc for DeviceManage service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -682,6 +682,10 @@ var DeviceManage_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _DeviceManage_DeviceInfoRead_Handler,
 		},
 		{
+			MethodName: "deviceInfoBind",
+			Handler:    _DeviceManage_DeviceInfoBind_Handler,
+		},
+		{
 			MethodName: "deviceGatewayMultiCreate",
 			Handler:    _DeviceManage_DeviceGatewayMultiCreate_Handler,
 		},
@@ -716,10 +720,6 @@ var DeviceManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "deviceProfileIndex",
 			Handler:    _DeviceManage_DeviceProfileIndex_Handler,
-		},
-		{
-			MethodName: "deviceBind",
-			Handler:    _DeviceManage_DeviceBind_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
