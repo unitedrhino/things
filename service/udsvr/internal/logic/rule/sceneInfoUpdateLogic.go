@@ -67,6 +67,7 @@ func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *ud.SceneInfo) (*ud.Empty, err
 		return nil, err
 	}
 	po := ToSceneInfoPo(do)
+	po.SoftTime = old.SoftTime
 	err = db.Update(l.ctx, po)
 	return &ud.Empty{}, err
 }
