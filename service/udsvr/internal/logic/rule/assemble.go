@@ -67,6 +67,7 @@ func ToSceneTriggerPo(si *scene.Info, in *scene.Trigger) *relationDB.UdSceneIfTr
 		execAt = in.Timer.ExecAt
 	}
 	return &relationDB.UdSceneIfTrigger{
+		SceneID:     si.ID,
 		Type:        in.Type,
 		Status:      si.Status,
 		LastRunTime: domain.GenLastRunTime(now, execAt),
