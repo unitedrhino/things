@@ -50,6 +50,7 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 		if temp.Property[v] == nil { //如果这个属性不存在则跳过
 			continue
 		}
+		dataID := v
 		wait.Add(1)
 		utils.Go(l.ctx, func() {
 			func(dataID string) {
@@ -87,7 +88,7 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 				defer mutex.Unlock()
 				diDatas = append(diDatas, &diData)
 				l.Infof("%s.get data=%+v", utils.FuncName(), diData)
-			}(v)
+			}(dataID)
 		})
 	}
 	wait.Wait()
