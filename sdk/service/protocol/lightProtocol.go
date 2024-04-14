@@ -181,8 +181,8 @@ func (p *LightProtocol) RegisterTimerHandler(f func(ctx context.Context, t time.
 	})
 	return err
 }
-func (p *LightProtocol) RegisterProductIDSync(fieldName string /*自定义协议的产品ID的字段名*/) error {
-	p.ThirdProductIDFieldName = fieldName
+func (p *LightProtocol) RegisterProductIDSync() error {
+	p.ThirdProductIDFieldName = "productID"
 	err := p.RegisterTimerHandler(func(ctx context.Context, t time.Time) error {
 		pis, err := p.ProductM.ProductInfoIndex(ctx, &dm.ProductInfoIndexReq{
 			ProtocolCode: p.Pi.Code,
@@ -194,7 +194,7 @@ func (p *LightProtocol) RegisterProductIDSync(fieldName string /*自定义协议
 		defer p.ProductIDMapMutex.Unlock()
 		p.ProductIDMap = map[string]string{}
 		for _, pi := range pis.List {
-			id := pi.ProtocolConf[fieldName]
+			id := pi.ProtocolConf[p.ThirdProductIDFieldName]
 			if id == "" {
 				continue
 			}

@@ -74,7 +74,7 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 	if data.AuthMode != 0 {
 		old.AuthMode = data.AuthMode
 	}
-	if data.ProtocolConf != nil {
+	if len(data.ProtocolConf) != 0 {
 		old.ProtocolConf = data.ProtocolConf
 	}
 	if data.DeviceType != 0 {
