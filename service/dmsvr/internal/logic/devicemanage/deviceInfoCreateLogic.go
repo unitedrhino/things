@@ -2,6 +2,7 @@ package devicemanagelogic
 
 import (
 	"context"
+	"fmt"
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
@@ -15,6 +16,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
+	"go.uber.org/atomic"
 )
 
 type DeviceInfoCreateLogic struct {
@@ -23,6 +25,12 @@ type DeviceInfoCreateLogic struct {
 	logx.Logger
 	PiDB *relationDB.ProductInfoRepo
 	DiDB *relationDB.DeviceInfoRepo
+}
+
+var randID atomic.Uint32
+
+func GenID() uint32 {
+	return randID.Inc() % 100
 }
 
 func NewDeviceInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeviceInfoCreateLogic {
@@ -52,15 +60,15 @@ func (l *DeviceInfoCreateLogic) CheckDevice(in *dm.DeviceInfo) (bool, error) {
 /*
 发现返回true 没有返回false
 */
-func (l *DeviceInfoCreateLogic) CheckProduct(in *dm.DeviceInfo) (bool, error) {
-	_, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
+func (l *DeviceInfoCreateLogic) CheckProduct(in *dm.DeviceInfo) (*relationDB.DmProductInfo, error) {
+	pi, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
 	if err == nil {
-		return true, nil
+		return pi, nil
 	}
 	if errors.Cmp(err, errors.NotFind) {
-		return false, nil
+		return nil, nil
 	}
-	return false, err
+	return nil, err
 }
 
 // 新增设备
@@ -82,11 +90,11 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 		return nil, errors.Duplicate.WithMsgf("设备名称重复:%s", in.DeviceName).AddDetail("DeviceName:" + in.DeviceName)
 	}
 
-	find, err = l.CheckProduct(in)
+	pi, err := l.CheckProduct(in)
 	if err != nil {
 		l.Errorf("%s.CheckProduct in=%v", utils.FuncName(), in)
-		return nil, errors.Database.AddDetail(err)
-	} else if find == false {
+		return nil, err
+	} else if pi == nil {
 		return nil, errors.Parameter.AddDetail("not find product id:" + cast.ToString(in.ProductID))
 	}
 	uc := ctxs.GetUserCtxNoNil(l.ctx)
@@ -139,6 +147,8 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 
 	if in.DeviceAlias != nil {
 		di.DeviceAlias = in.DeviceAlias.Value
+	} else {
+		di.DeviceAlias = fmt.Sprintf("%s%d", pi.ProductName, GenID())
 	}
 
 	if in.MobileOperator != 0 {

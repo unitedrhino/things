@@ -23,6 +23,7 @@ type (
 	CommonSchemaInfo              = dm.CommonSchemaInfo
 	CommonSchemaUpdateReq         = dm.CommonSchemaUpdateReq
 	CustomTopic                   = dm.CustomTopic
+	DeviceBindReq                 = dm.DeviceBindReq
 	DeviceCore                    = dm.DeviceCore
 	DeviceCountInfo               = dm.DeviceCountInfo
 	DeviceCountReq                = dm.DeviceCountReq
@@ -203,6 +204,7 @@ type (
 		DeviceProfileRead(ctx context.Context, in *DeviceProfileReadReq, opts ...grpc.CallOption) (*DeviceProfile, error)
 		DeviceProfileUpdate(ctx context.Context, in *DeviceProfile, opts ...grpc.CallOption) (*Empty, error)
 		DeviceProfileIndex(ctx context.Context, in *DeviceProfileIndexReq, opts ...grpc.CallOption) (*DeviceProfileIndexResp, error)
+		DeviceBind(ctx context.Context, in *DeviceBindReq, opts ...grpc.CallOption) (*Empty, error)
 	}
 
 	defaultDeviceManage struct {
@@ -394,4 +396,13 @@ func (m *defaultDeviceManage) DeviceProfileIndex(ctx context.Context, in *Device
 
 func (d *directDeviceManage) DeviceProfileIndex(ctx context.Context, in *DeviceProfileIndexReq, opts ...grpc.CallOption) (*DeviceProfileIndexResp, error) {
 	return d.svr.DeviceProfileIndex(ctx, in)
+}
+
+func (m *defaultDeviceManage) DeviceBind(ctx context.Context, in *DeviceBindReq, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceBind(ctx, in, opts...)
+}
+
+func (d *directDeviceManage) DeviceBind(ctx context.Context, in *DeviceBindReq, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.DeviceBind(ctx, in)
 }

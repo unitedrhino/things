@@ -113,3 +113,8 @@ func (s *DeviceManageServer) DeviceProfileIndex(ctx context.Context, in *dm.Devi
 	l := devicemanagelogic.NewDeviceProfileIndexLogic(ctx, s.svcCtx)
 	return l.DeviceProfileIndex(in)
 }
+
+func (s *DeviceManageServer) DeviceBind(ctx context.Context, in *dm.DeviceBindReq) (*dm.Empty, error) {
+	l := devicemanagelogic.NewDeviceBindLogic(ctx, s.svcCtx)
+	return l.DeviceBind(in)
+}

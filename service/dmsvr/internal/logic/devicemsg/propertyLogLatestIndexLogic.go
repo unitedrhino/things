@@ -47,43 +47,48 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 	wait := sync.WaitGroup{}
 	mutex := sync.Mutex{}
 	for _, v := range dataIDs {
+		if temp.Property[v] == nil { //如果这个属性不存在则跳过
+			continue
+		}
 		wait.Add(1)
-		go func(dataID string) {
-			defer wait.Done()
-			data, err := dd.GetLatestPropertyDataByID(l.ctx, temp.Property[dataID], msgThing.LatestFilter{
-				ProductID:  in.ProductID,
-				DeviceName: in.DeviceName,
-				DataID:     dataID,
-			})
-			if err != nil {
-				l.Errorf("%s.GetLatestPropertyDataByID err=%v", utils.FuncName(), err)
-				return
-			}
-			var diData dm.PropertyLogInfo
-			if data == nil {
-				diData = dm.PropertyLogInfo{
-					Timestamp: 0,
-					DataID:    dataID,
+		utils.Go(l.ctx, func() {
+			func(dataID string) {
+				defer wait.Done()
+				data, err := dd.GetLatestPropertyDataByID(l.ctx, temp.Property[dataID], msgThing.LatestFilter{
+					ProductID:  in.ProductID,
+					DeviceName: in.DeviceName,
+					DataID:     dataID,
+				})
+				if err != nil {
+					l.Errorf("%s.GetLatestPropertyDataByID err=%v", utils.FuncName(), err)
+					return
 				}
-			} else {
-				diData = dm.PropertyLogInfo{
-					Timestamp: data.TimeStamp.UnixMilli(),
-					DataID:    data.Identifier,
-				}
-				var payload []byte
-				if param, ok := data.Param.(string); ok {
-					payload = []byte(param)
+				var diData dm.PropertyLogInfo
+				if data == nil {
+					diData = dm.PropertyLogInfo{
+						Timestamp: 0,
+						DataID:    dataID,
+					}
 				} else {
-					payload, _ = json.Marshal(data.Param)
-				}
-				diData.Value = string(payload)
+					diData = dm.PropertyLogInfo{
+						Timestamp: data.TimeStamp.UnixMilli(),
+						DataID:    data.Identifier,
+					}
+					var payload []byte
+					if param, ok := data.Param.(string); ok {
+						payload = []byte(param)
+					} else {
+						payload, _ = json.Marshal(data.Param)
+					}
+					diData.Value = string(payload)
 
-			}
-			mutex.Lock()
-			defer mutex.Unlock()
-			diDatas = append(diDatas, &diData)
-			l.Infof("%s.get data=%+v", utils.FuncName(), diData)
-		}(v)
+				}
+				mutex.Lock()
+				defer mutex.Unlock()
+				diDatas = append(diDatas, &diData)
+				l.Infof("%s.get data=%+v", utils.FuncName(), diData)
+			}(v)
+		})
 	}
 	wait.Wait()
 	return &dm.PropertyLogIndexResp{

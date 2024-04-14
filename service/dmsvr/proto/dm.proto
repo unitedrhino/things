@@ -76,7 +76,7 @@ service DeviceManage {
   rpc deviceProfileRead(DeviceProfileReadReq)returns(DeviceProfile);
   rpc deviceProfileUpdate(DeviceProfile)returns(Empty);
   rpc deviceProfileIndex(DeviceProfileIndexReq)returns(DeviceProfileIndexResp);
-
+  rpc deviceBind(DeviceBindReq)returns(Empty);
 }
 
 //产品管理
@@ -1160,6 +1160,11 @@ message DeviceProfile{
 message DeviceProfileReadReq{
   DeviceCore device =1;
   string code=2;
+}
+
+message DeviceBindReq{
+  DeviceCore device =1;
+  int64 areaID =2;
 }
 
 message DeviceProfileIndexReq{

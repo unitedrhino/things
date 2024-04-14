@@ -23,6 +23,7 @@ type (
 	CommonSchemaInfo              = dm.CommonSchemaInfo
 	CommonSchemaUpdateReq         = dm.CommonSchemaUpdateReq
 	CustomTopic                   = dm.CustomTopic
+	DeviceBindReq                 = dm.DeviceBindReq
 	DeviceCore                    = dm.DeviceCore
 	DeviceCountInfo               = dm.DeviceCountInfo
 	DeviceCountReq                = dm.DeviceCountReq
