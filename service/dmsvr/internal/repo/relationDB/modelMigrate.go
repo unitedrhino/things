@@ -36,6 +36,7 @@ func Migrate(c conf.Database) error {
 		&DmOtaFirmwareFile{},
 		&DmOtaTaskDevice{},
 		&DmDeviceShadow{},
+		&DmDeviceProfile{},
 		&DmOtaFirmwareJob{},
 		&DmOtaFirmwareDevice{},
 		&DmUserDeviceCollect{},

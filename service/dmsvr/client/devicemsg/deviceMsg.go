@@ -41,6 +41,10 @@ type (
 	DeviceInfoIndexResp           = dm.DeviceInfoIndexResp
 	DeviceInfoMultiUpdateReq      = dm.DeviceInfoMultiUpdateReq
 	DeviceInfoReadReq             = dm.DeviceInfoReadReq
+	DeviceProfile                 = dm.DeviceProfile
+	DeviceProfileIndexReq         = dm.DeviceProfileIndexReq
+	DeviceProfileIndexResp        = dm.DeviceProfileIndexResp
+	DeviceProfileReadReq          = dm.DeviceProfileReadReq
 	DeviceTypeCountReq            = dm.DeviceTypeCountReq
 	DeviceTypeCountResp           = dm.DeviceTypeCountResp
 	Empty                         = dm.Empty

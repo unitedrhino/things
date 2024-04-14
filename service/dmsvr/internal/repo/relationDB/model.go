@@ -51,6 +51,21 @@ func (m *DmDeviceInfo) TableName() string {
 	return "dm_device_info"
 }
 
+// 用户配置表
+type DmDeviceProfile struct {
+	TenantCode stores.TenantCode `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL;uniqueIndex:tc_un;"` // 租户编码
+	ProductID  string            `gorm:"column:product_id;type:varchar(100);uniqueIndex:tc_un;NOT NULL"`  // 产品id
+	DeviceName string            `gorm:"column:device_name;uniqueIndex:tc_un;type:varchar(100);NOT NULL"` // 设备名称
+	Code       string            `gorm:"column:code;type:VARCHAR(50);uniqueIndex:tc_un;NOT NULL"`         //配置code
+	Params     string            `gorm:"column:params;type:text;NOT NULL"`
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:tc_un;"`
+}
+
+func (m *DmDeviceProfile) TableName() string {
+	return "dm_device_profile"
+}
+
 // 产品信息表
 type DmProductInfo struct {
 	ID           int64             `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`

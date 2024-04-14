@@ -1,0 +1,43 @@
+info(
+    title: "数据交互(待定)"
+    desc: "数据交互(待定)"
+    author: "杨磊"
+    email: "603685348@qq.com"
+    version: "v1"
+)
+@server(
+    group: things/device/profile
+    prefix: /api/v1/things/device/profile
+    middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
+)
+service api {
+    @doc "获取设备配置详情"
+    @handler read
+    post /read (DeviceProfileReadReq) returns (DeviceProfile)
+    @doc "获取设备配置列表"
+    @handler index
+    post /index (DeviceProfileIndexReq) returns (DeviceProfileIndexResp)
+    @doc "更新设备配置"
+    @handler update
+    post /update (DeviceProfile) returns ()
+
+
+}
+type (
+    DeviceProfileReadReq  {
+        Device DeviceCore `json:"device"`
+        Code   string      `json:"code"`
+    }
+    DeviceProfileIndexReq  {
+        Device *DeviceCore `json:"device"`
+        Codes  []string    `json:"codes"`
+    }
+    DeviceProfile  {
+        Device DeviceCore `json:"device"`
+        Code   string      `json:"code"`
+        Params string      `json:"params"`
+    }
+     DeviceProfileIndexResp  {
+        Profiles []*DeviceProfile `json:"profiles,omitempty"`
+    }
+)

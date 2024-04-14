@@ -41,6 +41,10 @@ type (
 	DeviceInfoIndexResp           = dm.DeviceInfoIndexResp
 	DeviceInfoMultiUpdateReq      = dm.DeviceInfoMultiUpdateReq
 	DeviceInfoReadReq             = dm.DeviceInfoReadReq
+	DeviceProfile                 = dm.DeviceProfile
+	DeviceProfileIndexReq         = dm.DeviceProfileIndexReq
+	DeviceProfileIndexResp        = dm.DeviceProfileIndexResp
+	DeviceProfileReadReq          = dm.DeviceProfileReadReq
 	DeviceTypeCountReq            = dm.DeviceTypeCountReq
 	DeviceTypeCountResp           = dm.DeviceTypeCountResp
 	Empty                         = dm.Empty
@@ -196,6 +200,9 @@ type (
 		// 设备类型
 		DeviceTypeCount(ctx context.Context, in *DeviceTypeCountReq, opts ...grpc.CallOption) (*DeviceTypeCountResp, error)
 		DeviceCount(ctx context.Context, in *DeviceCountReq, opts ...grpc.CallOption) (*DeviceCountResp, error)
+		DeviceProfileRead(ctx context.Context, in *DeviceProfileReadReq, opts ...grpc.CallOption) (*DeviceProfile, error)
+		DeviceProfileUpdate(ctx context.Context, in *DeviceProfile, opts ...grpc.CallOption) (*Empty, error)
+		DeviceProfileIndex(ctx context.Context, in *DeviceProfileIndexReq, opts ...grpc.CallOption) (*DeviceProfileIndexResp, error)
 	}
 
 	defaultDeviceManage struct {
@@ -360,4 +367,31 @@ func (m *defaultDeviceManage) DeviceCount(ctx context.Context, in *DeviceCountRe
 
 func (d *directDeviceManage) DeviceCount(ctx context.Context, in *DeviceCountReq, opts ...grpc.CallOption) (*DeviceCountResp, error) {
 	return d.svr.DeviceCount(ctx, in)
+}
+
+func (m *defaultDeviceManage) DeviceProfileRead(ctx context.Context, in *DeviceProfileReadReq, opts ...grpc.CallOption) (*DeviceProfile, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceProfileRead(ctx, in, opts...)
+}
+
+func (d *directDeviceManage) DeviceProfileRead(ctx context.Context, in *DeviceProfileReadReq, opts ...grpc.CallOption) (*DeviceProfile, error) {
+	return d.svr.DeviceProfileRead(ctx, in)
+}
+
+func (m *defaultDeviceManage) DeviceProfileUpdate(ctx context.Context, in *DeviceProfile, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceProfileUpdate(ctx, in, opts...)
+}
+
+func (d *directDeviceManage) DeviceProfileUpdate(ctx context.Context, in *DeviceProfile, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.DeviceProfileUpdate(ctx, in)
+}
+
+func (m *defaultDeviceManage) DeviceProfileIndex(ctx context.Context, in *DeviceProfileIndexReq, opts ...grpc.CallOption) (*DeviceProfileIndexResp, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceProfileIndex(ctx, in, opts...)
+}
+
+func (d *directDeviceManage) DeviceProfileIndex(ctx context.Context, in *DeviceProfileIndexReq, opts ...grpc.CallOption) (*DeviceProfileIndexResp, error) {
+	return d.svr.DeviceProfileIndex(ctx, in)
 }

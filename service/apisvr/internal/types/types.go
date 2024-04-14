@@ -506,6 +506,26 @@ type DeviceMultiImportRow struct {
 	Tips        string `json:"tips"`        //【提示】模板使用提示
 }
 
+type DeviceProfile struct {
+	Device DeviceCore `json:"device"`
+	Code   string     `json:"code"`
+	Params string     `json:"params"`
+}
+
+type DeviceProfileIndexReq struct {
+	Device *DeviceCore `json:"device"`
+	Codes  []string    `json:"codes"`
+}
+
+type DeviceProfileIndexResp struct {
+	Profiles []*DeviceProfile `json:"profiles,omitempty"`
+}
+
+type DeviceProfileReadReq struct {
+	Device DeviceCore `json:"device"`
+	Code   string     `json:"code"`
+}
+
 type DeviceRegisterReq struct {
 	ProductID  string `json:"productID"`  //产品id 只读
 	DeviceName string `json:"deviceName"` //设备名称 读写

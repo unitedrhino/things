@@ -98,3 +98,18 @@ func (s *DeviceManageServer) DeviceCount(ctx context.Context, in *dm.DeviceCount
 	l := devicemanagelogic.NewDeviceCountLogic(ctx, s.svcCtx)
 	return l.DeviceCount(in)
 }
+
+func (s *DeviceManageServer) DeviceProfileRead(ctx context.Context, in *dm.DeviceProfileReadReq) (*dm.DeviceProfile, error) {
+	l := devicemanagelogic.NewDeviceProfileReadLogic(ctx, s.svcCtx)
+	return l.DeviceProfileRead(in)
+}
+
+func (s *DeviceManageServer) DeviceProfileUpdate(ctx context.Context, in *dm.DeviceProfile) (*dm.Empty, error) {
+	l := devicemanagelogic.NewDeviceProfileUpdateLogic(ctx, s.svcCtx)
+	return l.DeviceProfileUpdate(in)
+}
+
+func (s *DeviceManageServer) DeviceProfileIndex(ctx context.Context, in *dm.DeviceProfileIndexReq) (*dm.DeviceProfileIndexResp, error) {
+	l := devicemanagelogic.NewDeviceProfileIndexLogic(ctx, s.svcCtx)
+	return l.DeviceProfileIndex(in)
+}

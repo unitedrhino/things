@@ -34,6 +34,9 @@ const (
 	DeviceManage_DeviceInfoCount_FullMethodName          = "/dm.DeviceManage/deviceInfoCount"
 	DeviceManage_DeviceTypeCount_FullMethodName          = "/dm.DeviceManage/deviceTypeCount"
 	DeviceManage_DeviceCount_FullMethodName              = "/dm.DeviceManage/deviceCount"
+	DeviceManage_DeviceProfileRead_FullMethodName        = "/dm.DeviceManage/deviceProfileRead"
+	DeviceManage_DeviceProfileUpdate_FullMethodName      = "/dm.DeviceManage/deviceProfileUpdate"
+	DeviceManage_DeviceProfileIndex_FullMethodName       = "/dm.DeviceManage/deviceProfileIndex"
 )
 
 // DeviceManageClient is the client API for DeviceManage service.
@@ -65,6 +68,9 @@ type DeviceManageClient interface {
 	// 设备类型
 	DeviceTypeCount(ctx context.Context, in *DeviceTypeCountReq, opts ...grpc.CallOption) (*DeviceTypeCountResp, error)
 	DeviceCount(ctx context.Context, in *DeviceCountReq, opts ...grpc.CallOption) (*DeviceCountResp, error)
+	DeviceProfileRead(ctx context.Context, in *DeviceProfileReadReq, opts ...grpc.CallOption) (*DeviceProfile, error)
+	DeviceProfileUpdate(ctx context.Context, in *DeviceProfile, opts ...grpc.CallOption) (*Empty, error)
+	DeviceProfileIndex(ctx context.Context, in *DeviceProfileIndexReq, opts ...grpc.CallOption) (*DeviceProfileIndexResp, error)
 }
 
 type deviceManageClient struct {
@@ -192,6 +198,33 @@ func (c *deviceManageClient) DeviceCount(ctx context.Context, in *DeviceCountReq
 	return out, nil
 }
 
+func (c *deviceManageClient) DeviceProfileRead(ctx context.Context, in *DeviceProfileReadReq, opts ...grpc.CallOption) (*DeviceProfile, error) {
+	out := new(DeviceProfile)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceProfileRead_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceManageClient) DeviceProfileUpdate(ctx context.Context, in *DeviceProfile, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceProfileUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceManageClient) DeviceProfileIndex(ctx context.Context, in *DeviceProfileIndexReq, opts ...grpc.CallOption) (*DeviceProfileIndexResp, error) {
+	out := new(DeviceProfileIndexResp)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceProfileIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DeviceManageServer is the server API for DeviceManage service.
 // All implementations must embed UnimplementedDeviceManageServer
 // for forward compatibility
@@ -221,6 +254,9 @@ type DeviceManageServer interface {
 	// 设备类型
 	DeviceTypeCount(context.Context, *DeviceTypeCountReq) (*DeviceTypeCountResp, error)
 	DeviceCount(context.Context, *DeviceCountReq) (*DeviceCountResp, error)
+	DeviceProfileRead(context.Context, *DeviceProfileReadReq) (*DeviceProfile, error)
+	DeviceProfileUpdate(context.Context, *DeviceProfile) (*Empty, error)
+	DeviceProfileIndex(context.Context, *DeviceProfileIndexReq) (*DeviceProfileIndexResp, error)
 	mustEmbedUnimplementedDeviceManageServer()
 }
 
@@ -266,6 +302,15 @@ func (UnimplementedDeviceManageServer) DeviceTypeCount(context.Context, *DeviceT
 }
 func (UnimplementedDeviceManageServer) DeviceCount(context.Context, *DeviceCountReq) (*DeviceCountResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceCount not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceProfileRead(context.Context, *DeviceProfileReadReq) (*DeviceProfile, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceProfileRead not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceProfileUpdate(context.Context, *DeviceProfile) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceProfileUpdate not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceProfileIndex(context.Context, *DeviceProfileIndexReq) (*DeviceProfileIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceProfileIndex not implemented")
 }
 func (UnimplementedDeviceManageServer) mustEmbedUnimplementedDeviceManageServer() {}
 
@@ -514,6 +559,60 @@ func _DeviceManage_DeviceCount_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DeviceManage_DeviceProfileRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceProfileReadReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceProfileRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceProfileRead_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceProfileRead(ctx, req.(*DeviceProfileReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceManage_DeviceProfileUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceProfile)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceProfileUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceProfileUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceProfileUpdate(ctx, req.(*DeviceProfile))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceManage_DeviceProfileIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceProfileIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceProfileIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceProfileIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceProfileIndex(ctx, req.(*DeviceProfileIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DeviceManage_ServiceDesc is the grpc.ServiceDesc for DeviceManage service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -572,6 +671,18 @@ var DeviceManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "deviceCount",
 			Handler:    _DeviceManage_DeviceCount_Handler,
+		},
+		{
+			MethodName: "deviceProfileRead",
+			Handler:    _DeviceManage_DeviceProfileRead_Handler,
+		},
+		{
+			MethodName: "deviceProfileUpdate",
+			Handler:    _DeviceManage_DeviceProfileUpdate_Handler,
+		},
+		{
+			MethodName: "deviceProfileIndex",
+			Handler:    _DeviceManage_DeviceProfileIndex_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

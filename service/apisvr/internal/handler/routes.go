@@ -10,6 +10,7 @@ import (
 	thingsdeviceinfo "github.com/i-Things/things/service/apisvr/internal/handler/things/device/info"
 	thingsdeviceinteract "github.com/i-Things/things/service/apisvr/internal/handler/things/device/interact"
 	thingsdevicemsg "github.com/i-Things/things/service/apisvr/internal/handler/things/device/msg"
+	thingsdeviceprofile "github.com/i-Things/things/service/apisvr/internal/handler/things/device/profile"
 	thingsgroupdevice "github.com/i-Things/things/service/apisvr/internal/handler/things/group/device"
 	thingsgroupinfo "github.com/i-Things/things/service/apisvr/internal/handler/things/group/info"
 	thingsotafirmwaredevice "github.com/i-Things/things/service/apisvr/internal/handler/things/ota/firmware/device"
@@ -266,6 +267,30 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/device/msg"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckTokenWare, serverCtx.InitCtxsWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsdeviceprofile.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/read",
+					Handler: thingsdeviceprofile.ReadHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsdeviceprofile.UpdateHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/device/profile"),
 	)
 
 	server.AddRoutes(
