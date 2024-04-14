@@ -45,7 +45,7 @@ func (l *IndexLogic) Index() (resp *types.UserCollectDeviceInfo, err error) {
 	}
 	pis := make([]*types.DeviceInfo, 0, len(ret2.List))
 	for _, v := range ret2.List {
-		pi := things.InfoToApi(l.ctx, l.svcCtx, v, nil)
+		pi := things.InfoToApi(l.ctx, l.svcCtx, v, nil, nil)
 		pis = append(pis, pi)
 	}
 	return &types.UserCollectDeviceInfo{Devices: pis}, nil

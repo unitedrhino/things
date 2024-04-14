@@ -174,6 +174,7 @@ type DeviceInfo struct {
 	CreatedTime    int64                              `json:"createdTime,optional,string"`         //创建时间 只读
 	WithProperties map[string]*DeviceInfoWithProperty `json:"withProperties,optional,omitempty"`   //获取的属性列表,如果不传withProperty,则不会返回
 	ProtocolConf   map[string]string                  `json:"protocolConf,optional,omitempty"`     //协议配置
+	Profiles       map[string]string                  `json:"profiles,optional,omitempty"`
 }
 
 type DeviceInfoDeleteReq struct {
@@ -191,6 +192,7 @@ type DeviceInfoIndexReq struct {
 	Range             int64     `json:"range,optional"`                //过滤条件:距离坐标点固定范围内的设备 单位：米
 	Tags              []*Tag    `json:"tags,optional"`                 // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
 	WithProperties    []string  `json:"withProperties,optional"`       //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表,如果没有匹配的则不会返回
+	WithProfiles      []string  `json:"withProfiles,optional"`         //
 	AreaIDs           []int64   `json:"areaIDs,optional"`              //项目区域ids
 	IsOnline          int64     `json:"isOnline,optional,range=[0:2]"` // 在线状态过滤  1离线 2在线
 	ProductCategoryID int64     `json:"productCategoryID,optional"`
@@ -213,6 +215,7 @@ type DeviceInfoReadReq struct {
 	ProductID      string   `json:"productID,optional"`      //产品id 为空时获取所有产品
 	DeviceName     string   `json:"deviceName"`              //设备名称 读写
 	WithProperties []string `json:"withProperties,optional"` //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表
+	WithProfiles   []string `json:"withProfiles,optional"`   //
 }
 
 type DeviceInfoSaveReq struct {
@@ -627,6 +630,7 @@ type GroupDeviceIndexReq struct {
 	ProductID      string    `json:"productID,optional"`      //产品ID
 	DeviceName     string    `json:"deviceName,optional"`     //设备名称
 	WithProperties []string  `json:"withProperties,optional"` //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表
+	WithProfiles   []string  `json:"withProfiles,optional"`   //
 }
 
 type GroupDeviceIndexResp struct {

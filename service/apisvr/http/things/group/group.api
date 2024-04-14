@@ -95,6 +95,7 @@ type (
         ProductID string `json:"productID,optional"`                         //产品ID
         DeviceName string `json:"deviceName,optional"`                       //设备名称
         WithProperties []string `json:"withProperties,optional"`   //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表
+        WithProfiles []string `json:"withProfiles,optional"` //
     }
 
     GroupDeviceIndexResp  {

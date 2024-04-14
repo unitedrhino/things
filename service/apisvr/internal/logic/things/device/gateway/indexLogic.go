@@ -44,7 +44,7 @@ func (l *IndexLogic) Index(req *types.DeviceGateWayIndexReq) (resp *types.Device
 	}
 	pis := make([]*types.DeviceInfo, 0, len(dmResp.List))
 	for _, v := range dmResp.List {
-		pi := things.InfoToApi(l.ctx, l.svcCtx, v, nil)
+		pi := things.InfoToApi(l.ctx, l.svcCtx, v, nil, nil)
 		pis = append(pis, pi)
 	}
 	return &types.DeviceGateWayIndexResp{

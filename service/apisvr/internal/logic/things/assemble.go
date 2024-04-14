@@ -11,8 +11,9 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo, withProperties []string) *types.DeviceInfo {
+func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo, withProperties []string, withProfiles []string) *types.DeviceInfo {
 	var properties map[string]*types.DeviceInfoWithProperty
+	var profiles map[string]string
 	position := &types.Point{
 		Longitude: v.Position.Longitude, //经度
 		Latitude:  v.Position.Latitude,  //维度
@@ -39,6 +40,23 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 				}
 			}
 		}()
+	}
+	if withProfiles != nil {
+		ret, err := svcCtx.DeviceM.DeviceProfileIndex(ctx, &dm.DeviceProfileIndexReq{
+			Device: &dm.DeviceCore{
+				ProductID:  v.ProductID,
+				DeviceName: v.DeviceName,
+			},
+			Codes: withProfiles,
+		})
+		if err != nil {
+			logx.WithContext(ctx).Errorf("%s.DeviceProfileIndex err:%v", utils.FuncName(), err)
+		} else if len(ret.Profiles) > 0 {
+			profiles = make(map[string]string, len(ret.Profiles))
+			for _, v := range ret.Profiles {
+				profiles[v.Code] = v.Params
+			}
+		}
 	}
 	return &types.DeviceInfo{
 		TenantCode:     v.TenantCode,
@@ -67,6 +85,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		ProjectID:      v.ProjectID, //项目id 只读
 		AreaID:         v.AreaID,    //项目区域id 只读
 		WithProperties: properties,
+		Profiles:       profiles,
 	}
 }
 

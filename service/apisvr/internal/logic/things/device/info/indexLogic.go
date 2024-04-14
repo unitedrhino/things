@@ -59,7 +59,7 @@ func (l *IndexLogic) Index(req *types.DeviceInfoIndexReq) (resp *types.DeviceInf
 		info := v
 		utils.Go(l.ctx, func() {
 			defer wait.Done()
-			pi := things.InfoToApi(l.ctx, l.svcCtx, info, req.WithProperties)
+			pi := things.InfoToApi(l.ctx, l.svcCtx, info, req.WithProperties, req.WithProfiles)
 			mutex.Lock()
 			defer mutex.Unlock()
 			pis = append(pis, pi)
