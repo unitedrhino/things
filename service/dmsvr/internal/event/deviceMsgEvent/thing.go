@@ -116,7 +116,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 			if err != nil {
 				logx.WithContext(ctx).Errorf("%s.DeviceThingPropertyReport  identifier:%v, param:%v,err:%v", utils.FuncName(), identifier, param, err)
 			}
-			err = l.svcCtx.WebHook.Publish(l.svcCtx.WithDeviceTenant(l.ctx, core), tenantOpenWebhook.CodeDmDevicePropertyUpdate, appMsg)
+			err = l.svcCtx.WebHook.Publish(l.svcCtx.WithDeviceTenant(l.ctx, core), tenantOpenWebhook.CodeDmDevicePropertyReport, appMsg)
 			if err != nil {
 				l.Error(err)
 			}
