@@ -2,6 +2,7 @@ package relationDB
 
 import (
 	"context"
+	"fmt"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/stores"
@@ -86,8 +87,9 @@ func (p ProductSchemaRepo) UpdateWithCommon(ctx context.Context, common *DmCommo
 		},
 	}
 	err := p.db.WithContext(ctx).Select("ExtendConfig", "Required", "IsCanSceneLinkage",
-		"IsShareAuthPerm", "IsHistory", "Affordance").Where("identifier = ? and tag=?",
-		common.Identifier, schema.TagOptional).Updates(data).Error
+		"IsShareAuthPerm", "IsHistory", "Affordance").
+		Where(fmt.Sprintf("identifier = ? and tag=? and %s=?", stores.Col("type")),
+			common.Identifier, schema.TagOptional, common.Type).Updates(data).Error
 	return stores.ErrFmt(err)
 }
 
