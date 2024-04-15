@@ -4,11 +4,8 @@ import (
 	"context"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
-	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
-	"gorm.io/gorm"
-
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 
@@ -42,24 +39,24 @@ func (l *CommonSchemaDeleteLogic) CommonSchemaDelete(in *dm.WithID) (*dm.Empty, 
 		}
 		return nil, err
 	}
+	count, err := relationDB.NewProductSchemaRepo(l.ctx).CountByFilter(l.ctx,
+		relationDB.ProductSchemaFilter{Identifiers: []string{po.Identifier}, Tag: 2})
+	if err != nil {
+		return nil, err
+	}
+	if count > 0 {
+		return nil, errors.Parameter.AddMsgf("有%v个产品绑定该物模型,不允许删除", count)
+	}
 	if schema.AffordanceType(po.Type) == schema.AffordanceTypeProperty {
 		if err := l.svcCtx.SchemaManaRepo.DeleteProperty(l.ctx, nil, "", po.Identifier); err != nil {
 			l.Errorf("%s.DeleteProperty failure,err:%v", utils.FuncName(), err)
 			return nil, errors.Database.AddDetail(err)
 		}
 	}
-	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
-		err = relationDB.NewCommonSchemaRepo(tx).DeleteByFilter(l.ctx, relationDB.CommonSchemaFilter{ID: po.ID})
-		if err != nil {
-			return err
-		}
-		err = relationDB.NewProductSchemaRepo(tx).DeleteByFilter(l.ctx, relationDB.ProductSchemaFilter{Identifiers: []string{po.Identifier}})
-		if err != nil {
-			return err
-		}
-		return nil
-	})
-
+	err = relationDB.NewCommonSchemaRepo(l.ctx).DeleteByFilter(l.ctx, relationDB.CommonSchemaFilter{ID: po.ID})
+	if err != nil {
+		return nil, err
+	}
 	return &dm.Empty{}, err
 
 }
