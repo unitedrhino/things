@@ -100,6 +100,9 @@ func (p ProductSchemaRepo) DeleteByFilter(ctx context.Context, f ProductSchemaFi
 
 func (p ProductSchemaRepo) FindByFilter(ctx context.Context, f ProductSchemaFilter, page *def.PageInfo) ([]*DmProductSchema, error) {
 	var results []*DmProductSchema
+	if page == nil {
+		page = &def.PageInfo{}
+	}
 	page.Orders = []def.OrderBy{{Filed: "identifier", Sort: 1}}
 	db := p.fmtFilter(ctx, f).Model(&DmProductSchema{})
 	db = page.ToGorm(db)

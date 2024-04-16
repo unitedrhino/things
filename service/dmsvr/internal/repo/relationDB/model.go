@@ -42,6 +42,7 @@ type DmDeviceInfo struct {
 	FirstLogin     sql.NullTime      `gorm:"column:first_login"`                                                              // 激活时间
 	LastLogin      sql.NullTime      `gorm:"column:last_login"`                                                               // 最后上线时间
 	LogLevel       int64             `gorm:"column:log_level;type:smallint;default:1;NOT NULL"`                               // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
+	Status         int64             `gorm:"column:status;type:smallint;default:1;NOT NULL"`                                  // 设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:product_id_deviceName"`
 	ProductInfo *DmProductInfo     `gorm:"foreignKey:ProductID;references:ProductID"` // 添加外键

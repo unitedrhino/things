@@ -134,6 +134,7 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 
 	if data.IsOnline != def.Unknown {
 		old.IsOnline = data.IsOnline
+		old.Status = data.IsOnline + 1
 		if data.IsOnline == def.True { //需要处理第一次上线的情况,一般在网关代理登录时需要处理
 			now := sql.NullTime{
 				Valid: true,
@@ -143,6 +144,7 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 				old.FirstLogin = now
 			}
 			old.LastLogin = now
+
 		}
 	}
 

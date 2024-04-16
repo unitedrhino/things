@@ -172,6 +172,7 @@ type DeviceInfo struct {
 	LastLogin      int64                              `json:"lastLogin,optional,string"`           //最后上线时间 只读
 	LogLevel       int64                              `json:"logLevel,optional,range=[0:5]"`       // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
 	CreatedTime    int64                              `json:"createdTime,optional,string"`         //创建时间 只读
+	Status         int64                              `json:"status,optional"`                     //设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)
 	WithProperties map[string]*DeviceInfoWithProperty `json:"withProperties,optional,omitempty"`   //获取的属性列表,如果不传withProperty,则不会返回
 	ProtocolConf   map[string]string                  `json:"protocolConf,optional,omitempty"`     //协议配置
 	Profiles       map[string]string                  `json:"profiles,optional,omitempty"`

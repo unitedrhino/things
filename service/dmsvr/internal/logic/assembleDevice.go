@@ -51,6 +51,7 @@ func ToDeviceInfo(in *relationDB.DmDeviceInfo) *dm.DeviceInfo {
 		LogLevel:       in.LogLevel,
 		CreatedTime:    in.CreatedTime.Unix(),
 		ProtocolConf:   in.ProtocolConf,
+		Status:         in.Status,
 	}
 }
 

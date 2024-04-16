@@ -112,6 +112,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 		DeviceName: in.DeviceName, // 设备名称
 		Position:   logic.ToStorePoint(in.Position),
 		AreaID:     def.NotClassified, //设备默认都是未分类
+		Status:     def.DeviceStatusInactive,
 	}
 
 	if in.Secret != "" {

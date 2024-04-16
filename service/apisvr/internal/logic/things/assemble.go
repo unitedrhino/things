@@ -86,6 +86,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		AreaID:         v.AreaID,    //项目区域id 只读
 		WithProperties: properties,
 		Profiles:       profiles,
+		Status:         v.Status,
 	}
 }
 
