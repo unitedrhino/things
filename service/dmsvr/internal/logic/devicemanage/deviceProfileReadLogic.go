@@ -3,6 +3,7 @@ package devicemanagelogic
 import (
 	"context"
 	"gitee.com/i-Things/share/devices"
+	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
@@ -34,6 +35,12 @@ func (l *DeviceProfileReadLogic) DeviceProfileRead(in *dm.DeviceProfileReadReq) 
 			DeviceName: in.Device.DeviceName,
 		},
 	})
-
+	if errors.Cmp(err, errors.NotFind) {
+		return &dm.DeviceProfile{
+			Device: in.Device,
+			Code:   in.Code,
+			Params: "",
+		}, nil
+	}
 	return utils.Copy[dm.DeviceProfile](po), err
 }
