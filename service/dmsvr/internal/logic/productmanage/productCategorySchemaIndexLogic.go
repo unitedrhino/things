@@ -27,7 +27,15 @@ func NewProductCategorySchemaIndexLogic(ctx context.Context, svcCtx *svc.Service
 
 // 获取产品品类下的物模型列表,绑定的物模型会自动添加到该产品品类及子分类的产品中,并不支持删除
 func (l *ProductCategorySchemaIndexLogic) ProductCategorySchemaIndex(in *dm.ProductCategorySchemaIndexReq) (*dm.ProductCategorySchemaIndexResp, error) {
-	pos, err := relationDB.NewProductCategorySchemaRepo(l.ctx).FindByFilter(l.ctx, relationDB.ProductCategorySchemaFilter{ProductCategoryID: in.ProductCategoryID}, nil)
+	var ProductCategoryIDs = []int64{in.ProductCategoryID}
+	if in.WithFather {
+		pc, err := relationDB.NewProductCategoryRepo(l.ctx).FindOne(l.ctx, in.ProductCategoryID)
+		if err != nil {
+			return nil, err
+		}
+		ProductCategoryIDs = append(ProductCategoryIDs, utils.GetIDPath(pc.IDPath)...)
+	}
+	pos, err := relationDB.NewProductCategorySchemaRepo(l.ctx).FindByFilter(l.ctx, relationDB.ProductCategorySchemaFilter{ProductCategoryIDs: ProductCategoryIDs}, nil)
 	if err != nil {
 		return nil, err
 	}

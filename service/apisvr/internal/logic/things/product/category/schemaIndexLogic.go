@@ -25,7 +25,7 @@ func NewSchemaIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Schem
 	}
 }
 
-func (l *SchemaIndexLogic) SchemaIndex(req *types.WithID) (resp *types.ProductCategorySchemaIndexResp, err error) {
-	ret, err := l.svcCtx.ProductM.ProductCategorySchemaIndex(l.ctx, &dm.ProductCategorySchemaIndexReq{ProductCategoryID: req.ID})
+func (l *SchemaIndexLogic) SchemaIndex(req *types.ProductCategorySchemaIndexReq) (resp *types.ProductCategorySchemaIndexResp, err error) {
+	ret, err := l.svcCtx.ProductM.ProductCategorySchemaIndex(l.ctx, utils.Copy[dm.ProductCategorySchemaIndexReq](req))
 	return utils.Copy[types.ProductCategorySchemaIndexResp](ret), err
 }

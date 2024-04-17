@@ -32,17 +32,20 @@ service api {
     post /schema/multi-update (ProductCategorySchemaMultiUpdateReq) returns ()
     @doc "获取产品品类列表"
     @handler schemaIndex
-    post /schema/index (WithID) returns (ProductCategorySchemaIndexResp)
+    post /schema/index (ProductCategorySchemaIndexReq) returns (ProductCategorySchemaIndexResp)
 }
 
 type (
-
+    ProductCategorySchemaIndexReq{
+        ProductCategoryID int64    `json:"productCategoryID"`
+        WithFather bool  `json:"withFather,optional"`
+    }
     ProductCategorySchemaIndexResp{
         Identifiers []string `json:"identifiers"`
     }
 
     ProductCategorySchemaMultiUpdateReq{
-        productCategoryID int64    `json:"productCategoryID"`
+        ProductCategoryID int64    `json:"productCategoryID"`
         Identifiers []string `json:"identifiers"`
     }
 

@@ -99,7 +99,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 		DeviceName: msg.DeviceName,
 	}
 
-	paramValues, err := ToParamValues(tp)
+	paramValues, err := msgThing.ToParamValues(tp)
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), err
 	}
@@ -274,7 +274,7 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 		return l.DeviceResp(msg, err, nil), err
 	}
 	dbData.TimeStamp = l.dreq.GetTimeStamp(msg.Timestamp)
-	paramValues, err := ToParamValues(tp)
+	paramValues, err := msgThing.ToParamValues(tp)
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), err
 	}

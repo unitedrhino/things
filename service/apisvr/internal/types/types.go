@@ -903,6 +903,11 @@ type ProductCategoryIndexResp struct {
 	Num   int64              `json:"num,optional"`   //返回的数量
 }
 
+type ProductCategorySchemaIndexReq struct {
+	ProductCategoryID int64 `json:"productCategoryID"`
+	WithFather        bool  `json:"withFather,optional"`
+}
+
 type ProductCategorySchemaIndexResp struct {
 	Identifiers []string `json:"identifiers"`
 }

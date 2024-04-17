@@ -3,7 +3,9 @@ package relationDB
 import (
 	"context"
 	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/stores"
+	"gitee.com/i-Things/share/utils"
 	"gorm.io/gorm"
 )
 
@@ -21,6 +23,7 @@ type ProductFilter struct {
 	WithProtocol bool
 	WithCategory bool
 	ProtocolCode string
+	CategoryIDs  []int64
 }
 
 func NewProductInfoRepo(in any) *ProductInfoRepo {
@@ -31,6 +34,9 @@ func (p ProductInfoRepo) fmtFilter(ctx context.Context, f ProductFilter) *gorm.D
 	db := p.db.WithContext(ctx)
 	if f.DeviceType != 0 {
 		db = db.Where("device_type=?", f.DeviceType)
+	}
+	if len(f.CategoryIDs) != 0 {
+		db = db.Where("category_id in ?", f.CategoryIDs)
 	}
 	if f.ProtocolCode != "" {
 		db = db.Where("protocol_code=?", f.ProtocolCode)
@@ -66,8 +72,50 @@ func (p ProductInfoRepo) fmtFilter(ctx context.Context, f ProductFilter) *gorm.D
 }
 
 func (p ProductInfoRepo) Insert(ctx context.Context, data *DmProductInfo) error {
-	result := p.db.WithContext(ctx).Create(data)
-	return stores.ErrFmt(result.Error)
+	err := p.db.Transaction(func(tx *gorm.DB) error {
+		err := p.db.WithContext(ctx).Create(data).Error
+		if err != nil {
+			return err
+		}
+		var ProductCategoryIDs = []int64{data.CategoryID}
+		if !(data.CategoryID == 0 || data.CategoryID == 1) {
+			pcDB := NewProductCategoryRepo(tx)
+			pcs, err := pcDB.FindOne(ctx, data.CategoryID)
+			if err != nil {
+				return err
+			}
+			ProductCategoryIDs = append(ProductCategoryIDs, utils.GetIDPath(pcs.IDPath)...)
+		}
+		pcs, err := NewProductCategorySchemaRepo(tx).FindByFilter(ctx, ProductCategorySchemaFilter{ProductCategoryIDs: ProductCategoryIDs}, nil)
+		if err != nil {
+			return err
+		}
+		if len(pcs) == 0 {
+			return nil
+		}
+		identifiers := utils.ToSliceWithFunc(pcs, func(in *DmProductCategorySchema) string {
+			return in.Identifier
+		})
+		ids, err := NewCommonSchemaRepo(tx).FindByFilter(ctx, CommonSchemaFilter{Identifiers: identifiers}, nil)
+		if err != nil {
+			return err
+		}
+		if len(ids) == 0 {
+			return nil
+		}
+		var schemas []*DmProductSchema
+		for _, v := range ids {
+			v.ID = 0
+			v.Tag = schema.TagRequired
+			schemas = append(schemas, &DmProductSchema{
+				ProductID:    data.ProductID,
+				DmSchemaCore: v.DmSchemaCore,
+			})
+		}
+		err = NewProductSchemaRepo(tx).MultiInsert(ctx, schemas)
+		return err
+	})
+	return stores.ErrFmt(err)
 }
 
 func (p ProductInfoRepo) FindOneByFilter(ctx context.Context, f ProductFilter) (*DmProductInfo, error) {

@@ -374,7 +374,7 @@ message ProductCategorySchemaIndexResp{
 
 message ProductCategorySchemaIndexReq{
   int64 productCategoryID = 1;
-  bool WithFather =8;//同时返回父节点的物模型
+  bool withFather =8;//同时返回父节点的物模型
 }
 
 message ProductCategorySchemaMultiUpdateReq{
@@ -675,7 +675,9 @@ message PropertyControlSendReq{
   string  productID = 1; //产品id
   string  deviceName = 2; //设备名
   string data = 3;//属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
-  int64 shadowControl = 4;//设备影子控制 0:自动,当设备不在线的时候设置设备影子,设备在线时直接下发给设备 1:只实时下发,不在线报错 2:如果有设备影子只修改影子,没有的也不下发
+  //设备影子控制 0:自动,当设备不在线的时候设置设备影子,设备在线时直接下发给设备 1:只实时下发,不在线报错
+  // 2:如果有设备影子只修改影子,没有的也不下发 3: 只修改云端的值,不下发设备
+  int64 shadowControl = 4;
   bool isAsync = 6;//是否异步操作 异步情况通过获取接口来获取
 }
 

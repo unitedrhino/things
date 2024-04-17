@@ -96,6 +96,14 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 	if err != nil {
 		return nil, err
 	}
+	if in.ShadowControl == shadow.ControlOnlyCloud {
+		//插入多条设备物模型属性数据
+		err = l.svcCtx.SchemaManaRepo.InsertPropertiesData(l.ctx, l.model, in.ProductID, in.DeviceName, req.Params, time.Now())
+		if err != nil {
+			l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
+			return nil, err
+		}
+	}
 	defer func() {
 		ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
 			uc := ctxs.GetUserCtx(l.ctx)

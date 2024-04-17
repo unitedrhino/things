@@ -5,6 +5,7 @@ import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/stores"
+	"gitee.com/i-Things/share/utils"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -74,6 +75,12 @@ func (p ProductSchemaRepo) Update(ctx context.Context, data *DmProductSchema) er
 	return stores.ErrFmt(err)
 }
 
+func (p ProductSchemaRepo) UpdateTag(ctx context.Context, productIDs []string, identifiers []string, oldTag, newTag int64) error {
+	err := p.db.WithContext(ctx).Where(
+		"product_id in ? and identifier in ? and tag =?", productIDs, identifiers, oldTag).Update("newTag", newTag).Error
+	return stores.ErrFmt(err)
+}
+
 func (p ProductSchemaRepo) UpdateWithCommon(ctx context.Context, common *DmCommonSchema) error {
 	data := DmProductSchema{
 		DmSchemaCore: DmSchemaCore{
@@ -111,6 +118,18 @@ func (p ProductSchemaRepo) FindByFilter(ctx context.Context, f ProductSchemaFilt
 		return nil, stores.ErrFmt(err)
 	}
 	return results, nil
+}
+func (p ProductSchemaRepo) FindProductIDByFilter(ctx context.Context, f ProductSchemaFilter) ([]string, error) {
+	var results []*DmProductSchema
+	db := p.fmtFilter(ctx, f).Model(&DmProductSchema{})
+	err := db.Select("ProductID").Find(&results).Error
+	if err != nil {
+		return nil, stores.ErrFmt(err)
+	}
+	return utils.ToSliceWithFunc(results, func(in *DmProductSchema) string {
+		return in.ProductID
+	}), nil
+
 }
 
 func (p ProductSchemaRepo) CountByFilter(ctx context.Context, f ProductSchemaFilter) (size int64, err error) {

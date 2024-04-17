@@ -41,6 +41,9 @@ func (l *ProductSchemaDeleteLogic) ProductSchemaDelete(in *dm.ProductSchemaDelet
 		}
 		return nil, err
 	}
+	if po.Tag == schema.TagRequired {
+		return nil, errors.Parameter.AddMsg("必选物模型不能删除")
+	}
 	if schema.AffordanceType(po.Type) == schema.AffordanceTypeProperty {
 		t, err := l.svcCtx.SchemaRepo.GetData(l.ctx, in.ProductID)
 		if err != nil {
