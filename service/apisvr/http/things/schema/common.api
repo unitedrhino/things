@@ -44,6 +44,8 @@ type (
         Identifiers []string `json:"identifiers,optional"`                 //过滤标识符列表
         ProductIDs []string `json:"productIDs,optional"`//提取产品共有的物模型
         Name string  `json:"name,optional"`
+        productCategoryID int64 `json:"productCategoryID,optional"`
+        productCategoryWithFather bool `json:"productCategoryWithFather,optional"`
     }
     CommonSchemaIndexResp {
         List []*CommonSchemaInfo `json:"list"`           //分页信息,只获取一个则不填

@@ -29,6 +29,7 @@ const (
 	DeviceManage_DeviceInfoMultiUpdate_FullMethodName    = "/dm.DeviceManage/DeviceInfoMultiUpdate"
 	DeviceManage_DeviceInfoRead_FullMethodName           = "/dm.DeviceManage/deviceInfoRead"
 	DeviceManage_DeviceInfoBind_FullMethodName           = "/dm.DeviceManage/deviceInfoBind"
+	DeviceManage_DeviceInfoUnbind_FullMethodName         = "/dm.DeviceManage/deviceInfoUnbind"
 	DeviceManage_DeviceGatewayMultiCreate_FullMethodName = "/dm.DeviceManage/deviceGatewayMultiCreate"
 	DeviceManage_DeviceGatewayIndex_FullMethodName       = "/dm.DeviceManage/deviceGatewayIndex"
 	DeviceManage_DeviceGatewayMultiDelete_FullMethodName = "/dm.DeviceManage/deviceGatewayMultiDelete"
@@ -59,6 +60,7 @@ type DeviceManageClient interface {
 	// 获取设备信息详情
 	DeviceInfoRead(ctx context.Context, in *DeviceInfoReadReq, opts ...grpc.CallOption) (*DeviceInfo, error)
 	DeviceInfoBind(ctx context.Context, in *DeviceInfoBindReq, opts ...grpc.CallOption) (*Empty, error)
+	DeviceInfoUnbind(ctx context.Context, in *DeviceCore, opts ...grpc.CallOption) (*Empty, error)
 	// 绑定网关下子设备设备
 	DeviceGatewayMultiCreate(ctx context.Context, in *DeviceGatewayMultiCreateReq, opts ...grpc.CallOption) (*Empty, error)
 	// 获取绑定信息的设备信息列表
@@ -149,6 +151,15 @@ func (c *deviceManageClient) DeviceInfoRead(ctx context.Context, in *DeviceInfoR
 func (c *deviceManageClient) DeviceInfoBind(ctx context.Context, in *DeviceInfoBindReq, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, DeviceManage_DeviceInfoBind_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceManageClient) DeviceInfoUnbind(ctx context.Context, in *DeviceCore, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceInfoUnbind_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -255,6 +266,7 @@ type DeviceManageServer interface {
 	// 获取设备信息详情
 	DeviceInfoRead(context.Context, *DeviceInfoReadReq) (*DeviceInfo, error)
 	DeviceInfoBind(context.Context, *DeviceInfoBindReq) (*Empty, error)
+	DeviceInfoUnbind(context.Context, *DeviceCore) (*Empty, error)
 	// 绑定网关下子设备设备
 	DeviceGatewayMultiCreate(context.Context, *DeviceGatewayMultiCreateReq) (*Empty, error)
 	// 获取绑定信息的设备信息列表
@@ -299,6 +311,9 @@ func (UnimplementedDeviceManageServer) DeviceInfoRead(context.Context, *DeviceIn
 }
 func (UnimplementedDeviceManageServer) DeviceInfoBind(context.Context, *DeviceInfoBindReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoBind not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceInfoUnbind(context.Context, *DeviceCore) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoUnbind not implemented")
 }
 func (UnimplementedDeviceManageServer) DeviceGatewayMultiCreate(context.Context, *DeviceGatewayMultiCreateReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceGatewayMultiCreate not implemented")
@@ -480,6 +495,24 @@ func _DeviceManage_DeviceInfoBind_Handler(srv interface{}, ctx context.Context, 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceManageServer).DeviceInfoBind(ctx, req.(*DeviceInfoBindReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceManage_DeviceInfoUnbind_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceCore)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceInfoUnbind(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceInfoUnbind_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceInfoUnbind(ctx, req.(*DeviceCore))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -686,6 +719,10 @@ var DeviceManage_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _DeviceManage_DeviceInfoBind_Handler,
 		},
 		{
+			MethodName: "deviceInfoUnbind",
+			Handler:    _DeviceManage_DeviceInfoUnbind_Handler,
+		},
+		{
 			MethodName: "deviceGatewayMultiCreate",
 			Handler:    _DeviceManage_DeviceGatewayMultiCreate_Handler,
 		},
@@ -727,26 +764,28 @@ var DeviceManage_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	ProductManage_ProductInit_FullMethodName              = "/dm.ProductManage/productInit"
-	ProductManage_ProductInfoCreate_FullMethodName        = "/dm.ProductManage/productInfoCreate"
-	ProductManage_ProductInfoUpdate_FullMethodName        = "/dm.ProductManage/productInfoUpdate"
-	ProductManage_ProductInfoDelete_FullMethodName        = "/dm.ProductManage/productInfoDelete"
-	ProductManage_ProductInfoIndex_FullMethodName         = "/dm.ProductManage/productInfoIndex"
-	ProductManage_ProductInfoRead_FullMethodName          = "/dm.ProductManage/productInfoRead"
-	ProductManage_ProductSchemaUpdate_FullMethodName      = "/dm.ProductManage/productSchemaUpdate"
-	ProductManage_ProductSchemaCreate_FullMethodName      = "/dm.ProductManage/productSchemaCreate"
-	ProductManage_ProductSchemaMultiCreate_FullMethodName = "/dm.ProductManage/productSchemaMultiCreate"
-	ProductManage_ProductSchemaDelete_FullMethodName      = "/dm.ProductManage/productSchemaDelete"
-	ProductManage_ProductSchemaIndex_FullMethodName       = "/dm.ProductManage/productSchemaIndex"
-	ProductManage_ProductSchemaTslImport_FullMethodName   = "/dm.ProductManage/productSchemaTslImport"
-	ProductManage_ProductSchemaTslRead_FullMethodName     = "/dm.ProductManage/productSchemaTslRead"
-	ProductManage_ProductCustomRead_FullMethodName        = "/dm.ProductManage/productCustomRead"
-	ProductManage_ProductCustomUpdate_FullMethodName      = "/dm.ProductManage/productCustomUpdate"
-	ProductManage_ProductCategoryCreate_FullMethodName    = "/dm.ProductManage/productCategoryCreate"
-	ProductManage_ProductCategoryUpdate_FullMethodName    = "/dm.ProductManage/productCategoryUpdate"
-	ProductManage_ProductCategoryDelete_FullMethodName    = "/dm.ProductManage/productCategoryDelete"
-	ProductManage_ProductCategoryIndex_FullMethodName     = "/dm.ProductManage/productCategoryIndex"
-	ProductManage_ProductCategoryRead_FullMethodName      = "/dm.ProductManage/productCategoryRead"
+	ProductManage_ProductInit_FullMethodName                      = "/dm.ProductManage/productInit"
+	ProductManage_ProductInfoCreate_FullMethodName                = "/dm.ProductManage/productInfoCreate"
+	ProductManage_ProductInfoUpdate_FullMethodName                = "/dm.ProductManage/productInfoUpdate"
+	ProductManage_ProductInfoDelete_FullMethodName                = "/dm.ProductManage/productInfoDelete"
+	ProductManage_ProductInfoIndex_FullMethodName                 = "/dm.ProductManage/productInfoIndex"
+	ProductManage_ProductInfoRead_FullMethodName                  = "/dm.ProductManage/productInfoRead"
+	ProductManage_ProductSchemaUpdate_FullMethodName              = "/dm.ProductManage/productSchemaUpdate"
+	ProductManage_ProductSchemaCreate_FullMethodName              = "/dm.ProductManage/productSchemaCreate"
+	ProductManage_ProductSchemaMultiCreate_FullMethodName         = "/dm.ProductManage/productSchemaMultiCreate"
+	ProductManage_ProductSchemaDelete_FullMethodName              = "/dm.ProductManage/productSchemaDelete"
+	ProductManage_ProductSchemaIndex_FullMethodName               = "/dm.ProductManage/productSchemaIndex"
+	ProductManage_ProductSchemaTslImport_FullMethodName           = "/dm.ProductManage/productSchemaTslImport"
+	ProductManage_ProductSchemaTslRead_FullMethodName             = "/dm.ProductManage/productSchemaTslRead"
+	ProductManage_ProductCustomRead_FullMethodName                = "/dm.ProductManage/productCustomRead"
+	ProductManage_ProductCustomUpdate_FullMethodName              = "/dm.ProductManage/productCustomUpdate"
+	ProductManage_ProductCategoryCreate_FullMethodName            = "/dm.ProductManage/productCategoryCreate"
+	ProductManage_ProductCategoryUpdate_FullMethodName            = "/dm.ProductManage/productCategoryUpdate"
+	ProductManage_ProductCategoryDelete_FullMethodName            = "/dm.ProductManage/productCategoryDelete"
+	ProductManage_ProductCategoryIndex_FullMethodName             = "/dm.ProductManage/productCategoryIndex"
+	ProductManage_ProductCategoryRead_FullMethodName              = "/dm.ProductManage/productCategoryRead"
+	ProductManage_ProductCategorySchemaIndex_FullMethodName       = "/dm.ProductManage/productCategorySchemaIndex"
+	ProductManage_ProductCategorySchemaMultiUpdate_FullMethodName = "/dm.ProductManage/productCategorySchemaMultiUpdate"
 )
 
 // ProductManageClient is the client API for ProductManage service.
@@ -791,6 +830,9 @@ type ProductManageClient interface {
 	ProductCategoryIndex(ctx context.Context, in *ProductCategoryIndexReq, opts ...grpc.CallOption) (*ProductCategoryIndexResp, error)
 	// 获取产品信息详情
 	ProductCategoryRead(ctx context.Context, in *ProductCategoryReadReq, opts ...grpc.CallOption) (*ProductCategory, error)
+	// 获取产品品类下的物模型列表,绑定的物模型会自动添加到该产品品类及子分类的产品中,并不支持删除
+	ProductCategorySchemaIndex(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProductCategorySchemaIndexResp, error)
+	ProductCategorySchemaMultiUpdate(ctx context.Context, in *ProductCategorySchemaMultiUpdateReq, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type productManageClient struct {
@@ -981,6 +1023,24 @@ func (c *productManageClient) ProductCategoryRead(ctx context.Context, in *Produ
 	return out, nil
 }
 
+func (c *productManageClient) ProductCategorySchemaIndex(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProductCategorySchemaIndexResp, error) {
+	out := new(ProductCategorySchemaIndexResp)
+	err := c.cc.Invoke(ctx, ProductManage_ProductCategorySchemaIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productManageClient) ProductCategorySchemaMultiUpdate(ctx context.Context, in *ProductCategorySchemaMultiUpdateReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, ProductManage_ProductCategorySchemaMultiUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProductManageServer is the server API for ProductManage service.
 // All implementations must embed UnimplementedProductManageServer
 // for forward compatibility
@@ -1023,6 +1083,9 @@ type ProductManageServer interface {
 	ProductCategoryIndex(context.Context, *ProductCategoryIndexReq) (*ProductCategoryIndexResp, error)
 	// 获取产品信息详情
 	ProductCategoryRead(context.Context, *ProductCategoryReadReq) (*ProductCategory, error)
+	// 获取产品品类下的物模型列表,绑定的物模型会自动添加到该产品品类及子分类的产品中,并不支持删除
+	ProductCategorySchemaIndex(context.Context, *WithID) (*ProductCategorySchemaIndexResp, error)
+	ProductCategorySchemaMultiUpdate(context.Context, *ProductCategorySchemaMultiUpdateReq) (*Empty, error)
 	mustEmbedUnimplementedProductManageServer()
 }
 
@@ -1089,6 +1152,12 @@ func (UnimplementedProductManageServer) ProductCategoryIndex(context.Context, *P
 }
 func (UnimplementedProductManageServer) ProductCategoryRead(context.Context, *ProductCategoryReadReq) (*ProductCategory, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductCategoryRead not implemented")
+}
+func (UnimplementedProductManageServer) ProductCategorySchemaIndex(context.Context, *WithID) (*ProductCategorySchemaIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductCategorySchemaIndex not implemented")
+}
+func (UnimplementedProductManageServer) ProductCategorySchemaMultiUpdate(context.Context, *ProductCategorySchemaMultiUpdateReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductCategorySchemaMultiUpdate not implemented")
 }
 func (UnimplementedProductManageServer) mustEmbedUnimplementedProductManageServer() {}
 
@@ -1463,6 +1532,42 @@ func _ProductManage_ProductCategoryRead_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProductManage_ProductCategorySchemaIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WithID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductCategorySchemaIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProductManage_ProductCategorySchemaIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductCategorySchemaIndex(ctx, req.(*WithID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductManage_ProductCategorySchemaMultiUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductCategorySchemaMultiUpdateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductCategorySchemaMultiUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProductManage_ProductCategorySchemaMultiUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductCategorySchemaMultiUpdate(ctx, req.(*ProductCategorySchemaMultiUpdateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ProductManage_ServiceDesc is the grpc.ServiceDesc for ProductManage service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1549,6 +1654,14 @@ var ProductManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "productCategoryRead",
 			Handler:    _ProductManage_ProductCategoryRead_Handler,
+		},
+		{
+			MethodName: "productCategorySchemaIndex",
+			Handler:    _ProductManage_ProductCategorySchemaIndex_Handler,
+		},
+		{
+			MethodName: "productCategorySchemaMultiUpdate",
+			Handler:    _ProductManage_ProductCategorySchemaMultiUpdate_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

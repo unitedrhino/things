@@ -22,6 +22,7 @@ func Migrate(c conf.Database) error {
 		&DmOtaModuleInfo{},
 		&DmProductInfo{},
 		&DmProductCategory{},
+		&DmProductCategorySchema{},
 		&DmProtocolInfo{},
 		&DmDeviceInfo{},
 		&DmProductCustom{},

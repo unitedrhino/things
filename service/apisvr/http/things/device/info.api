@@ -10,6 +10,10 @@ info(
 @server(
     group: things/device/info
     prefix: /api/v1/things/device/info
+//    accessCode: "thingsDevice"
+//    accessName: "设备信息"
+//    accessGroup: "设备管理"
+//    accessDesc: "管理设备"
     middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
@@ -22,26 +26,47 @@ service api {
     @doc "批量更新设备"
     @handler multiUpdate
     post /multi-update (DeviceInfoMultiUpdateReq) returns ()
-
-    @doc "删除设备"
+    @doc(
+        summary: "删除设备"
+        isNeedAuth: "true"
+        isAuthTenant: "false"
+    )
     @handler delete
     post /delete (DeviceInfoDeleteReq) returns ()
-    @doc "获取设备信息列表"
+    @doc(
+        summary: "获取设备列表"
+        isNeedAuth: "false"
+        isAuthTenant: "true"
+    )
     @handler index
     post /index (DeviceInfoIndexReq) returns (DeviceInfoIndexResp)
-    @doc "获取设备信息详情"
+    @doc(
+        summary: "获取设备详情"
+        isNeedAuth: "false"
+        isAuthTenant: "true"
+    )
     @handler read
     post /read (DeviceInfoReadReq) returns (DeviceInfo)
-    @doc "设备统计详情"
+    @doc(
+        summary: "设备统计详情"
+        isNeedAuth: "false"
+        isAuthTenant: "true"
+    )
     @handler count
     post /count (DeviceCountReq) returns (DeviceCountResp)
     @doc(
         summary: "批量导入设备"
-        inject_formdata_param: "file"
+        injectFormdataParam: "file"
+        isNeedAuth: "true"
+        isAuthTenant: "false"
     )
     @handler multiImport
     post /multi-import (DeviceMultiImportReq) returns (DeviceMultiImportResp)
-    @doc "绑定"
+    @doc(
+        summary: "绑定"
+        isNeedAuth: "true"
+        isAuthTenant: "true"
+    )
     @handler bind
     post /bind (DeviceInfoBindReq) returns ()
 }

@@ -57,6 +57,7 @@ func (p ProductCategoryRepo) FindOneByFilter(ctx context.Context, f ProductCateg
 	}
 	return &result, nil
 }
+
 func (p ProductCategoryRepo) FindByFilter(ctx context.Context, f ProductCategoryFilter, page *def.PageInfo) ([]*DmProductCategory, error) {
 	var results []*DmProductCategory
 	db := p.fmtFilter(ctx, f).Model(&DmProductCategory{})

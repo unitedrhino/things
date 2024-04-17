@@ -508,6 +508,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/schema/index",
+					Handler: thingsproductcategory.SchemaIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/schema/multi-update",
+					Handler: thingsproductcategory.SchemaMultiUpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/update",
 					Handler: thingsproductcategory.UpdateHandler(serverCtx),
 				},

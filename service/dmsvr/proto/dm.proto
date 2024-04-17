@@ -59,6 +59,7 @@ service DeviceManage {
   //获取设备信息详情
   rpc deviceInfoRead(DeviceInfoReadReq)     returns (DeviceInfo);
   rpc deviceInfoBind(DeviceInfoBindReq)returns(Empty);
+  rpc deviceInfoUnbind(DeviceCore)returns(Empty);
 
   //绑定网关下子设备设备
   rpc deviceGatewayMultiCreate(DeviceGatewayMultiCreateReq)     returns (Empty);
@@ -126,8 +127,9 @@ service ProductManage{
   rpc productCategoryIndex(ProductCategoryIndexReq)     returns (ProductCategoryIndexResp);
   //获取产品信息详情
   rpc productCategoryRead(ProductCategoryReadReq)     returns (ProductCategory);
-
-
+  //获取产品品类下的物模型列表,绑定的物模型会自动添加到该产品品类及子分类的产品中,并不支持删除
+  rpc productCategorySchemaIndex(WithID) returns(ProductCategorySchemaIndexResp);
+  rpc productCategorySchemaMultiUpdate(ProductCategorySchemaMultiUpdateReq) returns(Empty);
 }
 
 
@@ -141,7 +143,6 @@ service SchemaManage{
   rpc commonSchemaDelete(WithID)     returns (Empty);
   //获取产品信息列表
   rpc commonSchemaIndex(CommonSchemaIndexReq)     returns (CommonSchemaIndexResp);
-
 }
 
 service ProtocolManage {
@@ -365,6 +366,15 @@ message ProductCategory{
 message ProductCategoryReadReq{
   int64 id = 1;
   bool withChildren = 2;//是否返回子节点
+}
+
+message ProductCategorySchemaIndexResp{
+  repeated string   identifiers = 5; //过滤标识符列表
+}
+
+message ProductCategorySchemaMultiUpdateReq{
+  int64 productCategoryID = 1;
+  repeated string   identifiers = 5; //过滤标识符列表
 }
 
 message ProductCategoryIndexReq{
@@ -1059,6 +1069,9 @@ message CommonSchemaIndexReq{
   int64  type = 3; //物模型类型 1:property属性 2:event事件 3:action行为
   repeated string   identifiers = 5; //过滤标识符列表
   string name =6;//标识符名字过滤
+  bool withProductCategory =4;
+  int64 productCategoryID = 7;//过滤属于该产品品类的物模型
+  bool productCategoryWithFather =8;//同时返回父节点的物模型
 }
 
 message CommonSchemaIndexResp{
@@ -1080,6 +1093,7 @@ message CommonSchemaInfo{
   google.protobuf.StringValue affordance = 11;//各功能类型的详细参数定义
   string extendConfig = 12; //拓展参数
   int64 order =13;//排序
+  repeated ProductCategory productCategories =3; //绑定的产品品类(如果绑定了,则该品类下的产品会自动新增并不允许删除)
 }
 
 /*********************************/

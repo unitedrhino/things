@@ -139,3 +139,14 @@ func (s *ProductManageServer) ProductCategoryRead(ctx context.Context, in *dm.Pr
 	l := productmanagelogic.NewProductCategoryReadLogic(ctx, s.svcCtx)
 	return l.ProductCategoryRead(in)
 }
+
+// 获取产品品类下的物模型列表,绑定的物模型会自动添加到该产品品类及子分类的产品中,并不支持删除
+func (s *ProductManageServer) ProductCategorySchemaIndex(ctx context.Context, in *dm.WithID) (*dm.ProductCategorySchemaIndexResp, error) {
+	l := productmanagelogic.NewProductCategorySchemaIndexLogic(ctx, s.svcCtx)
+	return l.ProductCategorySchemaIndex(in)
+}
+
+func (s *ProductManageServer) ProductCategorySchemaMultiUpdate(ctx context.Context, in *dm.ProductCategorySchemaMultiUpdateReq) (*dm.Empty, error) {
+	l := productmanagelogic.NewProductCategorySchemaMultiUpdateLogic(ctx, s.svcCtx)
+	return l.ProductCategorySchemaMultiUpdate(in)
+}

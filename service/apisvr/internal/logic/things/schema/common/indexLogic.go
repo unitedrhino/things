@@ -4,7 +4,6 @@ import (
 	"context"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/apisvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/service/apisvr/internal/svc"
@@ -28,14 +27,7 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 }
 
 func (l *IndexLogic) Index(req *types.CommonSchemaIndexReq) (resp *types.CommonSchemaIndexResp, err error) {
-	dmReq := &dm.CommonSchemaIndexReq{
-		Page:        logic.ToDmPageRpc(req.Page),
-		Type:        req.Type,
-		Identifiers: req.Identifiers,
-		ProductIDs:  req.ProductIDs,
-		Name:        req.Name,
-	}
-	dmResp, err := l.svcCtx.SchemaM.CommonSchemaIndex(l.ctx, dmReq)
+	dmResp, err := l.svcCtx.SchemaM.CommonSchemaIndex(l.ctx, utils.Copy[dm.CommonSchemaIndexReq](req))
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.CommonSchemaIndex req=%v err=%+v", utils.FuncName(), req, er)

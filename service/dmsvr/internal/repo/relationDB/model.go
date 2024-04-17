@@ -112,6 +112,18 @@ func (m *DmProductCategory) TableName() string {
 	return "dm_product_category"
 }
 
+type DmProductCategorySchema struct {
+	ID                int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	ProductCategoryID int64  `gorm:"column:product_category_id;uniqueIndex:pn;type:bigint;NOT NULL"` // 产品品类id
+	Identifier        string `gorm:"column:identifier;type:varchar(200);uniqueIndex:pn"`             // 标识符的id
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:pn"`
+}
+
+func (m *DmProductCategorySchema) TableName() string {
+	return "dm_product_category_schema"
+}
+
 // 自定义协议表
 type DmProtocolInfo struct {
 	ID            int64                 `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`

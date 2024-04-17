@@ -18,11 +18,13 @@ type CommonSchemaDeleteReq struct {
 }
 
 type CommonSchemaIndexReq struct {
-	Page        *PageInfo `json:"page,optional"`        //分页信息,只获取一个则不填
-	Type        int64     `json:"type,optional"`        //物模型类型 1:property属性 2:event事件 3:action行为
-	Identifiers []string  `json:"identifiers,optional"` //过滤标识符列表
-	ProductIDs  []string  `json:"productIDs,optional"`  //提取产品共有的物模型
-	Name        string    `json:"name,optional"`
+	Page                      *PageInfo `json:"page,optional"`        //分页信息,只获取一个则不填
+	Type                      int64     `json:"type,optional"`        //物模型类型 1:property属性 2:event事件 3:action行为
+	Identifiers               []string  `json:"identifiers,optional"` //过滤标识符列表
+	ProductIDs                []string  `json:"productIDs,optional"`  //提取产品共有的物模型
+	Name                      string    `json:"name,optional"`
+	ProductCategoryID         int64     `json:"productCategoryID,optional"`
+	ProductCategoryWithFather bool      `json:"productCategoryWithFather,optional"`
 }
 
 type CommonSchemaIndexResp struct {
@@ -899,6 +901,15 @@ type ProductCategoryIndexResp struct {
 	List  []*ProductCategory `json:"list"`           //产品信息
 	Total int64              `json:"total,optional"` //拥有的总数
 	Num   int64              `json:"num,optional"`   //返回的数量
+}
+
+type ProductCategorySchemaIndexResp struct {
+	Identifiers []string `json:"identifiers"`
+}
+
+type ProductCategorySchemaMultiUpdateReq struct {
+	ProductCategoryID int64    `json:"productCategoryID"`
+	Identifiers       []string `json:"identifiers"`
 }
 
 type ProductCustom struct {

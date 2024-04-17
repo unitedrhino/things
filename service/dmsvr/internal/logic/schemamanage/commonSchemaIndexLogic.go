@@ -2,6 +2,7 @@ package schemamanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
@@ -33,6 +34,24 @@ func (l *CommonSchemaIndexLogic) CommonSchemaIndex(in *dm.CommonSchemaIndexReq) 
 		Type:        in.Type,
 		Name:        in.Name,
 		Identifiers: in.Identifiers,
+	}
+	if in.ProductCategoryID != 0 {
+		var ProductCategoryIDs = []int64{in.ProductCategoryID}
+		if in.ProductCategoryWithFather {
+			pc, err := relationDB.NewProductCategoryRepo(l.ctx).FindOne(l.ctx, in.ProductCategoryID)
+			if err != nil {
+				return nil, err
+			}
+			ProductCategoryIDs = append(ProductCategoryIDs, utils.GetIDPath(pc.IDPath)...)
+		}
+		pcs, err := relationDB.NewProductCategorySchemaRepo(l.ctx).FindByFilter(l.ctx, relationDB.ProductCategorySchemaFilter{ProductCategoryIDs: ProductCategoryIDs}, nil)
+		if err != nil {
+			return nil, err
+		}
+		ids := utils.ToSliceWithFunc(pcs, func(in *relationDB.DmProductCategorySchema) string {
+			return in.Identifier
+		})
+		filter.Identifiers = append(filter.Identifiers, ids...)
 	}
 	if len(in.ProductIDs) != 0 {
 		rst, err := relationDB.NewProductSchemaRepo(l.ctx).FindByFilter(l.ctx, relationDB.ProductSchemaFilter{ProductIDs: in.ProductIDs, Tag: 2}, nil)

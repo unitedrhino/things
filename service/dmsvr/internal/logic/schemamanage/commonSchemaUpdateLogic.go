@@ -29,20 +29,22 @@ func NewCommonSchemaUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 	}
 }
 
-func (l *CommonSchemaUpdateLogic) ruleCheck(in *dm.CommonSchemaUpdateReq) (*relationDB.DmCommonSchema, *relationDB.DmCommonSchema, error) {
+func (l *CommonSchemaUpdateLogic) ruleCheck(in *dm.CommonSchemaUpdateReq) (*relationDB.DmCommonSchema, *relationDB.DmCommonSchema, bool, error) {
+	var schemaIsUpdate bool
 	po, err := l.PsDB.FindOneByFilter(l.ctx, relationDB.CommonSchemaFilter{
 		Identifiers: []string{in.Info.Identifier},
 	})
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {
-			return nil, nil, errors.Parameter.AddMsgf("标识符不存在:" + in.Info.Identifier)
+			return nil, nil, schemaIsUpdate, errors.Parameter.AddMsgf("标识符不存在:" + in.Info.Identifier)
 		}
-		return nil, nil, err
+		return nil, nil, schemaIsUpdate, err
 	}
 	newPo := ToCommonSchemaPo(in.Info)
 	newPo.ID = po.ID
-	if in.Info.Affordance == nil {
+	if in.Info.Affordance == nil && in.Info.Affordance.Value != newPo.Affordance {
 		newPo.Affordance = po.Affordance
+		schemaIsUpdate = true
 	}
 	if in.Info.Name == nil {
 		newPo.Name = po.Name
@@ -72,29 +74,31 @@ func (l *CommonSchemaUpdateLogic) ruleCheck(in *dm.CommonSchemaUpdateReq) (*rela
 		}
 	}
 	if err := CheckAffordance(&newPo.DmSchemaCore); err != nil {
-		return nil, nil, err
+		return nil, nil, schemaIsUpdate, err
 	}
-	return po, newPo, nil
+	return po, newPo, schemaIsUpdate, nil
 }
 
 // 更新产品物模型
 func (l *CommonSchemaUpdateLogic) CommonSchemaUpdate(in *dm.CommonSchemaUpdateReq) (*dm.Empty, error) {
-	po, newPo, err := l.ruleCheck(in)
+	po, newPo, schemaIsUpdate, err := l.ruleCheck(in)
 	if err != nil {
 		return nil, err
 	}
-	if schema.AffordanceType(po.Type) == schema.AffordanceTypeProperty {
-		if err := l.svcCtx.SchemaManaRepo.DeleteProperty(
-			l.ctx, nil, "", in.Info.Identifier); err != nil {
-			l.Errorf("%s.DeleteProperty failure,err:%v", utils.FuncName(), err)
-			return nil, errors.Database.AddDetail(err)
+	if schemaIsUpdate {
+		if schema.AffordanceType(po.Type) == schema.AffordanceTypeProperty {
+			if err := l.svcCtx.SchemaManaRepo.DeleteProperty(
+				l.ctx, nil, "", in.Info.Identifier); err != nil {
+				l.Errorf("%s.DeleteProperty failure,err:%v", utils.FuncName(), err)
+				return nil, errors.Database.AddDetail(err)
+			}
 		}
-	}
-	if schema.AffordanceType(newPo.Type) == schema.AffordanceTypeProperty {
-		if err := l.svcCtx.SchemaManaRepo.CreateProperty(
-			l.ctx, relationDB.ToPropertyDo(&newPo.DmSchemaCore), ""); err != nil {
-			l.Errorf("%s.CreateProperty failure,err:%v", utils.FuncName(), err)
-			return nil, errors.Database.AddDetail(err)
+		if schema.AffordanceType(newPo.Type) == schema.AffordanceTypeProperty {
+			if err := l.svcCtx.SchemaManaRepo.CreateProperty(
+				l.ctx, relationDB.ToPropertyDo(&newPo.DmSchemaCore), ""); err != nil {
+				l.Errorf("%s.CreateProperty failure,err:%v", utils.FuncName(), err)
+				return nil, errors.Database.AddDetail(err)
+			}
 		}
 	}
 	err = l.PsDB.Update(l.ctx, newPo)

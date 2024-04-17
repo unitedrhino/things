@@ -27,9 +27,25 @@ service api {
     @doc "获取产品品类详情"
     @handler read
     post /read (WithIDChildren) returns (ProductCategory)
+    @doc "获取产品品类列表"
+    @handler schemaMultiUpdate
+    post /schema/multi-update (ProductCategorySchemaMultiUpdateReq) returns ()
+    @doc "获取产品品类列表"
+    @handler schemaIndex
+    post /schema/index (WithID) returns (ProductCategorySchemaIndexResp)
 }
 
 type (
+
+    ProductCategorySchemaIndexResp{
+        Identifiers []string `json:"identifiers"`
+    }
+
+    ProductCategorySchemaMultiUpdateReq{
+        productCategoryID int64    `json:"productCategoryID"`
+        Identifiers []string `json:"identifiers"`
+    }
+
     ProductCategory  {
         ID int64 `json:"id,optional"`
         ParentID int64 `json:"parentID,optional"`
