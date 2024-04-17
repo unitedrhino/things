@@ -103,6 +103,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 			l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
 			return nil, err
 		}
+		return &dm.PropertyControlSendResp{}, nil
 	}
 	defer func() {
 		ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
