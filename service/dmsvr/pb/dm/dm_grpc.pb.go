@@ -831,7 +831,7 @@ type ProductManageClient interface {
 	// 获取产品信息详情
 	ProductCategoryRead(ctx context.Context, in *ProductCategoryReadReq, opts ...grpc.CallOption) (*ProductCategory, error)
 	// 获取产品品类下的物模型列表,绑定的物模型会自动添加到该产品品类及子分类的产品中,并不支持删除
-	ProductCategorySchemaIndex(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProductCategorySchemaIndexResp, error)
+	ProductCategorySchemaIndex(ctx context.Context, in *ProductCategorySchemaIndexReq, opts ...grpc.CallOption) (*ProductCategorySchemaIndexResp, error)
 	ProductCategorySchemaMultiUpdate(ctx context.Context, in *ProductCategorySchemaMultiUpdateReq, opts ...grpc.CallOption) (*Empty, error)
 }
 
@@ -1023,7 +1023,7 @@ func (c *productManageClient) ProductCategoryRead(ctx context.Context, in *Produ
 	return out, nil
 }
 
-func (c *productManageClient) ProductCategorySchemaIndex(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProductCategorySchemaIndexResp, error) {
+func (c *productManageClient) ProductCategorySchemaIndex(ctx context.Context, in *ProductCategorySchemaIndexReq, opts ...grpc.CallOption) (*ProductCategorySchemaIndexResp, error) {
 	out := new(ProductCategorySchemaIndexResp)
 	err := c.cc.Invoke(ctx, ProductManage_ProductCategorySchemaIndex_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -1084,7 +1084,7 @@ type ProductManageServer interface {
 	// 获取产品信息详情
 	ProductCategoryRead(context.Context, *ProductCategoryReadReq) (*ProductCategory, error)
 	// 获取产品品类下的物模型列表,绑定的物模型会自动添加到该产品品类及子分类的产品中,并不支持删除
-	ProductCategorySchemaIndex(context.Context, *WithID) (*ProductCategorySchemaIndexResp, error)
+	ProductCategorySchemaIndex(context.Context, *ProductCategorySchemaIndexReq) (*ProductCategorySchemaIndexResp, error)
 	ProductCategorySchemaMultiUpdate(context.Context, *ProductCategorySchemaMultiUpdateReq) (*Empty, error)
 	mustEmbedUnimplementedProductManageServer()
 }
@@ -1153,7 +1153,7 @@ func (UnimplementedProductManageServer) ProductCategoryIndex(context.Context, *P
 func (UnimplementedProductManageServer) ProductCategoryRead(context.Context, *ProductCategoryReadReq) (*ProductCategory, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductCategoryRead not implemented")
 }
-func (UnimplementedProductManageServer) ProductCategorySchemaIndex(context.Context, *WithID) (*ProductCategorySchemaIndexResp, error) {
+func (UnimplementedProductManageServer) ProductCategorySchemaIndex(context.Context, *ProductCategorySchemaIndexReq) (*ProductCategorySchemaIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductCategorySchemaIndex not implemented")
 }
 func (UnimplementedProductManageServer) ProductCategorySchemaMultiUpdate(context.Context, *ProductCategorySchemaMultiUpdateReq) (*Empty, error) {
@@ -1533,7 +1533,7 @@ func _ProductManage_ProductCategoryRead_Handler(srv interface{}, ctx context.Con
 }
 
 func _ProductManage_ProductCategorySchemaIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(WithID)
+	in := new(ProductCategorySchemaIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1545,7 +1545,7 @@ func _ProductManage_ProductCategorySchemaIndex_Handler(srv interface{}, ctx cont
 		FullMethod: ProductManage_ProductCategorySchemaIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductManageServer).ProductCategorySchemaIndex(ctx, req.(*WithID))
+		return srv.(ProductManageServer).ProductCategorySchemaIndex(ctx, req.(*ProductCategorySchemaIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }

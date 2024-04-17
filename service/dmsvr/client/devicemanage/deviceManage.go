@@ -108,6 +108,7 @@ type (
 	ProductCategoryIndexReq             = dm.ProductCategoryIndexReq
 	ProductCategoryIndexResp            = dm.ProductCategoryIndexResp
 	ProductCategoryReadReq              = dm.ProductCategoryReadReq
+	ProductCategorySchemaIndexReq       = dm.ProductCategorySchemaIndexReq
 	ProductCategorySchemaIndexResp      = dm.ProductCategorySchemaIndexResp
 	ProductCategorySchemaMultiUpdateReq = dm.ProductCategorySchemaMultiUpdateReq
 	ProductCustom                       = dm.ProductCustom

@@ -108,6 +108,7 @@ type (
 	ProductCategoryIndexReq             = dm.ProductCategoryIndexReq
 	ProductCategoryIndexResp            = dm.ProductCategoryIndexResp
 	ProductCategoryReadReq              = dm.ProductCategoryReadReq
+	ProductCategorySchemaIndexReq       = dm.ProductCategorySchemaIndexReq
 	ProductCategorySchemaIndexResp      = dm.ProductCategorySchemaIndexResp
 	ProductCategorySchemaMultiUpdateReq = dm.ProductCategorySchemaMultiUpdateReq
 	ProductCustom                       = dm.ProductCustom
@@ -217,7 +218,7 @@ type (
 		// 获取产品信息详情
 		ProductCategoryRead(ctx context.Context, in *ProductCategoryReadReq, opts ...grpc.CallOption) (*ProductCategory, error)
 		// 获取产品品类下的物模型列表,绑定的物模型会自动添加到该产品品类及子分类的产品中,并不支持删除
-		ProductCategorySchemaIndex(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProductCategorySchemaIndexResp, error)
+		ProductCategorySchemaIndex(ctx context.Context, in *ProductCategorySchemaIndexReq, opts ...grpc.CallOption) (*ProductCategorySchemaIndexResp, error)
 		ProductCategorySchemaMultiUpdate(ctx context.Context, in *ProductCategorySchemaMultiUpdateReq, opts ...grpc.CallOption) (*Empty, error)
 	}
 
@@ -461,13 +462,13 @@ func (d *directProductManage) ProductCategoryRead(ctx context.Context, in *Produ
 }
 
 // 获取产品品类下的物模型列表,绑定的物模型会自动添加到该产品品类及子分类的产品中,并不支持删除
-func (m *defaultProductManage) ProductCategorySchemaIndex(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProductCategorySchemaIndexResp, error) {
+func (m *defaultProductManage) ProductCategorySchemaIndex(ctx context.Context, in *ProductCategorySchemaIndexReq, opts ...grpc.CallOption) (*ProductCategorySchemaIndexResp, error) {
 	client := dm.NewProductManageClient(m.cli.Conn())
 	return client.ProductCategorySchemaIndex(ctx, in, opts...)
 }
 
 // 获取产品品类下的物模型列表,绑定的物模型会自动添加到该产品品类及子分类的产品中,并不支持删除
-func (d *directProductManage) ProductCategorySchemaIndex(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProductCategorySchemaIndexResp, error) {
+func (d *directProductManage) ProductCategorySchemaIndex(ctx context.Context, in *ProductCategorySchemaIndexReq, opts ...grpc.CallOption) (*ProductCategorySchemaIndexResp, error) {
 	return d.svr.ProductCategorySchemaIndex(ctx, in)
 }
 
