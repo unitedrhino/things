@@ -68,7 +68,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		Imei:           v.Imei,                        //IMEI号信息 只读
 		Mac:            v.Mac,                         //MAC号信息 只读
 		Version:        utils.ToNullString(v.Version), //固件版本 读写
-		Rssi:           v.Rssi,
+		Rssi:           utils.ToEmptyInt64(v.Rssi),
 		HardInfo:       v.HardInfo,               //模组硬件型号 只读
 		SoftInfo:       v.SoftInfo,               //模组软件版本 只读
 		Position:       position,                 //设别定位（百度坐标）

@@ -42,7 +42,7 @@ func ToDeviceInfo(in *relationDB.DmDeviceInfo) *dm.DeviceInfo {
 		SoftInfo:       in.SoftInfo,
 		Position:       ToDmPoint(&in.Position),
 		Address:        &wrappers.StringValue{Value: in.Address},
-		Rssi:           in.Rssi,
+		Rssi:           nil,
 		Tags:           in.Tags,
 		SchemaAlias:    in.SchemaAlias,
 		IsOnline:       in.IsOnline,

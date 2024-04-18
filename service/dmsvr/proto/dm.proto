@@ -937,7 +937,7 @@ message DeviceInfo {
   google.protobuf.StringValue phone = 23;//手机号
   google.protobuf.StringValue iccid = 24;//SIM卡卡号
   map<string,string> schemaAlias = 25;//设备物模型别名,如果是结构体类型则key为xxx.xxx
-  int64  rssi = 27; // 设备信号（信号极好[-55— 0]，信号好[-70— -55]，信号一般[-85— -70]，信号差[-100— -85]）
+  google.protobuf.Int64Value  rssi = 27; // 设备信号（信号极好[-55— 0]，信号好[-70— -55]，信号一般[-85— -70]，信号差[-100— -85]）
   int64  ratedPower =28;// 额定功率:单位k/wh
   map<string,string>protocolConf =29;
   int64 status =30 ;//设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)
