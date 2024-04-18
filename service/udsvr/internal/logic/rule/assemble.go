@@ -235,15 +235,16 @@ func ToSceneTriggerTimerDo(in relationDB.UdSceneTriggerTimer) (ret *scene.Timer)
 
 func ToSceneTriggerDeviceDo(in relationDB.UdSceneTriggerDevice) (ret *scene.TriggerDevice) {
 	return &scene.TriggerDevice{
-		ProductID:   in.ProductID,
-		SelectType:  scene.SelectType(in.SelectType),
-		DeviceName:  in.DeviceName,
-		DeviceAlias: in.DeviceAlias,
-		Type:        scene.TriggerDeviceType(in.Type),
-		DataID:      in.DataID,
-		DataName:    in.DataName,
-		TermType:    scene.CmpType(in.TermType),
-		Values:      in.Values,
+		ProductID:        in.ProductID,
+		SelectType:       scene.SelectType(in.SelectType),
+		DeviceName:       in.DeviceName,
+		DeviceAlias:      in.DeviceAlias,
+		Type:             scene.TriggerDeviceType(in.Type),
+		DataID:           in.DataID,
+		DataName:         in.DataName,
+		TermType:         scene.CmpType(in.TermType),
+		Values:           in.Values,
+		SchemaAffordance: in.SchemaAffordance,
 	}
 }
 
