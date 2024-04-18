@@ -13,6 +13,7 @@ import (
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	ws "gitee.com/i-Things/share/websocket"
 	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/shadow"
@@ -117,6 +118,20 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 				logx.WithContext(ctx).Errorf("%s.DeviceThingPropertyReport  identifier:%v, param:%v,err:%v", utils.FuncName(), identifier, param, err)
 			}
 			err = l.svcCtx.WebHook.Publish(l.svcCtx.WithDeviceTenant(l.ctx, core), tenantOpenWebhook.CodeDmDevicePropertyReport, appMsg)
+			if err != nil {
+				l.Error(err)
+			}
+			err = l.svcCtx.UserSubscribe.Publish(l.ctx, &ws.SubscribeInfo{
+				Code: def.UserSubscribeDevicePropertyReport,
+				Params: map[string]any{
+					"productID":  core.ProductID,
+					"deviceName": core.DeviceName,
+					"identifier": identifier,
+				},
+			}, appMsg)
+			if err != nil {
+				l.Error(err)
+			}
 			if err != nil {
 				l.Error(err)
 			}

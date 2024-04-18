@@ -3,6 +3,7 @@ package svc
 import (
 	"context"
 	"gitee.com/i-Things/core/sdk/tenantOpenWebhook"
+	"gitee.com/i-Things/core/service/apisvr/coreExport"
 	"gitee.com/i-Things/core/service/syssvr/client/areamanage"
 	"gitee.com/i-Things/core/service/syssvr/client/projectmanage"
 	"gitee.com/i-Things/core/service/syssvr/client/tenantmanage"
@@ -68,6 +69,7 @@ type ServiceContext struct {
 	DeviceCache    *caches.Cache[dm.DeviceInfo]
 	TenantCache    *caches.Cache[tenant.Info]
 	WebHook        *tenantOpenWebhook.Info
+	UserSubscribe  *coreExport.UserSubscribe
 	NodeID         int64
 }
 
@@ -162,6 +164,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		DeviceID:       DeviceID,
 		GroupID:        GroupID,
 		Cache:          ca,
+		UserSubscribe:  coreExport.NewUserSubscribe(ca, serverMsg),
 		SchemaRepo:     ccSchemaR,
 		SchemaManaRepo: deviceDataR,
 		DeviceStatus:   cache.NewDeviceStatus(ca),
