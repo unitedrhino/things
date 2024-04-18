@@ -103,7 +103,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	caches.InitStore(c.CacheRedis)
 
-	ws.StartWsDp(false)
 	//var me menu.Menu
 	if c.DmRpc.Enable {
 		if c.DmRpc.Mode == conf.ClientModeGrpc { //服务模式
