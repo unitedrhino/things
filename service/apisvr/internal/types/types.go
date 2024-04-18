@@ -1216,6 +1216,11 @@ type SlotAreaSaveReq struct {
 	ParentAreaID int64 `json:"parentAreaID,string,optional"` //上级项目区域id（只读）
 }
 
+type SlotUserSubscribeReq struct {
+	Code   string                 `json:"code"`
+	Params map[string]interface{} `json:"params"`
+}
+
 type Tag struct {
 	Key   string `json:"key"`
 	Value string `json:"value"`

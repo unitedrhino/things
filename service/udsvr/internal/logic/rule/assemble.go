@@ -67,13 +67,14 @@ func ToSceneTriggerPo(si *scene.Info, in *scene.Trigger) *relationDB.UdSceneIfTr
 		execAt = in.Timer.ExecAt
 	}
 	return &relationDB.UdSceneIfTrigger{
-		SceneID:     si.ID,
-		Type:        in.Type,
-		Status:      si.Status,
-		LastRunTime: domain.GenLastRunTime(now, execAt),
-		Order:       in.Order,
-		Device:      ToSceneTriggerDevicePo(in.Device),
-		Timer:       ToSceneTriggerTimerPo(si, in.Timer),
+		SceneID:          si.ID,
+		Type:             in.Type,
+		Status:           si.Status,
+		LastRunTime:      domain.GenLastRunTime(now, execAt),
+		Order:            in.Order,
+		Device:           ToSceneTriggerDevicePo(in.Device),
+		Timer:            ToSceneTriggerTimerPo(si, in.Timer),
+		SchemaAffordance: in.SchemaAffordance,
 	}
 }
 
@@ -92,15 +93,16 @@ func ToSceneTriggerDevicePo(in *scene.TriggerDevice) (ret relationDB.UdSceneTrig
 		return relationDB.UdSceneTriggerDevice{}
 	}
 	return relationDB.UdSceneTriggerDevice{
-		ProductID:   in.ProductID,
-		SelectType:  in.SelectType,
-		DeviceName:  in.DeviceName,
-		DeviceAlias: in.DeviceAlias,
-		Type:        string(in.Type),
-		DataID:      in.DataID,
-		DataName:    in.DataName,
-		TermType:    string(in.TermType),
-		Values:      in.Values,
+		ProductID:        in.ProductID,
+		SelectType:       in.SelectType,
+		DeviceName:       in.DeviceName,
+		DeviceAlias:      in.DeviceAlias,
+		Type:             string(in.Type),
+		DataID:           in.DataID,
+		DataName:         in.DataName,
+		TermType:         string(in.TermType),
+		Values:           in.Values,
+		SchemaAffordance: in.SchemaAffordance,
 	}
 }
 

@@ -28,6 +28,7 @@ import (
 	thingsrulesceneinfo "github.com/i-Things/things/service/apisvr/internal/handler/things/rule/scene/info"
 	thingsschemacommon "github.com/i-Things/things/service/apisvr/internal/handler/things/schema/common"
 	thingsslotarea "github.com/i-Things/things/service/apisvr/internal/handler/things/slot/area"
+	thingsslotuser "github.com/i-Things/things/service/apisvr/internal/handler/things/slot/user"
 	thingsuserdevicecollect "github.com/i-Things/things/service/apisvr/internal/handler/things/user/device/collect"
 	thingsuserdeviceshare "github.com/i-Things/things/service/apisvr/internal/handler/things/user/device/share"
 	"github.com/i-Things/things/service/apisvr/internal/svc"
@@ -811,6 +812,20 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		ws.WithPrefix("/api/v1/things/slot/area"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckTokenWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/subscribe",
+					Handler: thingsslotuser.SubscribeHandler(serverCtx),
+				},
+			}...,
+		),
+		ws.WithPrefix("/api/v1/things/slot/user"),
 	)
 
 	server.AddRoutes(

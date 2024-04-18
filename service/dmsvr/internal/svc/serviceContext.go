@@ -68,6 +68,7 @@ type ServiceContext struct {
 	DeviceCache    *caches.Cache[dm.DeviceInfo]
 	TenantCache    *caches.Cache[tenant.Info]
 	WebHook        *tenantOpenWebhook.Info
+	NodeID         int64
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -169,6 +170,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		StatusRepo:     statusR,
 		SendRepo:       sendR,
 		WebHook:        webHook,
+		NodeID:         nodeID,
 	}
 }
 

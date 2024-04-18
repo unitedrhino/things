@@ -37,6 +37,7 @@ func (l *TimerHandle) SceneTiming() error {
 			do := rulelogic.PoToSceneInfoDo(po.SceneInfo)
 			if po.SceneInfo == nil {
 				logx.WithContext(l.ctx).Errorf("trigger timer not bind scene, trigger:%v", utils.Fmt(po))
+				relationDB.NewSceneIfTriggerRepo(l.ctx).Delete(l.ctx, po.ID)
 				continue
 			}
 			if !do.When.IsHit(ctx, now, nil) {

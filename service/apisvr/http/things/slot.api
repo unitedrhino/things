@@ -20,7 +20,22 @@ service api {
 	post /delete (SlotAreaSaveReq) returns ()
 }
 
+@server (
+	group: things/slot/user
+	prefix: /api/v1/things/slot/user
+	middleware:  CheckTokenWare
+)
+service api {
+	@doc "插槽用户订阅"
+	@handler subscribe
+	post /subscribe (SlotUserSubscribeReq) returns ()
+}
+
 type (
+	SlotUserSubscribeReq{
+		Code string  `json:"code"`
+		Params map[string ]interface{} `json:"params"`
+	}
 	SlotAreaSaveReq{
 		ProjectID int64 `json:"projectID,string,optional"`       //项目id（只读）
 		AreaID int64 `json:"areaID,string,optional"`             //项目区域id（只读）
