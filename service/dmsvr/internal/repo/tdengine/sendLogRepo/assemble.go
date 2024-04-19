@@ -10,7 +10,7 @@ func ToDeviceLog(db map[string]any) *deviceLog.Send {
 		TenantCode: cast.ToString(db["tenant_code"]),
 		ProjectID:  cast.ToInt64(db["project_id"]),
 		AreaID:     cast.ToInt64(db["area_id"]),
-		UserID:     cast.ToInt64(db["tenant_code"]),
+		UserID:     cast.ToInt64(db["user_id"]),
 		Action:     cast.ToString(db["action"]),
 		TraceID:    cast.ToString(db["trace_id"]),
 		ResultCode: cast.ToInt64(db["result_code"]),
