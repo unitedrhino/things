@@ -52,7 +52,7 @@ type (
         Secret string `json:"secret,optional"`                                  //动态注册产品秘钥 只读
         Desc *string `json:"desc,optional"`                       //描述
         Tags []*Tag `json:"tags,optional"`                                         // 产品tag
-        ProtocolConf map[string]string `json:"protocolConf,optional,omitempty"` //协议配置
+        ProtocolConf []*Tag `json:"protocolConf,optional,omitempty"` //协议配置
     //  DevStatus *string `json:"devStatus,optional,omitempty"`                           // 产品状态
         Protocol           *ProtocolInfo           `json:"protocol,omitempty"`
         Category           *ProductCategory        `json:"category,omitempty"`

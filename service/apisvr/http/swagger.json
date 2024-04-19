@@ -539,7 +539,7 @@
     },
     "/api/v1/things/device/info/index": {
       "post": {
-        "summary": "获取设备信息列表",
+        "summary": "获取设备列表",
         "operationId": "postApiV1ThingsDeviceInfoIndex",
         "responses": {
           "200": {
@@ -607,10 +607,12 @@
         },
         "parameters": [
           {
-            "name": "file",
-            "in": "formData",
+            "name": "body",
+            "in": "body",
             "required": true,
-            "type": "file"
+            "schema": {
+              "$ref": "#/definitions/DeviceMultiImportReq"
+            }
           }
         ],
         "tags": [
@@ -660,7 +662,7 @@
     },
     "/api/v1/things/device/info/read": {
       "post": {
-        "summary": "获取设备信息详情",
+        "summary": "获取设备详情",
         "operationId": "postApiV1ThingsDeviceInfoRead",
         "responses": {
           "200": {
@@ -2875,6 +2877,87 @@
         ]
       }
     },
+    "/api/v1/things/product/category/schema/index": {
+      "post": {
+        "summary": "获取产品品类列表",
+        "operationId": "postApiV1ThingsProductCategorySchemaIndex",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/ProductCategorySchemaIndexResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProductCategorySchemaIndexReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/product/category",
+          "thingsProductCategory"
+        ]
+      }
+    },
+    "/api/v1/things/product/category/schema/multi-update": {
+      "post": {
+        "summary": "获取产品品类列表",
+        "operationId": "postApiV1ThingsProductCategorySchemaMulti-update",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProductCategorySchemaMultiUpdateReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/product/category",
+          "thingsProductCategory"
+        ]
+      }
+    },
     "/api/v1/things/product/category/update": {
       "post": {
         "summary": "更新产品品类",
@@ -4564,6 +4647,45 @@
         ]
       }
     },
+    "/api/v1/things/slot/user/subscribe": {
+      "post": {
+        "summary": "插槽用户订阅",
+        "operationId": "postApiV1ThingsSlotUserSubscribe",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SlotUserSubscribeReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/slot/user",
+          "thingsSlotUser"
+        ]
+      }
+    },
     "/api/v1/things/user/device/collect/index": {
       "post": {
         "summary": "获取收藏设备列表",
@@ -4993,6 +5115,14 @@
         },
         "name": {
           "type": "string"
+        },
+        "productCategoryID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "productCategoryWithFather": {
+          "type": "boolean",
+          "format": "boolean"
         }
       },
       "title": "CommonSchemaIndexReq"
@@ -5560,6 +5690,11 @@
           "description": " 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写",
           "maximum": 5
         },
+        "rssi": {
+          "type": "integer",
+          "format": "int64",
+          "description": "信号强度"
+        },
         "createdTime": {
           "type": "integer",
           "format": "int64",
@@ -5575,7 +5710,10 @@
           "description": "获取的属性列表,如果不传withProperty,则不会返回"
         },
         "protocolConf": {
-          "type": "object",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Tag"
+          },
           "description": "协议配置"
         },
         "profiles": {
@@ -8555,6 +8693,58 @@
         "list"
       ]
     },
+    "ProductCategorySchemaIndexReq": {
+      "type": "object",
+      "properties": {
+        "productCategoryID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "withFather": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      },
+      "title": "ProductCategorySchemaIndexReq",
+      "required": [
+        "productCategoryID"
+      ]
+    },
+    "ProductCategorySchemaIndexResp": {
+      "type": "object",
+      "properties": {
+        "identifiers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "ProductCategorySchemaIndexResp",
+      "required": [
+        "identifiers"
+      ]
+    },
+    "ProductCategorySchemaMultiUpdateReq": {
+      "type": "object",
+      "properties": {
+        "productCategoryID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "identifiers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "ProductCategorySchemaMultiUpdateReq",
+      "required": [
+        "productCategoryID",
+        "identifiers"
+      ]
+    },
     "ProductCustom": {
       "type": "object",
       "properties": {
@@ -8693,7 +8883,10 @@
           "description": " 产品tag"
         },
         "protocolConf": {
-          "type": "object",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Tag"
+          },
           "description": "协议配置"
         },
         "protocol": {
@@ -9776,6 +9969,22 @@
         }
       },
       "title": "SlotAreaSaveReq"
+    },
+    "SlotUserSubscribeReq": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "params": {
+          "type": "object"
+        }
+      },
+      "title": "SlotUserSubscribeReq",
+      "required": [
+        "code",
+        "params"
+      ]
     },
     "Tag": {
       "type": "object",
