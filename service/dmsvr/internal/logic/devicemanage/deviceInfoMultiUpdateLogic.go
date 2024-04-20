@@ -3,7 +3,6 @@ package devicemanagelogic
 import (
 	"context"
 	"gitee.com/i-Things/share/def"
-	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/dmExport"
@@ -36,23 +35,23 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 		return nil, errors.Parameter.AddMsgf("设备不能在root节点的区域下")
 	}
 	for _, v := range in.Devices {
-		err := l.svcCtx.StatusRepo.ModifyDeviceArea(l.ctx, devices.Core{
-			ProductID:  v.ProductID,
-			DeviceName: v.DeviceName,
-		}, in.AreaID)
-		if err != nil {
-			l.Error(err)
-			return nil, errors.Database.AddDetail(err)
-		}
-		err = l.svcCtx.SendRepo.ModifyDeviceArea(l.ctx, devices.Core{
-			ProductID:  v.ProductID,
-			DeviceName: v.DeviceName,
-		}, in.AreaID)
-		if err != nil {
-			l.Error(err)
-			return nil, errors.Database.AddDetail(err)
-		}
-		err = l.svcCtx.DeviceCache.SetData(l.ctx, dmExport.GenDeviceInfoKey(v.ProductID, v.DeviceName), nil)
+		//err := l.svcCtx.StatusRepo.ModifyDeviceArea(l.ctx, devices.Core{
+		//	ProductID:  v.ProductID,
+		//	DeviceName: v.DeviceName,
+		//}, in.AreaID)
+		//if err != nil {
+		//	l.Error(err)
+		//	return nil, errors.Database.AddDetail(err)
+		//}
+		//err = l.svcCtx.SendRepo.ModifyDeviceArea(l.ctx, devices.Core{
+		//	ProductID:  v.ProductID,
+		//	DeviceName: v.DeviceName,
+		//}, in.AreaID)
+		//if err != nil {
+		//	l.Error(err)
+		//	return nil, errors.Database.AddDetail(err)
+		//}
+		err := l.svcCtx.DeviceCache.SetData(l.ctx, dmExport.GenDeviceInfoKey(v.ProductID, v.DeviceName), nil)
 		if err != nil {
 			l.Error(err)
 		}

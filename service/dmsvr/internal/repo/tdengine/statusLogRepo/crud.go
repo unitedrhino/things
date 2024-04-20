@@ -21,15 +21,6 @@ func (s *StatusLogRepo) fillFilter(sql sq.SelectBuilder, filter deviceLog.Status
 	if filter.Status != 0 {
 		sql = sql.Where("`status`=?", filter.Status == def.True)
 	}
-	if len(filter.TenantCode) != 0 {
-		sql = sql.Where("`tenant_code`=?", filter.TenantCode)
-	}
-	if filter.ProjectID != 0 {
-		sql = sql.Where("`project_id` =?", filter.ProjectID)
-	}
-	if len(filter.AreaIDs) != 0 {
-		sql = sql.Where(fmt.Sprintf("`area_id` in (%v)", stores.ArrayToSql(filter.AreaIDs)))
-	}
 	return sql
 }
 
@@ -79,8 +70,8 @@ func (s *StatusLogRepo) GetDeviceLog(ctx context.Context, filter deviceLog.Statu
 }
 
 func (s *StatusLogRepo) Insert(ctx context.Context, data *deviceLog.Status) error {
-	sql := fmt.Sprintf(" %s (`ts`, `status`) values (?,?);",
-		s.GetLogTableName(data.ProductID, data.DeviceName))
+	sql := fmt.Sprintf("  %s using %s tags('%s','%s') (`ts`, `status`) values (?,?) ",
+		s.GetLogTableName(data.ProductID, data.DeviceName), s.GetLogStableName(), data.ProductID, data.DeviceName)
 	s.t.AsyncInsert(sql, data.Timestamp, data.Status)
 	return nil
 }

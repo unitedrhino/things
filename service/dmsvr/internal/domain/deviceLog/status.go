@@ -9,9 +9,6 @@ import (
 
 type (
 	Status struct {
-		TenantCode string    `json:"tenantCode,omitempty"`
-		ProjectID  int64     `json:"projectID,omitempty"`
-		AreaID     int64     `json:"areaID"`
 		ProductID  string    `json:"productID"`  // 产品id
 		DeviceName string    `json:"deviceName"` // 设备名称
 		Status     int64     `json:"status"`     // 设备状态 connected:上线 disconnected:下线
@@ -30,6 +27,6 @@ type (
 		GetCountLog(ctx context.Context, filter StatusFilter, page def.PageInfo2) (int64, error)
 		Insert(ctx context.Context, data *Status) error
 		ManageRepo
-		ModifyRepo
+		//ModifyRepo
 	}
 )

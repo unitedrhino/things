@@ -28,8 +28,6 @@ func NewStatusLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *St
 
 func (l *StatusLogIndexLogic) StatusLogIndex(in *dm.StatusLogIndexReq) (*dm.StatusLogIndexResp, error) {
 	filter := deviceLog.StatusFilter{
-		ProjectID:  in.ProjectID,
-		AreaIDs:    in.AreaIDs,
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 		Status:     in.Status,

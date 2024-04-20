@@ -34,8 +34,6 @@ func (l *SendLogIndexLogic) SendLogIndex(req *types.DeviceMsgSendLogIndexReq) (r
 		TimeStart:  req.TimeStart,
 		TimeEnd:    req.TimeEnd,
 		Page:       logic.ToDiPageRpc(req.Page),
-		ProjectID:  req.ProjectID,
-		AreaIDs:    req.AreaIDs,
 		UserID:     req.UserID,
 		Actions:    req.Actions,
 		ResultCode: req.ResultCode,
@@ -49,8 +47,7 @@ func (l *SendLogIndexLogic) SendLogIndex(req *types.DeviceMsgSendLogIndexReq) (r
 	for _, v := range dmResp.List {
 		info = append(info, &types.DeviceMsgSendLogInfo{
 			Timestamp:  v.Timestamp,
-			ProjectID:  v.ProjectID,
-			AreaID:     v.AreaID,
+			Account:    v.Account,
 			UserID:     v.UserID,
 			ProductID:  v.ProductID,
 			DeviceName: v.DeviceName,

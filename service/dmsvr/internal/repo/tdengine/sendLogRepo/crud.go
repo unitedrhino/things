@@ -18,15 +18,6 @@ func (s *SendLogRepo) fillFilter(sql sq.SelectBuilder, filter deviceLog.SendFilt
 	if len(filter.DeviceName) != 0 {
 		sql = sql.Where("`device_name`=?", filter.DeviceName)
 	}
-	if len(filter.TenantCode) != 0 {
-		sql = sql.Where("`tenant_code`=?", filter.TenantCode)
-	}
-	if filter.ProjectID != 0 {
-		sql = sql.Where("`project_id` =?", filter.ProjectID)
-	}
-	if len(filter.AreaIDs) != 0 {
-		sql = sql.Where(fmt.Sprintf("`area_id` in (%v)", stores.ArrayToSql(filter.AreaIDs)))
-	}
 	return sql
 }
 
@@ -76,8 +67,8 @@ func (s *SendLogRepo) GetDeviceLog(ctx context.Context, filter deviceLog.SendFil
 }
 
 func (s *SendLogRepo) Insert(ctx context.Context, data *deviceLog.Send) error {
-	sql := fmt.Sprintf(" %s (`ts`, `user_id` ,`action` ,`data_id` ,`trace_id` ,`content`,`result_code`) values (?,?,?,?,?,?,?);",
-		s.GetLogTableName(data.ProductID, data.DeviceName))
-	s.t.AsyncInsert(sql, data.Timestamp, data.UserID, data.Action, data.DataID, data.TraceID, data.Content, data.ResultCode)
+	sql := fmt.Sprintf("  %s using %s tags('%s','%s')(`ts`, `user_id`,`account` ,`action` ,`data_id` ,`trace_id` ,`content`,`result_code`) values (?,?,?,?,?,?,?,?) ",
+		s.GetLogTableName(data.ProductID, data.DeviceName), s.GetLogStableName(), data.ProductID, data.DeviceName)
+	s.t.AsyncInsert(sql, data.Timestamp, data.UserID, data.Account, data.Action, data.DataID, data.TraceID, data.Content, data.ResultCode)
 	return nil
 }

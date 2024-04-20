@@ -117,6 +117,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 					TraceID:    utils.TraceIdFromContext(ctx),
 					UserID:     uc.UserID,
 					DataID:     dataID,
+					Account:    uc.Account,
 					Content:    utils.Fmt(content),
 					ResultCode: errors.Fmt(err).GetCode(),
 				})

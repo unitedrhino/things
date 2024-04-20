@@ -7,10 +7,8 @@ import (
 
 func ToDeviceLog(db map[string]any) *deviceLog.Send {
 	return &deviceLog.Send{
-		TenantCode: cast.ToString(db["tenant_code"]),
-		ProjectID:  cast.ToInt64(db["project_id"]),
-		AreaID:     cast.ToInt64(db["area_id"]),
 		UserID:     cast.ToInt64(db["user_id"]),
+		Account:    cast.ToString(db["account"]),
 		Action:     cast.ToString(db["action"]),
 		TraceID:    cast.ToString(db["trace_id"]),
 		DataID:     cast.ToString(db["data_id"]),

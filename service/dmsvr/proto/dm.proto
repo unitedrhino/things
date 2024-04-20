@@ -567,8 +567,6 @@ message StatusLogIndexReq{
   int64   timeStart = 3;//获取时间的开始(毫秒时间戳)
   int64   timeEnd = 4;//时间的结束(毫秒时间戳)
   PageInfo   page = 5;//分页信息
-  int64 projectID = 7;//项目id
-  repeated int64 areaIDs = 8;//过滤内容
   int64 status = 9;//在线状态
 }
 
@@ -596,8 +594,6 @@ message SendLogIndexReq{
   int64   timeStart = 3;//获取时间的开始(毫秒时间戳)
   int64   timeEnd = 4;//时间的结束(毫秒时间戳)
   PageInfo   page = 5;//分页信息
-  int64 projectID = 7;//项目id
-  repeated int64 areaIDs = 8;//过滤内容
   int64 userID = 9;
   repeated string actions =10;
   int64 resultCode = 12;//请求结果状态,200为成功
@@ -612,8 +608,7 @@ message SendLogIndexResp{
 /*设备的日志数据*/
 message SendLogInfo{
   int64 timestamp = 1;//发生时间戳(毫秒时间戳)
-  int64 projectID = 2 ;
-  int64 areaID = 3;//
+  string account = 2;//账号
   int64 userID = 4;//
   string productID = 5;//
   string deviceName = 6;//

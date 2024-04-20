@@ -433,8 +433,6 @@ type DeviceMsgSendLogIndexReq struct {
 	TimeStart  int64     `json:"timeStart,string,optional"` //获取时间的开始(毫秒时间戳)
 	TimeEnd    int64     `json:"timeEnd,string,optional"`   //时间的结束(毫秒时间戳)
 	Page       *PageInfo `json:"page,optional"`             //分页信息
-	ProjectID  int64     `json:"projectID,string,optional"` //项目id
-	AreaIDs    []int64   `json:"areaIDs,string,optional"`   //过滤内容
 	UserID     int64     `json:"userID,string,optional"`
 	Actions    []string  `json:"actions,optional"`
 	ResultCode int64     `json:"resultCode,optional"` //请求结果状态,200为成功
@@ -447,8 +445,7 @@ type DeviceMsgSendLogIndexResp struct {
 
 type DeviceMsgSendLogInfo struct {
 	Timestamp  int64  `json:"timestamp,string,optional"` //发生时间戳(毫秒时间戳)
-	ProjectID  int64  `json:"projectID,string,optional"`
-	AreaID     int64  `json:"areaID,string,optional"` //
+	Account    string `json:"account,optional"`
 	UserID     int64  `json:"userID,string,optional"` //
 	ProductID  string `json:"productID,optional"`     //
 	DeviceName string `json:"deviceName,optional"`    //
@@ -475,8 +472,6 @@ type DeviceMsgStatusLogIndexReq struct {
 	TimeStart  int64     `json:"timeStart,string,optional"` //获取时间的开始(毫秒时间戳)
 	TimeEnd    int64     `json:"timeEnd,string,optional"`   //时间的结束(毫秒时间戳)
 	Page       *PageInfo `json:"page,optional"`             //分页信息
-	ProjectID  int64     `json:"projectID,optional,string"` //项目id
-	AreaIDs    []int64   `json:"areaIDs,optional,string"`   //过滤内容
 	Status     int64     `json:"status,optional"`           //在线状态
 }
 

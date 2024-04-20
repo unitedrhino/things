@@ -34,8 +34,6 @@ func (l *StatusLogIndexLogic) StatusLogIndex(req *types.DeviceMsgStatusLogIndexR
 		TimeStart:  req.TimeStart,
 		TimeEnd:    req.TimeEnd,
 		Page:       logic.ToDiPageRpc(req.Page),
-		ProjectID:  req.ProjectID,
-		AreaIDs:    req.AreaIDs,
 		Status:     req.Status,
 	})
 	if err != nil {

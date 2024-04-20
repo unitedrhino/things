@@ -20,8 +20,7 @@ func ToDataHubLogIndex(log *deviceLog.Hub) *dm.HubLogInfo {
 func ToDataSendLogIndex(log *deviceLog.Send) *dm.SendLogInfo {
 	return &dm.SendLogInfo{
 		Timestamp:  log.Timestamp.UnixMilli(),
-		ProjectID:  log.ProjectID,
-		AreaID:     log.AreaID,
+		Account:    log.Account,
 		UserID:     log.UserID,
 		ProductID:  log.ProductID,
 		DeviceName: log.DeviceName,

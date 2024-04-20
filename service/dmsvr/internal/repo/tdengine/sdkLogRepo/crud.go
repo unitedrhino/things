@@ -39,7 +39,7 @@ func (d SDKLogRepo) GetDeviceSDKLog(ctx context.Context,
 
 func (d SDKLogRepo) Insert(ctx context.Context, data *deviceLog.SDK) error {
 	sql := fmt.Sprintf(
-		" %s using %s tags('%s','%s')(`ts`, `content`,`log_level`) values (?,?,?);",
+		" %s using %s tags('%s','%s')(`ts`, `content`,`log_level`) values (?,?,?)",
 		d.GetSDKLogTableName(data.ProductID, data.DeviceName), d.GetSDKLogStableName(), data.ProductID, data.DeviceName)
 	//if _, err := d.t.ExecContext(ctx, sql, data.Timestamp, data.Content, data.LogLevel); err != nil {
 	//	logx.WithContext(ctx).Errorf(

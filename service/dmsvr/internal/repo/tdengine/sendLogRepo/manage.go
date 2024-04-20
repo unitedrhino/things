@@ -9,8 +9,8 @@ import (
 func (s *SendLogRepo) InitProduct(ctx context.Context, productID string) (err error) {
 	s.once.Do(func() {
 		sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s "+
-			"(`ts` timestamp,`user_id` BIGINT,`action` BINARY(50),`data_id` BINARY(50),`trace_id` BINARY(50),`content` BINARY(200),`result_code` BINARY(50)) "+
-			"TAGS (`tenant_code` BINARY(50),`project_id` BIGINT,`area_id` BIGINT,`product_id` BINARY(50),`device_name`  BINARY(50));",
+			"(`ts` timestamp,`user_id` BIGINT,`account` BINARY(200),`action` BINARY(50),`data_id` BINARY(50),`trace_id` BINARY(50),`content` BINARY(200),`result_code` BINARY(50)) "+
+			"TAGS (`product_id` BINARY(50),`device_name`  BINARY(50));",
 			s.GetLogStableName())
 		_, err = s.t.ExecContext(ctx, sql)
 	})
@@ -30,29 +30,8 @@ func (s *SendLogRepo) DeleteDevice(ctx context.Context, productID string, device
 }
 
 func (s *SendLogRepo) InitDevice(ctx context.Context, device devices.Info) error {
-	sql := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s USING %s (`tenant_code`,`project_id`,`area_id`,`product_id`,`device_name` ) TAGS (?,?,?,?,?);",
+	sql := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s USING %s (`product_id`,`device_name` ) TAGS (?,?,?,?,?);",
 		s.GetLogTableName(device.ProductID, device.DeviceName), s.GetLogStableName())
-	_, err := s.t.ExecContext(ctx, sql, device.TenantCode, device.ProjectID, device.AreaID, device.ProductID, device.DeviceName)
-	return err
-}
-
-func (s *SendLogRepo) ModifyDeviceTenant(ctx context.Context, device devices.Core, tenantCode string) error {
-	sql := fmt.Sprintf("ALTER TABLE %s SET TAG `tenant_code`=?;",
-		s.GetLogTableName(device.ProductID, device.DeviceName))
-	_, err := s.t.ExecContext(ctx, sql, tenantCode)
-	return err
-}
-
-func (s *SendLogRepo) ModifyDeviceArea(ctx context.Context, device devices.Core, areaID int64) error {
-	sql := fmt.Sprintf("ALTER TABLE %s SET TAG `area_id`=?;",
-		s.GetLogTableName(device.ProductID, device.DeviceName))
-	_, err := s.t.ExecContext(ctx, sql, areaID)
-	return err
-}
-
-func (s *SendLogRepo) ModifyDeviceProject(ctx context.Context, device devices.Core, projectID int64) error {
-	sql := fmt.Sprintf("ALTER TABLE %s SET TAG `project_id`=?;",
-		s.GetLogTableName(device.ProductID, device.DeviceName))
-	_, err := s.t.ExecContext(ctx, sql, projectID)
+	_, err := s.t.ExecContext(ctx, sql, device.ProductID, device.DeviceName)
 	return err
 }

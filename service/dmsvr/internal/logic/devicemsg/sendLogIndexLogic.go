@@ -28,8 +28,6 @@ func NewSendLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Send
 
 func (l *SendLogIndexLogic) SendLogIndex(in *dm.SendLogIndexReq) (*dm.SendLogIndexResp, error) {
 	filter := deviceLog.SendFilter{
-		ProjectID:  in.ProjectID,
-		AreaIDs:    in.AreaIDs,
 		UserID:     in.UserID,
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
