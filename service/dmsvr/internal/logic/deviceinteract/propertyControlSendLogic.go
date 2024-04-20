@@ -109,7 +109,6 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 		ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
 			uc := ctxs.GetUserCtx(l.ctx)
 			for dataID, content := range param {
-				contentStr, _ := json.Marshal(content)
 				_ = l.svcCtx.SendRepo.Insert(ctx, &deviceLog.Send{
 					ProductID:  in.ProductID,
 					Action:     "propertyControlSend",
@@ -118,7 +117,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 					TraceID:    utils.TraceIdFromContext(ctx),
 					UserID:     uc.UserID,
 					DataID:     dataID,
-					Content:    string(contentStr),
+					Content:    utils.Fmt(content),
 					ResultCode: errors.Fmt(err).GetCode(),
 				})
 			}

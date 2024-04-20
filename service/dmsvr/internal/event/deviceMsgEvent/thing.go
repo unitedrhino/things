@@ -131,9 +131,6 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 			if err != nil {
 				l.Error(err)
 			}
-			if err != nil {
-				l.Error(err)
-			}
 		}
 		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).Infof("%s.DeviceThingPropertyReport startTime:%v",
 			utils.FuncName(), startTime)
