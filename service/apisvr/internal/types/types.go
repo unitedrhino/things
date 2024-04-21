@@ -815,7 +815,7 @@ type OtaFirmwareJobInfo struct {
 	IsNeedConfirm    int64    `json:"isNeedConfirm,optional,range=[0:2]"`
 	Target           string   `json:"target,optional"`                      // 分组升级和区域升级填写对应的id
 	TargetSelection  int64    `json:"targetSelection,optional,range=[0:4]"` //升级范围。 1：全量升级。 2：定向升级。 3：灰度升级。 4：分组升级(不做) 5: 区域升级(不做)
-	TenantCodes      []string `json:"tenantCodes"`                          //指定租户
+	TenantCodes      []string `json:"tenantCodes,optional"`                 //指定租户
 	OtaFirmwareJobDynamic
 	OtaFirmwareJobStatic
 }
