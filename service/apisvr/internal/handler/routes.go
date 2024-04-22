@@ -446,7 +446,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/things/firmware/job"),
+		rest.WithPrefix("/api/v1/things/ota/firmware/job"),
 	)
 
 	server.AddRoutes(

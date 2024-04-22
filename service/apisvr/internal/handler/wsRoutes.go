@@ -447,7 +447,7 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		ws.WithPrefix("/api/v1/things/firmware/job"),
+		ws.WithPrefix("/api/v1/things/ota/firmware/job"),
 	)
 
 	server.AddRoutes(

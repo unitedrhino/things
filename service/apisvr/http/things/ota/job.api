@@ -11,7 +11,7 @@ info(
 @server(
 //asdfawefa
     group: things/ota/firmware/job
-    prefix: /api/v1/things/firmware/job
+    prefix: /api/v1/things/ota/firmware/job
     middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api{
