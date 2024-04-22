@@ -61,7 +61,7 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 				DeviceName: v.DeviceName,
 			})
 		}
-		if len(udss) == 0 {
+		if len(udss) == 0 && in.WithShared == def.SelectTypeOnly {
 			return nil, errors.NotFind
 		}
 	}
