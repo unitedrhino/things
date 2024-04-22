@@ -16,7 +16,7 @@ const (
 type StateKeep struct {
 	Type  StateKeepType `json:"type"`  //持续时间: duration  重复次数 repeating
 	Value int64         `json:"value"` //持续的时间或重复的次数
-	Unit  TimeUnit      `json:"unit"`  //时间单位 second:秒  minute:分钟  hour:小时  week:星期 month:月
+	//Unit  TimeUnit      `json:"unit"`  //时间单位 second:秒  minute:分钟  hour:小时  week:星期 month:月
 }
 
 func (s StateKeepType) Validate() error {
@@ -33,8 +33,8 @@ func (s *StateKeep) Validate() error {
 	if err := s.Type.Validate(); err != nil {
 		return err
 	}
-	if err := s.Unit.Validate(); err != nil {
-		return err
-	}
+	//if err := s.Unit.Validate(); err != nil {
+	//	return err
+	//}
 	return nil
 }

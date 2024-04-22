@@ -38,7 +38,7 @@ type TimeRange struct {
 }
 
 type DateRange struct {
-	Type      DateRangeType `json:"type"`      //日期类型 workday: 工作日 weekend: 周末 holiday: 节假日 custom:自定义
+	Type      DateRangeType `json:"type"`      //日期类型 workday: 工作日 weekend: 周末 holiday: 节假日  custom:自定义
 	StartDate string        `json:"startDate"` //开始日期 2006-01-02
 	EndDate   string        `json:"endDate"`   //结束日期 2006-01-02
 }
@@ -51,18 +51,18 @@ type Timer struct {
 	ExecRepeat int64 `json:"execRepeat,string"` //二进制周一到周日 11111111
 }
 
-type TimeUnit string
-
-const (
-	TimeUnitSeconds TimeUnit = "seconds"
-	TimeUnitMinutes TimeUnit = "minutes"
-	TimeUnitHours   TimeUnit = "hours"
-)
-
-type UnitTime struct {
-	Time int64    `json:"time"` //延迟时间
-	Unit TimeUnit `json:"unit"` //时间单位 second:秒  minute:分钟  hour:小时  week:星期 month:月
-}
+//type TimeUnit string
+//
+//const (
+//	TimeUnitSeconds TimeUnit = "seconds"
+//	TimeUnitMinutes TimeUnit = "minutes"
+//	TimeUnitHours   TimeUnit = "hours"
+//)
+//
+//type UnitTime struct {
+//	Time int64    `json:"time"` //延迟时间
+//	Unit TimeUnit `json:"unit"` //时间单位 second:秒  minute:分钟  hour:小时  week:星期 month:月
+//}
 
 func (t *TimeRange) Validate() error {
 	if t == nil {
@@ -123,33 +123,6 @@ func (t Timers) Validate() error {
 		}
 	}
 	return nil
-}
-
-func (t TimeUnit) Validate() error {
-	if !utils.SliceIn(t, TimeUnitSeconds, TimeUnitMinutes, TimeUnitHours) {
-		return errors.Parameter.AddMsg("时间单位不支持:" + string(t))
-	}
-	return nil
-}
-
-func (a *UnitTime) Validate() error {
-	if a == nil {
-		return nil
-	}
-	return a.Unit.Validate()
-}
-
-func (a *UnitTime) Execute() {
-	var delayTime = time.Duration(a.Time)
-	switch a.Unit {
-	case TimeUnitSeconds:
-		delayTime *= time.Second
-	case TimeUnitMinutes:
-		delayTime *= time.Minute
-	case TimeUnitHours:
-		delayTime *= time.Hour
-	}
-	time.Sleep(delayTime)
 }
 
 func (d *DateRange) IsHit(ctx context.Context, t time.Time, repo WhenRepo) bool {

@@ -77,6 +77,11 @@ func (a *Action) Validate(repo ValidateRepo) error {
 			return errors.Parameter.AddMsg("对应的操作类型下没有进行配置:" + string(a.Type))
 		}
 		return a.Device.Validate(repo)
+	case ActionExecutorNotify:
+		if a.Notify == nil {
+			return errors.Parameter.AddMsg("对应的操作类型下没有进行配置:" + string(a.Type))
+		}
+		return a.Notify.Validate(repo)
 	//case ActionExecutorAlarm:
 	//	if a.Alarm == nil {
 	//		return errors.Parameter.AddMsg("对应的操作类型下没有进行配置:" + string(a.Type))
@@ -95,6 +100,12 @@ func (a *Action) Execute(ctx context.Context, repo ActionRepo) error {
 		time.Sleep(time.Second * time.Duration(a.Delay))
 	case ActionExecutorDevice:
 		err := a.Device.Execute(ctx, repo)
+		if err != nil {
+			logx.WithContext(ctx).Errorf("%s.Execute Action:%#v err:%v", utils.FuncName(), a, err)
+			return err
+		}
+	case ActionExecutorNotify:
+		err := a.Notify.Execute(ctx, repo)
 		if err != nil {
 			logx.WithContext(ctx).Errorf("%s.Execute Action:%#v err:%v", utils.FuncName(), a, err)
 			return err

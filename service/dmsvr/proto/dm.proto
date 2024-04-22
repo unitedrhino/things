@@ -1019,7 +1019,7 @@ message DeviceInfoIndexReq{
   int64 isOnline = 10; //在线状态过滤  1离线 2在线
   int64  productCategoryID = 11;//产品品类id
   repeated DeviceCore devices =12;
-  int64 isShared = 13;//过滤分享的设备(这里只获取分享的设备)
+  int64 withShared = 13;//过滤分享的设备(这里只获取分享的设备) 1: 同时获取分享的设备 2:只获取分享的设备
   string tenantCode = 14;//租户过滤
   repeated string versions =15;//版本列表
 }

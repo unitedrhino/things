@@ -19,6 +19,7 @@ const (
 	SceneTypeAuto   SceneType = "auto"   //自动化
 )
 
+// 多设备的场景联动
 type Info struct {
 	ID          int64       `json:"id"`
 	HeadImg     string      `json:"headImg"`  // 头像

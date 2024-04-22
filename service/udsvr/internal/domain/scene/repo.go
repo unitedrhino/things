@@ -1,6 +1,7 @@
 package scene
 
 import (
+	"gitee.com/i-Things/core/service/syssvr/client/notifymanage"
 	"gitee.com/i-Things/share/caches"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
@@ -53,9 +54,11 @@ type TermRepo struct {
 }
 
 type ActionRepo struct {
+	UserID         int64
 	DeviceInteract deviceinteract.DeviceInteract
 	DeviceM        devicemanage.DeviceManage
 	DeviceG        devicegroup.DeviceGroup
+	NotifyM        notifymanage.NotifyManage
 }
 
 type AlarmRepo interface {

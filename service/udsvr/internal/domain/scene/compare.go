@@ -18,6 +18,7 @@ const (
 	CmpTypeLt  CmpType = "lt"  //小于
 	CmpTypeLte CmpType = "lte" //小于等于
 	CmpTypeIn  CmpType = "in"  //在xx值之中,可以有n个参数
+	CmpTypeAll CmpType = "all" //全部触发
 )
 
 func (t CmpType) IsHit(dataType schema.DataType, data any, values []string) bool {

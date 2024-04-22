@@ -60,10 +60,10 @@ func (t *Term) Validate(repo ValidateRepo) error {
 	return nil
 }
 func (t CmpType) Validate(values []string) error {
-	if !utils.SliceIn(t, CmpTypeEq, CmpTypeNot, CmpTypeBtw, CmpTypeGt, CmpTypeGte, CmpTypeLt, CmpTypeLte, CmpTypeIn) {
+	if !utils.SliceIn(t, CmpTypeEq, CmpTypeNot, CmpTypeBtw, CmpTypeGt, CmpTypeGte, CmpTypeLt, CmpTypeLte, CmpTypeIn, CmpTypeAll) {
 		return errors.Parameter.AddMsg("动态条件类型 类型不支持:" + string(t))
 	}
-	if len(values) == 0 {
+	if len(values) == 0 && t != CmpTypeAll {
 		return errors.Parameter.AddMsg("动态条件类型 需要填写参数")
 	}
 	if utils.SliceIn(t, CmpTypeIn, CmpTypeBtw) && len(values) != 2 {

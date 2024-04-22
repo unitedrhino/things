@@ -41,6 +41,7 @@ const (
 	TriggerDeviceTypeConnected      TriggerDeviceType = "connected"
 	TriggerDeviceTypeDisConnected   TriggerDeviceType = "disConnected"
 	TriggerDeviceTypePropertyReport TriggerDeviceType = "propertyReport"
+	TriggerDeviceTypeEventReport    TriggerDeviceType = "eventReport"
 )
 
 func (t *TriggerDevice) Validate(repo ValidateRepo) error {
@@ -53,10 +54,28 @@ func (t *TriggerDevice) Validate(repo ValidateRepo) error {
 	if !utils.SliceIn(t.SelectType, SelectorDeviceAll, SelectDeviceFixed) {
 		return errors.Parameter.AddMsg("设备触发类型设备选择方式不支持:" + string(t.SelectType))
 	}
-	if !utils.SliceIn(t.Type, TriggerDeviceTypeConnected, TriggerDeviceTypeDisConnected, TriggerDeviceTypePropertyReport) {
+	if !utils.SliceIn(t.Type, TriggerDeviceTypeConnected, TriggerDeviceTypeDisConnected, TriggerDeviceTypePropertyReport, TriggerDeviceTypeEventReport) {
 		return errors.Parameter.AddMsgf("设备触发的触发类型不支持:%s", string(t.Type))
 	}
-	if t.Type == TriggerDeviceTypePropertyReport {
+	switch t.Type {
+	case TriggerDeviceTypeEventReport:
+		if len(t.DataID) == 0 {
+			return errors.Parameter.AddMsg("触发设备类型中的标识符需要填写")
+		}
+		v, err := repo.ProductSchemaCache.GetData(repo.Ctx, t.ProductID)
+		if err != nil {
+			return err
+		}
+		p := v.Event[t.DataID]
+		if p == nil {
+			return errors.Parameter.AddMsg("dataID不存在")
+		}
+		t.DataName = p.Name
+		t.SchemaAffordance = schema.DoToAffordanceStr(p)
+		if err := t.TermType.Validate(t.Values); err != nil {
+			return err
+		}
+	case TriggerDeviceTypePropertyReport:
 		if len(t.DataID) == 0 {
 			return errors.Parameter.AddMsg("触发设备类型中的标识符需要填写")
 		}

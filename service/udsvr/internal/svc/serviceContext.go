@@ -2,6 +2,7 @@ package svc
 
 import (
 	"gitee.com/i-Things/core/service/syssvr/client/areamanage"
+	"gitee.com/i-Things/core/service/syssvr/client/notifymanage"
 	"gitee.com/i-Things/core/service/syssvr/client/projectmanage"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
 	"gitee.com/i-Things/share/caches"
@@ -33,6 +34,7 @@ type SvrClient struct {
 	DeviceM            devicemanage.DeviceManage
 	DeviceG            devicegroup.DeviceGroup
 	TimedM             timedmanage.TimedManage
+	NotifyM            notifymanage.NotifyManage
 	AreaM              areamanage.AreaManage
 	ProjectM           projectmanage.ProjectManage
 	DeviceCache        *caches.Cache[dm.DeviceInfo]
@@ -50,6 +52,7 @@ type ServiceContext struct {
 func NewServiceContext(c config.Config) *ServiceContext {
 	var (
 		timedM         timedmanage.TimedManage
+		notifyM        notifymanage.NotifyManage
 		areaM          areamanage.AreaManage
 		projectM       projectmanage.ProjectManage
 		deviceM        devicemanage.DeviceManage
@@ -63,6 +66,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	timedM = timedmanage.NewTimedManage(zrpc.MustNewClient(c.TimedJobRpc.Conf))
 	areaM = areamanage.NewAreaManage(zrpc.MustNewClient(c.SysRpc.Conf))
 	projectM = projectmanage.NewProjectManage(zrpc.MustNewClient(c.SysRpc.Conf))
+	notifyM = notifymanage.NewNotifyManage(zrpc.MustNewClient(c.SysRpc.Conf))
 	if c.DmRpc.Mode == conf.ClientModeGrpc {
 		productM = productmanage.NewProductManage(zrpc.MustNewClient(c.DmRpc.Conf))
 		deviceM = devicemanage.NewDeviceManage(zrpc.MustNewClient(c.DmRpc.Conf))
@@ -96,6 +100,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		SvrClient: SvrClient{
 			TimedM:             timedM,
 			AreaM:              areaM,
+			NotifyM:            notifyM,
 			ProjectM:           projectM,
 			ProductM:           productM,
 			DeviceInteract:     deviceInteract,

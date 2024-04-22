@@ -3,6 +3,7 @@ package relationDB
 import (
 	"context"
 	"fmt"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/stores"
@@ -18,6 +19,7 @@ type (
 	DeviceFilter struct {
 		TenantCode        string
 		TenantCodes       []string
+		ProjectIDs        []int64
 		ProductID         string
 		AreaIDs           []int64
 		NotAreaIDs        []int64
@@ -33,6 +35,8 @@ type (
 		Cores             []*devices.Core
 		WithProduct       bool
 		ProductCategoryID int64
+		SharedDevices     []*devices.Core
+		SharedType        def.SelectType
 	}
 )
 
@@ -111,6 +115,24 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	if f.Range > 0 {
 		//f.Position 形如：point(116.393 39.905)
 		db = db.Where(f.Position.Range("position", f.Range))
+	}
+	if f.SharedType != 0 && len(f.SharedDevices) > 0 { //如果要获取共享设备
+		scope := func(db *gorm.DB) *gorm.DB {
+			for i, d := range f.SharedDevices {
+				if i == 0 {
+					db = db.Where("product_id = ? and device_name = ?", d.ProductID, d.DeviceName)
+					continue
+				}
+				db = db.Or("product_id = ? and device_name = ?", d.ProductID, d.DeviceName)
+			}
+			return db
+		}
+		switch f.SharedType {
+		case def.SelectTypeOnly: //直接过滤这几个设备
+			db = db.WithContext(ctxs.WithAllProject(ctx)).Where(scope(db))
+		case def.SelectTypeAll: //同时获取普通设备
+			db = db.WithContext(ctxs.WithRoot(ctx)).Where("project_id=? or ?", ctxs.GetUserCtx(ctx).ProjectID, scope(db))
+		}
 	}
 	return db
 }
