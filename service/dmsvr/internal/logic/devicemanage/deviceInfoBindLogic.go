@@ -59,6 +59,9 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 		in.AreaID = def.NotClassified
 	}
 	di.AreaID = stores.AreaID(in.AreaID)
+	if di.AreaID == 0 {
+		di.AreaID = def.NotClassified
+	}
 	err = diDB.Update(ctxs.WithRoot(l.ctx), di)
 	return &dm.Empty{}, err
 }
