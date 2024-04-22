@@ -52,6 +52,7 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceCore) (*dm.Empty, 
 	}
 	di.TenantCode = def.TenantCodeDefault
 	di.ProjectID = stores.ProjectID(dpi.DefaultProjectID)
+	di.AreaID = stores.AreaID(def.NotClassified)
 	err = diDB.Update(l.ctx, di)
 
 	return &dm.Empty{}, err
