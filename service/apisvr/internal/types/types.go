@@ -206,7 +206,7 @@ type DeviceInfoIndexReq struct {
 	AreaIDs           []int64   `json:"areaIDs,optional"`              //项目区域ids
 	IsOnline          int64     `json:"isOnline,optional,range=[0:2]"` // 在线状态过滤  1离线 2在线
 	ProductCategoryID int64     `json:"productCategoryID,optional"`
-	WithShared        int64     `json:"withShared,optional,range=[0:2]"` // 过滤分享的设备(这里只获取分享的设备) 1: 同时获取分享的设备 2:只获取分享的设备
+	WithShared        int64     `json:"withShared,optional,range=[0:2]"` // 过滤分享的设备1: 同时获取分享的设备 2:只获取分享的设备
 	Versions          []string  `json:"versions,optional"`
 }
 
@@ -620,6 +620,7 @@ type FirmwareInfo struct {
 	IsNeedToVerify int64           `json:"isNeedToVerify"` //是否需要验证
 	ModuleCode     string          `json:"moduleCode"`     //模块编码
 	FileList       []*FirmwareFile `json:"fileList"`       //文件列表
+	CreatedTime    int64           `json:"createdTime"`
 }
 
 type FirmwareUpdateReq struct {
@@ -816,6 +817,7 @@ type OtaFirmwareJobInfo struct {
 	Target           string   `json:"target,optional"`                      // 分组升级和区域升级填写对应的id
 	TargetSelection  int64    `json:"targetSelection,optional,range=[0:4]"` //升级范围。 1：全量升级。 2：定向升级。 3：灰度升级。 4：分组升级(不做) 5: 区域升级(不做)
 	TenantCodes      []string `json:"tenantCodes,optional"`                 //指定租户
+	CreatedTime      int64    `json:"createdTime,optional"`
 	OtaFirmwareJobDynamic
 	OtaFirmwareJobStatic
 }
@@ -848,11 +850,12 @@ type OtaFirmwareReadResp struct {
 }
 
 type OtaModuleInfo struct {
-	ID        int64  `json:"id,optional"`
-	Code      string `json:"code,optional"`
-	Name      string `json:"name,optional"`
-	Desc      string `json:"desc,optional"`
-	ProductID string `json:"productID,optional"`
+	ID          int64  `json:"id,optional"`
+	Code        string `json:"code,optional"`
+	Name        string `json:"name,optional"`
+	Desc        string `json:"desc,optional"`
+	ProductID   string `json:"productID,optional"`
+	CreatedTime int64  `json:"createdTime,optional"`
 }
 
 type OtaModuleInfoIndexReq struct {

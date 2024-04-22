@@ -105,6 +105,7 @@ type FirmwareInfo  {
     IsNeedToVerify int64           `json:"isNeedToVerify"` //是否需要验证
     ModuleCode     string          `json:"moduleCode"`          //模块编码
     FileList       []*FirmwareFile `json:"fileList"`              //文件列表
+    CreatedTime int64       `json:"createdTime"`
 }
 type (
     OtaFirmwareIndexReq  {

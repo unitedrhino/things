@@ -308,6 +308,7 @@ message OtaModuleInfo{
   string name = 3;
   string desc = 4;
   string productID = 5;
+  int64 createdTime = 6;
 }
 
 
@@ -1478,6 +1479,7 @@ message OtaFirmwareJobInfo{
   OtaJobStaticInfo static=16;
   string target =17;//分组升级和区域升级填写对应的id
   repeated string tenantCodes = 18;//指定租户
+  int64 createTime =19;
 }
 
 message OtaJobDynamicInfo{

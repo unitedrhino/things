@@ -55,6 +55,7 @@ type OtaModuleInfo  {
     Name      string `json:"name,optional"`
     Desc      string `json:"desc,optional"`
     ProductID string `json:"productID,optional"`
+    CreatedTime int64 `json:"createdTime,optional"`
 }
 
 
