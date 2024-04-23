@@ -2,7 +2,6 @@ package svc
 
 import (
 	"context"
-	"gitee.com/i-Things/core/sdk/tenantOpenWebhook"
 	"gitee.com/i-Things/core/service/apisvr/coreExport"
 	"gitee.com/i-Things/core/service/syssvr/client/areamanage"
 	"gitee.com/i-Things/core/service/syssvr/client/projectmanage"
@@ -68,7 +67,7 @@ type ServiceContext struct {
 	ProductCache   *caches.Cache[dm.ProductInfo]
 	DeviceCache    *caches.Cache[dm.DeviceInfo]
 	TenantCache    *caches.Cache[tenant.Info]
-	WebHook        *tenantOpenWebhook.Info
+	WebHook        *sysExport.Webhook
 	UserSubscribe  *coreExport.UserSubscribe
 	NodeID         int64
 }
@@ -141,7 +140,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	projectM = projectmanage.NewProjectManage(zrpc.MustNewClient(c.SysRpc.Conf))
 	tenantCache, err := sysExport.NewTenantInfoCache(tenantmanage.NewTenantManage(zrpc.MustNewClient(c.SysRpc.Conf)), serverMsg)
 	logx.Must(err)
-	webHook, err := tenantOpenWebhook.NewTenantOpenWebhook(tenantmanage.NewTenantManage(zrpc.MustNewClient(c.SysRpc.Conf)), serverMsg)
+	webHook, err := sysExport.NewTenantOpenWebhook(tenantmanage.NewTenantManage(zrpc.MustNewClient(c.SysRpc.Conf)), serverMsg)
 	logx.Must(err)
 	//webHook.Publish(ctxs.BindTenantCode(context.Background(), "default"),
 	//	tenantOpenWebhook.CodeDmDeviceConn, application.ConnectMsg{Device: devices.Core{

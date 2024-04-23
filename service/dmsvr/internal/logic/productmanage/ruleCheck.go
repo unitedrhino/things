@@ -44,7 +44,6 @@ func CheckAffordance(po *relationDB.DmSchemaCore, cs *relationDB.DmCommonSchema)
 	if err := affordance.ValidateWithFmt(); err != nil {
 		return err
 	}
-	//todo 规范化了之后前端会有问题
 	po.Affordance = relationDB.ToAffordancePo(affordance)
 	return nil
 }

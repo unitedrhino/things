@@ -3,7 +3,7 @@ package serverEvent
 import (
 	"context"
 	"encoding/json"
-	"gitee.com/i-Things/core/sdk/tenantOpenWebhook"
+	"gitee.com/i-Things/core/service/syssvr/sysExport"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/pb/timedjob"
 	"gitee.com/i-Things/share/ctxs"
@@ -157,7 +157,21 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 					ProductID:  ld.ProductID,
 					DeviceName: ld.DeviceName,
 				},
+				Status:    status,
 				Timestamp: msg.Timestamp.UnixMilli(),
+			}
+			err = l.svcCtx.WebHook.Publish(l.svcCtx.WithDeviceTenant(l.ctx, appMsg.Device), sysExport.CodeDmDeviceConn, appMsg)
+			if err != nil {
+				l.Error(err)
+			}
+			err = l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDeviceConn, appMsg, map[string]any{
+				"productID":  ld.ProductID,
+				"deviceName": ld.DeviceName,
+			}, map[string]any{
+				"productID": ld.ProductID,
+			}, map[string]any{})
+			if err != nil {
+				l.Error(err)
 			}
 			if status == def.ConnectedStatus {
 
@@ -185,10 +199,6 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 					l.Errorf("%s.pubApp productID:%v deviceName:%v err:%v",
 						utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 				}
-				err = l.svcCtx.WebHook.Publish(l.svcCtx.WithDeviceTenant(l.ctx, appMsg.Device), tenantOpenWebhook.CodeDmDeviceConn, appMsg)
-				if err != nil {
-					l.Error(err)
-				}
 			} else {
 				OffLineDevices = append(OffLineDevices, &devices.Core{
 					ProductID:  ld.ProductID,
@@ -199,10 +209,7 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 					l.Errorf("%s.pubApp productID:%v deviceName:%v err:%v",
 						utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 				}
-				err = l.svcCtx.WebHook.Publish(l.svcCtx.WithDeviceTenant(l.ctx, appMsg.Device), tenantOpenWebhook.CodeDmDeviceDisConn, appMsg)
-				if err != nil {
-					l.Error(err)
-				}
+
 			}
 		}
 		diDB := relationDB.NewDeviceInfoRepo(ctx)
