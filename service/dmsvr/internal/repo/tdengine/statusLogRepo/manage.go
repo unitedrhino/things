@@ -30,8 +30,8 @@ func (s *StatusLogRepo) DeleteDevice(ctx context.Context, productID string, devi
 }
 
 func (s *StatusLogRepo) InitDevice(ctx context.Context, device devices.Info) error {
-	sql := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s USING %s (`product_id`,`device_name` ) TAGS (?,?,?,?,?);",
+	sql := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s USING %s (`product_id`,`device_name` ) TAGS (?,?);",
 		s.GetLogTableName(device.ProductID, device.DeviceName), s.GetLogStableName())
-	_, err := s.t.ExecContext(ctx, sql, device.TenantCode, device.ProjectID, device.AreaID, device.ProductID, device.DeviceName)
+	_, err := s.t.ExecContext(ctx, sql, device.ProductID, device.DeviceName)
 	return err
 }
