@@ -6,6 +6,7 @@ import (
 	"gitee.com/i-Things/core/service/syssvr/client/areamanage"
 	"gitee.com/i-Things/core/service/syssvr/client/projectmanage"
 	"gitee.com/i-Things/core/service/syssvr/client/tenantmanage"
+	"gitee.com/i-Things/core/service/syssvr/client/usermanage"
 	"gitee.com/i-Things/core/service/syssvr/sysExport"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
 	"gitee.com/i-Things/share/ctxs"
@@ -63,6 +64,7 @@ type ServiceContext struct {
 	DeviceStatus   *cache.DeviceStatus
 	FastEvent      *eventBus.FastEvent
 	AreaM          areamanage.AreaManage
+	UserM          usermanage.UserManage
 	ProjectM       projectmanage.ProjectManage
 	ProductCache   *caches.Cache[dm.ProductInfo]
 	DeviceCache    *caches.Cache[dm.DeviceInfo]
@@ -137,6 +139,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 	timedM = timedmanage.NewTimedManage(zrpc.MustNewClient(c.TimedJobRpc.Conf))
 	areaM = areamanage.NewAreaManage(zrpc.MustNewClient(c.SysRpc.Conf))
+	userM := usermanage.NewUserManage(zrpc.MustNewClient(c.SysRpc.Conf))
 	projectM = projectmanage.NewProjectManage(zrpc.MustNewClient(c.SysRpc.Conf))
 	tenantCache, err := sysExport.NewTenantInfoCache(tenantmanage.NewTenantManage(zrpc.MustNewClient(c.SysRpc.Conf)), serverMsg)
 	logx.Must(err)
@@ -163,6 +166,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		DeviceID:       DeviceID,
 		GroupID:        GroupID,
 		Cache:          ca,
+		UserM:          userM,
 		UserSubscribe:  coreExport.NewUserSubscribe(ca, serverMsg),
 		SchemaRepo:     ccSchemaR,
 		SchemaManaRepo: deviceDataR,

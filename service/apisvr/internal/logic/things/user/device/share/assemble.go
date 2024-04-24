@@ -32,10 +32,11 @@ func ToShareTypes(in *dm.UserDeviceShareInfo) *types.UserDeviceShareInfo {
 			ProductID:  in.Device.ProductID,
 			DeviceName: in.Device.DeviceName,
 		},
-		SharedUserID: in.SharedUserID,
-		ProjectID:    in.ProjectID,
-		SchemaPerm:   in.SchemaPerm,
-		AccessPerm:   in.AccessPerm,
+		SharedUserAccount: in.SharedUserAccount,
+		SharedUserID:      in.SharedUserID,
+		ProjectID:         in.ProjectID,
+		SchemaPerm:        in.SchemaPerm,
+		AccessPerm:        in.AccessPerm,
 	}
 }
 func ToSharesTypes(in []*dm.UserDeviceShareInfo) (ret []*types.UserDeviceShareInfo) {

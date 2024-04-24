@@ -6,6 +6,7 @@ import (
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/errors"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
+	"github.com/spf13/cast"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
@@ -41,13 +42,31 @@ func (l *UserDeviceShareCreateLogic) UserDeviceShareCreate(in *dm.UserDeviceShar
 	if pi.AdminUserID != uc.UserID {
 		return nil, errors.Permissions.AddMsg("只有所有者才能分享设备")
 	}
+	if in.SharedUserID == uc.UserID {
+		return nil, errors.Parameter.AddMsg("不能分享给自己")
+	}
+	ui, err := l.svcCtx.UserM.UserInfoRead(l.ctx, &sys.UserInfoReadReq{UserID: in.SharedUserID})
+	if err != nil {
+		return nil, err
+	}
+	var account = ui.UserName
+	if account == "" {
+		account = ui.Phone.Value
+	}
+	if account == "" {
+		account = ui.Email.Value
+	}
+	if account == "" {
+		account = cast.ToString(ui.UserID)
+	}
 	po := relationDB.DmUserDeviceShare{
-		ProjectID:    pi.ProjectID,
-		SharedUserID: in.SharedUserID,
-		ProductID:    in.Device.ProductID,
-		DeviceName:   in.Device.DeviceName,
-		AccessPerm:   in.AccessPerm,
-		SchemaPerm:   in.SchemaPerm,
+		ProjectID:         pi.ProjectID,
+		SharedUserID:      in.SharedUserID,
+		SharedUserAccount: account,
+		ProductID:         in.Device.ProductID,
+		DeviceName:        in.Device.DeviceName,
+		AccessPerm:        in.AccessPerm,
+		SchemaPerm:        in.SchemaPerm,
 	}
 	err = relationDB.NewUserDeviceShareRepo(l.ctx).Insert(l.ctx, &po)
 	if err != nil {
