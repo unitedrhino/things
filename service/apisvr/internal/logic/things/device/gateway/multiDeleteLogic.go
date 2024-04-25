@@ -30,9 +30,11 @@ func NewMultiDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Multi
 func (l *MultiDeleteLogic) MultiDelete(req *types.DeviceGateWayMultiDeleteReq) error {
 	_, err := l.svcCtx.DeviceM.DeviceGatewayMultiDelete(l.ctx,
 		&dm.DeviceGatewayMultiDeleteReq{
-			GatewayProductID:  req.GateWayProductID,
-			GatewayDeviceName: req.GateWayDeviceName,
-			List:              things.ToDmDeviceCoresPb(req.List)})
+			Gateway: &dm.DeviceCore{
+				ProductID:  req.GateWayProductID,
+				DeviceName: req.GateWayDeviceName,
+			},
+			List: things.ToDmDeviceCoresPb(req.List)})
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.MultiDelete MultiDelete req=%v err=%+v", utils.FuncName(), req, er)

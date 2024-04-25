@@ -36,10 +36,12 @@ func (l *MultiCreateLogic) MultiCreate(req *types.DeviceGateWayMultiCreateReq) e
 	}
 	_, err := l.svcCtx.DeviceM.DeviceGatewayMultiCreate(l.ctx,
 		&dm.DeviceGatewayMultiCreateReq{
-			GatewayProductID:  req.GateWayProductID,
-			GatewayDeviceName: req.GateWayDeviceName,
-			IsAuthSign:        false,
-			List:              m})
+			Gateway: &dm.DeviceCore{
+				ProductID:  req.GateWayProductID,
+				DeviceName: req.GateWayDeviceName,
+			},
+			IsAuthSign: false,
+			List:       m})
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.MultiCreate req=%v err=%+v", utils.FuncName(), req, er)

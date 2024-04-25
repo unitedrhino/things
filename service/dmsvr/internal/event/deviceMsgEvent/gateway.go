@@ -162,10 +162,12 @@ func (l *GatewayLogic) HandleTopo(msg *deviceMsg.PublishMsg) (respMsg *msgGatewa
 				return &resp, err
 			}
 			_, err = devicemanage.NewDeviceManageServer(l.svcCtx).DeviceGatewayMultiCreate(l.ctx, &dm.DeviceGatewayMultiCreateReq{
-				IsAuthSign:        true,
-				GatewayProductID:  msg.ProductID,
-				GatewayDeviceName: msg.DeviceName,
-				List:              list,
+				IsAuthSign: true,
+				Gateway: &dm.DeviceCore{
+					ProductID:  msg.ProductID,
+					DeviceName: msg.DeviceName,
+				},
+				List: list,
 			})
 			if err != nil {
 				resp.AddStatus(err)
@@ -175,9 +177,11 @@ func (l *GatewayLogic) HandleTopo(msg *deviceMsg.PublishMsg) (respMsg *msgGatewa
 			return &resp, nil
 		case deviceMsg.Unbind:
 			_, err := devicemanage.NewDeviceManageServer(l.svcCtx).DeviceGatewayMultiDelete(l.ctx, &dm.DeviceGatewayMultiDeleteReq{
-				GatewayProductID:  msg.ProductID,
-				GatewayDeviceName: msg.DeviceName,
-				List:              ToDmDevicesCore(l.dreq.Payload.Devices),
+				Gateway: &dm.DeviceCore{
+					ProductID:  msg.ProductID,
+					DeviceName: msg.DeviceName,
+				},
+				List: ToDmDevicesCore(l.dreq.Payload.Devices),
 			})
 			if err != nil {
 				resp.AddStatus(err)

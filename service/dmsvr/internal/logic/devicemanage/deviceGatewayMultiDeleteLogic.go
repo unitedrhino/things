@@ -38,8 +38,8 @@ func NewDeviceGatewayMultiDeleteLogic(ctx context.Context, svcCtx *svc.ServiceCo
 func (l *DeviceGatewayMultiDeleteLogic) DeviceGatewayMultiDelete(in *dm.DeviceGatewayMultiDeleteReq) (*dm.Empty, error) {
 	devicesDos := logic.ToDeviceCoreDos(in.List)
 	err := l.GdDB.MultiDelete(l.ctx, &devices.Core{
-		ProductID:  in.GatewayProductID,
-		DeviceName: in.GatewayDeviceName,
+		ProductID:  in.Gateway.ProductID,
+		DeviceName: in.Gateway.DeviceName,
 	}, devicesDos)
 	if err != nil {
 		return nil, err
@@ -54,8 +54,8 @@ func (l *DeviceGatewayMultiDeleteLogic) DeviceGatewayMultiDelete(in *dm.DeviceGa
 		Type:       msgGateway.TypeTopo,
 		Payload:    respBytes,
 		Timestamp:  time.Now().UnixMilli(),
-		ProductID:  in.GatewayProductID,
-		DeviceName: in.GatewayDeviceName,
+		ProductID:  in.Gateway.ProductID,
+		DeviceName: in.Gateway.DeviceName,
 	}
 	er := l.svcCtx.PubDev.PublishToDev(l.ctx, &msg)
 	if er != nil {
