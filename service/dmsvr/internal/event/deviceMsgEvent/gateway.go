@@ -188,7 +188,7 @@ func (l *GatewayLogic) HandleTopo(msg *deviceMsg.PublishMsg) (respMsg *msgGatewa
 				return &resp, err
 			}
 			resp.Payload = &msgGateway.GatewayPayload{Devices: l.dreq.Payload.Devices.GetCore()}
-		case deviceMsg.DescribeSubDevices:
+		case deviceMsg.GetTopo:
 			deviceList, err := devicemanage.NewDeviceManageServer(l.svcCtx).DeviceGatewayIndex(l.ctx, &dm.DeviceGatewayIndexReq{
 				Gateway: &dm.DeviceCore{
 					ProductID:  msg.ProductID,

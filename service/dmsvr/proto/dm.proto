@@ -227,7 +227,7 @@ service DeviceInteract {
   //获取异步调用设备属性的结果
   rpc propertyControlRead(RespReadReq)  returns(PropertyControlSendResp);
   //实时获取网关拓扑关系
-  rpc gatewayGetTopoSend(GatewayTopoReadSendReq)returns(GatewayTopoReadSendResp);
+  rpc gatewayGetFoundSend(GatewayGetFoundReq)returns(GatewayGetFoundResp);
   //通知网关绑定子设备
   rpc gatewayNotifyBindSend(GatewayNotifyBindSendReq)returns(Empty);
   //发送消息给设备 -- 调试使用
@@ -699,12 +699,12 @@ message PropertyControlSendResp{
   string msgToken = 3;//调用id
 }
 
-message GatewayTopoReadSendReq{
+message GatewayGetFoundReq{
   string  productID = 1; //产品id
   string  deviceName = 2; //设备名
 }
 
-message GatewayTopoReadSendResp{
+message GatewayGetFoundResp{
   repeated DeviceCore devices =1;
 }
 

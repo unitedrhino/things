@@ -27,6 +27,7 @@ func (d *DeviceStatus) Lock(ctx context.Context) (bool, error) {
 	ok, err := d.cache.SetnxExCtx(ctx, genOnlineLockKey(), time.Now().Format("2006-01-02 15:04:05.999"), 5)
 	return ok, err
 }
+
 func (d *DeviceStatus) UnLock(ctx context.Context) error {
 	_, err := d.cache.DelCtx(ctx, genOnlineLockKey())
 	return err
