@@ -128,7 +128,7 @@ func (m *MqttProtocol) SubscribeDevConn(handle ConnHandle) error {
 		}
 		newDo, err := handle(ctx, do)
 		if err != nil {
-			return err
+			return nil //不是该类型的设备
 		}
 		switch do.Action {
 		case ActionConnected:
