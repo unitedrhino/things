@@ -29,11 +29,14 @@ func NewUserDeviceShareMultiDeleteLogic(ctx context.Context, svcCtx *svc.Service
 
 // 取消分享设备
 func (l *UserDeviceShareMultiDeleteLogic) UserDeviceShareMultiDelete(in *dm.UserDeviceShareMultiDeleteReq) (*dm.Empty, error) {
+	uc := ctxs.GetUserCtx(l.ctx)
+	if in.ProjectID == 0 {
+		in.ProjectID = uc.ProjectID
+	}
 	pi, err := l.svcCtx.ProjectM.ProjectInfoRead(l.ctx, &sys.ProjectWithID{ProjectID: int64(in.ProjectID)})
 	if err != nil {
 		return nil, err
 	}
-	uc := ctxs.GetUserCtx(l.ctx)
 	if pi.AdminUserID != uc.UserID { //只有所有者和被分享者才有权限操作
 		return nil, errors.Permissions
 	}
