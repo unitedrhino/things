@@ -51,10 +51,10 @@ func (l *UserDeviceShareCreateLogic) UserDeviceShareCreate(in *dm.UserDeviceShar
 	}
 	var account = ui.UserName
 	if account == "" {
-		account = ui.Phone.Value
+		account = ui.Phone.GetValue()
 	}
 	if account == "" {
-		account = ui.Email.Value
+		account = ui.Email.GetValue()
 	}
 	if account == "" {
 		account = cast.ToString(ui.UserID)
