@@ -32,6 +32,7 @@ func ToShareTypes(in *dm.UserDeviceShareInfo) *types.UserDeviceShareInfo {
 			ProductID:  in.Device.ProductID,
 			DeviceName: in.Device.DeviceName,
 		},
+		CreatedTime:       in.CreatedTime,
 		SharedUserAccount: in.SharedUserAccount,
 		SharedUserID:      in.SharedUserID,
 		ProjectID:         in.ProjectID,

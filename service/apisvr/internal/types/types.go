@@ -1254,6 +1254,7 @@ type UserDeviceShareInfo struct {
 	SharedUserAccount string     `json:"sharedUserAccount,optional"`
 	SchemaPerm        []string   `json:"schemaPerm,optional"` //物模型权限,只需要填写需要授权并授权的物模型id
 	AccessPerm        []string   `json:"accessPerm,optional"` //操作权限 hubLog:设备消息记录,ota:ota升级权限,deviceTiming:设备定时
+	CreatedTime       int64      `json:"createdTime,optional"`
 }
 
 type UserDeviceShareMultiDeleteReq struct {
