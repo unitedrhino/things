@@ -64,6 +64,18 @@ func (s *DeviceInteractServer) PropertyControlRead(ctx context.Context, in *dm.R
 	return l.PropertyControlRead(in)
 }
 
+// 实时获取网关拓扑关系
+func (s *DeviceInteractServer) GatewayGetTopoSend(ctx context.Context, in *dm.GatewayTopoReadSendReq) (*dm.GatewayTopoReadSendResp, error) {
+	l := deviceinteractlogic.NewGatewayGetTopoSendLogic(ctx, s.svcCtx)
+	return l.GatewayGetTopoSend(in)
+}
+
+// 通知网关绑定子设备
+func (s *DeviceInteractServer) GatewayNotifyBindSend(ctx context.Context, in *dm.GatewayNotifyBindSendReq) (*dm.Empty, error) {
+	l := deviceinteractlogic.NewGatewayNotifyBindSendLogic(ctx, s.svcCtx)
+	return l.GatewayNotifyBindSend(in)
+}
+
 // 发送消息给设备 -- 调试使用
 func (s *DeviceInteractServer) SendMsg(ctx context.Context, in *dm.SendMsgReq) (*dm.SendMsgResp, error) {
 	l := deviceinteractlogic.NewSendMsgLogic(ctx, s.svcCtx)

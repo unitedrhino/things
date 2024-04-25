@@ -62,6 +62,9 @@ type (
 	FirmwareInfoReadReq                 = dm.FirmwareInfoReadReq
 	FirmwareInfoReadResp                = dm.FirmwareInfoReadResp
 	FirmwareResp                        = dm.FirmwareResp
+	GatewayNotifyBindSendReq            = dm.GatewayNotifyBindSendReq
+	GatewayTopoReadSendReq              = dm.GatewayTopoReadSendReq
+	GatewayTopoReadSendResp             = dm.GatewayTopoReadSendResp
 	GroupDeviceIndexReq                 = dm.GroupDeviceIndexReq
 	GroupDeviceIndexResp                = dm.GroupDeviceIndexResp
 	GroupDeviceMultiDeleteReq           = dm.GroupDeviceMultiDeleteReq

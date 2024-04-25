@@ -52,8 +52,8 @@ func (l *GatewayLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Pub
 	)
 
 	switch msg.Type {
-	case msgGateway.TypeOperation:
-		resp, err = l.HandleOperation(msg)
+	case msgGateway.TypeTopo:
+		resp, err = l.HandleTopo(msg)
 	case msgGateway.TypeStatus:
 		resp, err = l.HandleStatus(msg)
 	}
@@ -145,7 +145,7 @@ func (l *GatewayLogic) HandleRegister(msg *deviceMsg.PublishMsg, resp *msgGatewa
 	return resp, nil
 }
 
-func (l *GatewayLogic) HandleOperation(msg *deviceMsg.PublishMsg) (respMsg *msgGateway.Msg, err error) {
+func (l *GatewayLogic) HandleTopo(msg *deviceMsg.PublishMsg) (respMsg *msgGateway.Msg, err error) {
 	l.Debugf("%s", utils.FuncName())
 	var resp = msgGateway.Msg{
 		CommonMsg: deviceMsg.NewRespCommonMsg(l.ctx, l.dreq.Method, l.dreq.MsgToken),

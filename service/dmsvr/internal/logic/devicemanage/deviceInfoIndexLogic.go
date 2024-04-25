@@ -56,7 +56,7 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 			return nil, err
 		}
 		for _, v := range udss {
-			shared = append(cores, &devices.Core{
+			shared = append(shared, &devices.Core{
 				ProductID:  v.ProductID,
 				DeviceName: v.DeviceName,
 			})

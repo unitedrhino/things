@@ -227,7 +227,9 @@ service DeviceInteract {
   //获取异步调用设备属性的结果
   rpc propertyControlRead(RespReadReq)  returns(PropertyControlSendResp);
   //实时获取网关拓扑关系
-  rpc gatewayTopoReadSend(GatewayTopoReadSendReq)returns(GatewayTopoReadSendResp);
+  rpc gatewayGetTopoSend(GatewayTopoReadSendReq)returns(GatewayTopoReadSendResp);
+  //通知网关绑定子设备
+  rpc gatewayNotifyBindSend(GatewayNotifyBindSendReq)returns(Empty);
   //发送消息给设备 -- 调试使用
   rpc sendMsg(SendMsgReq)     returns(SendMsgResp);
 }
@@ -703,7 +705,12 @@ message GatewayTopoReadSendReq{
 }
 
 message GatewayTopoReadSendResp{
+  repeated DeviceCore devices =1;
+}
 
+message GatewayNotifyBindSendReq{
+  DeviceCore gateway =1;
+  repeated DeviceCore subDevices =2;
 }
 
 message SendMsgReq{
@@ -821,8 +828,7 @@ message DeviceGatewaySign{
 }
 
 message DeviceGatewayMultiCreateReq{
-  string gatewayProductID = 1;
-  string gatewayDeviceName = 2;
+  DeviceCore gateway = 1;//
   bool isAuthSign = 3;//是否校验设备签名
   repeated DeviceGatewayBindDevice list = 4;
 }
@@ -840,8 +846,7 @@ message DeviceGatewayIndexResp{
 }
 
 message DeviceGatewayMultiDeleteReq{
-  string gatewayProductID = 1;
-  string gatewayDeviceName = 2;
+  DeviceCore gateway = 1;
   repeated DeviceCore list = 3;
 }
 

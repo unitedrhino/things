@@ -44,10 +44,10 @@ func NewDeviceGatewayMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceCo
 // 创建分组设备
 func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGatewayMultiCreateReq) (*dm.Empty, error) {
 	{ //检查是否是网关类型
-		pi, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.GatewayProductID}})
+		pi, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.Gateway.ProductID}})
 		if err != nil {
 			if errors.Cmp(err, errors.NotFind) {
-				return nil, errors.Parameter.AddDetail("not find GatewayProductID id:" + cast.ToString(in.GatewayProductID))
+				return nil, errors.Parameter.AddDetail("not find GatewayProductID id:" + cast.ToString(in.Gateway.ProductID))
 			}
 			return nil, errors.Database.AddDetail(err)
 		}
@@ -97,8 +97,8 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 	}
 	devicesDos := logic.BindToDeviceCoreDos(in.List)
 	err := l.GdDB.MultiInsert(l.ctx, &devices.Core{
-		ProductID:  in.GatewayProductID,
-		DeviceName: in.GatewayDeviceName,
+		ProductID:  in.Gateway.ProductID,
+		DeviceName: in.Gateway.DeviceName,
 	}, devicesDos)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
@@ -110,11 +110,11 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 	respBytes, _ := json.Marshal(req)
 	msg := deviceMsg.PublishMsg{
 		Handle:     devices.Gateway,
-		Type:       msgGateway.TypeOperation,
+		Type:       msgGateway.TypeTopo,
 		Payload:    respBytes,
 		Timestamp:  time.Now().UnixMilli(),
-		ProductID:  in.GatewayProductID,
-		DeviceName: in.GatewayDeviceName,
+		ProductID:  in.Gateway.ProductID,
+		DeviceName: in.Gateway.DeviceName,
 	}
 	er := l.svcCtx.PubDev.PublishToDev(l.ctx, &msg)
 	if er != nil {

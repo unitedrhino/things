@@ -51,7 +51,7 @@ func (l *DeviceGatewayMultiDeleteLogic) DeviceGatewayMultiDelete(in *dm.DeviceGa
 	respBytes, _ := json.Marshal(req)
 	msg := deviceMsg.PublishMsg{
 		Handle:     devices.Gateway,
-		Type:       msgGateway.TypeOperation,
+		Type:       msgGateway.TypeTopo,
 		Payload:    respBytes,
 		Timestamp:  time.Now().UnixMilli(),
 		ProductID:  in.GatewayProductID,

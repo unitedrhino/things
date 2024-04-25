@@ -3138,6 +3138,8 @@ const (
 	DeviceInteract_PropertyControlSend_FullMethodName      = "/dm.DeviceInteract/propertyControlSend"
 	DeviceInteract_PropertyControlMultiSend_FullMethodName = "/dm.DeviceInteract/propertyControlMultiSend"
 	DeviceInteract_PropertyControlRead_FullMethodName      = "/dm.DeviceInteract/propertyControlRead"
+	DeviceInteract_GatewayGetTopoSend_FullMethodName       = "/dm.DeviceInteract/gatewayGetTopoSend"
+	DeviceInteract_GatewayNotifyBindSend_FullMethodName    = "/dm.DeviceInteract/gatewayNotifyBindSend"
 	DeviceInteract_SendMsg_FullMethodName                  = "/dm.DeviceInteract/sendMsg"
 )
 
@@ -3159,6 +3161,10 @@ type DeviceInteractClient interface {
 	PropertyControlMultiSend(ctx context.Context, in *PropertyControlMultiSendReq, opts ...grpc.CallOption) (*PropertyControlMultiSendResp, error)
 	// 获取异步调用设备属性的结果
 	PropertyControlRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*PropertyControlSendResp, error)
+	// 实时获取网关拓扑关系
+	GatewayGetTopoSend(ctx context.Context, in *GatewayTopoReadSendReq, opts ...grpc.CallOption) (*GatewayTopoReadSendResp, error)
+	// 通知网关绑定子设备
+	GatewayNotifyBindSend(ctx context.Context, in *GatewayNotifyBindSendReq, opts ...grpc.CallOption) (*Empty, error)
 	// 发送消息给设备 -- 调试使用
 	SendMsg(ctx context.Context, in *SendMsgReq, opts ...grpc.CallOption) (*SendMsgResp, error)
 }
@@ -3234,6 +3240,24 @@ func (c *deviceInteractClient) PropertyControlRead(ctx context.Context, in *Resp
 	return out, nil
 }
 
+func (c *deviceInteractClient) GatewayGetTopoSend(ctx context.Context, in *GatewayTopoReadSendReq, opts ...grpc.CallOption) (*GatewayTopoReadSendResp, error) {
+	out := new(GatewayTopoReadSendResp)
+	err := c.cc.Invoke(ctx, DeviceInteract_GatewayGetTopoSend_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceInteractClient) GatewayNotifyBindSend(ctx context.Context, in *GatewayNotifyBindSendReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, DeviceInteract_GatewayNotifyBindSend_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *deviceInteractClient) SendMsg(ctx context.Context, in *SendMsgReq, opts ...grpc.CallOption) (*SendMsgResp, error) {
 	out := new(SendMsgResp)
 	err := c.cc.Invoke(ctx, DeviceInteract_SendMsg_FullMethodName, in, out, opts...)
@@ -3261,6 +3285,10 @@ type DeviceInteractServer interface {
 	PropertyControlMultiSend(context.Context, *PropertyControlMultiSendReq) (*PropertyControlMultiSendResp, error)
 	// 获取异步调用设备属性的结果
 	PropertyControlRead(context.Context, *RespReadReq) (*PropertyControlSendResp, error)
+	// 实时获取网关拓扑关系
+	GatewayGetTopoSend(context.Context, *GatewayTopoReadSendReq) (*GatewayTopoReadSendResp, error)
+	// 通知网关绑定子设备
+	GatewayNotifyBindSend(context.Context, *GatewayNotifyBindSendReq) (*Empty, error)
 	// 发送消息给设备 -- 调试使用
 	SendMsg(context.Context, *SendMsgReq) (*SendMsgResp, error)
 	mustEmbedUnimplementedDeviceInteractServer()
@@ -3290,6 +3318,12 @@ func (UnimplementedDeviceInteractServer) PropertyControlMultiSend(context.Contex
 }
 func (UnimplementedDeviceInteractServer) PropertyControlRead(context.Context, *RespReadReq) (*PropertyControlSendResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PropertyControlRead not implemented")
+}
+func (UnimplementedDeviceInteractServer) GatewayGetTopoSend(context.Context, *GatewayTopoReadSendReq) (*GatewayTopoReadSendResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GatewayGetTopoSend not implemented")
+}
+func (UnimplementedDeviceInteractServer) GatewayNotifyBindSend(context.Context, *GatewayNotifyBindSendReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GatewayNotifyBindSend not implemented")
 }
 func (UnimplementedDeviceInteractServer) SendMsg(context.Context, *SendMsgReq) (*SendMsgResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendMsg not implemented")
@@ -3433,6 +3467,42 @@ func _DeviceInteract_PropertyControlRead_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DeviceInteract_GatewayGetTopoSend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GatewayTopoReadSendReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceInteractServer).GatewayGetTopoSend(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceInteract_GatewayGetTopoSend_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceInteractServer).GatewayGetTopoSend(ctx, req.(*GatewayTopoReadSendReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceInteract_GatewayNotifyBindSend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GatewayNotifyBindSendReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceInteractServer).GatewayNotifyBindSend(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceInteract_GatewayNotifyBindSend_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceInteractServer).GatewayNotifyBindSend(ctx, req.(*GatewayNotifyBindSendReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _DeviceInteract_SendMsg_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SendMsgReq)
 	if err := dec(in); err != nil {
@@ -3485,6 +3555,14 @@ var DeviceInteract_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "propertyControlRead",
 			Handler:    _DeviceInteract_PropertyControlRead_Handler,
+		},
+		{
+			MethodName: "gatewayGetTopoSend",
+			Handler:    _DeviceInteract_GatewayGetTopoSend_Handler,
+		},
+		{
+			MethodName: "gatewayNotifyBindSend",
+			Handler:    _DeviceInteract_GatewayNotifyBindSend_Handler,
 		},
 		{
 			MethodName: "sendMsg",
