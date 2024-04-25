@@ -60,6 +60,7 @@ service DeviceManage {
   rpc deviceInfoRead(DeviceInfoReadReq)     returns (DeviceInfo);
   rpc deviceInfoBind(DeviceInfoBindReq)returns(Empty);
   rpc deviceInfoUnbind(DeviceCore)returns(Empty);
+  rpc deviceTransfer(deviceTransferReq)returns(Empty);
 
   //绑定网关下子设备设备
   rpc deviceGatewayMultiCreate(DeviceGatewayMultiCreateReq)     returns (Empty);
@@ -292,6 +293,8 @@ service userDevice{
   rpc userDeviceShareIndex(UserDeviceShareIndexReq)returns(UserDeviceShareIndexResp);
   //获取设备分享的详情
   rpc userDeviceShareRead(UserDeviceShareReadReq)returns(UserDeviceShareInfo);
+
+  rpc userDeviceTransfer(deviceTransferReq)returns(Empty);
 }
 
 
@@ -319,6 +322,15 @@ message OtaModuleInfo{
 message ProductInitReq{
 //  repeated string initType =1;//thing:物模型
   repeated string   productIDs = 2; //产品id,不填初始化所有产品
+}
+
+
+message deviceTransferReq{
+  DeviceCore device = 1;//设备信息
+  int64  transferTo = 2;//转让给: 1: 某个人 2: 自己的某个项目
+  int64 userID =3;//用户id
+  int64 projectID =4;//项目id
+  int64 isCleanData =5;//是否清除数据:1是 2否
 }
 
 message UserDeviceShareReadReq{

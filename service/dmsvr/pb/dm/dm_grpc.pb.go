@@ -30,6 +30,7 @@ const (
 	DeviceManage_DeviceInfoRead_FullMethodName           = "/dm.DeviceManage/deviceInfoRead"
 	DeviceManage_DeviceInfoBind_FullMethodName           = "/dm.DeviceManage/deviceInfoBind"
 	DeviceManage_DeviceInfoUnbind_FullMethodName         = "/dm.DeviceManage/deviceInfoUnbind"
+	DeviceManage_DeviceTransfer_FullMethodName           = "/dm.DeviceManage/deviceTransfer"
 	DeviceManage_DeviceGatewayMultiCreate_FullMethodName = "/dm.DeviceManage/deviceGatewayMultiCreate"
 	DeviceManage_DeviceGatewayIndex_FullMethodName       = "/dm.DeviceManage/deviceGatewayIndex"
 	DeviceManage_DeviceGatewayMultiDelete_FullMethodName = "/dm.DeviceManage/deviceGatewayMultiDelete"
@@ -61,6 +62,7 @@ type DeviceManageClient interface {
 	DeviceInfoRead(ctx context.Context, in *DeviceInfoReadReq, opts ...grpc.CallOption) (*DeviceInfo, error)
 	DeviceInfoBind(ctx context.Context, in *DeviceInfoBindReq, opts ...grpc.CallOption) (*Empty, error)
 	DeviceInfoUnbind(ctx context.Context, in *DeviceCore, opts ...grpc.CallOption) (*Empty, error)
+	DeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error)
 	// 绑定网关下子设备设备
 	DeviceGatewayMultiCreate(ctx context.Context, in *DeviceGatewayMultiCreateReq, opts ...grpc.CallOption) (*Empty, error)
 	// 获取绑定信息的设备信息列表
@@ -160,6 +162,15 @@ func (c *deviceManageClient) DeviceInfoBind(ctx context.Context, in *DeviceInfoB
 func (c *deviceManageClient) DeviceInfoUnbind(ctx context.Context, in *DeviceCore, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, DeviceManage_DeviceInfoUnbind_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceManageClient) DeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceTransfer_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -267,6 +278,7 @@ type DeviceManageServer interface {
 	DeviceInfoRead(context.Context, *DeviceInfoReadReq) (*DeviceInfo, error)
 	DeviceInfoBind(context.Context, *DeviceInfoBindReq) (*Empty, error)
 	DeviceInfoUnbind(context.Context, *DeviceCore) (*Empty, error)
+	DeviceTransfer(context.Context, *DeviceTransferReq) (*Empty, error)
 	// 绑定网关下子设备设备
 	DeviceGatewayMultiCreate(context.Context, *DeviceGatewayMultiCreateReq) (*Empty, error)
 	// 获取绑定信息的设备信息列表
@@ -314,6 +326,9 @@ func (UnimplementedDeviceManageServer) DeviceInfoBind(context.Context, *DeviceIn
 }
 func (UnimplementedDeviceManageServer) DeviceInfoUnbind(context.Context, *DeviceCore) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoUnbind not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceTransfer(context.Context, *DeviceTransferReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceTransfer not implemented")
 }
 func (UnimplementedDeviceManageServer) DeviceGatewayMultiCreate(context.Context, *DeviceGatewayMultiCreateReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceGatewayMultiCreate not implemented")
@@ -513,6 +528,24 @@ func _DeviceManage_DeviceInfoUnbind_Handler(srv interface{}, ctx context.Context
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceManageServer).DeviceInfoUnbind(ctx, req.(*DeviceCore))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceManage_DeviceTransfer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceTransferReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceTransfer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceTransfer_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceTransfer(ctx, req.(*DeviceTransferReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -721,6 +754,10 @@ var DeviceManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "deviceInfoUnbind",
 			Handler:    _DeviceManage_DeviceInfoUnbind_Handler,
+		},
+		{
+			MethodName: "deviceTransfer",
+			Handler:    _DeviceManage_DeviceTransfer_Handler,
 		},
 		{
 			MethodName: "deviceGatewayMultiCreate",
@@ -3138,7 +3175,7 @@ const (
 	DeviceInteract_PropertyControlSend_FullMethodName      = "/dm.DeviceInteract/propertyControlSend"
 	DeviceInteract_PropertyControlMultiSend_FullMethodName = "/dm.DeviceInteract/propertyControlMultiSend"
 	DeviceInteract_PropertyControlRead_FullMethodName      = "/dm.DeviceInteract/propertyControlRead"
-	DeviceInteract_GatewayGetTopoSend_FullMethodName       = "/dm.DeviceInteract/gatewayGetTopoSend"
+	DeviceInteract_GatewayGetFoundSend_FullMethodName      = "/dm.DeviceInteract/gatewayGetFoundSend"
 	DeviceInteract_GatewayNotifyBindSend_FullMethodName    = "/dm.DeviceInteract/gatewayNotifyBindSend"
 	DeviceInteract_SendMsg_FullMethodName                  = "/dm.DeviceInteract/sendMsg"
 )
@@ -3162,7 +3199,7 @@ type DeviceInteractClient interface {
 	// 获取异步调用设备属性的结果
 	PropertyControlRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*PropertyControlSendResp, error)
 	// 实时获取网关拓扑关系
-	GatewayGetTopoSend(ctx context.Context, in *GatewayTopoReadSendReq, opts ...grpc.CallOption) (*GatewayTopoReadSendResp, error)
+	GatewayGetFoundSend(ctx context.Context, in *GatewayGetFoundReq, opts ...grpc.CallOption) (*GatewayGetFoundResp, error)
 	// 通知网关绑定子设备
 	GatewayNotifyBindSend(ctx context.Context, in *GatewayNotifyBindSendReq, opts ...grpc.CallOption) (*Empty, error)
 	// 发送消息给设备 -- 调试使用
@@ -3240,9 +3277,9 @@ func (c *deviceInteractClient) PropertyControlRead(ctx context.Context, in *Resp
 	return out, nil
 }
 
-func (c *deviceInteractClient) GatewayGetTopoSend(ctx context.Context, in *GatewayTopoReadSendReq, opts ...grpc.CallOption) (*GatewayTopoReadSendResp, error) {
-	out := new(GatewayTopoReadSendResp)
-	err := c.cc.Invoke(ctx, DeviceInteract_GatewayGetTopoSend_FullMethodName, in, out, opts...)
+func (c *deviceInteractClient) GatewayGetFoundSend(ctx context.Context, in *GatewayGetFoundReq, opts ...grpc.CallOption) (*GatewayGetFoundResp, error) {
+	out := new(GatewayGetFoundResp)
+	err := c.cc.Invoke(ctx, DeviceInteract_GatewayGetFoundSend_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -3286,7 +3323,7 @@ type DeviceInteractServer interface {
 	// 获取异步调用设备属性的结果
 	PropertyControlRead(context.Context, *RespReadReq) (*PropertyControlSendResp, error)
 	// 实时获取网关拓扑关系
-	GatewayGetTopoSend(context.Context, *GatewayTopoReadSendReq) (*GatewayTopoReadSendResp, error)
+	GatewayGetFoundSend(context.Context, *GatewayGetFoundReq) (*GatewayGetFoundResp, error)
 	// 通知网关绑定子设备
 	GatewayNotifyBindSend(context.Context, *GatewayNotifyBindSendReq) (*Empty, error)
 	// 发送消息给设备 -- 调试使用
@@ -3319,8 +3356,8 @@ func (UnimplementedDeviceInteractServer) PropertyControlMultiSend(context.Contex
 func (UnimplementedDeviceInteractServer) PropertyControlRead(context.Context, *RespReadReq) (*PropertyControlSendResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PropertyControlRead not implemented")
 }
-func (UnimplementedDeviceInteractServer) GatewayGetTopoSend(context.Context, *GatewayTopoReadSendReq) (*GatewayTopoReadSendResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GatewayGetTopoSend not implemented")
+func (UnimplementedDeviceInteractServer) GatewayGetFoundSend(context.Context, *GatewayGetFoundReq) (*GatewayGetFoundResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GatewayGetFoundSend not implemented")
 }
 func (UnimplementedDeviceInteractServer) GatewayNotifyBindSend(context.Context, *GatewayNotifyBindSendReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GatewayNotifyBindSend not implemented")
@@ -3467,20 +3504,20 @@ func _DeviceInteract_PropertyControlRead_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DeviceInteract_GatewayGetTopoSend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GatewayTopoReadSendReq)
+func _DeviceInteract_GatewayGetFoundSend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GatewayGetFoundReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DeviceInteractServer).GatewayGetTopoSend(ctx, in)
+		return srv.(DeviceInteractServer).GatewayGetFoundSend(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: DeviceInteract_GatewayGetTopoSend_FullMethodName,
+		FullMethod: DeviceInteract_GatewayGetFoundSend_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceInteractServer).GatewayGetTopoSend(ctx, req.(*GatewayTopoReadSendReq))
+		return srv.(DeviceInteractServer).GatewayGetFoundSend(ctx, req.(*GatewayGetFoundReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3557,8 +3594,8 @@ var DeviceInteract_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _DeviceInteract_PropertyControlRead_Handler,
 		},
 		{
-			MethodName: "gatewayGetTopoSend",
-			Handler:    _DeviceInteract_GatewayGetTopoSend_Handler,
+			MethodName: "gatewayGetFoundSend",
+			Handler:    _DeviceInteract_GatewayGetFoundSend_Handler,
 		},
 		{
 			MethodName: "gatewayNotifyBindSend",
@@ -4295,6 +4332,7 @@ const (
 	UserDevice_UserDeviceShareMultiDelete_FullMethodName   = "/dm.userDevice/userDeviceShareMultiDelete"
 	UserDevice_UserDeviceShareIndex_FullMethodName         = "/dm.userDevice/userDeviceShareIndex"
 	UserDevice_UserDeviceShareRead_FullMethodName          = "/dm.userDevice/userDeviceShareRead"
+	UserDevice_UserDeviceTransfer_FullMethodName           = "/dm.userDevice/userDeviceTransfer"
 )
 
 // UserDeviceClient is the client API for UserDevice service.
@@ -4317,6 +4355,7 @@ type UserDeviceClient interface {
 	UserDeviceShareIndex(ctx context.Context, in *UserDeviceShareIndexReq, opts ...grpc.CallOption) (*UserDeviceShareIndexResp, error)
 	// 获取设备分享的详情
 	UserDeviceShareRead(ctx context.Context, in *UserDeviceShareReadReq, opts ...grpc.CallOption) (*UserDeviceShareInfo, error)
+	UserDeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type userDeviceClient struct {
@@ -4408,6 +4447,15 @@ func (c *userDeviceClient) UserDeviceShareRead(ctx context.Context, in *UserDevi
 	return out, nil
 }
 
+func (c *userDeviceClient) UserDeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, UserDevice_UserDeviceTransfer_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserDeviceServer is the server API for UserDevice service.
 // All implementations must embed UnimplementedUserDeviceServer
 // for forward compatibility
@@ -4428,6 +4476,7 @@ type UserDeviceServer interface {
 	UserDeviceShareIndex(context.Context, *UserDeviceShareIndexReq) (*UserDeviceShareIndexResp, error)
 	// 获取设备分享的详情
 	UserDeviceShareRead(context.Context, *UserDeviceShareReadReq) (*UserDeviceShareInfo, error)
+	UserDeviceTransfer(context.Context, *DeviceTransferReq) (*Empty, error)
 	mustEmbedUnimplementedUserDeviceServer()
 }
 
@@ -4461,6 +4510,9 @@ func (UnimplementedUserDeviceServer) UserDeviceShareIndex(context.Context, *User
 }
 func (UnimplementedUserDeviceServer) UserDeviceShareRead(context.Context, *UserDeviceShareReadReq) (*UserDeviceShareInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserDeviceShareRead not implemented")
+}
+func (UnimplementedUserDeviceServer) UserDeviceTransfer(context.Context, *DeviceTransferReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserDeviceTransfer not implemented")
 }
 func (UnimplementedUserDeviceServer) mustEmbedUnimplementedUserDeviceServer() {}
 
@@ -4637,6 +4689,24 @@ func _UserDevice_UserDeviceShareRead_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserDevice_UserDeviceTransfer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceTransferReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserDeviceServer).UserDeviceTransfer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserDevice_UserDeviceTransfer_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserDeviceServer).UserDeviceTransfer(ctx, req.(*DeviceTransferReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserDevice_ServiceDesc is the grpc.ServiceDesc for UserDevice service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -4679,6 +4749,10 @@ var UserDevice_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "userDeviceShareRead",
 			Handler:    _UserDevice_UserDeviceShareRead_Handler,
+		},
+		{
+			MethodName: "userDeviceTransfer",
+			Handler:    _UserDevice_UserDeviceTransfer_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

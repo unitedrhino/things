@@ -46,6 +46,7 @@ type (
 	DeviceProfileIndexReq               = dm.DeviceProfileIndexReq
 	DeviceProfileIndexResp              = dm.DeviceProfileIndexResp
 	DeviceProfileReadReq                = dm.DeviceProfileReadReq
+	DeviceTransferReq                   = dm.DeviceTransferReq
 	DeviceTypeCountReq                  = dm.DeviceTypeCountReq
 	DeviceTypeCountResp                 = dm.DeviceTypeCountResp
 	Empty                               = dm.Empty
@@ -62,9 +63,9 @@ type (
 	FirmwareInfoReadReq                 = dm.FirmwareInfoReadReq
 	FirmwareInfoReadResp                = dm.FirmwareInfoReadResp
 	FirmwareResp                        = dm.FirmwareResp
+	GatewayGetFoundReq                  = dm.GatewayGetFoundReq
+	GatewayGetFoundResp                 = dm.GatewayGetFoundResp
 	GatewayNotifyBindSendReq            = dm.GatewayNotifyBindSendReq
-	GatewayTopoReadSendReq              = dm.GatewayTopoReadSendReq
-	GatewayTopoReadSendResp             = dm.GatewayTopoReadSendResp
 	GroupDeviceIndexReq                 = dm.GroupDeviceIndexReq
 	GroupDeviceIndexResp                = dm.GroupDeviceIndexResp
 	GroupDeviceMultiDeleteReq           = dm.GroupDeviceMultiDeleteReq
@@ -198,6 +199,7 @@ type (
 		UserDeviceShareIndex(ctx context.Context, in *UserDeviceShareIndexReq, opts ...grpc.CallOption) (*UserDeviceShareIndexResp, error)
 		// 获取设备分享的详情
 		UserDeviceShareRead(ctx context.Context, in *UserDeviceShareReadReq, opts ...grpc.CallOption) (*UserDeviceShareInfo, error)
+		UserDeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error)
 	}
 
 	defaultUserDevice struct {
@@ -316,4 +318,13 @@ func (m *defaultUserDevice) UserDeviceShareRead(ctx context.Context, in *UserDev
 // 获取设备分享的详情
 func (d *directUserDevice) UserDeviceShareRead(ctx context.Context, in *UserDeviceShareReadReq, opts ...grpc.CallOption) (*UserDeviceShareInfo, error) {
 	return d.svr.UserDeviceShareRead(ctx, in)
+}
+
+func (m *defaultUserDevice) UserDeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewUserDeviceClient(m.cli.Conn())
+	return client.UserDeviceTransfer(ctx, in, opts...)
+}
+
+func (d *directUserDevice) UserDeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.UserDeviceTransfer(ctx, in)
 }

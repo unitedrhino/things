@@ -74,6 +74,11 @@ func (s *DeviceManageServer) DeviceInfoUnbind(ctx context.Context, in *dm.Device
 	return l.DeviceInfoUnbind(in)
 }
 
+func (s *DeviceManageServer) DeviceTransfer(ctx context.Context, in *dm.DeviceTransferReq) (*dm.Empty, error) {
+	l := devicemanagelogic.NewDeviceTransferLogic(ctx, s.svcCtx)
+	return l.DeviceTransfer(in)
+}
+
 // 绑定网关下子设备设备
 func (s *DeviceManageServer) DeviceGatewayMultiCreate(ctx context.Context, in *dm.DeviceGatewayMultiCreateReq) (*dm.Empty, error) {
 	l := devicemanagelogic.NewDeviceGatewayMultiCreateLogic(ctx, s.svcCtx)

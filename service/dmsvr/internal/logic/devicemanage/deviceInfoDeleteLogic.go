@@ -42,29 +42,11 @@ func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*d
 		l.Errorf("%s.FindOne err=%+v", utils.FuncName(), err)
 		return nil, errors.System.AddDetail(err)
 	}
-	{ //删除时序数据库中的表数据
-		schema, err := l.svcCtx.SchemaRepo.GetData(l.ctx, in.ProductID)
-		if err != nil {
-			l.Errorf("%s.GetSchemaModel err=%+v", utils.FuncName(), err)
-			return nil, errors.System.AddDetail(err)
-		}
-		err = l.svcCtx.HubLogRepo.DeleteDevice(l.ctx, in.ProductID, in.DeviceName)
-		if err != nil {
-			l.Errorf("%s.DeviceLogRepo.DeleteDevice err=%v", utils.FuncName(), err)
-			return nil, err
-		}
-		err = l.svcCtx.SchemaManaRepo.DeleteDevice(l.ctx, schema, in.ProductID, in.DeviceName)
-		if err != nil {
-			l.Errorf("%s.SchemaManaRepo.DeleteDevice err=%v", utils.FuncName(), err)
-			return nil, err
-		}
-		err = l.svcCtx.SDKLogRepo.DeleteDevice(l.ctx, in.ProductID, in.DeviceName)
-		if err != nil {
-			l.Errorf("%s.SchemaManaRepo.DeleteDevice err=%v", utils.FuncName(), err)
-			return nil, err
-		}
+	//删除时序数据库中的表数据
+	err = DeleteDeviceTimeData(l.ctx, l.svcCtx, in.ProductID, in.DeviceName)
+	if err != nil {
+		return nil, err
 	}
-
 	err = l.DiDB.Delete(l.ctx, di.ID)
 	if err != nil {
 		l.Errorf("%s.DeviceInfo.Delete err=%+v", utils.FuncName(), err)
@@ -79,4 +61,38 @@ func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*d
 		l.Error(err)
 	}
 	return &dm.Empty{}, nil
+}
+
+func DeleteDeviceTimeData(ctx context.Context, svcCtx *svc.ServiceContext, productID, deviceName string) error {
+	schema, err := svcCtx.SchemaRepo.GetData(ctx, productID)
+	if err != nil {
+		logx.WithContext(ctx).Errorf("%s.GetSchemaModel err=%+v", utils.FuncName(), err)
+		return errors.System.AddDetail(err)
+	}
+	err = svcCtx.HubLogRepo.DeleteDevice(ctx, productID, deviceName)
+	if err != nil {
+		logx.WithContext(ctx).Errorf("%s.HubLogRepo.DeleteDevice err=%v", utils.FuncName(), err)
+		return err
+	}
+	err = svcCtx.SchemaManaRepo.DeleteDevice(ctx, schema, productID, deviceName)
+	if err != nil {
+		logx.WithContext(ctx).Errorf("%s.SchemaManaRepo.DeleteDevice err=%v", utils.FuncName(), err)
+		return err
+	}
+	err = svcCtx.SDKLogRepo.DeleteDevice(ctx, productID, deviceName)
+	if err != nil {
+		logx.WithContext(ctx).Errorf("%s.SDKLogRepo.DeleteDevice err=%v", utils.FuncName(), err)
+		return err
+	}
+	err = svcCtx.SendRepo.DeleteDevice(ctx, productID, deviceName)
+	if err != nil {
+		logx.WithContext(ctx).Errorf("%s.SendRepo.DeleteDevice err=%v", utils.FuncName(), err)
+		return err
+	}
+	err = svcCtx.StatusRepo.DeleteDevice(ctx, productID, deviceName)
+	if err != nil {
+		logx.WithContext(ctx).Errorf("%s.StatusRepo.DeleteDevice err=%v", utils.FuncName(), err)
+		return err
+	}
+	return nil
 }

@@ -46,6 +46,7 @@ type (
 	DeviceProfileIndexReq               = dm.DeviceProfileIndexReq
 	DeviceProfileIndexResp              = dm.DeviceProfileIndexResp
 	DeviceProfileReadReq                = dm.DeviceProfileReadReq
+	DeviceTransferReq                   = dm.DeviceTransferReq
 	DeviceTypeCountReq                  = dm.DeviceTypeCountReq
 	DeviceTypeCountResp                 = dm.DeviceTypeCountResp
 	Empty                               = dm.Empty
@@ -62,9 +63,9 @@ type (
 	FirmwareInfoReadReq                 = dm.FirmwareInfoReadReq
 	FirmwareInfoReadResp                = dm.FirmwareInfoReadResp
 	FirmwareResp                        = dm.FirmwareResp
+	GatewayGetFoundReq                  = dm.GatewayGetFoundReq
+	GatewayGetFoundResp                 = dm.GatewayGetFoundResp
 	GatewayNotifyBindSendReq            = dm.GatewayNotifyBindSendReq
-	GatewayTopoReadSendReq              = dm.GatewayTopoReadSendReq
-	GatewayTopoReadSendResp             = dm.GatewayTopoReadSendResp
 	GroupDeviceIndexReq                 = dm.GroupDeviceIndexReq
 	GroupDeviceIndexResp                = dm.GroupDeviceIndexResp
 	GroupDeviceMultiDeleteReq           = dm.GroupDeviceMultiDeleteReq

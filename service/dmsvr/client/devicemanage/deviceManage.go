@@ -46,6 +46,7 @@ type (
 	DeviceProfileIndexReq               = dm.DeviceProfileIndexReq
 	DeviceProfileIndexResp              = dm.DeviceProfileIndexResp
 	DeviceProfileReadReq                = dm.DeviceProfileReadReq
+	DeviceTransferReq                   = dm.DeviceTransferReq
 	DeviceTypeCountReq                  = dm.DeviceTypeCountReq
 	DeviceTypeCountResp                 = dm.DeviceTypeCountResp
 	Empty                               = dm.Empty
@@ -62,9 +63,9 @@ type (
 	FirmwareInfoReadReq                 = dm.FirmwareInfoReadReq
 	FirmwareInfoReadResp                = dm.FirmwareInfoReadResp
 	FirmwareResp                        = dm.FirmwareResp
+	GatewayGetFoundReq                  = dm.GatewayGetFoundReq
+	GatewayGetFoundResp                 = dm.GatewayGetFoundResp
 	GatewayNotifyBindSendReq            = dm.GatewayNotifyBindSendReq
-	GatewayTopoReadSendReq              = dm.GatewayTopoReadSendReq
-	GatewayTopoReadSendResp             = dm.GatewayTopoReadSendResp
 	GroupDeviceIndexReq                 = dm.GroupDeviceIndexReq
 	GroupDeviceIndexResp                = dm.GroupDeviceIndexResp
 	GroupDeviceMultiDeleteReq           = dm.GroupDeviceMultiDeleteReq
@@ -198,6 +199,7 @@ type (
 		DeviceInfoRead(ctx context.Context, in *DeviceInfoReadReq, opts ...grpc.CallOption) (*DeviceInfo, error)
 		DeviceInfoBind(ctx context.Context, in *DeviceInfoBindReq, opts ...grpc.CallOption) (*Empty, error)
 		DeviceInfoUnbind(ctx context.Context, in *DeviceCore, opts ...grpc.CallOption) (*Empty, error)
+		DeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error)
 		// 绑定网关下子设备设备
 		DeviceGatewayMultiCreate(ctx context.Context, in *DeviceGatewayMultiCreateReq, opts ...grpc.CallOption) (*Empty, error)
 		// 获取绑定信息的设备信息列表
@@ -330,6 +332,15 @@ func (m *defaultDeviceManage) DeviceInfoUnbind(ctx context.Context, in *DeviceCo
 
 func (d *directDeviceManage) DeviceInfoUnbind(ctx context.Context, in *DeviceCore, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.DeviceInfoUnbind(ctx, in)
+}
+
+func (m *defaultDeviceManage) DeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceTransfer(ctx, in, opts...)
+}
+
+func (d *directDeviceManage) DeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.DeviceTransfer(ctx, in)
 }
 
 // 绑定网关下子设备设备

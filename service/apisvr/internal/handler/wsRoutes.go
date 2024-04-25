@@ -155,6 +155,11 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/transfer",
+					Handler: thingsdeviceinfo.TransferHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/update",
 					Handler: thingsdeviceinfo.UpdateHandler(serverCtx),
 				},

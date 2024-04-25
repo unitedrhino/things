@@ -244,6 +244,14 @@ type DeviceInfoSaveReq struct {
 	SchemaAlias    map[string]string `json:"schemaAlias,optional"`                //设备物模型别名,如果是结构体类型则key为xxx.xxx
 }
 
+type DeviceInfoTransferReq struct {
+	Device      DeviceCore `json:"device"`
+	TransferTo  int64      `json:"transferTo"` //转让给: 1: 某个人 2: 自己的某个项目
+	UserID      int64      `json:"userID,string,optional"`
+	ProjectID   int64      `json:"projectID,string,optional"`
+	IsCleanData int64      `json:"isCleanData"` //是否清除数据:1是 2否
+}
+
 type DeviceInfoWithProperty struct {
 	Value     string `json:"value"`            //获取到的值
 	Timestamp int64  `json:"timestamp,string"` //发生时间戳

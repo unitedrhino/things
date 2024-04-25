@@ -65,9 +65,9 @@ func (s *DeviceInteractServer) PropertyControlRead(ctx context.Context, in *dm.R
 }
 
 // 实时获取网关拓扑关系
-func (s *DeviceInteractServer) GatewayGetTopoSend(ctx context.Context, in *dm.GatewayTopoReadSendReq) (*dm.GatewayTopoReadSendResp, error) {
-	l := deviceinteractlogic.NewGatewayGetTopoSendLogic(ctx, s.svcCtx)
-	return l.GatewayGetTopoSend(in)
+func (s *DeviceInteractServer) GatewayGetFoundSend(ctx context.Context, in *dm.GatewayGetFoundReq) (*dm.GatewayGetFoundResp, error) {
+	l := deviceinteractlogic.NewGatewayGetFoundSendLogic(ctx, s.svcCtx)
+	return l.GatewayGetFoundSend(in)
 }
 
 // 通知网关绑定子设备

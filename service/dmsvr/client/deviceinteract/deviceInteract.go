@@ -46,6 +46,7 @@ type (
 	DeviceProfileIndexReq               = dm.DeviceProfileIndexReq
 	DeviceProfileIndexResp              = dm.DeviceProfileIndexResp
 	DeviceProfileReadReq                = dm.DeviceProfileReadReq
+	DeviceTransferReq                   = dm.DeviceTransferReq
 	DeviceTypeCountReq                  = dm.DeviceTypeCountReq
 	DeviceTypeCountResp                 = dm.DeviceTypeCountResp
 	Empty                               = dm.Empty
@@ -62,9 +63,9 @@ type (
 	FirmwareInfoReadReq                 = dm.FirmwareInfoReadReq
 	FirmwareInfoReadResp                = dm.FirmwareInfoReadResp
 	FirmwareResp                        = dm.FirmwareResp
+	GatewayGetFoundReq                  = dm.GatewayGetFoundReq
+	GatewayGetFoundResp                 = dm.GatewayGetFoundResp
 	GatewayNotifyBindSendReq            = dm.GatewayNotifyBindSendReq
-	GatewayTopoReadSendReq              = dm.GatewayTopoReadSendReq
-	GatewayTopoReadSendResp             = dm.GatewayTopoReadSendResp
 	GroupDeviceIndexReq                 = dm.GroupDeviceIndexReq
 	GroupDeviceIndexResp                = dm.GroupDeviceIndexResp
 	GroupDeviceMultiDeleteReq           = dm.GroupDeviceMultiDeleteReq
@@ -197,7 +198,7 @@ type (
 		// 获取异步调用设备属性的结果
 		PropertyControlRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*PropertyControlSendResp, error)
 		// 实时获取网关拓扑关系
-		GatewayGetTopoSend(ctx context.Context, in *GatewayTopoReadSendReq, opts ...grpc.CallOption) (*GatewayTopoReadSendResp, error)
+		GatewayGetFoundSend(ctx context.Context, in *GatewayGetFoundReq, opts ...grpc.CallOption) (*GatewayGetFoundResp, error)
 		// 通知网关绑定子设备
 		GatewayNotifyBindSend(ctx context.Context, in *GatewayNotifyBindSendReq, opts ...grpc.CallOption) (*Empty, error)
 		// 发送消息给设备 -- 调试使用
@@ -305,14 +306,14 @@ func (d *directDeviceInteract) PropertyControlRead(ctx context.Context, in *Resp
 }
 
 // 实时获取网关拓扑关系
-func (m *defaultDeviceInteract) GatewayGetTopoSend(ctx context.Context, in *GatewayTopoReadSendReq, opts ...grpc.CallOption) (*GatewayTopoReadSendResp, error) {
+func (m *defaultDeviceInteract) GatewayGetFoundSend(ctx context.Context, in *GatewayGetFoundReq, opts ...grpc.CallOption) (*GatewayGetFoundResp, error) {
 	client := dm.NewDeviceInteractClient(m.cli.Conn())
-	return client.GatewayGetTopoSend(ctx, in, opts...)
+	return client.GatewayGetFoundSend(ctx, in, opts...)
 }
 
 // 实时获取网关拓扑关系
-func (d *directDeviceInteract) GatewayGetTopoSend(ctx context.Context, in *GatewayTopoReadSendReq, opts ...grpc.CallOption) (*GatewayTopoReadSendResp, error) {
-	return d.svr.GatewayGetTopoSend(ctx, in)
+func (d *directDeviceInteract) GatewayGetFoundSend(ctx context.Context, in *GatewayGetFoundReq, opts ...grpc.CallOption) (*GatewayGetFoundResp, error) {
+	return d.svr.GatewayGetFoundSend(ctx, in)
 }
 
 // 通知网关绑定子设备

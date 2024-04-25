@@ -73,3 +73,8 @@ func (s *UserDeviceServer) UserDeviceShareRead(ctx context.Context, in *dm.UserD
 	l := userdevicelogic.NewUserDeviceShareReadLogic(ctx, s.svcCtx)
 	return l.UserDeviceShareRead(in)
 }
+
+func (s *UserDeviceServer) UserDeviceTransfer(ctx context.Context, in *dm.DeviceTransferReq) (*dm.Empty, error) {
+	l := userdevicelogic.NewUserDeviceTransferLogic(ctx, s.svcCtx)
+	return l.UserDeviceTransfer(in)
+}
