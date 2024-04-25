@@ -35,6 +35,9 @@ func (o *OtaEvent) DeviceUpgradePush() error {
 		return err
 	}
 	for _, job := range jobs {
+		if job.Firmware == nil {
+			continue
+		}
 		j := job
 		ctxs.GoNewCtx(o.ctx, func(ctx context.Context) {
 			err := otamanagelogic.NewSendMessageToDevicesLogic(ctx, o.svcCtx).PushMessageToDevices(j)
