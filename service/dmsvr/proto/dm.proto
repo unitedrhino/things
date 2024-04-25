@@ -226,6 +226,8 @@ service DeviceInteract {
   rpc propertyControlMultiSend(PropertyControlMultiSendReq)     returns(PropertyControlMultiSendResp);
   //获取异步调用设备属性的结果
   rpc propertyControlRead(RespReadReq)  returns(PropertyControlSendResp);
+  //实时获取网关拓扑关系
+  rpc gatewayTopoReadSend(GatewayTopoReadSendReq)returns(GatewayTopoReadSendResp);
   //发送消息给设备 -- 调试使用
   rpc sendMsg(SendMsgReq)     returns(SendMsgResp);
 }
@@ -693,6 +695,15 @@ message PropertyControlSendResp{
   int64   code = 1;//设备返回状态码
   string  msg = 2;//返回状态
   string msgToken = 3;//调用id
+}
+
+message GatewayTopoReadSendReq{
+  string  productID = 1; //产品id
+  string  deviceName = 2; //设备名
+}
+
+message GatewayTopoReadSendResp{
+
 }
 
 message SendMsgReq{

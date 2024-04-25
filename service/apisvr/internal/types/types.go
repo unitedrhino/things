@@ -1259,7 +1259,7 @@ type UserDeviceShareInfo struct {
 
 type UserDeviceShareMultiDeleteReq struct {
 	IDs       []int64 `json:"ids,optional"`
-	ProjectID int64   `json:"projectID"`
+	ProjectID int64   `json:"projectID,optional"`
 }
 
 type UserDeviceShareReadReq struct {

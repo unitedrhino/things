@@ -131,7 +131,8 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 		case def.SelectTypeOnly: //直接过滤这几个设备
 			db = db.WithContext(ctxs.WithAllProject(ctx)).Where(scope(db))
 		case def.SelectTypeAll: //同时获取普通设备
-			db = db.WithContext(ctxs.WithRoot(ctx)).Where("project_id=? or ?", ctxs.GetUserCtx(ctx).ProjectID, scope(db))
+			uc := ctxs.GetUserCtx(ctx)
+			db = db.WithContext(ctxs.WithRoot(ctx)).Where("tenant_code=? and  project_id=?", uc.TenantCode, uc.ProjectID).Or(scope(db))
 		}
 	}
 	return db
