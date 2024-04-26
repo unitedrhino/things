@@ -39,11 +39,12 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceCore) (*dm.Empty, 
 		return nil, err
 	}
 	uc := ctxs.GetUserCtxNoNil(l.ctx)
-	pi, err := l.svcCtx.ProjectM.ProjectInfoRead(l.ctx, &sys.ProjectWithID{ProjectID: uc.ProjectID})
+	pi, err := l.svcCtx.ProjectM.ProjectInfoRead(l.ctx, &sys.ProjectWithID{ProjectID: int64(di.ProjectID)})
 	if err != nil {
 		return nil, err
 	}
-	if di.TenantCode != di.TenantCode || pi.AdminUserID != uc.UserID || int64(di.ProjectID) != uc.ProjectID {
+	//如果是超管有全部权限
+	if !uc.AllTenant && (di.TenantCode != di.TenantCode || pi.AdminUserID != uc.UserID || int64(di.ProjectID) != uc.ProjectID) {
 		return nil, errors.Permissions
 	}
 	dpi, err := l.svcCtx.TenantCache.GetData(l.ctx, def.TenantCodeDefault)
@@ -53,7 +54,7 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceCore) (*dm.Empty, 
 	di.TenantCode = def.TenantCodeDefault
 	di.ProjectID = stores.ProjectID(dpi.DefaultProjectID)
 	di.AreaID = stores.AreaID(def.NotClassified)
-	err = diDB.Update(l.ctx, di)
+	err = diDB.Update(ctxs.WithRoot(l.ctx), di)
 
 	return &dm.Empty{}, err
 }
