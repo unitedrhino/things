@@ -159,6 +159,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/unbind",
+					Handler: thingsdeviceinfo.UnbindHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/update",
 					Handler: thingsdeviceinfo.UpdateHandler(serverCtx),
 				},

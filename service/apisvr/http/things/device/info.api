@@ -70,6 +70,13 @@ service api {
     @handler bind
     post /bind (DeviceInfoBindReq) returns ()
     @doc(
+        summary: "解绑设备"
+        isNeedAuth: "true"
+        isAuthTenant: "true"
+    )
+    @handler unbind
+    post /unbind (DeviceCore) returns ()
+    @doc(
         summary: "转让设备"
         isNeedAuth: "true"
         isAuthTenant: "true"
