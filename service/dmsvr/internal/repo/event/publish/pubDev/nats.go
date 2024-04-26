@@ -53,7 +53,7 @@ func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqMsg *deviceMsg.Publ
 	if err != nil {
 		return nil, err
 	}
-	handle, err := n.subscribeDevSync(ctx, fmt.Sprintf(topics.DeviceUpMsg, reqMsg.Type, reqMsg.ProductID, reqMsg.DeviceName))
+	handle, err := n.subscribeDevSync(ctx, fmt.Sprintf(topics.DeviceUpMsg, reqMsg.Handle, reqMsg.ProductID, reqMsg.DeviceName))
 	if err != nil {
 		logx.WithContext(ctx).Errorf("%s.subscribeDevSync failure err:%v", utils.FuncName(), err)
 		return nil, err
