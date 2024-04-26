@@ -29,15 +29,20 @@ func NewUserDeviceShareReadLogic(ctx context.Context, svcCtx *svc.ServiceContext
 
 // 获取设备分享的详情
 func (l *UserDeviceShareReadLogic) UserDeviceShareRead(in *dm.UserDeviceShareReadReq) (*dm.UserDeviceShareInfo, error) {
-	uds, err := relationDB.NewUserDeviceShareRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.UserDeviceShareFilter{
+	uc := ctxs.GetUserCtx(l.ctx)
+
+	f := relationDB.UserDeviceShareFilter{
 		ID:         in.Id,
 		DeviceName: in.Device.GetDeviceName(),
 		ProductID:  in.Device.GetProductID(),
-	})
+	}
+	if in.Id == 0 { //如果是被分享者来获取
+		f.SharedUserID = uc.UserID
+	}
+	uds, err := relationDB.NewUserDeviceShareRepo(l.ctx).FindOneByFilter(l.ctx, f)
 	if err != nil {
 		return nil, err
 	}
-	uc := ctxs.GetUserCtx(l.ctx)
 	if uds.SharedUserID != uc.UserID {
 		di, err := relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(ctxs.WithAllProject(l.ctx), relationDB.DeviceFilter{ProductID: uds.ProductID, DeviceNames: []string{uds.DeviceName}})
 		if err != nil {
