@@ -110,7 +110,7 @@ func (p ProductSchemaRepo) FindByFilter(ctx context.Context, f ProductSchemaFilt
 	if page == nil {
 		page = &def.PageInfo{}
 	}
-	page.Orders = []def.OrderBy{{Filed: "identifier", Sort: 1}}
+	page.Orders = []def.OrderBy{{Filed: "identifier", Sort: def.OrderDesc}}
 	db := p.fmtFilter(ctx, f).Model(&DmProductSchema{})
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error

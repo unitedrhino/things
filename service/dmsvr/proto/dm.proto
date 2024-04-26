@@ -853,7 +853,7 @@ message DeviceGatewayIndexReq{
 }
 
 message DeviceGatewayIndexResp{
-  repeated DeviceInfo list = 1;
+  repeated DeviceCore list = 1;
   int64 total = 2;
 }
 

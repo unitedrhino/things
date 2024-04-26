@@ -96,6 +96,8 @@ func (l *GatewayGetFoundSendLogic) GatewayGetFoundSend(in *dm.GatewayGetFoundReq
 	if err != nil {
 		return nil, err
 	}
+	//gdDB := relationDB.NewGatewayDeviceRepo(l.ctx)
+	//gdDB.FindByFilter()
 	fmt.Println(dis)
 	return &dm.GatewayGetFoundResp{}, nil
 }

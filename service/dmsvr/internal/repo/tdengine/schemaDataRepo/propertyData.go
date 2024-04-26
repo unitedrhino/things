@@ -135,7 +135,7 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 
 	if filter.ArgFunc == "" {
 		sql = sq.Select("*")
-		if filter.Order != def.OrderAes {
+		if filter.Order != def.OrderAsc {
 			sql = sql.OrderBy("`ts` desc")
 		}
 	} else {

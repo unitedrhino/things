@@ -5,7 +5,6 @@ import (
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/logic"
-	"github.com/i-Things/things/service/apisvr/internal/logic/things"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/service/apisvr/internal/svc"
@@ -43,10 +42,10 @@ func (l *IndexLogic) Index(req *types.DeviceGateWayIndexReq) (resp *types.Device
 		return nil, er
 	}
 	pis := make([]*types.DeviceInfo, 0, len(dmResp.List))
-	for _, v := range dmResp.List {
-		pi := things.InfoToApi(l.ctx, l.svcCtx, v, nil, nil)
-		pis = append(pis, pi)
-	}
+	//for _, v := range dmResp.List {
+	//	pi := things.InfoToApi(l.ctx, l.svcCtx, v, nil, nil)
+	//	pis = append(pis, pi)
+	//}
 	return &types.DeviceGateWayIndexResp{
 		Total: dmResp.Total,
 		List:  pis,

@@ -38,10 +38,10 @@ func CheckIsOnline(ctx context.Context, svcCtx *svc.ServiceContext, core devices
 	if len(gateways.List) == 0 {
 		return info.ProtocolCode, errors.NotFind.AddMsg("子设备未绑定网关")
 	}
-	for _, g := range gateways.List {
-		if g.IsOnline == def.True {
-			return info.ProtocolCode, nil
-		}
-	}
+	//for _, g := range gateways.List {
+	//	//if g.IsOnline == def.True {
+	//	//	return info.ProtocolCode, nil
+	//	//}
+	//}
 	return info.ProtocolCode, errors.NotOnline.AddMsg("网关未在线")
 }

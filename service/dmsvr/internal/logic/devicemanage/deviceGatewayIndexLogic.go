@@ -2,6 +2,7 @@ package devicemanagelogic
 
 import (
 	"context"
+	"fmt"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
@@ -43,11 +44,12 @@ func (l *DeviceGatewayIndexLogic) DeviceGatewayIndex(in *dm.DeviceGatewayIndexRe
 	if err != nil {
 		return nil, err
 	}
-
-	info := make([]*dm.DeviceInfo, 0, len(di))
-	for _, v := range di {
-		info = append(info, logic.ToDeviceInfo(v))
-	}
-
-	return &dm.DeviceGatewayIndexResp{List: info, Total: size}, nil
+	fmt.Println(di, size)
+	return nil, nil
+	//info := make([]*dm.DeviceInfo, 0, len(di))
+	//for _, v := range di {
+	//	info = append(info, logic.ToDeviceInfo(v))
+	//}
+	//
+	//return &dm.DeviceGatewayIndexResp{List: info, Total: size}, nil
 }

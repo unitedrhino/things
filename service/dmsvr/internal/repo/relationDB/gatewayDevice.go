@@ -6,6 +6,7 @@ import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/stores"
+	"gitee.com/i-Things/share/utils"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -19,7 +20,8 @@ type (
 		//网关和子设备 至少要有一个填写
 		Gateway *devices.Core
 		//网关和子设备 至少要有一个填写
-		SubDevice *devices.Core
+		SubDevice  *devices.Core
+		SubDevices []*devices.Core
 	}
 )
 
@@ -28,25 +30,25 @@ func NewGatewayDeviceRepo(in any) *GatewayDeviceRepo {
 }
 func (p GatewayDeviceRepo) fmtFilter(ctx context.Context, f GatewayDeviceFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
-	di := DmDeviceInfo{}
-	gd := DmGatewayDevice{}
 	if f.Gateway != nil { //通过网关获取旗下子设备列表
-		db = db.Table(gd.TableName()+" as gd").Joins(fmt.Sprintf(
-			"left join %s as di on di.product_id=gd.product_id and di.device_name=gd.device_name", di.TableName())).
-			Where("gateway_product_id=? and gateway_device_name=? and di.id IS NOT NULL", f.Gateway.ProductID, f.Gateway.DeviceName)
-	} else {
-		db = db.Table(gd.TableName()+" as gd").Joins(fmt.Sprintf(
-			"left join %s as di on di.product_id=gd.gateway_product_id and di.device_name=gd.gateway_device_name", di.TableName())).
-			Where("gd.product_id=? and gd.device_name=? and di.id IS NOT NULL", f.SubDevice.ProductID, f.SubDevice.DeviceName)
+		db = db.Where("gateway_product_id=? and gateway_device_name=?", f.Gateway.ProductID, f.Gateway.DeviceName)
+	}
+	if f.SubDevice != nil { //根据子设备获取网关
+		db = db.Where("product_id=? and device_name=?", f.SubDevice.ProductID, f.SubDevice.DeviceName)
+	}
+	if len(f.SubDevices) != 0 {
+		db = db.Where(fmt.Sprintf("(product_id, device_name) in (%s)", utils.JoinWithFunc(f.SubDevices, ",", func(in *devices.Core) string {
+			return fmt.Sprintf("(%s)")
+		})))
 	}
 	return db
 }
 
-func (g GatewayDeviceRepo) FindByFilter(ctx context.Context, f GatewayDeviceFilter, page *def.PageInfo) ([]*DmDeviceInfo, error) {
-	var results []*DmDeviceInfo
+func (g GatewayDeviceRepo) FindByFilter(ctx context.Context, f GatewayDeviceFilter, page *def.PageInfo) ([]*DmGatewayDevice, error) {
+	var results []*DmGatewayDevice
 	db := g.fmtFilter(ctx, f)
 	db = page.ToGorm(db)
-	err := db.Select("di.*").Find(&results).Error
+	err := db.Find(&results).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
@@ -58,10 +60,10 @@ func (g GatewayDeviceRepo) CountByFilter(ctx context.Context, f GatewayDeviceFil
 	err = db.Count(&size).Error
 	return size, stores.ErrFmt(err)
 }
-func (p GatewayDeviceRepo) FindOneByFilter(ctx context.Context, f GatewayDeviceFilter) (*DmDeviceInfo, error) {
-	var result DmDeviceInfo
+func (p GatewayDeviceRepo) FindOneByFilter(ctx context.Context, f GatewayDeviceFilter) (*DmGatewayDevice, error) {
+	var result DmGatewayDevice
 	db := p.fmtFilter(ctx, f)
-	err := db.Select("di.*").First(&result).Error
+	err := db.First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
