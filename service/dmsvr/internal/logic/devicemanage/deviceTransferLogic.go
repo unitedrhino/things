@@ -8,6 +8,7 @@ import (
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
+	"gorm.io/gorm"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
@@ -82,9 +83,20 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 			return nil, err
 		}
 	}
-	err = diDB.Update(ctxs.WithAllProject(l.ctx), di)
-	if err != nil {
-		return nil, err
-	}
+	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+		err := relationDB.NewUserDeviceShareRepo(tx).DeleteByFilter(l.ctx, relationDB.UserDeviceShareFilter{
+			ProductID:  in.Device.ProductID,
+			DeviceName: in.Device.DeviceName,
+		})
+		if err != nil {
+			return err
+		}
+		err = relationDB.NewDeviceInfoRepo(tx).Update(ctxs.WithAllProject(l.ctx), di)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+
 	return &dm.Empty{}, err
 }
