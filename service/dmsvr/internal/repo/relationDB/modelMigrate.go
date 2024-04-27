@@ -47,12 +47,12 @@ func Migrate(c conf.Database) error {
 	if err != nil {
 		return err
 	}
-	{
-		db := stores.GetCommonConn(context.TODO()).Clauses(clause.OnConflict{DoNothing: true})
-		if err := db.CreateInBatches(&MigrateManufacturerInfo, 100).Error; err != nil {
-			return err
-		}
-	}
+	//{
+	//	db := stores.GetCommonConn(context.TODO()).Clauses(clause.OnConflict{DoNothing: true})
+	//	if err := db.CreateInBatches(&MigrateManufacturerInfo, 100).Error; err != nil {
+	//		return err
+	//	}
+	//}
 	//stores.SetAuthIncrement(db, &DmGroupInfo{ID: 10})
 	if needInitColumn {
 		return migrateTableColumn()

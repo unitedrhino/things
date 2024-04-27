@@ -77,7 +77,7 @@ func (p ProductSchemaRepo) Update(ctx context.Context, data *DmProductSchema) er
 
 func (p ProductSchemaRepo) UpdateTag(ctx context.Context, productIDs []string, identifiers []string, oldTag, newTag int64) error {
 	err := p.db.WithContext(ctx).Model(&DmProductSchema{}).Where(
-		"product_id in ? and identifier in ? and tag =?", productIDs, identifiers, oldTag).Update("newTag", newTag).Error
+		"product_id in ? and identifier in ? and tag =?", productIDs, identifiers, oldTag).Update("tag", newTag).Error
 	return stores.ErrFmt(err)
 }
 
