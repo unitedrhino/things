@@ -939,6 +939,13 @@ message Point{
   double  latitude = 2;//纬度
 }
 
+message ManufacturerInfo {
+  int64 id =1;
+  string name =2;
+  string desc=3;
+  string phone =4;
+}
+
 message DeviceInfo {
   string tenantCode =26;//租户号,只有default租户能查到这个字段
   string productID = 1; //产品id 只读
@@ -970,6 +977,8 @@ message DeviceInfo {
   int64  ratedPower =28;// 额定功率:单位k/wh
   map<string,string>protocolConf =29;
   int64 status =30 ;//设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)
+  int64 isEnable =31;//是否启用
+  ManufacturerInfo manufacturer =32; //制造商信息
 }
 
 message ProductInfo{
@@ -1033,6 +1042,7 @@ message DeviceCore{
 message DeviceInfoReadReq{
   string   productID = 1; //产品id
   string  deviceName = 2; //设备名称
+  bool withManufacturer =3;//同时获取制造商信息
 }
 
 message DeviceInfoMultiUpdateReq{

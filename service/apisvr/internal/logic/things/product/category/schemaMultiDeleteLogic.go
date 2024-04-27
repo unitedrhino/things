@@ -26,6 +26,6 @@ func NewSchemaMultiDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 }
 
 func (l *SchemaMultiDeleteLogic) SchemaMultiDelete(req *types.ProductCategorySchemaMultiSaveReq) error {
-	_, err := l.svcCtx.ProductM.ProductCategorySchemaMultiUpdate(l.ctx, utils.Copy[dm.ProductCategorySchemaMultiSaveReq](req))
+	_, err := l.svcCtx.ProductM.ProductCategorySchemaMultiDelete(l.ctx, utils.Copy[dm.ProductCategorySchemaMultiSaveReq](req))
 	return err
 }

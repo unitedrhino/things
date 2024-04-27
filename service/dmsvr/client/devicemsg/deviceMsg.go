@@ -78,6 +78,7 @@ type (
 	HubLogIndexReq                    = dm.HubLogIndexReq
 	HubLogIndexResp                   = dm.HubLogIndexResp
 	HubLogInfo                        = dm.HubLogInfo
+	ManufacturerInfo                  = dm.ManufacturerInfo
 	OtaFirmwareDeviceCancelReq        = dm.OtaFirmwareDeviceCancelReq
 	OtaFirmwareDeviceIndexReq         = dm.OtaFirmwareDeviceIndexReq
 	OtaFirmwareDeviceIndexResp        = dm.OtaFirmwareDeviceIndexResp

@@ -26,6 +26,6 @@ func NewSchemaMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 }
 
 func (l *SchemaMultiCreateLogic) SchemaMultiCreate(req *types.ProductCategorySchemaMultiSaveReq) error {
-	_, err := l.svcCtx.ProductM.ProductCategorySchemaMultiUpdate(l.ctx, utils.Copy[dm.ProductCategorySchemaMultiSaveReq](req))
+	_, err := l.svcCtx.ProductM.ProductCategorySchemaMultiCreate(l.ctx, utils.Copy[dm.ProductCategorySchemaMultiSaveReq](req))
 	return err
 }

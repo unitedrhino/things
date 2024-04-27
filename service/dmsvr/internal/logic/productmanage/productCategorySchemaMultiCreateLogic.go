@@ -70,9 +70,12 @@ func (l *ProductCategorySchemaMultiCreateLogic) ProductCategorySchemaMultiCreate
 	oldIdentifierSet := utils.SliceToSet(oldIdentifiers)
 	var newIdentifiers []string //把已经新增过的剔除
 	for _, v := range in.Identifiers {
-		if _, ok := oldIdentifierSet[v]; ok {
+		if _, ok := oldIdentifierSet[v]; !ok { //原来没有的
 			newIdentifiers = append(newIdentifiers, v)
 		}
+	}
+	if len(newIdentifiers) == 0 {
+		return &dm.Empty{}, nil
 	}
 	var insertDatas []*relationDB.DmProductCategorySchema
 	for _, v := range newIdentifiers {
@@ -132,5 +135,5 @@ func (l *ProductCategorySchemaMultiCreateLogic) ProductCategorySchemaMultiCreate
 			}
 		}
 	})
-	return &dm.Empty{}, nil
+	return &dm.Empty{}, err
 }

@@ -89,6 +89,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		WithProperties: properties,
 		Profiles:       profiles,
 		Status:         v.Status,
+		Manufacturer:   utils.Copy[types.ManufacturerInfo](v.Manufacturer),
 	}
 }
 

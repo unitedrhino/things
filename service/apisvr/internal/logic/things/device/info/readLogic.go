@@ -29,7 +29,7 @@ func NewReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogic {
 
 func (l *ReadLogic) Read(req *types.DeviceInfoReadReq) (resp *types.DeviceInfo, err error) {
 	dmResp, err := l.svcCtx.DeviceM.DeviceInfoRead(l.ctx,
-		&dm.DeviceInfoReadReq{ProductID: req.ProductID, DeviceName: req.DeviceName})
+		&dm.DeviceInfoReadReq{ProductID: req.ProductID, DeviceName: req.DeviceName, WithManufacturer: req.WithManufacturer})
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.GetDeviceInfo req=%v err=%+v", utils.FuncName(), req, er)

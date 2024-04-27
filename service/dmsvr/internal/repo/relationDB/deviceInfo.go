@@ -37,6 +37,7 @@ type (
 		ProductCategoryID int64
 		SharedDevices     []*devices.Core
 		SharedType        def.SelectType
+		WithManufacturer  bool
 	}
 )
 
@@ -48,6 +49,9 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	db := d.db.WithContext(ctx)
 	if f.WithProduct {
 		db = db.Preload("ProductInfo")
+	}
+	if f.WithManufacturer {
+		db = db.Preload("Manufacturer")
 	}
 	if len(f.TenantCodes) != 0 {
 		db = db.Where("tenant_code in ?", f.TenantCodes)

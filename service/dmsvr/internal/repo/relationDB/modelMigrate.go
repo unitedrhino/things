@@ -19,6 +19,7 @@ func Migrate(c conf.Database) error {
 		needInitColumn = true
 	}
 	err := db.AutoMigrate(
+		&DmManufacturerInfo{},
 		&DmOtaModuleInfo{},
 		&DmProductInfo{},
 		&DmProductCategory{},
@@ -46,6 +47,12 @@ func Migrate(c conf.Database) error {
 	if err != nil {
 		return err
 	}
+	{
+		db := stores.GetCommonConn(context.TODO()).Clauses(clause.OnConflict{DoNothing: true})
+		if err := db.CreateInBatches(&MigrateManufacturerInfo, 100).Error; err != nil {
+			return err
+		}
+	}
 	//stores.SetAuthIncrement(db, &DmGroupInfo{ID: 10})
 	if needInitColumn {
 		return migrateTableColumn()
@@ -60,6 +67,9 @@ func migrateTableColumn() error {
 	if err := db.CreateInBatches(&MigrateProductCategory, 100).Error; err != nil {
 		return err
 	}
+	if err := db.CreateInBatches(&MigrateManufacturerInfo, 100).Error; err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -70,5 +80,13 @@ var (
 		{ID: 4, Name: "空调设备", ParentID: def.RootNode, IDPath: "4-"},
 		{ID: 5, Name: "风扇设备", ParentID: def.RootNode, IDPath: "5-"},
 		{ID: 6, Name: "传感器设备", ParentID: def.RootNode, IDPath: "6-"},
+	}
+	MigrateManufacturerInfo = []DmManufacturerInfo{
+		{
+			ID:    1,
+			Name:  "iThings",
+			Desc:  "欢迎加入",
+			Phone: "166666666",
+		},
 	}
 )
