@@ -28,6 +28,7 @@ type DmDeviceInfo struct {
 	Cert           string            `gorm:"column:cert;type:varchar(512);NOT NULL"`                                          // 设备证书
 	Imei           string            `gorm:"column:imei;type:varchar(15);NOT NULL"`                                           // IMEI号信息
 	Mac            string            `gorm:"column:mac;type:varchar(17);NOT NULL"`                                            // MAC号信息
+	DeviceType     int64             `gorm:"column:device_type;index;type:smallint;default:1"`                                // 设备类型:1:设备,2:网关,3:子设备
 	Version        string            `gorm:"column:version;type:varchar(64);NOT NULL"`                                        // 固件版本
 	HardInfo       string            `gorm:"column:hard_info;type:varchar(64);NOT NULL"`                                      // 模组硬件型号
 	SoftInfo       string            `gorm:"column:soft_info;type:varchar(64);NOT NULL"`                                      // 模组软件版本

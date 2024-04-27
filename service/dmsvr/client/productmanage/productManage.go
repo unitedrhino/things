@@ -14,173 +14,173 @@ import (
 )
 
 type (
-	ActionRespReq                       = dm.ActionRespReq
-	ActionSendReq                       = dm.ActionSendReq
-	ActionSendResp                      = dm.ActionSendResp
-	CommonSchemaCreateReq               = dm.CommonSchemaCreateReq
-	CommonSchemaIndexReq                = dm.CommonSchemaIndexReq
-	CommonSchemaIndexResp               = dm.CommonSchemaIndexResp
-	CommonSchemaInfo                    = dm.CommonSchemaInfo
-	CommonSchemaUpdateReq               = dm.CommonSchemaUpdateReq
-	CustomTopic                         = dm.CustomTopic
-	DeviceCore                          = dm.DeviceCore
-	DeviceCountInfo                     = dm.DeviceCountInfo
-	DeviceCountReq                      = dm.DeviceCountReq
-	DeviceCountResp                     = dm.DeviceCountResp
-	DeviceGatewayBindDevice             = dm.DeviceGatewayBindDevice
-	DeviceGatewayIndexReq               = dm.DeviceGatewayIndexReq
-	DeviceGatewayIndexResp              = dm.DeviceGatewayIndexResp
-	DeviceGatewayMultiCreateReq         = dm.DeviceGatewayMultiCreateReq
-	DeviceGatewayMultiDeleteReq         = dm.DeviceGatewayMultiDeleteReq
-	DeviceGatewaySign                   = dm.DeviceGatewaySign
-	DeviceInfo                          = dm.DeviceInfo
-	DeviceInfoBindReq                   = dm.DeviceInfoBindReq
-	DeviceInfoCount                     = dm.DeviceInfoCount
-	DeviceInfoCountReq                  = dm.DeviceInfoCountReq
-	DeviceInfoDeleteReq                 = dm.DeviceInfoDeleteReq
-	DeviceInfoIndexReq                  = dm.DeviceInfoIndexReq
-	DeviceInfoIndexResp                 = dm.DeviceInfoIndexResp
-	DeviceInfoMultiUpdateReq            = dm.DeviceInfoMultiUpdateReq
-	DeviceInfoReadReq                   = dm.DeviceInfoReadReq
-	DeviceProfile                       = dm.DeviceProfile
-	DeviceProfileIndexReq               = dm.DeviceProfileIndexReq
-	DeviceProfileIndexResp              = dm.DeviceProfileIndexResp
-	DeviceProfileReadReq                = dm.DeviceProfileReadReq
-	DeviceTransferReq                   = dm.DeviceTransferReq
-	DeviceTypeCountReq                  = dm.DeviceTypeCountReq
-	DeviceTypeCountResp                 = dm.DeviceTypeCountResp
-	Empty                               = dm.Empty
-	EventLogIndexReq                    = dm.EventLogIndexReq
-	EventLogIndexResp                   = dm.EventLogIndexResp
-	EventLogInfo                        = dm.EventLogInfo
-	Firmware                            = dm.Firmware
-	FirmwareFile                        = dm.FirmwareFile
-	FirmwareInfo                        = dm.FirmwareInfo
-	FirmwareInfoDeleteReq               = dm.FirmwareInfoDeleteReq
-	FirmwareInfoDeleteResp              = dm.FirmwareInfoDeleteResp
-	FirmwareInfoIndexReq                = dm.FirmwareInfoIndexReq
-	FirmwareInfoIndexResp               = dm.FirmwareInfoIndexResp
-	FirmwareInfoReadReq                 = dm.FirmwareInfoReadReq
-	FirmwareInfoReadResp                = dm.FirmwareInfoReadResp
-	FirmwareResp                        = dm.FirmwareResp
-	GatewayGetFoundReq                  = dm.GatewayGetFoundReq
-	GatewayGetFoundResp                 = dm.GatewayGetFoundResp
-	GatewayNotifyBindSendReq            = dm.GatewayNotifyBindSendReq
-	GroupDeviceIndexReq                 = dm.GroupDeviceIndexReq
-	GroupDeviceIndexResp                = dm.GroupDeviceIndexResp
-	GroupDeviceMultiDeleteReq           = dm.GroupDeviceMultiDeleteReq
-	GroupDeviceMultiSaveReq             = dm.GroupDeviceMultiSaveReq
-	GroupInfo                           = dm.GroupInfo
-	GroupInfoCreateReq                  = dm.GroupInfoCreateReq
-	GroupInfoIndexReq                   = dm.GroupInfoIndexReq
-	GroupInfoIndexResp                  = dm.GroupInfoIndexResp
-	GroupInfoUpdateReq                  = dm.GroupInfoUpdateReq
-	HubLogIndexReq                      = dm.HubLogIndexReq
-	HubLogIndexResp                     = dm.HubLogIndexResp
-	HubLogInfo                          = dm.HubLogInfo
-	OtaFirmwareDeviceCancelReq          = dm.OtaFirmwareDeviceCancelReq
-	OtaFirmwareDeviceIndexReq           = dm.OtaFirmwareDeviceIndexReq
-	OtaFirmwareDeviceIndexResp          = dm.OtaFirmwareDeviceIndexResp
-	OtaFirmwareDeviceInfo               = dm.OtaFirmwareDeviceInfo
-	OtaFirmwareDeviceRetryReq           = dm.OtaFirmwareDeviceRetryReq
-	OtaFirmwareFile                     = dm.OtaFirmwareFile
-	OtaFirmwareFileIndexReq             = dm.OtaFirmwareFileIndexReq
-	OtaFirmwareFileIndexResp            = dm.OtaFirmwareFileIndexResp
-	OtaFirmwareFileInfo                 = dm.OtaFirmwareFileInfo
-	OtaFirmwareFileReq                  = dm.OtaFirmwareFileReq
-	OtaFirmwareFileResp                 = dm.OtaFirmwareFileResp
-	OtaFirmwareInfo                     = dm.OtaFirmwareInfo
-	OtaFirmwareInfoCreateReq            = dm.OtaFirmwareInfoCreateReq
-	OtaFirmwareInfoIndexReq             = dm.OtaFirmwareInfoIndexReq
-	OtaFirmwareInfoIndexResp            = dm.OtaFirmwareInfoIndexResp
-	OtaFirmwareInfoUpdateReq            = dm.OtaFirmwareInfoUpdateReq
-	OtaFirmwareJobIndexReq              = dm.OtaFirmwareJobIndexReq
-	OtaFirmwareJobIndexResp             = dm.OtaFirmwareJobIndexResp
-	OtaFirmwareJobInfo                  = dm.OtaFirmwareJobInfo
-	OtaJobByDeviceIndexReq              = dm.OtaJobByDeviceIndexReq
-	OtaJobDynamicInfo                   = dm.OtaJobDynamicInfo
-	OtaJobStaticInfo                    = dm.OtaJobStaticInfo
-	OtaModuleInfo                       = dm.OtaModuleInfo
-	OtaModuleInfoIndexReq               = dm.OtaModuleInfoIndexReq
-	OtaModuleInfoIndexResp              = dm.OtaModuleInfoIndexResp
-	OtaPromptIndexReq                   = dm.OtaPromptIndexReq
-	OtaPromptIndexResp                  = dm.OtaPromptIndexResp
-	PageInfo                            = dm.PageInfo
-	PageInfo_OrderBy                    = dm.PageInfo_OrderBy
-	Point                               = dm.Point
-	ProductCategory                     = dm.ProductCategory
-	ProductCategoryIndexReq             = dm.ProductCategoryIndexReq
-	ProductCategoryIndexResp            = dm.ProductCategoryIndexResp
-	ProductCategoryReadReq              = dm.ProductCategoryReadReq
-	ProductCategorySchemaIndexReq       = dm.ProductCategorySchemaIndexReq
-	ProductCategorySchemaIndexResp      = dm.ProductCategorySchemaIndexResp
-	ProductCategorySchemaMultiUpdateReq = dm.ProductCategorySchemaMultiUpdateReq
-	ProductCustom                       = dm.ProductCustom
-	ProductCustomReadReq                = dm.ProductCustomReadReq
-	ProductInfo                         = dm.ProductInfo
-	ProductInfoDeleteReq                = dm.ProductInfoDeleteReq
-	ProductInfoIndexReq                 = dm.ProductInfoIndexReq
-	ProductInfoIndexResp                = dm.ProductInfoIndexResp
-	ProductInfoReadReq                  = dm.ProductInfoReadReq
-	ProductInitReq                      = dm.ProductInitReq
-	ProductRemoteConfig                 = dm.ProductRemoteConfig
-	ProductSchemaCreateReq              = dm.ProductSchemaCreateReq
-	ProductSchemaDeleteReq              = dm.ProductSchemaDeleteReq
-	ProductSchemaIndexReq               = dm.ProductSchemaIndexReq
-	ProductSchemaIndexResp              = dm.ProductSchemaIndexResp
-	ProductSchemaInfo                   = dm.ProductSchemaInfo
-	ProductSchemaMultiCreateReq         = dm.ProductSchemaMultiCreateReq
-	ProductSchemaTslImportReq           = dm.ProductSchemaTslImportReq
-	ProductSchemaTslReadReq             = dm.ProductSchemaTslReadReq
-	ProductSchemaTslReadResp            = dm.ProductSchemaTslReadResp
-	ProductSchemaUpdateReq              = dm.ProductSchemaUpdateReq
-	PropertyControlMultiSendReq         = dm.PropertyControlMultiSendReq
-	PropertyControlMultiSendResp        = dm.PropertyControlMultiSendResp
-	PropertyControlSendMsg              = dm.PropertyControlSendMsg
-	PropertyControlSendReq              = dm.PropertyControlSendReq
-	PropertyControlSendResp             = dm.PropertyControlSendResp
-	PropertyGetReportSendReq            = dm.PropertyGetReportSendReq
-	PropertyGetReportSendResp           = dm.PropertyGetReportSendResp
-	PropertyLogIndexReq                 = dm.PropertyLogIndexReq
-	PropertyLogIndexResp                = dm.PropertyLogIndexResp
-	PropertyLogInfo                     = dm.PropertyLogInfo
-	PropertyLogLatestIndexReq           = dm.PropertyLogLatestIndexReq
-	ProtocolConfigField                 = dm.ProtocolConfigField
-	ProtocolConfigInfo                  = dm.ProtocolConfigInfo
-	ProtocolInfo                        = dm.ProtocolInfo
-	ProtocolInfoIndexReq                = dm.ProtocolInfoIndexReq
-	ProtocolInfoIndexResp               = dm.ProtocolInfoIndexResp
-	RemoteConfigCreateReq               = dm.RemoteConfigCreateReq
-	RemoteConfigIndexReq                = dm.RemoteConfigIndexReq
-	RemoteConfigIndexResp               = dm.RemoteConfigIndexResp
-	RemoteConfigLastReadReq             = dm.RemoteConfigLastReadReq
-	RemoteConfigLastReadResp            = dm.RemoteConfigLastReadResp
-	RemoteConfigPushAllReq              = dm.RemoteConfigPushAllReq
-	RespReadReq                         = dm.RespReadReq
-	RootCheckReq                        = dm.RootCheckReq
-	SdkLogIndexReq                      = dm.SdkLogIndexReq
-	SdkLogIndexResp                     = dm.SdkLogIndexResp
-	SdkLogInfo                          = dm.SdkLogInfo
-	SendLogIndexReq                     = dm.SendLogIndexReq
-	SendLogIndexResp                    = dm.SendLogIndexResp
-	SendLogInfo                         = dm.SendLogInfo
-	SendMsgReq                          = dm.SendMsgReq
-	SendMsgResp                         = dm.SendMsgResp
-	SendOption                          = dm.SendOption
-	ShadowIndex                         = dm.ShadowIndex
-	ShadowIndexResp                     = dm.ShadowIndexResp
-	StatusLogIndexReq                   = dm.StatusLogIndexReq
-	StatusLogIndexResp                  = dm.StatusLogIndexResp
-	StatusLogInfo                       = dm.StatusLogInfo
-	TimeRange                           = dm.TimeRange
-	UserDeviceCollectSave               = dm.UserDeviceCollectSave
-	UserDeviceShareIndexReq             = dm.UserDeviceShareIndexReq
-	UserDeviceShareIndexResp            = dm.UserDeviceShareIndexResp
-	UserDeviceShareInfo                 = dm.UserDeviceShareInfo
-	UserDeviceShareMultiDeleteReq       = dm.UserDeviceShareMultiDeleteReq
-	UserDeviceShareReadReq              = dm.UserDeviceShareReadReq
-	WithID                              = dm.WithID
-	WithIDCode                          = dm.WithIDCode
+	ActionRespReq                     = dm.ActionRespReq
+	ActionSendReq                     = dm.ActionSendReq
+	ActionSendResp                    = dm.ActionSendResp
+	CommonSchemaCreateReq             = dm.CommonSchemaCreateReq
+	CommonSchemaIndexReq              = dm.CommonSchemaIndexReq
+	CommonSchemaIndexResp             = dm.CommonSchemaIndexResp
+	CommonSchemaInfo                  = dm.CommonSchemaInfo
+	CommonSchemaUpdateReq             = dm.CommonSchemaUpdateReq
+	CustomTopic                       = dm.CustomTopic
+	DeviceCore                        = dm.DeviceCore
+	DeviceCountInfo                   = dm.DeviceCountInfo
+	DeviceCountReq                    = dm.DeviceCountReq
+	DeviceCountResp                   = dm.DeviceCountResp
+	DeviceGatewayBindDevice           = dm.DeviceGatewayBindDevice
+	DeviceGatewayIndexReq             = dm.DeviceGatewayIndexReq
+	DeviceGatewayIndexResp            = dm.DeviceGatewayIndexResp
+	DeviceGatewayMultiCreateReq       = dm.DeviceGatewayMultiCreateReq
+	DeviceGatewayMultiDeleteReq       = dm.DeviceGatewayMultiDeleteReq
+	DeviceGatewaySign                 = dm.DeviceGatewaySign
+	DeviceInfo                        = dm.DeviceInfo
+	DeviceInfoBindReq                 = dm.DeviceInfoBindReq
+	DeviceInfoCount                   = dm.DeviceInfoCount
+	DeviceInfoCountReq                = dm.DeviceInfoCountReq
+	DeviceInfoDeleteReq               = dm.DeviceInfoDeleteReq
+	DeviceInfoIndexReq                = dm.DeviceInfoIndexReq
+	DeviceInfoIndexResp               = dm.DeviceInfoIndexResp
+	DeviceInfoMultiUpdateReq          = dm.DeviceInfoMultiUpdateReq
+	DeviceInfoReadReq                 = dm.DeviceInfoReadReq
+	DeviceProfile                     = dm.DeviceProfile
+	DeviceProfileIndexReq             = dm.DeviceProfileIndexReq
+	DeviceProfileIndexResp            = dm.DeviceProfileIndexResp
+	DeviceProfileReadReq              = dm.DeviceProfileReadReq
+	DeviceTransferReq                 = dm.DeviceTransferReq
+	DeviceTypeCountReq                = dm.DeviceTypeCountReq
+	DeviceTypeCountResp               = dm.DeviceTypeCountResp
+	Empty                             = dm.Empty
+	EventLogIndexReq                  = dm.EventLogIndexReq
+	EventLogIndexResp                 = dm.EventLogIndexResp
+	EventLogInfo                      = dm.EventLogInfo
+	Firmware                          = dm.Firmware
+	FirmwareFile                      = dm.FirmwareFile
+	FirmwareInfo                      = dm.FirmwareInfo
+	FirmwareInfoDeleteReq             = dm.FirmwareInfoDeleteReq
+	FirmwareInfoDeleteResp            = dm.FirmwareInfoDeleteResp
+	FirmwareInfoIndexReq              = dm.FirmwareInfoIndexReq
+	FirmwareInfoIndexResp             = dm.FirmwareInfoIndexResp
+	FirmwareInfoReadReq               = dm.FirmwareInfoReadReq
+	FirmwareInfoReadResp              = dm.FirmwareInfoReadResp
+	FirmwareResp                      = dm.FirmwareResp
+	GatewayGetFoundReq                = dm.GatewayGetFoundReq
+	GatewayGetFoundResp               = dm.GatewayGetFoundResp
+	GatewayNotifyBindSendReq          = dm.GatewayNotifyBindSendReq
+	GroupDeviceIndexReq               = dm.GroupDeviceIndexReq
+	GroupDeviceIndexResp              = dm.GroupDeviceIndexResp
+	GroupDeviceMultiDeleteReq         = dm.GroupDeviceMultiDeleteReq
+	GroupDeviceMultiSaveReq           = dm.GroupDeviceMultiSaveReq
+	GroupInfo                         = dm.GroupInfo
+	GroupInfoCreateReq                = dm.GroupInfoCreateReq
+	GroupInfoIndexReq                 = dm.GroupInfoIndexReq
+	GroupInfoIndexResp                = dm.GroupInfoIndexResp
+	GroupInfoUpdateReq                = dm.GroupInfoUpdateReq
+	HubLogIndexReq                    = dm.HubLogIndexReq
+	HubLogIndexResp                   = dm.HubLogIndexResp
+	HubLogInfo                        = dm.HubLogInfo
+	OtaFirmwareDeviceCancelReq        = dm.OtaFirmwareDeviceCancelReq
+	OtaFirmwareDeviceIndexReq         = dm.OtaFirmwareDeviceIndexReq
+	OtaFirmwareDeviceIndexResp        = dm.OtaFirmwareDeviceIndexResp
+	OtaFirmwareDeviceInfo             = dm.OtaFirmwareDeviceInfo
+	OtaFirmwareDeviceRetryReq         = dm.OtaFirmwareDeviceRetryReq
+	OtaFirmwareFile                   = dm.OtaFirmwareFile
+	OtaFirmwareFileIndexReq           = dm.OtaFirmwareFileIndexReq
+	OtaFirmwareFileIndexResp          = dm.OtaFirmwareFileIndexResp
+	OtaFirmwareFileInfo               = dm.OtaFirmwareFileInfo
+	OtaFirmwareFileReq                = dm.OtaFirmwareFileReq
+	OtaFirmwareFileResp               = dm.OtaFirmwareFileResp
+	OtaFirmwareInfo                   = dm.OtaFirmwareInfo
+	OtaFirmwareInfoCreateReq          = dm.OtaFirmwareInfoCreateReq
+	OtaFirmwareInfoIndexReq           = dm.OtaFirmwareInfoIndexReq
+	OtaFirmwareInfoIndexResp          = dm.OtaFirmwareInfoIndexResp
+	OtaFirmwareInfoUpdateReq          = dm.OtaFirmwareInfoUpdateReq
+	OtaFirmwareJobIndexReq            = dm.OtaFirmwareJobIndexReq
+	OtaFirmwareJobIndexResp           = dm.OtaFirmwareJobIndexResp
+	OtaFirmwareJobInfo                = dm.OtaFirmwareJobInfo
+	OtaJobByDeviceIndexReq            = dm.OtaJobByDeviceIndexReq
+	OtaJobDynamicInfo                 = dm.OtaJobDynamicInfo
+	OtaJobStaticInfo                  = dm.OtaJobStaticInfo
+	OtaModuleInfo                     = dm.OtaModuleInfo
+	OtaModuleInfoIndexReq             = dm.OtaModuleInfoIndexReq
+	OtaModuleInfoIndexResp            = dm.OtaModuleInfoIndexResp
+	OtaPromptIndexReq                 = dm.OtaPromptIndexReq
+	OtaPromptIndexResp                = dm.OtaPromptIndexResp
+	PageInfo                          = dm.PageInfo
+	PageInfo_OrderBy                  = dm.PageInfo_OrderBy
+	Point                             = dm.Point
+	ProductCategory                   = dm.ProductCategory
+	ProductCategoryIndexReq           = dm.ProductCategoryIndexReq
+	ProductCategoryIndexResp          = dm.ProductCategoryIndexResp
+	ProductCategoryReadReq            = dm.ProductCategoryReadReq
+	ProductCategorySchemaIndexReq     = dm.ProductCategorySchemaIndexReq
+	ProductCategorySchemaIndexResp    = dm.ProductCategorySchemaIndexResp
+	ProductCategorySchemaMultiSaveReq = dm.ProductCategorySchemaMultiSaveReq
+	ProductCustom                     = dm.ProductCustom
+	ProductCustomReadReq              = dm.ProductCustomReadReq
+	ProductInfo                       = dm.ProductInfo
+	ProductInfoDeleteReq              = dm.ProductInfoDeleteReq
+	ProductInfoIndexReq               = dm.ProductInfoIndexReq
+	ProductInfoIndexResp              = dm.ProductInfoIndexResp
+	ProductInfoReadReq                = dm.ProductInfoReadReq
+	ProductInitReq                    = dm.ProductInitReq
+	ProductRemoteConfig               = dm.ProductRemoteConfig
+	ProductSchemaCreateReq            = dm.ProductSchemaCreateReq
+	ProductSchemaDeleteReq            = dm.ProductSchemaDeleteReq
+	ProductSchemaIndexReq             = dm.ProductSchemaIndexReq
+	ProductSchemaIndexResp            = dm.ProductSchemaIndexResp
+	ProductSchemaInfo                 = dm.ProductSchemaInfo
+	ProductSchemaMultiCreateReq       = dm.ProductSchemaMultiCreateReq
+	ProductSchemaTslImportReq         = dm.ProductSchemaTslImportReq
+	ProductSchemaTslReadReq           = dm.ProductSchemaTslReadReq
+	ProductSchemaTslReadResp          = dm.ProductSchemaTslReadResp
+	ProductSchemaUpdateReq            = dm.ProductSchemaUpdateReq
+	PropertyControlMultiSendReq       = dm.PropertyControlMultiSendReq
+	PropertyControlMultiSendResp      = dm.PropertyControlMultiSendResp
+	PropertyControlSendMsg            = dm.PropertyControlSendMsg
+	PropertyControlSendReq            = dm.PropertyControlSendReq
+	PropertyControlSendResp           = dm.PropertyControlSendResp
+	PropertyGetReportSendReq          = dm.PropertyGetReportSendReq
+	PropertyGetReportSendResp         = dm.PropertyGetReportSendResp
+	PropertyLogIndexReq               = dm.PropertyLogIndexReq
+	PropertyLogIndexResp              = dm.PropertyLogIndexResp
+	PropertyLogInfo                   = dm.PropertyLogInfo
+	PropertyLogLatestIndexReq         = dm.PropertyLogLatestIndexReq
+	ProtocolConfigField               = dm.ProtocolConfigField
+	ProtocolConfigInfo                = dm.ProtocolConfigInfo
+	ProtocolInfo                      = dm.ProtocolInfo
+	ProtocolInfoIndexReq              = dm.ProtocolInfoIndexReq
+	ProtocolInfoIndexResp             = dm.ProtocolInfoIndexResp
+	RemoteConfigCreateReq             = dm.RemoteConfigCreateReq
+	RemoteConfigIndexReq              = dm.RemoteConfigIndexReq
+	RemoteConfigIndexResp             = dm.RemoteConfigIndexResp
+	RemoteConfigLastReadReq           = dm.RemoteConfigLastReadReq
+	RemoteConfigLastReadResp          = dm.RemoteConfigLastReadResp
+	RemoteConfigPushAllReq            = dm.RemoteConfigPushAllReq
+	RespReadReq                       = dm.RespReadReq
+	RootCheckReq                      = dm.RootCheckReq
+	SdkLogIndexReq                    = dm.SdkLogIndexReq
+	SdkLogIndexResp                   = dm.SdkLogIndexResp
+	SdkLogInfo                        = dm.SdkLogInfo
+	SendLogIndexReq                   = dm.SendLogIndexReq
+	SendLogIndexResp                  = dm.SendLogIndexResp
+	SendLogInfo                       = dm.SendLogInfo
+	SendMsgReq                        = dm.SendMsgReq
+	SendMsgResp                       = dm.SendMsgResp
+	SendOption                        = dm.SendOption
+	ShadowIndex                       = dm.ShadowIndex
+	ShadowIndexResp                   = dm.ShadowIndexResp
+	StatusLogIndexReq                 = dm.StatusLogIndexReq
+	StatusLogIndexResp                = dm.StatusLogIndexResp
+	StatusLogInfo                     = dm.StatusLogInfo
+	TimeRange                         = dm.TimeRange
+	UserDeviceCollectSave             = dm.UserDeviceCollectSave
+	UserDeviceShareIndexReq           = dm.UserDeviceShareIndexReq
+	UserDeviceShareIndexResp          = dm.UserDeviceShareIndexResp
+	UserDeviceShareInfo               = dm.UserDeviceShareInfo
+	UserDeviceShareMultiDeleteReq     = dm.UserDeviceShareMultiDeleteReq
+	UserDeviceShareReadReq            = dm.UserDeviceShareReadReq
+	WithID                            = dm.WithID
+	WithIDCode                        = dm.WithIDCode
 
 	ProductManage interface {
 		ProductInit(ctx context.Context, in *ProductInitReq, opts ...grpc.CallOption) (*Empty, error)
@@ -223,7 +223,9 @@ type (
 		ProductCategoryRead(ctx context.Context, in *ProductCategoryReadReq, opts ...grpc.CallOption) (*ProductCategory, error)
 		// 获取产品品类下的物模型列表,绑定的物模型会自动添加到该产品品类及子分类的产品中,并不支持删除
 		ProductCategorySchemaIndex(ctx context.Context, in *ProductCategorySchemaIndexReq, opts ...grpc.CallOption) (*ProductCategorySchemaIndexResp, error)
-		ProductCategorySchemaMultiUpdate(ctx context.Context, in *ProductCategorySchemaMultiUpdateReq, opts ...grpc.CallOption) (*Empty, error)
+		ProductCategorySchemaMultiUpdate(ctx context.Context, in *ProductCategorySchemaMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
+		ProductCategorySchemaMultiCreate(ctx context.Context, in *ProductCategorySchemaMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
+		ProductCategorySchemaMultiDelete(ctx context.Context, in *ProductCategorySchemaMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
 	}
 
 	defaultProductManage struct {
@@ -476,11 +478,29 @@ func (d *directProductManage) ProductCategorySchemaIndex(ctx context.Context, in
 	return d.svr.ProductCategorySchemaIndex(ctx, in)
 }
 
-func (m *defaultProductManage) ProductCategorySchemaMultiUpdate(ctx context.Context, in *ProductCategorySchemaMultiUpdateReq, opts ...grpc.CallOption) (*Empty, error) {
+func (m *defaultProductManage) ProductCategorySchemaMultiUpdate(ctx context.Context, in *ProductCategorySchemaMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewProductManageClient(m.cli.Conn())
 	return client.ProductCategorySchemaMultiUpdate(ctx, in, opts...)
 }
 
-func (d *directProductManage) ProductCategorySchemaMultiUpdate(ctx context.Context, in *ProductCategorySchemaMultiUpdateReq, opts ...grpc.CallOption) (*Empty, error) {
+func (d *directProductManage) ProductCategorySchemaMultiUpdate(ctx context.Context, in *ProductCategorySchemaMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.ProductCategorySchemaMultiUpdate(ctx, in)
+}
+
+func (m *defaultProductManage) ProductCategorySchemaMultiCreate(ctx context.Context, in *ProductCategorySchemaMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewProductManageClient(m.cli.Conn())
+	return client.ProductCategorySchemaMultiCreate(ctx, in, opts...)
+}
+
+func (d *directProductManage) ProductCategorySchemaMultiCreate(ctx context.Context, in *ProductCategorySchemaMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.ProductCategorySchemaMultiCreate(ctx, in)
+}
+
+func (m *defaultProductManage) ProductCategorySchemaMultiDelete(ctx context.Context, in *ProductCategorySchemaMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewProductManageClient(m.cli.Conn())
+	return client.ProductCategorySchemaMultiDelete(ctx, in, opts...)
+}
+
+func (d *directProductManage) ProductCategorySchemaMultiDelete(ctx context.Context, in *ProductCategorySchemaMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.ProductCategorySchemaMultiDelete(ctx, in)
 }

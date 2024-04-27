@@ -524,6 +524,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/schema/multi-create",
+					Handler: thingsproductcategory.SchemaMultiCreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/schema/multi-delete",
+					Handler: thingsproductcategory.SchemaMultiDeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/schema/multi-update",
 					Handler: thingsproductcategory.SchemaMultiUpdateHandler(serverCtx),
 				},

@@ -823,6 +823,8 @@ const (
 	ProductManage_ProductCategoryRead_FullMethodName              = "/dm.ProductManage/productCategoryRead"
 	ProductManage_ProductCategorySchemaIndex_FullMethodName       = "/dm.ProductManage/productCategorySchemaIndex"
 	ProductManage_ProductCategorySchemaMultiUpdate_FullMethodName = "/dm.ProductManage/productCategorySchemaMultiUpdate"
+	ProductManage_ProductCategorySchemaMultiCreate_FullMethodName = "/dm.ProductManage/productCategorySchemaMultiCreate"
+	ProductManage_ProductCategorySchemaMultiDelete_FullMethodName = "/dm.ProductManage/productCategorySchemaMultiDelete"
 )
 
 // ProductManageClient is the client API for ProductManage service.
@@ -869,7 +871,9 @@ type ProductManageClient interface {
 	ProductCategoryRead(ctx context.Context, in *ProductCategoryReadReq, opts ...grpc.CallOption) (*ProductCategory, error)
 	// 获取产品品类下的物模型列表,绑定的物模型会自动添加到该产品品类及子分类的产品中,并不支持删除
 	ProductCategorySchemaIndex(ctx context.Context, in *ProductCategorySchemaIndexReq, opts ...grpc.CallOption) (*ProductCategorySchemaIndexResp, error)
-	ProductCategorySchemaMultiUpdate(ctx context.Context, in *ProductCategorySchemaMultiUpdateReq, opts ...grpc.CallOption) (*Empty, error)
+	ProductCategorySchemaMultiUpdate(ctx context.Context, in *ProductCategorySchemaMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
+	ProductCategorySchemaMultiCreate(ctx context.Context, in *ProductCategorySchemaMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
+	ProductCategorySchemaMultiDelete(ctx context.Context, in *ProductCategorySchemaMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type productManageClient struct {
@@ -1069,9 +1073,27 @@ func (c *productManageClient) ProductCategorySchemaIndex(ctx context.Context, in
 	return out, nil
 }
 
-func (c *productManageClient) ProductCategorySchemaMultiUpdate(ctx context.Context, in *ProductCategorySchemaMultiUpdateReq, opts ...grpc.CallOption) (*Empty, error) {
+func (c *productManageClient) ProductCategorySchemaMultiUpdate(ctx context.Context, in *ProductCategorySchemaMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, ProductManage_ProductCategorySchemaMultiUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productManageClient) ProductCategorySchemaMultiCreate(ctx context.Context, in *ProductCategorySchemaMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, ProductManage_ProductCategorySchemaMultiCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productManageClient) ProductCategorySchemaMultiDelete(ctx context.Context, in *ProductCategorySchemaMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, ProductManage_ProductCategorySchemaMultiDelete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1122,7 +1144,9 @@ type ProductManageServer interface {
 	ProductCategoryRead(context.Context, *ProductCategoryReadReq) (*ProductCategory, error)
 	// 获取产品品类下的物模型列表,绑定的物模型会自动添加到该产品品类及子分类的产品中,并不支持删除
 	ProductCategorySchemaIndex(context.Context, *ProductCategorySchemaIndexReq) (*ProductCategorySchemaIndexResp, error)
-	ProductCategorySchemaMultiUpdate(context.Context, *ProductCategorySchemaMultiUpdateReq) (*Empty, error)
+	ProductCategorySchemaMultiUpdate(context.Context, *ProductCategorySchemaMultiSaveReq) (*Empty, error)
+	ProductCategorySchemaMultiCreate(context.Context, *ProductCategorySchemaMultiSaveReq) (*Empty, error)
+	ProductCategorySchemaMultiDelete(context.Context, *ProductCategorySchemaMultiSaveReq) (*Empty, error)
 	mustEmbedUnimplementedProductManageServer()
 }
 
@@ -1193,8 +1217,14 @@ func (UnimplementedProductManageServer) ProductCategoryRead(context.Context, *Pr
 func (UnimplementedProductManageServer) ProductCategorySchemaIndex(context.Context, *ProductCategorySchemaIndexReq) (*ProductCategorySchemaIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductCategorySchemaIndex not implemented")
 }
-func (UnimplementedProductManageServer) ProductCategorySchemaMultiUpdate(context.Context, *ProductCategorySchemaMultiUpdateReq) (*Empty, error) {
+func (UnimplementedProductManageServer) ProductCategorySchemaMultiUpdate(context.Context, *ProductCategorySchemaMultiSaveReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductCategorySchemaMultiUpdate not implemented")
+}
+func (UnimplementedProductManageServer) ProductCategorySchemaMultiCreate(context.Context, *ProductCategorySchemaMultiSaveReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductCategorySchemaMultiCreate not implemented")
+}
+func (UnimplementedProductManageServer) ProductCategorySchemaMultiDelete(context.Context, *ProductCategorySchemaMultiSaveReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductCategorySchemaMultiDelete not implemented")
 }
 func (UnimplementedProductManageServer) mustEmbedUnimplementedProductManageServer() {}
 
@@ -1588,7 +1618,7 @@ func _ProductManage_ProductCategorySchemaIndex_Handler(srv interface{}, ctx cont
 }
 
 func _ProductManage_ProductCategorySchemaMultiUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProductCategorySchemaMultiUpdateReq)
+	in := new(ProductCategorySchemaMultiSaveReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1600,7 +1630,43 @@ func _ProductManage_ProductCategorySchemaMultiUpdate_Handler(srv interface{}, ct
 		FullMethod: ProductManage_ProductCategorySchemaMultiUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductManageServer).ProductCategorySchemaMultiUpdate(ctx, req.(*ProductCategorySchemaMultiUpdateReq))
+		return srv.(ProductManageServer).ProductCategorySchemaMultiUpdate(ctx, req.(*ProductCategorySchemaMultiSaveReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductManage_ProductCategorySchemaMultiCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductCategorySchemaMultiSaveReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductCategorySchemaMultiCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProductManage_ProductCategorySchemaMultiCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductCategorySchemaMultiCreate(ctx, req.(*ProductCategorySchemaMultiSaveReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductManage_ProductCategorySchemaMultiDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductCategorySchemaMultiSaveReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductCategorySchemaMultiDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProductManage_ProductCategorySchemaMultiDelete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductCategorySchemaMultiDelete(ctx, req.(*ProductCategorySchemaMultiSaveReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1699,6 +1765,14 @@ var ProductManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "productCategorySchemaMultiUpdate",
 			Handler:    _ProductManage_ProductCategorySchemaMultiUpdate_Handler,
+		},
+		{
+			MethodName: "productCategorySchemaMultiCreate",
+			Handler:    _ProductManage_ProductCategorySchemaMultiCreate_Handler,
+		},
+		{
+			MethodName: "productCategorySchemaMultiDelete",
+			Handler:    _ProductManage_ProductCategorySchemaMultiDelete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

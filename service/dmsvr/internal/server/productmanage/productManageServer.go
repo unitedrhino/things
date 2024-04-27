@@ -146,7 +146,17 @@ func (s *ProductManageServer) ProductCategorySchemaIndex(ctx context.Context, in
 	return l.ProductCategorySchemaIndex(in)
 }
 
-func (s *ProductManageServer) ProductCategorySchemaMultiUpdate(ctx context.Context, in *dm.ProductCategorySchemaMultiUpdateReq) (*dm.Empty, error) {
+func (s *ProductManageServer) ProductCategorySchemaMultiUpdate(ctx context.Context, in *dm.ProductCategorySchemaMultiSaveReq) (*dm.Empty, error) {
 	l := productmanagelogic.NewProductCategorySchemaMultiUpdateLogic(ctx, s.svcCtx)
 	return l.ProductCategorySchemaMultiUpdate(in)
+}
+
+func (s *ProductManageServer) ProductCategorySchemaMultiCreate(ctx context.Context, in *dm.ProductCategorySchemaMultiSaveReq) (*dm.Empty, error) {
+	l := productmanagelogic.NewProductCategorySchemaMultiCreateLogic(ctx, s.svcCtx)
+	return l.ProductCategorySchemaMultiCreate(in)
+}
+
+func (s *ProductManageServer) ProductCategorySchemaMultiDelete(ctx context.Context, in *dm.ProductCategorySchemaMultiSaveReq) (*dm.Empty, error) {
+	l := productmanagelogic.NewProductCategorySchemaMultiDeleteLogic(ctx, s.svcCtx)
+	return l.ProductCategorySchemaMultiDelete(in)
 }

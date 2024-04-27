@@ -130,7 +130,10 @@ service ProductManage{
   rpc productCategoryRead(ProductCategoryReadReq)     returns (ProductCategory);
   //获取产品品类下的物模型列表,绑定的物模型会自动添加到该产品品类及子分类的产品中,并不支持删除
   rpc productCategorySchemaIndex(ProductCategorySchemaIndexReq) returns(ProductCategorySchemaIndexResp);
-  rpc productCategorySchemaMultiUpdate(ProductCategorySchemaMultiUpdateReq) returns(Empty);
+  rpc productCategorySchemaMultiUpdate(ProductCategorySchemaMultiSaveReq) returns(Empty);
+  rpc productCategorySchemaMultiCreate(ProductCategorySchemaMultiSaveReq) returns(Empty);
+  rpc productCategorySchemaMultiDelete(ProductCategorySchemaMultiSaveReq) returns(Empty);
+
 }
 
 
@@ -396,7 +399,7 @@ message ProductCategorySchemaIndexReq{
   bool withFather =8;//同时返回父节点的物模型
 }
 
-message ProductCategorySchemaMultiUpdateReq{
+message ProductCategorySchemaMultiSaveReq{
   int64 productCategoryID = 1;
   repeated string   identifiers = 5; //过滤标识符列表
 }

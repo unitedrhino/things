@@ -26,6 +26,7 @@ func NewProductCategorySchemaRepo(in any) *ProductCategorySchemaRepo {
 type ProductCategorySchemaFilter struct {
 	ProductCategoryID  int64
 	ProductCategoryIDs []int64
+	Identifiers        []string
 }
 
 func (p ProductCategorySchemaRepo) fmtFilter(ctx context.Context, f ProductCategorySchemaFilter) *gorm.DB {
@@ -35,6 +36,9 @@ func (p ProductCategorySchemaRepo) fmtFilter(ctx context.Context, f ProductCateg
 	}
 	if len(f.ProductCategoryIDs) != 0 {
 		db = db.Where("product_category_id in ?", f.ProductCategoryIDs)
+	}
+	if len(f.Identifiers) != 0 {
+		db = db.Where("identifier in ?", f.Identifiers)
 	}
 	return db
 }

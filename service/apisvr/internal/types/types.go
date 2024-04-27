@@ -918,7 +918,7 @@ type ProductCategorySchemaIndexResp struct {
 	Identifiers []string `json:"identifiers"`
 }
 
-type ProductCategorySchemaMultiUpdateReq struct {
+type ProductCategorySchemaMultiSaveReq struct {
 	ProductCategoryID int64    `json:"productCategoryID"`
 	Identifiers       []string `json:"identifiers"`
 }

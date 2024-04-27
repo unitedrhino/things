@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-func SchemaMultiUpdateHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func SchemaMultiCreateHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.ProductCategorySchemaMultiSaveReq
 		if err := httpx.Parse(r, &req); err != nil {
@@ -18,8 +18,8 @@ func SchemaMultiUpdateHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := category.NewSchemaMultiUpdateLogic(r.Context(), svcCtx)
-		err := l.SchemaMultiUpdate(&req)
+		l := category.NewSchemaMultiCreateLogic(r.Context(), svcCtx)
+		err := l.SchemaMultiCreate(&req)
 		result.Http(w, r, nil, err)
 	}
 }

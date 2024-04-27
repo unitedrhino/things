@@ -17,21 +17,21 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type ProductCategorySchemaMultiUpdateLogic struct {
+type ProductCategorySchemaMultiCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewProductCategorySchemaMultiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProductCategorySchemaMultiUpdateLogic {
-	return &ProductCategorySchemaMultiUpdateLogic{
+func NewProductCategorySchemaMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProductCategorySchemaMultiCreateLogic {
+	return &ProductCategorySchemaMultiCreateLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *ProductCategorySchemaMultiUpdateLogic) ProductCategorySchemaMultiUpdate(in *dm.ProductCategorySchemaMultiSaveReq) (*dm.Empty, error) {
+func (l *ProductCategorySchemaMultiCreateLogic) ProductCategorySchemaMultiCreate(in *dm.ProductCategorySchemaMultiSaveReq) (*dm.Empty, error) {
 	pcDB := relationDB.NewProductCategoryRepo(l.ctx)
 	var productIDs []string
 	{
@@ -67,12 +67,22 @@ func (l *ProductCategorySchemaMultiUpdateLogic) ProductCategorySchemaMultiUpdate
 	oldIdentifiers := utils.ToSliceWithFunc(olds, func(in *relationDB.DmProductCategorySchema) string {
 		return in.Identifier
 	})
-	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
-		err := relationDB.NewProductSchemaRepo(tx).UpdateTag(l.ctx, productIDs, oldIdentifiers, schema.TagRequired, schema.TagOptional)
-		if err != nil {
-			return err
+	oldIdentifierSet := utils.SliceToSet(oldIdentifiers)
+	var newIdentifiers []string //把已经新增过的剔除
+	for _, v := range in.Identifiers {
+		if _, ok := oldIdentifierSet[v]; ok {
+			newIdentifiers = append(newIdentifiers, v)
 		}
-		err = relationDB.NewProductCategorySchemaRepo(l.ctx).MultiUpdate(l.ctx, in.ProductCategoryID, in.Identifiers)
+	}
+	var insertDatas []*relationDB.DmProductCategorySchema
+	for _, v := range newIdentifiers {
+		insertDatas = append(insertDatas, &relationDB.DmProductCategorySchema{
+			ProductCategoryID: in.ProductCategoryID,
+			Identifier:        v,
+		})
+	}
+	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+		err = relationDB.NewProductCategorySchemaRepo(l.ctx).MultiInsert(l.ctx, insertDatas)
 		if err != nil {
 			return err
 		}
@@ -122,5 +132,5 @@ func (l *ProductCategorySchemaMultiUpdateLogic) ProductCategorySchemaMultiUpdate
 			}
 		}
 	})
-	return &dm.Empty{}, err
+	return &dm.Empty{}, nil
 }
