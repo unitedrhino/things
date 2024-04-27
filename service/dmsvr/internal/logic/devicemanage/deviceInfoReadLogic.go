@@ -33,7 +33,7 @@ func (l *DeviceInfoReadLogic) DeviceInfoRead(in *dm.DeviceInfoReadReq) (*dm.Devi
 	di, err := l.DiDB.FindOneByFilter(l.ctx,
 		relationDB.DeviceFilter{ProductID: in.ProductID, DeviceNames: []string{in.DeviceName},
 			SharedType: def.SelectTypeAll, SharedDevices: []*devices.Core{{ProductID: in.ProductID, DeviceName: in.DeviceName}},
-			WithProduct: true})
+			WithProduct: true, WithManufacturer: in.WithManufacturer})
 	if err != nil {
 		return nil, err
 	}
