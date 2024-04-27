@@ -223,11 +223,11 @@ type DeviceInfoMultiUpdateReq struct {
 }
 
 type DeviceInfoReadReq struct {
-	ProductID        string   `json:"productID,optional"`      //产品id 为空时获取所有产品
-	DeviceName       string   `json:"deviceName"`              //设备名称 读写
-	WithProperties   []string `json:"withProperties,optional"` //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表
-	WithProfiles     []string `json:"withProfiles,optional"`   //
-	WithManufacturer bool     `json:"withManufacturer"`        //同时获取制造商信息
+	ProductID        string   `json:"productID,optional"`        //产品id 为空时获取所有产品
+	DeviceName       string   `json:"deviceName"`                //设备名称 读写
+	WithProperties   []string `json:"withProperties,optional"`   //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表
+	WithProfiles     []string `json:"withProfiles,optional"`     //
+	WithManufacturer bool     `json:"withManufacturer,optional"` //同时获取制造商信息
 }
 
 type DeviceInfoSaveReq struct {
