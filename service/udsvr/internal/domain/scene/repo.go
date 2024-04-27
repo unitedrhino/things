@@ -42,6 +42,7 @@ type ValidateRepo struct {
 	Ctx                context.Context
 	DeviceCache        *caches.Cache[dm.DeviceInfo]
 	ProductSchemaCache *caches.Cache[schema.Model]
+	Info               *Info
 }
 
 type WhenRepo interface {

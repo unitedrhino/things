@@ -37,6 +37,11 @@ type ActionDevice struct {
 }
 
 func (a *ActionDevice) Validate(repo ValidateRepo) error {
+	if repo.Info.DeviceMode == DeviceModeSingle {
+		a.ProductID = repo.Info.ProductID
+		a.DeviceName = repo.Info.DeviceName
+		a.SelectType = SelectDeviceFixed
+	}
 	if a.ProductID == "" {
 		return errors.Parameter.AddMsgf("产品id不能为空:%v", a.ProductID)
 	}
@@ -49,7 +54,9 @@ func (a *ActionDevice) Validate(repo ValidateRepo) error {
 	if a.DataID == "" { //todo 这里需要添加校验,是否存在
 		return errors.Parameter.AddMsg("dataID不能为空")
 	}
-	a.DeviceAlias = GetDeviceAlias(repo.Ctx, repo.DeviceCache, a.ProductID, a.DeviceName)
+	if repo.Info.DeviceMode != DeviceModeSingle {
+		a.DeviceAlias = GetDeviceAlias(repo.Ctx, repo.DeviceCache, a.ProductID, a.DeviceName)
+	}
 	v, err := repo.ProductSchemaCache.GetData(repo.Ctx, a.ProductID)
 	if err != nil {
 		return err

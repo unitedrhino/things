@@ -7,15 +7,19 @@ import (
 )
 
 type UdSceneInfo struct {
-	ID         int64             `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`     // id编号
-	TenantCode stores.TenantCode `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`         // 租户编码
-	ProjectID  stores.ProjectID  `gorm:"column:project_id;type:bigint;default:0;NOT NULL"`     // 项目ID(雪花ID)
-	FlowPath   []*scene.FlowInfo `gorm:"column:flow_path;type:json;serializer:json;"`          //执行路径
-	Tag        string            `gorm:"column:tag;type:VARCHAR(128);NOT NULL;default:normal"` //标签 admin: 管理员 normal: 普通
-	HeadImg    string            `gorm:"column:head_img;type:VARCHAR(256);NOT NULL"`           // 头像
-	Name       string            `gorm:"column:name;type:varchar(100);NOT NULL"`               // 名称
-	Desc       string            `gorm:"column:desc;type:varchar(200);NOT NULL"`               // 描述
-	Type       string            `gorm:"column:type;type:VARCHAR(25);NOT NULL"`                //auto manual
+	ID          int64             `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`     // id编号
+	TenantCode  stores.TenantCode `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`         // 租户编码
+	ProjectID   stores.ProjectID  `gorm:"column:project_id;type:bigint;default:0;NOT NULL"`     // 项目ID(雪花ID)
+	FlowPath    []*scene.FlowInfo `gorm:"column:flow_path;type:json;serializer:json;"`          //执行路径
+	DeviceMode  scene.DeviceMode  `gorm:"column:tenant_code;type:VARCHAR(50);default:'single'"` //设备模式
+	ProductID   string            `gorm:"column:product_id;index;type:VARCHAR(25);default:''"`  //产品id
+	DeviceName  string            `gorm:"column:device_name;type:VARCHAR(255);default:''"`      //设备名
+	DeviceAlias string            `gorm:"column:device_alias;type:VARCHAR(255);default:''"`     //设备别名
+	Tag         string            `gorm:"column:tag;type:VARCHAR(128);NOT NULL;default:normal"` //标签 admin: 管理员 normal: 普通
+	HeadImg     string            `gorm:"column:head_img;type:VARCHAR(256);NOT NULL"`           // 头像
+	Name        string            `gorm:"column:name;type:varchar(100);NOT NULL"`               // 名称
+	Desc        string            `gorm:"column:desc;type:varchar(200);NOT NULL"`               // 描述
+	Type        string            `gorm:"column:type;type:VARCHAR(25);NOT NULL"`                //auto manual
 	//LastRunTime    time.Time         `gorm:"column:last_run_time;index;default:CURRENT_TIMESTAMP;NOT NULL"`
 	Status      int64 `gorm:"column:status;type:BIGINT;default:1"` //状态
 	UdSceneIf   `gorm:"embedded;embeddedPrefix:if_"`
@@ -86,6 +90,7 @@ type UdSceneThenAction struct {
 	Type       scene.ActionType    `gorm:"column:type;type:VARCHAR(25);NOT NULL"`
 	Delay      int64               `gorm:"column:delay;type:bigint"`
 	Device     UdSceneActionDevice `gorm:"embedded;embeddedPrefix:device_"`
+	Notify     *scene.ActionNotify `gorm:"column:notify;type:json;serializer:json"`
 }
 
 func (m *UdSceneThenAction) TableName() string {

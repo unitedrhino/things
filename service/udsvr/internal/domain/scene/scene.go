@@ -19,11 +19,22 @@ const (
 	SceneTypeAuto   SceneType = "auto"   //自动化
 )
 
+type DeviceMode = string
+
+const (
+	DeviceModeSingle DeviceMode = "single" //单设备
+	DeviceModeMulti  DeviceMode = "multi"  //多设备
+)
+
 // 多设备的场景联动
 type Info struct {
 	ID          int64       `json:"id"`
-	HeadImg     string      `json:"headImg"`  // 头像
-	FlowPath    []*FlowInfo `json:"flowPath"` //执行路径
+	HeadImg     string      `json:"headImg"`               // 头像
+	FlowPath    []*FlowInfo `json:"flowPath"`              //执行路径
+	DeviceMode  DeviceMode  `json:"deviceMode"`            //设备模式: 1:单设备 2:多设备
+	ProductID   string      `json:"productID,omitempty"`   //产品id
+	DeviceName  string      `json:"deviceName,omitempty"`  //设备名
+	DeviceAlias string      `json:"deviceAlias,omitempty"` //设备别名,只读
 	Tag         string      `json:"tag"`
 	Name        string      `json:"name"`
 	Desc        string      `json:"desc"`
@@ -39,6 +50,19 @@ func (i *Info) Validate(repo ValidateRepo) error {
 	if !utils.SliceIn(i.Type, SceneTypeAuto, SceneTypeManual) {
 		return errors.Parameter.AddMsg("场景类型不支持的类型:" + string(i.Type))
 	}
+	if !utils.SliceIn(i.DeviceMode, DeviceModeSingle, DeviceModeMulti, "") {
+		return errors.Parameter.AddMsg("场景设备模式不支持的类型:" + string(i.DeviceMode))
+	}
+	if i.DeviceMode == "" {
+		i.DeviceMode = DeviceModeMulti
+	}
+	if i.DeviceMode == DeviceModeSingle && (i.ProductID == "" || i.DeviceName == "") {
+		return errors.Parameter.AddMsg("单设备模式需要填写产品和设备")
+	}
+	if i.DeviceMode == DeviceModeSingle {
+		i.DeviceAlias = GetDeviceAlias(repo.Ctx, repo.DeviceCache, i.ProductID, i.DeviceName)
+	}
+	repo.Info = i
 	err := i.If.Validate(i.Type, repo)
 	if err != nil {
 		return err

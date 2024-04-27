@@ -1144,6 +1144,10 @@ type SceneInfo struct {
 	Then            string           `json:"then,optional"`
 	HeadImg         string           `json:"headImg,optional"`                   // 用户头像
 	IsUpdateHeadImg bool             `json:"isUpdateHeadImg,omitempty,optional"` // 用户头像
+	ProductID       string           `json:"productID,omitempty,optional"`
+	DeviceName      string           `json:"deviceName,omitempty,optional"`
+	DeviceAlias     string           `json:"deviceAlias,omitempty,optional"` //只读
+	DeviceMode      string           `json:"deviceMode,optional"`            //设备模式 single:单设备 multi:多设备
 }
 
 type SceneInfoCreateReq struct {

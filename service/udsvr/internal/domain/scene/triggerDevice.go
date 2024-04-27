@@ -48,6 +48,11 @@ func (t *TriggerDevice) Validate(repo ValidateRepo) error {
 	if t == nil {
 		return nil
 	}
+	if repo.Info.DeviceMode == DeviceModeSingle {
+		t.ProductID = repo.Info.ProductID
+		t.DeviceName = repo.Info.DeviceName
+		t.SelectType = SelectDeviceFixed
+	}
 	if t.ProductID == "" {
 		return errors.Parameter.AddMsg("设备触发类型产品未选择,产品id为:" + t.ProductID)
 	}
@@ -93,7 +98,9 @@ func (t *TriggerDevice) Validate(repo ValidateRepo) error {
 			return err
 		}
 	}
-	t.DeviceAlias = GetDeviceAlias(repo.Ctx, repo.DeviceCache, t.ProductID, t.DeviceName)
+	if repo.Info.DeviceMode != DeviceModeSingle {
+		t.DeviceAlias = GetDeviceAlias(repo.Ctx, repo.DeviceCache, t.ProductID, t.DeviceName)
+	}
 	return nil
 }
 func (t TriggerDevices) Validate(repo ValidateRepo) error {

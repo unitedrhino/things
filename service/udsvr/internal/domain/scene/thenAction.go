@@ -13,7 +13,7 @@ import (
 type ActionType = string
 
 const (
-	ActionExecutorNotify ActionType = "notify" //通知 todo
+	ActionExecutorNotify ActionType = "notify" //通知
 	ActionExecutorDelay  ActionType = "delay"  //延迟
 	ActionExecutorDevice ActionType = "device" //设备输出
 	ActionExecutorAlarm  ActionType = "alarm"  //告警 todo

@@ -45,6 +45,10 @@ func (c *TermProperty) Validate(repo ValidateRepo) error {
 	if err := c.TermType.Validate(c.Values); err != nil {
 		return err
 	}
+	if repo.Info.DeviceMode == DeviceModeSingle {
+		c.ProductID = repo.Info.ProductID
+		c.DeviceName = repo.Info.DeviceName
+	}
 	if c.ProductID == "" {
 		return errors.Parameter.AddMsg("触发设备类型中的产品id需要填写")
 	}
@@ -54,7 +58,9 @@ func (c *TermProperty) Validate(repo ValidateRepo) error {
 	if len(c.DataID) == 0 {
 		return errors.Parameter.AddMsg("触发设备类型中的标识符需要填写")
 	}
-	c.DeviceAlias = GetDeviceAlias(repo.Ctx, repo.DeviceCache, c.ProductID, c.DeviceName)
+	if repo.Info.DeviceMode != DeviceModeSingle {
+		c.DeviceAlias = GetDeviceAlias(repo.Ctx, repo.DeviceCache, c.ProductID, c.DeviceName)
+	}
 	v, err := repo.ProductSchemaCache.GetData(repo.Ctx, c.ProductID)
 	if err != nil {
 		return err

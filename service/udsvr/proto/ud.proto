@@ -105,5 +105,9 @@ message SceneInfo{
   string headImg = 10;
   bool isUpdateHeadImg = 11;//只有这个参数为true的时候才会更新图片,传参为图片的file path
   int64 lastRunTime = 13;//最后一次执行时间 秒级时间戳 只读
+  string   productID = 16; //产品id
+  string  deviceName = 17; //设备名称
+  string deviceAlias =18;//设备别名(只读)
+  string deviceMode =19;//设备模式 single:单设备 multi:多设备
 }
 

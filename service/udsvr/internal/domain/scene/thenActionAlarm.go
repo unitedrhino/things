@@ -44,7 +44,7 @@ func (a *ActionAlarm) Validate() error {
 }
 
 func (a *ActionAlarm) Execute(ctx context.Context, repo ActionRepo) error {
-	//switch a.Mode {
+	//switch a.DeviceMode {
 	//case ActionAlarmModeRelieve:
 	//	err := repo.Alarm.AlarmRelieve(ctx, AlarmRelieve{
 	//		SceneID:   repo.Scene.ID,

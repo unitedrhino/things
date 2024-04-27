@@ -29,12 +29,16 @@ func ToSceneInfoPo(in *scene.Info) *relationDB.UdSceneInfo {
 		ID:   in.ID,
 		Type: in.Type,
 		//AreaIDs: in.AreaIDs,
-		FlowPath: in.FlowPath,
-		Name:     in.Name,
-		Desc:     in.Desc,
-		Tag:      in.Tag,
-		HeadImg:  in.HeadImg,
-		Status:   in.Status,
+		FlowPath:    in.FlowPath,
+		Name:        in.Name,
+		Desc:        in.Desc,
+		Tag:         in.Tag,
+		DeviceMode:  in.DeviceMode,
+		ProductID:   in.ProductID,
+		DeviceName:  in.DeviceName,
+		DeviceAlias: in.DeviceAlias,
+		HeadImg:     in.HeadImg,
+		Status:      in.Status,
 		UdSceneIf: relationDB.UdSceneIf{
 			Triggers: ToSceneTriggersPo(in, in.If.Triggers),
 		},
@@ -117,6 +121,10 @@ func PoToSceneInfoDo(in *relationDB.UdSceneInfo) *scene.Info {
 		FlowPath:    in.FlowPath,
 		Desc:        in.Desc,
 		CreatedTime: in.CreatedTime,
+		DeviceMode:  in.DeviceMode,
+		ProductID:   in.ProductID,
+		DeviceName:  in.DeviceName,
+		DeviceAlias: in.DeviceAlias,
 		Type:        in.Type,
 		If: scene.If{
 			Triggers: ToSceneTriggersDo(in.Triggers),
@@ -149,6 +157,7 @@ func ToSceneActionPo(s *scene.Info, in *scene.Action) *relationDB.UdSceneThenAct
 		SceneID: s.ID,
 		Type:    in.Type,
 		Delay:   in.Delay,
+		Notify:  in.Notify,
 	}
 	if in.Device != nil {
 		po.Device = relationDB.UdSceneActionDevice{
