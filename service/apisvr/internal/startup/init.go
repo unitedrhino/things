@@ -9,7 +9,6 @@ import (
 )
 
 func StartOtaChanWalk(s *svc.ServiceContext) {
-	s.FileChan = make(chan int64, 100)
 	if s.Config.DmRpc.Enable {
 		utils.Go(context.Background(), func() {
 			FileChanWalk(s)

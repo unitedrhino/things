@@ -180,6 +180,7 @@ type DeviceInfo struct {
 	ProtocolConf   []*Tag                             `json:"protocolConf,optional,omitempty"`     //协议配置
 	Profiles       map[string]string                  `json:"profiles,optional,omitempty"`
 	Manufacturer   *ManufacturerInfo                  `json:"manufacturer,optional,omitempty"` //制造商信息
+	Owner          *UserCore                          `json:"owner,optional,omitempty"`
 }
 
 type DeviceInfoBindReq struct {
@@ -228,6 +229,7 @@ type DeviceInfoReadReq struct {
 	WithProperties   []string `json:"withProperties,optional"`   //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表
 	WithProfiles     []string `json:"withProfiles,optional"`     //
 	WithManufacturer bool     `json:"withManufacturer,optional"` //同时获取制造商信息
+	WithOwner        bool     `json:"withOwner,optional"`        //同时获取拥有人的信息
 }
 
 type DeviceInfoSaveReq struct {
@@ -1255,6 +1257,18 @@ type UserCollectDeviceInfo struct {
 
 type UserCollectDeviceSave struct {
 	Devices []*DeviceCore `json:"devices"`
+}
+
+type UserCore struct {
+	UserID      int64  `json:"userID,string,optional"`      // 用户id
+	UserName    string `json:"userName,optional"`           // 用户名(唯一)
+	Email       string `json:"email,optional"`              // 邮箱
+	Phone       string `json:"phone,optional"`              // 手机号
+	LastIP      string `json:"lastIP,optional"`             // 最后登录ip
+	RegIP       string `json:"regIP,optional"`              // 注册ip
+	NickName    string `json:"nickName,optional"`           // 用户的昵称
+	HeadImg     string `json:"headImg,optional"`            // 用户头像
+	CreatedTime int64  `json:"createdTime,string,optional"` // 创建时间
 }
 
 type UserDeviceShareIndexReq struct {

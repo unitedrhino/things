@@ -2,6 +2,8 @@ package things
 
 import (
 	"context"
+	"gitee.com/i-Things/core/service/syssvr/pb/sys"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/logic"
 	"github.com/i-Things/things/service/apisvr/internal/svc"
@@ -11,12 +13,29 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo, withProperties []string, withProfiles []string) *types.DeviceInfo {
+func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo, withProperties []string, withProfiles []string, withOwner bool) *types.DeviceInfo {
 	var properties map[string]*types.DeviceInfoWithProperty
 	var profiles map[string]string
+	var owner *types.UserCore
 	position := &types.Point{
 		Longitude: v.Position.Longitude, //经度
 		Latitude:  v.Position.Latitude,  //维度
+	}
+	if withOwner && v.ProjectID > 3 {
+		func() {
+			pi, err := svcCtx.ProjectM.ProjectInfoRead(ctxs.WithRoot(ctx), &sys.ProjectWithID{ProjectID: v.ProjectID})
+			if err != nil {
+				logx.WithContext(ctx).Error(err)
+				return
+			}
+			ui, err := svcCtx.UserM.UserInfoRead(ctxs.WithRoot(ctx), &sys.UserInfoReadReq{UserID: pi.AdminUserID})
+			if err != nil {
+				logx.WithContext(ctx).Error(err)
+				return
+			}
+			owner = utils.Copy[types.UserCore](ui)
+		}()
+
 	}
 	if withProperties != nil {
 		func() {
@@ -90,6 +109,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		Profiles:       profiles,
 		Status:         v.Status,
 		Manufacturer:   utils.Copy[types.ManufacturerInfo](v.Manufacturer),
+		Owner:          owner,
 	}
 }
 

@@ -4,6 +4,7 @@ import (
 	"gitee.com/i-Things/core/service/apisvr/export"
 	"gitee.com/i-Things/core/service/syssvr/client/areamanage"
 	"gitee.com/i-Things/core/service/syssvr/client/log"
+	"gitee.com/i-Things/core/service/syssvr/client/projectmanage"
 	role "gitee.com/i-Things/core/service/syssvr/client/rolemanage"
 	tenant "gitee.com/i-Things/core/service/syssvr/client/tenantmanage"
 	user "gitee.com/i-Things/core/service/syssvr/client/usermanage"
@@ -57,8 +58,9 @@ type SvrClient struct {
 	UserDevice userdevice.UserDevice
 	Scene      scenelinkage.SceneLinkage
 	Alarm      alarmcenter.AlarmCenter
-
-	AreaM areamanage.AreaManage
+	UserM      user.UserManage
+	ProjectM   projectmanage.ProjectManage
+	AreaM      areamanage.AreaManage
 }
 
 type ServiceContext struct {
@@ -74,7 +76,6 @@ type ServiceContext struct {
 	Captcha        *verify.Captcha
 	OssClient      *oss.Client
 	OtaM           otamanage.OtaManage
-	FileChan       chan int64
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -93,8 +94,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		otaM           otamanage.OtaManage
 		UserDevice     userdevice.UserDevice
 		Rule           rule.Rule
-
-		areaM areamanage.AreaManage
+		projectM       projectmanage.ProjectManage
+		areaM          areamanage.AreaManage
 	)
 	var ur user.UserManage
 	var ro role.RoleManage
@@ -153,12 +154,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			lo = log.NewLog(zrpc.MustNewClient(c.SysRpc.Conf))
 			areaM = areamanage.NewAreaManage(zrpc.MustNewClient(c.SysRpc.Conf))
 			tm = tenant.NewTenantManage(zrpc.MustNewClient(c.SysRpc.Conf))
+			projectM = projectmanage.NewProjectManage(zrpc.MustNewClient(c.SysRpc.Conf))
 		} else {
 			ur = sysdirect.NewUser(c.SysRpc.RunProxy)
 			ro = sysdirect.NewRole(c.SysRpc.RunProxy)
 			lo = sysdirect.NewLog(c.SysRpc.RunProxy)
 			areaM = sysdirect.NewAreaManage(c.SysRpc.RunProxy)
 			tm = sysdirect.NewTenantManage(c.SysRpc.RunProxy)
+			projectM = sysdirect.NewProjectManage(c.SysRpc.RunProxy)
 		}
 	}
 
@@ -198,7 +201,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		OtaM:           otaM,
 		Ws:             ws.MustNewServer(c.RestConf),
 		SvrClient: SvrClient{
-
+			UserM:     ur,
+			ProjectM:  projectM,
 			ProtocolM: protocolM,
 			SchemaM:   schemaM,
 			ProductM:  productM,

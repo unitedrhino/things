@@ -56,4 +56,16 @@ type(
         ProductID string `json:"productID"`      //产品ID
         DeviceName string `json:"deviceName"`    //设备名称
     }
+
+    UserCore {
+        UserID         int64  `json:"userID,string,optional"`        // 用户id
+        UserName    string `json:"userName,optional"`          // 用户名(唯一)
+        Email       string `json:"email,optional"`             // 邮箱
+        Phone       string `json:"phone,optional"`             // 手机号
+        LastIP      string `json:"lastIP,optional"`            // 最后登录ip
+        RegIP       string `json:"regIP,optional"`             // 注册ip
+        NickName    string `json:"nickName,optional"`          // 用户的昵称
+        HeadImg  string `json:"headImg,optional"`        // 用户头像
+        CreatedTime int64  `json:"createdTime,string,optional"`// 创建时间
+    }
 )
