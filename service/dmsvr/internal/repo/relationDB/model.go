@@ -189,7 +189,7 @@ type DmSchemaCore struct {
 	Desc              string     `gorm:"column:desc;type:varchar(200)"`                                       // 描述
 	IsCanSceneLinkage int64      `gorm:"column:is_can_scene_linkage;type:smallint;default:1"`                 // 是否放到场景联动中
 	FuncGroup         int64      `gorm:"column:func_group;type:smallint;default:1"`                           // 功能分类: 1:普通功能 2:系统功能
-	UserAuth          int64      `gorm:"column:user_auth;type:smallint;default:3"`                            //用户权限操作: 1:r(只读) 3:rw(可读可写)
+	UserPerm          int64      `gorm:"column:user_auth;type:smallint;default:3"`                            //用户权限操作: 1:r(只读) 3:rw(可读可写)
 	IsHistory         int64      `gorm:"column:is_history;type:smallint;default:1"`                           // 是否存储历史记录
 	Affordance        string     `gorm:"column:affordance;type:json;NOT NULL"`                                // 各类型的自定义功能定义
 	Order             int64      `gorm:"column:order;type:BIGINT;default:1;NOT NULL"`                         // 左侧table排序序号

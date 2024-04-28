@@ -72,8 +72,8 @@ func (l *ProductSchemaUpdateLogic) ruleCheck(in *dm.ProductSchemaUpdateReq) (*re
 	if in.Info.FuncGroup != 0 && po.Tag == schema.TagCustom {
 		po.FuncGroup = newPo.FuncGroup
 	}
-	if in.Info.UserAuth != 0 && po.Tag == schema.TagCustom {
-		po.UserAuth = newPo.UserAuth
+	if in.Info.UserPerm != 0 && po.Tag == schema.TagCustom {
+		po.UserPerm = newPo.UserPerm
 	}
 
 	if in.Info.IsHistory != 0 && po.Tag == schema.TagCustom {

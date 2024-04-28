@@ -36,7 +36,7 @@ func (l *CommonSchemaIndexLogic) CommonSchemaIndex(in *dm.CommonSchemaIndexReq) 
 		Identifiers:       in.Identifiers,
 		IsCanSceneLinkage: in.IsCanSceneLinkage,
 		FuncGroup:         in.FuncGroup,
-		UserAuth:          in.UserAuth,
+		UserPerm:          in.UserPerm,
 	}
 	if in.ProductCategoryID != 0 {
 		var ProductCategoryIDs = []int64{in.ProductCategoryID}

@@ -39,7 +39,7 @@ func (l *ProductSchemaIndexLogic) ProductSchemaIndex(in *dm.ProductSchemaIndexRe
 		Name:              in.Name,
 		IsCanSceneLinkage: in.IsCanSceneLinkage,
 		FuncGroup:         in.FuncGroup,
-		UserAuth:          in.UserAuth,
+		UserPerm:          in.UserPerm,
 	}
 	schemas, err := l.PsDB.FindByFilter(l.ctx, filter, logic.ToPageInfo(in.Page))
 	if err != nil {

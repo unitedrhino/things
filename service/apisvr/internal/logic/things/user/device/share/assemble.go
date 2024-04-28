@@ -17,8 +17,8 @@ func ToSharePb(in *types.UserDeviceShareInfo) *dm.UserDeviceShareInfo {
 		},
 		SharedUserID: in.SharedUserID,
 		ProjectID:    in.ProjectID,
-		SchemaPerm:   in.SchemaPerm,
-		AccessPerm:   in.AccessPerm,
+		NormalPerm:   in.NormalPerm,
+		SystemPerm:   in.SystemPerm,
 	}
 }
 
@@ -36,8 +36,8 @@ func ToShareTypes(in *dm.UserDeviceShareInfo) *types.UserDeviceShareInfo {
 		SharedUserAccount: in.SharedUserAccount,
 		SharedUserID:      in.SharedUserID,
 		ProjectID:         in.ProjectID,
-		SchemaPerm:        in.SchemaPerm,
-		AccessPerm:        in.AccessPerm,
+		NormalPerm:        in.NormalPerm,
+		SystemPerm:        in.SystemPerm,
 	}
 }
 func ToSharesTypes(in []*dm.UserDeviceShareInfo) (ret []*types.UserDeviceShareInfo) {

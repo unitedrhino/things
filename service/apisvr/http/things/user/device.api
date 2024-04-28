@@ -60,9 +60,9 @@ type (
 		Device     DeviceCore `json:"device,optional"`         //设备信息
 		SharedUserID     int64       `json:"sharedUserID,string,optional"`        //分享的对象
 		SharedUserAccount string `json:"sharedUserAccount,optional"`
-		SchemaPerm []string    `json:"schemaPerm,optional"` //物模型权限,只需要填写需要授权并授权的物模型id
-		AccessPerm []string    `json:"accessPerm,optional"` //操作权限 hubLog:设备消息记录,ota:ota升级权限,deviceTiming:设备定时
-		CreatedTime int64  `json:"createdTime,optional"`
+		NormalPerm int64  `json:"normalPerm,optional"`//普通功能权限 1:r(只读) 3:rw(可读可写)
+		SystemPerm int64  `json:"systemPerm,optional"`//系统功能权限 1:r(只读) 3:rw(可读可写)
+				CreatedTime int64  `json:"createdTime,optional"`
 	}
 	UserDeviceShareReadReq{
 		ID     int64       `json:"id,optional"`

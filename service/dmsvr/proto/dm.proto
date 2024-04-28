@@ -362,8 +362,8 @@ message UserDeviceShareInfo{
   DeviceCore device = 2;//设备信息
   int64 sharedUserID = 3;//分享的对象
   string sharedUserAccount =7;//分享的账号(只读)
-  repeated string schemaPerm = 4;//物模型权限,只需要填写需要授权并授权的物模型id
-  repeated string accessPerm = 5;//操作权限 hubLog:设备消息记录,ota:ota升级权限,deviceTiming:设备定时
+  int64 normalPerm =4;//普通功能权限 1:r(只读) 3:rw(可读可写)
+  int64 systemPerm = 5;//系统功能权限 1:r(只读) 3:rw(可读可写)
   int64 projectID =6;//设备归属的项目
   int64 createdTime =8;
 }
@@ -1120,7 +1120,7 @@ message CommonSchemaIndexReq{
   bool productCategoryWithFather =8;//同时返回父节点的物模型
   int64 isCanSceneLinkage =9;//是否支持场景联动控制
   int64 funcGroup =14; // 功能分类: 1:普通功能 2:系统功能
-  int64 userAuth =15;//用户权限操作: 1:r(只读) 3:rw(可读可写)
+  int64 userPerm =15;//用户权限操作: 1:r(只读) 3:rw(可读可写)
 }
 
 message CommonSchemaIndexResp{
@@ -1138,7 +1138,7 @@ message CommonSchemaInfo{
   int64 required = 7;  //是否必须 1:是 2:否
   int64 isCanSceneLinkage =8;//是否支持场景联动控制
   int64 funcGroup =14; // 功能分类: 1:普通功能 2:系统功能
-  int64 userAuth =15;//用户权限操作: 1:r(只读) 3:rw(可读可写)
+  int64 userPerm =15;//用户权限操作: 1:r(只读) 3:rw(可读可写)
   int64 isHistory = 10;// 是否存储历史记录
   google.protobuf.StringValue affordance = 11;//各功能类型的详细参数定义
   string extendConfig = 12; //拓展参数
@@ -1178,7 +1178,7 @@ message ProductSchemaIndexReq{
   string name =6;//标识符名字过滤
   int64 isCanSceneLinkage =8;//是否支持场景联动控制
   int64 funcGroup =14; // 功能分类: 1:普通功能 2:系统功能
-  int64 userAuth =15;//用户权限操作: 1:r(只读) 3:rw(可读可写)
+  int64 userPerm =15;//用户权限操作: 1:r(只读) 3:rw(可读可写)
 }
 
 message ProductSchemaIndexResp{
@@ -1196,7 +1196,7 @@ message ProductSchemaInfo{
   int64 required = 7;  //是否必须 1:是 2:否
   int64 isCanSceneLinkage =8;//是否支持场景联动控制
   int64 funcGroup =14; // 功能分类: 1:普通功能 2:系统功能
-  int64 userAuth =15;//用户权限操作: 1:r(只读) 3:rw(可读可写)
+  int64 userPerm =15;//用户权限操作: 1:r(只读) 3:rw(可读可写)
   int64 isHistory = 10;// 是否存储历史记录
   google.protobuf.StringValue affordance = 11;//各功能类型的详细参数定义
   string extendConfig = 12; //拓展参数

@@ -27,7 +27,7 @@ type CommonSchemaIndexReq struct {
 	ProductCategoryWithFather bool      `json:"productCategoryWithFather,optional"`
 	IsCanSceneLinkage         int64     `json:"isCanSceneLinkage,optional"` //是否可以场景联动
 	FuncGroup                 int64     `json:"funcGroup,optional"`         // 功能分类: 1:普通功能 2:系统功能
-	UserAuth                  int64     `json:"userAuth,optional"`          //用户权限操作: 1:r(只读) 3:rw(可读可写)
+	UserPerm                  int64     `json:"userPerm,optional"`          //用户权限操作: 1:r(只读) 3:rw(可读可写)
 }
 
 type CommonSchemaIndexResp struct {
@@ -46,7 +46,7 @@ type CommonSchemaInfo struct {
 	Affordance        *string `json:"affordance,optional"`        //各功能类型的详细参数定义
 	IsCanSceneLinkage int64   `json:"isCanSceneLinkage,optional"` //是否可以场景联动
 	FuncGroup         int64   `json:"funcGroup,optional"`         // 功能分类: 1:普通功能 2:系统功能
-	UserAuth          int64   `json:"userAuth,optional"`          //用户权限操作: 1:r(只读) 3:rw(可读可写)
+	UserPerm          int64   `json:"userPerm,optional"`          //用户权限操作: 1:r(只读) 3:rw(可读可写)
 	IsHistory         int64   `json:"isHistory,optional"`         // 是否存储历史记录
 	Order             int64   `json:"order,optional"`             // 排序
 }
@@ -1058,7 +1058,7 @@ type ProductSchemaIndexReq struct {
 	Name              string    `json:"name,optional"`
 	IsCanSceneLinkage int64     `json:"isCanSceneLinkage,optional"` //是否可以场景联动
 	FuncGroup         int64     `json:"funcGroup,optional"`         // 功能分类: 1:普通功能 2:系统功能
-	UserAuth          int64     `json:"userAuth,optional"`          //用户权限操作: 1:r(只读) 3:rw(可读可写)
+	UserPerm          int64     `json:"userPerm,optional"`          //用户权限操作: 1:r(只读) 3:rw(可读可写)
 }
 
 type ProductSchemaIndexResp struct {
@@ -1078,7 +1078,7 @@ type ProductSchemaInfo struct {
 	Affordance        *string `json:"affordance,optional"`        //各功能类型的详细参数定义
 	IsCanSceneLinkage int64   `json:"isCanSceneLinkage,optional"` //是否可以场景联动
 	FuncGroup         int64   `json:"funcGroup,optional"`         // 功能分类: 1:普通功能 2:系统功能
-	UserAuth          int64   `json:"userAuth,optional"`          //用户权限操作: 1:r(只读) 3:rw(可读可写)
+	UserPerm          int64   `json:"userPerm,optional"`          //用户权限操作: 1:r(只读) 3:rw(可读可写)
 	IsHistory         int64   `json:"isHistory,optional"`         // 是否存储历史记录
 	Order             int64   `json:"order,optional"`             // 排序
 }
@@ -1296,8 +1296,8 @@ type UserDeviceShareInfo struct {
 	Device            DeviceCore `json:"device,optional"`              //设备信息
 	SharedUserID      int64      `json:"sharedUserID,string,optional"` //分享的对象
 	SharedUserAccount string     `json:"sharedUserAccount,optional"`
-	SchemaPerm        []string   `json:"schemaPerm,optional"` //物模型权限,只需要填写需要授权并授权的物模型id
-	AccessPerm        []string   `json:"accessPerm,optional"` //操作权限 hubLog:设备消息记录,ota:ota升级权限,deviceTiming:设备定时
+	NormalPerm        int64      `json:"normalPerm,optional"` //普通功能权限 1:r(只读) 3:rw(可读可写)
+	SystemPerm        int64      `json:"systemPerm,optional"` //系统功能权限 1:r(只读) 3:rw(可读可写)
 	CreatedTime       int64      `json:"createdTime,optional"`
 }
 

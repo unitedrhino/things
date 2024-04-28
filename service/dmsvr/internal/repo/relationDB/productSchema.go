@@ -25,7 +25,7 @@ type (
 		Name              string
 		IsCanSceneLinkage int64
 		FuncGroup         int64
-		UserAuth          int64
+		UserPerm          int64
 	}
 )
 
@@ -41,8 +41,8 @@ func (p ProductSchemaRepo) fmtFilter(ctx context.Context, f ProductSchemaFilter)
 	if f.FuncGroup != 0 {
 		db = db.Where("func_group = ?", f.FuncGroup)
 	}
-	if f.UserAuth != 0 {
-		db = db.Where("user_auth = ?", f.UserAuth)
+	if f.UserPerm != 0 {
+		db = db.Where("user_auth = ?", f.UserPerm)
 	}
 	if f.Name != "" {
 		db = db.Where("name like ?", "%"+f.Name+"%")
@@ -100,12 +100,12 @@ func (p ProductSchemaRepo) UpdateWithCommon(ctx context.Context, common *DmCommo
 			Required:          common.Required,
 			IsCanSceneLinkage: common.IsCanSceneLinkage,
 			FuncGroup:         common.FuncGroup,
-			UserAuth:          common.UserAuth,
+			UserPerm:          common.UserPerm,
 			IsHistory:         common.IsHistory,
 			Affordance:        common.Affordance,
 		},
 	}
-	err := p.db.WithContext(ctx).Select("ExtendConfig", "Required", "IsCanSceneLinkage", "UserAuth", "FuncGroup", "IsHistory", "Affordance").
+	err := p.db.WithContext(ctx).Select("ExtendConfig", "Required", "IsCanSceneLinkage", "UserPerm", "FuncGroup", "IsHistory", "Affordance").
 		Where("identifier = ? and tag=?",
 			common.Identifier, schema.TagOptional).Updates(&data).Error
 	return stores.ErrFmt(err)

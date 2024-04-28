@@ -65,8 +65,8 @@ func (l *UserDeviceShareCreateLogic) UserDeviceShareCreate(in *dm.UserDeviceShar
 		SharedUserAccount: account,
 		ProductID:         in.Device.ProductID,
 		DeviceName:        in.Device.DeviceName,
-		AccessPerm:        in.AccessPerm,
-		SchemaPerm:        in.SchemaPerm,
+		NormalPerm:        in.NormalPerm,
+		SystemPerm:        in.SystemPerm,
 	}
 	err = relationDB.NewUserDeviceShareRepo(l.ctx).Insert(l.ctx, &po)
 	if err != nil {

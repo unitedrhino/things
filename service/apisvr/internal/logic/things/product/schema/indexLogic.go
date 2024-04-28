@@ -37,7 +37,7 @@ func (l *IndexLogic) Index(req *types.ProductSchemaIndexReq) (resp *types.Produc
 		Name:              req.Name,
 		IsCanSceneLinkage: req.IsCanSceneLinkage,
 		FuncGroup:         req.FuncGroup,
-		UserAuth:          req.UserAuth,
+		UserPerm:          req.UserPerm,
 	}
 	dmResp, err := l.svcCtx.ProductM.ProductSchemaIndex(l.ctx, dmReq)
 	if err != nil {
