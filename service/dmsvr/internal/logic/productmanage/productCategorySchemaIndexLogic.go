@@ -2,6 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
@@ -28,7 +29,7 @@ func NewProductCategorySchemaIndexLogic(ctx context.Context, svcCtx *svc.Service
 // 获取产品品类下的物模型列表,绑定的物模型会自动添加到该产品品类及子分类的产品中,并不支持删除
 func (l *ProductCategorySchemaIndexLogic) ProductCategorySchemaIndex(in *dm.ProductCategorySchemaIndexReq) (*dm.ProductCategorySchemaIndexResp, error) {
 	var ProductCategoryIDs = []int64{in.ProductCategoryID}
-	if in.WithFather {
+	if in.WithFather && in.ProductCategoryID != def.RootNode {
 		pc, err := relationDB.NewProductCategoryRepo(l.ctx).FindOne(l.ctx, in.ProductCategoryID)
 		if err != nil {
 			return nil, err
