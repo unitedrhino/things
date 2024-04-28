@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/core/service/apisvr/coreExport"
 	"gitee.com/i-Things/core/service/syssvr/client/areamanage"
+	"gitee.com/i-Things/core/service/syssvr/client/common"
 	"gitee.com/i-Things/core/service/syssvr/client/datamanage"
 	"gitee.com/i-Things/core/service/syssvr/client/projectmanage"
 	"gitee.com/i-Things/core/service/syssvr/client/tenantmanage"
@@ -13,6 +14,7 @@ import (
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
+	"gitee.com/i-Things/share/domain/slot"
 	"gitee.com/i-Things/share/domain/tenant"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/cache"
@@ -72,6 +74,7 @@ type ServiceContext struct {
 	DeviceCache    *caches.Cache[dm.DeviceInfo]
 	TenantCache    *caches.Cache[tenant.Info]
 	WebHook        *sysExport.Webhook
+	Slot           *caches.Cache[slot.Infos]
 	UserSubscribe  *coreExport.UserSubscribe
 	NodeID         int64
 }
@@ -153,6 +156,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	//		ProductID:  "123",
 	//		DeviceName: "123",
 	//	}, Timestamp: time.Now().UnixMilli()})
+	Slot, err := sysExport.NewSlotCache(common.NewCommon(zrpc.MustNewClient(c.SysRpc.Conf)))
+	logx.Must(err)
 	return &ServiceContext{
 		FastEvent:      serverMsg,
 		TenantCache:    tenantCache,
@@ -181,6 +186,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		SendRepo:       sendR,
 		WebHook:        webHook,
 		NodeID:         nodeID,
+		Slot:           Slot,
 	}
 }
 

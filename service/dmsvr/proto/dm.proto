@@ -1118,6 +1118,9 @@ message CommonSchemaIndexReq{
   bool withProductCategory =4;
   int64 productCategoryID = 7;//过滤属于该产品品类的物模型
   bool productCategoryWithFather =8;//同时返回父节点的物模型
+  int64 isCanSceneLinkage =9;//是否支持场景联动控制
+  int64 funcGroup =14; // 功能分类: 1:普通功能 2:系统功能
+  int64 userAuth =15;//用户权限操作: 1:r(只读) 3:rw(可读可写)
 }
 
 message CommonSchemaIndexResp{
@@ -1134,7 +1137,8 @@ message CommonSchemaInfo{
   google.protobuf.StringValue desc = 6;       //描述
   int64 required = 7;  //是否必须 1:是 2:否
   int64 isCanSceneLinkage =8;//是否支持场景联动控制
-  int64 isShareAuthPerm = 9;// 分享是否需要校验权限
+  int64 funcGroup =14; // 功能分类: 1:普通功能 2:系统功能
+  int64 userAuth =15;//用户权限操作: 1:r(只读) 3:rw(可读可写)
   int64 isHistory = 10;// 是否存储历史记录
   google.protobuf.StringValue affordance = 11;//各功能类型的详细参数定义
   string extendConfig = 12; //拓展参数
@@ -1172,6 +1176,9 @@ message ProductSchemaIndexReq{
   int64  tag = 4; //过滤条件: 物模型标签 1:自定义 2:可选 3:必选
   repeated string   identifiers = 5; //过滤标识符列表
   string name =6;//标识符名字过滤
+  int64 isCanSceneLinkage =8;//是否支持场景联动控制
+  int64 funcGroup =14; // 功能分类: 1:普通功能 2:系统功能
+  int64 userAuth =15;//用户权限操作: 1:r(只读) 3:rw(可读可写)
 }
 
 message ProductSchemaIndexResp{
@@ -1188,7 +1195,8 @@ message ProductSchemaInfo{
   google.protobuf.StringValue desc = 6;       //描述
   int64 required = 7;  //是否必须 1:是 2:否
   int64 isCanSceneLinkage =8;//是否支持场景联动控制
-  int64 isShareAuthPerm = 9;// 分享是否需要校验权限
+  int64 funcGroup =14; // 功能分类: 1:普通功能 2:系统功能
+  int64 userAuth =15;//用户权限操作: 1:r(只读) 3:rw(可读可写)
   int64 isHistory = 10;// 是否存储历史记录
   google.protobuf.StringValue affordance = 11;//各功能类型的详细参数定义
   string extendConfig = 12; //拓展参数

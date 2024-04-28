@@ -13,6 +13,8 @@ import (
 )
 
 func (l *TimerHandle) DeviceTimer() error {
+	return nil //暂时不支持了
+
 	now := time.Now()
 	return tools.RunAllTenants(l.ctx, func(ctx context.Context) error {
 		ctxs.GetUserCtx(ctx).AllProject = true

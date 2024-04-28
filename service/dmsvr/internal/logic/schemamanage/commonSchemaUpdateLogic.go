@@ -61,8 +61,11 @@ func (l *CommonSchemaUpdateLogic) ruleCheck(in *dm.CommonSchemaUpdateReq) (*rela
 	if in.Info.IsCanSceneLinkage == 0 {
 		newPo.IsCanSceneLinkage = po.IsCanSceneLinkage
 	}
-	if in.Info.IsShareAuthPerm == 0 {
-		newPo.IsShareAuthPerm = po.IsShareAuthPerm
+	if in.Info.FuncGroup == 0 {
+		newPo.FuncGroup = po.FuncGroup
+	}
+	if in.Info.UserAuth == 0 {
+		newPo.UserAuth = po.UserAuth
 	}
 	if in.Info.IsHistory == 0 {
 		newPo.IsHistory = po.IsHistory

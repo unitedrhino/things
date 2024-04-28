@@ -46,6 +46,9 @@ type (
         Name string  `json:"name,optional"`
         productCategoryID int64 `json:"productCategoryID,optional"`
         productCategoryWithFather bool `json:"productCategoryWithFather,optional"`
+        IsCanSceneLinkage int64  `json:"isCanSceneLinkage,optional"` //是否可以场景联动
+        FuncGroup int64 `json:"funcGroup,optional"`// 功能分类: 1:普通功能 2:系统功能
+        UserAuth int64 `json:"userAuth,optional"`//用户权限操作: 1:r(只读) 3:rw(可读可写)
     }
     CommonSchemaIndexResp {
         List []*CommonSchemaInfo `json:"list"`           //分页信息,只获取一个则不填
@@ -66,7 +69,8 @@ type (
         Required int64 `json:"required,optional"`                     //是否必须 1:是 2:否
         Affordance *string `json:"affordance,optional"`                //各功能类型的详细参数定义
         IsCanSceneLinkage int64  `json:"isCanSceneLinkage,optional"` //是否可以场景联动
-        IsShareAuthPerm int64 `json:"isShareAuthPerm,optional"`// 分享是否需要校验权限
+        FuncGroup int64 `json:"funcGroup,optional"`// 功能分类: 1:普通功能 2:系统功能
+        UserAuth int64 `json:"userAuth,optional"`//用户权限操作: 1:r(只读) 3:rw(可读可写)
         IsHistory int64 `json:"isHistory,optional"`// 是否存储历史记录
         Order int64 `json:"order,optional"`// 排序
 //        Event *SchemaEvent `json:"event,optional"`           //事件参数定义

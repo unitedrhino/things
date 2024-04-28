@@ -46,6 +46,7 @@ func ToDeviceInfo(in *relationDB.DmDeviceInfo) *dm.DeviceInfo {
 		Tags:           in.Tags,
 		SchemaAlias:    in.SchemaAlias,
 		IsOnline:       in.IsOnline,
+		IsEnable:       in.IsEnable,
 		FirstLogin:     utils.GetNullTime(in.FirstLogin),
 		LastLogin:      utils.GetNullTime(in.LastLogin),
 		LogLevel:       in.LogLevel,

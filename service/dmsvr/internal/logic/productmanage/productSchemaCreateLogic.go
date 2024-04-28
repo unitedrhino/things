@@ -59,7 +59,8 @@ func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*re
 			return nil, err
 		}
 		po.IsCanSceneLinkage = cs.IsCanSceneLinkage
-		po.IsShareAuthPerm = cs.IsShareAuthPerm
+		po.FuncGroup = cs.FuncGroup
+		po.UserAuth = cs.UserAuth
 		po.IsHistory = cs.IsHistory
 	}
 	if po.Name == "" {
@@ -75,8 +76,11 @@ func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*re
 	if po.IsCanSceneLinkage == 0 && cs != nil {
 		po.IsCanSceneLinkage = cs.IsCanSceneLinkage
 	}
-	if po.IsShareAuthPerm == 0 && cs != nil {
-		po.IsShareAuthPerm = cs.IsShareAuthPerm
+	if po.FuncGroup == 0 && cs != nil {
+		po.FuncGroup = cs.FuncGroup
+	}
+	if po.UserAuth != 0 && cs != nil {
+		po.UserAuth = cs.UserAuth
 	}
 	if po.IsHistory == 0 && cs != nil {
 		po.IsHistory = cs.IsHistory

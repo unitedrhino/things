@@ -69,8 +69,11 @@ func (l *ProductSchemaUpdateLogic) ruleCheck(in *dm.ProductSchemaUpdateReq) (*re
 	if in.Info.IsCanSceneLinkage != 0 && po.Tag == schema.TagCustom {
 		po.IsCanSceneLinkage = newPo.IsCanSceneLinkage
 	}
-	if in.Info.IsShareAuthPerm != 0 && po.Tag == schema.TagCustom {
-		po.IsShareAuthPerm = newPo.IsShareAuthPerm
+	if in.Info.FuncGroup != 0 && po.Tag == schema.TagCustom {
+		po.FuncGroup = newPo.FuncGroup
+	}
+	if in.Info.UserAuth != 0 && po.Tag == schema.TagCustom {
+		po.UserAuth = newPo.UserAuth
 	}
 
 	if in.Info.IsHistory != 0 && po.Tag == schema.TagCustom {

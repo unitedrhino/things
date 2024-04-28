@@ -16,13 +16,16 @@ type ProductSchemaRepo struct {
 
 type (
 	ProductSchemaFilter struct {
-		ID          int64
-		ProductID   string   //产品id  必填
-		ProductIDs  []string //产品id列表
-		Type        int64    //物模型类型 1:property属性 2:event事件 3:action行为
-		Tag         int64    //过滤条件: 物模型标签 1:自定义 2:可选 3:必选
-		Identifiers []string //过滤标识符列表
-		Name        string
+		ID                int64
+		ProductID         string   //产品id  必填
+		ProductIDs        []string //产品id列表
+		Type              int64    //物模型类型 1:property属性 2:event事件 3:action行为
+		Tag               int64    //过滤条件: 物模型标签 1:自定义 2:可选 3:必选
+		Identifiers       []string //过滤标识符列表
+		Name              string
+		IsCanSceneLinkage int64
+		FuncGroup         int64
+		UserAuth          int64
 	}
 )
 
@@ -32,6 +35,15 @@ func NewProductSchemaRepo(in any) *ProductSchemaRepo {
 
 func (p ProductSchemaRepo) fmtFilter(ctx context.Context, f ProductSchemaFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
+	if f.IsCanSceneLinkage != 0 {
+		db = db.Where("is_can_scene_linkage = ?", f.IsCanSceneLinkage)
+	}
+	if f.FuncGroup != 0 {
+		db = db.Where("func_group = ?", f.FuncGroup)
+	}
+	if f.UserAuth != 0 {
+		db = db.Where("user_auth = ?", f.UserAuth)
+	}
 	if f.Name != "" {
 		db = db.Where("name like ?", "%"+f.Name+"%")
 	}
@@ -87,13 +99,13 @@ func (p ProductSchemaRepo) UpdateWithCommon(ctx context.Context, common *DmCommo
 			ExtendConfig:      common.ExtendConfig,
 			Required:          common.Required,
 			IsCanSceneLinkage: common.IsCanSceneLinkage,
-			IsShareAuthPerm:   common.IsShareAuthPerm,
+			FuncGroup:         common.FuncGroup,
+			UserAuth:          common.UserAuth,
 			IsHistory:         common.IsHistory,
 			Affordance:        common.Affordance,
 		},
 	}
-	err := p.db.WithContext(ctx).Select("ExtendConfig", "Required", "IsCanSceneLinkage",
-		"IsShareAuthPerm", "IsHistory", "Affordance").
+	err := p.db.WithContext(ctx).Select("ExtendConfig", "Required", "IsCanSceneLinkage", "UserAuth", "FuncGroup", "IsHistory", "Affordance").
 		Where("identifier = ? and tag=?",
 			common.Identifier, schema.TagOptional).Updates(&data).Error
 	return stores.ErrFmt(err)

@@ -25,6 +25,9 @@ type CommonSchemaIndexReq struct {
 	Name                      string    `json:"name,optional"`
 	ProductCategoryID         int64     `json:"productCategoryID,optional"`
 	ProductCategoryWithFather bool      `json:"productCategoryWithFather,optional"`
+	IsCanSceneLinkage         int64     `json:"isCanSceneLinkage,optional"` //是否可以场景联动
+	FuncGroup                 int64     `json:"funcGroup,optional"`         // 功能分类: 1:普通功能 2:系统功能
+	UserAuth                  int64     `json:"userAuth,optional"`          //用户权限操作: 1:r(只读) 3:rw(可读可写)
 }
 
 type CommonSchemaIndexResp struct {
@@ -42,7 +45,8 @@ type CommonSchemaInfo struct {
 	Required          int64   `json:"required,optional"`          //是否必须 1:是 2:否
 	Affordance        *string `json:"affordance,optional"`        //各功能类型的详细参数定义
 	IsCanSceneLinkage int64   `json:"isCanSceneLinkage,optional"` //是否可以场景联动
-	IsShareAuthPerm   int64   `json:"isShareAuthPerm,optional"`   // 分享是否需要校验权限
+	FuncGroup         int64   `json:"funcGroup,optional"`         // 功能分类: 1:普通功能 2:系统功能
+	UserAuth          int64   `json:"userAuth,optional"`          //用户权限操作: 1:r(只读) 3:rw(可读可写)
 	IsHistory         int64   `json:"isHistory,optional"`         // 是否存储历史记录
 	Order             int64   `json:"order,optional"`             // 排序
 }
@@ -176,8 +180,9 @@ type DeviceInfo struct {
 	Rssi           int64                              `json:"rssi,optional"`                       //信号强度
 	CreatedTime    int64                              `json:"createdTime,optional,string"`         //创建时间 只读
 	Status         int64                              `json:"status,optional"`                     //设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)
-	WithProperties map[string]*DeviceInfoWithProperty `json:"withProperties,optional,omitempty"`   //获取的属性列表,如果不传withProperty,则不会返回
-	ProtocolConf   []*Tag                             `json:"protocolConf,optional,omitempty"`     //协议配置
+	IsEnable       int64                              `json:"isEnable,optional"`
+	WithProperties map[string]*DeviceInfoWithProperty `json:"withProperties,optional,omitempty"` //获取的属性列表,如果不传withProperty,则不会返回
+	ProtocolConf   []*Tag                             `json:"protocolConf,optional,omitempty"`   //协议配置
 	Profiles       map[string]string                  `json:"profiles,optional,omitempty"`
 	Manufacturer   *ManufacturerInfo                  `json:"manufacturer,optional,omitempty"` //制造商信息
 	Owner          *UserCore                          `json:"owner,optional,omitempty"`
@@ -1045,12 +1050,15 @@ type ProductSchemaDeleteReq struct {
 }
 
 type ProductSchemaIndexReq struct {
-	Page        *PageInfo `json:"page,optional"`        //分页信息,只获取一个则不填
-	ProductID   string    `json:"productID"`            //产品id
-	Type        int64     `json:"type,optional"`        //物模型类型 1:property属性 2:event事件 3:action行为
-	Tag         int64     `json:"tag,optional"`         //过滤条件: 物模型标签 1:自定义 2:可选 3:必选
-	Identifiers []string  `json:"identifiers,optional"` //过滤标识符列表
-	Name        string    `json:"name,optional"`
+	Page              *PageInfo `json:"page,optional"`        //分页信息,只获取一个则不填
+	ProductID         string    `json:"productID"`            //产品id
+	Type              int64     `json:"type,optional"`        //物模型类型 1:property属性 2:event事件 3:action行为
+	Tag               int64     `json:"tag,optional"`         //过滤条件: 物模型标签 1:自定义 2:可选 3:必选
+	Identifiers       []string  `json:"identifiers,optional"` //过滤标识符列表
+	Name              string    `json:"name,optional"`
+	IsCanSceneLinkage int64     `json:"isCanSceneLinkage,optional"` //是否可以场景联动
+	FuncGroup         int64     `json:"funcGroup,optional"`         // 功能分类: 1:普通功能 2:系统功能
+	UserAuth          int64     `json:"userAuth,optional"`          //用户权限操作: 1:r(只读) 3:rw(可读可写)
 }
 
 type ProductSchemaIndexResp struct {
@@ -1069,7 +1077,8 @@ type ProductSchemaInfo struct {
 	Required          int64   `json:"required,optional"`          //是否必须 1:是 2:否
 	Affordance        *string `json:"affordance,optional"`        //各功能类型的详细参数定义
 	IsCanSceneLinkage int64   `json:"isCanSceneLinkage,optional"` //是否可以场景联动
-	IsShareAuthPerm   int64   `json:"isShareAuthPerm,optional"`   // 分享是否需要校验权限
+	FuncGroup         int64   `json:"funcGroup,optional"`         // 功能分类: 1:普通功能 2:系统功能
+	UserAuth          int64   `json:"userAuth,optional"`          //用户权限操作: 1:r(只读) 3:rw(可读可写)
 	IsHistory         int64   `json:"isHistory,optional"`         // 是否存储历史记录
 	Order             int64   `json:"order,optional"`             // 排序
 }

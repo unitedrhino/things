@@ -23,6 +23,9 @@ func CheckIsOnline(ctx context.Context, svcCtx *svc.ServiceContext, core devices
 	if dev.IsOnline == def.False {
 		return info.ProtocolCode, errors.NotOnline
 	}
+	if dev.IsEnable == def.False { //未启用不能控制
+		return info.ProtocolCode, errors.NotEnable
+	}
 
 	if info.DeviceType != def.DeviceTypeSubset {
 		return info.ProtocolCode, nil

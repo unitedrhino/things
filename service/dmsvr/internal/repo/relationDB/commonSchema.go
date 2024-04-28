@@ -13,10 +13,13 @@ type CommonSchemaRepo struct {
 
 type (
 	CommonSchemaFilter struct {
-		ID          int64
-		Type        int64    //物模型类型 1:property属性 2:event事件 3:action行为
-		Identifiers []string //过滤标识符列表
-		Name        string
+		ID                int64
+		Type              int64    //物模型类型 1:property属性 2:event事件 3:action行为
+		Identifiers       []string //过滤标识符列表
+		Name              string
+		IsCanSceneLinkage int64
+		FuncGroup         int64
+		UserAuth          int64
 	}
 )
 
@@ -26,6 +29,15 @@ func NewCommonSchemaRepo(in any) *CommonSchemaRepo {
 
 func (p CommonSchemaRepo) fmtFilter(ctx context.Context, f CommonSchemaFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
+	if f.IsCanSceneLinkage != 0 {
+		db = db.Where("is_can_scene_linkage = ?", f.IsCanSceneLinkage)
+	}
+	if f.FuncGroup != 0 {
+		db = db.Where("func_group = ?", f.FuncGroup)
+	}
+	if f.UserAuth != 0 {
+		db = db.Where("user_auth = ?", f.UserAuth)
+	}
 	if f.Name != "" {
 		db = db.Where("name like ?", "%"+f.Name+"%")
 	}

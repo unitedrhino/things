@@ -32,11 +32,14 @@ func NewProductSchemaIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 func (l *ProductSchemaIndexLogic) ProductSchemaIndex(in *dm.ProductSchemaIndexReq) (*dm.ProductSchemaIndexResp, error) {
 	l.Infof("%s req=%v", utils.FuncName(), utils.Fmt(in))
 	filter := relationDB.ProductSchemaFilter{
-		ProductID:   in.ProductID,
-		Type:        in.Type,
-		Tag:         in.Tag,
-		Identifiers: in.Identifiers,
-		Name:        in.Name,
+		ProductID:         in.ProductID,
+		Type:              in.Type,
+		Tag:               in.Tag,
+		Identifiers:       in.Identifiers,
+		Name:              in.Name,
+		IsCanSceneLinkage: in.IsCanSceneLinkage,
+		FuncGroup:         in.FuncGroup,
+		UserAuth:          in.UserAuth,
 	}
 	schemas, err := l.PsDB.FindByFilter(l.ctx, filter, logic.ToPageInfo(in.Page))
 	if err != nil {

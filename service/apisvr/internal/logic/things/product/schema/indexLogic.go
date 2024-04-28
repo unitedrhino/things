@@ -29,12 +29,15 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 
 func (l *IndexLogic) Index(req *types.ProductSchemaIndexReq) (resp *types.ProductSchemaIndexResp, err error) {
 	dmReq := &dm.ProductSchemaIndexReq{
-		Page:        logic.ToDmPageRpc(req.Page),
-		ProductID:   req.ProductID,
-		Type:        req.Type,
-		Tag:         req.Tag,
-		Identifiers: req.Identifiers,
-		Name:        req.Name,
+		Page:              logic.ToDmPageRpc(req.Page),
+		ProductID:         req.ProductID,
+		Type:              req.Type,
+		Tag:               req.Tag,
+		Identifiers:       req.Identifiers,
+		Name:              req.Name,
+		IsCanSceneLinkage: req.IsCanSceneLinkage,
+		FuncGroup:         req.FuncGroup,
+		UserAuth:          req.UserAuth,
 	}
 	dmResp, err := l.svcCtx.ProductM.ProductSchemaIndex(l.ctx, dmReq)
 	if err != nil {

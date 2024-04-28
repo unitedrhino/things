@@ -31,9 +31,12 @@ func NewCommonSchemaIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 // 获取产品信息列表
 func (l *CommonSchemaIndexLogic) CommonSchemaIndex(in *dm.CommonSchemaIndexReq) (*dm.CommonSchemaIndexResp, error) {
 	filter := relationDB.CommonSchemaFilter{
-		Type:        in.Type,
-		Name:        in.Name,
-		Identifiers: in.Identifiers,
+		Type:              in.Type,
+		Name:              in.Name,
+		Identifiers:       in.Identifiers,
+		IsCanSceneLinkage: in.IsCanSceneLinkage,
+		FuncGroup:         in.FuncGroup,
+		UserAuth:          in.UserAuth,
 	}
 	if in.ProductCategoryID != 0 {
 		var ProductCategoryIDs = []int64{in.ProductCategoryID}
