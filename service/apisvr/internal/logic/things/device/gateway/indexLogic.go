@@ -5,6 +5,7 @@ import (
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/logic"
+	"github.com/i-Things/things/service/apisvr/internal/logic/things"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/service/apisvr/internal/svc"
@@ -41,14 +42,25 @@ func (l *IndexLogic) Index(req *types.DeviceGateWayIndexReq) (resp *types.Device
 		l.Errorf("%s.rpc.GetDeviceInfo req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
+	if dmResp.Total == 0 {
+		return &types.DeviceGateWayIndexResp{
+			List:  nil,
+			Total: 0,
+		}, nil
+	}
 	pis := make([]*types.DeviceInfo, 0, len(dmResp.List))
-	//for _, v := range dmResp.List {
-	//	pi := things.InfoToApi(l.ctx, l.svcCtx, v, nil, nil)
-	//	pis = append(pis, pi)
-	//}
+	ret, err := l.svcCtx.DeviceM.DeviceInfoIndex(l.ctx, &dm.DeviceInfoIndexReq{
+		Devices: dmResp.List,
+	})
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range ret.List {
+		pi := things.InfoToApi(l.ctx, l.svcCtx, v, nil, nil, false)
+		pis = append(pis, pi)
+	}
 	return &types.DeviceGateWayIndexResp{
-		Total: dmResp.Total,
+		Total: ret.Total,
 		List:  pis,
 	}, nil
-	return
 }

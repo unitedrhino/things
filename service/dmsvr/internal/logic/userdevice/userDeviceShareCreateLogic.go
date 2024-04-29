@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/core/service/syssvr/pb/sys"
 	"gitee.com/i-Things/share/ctxs"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/spf13/cast"
@@ -67,6 +68,12 @@ func (l *UserDeviceShareCreateLogic) UserDeviceShareCreate(in *dm.UserDeviceShar
 		DeviceName:        in.Device.DeviceName,
 		NormalPerm:        in.NormalPerm,
 		SystemPerm:        in.SystemPerm,
+	}
+	if po.NormalPerm == 0 {
+		po.NormalPerm = def.PermRw
+	}
+	if po.SystemPerm == 0 {
+		po.SystemPerm = def.PermRw
 	}
 	err = relationDB.NewUserDeviceShareRepo(l.ctx).Insert(l.ctx, &po)
 	if err != nil {

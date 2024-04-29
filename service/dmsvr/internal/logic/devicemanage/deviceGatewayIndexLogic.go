@@ -45,7 +45,26 @@ func (l *DeviceGatewayIndexLogic) DeviceGatewayIndex(in *dm.DeviceGatewayIndexRe
 		return nil, err
 	}
 	fmt.Println(di, size)
-	return nil, nil
+	var list []*dm.DeviceCore
+	if f.Gateway != nil {
+		for _, v := range di {
+			list = append(list, &dm.DeviceCore{
+				ProductID:  v.GatewayProductID,
+				DeviceName: v.GatewayDeviceName,
+			})
+		}
+	} else {
+		for _, v := range di {
+			list = append(list, &dm.DeviceCore{
+				ProductID:  v.ProductID,
+				DeviceName: v.DeviceName,
+			})
+		}
+	}
+	return &dm.DeviceGatewayIndexResp{
+		List:  list,
+		Total: size,
+	}, nil
 	//info := make([]*dm.DeviceInfo, 0, len(di))
 	//for _, v := range di {
 	//	info = append(info, logic.ToDeviceInfo(v))

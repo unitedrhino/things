@@ -57,7 +57,7 @@ func (g GatewayDeviceRepo) FindByFilter(ctx context.Context, f GatewayDeviceFilt
 
 func (g GatewayDeviceRepo) CountByFilter(ctx context.Context, f GatewayDeviceFilter) (size int64, err error) {
 	db := g.fmtFilter(ctx, f)
-	err = db.Count(&size).Error
+	err = db.Model(&DmGatewayDevice{}).Count(&size).Error
 	return size, stores.ErrFmt(err)
 }
 func (p GatewayDeviceRepo) FindOneByFilter(ctx context.Context, f GatewayDeviceFilter) (*DmGatewayDevice, error) {
