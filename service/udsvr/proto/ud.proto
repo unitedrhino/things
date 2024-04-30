@@ -77,6 +77,9 @@ message SceneInfoIndexReq{
   int64 status = 3;//状态: 1启用 2禁用
   string type = 4;//auto:自动化 manual:手动触发
   int64 alarmID = 5;//告警配置ID过滤
+  string deviceMode =10;//设备模式 single:单设备 multi:多设备
+  string   productID = 8; //产品id
+  string  deviceName = 9; //设备名称
 }
 
 message SceneInfoIndexResp{

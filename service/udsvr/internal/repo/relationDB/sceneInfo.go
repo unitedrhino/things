@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/stores"
+	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -24,11 +25,14 @@ func NewSceneInfoRepo(in any) *SceneInfoRepo {
 }
 
 type SceneInfoFilter struct {
-	Name   string `json:"name"`
-	Status int64
-	Type   string
-	Tag    string
-	AreaID int64
+	Name       string `json:"name"`
+	Status     int64
+	Type       string
+	Tag        string
+	AreaID     int64
+	DeviceMode scene.DeviceMode //设备模式
+	ProductID  string           //产品id
+	DeviceName string           //设备名
 }
 
 func (p SceneInfoRepo) fmtFilter(ctx context.Context, f SceneInfoFilter) *gorm.DB {
@@ -36,6 +40,15 @@ func (p SceneInfoRepo) fmtFilter(ctx context.Context, f SceneInfoFilter) *gorm.D
 	//if f.AreaID != 0 {
 	//	db = db.Where("area_id = ?", f.AreaID)
 	//}
+	if f.DeviceMode != "" {
+		db = db.Where("device_mode=?", f.DeviceMode)
+	}
+	if f.ProductID != "" {
+		db = db.Where("product_id=?", f.ProductID)
+	}
+	if f.DeviceName != "" {
+		db = db.Where("device_name=?", f.DeviceName)
+	}
 	if f.Tag != "" {
 		db = db.Where("tag=?", f.Tag)
 	}
