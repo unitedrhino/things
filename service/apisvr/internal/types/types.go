@@ -1242,6 +1242,10 @@ type SendOption struct {
 	RetryInterval  int64 `json:"retryInterval,optional"`  //重试间隔
 }
 
+type SharePerm struct {
+	Perm int64 `json:"perm,optional,default=3"` //1:r(只读) 3(默认):rw(可读可写)
+}
+
 type SlotAreaSaveReq struct {
 	ProjectID    int64 `json:"projectID,string,optional"`    //项目id（只读）
 	AreaID       int64 `json:"areaID,string,optional"`       //项目区域id（只读）
@@ -1294,14 +1298,14 @@ type UserDeviceShareIndexResp struct {
 }
 
 type UserDeviceShareInfo struct {
-	ID                int64      `json:"id,optional"`
-	ProjectID         int64      `json:"projectID,optional"`
-	Device            DeviceCore `json:"device,optional"`              //设备信息
-	SharedUserID      int64      `json:"sharedUserID,string,optional"` //分享的对象
-	SharedUserAccount string     `json:"sharedUserAccount,optional"`
-	NormalPerm        int64      `json:"normalPerm,optional"` //普通功能权限 1:r(只读) 3:rw(可读可写)
-	SystemPerm        int64      `json:"systemPerm,optional"` //系统功能权限 1:r(只读) 3:rw(可读可写)
-	CreatedTime       int64      `json:"createdTime,optional"`
+	ID                int64        `json:"id,optional"`
+	ProjectID         int64        `json:"projectID,optional"`
+	Device            DeviceCore   `json:"device,optional"`              //设备信息
+	SharedUserID      int64        `json:"sharedUserID,string,optional"` //分享的对象
+	SharedUserAccount string       `json:"sharedUserAccount,optional"`
+	SchemaPerm        []*SharePerm `json:"schemaPerm,optional"` //普通功能权限 1:r(只读) 3:rw(可读可写)
+	AccessPerm        []*SharePerm `json:"accessPerm,optional"` //系统功能权限 1:r(只读) 3:rw(可读可写)
+	CreatedTime       int64        `json:"createdTime,optional"`
 }
 
 type UserDeviceShareMultiDeleteReq struct {

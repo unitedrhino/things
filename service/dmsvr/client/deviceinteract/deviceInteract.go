@@ -170,6 +170,7 @@ type (
 	SendOption                        = dm.SendOption
 	ShadowIndex                       = dm.ShadowIndex
 	ShadowIndexResp                   = dm.ShadowIndexResp
+	SharePerm                         = dm.SharePerm
 	StatusLogIndexReq                 = dm.StatusLogIndexReq
 	StatusLogIndexResp                = dm.StatusLogIndexResp
 	StatusLogInfo                     = dm.StatusLogInfo

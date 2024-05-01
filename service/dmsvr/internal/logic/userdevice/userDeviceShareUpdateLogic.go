@@ -5,6 +5,7 @@ import (
 	"gitee.com/i-Things/core/service/syssvr/pb/sys"
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -45,8 +46,8 @@ func (l *UserDeviceShareUpdateLogic) UserDeviceShareUpdate(in *dm.UserDeviceShar
 	if pi.AdminUserID != uc.UserID { //只有所有者和被分享者才有权限操作
 		return nil, errors.Permissions
 	}
-	uds.NormalPerm = in.NormalPerm
-	uds.SystemPerm = in.SystemPerm
+	uds.AccessPerm = utils.CopySlice[relationDB.SharePerm](in.AccessPerm)
+	uds.SchemaPerm = utils.CopySlice[relationDB.SharePerm](in.SchemaPerm)
 	if err := relationDB.NewUserDeviceShareRepo(l.ctx).Update(l.ctx, uds); err != nil {
 		return nil, err
 	}

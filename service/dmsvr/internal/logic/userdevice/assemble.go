@@ -1,6 +1,7 @@
 package userdevicelogic
 
 import (
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 )
@@ -19,8 +20,8 @@ func ToUserDeviceSharePb(in *relationDB.DmUserDeviceShare) *dm.UserDeviceShareIn
 		CreatedTime:       in.CreatedTime.Unix(),
 		SharedUserAccount: in.SharedUserAccount,
 		SharedUserID:      in.SharedUserID,
-		NormalPerm:        in.NormalPerm,
-		SystemPerm:        in.SystemPerm,
+		AccessPerm:        utils.CopySlice[dm.SharePerm](in.AccessPerm),
+		SchemaPerm:        utils.CopySlice[dm.SharePerm](in.SchemaPerm),
 	}
 }
 func ToUserDeviceSharePbs(in []*relationDB.DmUserDeviceShare) (ret []*dm.UserDeviceShareInfo) {

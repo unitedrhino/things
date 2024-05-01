@@ -702,6 +702,84 @@
         ]
       }
     },
+    "/api/v1/things/device/info/transfer": {
+      "post": {
+        "summary": "转让设备",
+        "operationId": "postApiV1ThingsDeviceInfoTransfer",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceInfoTransferReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/info",
+          "thingsDeviceInfo"
+        ]
+      }
+    },
+    "/api/v1/things/device/info/unbind": {
+      "post": {
+        "summary": "解绑设备",
+        "operationId": "postApiV1ThingsDeviceInfoUnbind",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceCore"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/info",
+          "thingsDeviceInfo"
+        ]
+      }
+    },
     "/api/v1/things/device/info/update": {
       "post": {
         "summary": "更新设备",
@@ -1659,171 +1737,6 @@
         ]
       }
     },
-    "/api/v1/things/firmware/job/create": {
-      "post": {
-        "summary": "创建升级任务",
-        "operationId": "postApiV1ThingsFirmwareJobCreate",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "default": "200",
-                  "title": "返回code"
-                },
-                "msg": {
-                  "type": "string",
-                  "title": "返回的消息"
-                },
-                "data": {
-                  "$ref": "#/definitions/WithID"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/OtaFirmwareJobInfo"
-            }
-          }
-        ],
-        "tags": [
-          "things/ota/firmware/job",
-          "thingsOtaFirmwareJob"
-        ]
-      }
-    },
-    "/api/v1/things/firmware/job/index": {
-      "post": {
-        "summary": "获取升级包下的升级任务批次列表",
-        "operationId": "postApiV1ThingsFirmwareJobIndex",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "default": "200",
-                  "title": "返回code"
-                },
-                "msg": {
-                  "type": "string",
-                  "title": "返回的消息"
-                },
-                "data": {
-                  "$ref": "#/definitions/OtaFirmwareJobInfoIndexResp"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/OtaFirmwareJobIndexReq"
-            }
-          }
-        ],
-        "tags": [
-          "things/ota/firmware/job",
-          "thingsOtaFirmwareJob"
-        ]
-      }
-    },
-    "/api/v1/things/firmware/job/read": {
-      "post": {
-        "summary": "查询指定升级批次的详情",
-        "operationId": "postApiV1ThingsFirmwareJobRead",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "default": "200",
-                  "title": "返回code"
-                },
-                "msg": {
-                  "type": "string",
-                  "title": "返回的消息"
-                },
-                "data": {
-                  "$ref": "#/definitions/OtaFirmwareJobInfo"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/WithID"
-            }
-          }
-        ],
-        "tags": [
-          "things/ota/firmware/job",
-          "thingsOtaFirmwareJob"
-        ]
-      }
-    },
-    "/api/v1/things/firmware/job/update": {
-      "post": {
-        "summary": "更新升级批次",
-        "operationId": "postApiV1ThingsFirmwareJobUpdate",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "default": "200",
-                  "title": "返回code"
-                },
-                "msg": {
-                  "type": "string",
-                  "title": "返回的消息"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/OtaFirmwareJobInfo"
-            }
-          }
-        ],
-        "tags": [
-          "things/ota/firmware/job",
-          "thingsOtaFirmwareJob"
-        ]
-      }
-    },
     "/api/v1/things/group/device/index": {
       "post": {
         "summary": "获取分组设备列表",
@@ -2511,6 +2424,171 @@
         ]
       }
     },
+    "/api/v1/things/ota/firmware/job/create": {
+      "post": {
+        "summary": "创建升级任务",
+        "operationId": "postApiV1ThingsOtaFirmwareJobCreate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/WithID"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/OtaFirmwareJobInfo"
+            }
+          }
+        ],
+        "tags": [
+          "things/ota/firmware/job",
+          "thingsOtaFirmwareJob"
+        ]
+      }
+    },
+    "/api/v1/things/ota/firmware/job/index": {
+      "post": {
+        "summary": "获取升级包下的升级任务批次列表",
+        "operationId": "postApiV1ThingsOtaFirmwareJobIndex",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/OtaFirmwareJobInfoIndexResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/OtaFirmwareJobIndexReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/ota/firmware/job",
+          "thingsOtaFirmwareJob"
+        ]
+      }
+    },
+    "/api/v1/things/ota/firmware/job/read": {
+      "post": {
+        "summary": "查询指定升级批次的详情",
+        "operationId": "postApiV1ThingsOtaFirmwareJobRead",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/OtaFirmwareJobInfo"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/WithID"
+            }
+          }
+        ],
+        "tags": [
+          "things/ota/firmware/job",
+          "thingsOtaFirmwareJob"
+        ]
+      }
+    },
+    "/api/v1/things/ota/firmware/job/update": {
+      "post": {
+        "summary": "更新升级批次",
+        "operationId": "postApiV1ThingsOtaFirmwareJobUpdate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/OtaFirmwareJobInfo"
+            }
+          }
+        ],
+        "tags": [
+          "things/ota/firmware/job",
+          "thingsOtaFirmwareJob"
+        ]
+      }
+    },
     "/api/v1/things/ota/module/info/create": {
       "post": {
         "summary": "创建模块",
@@ -2919,9 +2997,87 @@
         ]
       }
     },
+    "/api/v1/things/product/category/schema/multi-create": {
+      "post": {
+        "summary": "批量新增产品品类物模型",
+        "operationId": "postApiV1ThingsProductCategorySchemaMulti-create",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProductCategorySchemaMultiSaveReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/product/category",
+          "thingsProductCategory"
+        ]
+      }
+    },
+    "/api/v1/things/product/category/schema/multi-delete": {
+      "post": {
+        "summary": "批量删除产品品类物模型",
+        "operationId": "postApiV1ThingsProductCategorySchemaMulti-delete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProductCategorySchemaMultiSaveReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/product/category",
+          "thingsProductCategory"
+        ]
+      }
+    },
     "/api/v1/things/product/category/schema/multi-update": {
       "post": {
-        "summary": "获取产品品类列表",
+        "summary": "批量更新产品品类物模型",
         "operationId": "postApiV1ThingsProductCategorySchemaMulti-update",
         "responses": {
           "200": {
@@ -2948,7 +3104,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/ProductCategorySchemaMultiUpdateReq"
+              "$ref": "#/definitions/ProductCategorySchemaMultiSaveReq"
             }
           }
         ],
@@ -5123,6 +5279,21 @@
         "productCategoryWithFather": {
           "type": "boolean",
           "format": "boolean"
+        },
+        "isCanSceneLinkage": {
+          "type": "integer",
+          "format": "int64",
+          "description": "是否可以场景联动"
+        },
+        "funcGroup": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 功能分类: 1:普通功能 2:系统功能"
+        },
+        "userPerm": {
+          "type": "integer",
+          "format": "int64",
+          "description": "用户权限操作: 1:r(只读) 3:rw(可读可写)"
         }
       },
       "title": "CommonSchemaIndexReq"
@@ -5192,10 +5363,15 @@
           "format": "int64",
           "description": "是否可以场景联动"
         },
-        "isShareAuthPerm": {
+        "funcGroup": {
           "type": "integer",
           "format": "int64",
-          "description": " 分享是否需要校验权限"
+          "description": " 功能分类: 1:普通功能 2:系统功能"
+        },
+        "userPerm": {
+          "type": "integer",
+          "format": "int64",
+          "description": "用户权限操作: 1:r(只读) 3:rw(可读可写)"
         },
         "isHistory": {
           "type": "integer",
@@ -5705,6 +5881,10 @@
           "format": "int64",
           "description": "设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)"
         },
+        "isEnable": {
+          "type": "integer",
+          "format": "int64"
+        },
         "withProperties": {
           "type": "object",
           "description": "获取的属性列表,如果不传withProperty,则不会返回"
@@ -5718,6 +5898,13 @@
         },
         "profiles": {
           "type": "object"
+        },
+        "manufacturer": {
+          "$ref": "#/definitions/ManufacturerInfo",
+          "description": "制造商信息"
+        },
+        "owner": {
+          "$ref": "#/definitions/UserCore"
         }
       },
       "title": "DeviceInfo",
@@ -5832,10 +6019,10 @@
           "type": "integer",
           "format": "int64"
         },
-        "isShared": {
+        "withShared": {
           "type": "integer",
           "format": "int64",
-          "description": " 是否共享  1:是 2:否",
+          "description": " 过滤分享的设备1: 同时获取分享的设备 2:只获取分享的设备",
           "maximum": 2
         },
         "versions": {
@@ -5917,6 +6104,16 @@
           "items": {
             "type": "string"
           }
+        },
+        "withManufacturer": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "同时获取制造商信息"
+        },
+        "withOwner": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "同时获取拥有人的信息"
         }
       },
       "title": "DeviceInfoReadReq",
@@ -5993,6 +6190,38 @@
       "required": [
         "productID",
         "deviceName"
+      ]
+    },
+    "DeviceInfoTransferReq": {
+      "type": "object",
+      "properties": {
+        "device": {
+          "$ref": "#/definitions/DeviceCore"
+        },
+        "transferTo": {
+          "type": "integer",
+          "format": "int64",
+          "description": "转让给: 1: 某个人 2: 自己的某个项目"
+        },
+        "userID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "projectID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "isCleanData": {
+          "type": "integer",
+          "format": "int64",
+          "description": "是否清除数据:1是 2否"
+        }
+      },
+      "title": "DeviceInfoTransferReq",
+      "required": [
+        "device",
+        "transferTo",
+        "isCleanData"
       ]
     },
     "DeviceInfoWithProperty": {
@@ -6772,19 +7001,6 @@
           "$ref": "#/definitions/PageInfo",
           "description": "分页信息"
         },
-        "projectID": {
-          "type": "integer",
-          "format": "int64",
-          "description": "项目id"
-        },
-        "areaIDs": {
-          "type": "array",
-          "items": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "description": "过滤内容"
-        },
         "userID": {
           "type": "integer",
           "format": "int64"
@@ -6833,13 +7049,8 @@
           "format": "int64",
           "description": "发生时间戳(毫秒时间戳)"
         },
-        "projectID": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "areaID": {
-          "type": "integer",
-          "format": "int64"
+        "account": {
+          "type": "string"
         },
         "userID": {
           "type": "integer",
@@ -6938,19 +7149,6 @@
         "page": {
           "$ref": "#/definitions/PageInfo",
           "description": "分页信息"
-        },
-        "projectID": {
-          "type": "integer",
-          "format": "int64",
-          "description": "项目id"
-        },
-        "areaIDs": {
-          "type": "array",
-          "items": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "description": "过滤内容"
         },
         "status": {
           "type": "integer",
@@ -7771,6 +7969,25 @@
         "total"
       ]
     },
+    "ManufacturerInfo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "desc": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        }
+      },
+      "title": "ManufacturerInfo"
+    },
     "OtaFirmwareCreateReq": {
       "type": "object",
       "properties": {
@@ -8353,6 +8570,10 @@
           },
           "description": "指定租户"
         },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64"
+        },
         "dynamicMode": {
           "type": "integer",
           "format": "int64",
@@ -8380,10 +8601,7 @@
           "description": "灰度的范围,小数点后两位, 1.23%为 123"
         }
       },
-      "title": "OtaFirmwareJobInfo",
-      "required": [
-        "tenantCodes"
-      ]
+      "title": "OtaFirmwareJobInfo"
     },
     "OtaFirmwareJobInfoIndexResp": {
       "type": "object",
@@ -8525,6 +8743,10 @@
         },
         "productID": {
           "type": "string"
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "OtaModuleInfo"
@@ -8725,7 +8947,7 @@
         "identifiers"
       ]
     },
-    "ProductCategorySchemaMultiUpdateReq": {
+    "ProductCategorySchemaMultiSaveReq": {
       "type": "object",
       "properties": {
         "productCategoryID": {
@@ -8739,7 +8961,7 @@
           }
         }
       },
-      "title": "ProductCategorySchemaMultiUpdateReq",
+      "title": "ProductCategorySchemaMultiSaveReq",
       "required": [
         "productCategoryID",
         "identifiers"
@@ -9204,6 +9426,21 @@
         },
         "name": {
           "type": "string"
+        },
+        "isCanSceneLinkage": {
+          "type": "integer",
+          "format": "int64",
+          "description": "是否可以场景联动"
+        },
+        "funcGroup": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 功能分类: 1:普通功能 2:系统功能"
+        },
+        "userPerm": {
+          "type": "integer",
+          "format": "int64",
+          "description": "用户权限操作: 1:r(只读) 3:rw(可读可写)"
         }
       },
       "title": "ProductSchemaIndexReq",
@@ -9280,10 +9517,15 @@
           "format": "int64",
           "description": "是否可以场景联动"
         },
-        "isShareAuthPerm": {
+        "funcGroup": {
           "type": "integer",
           "format": "int64",
-          "description": " 分享是否需要校验权限"
+          "description": " 功能分类: 1:普通功能 2:系统功能"
+        },
+        "userPerm": {
+          "type": "integer",
+          "format": "int64",
+          "description": "用户权限操作: 1:r(只读) 3:rw(可读可写)"
         },
         "isHistory": {
           "type": "integer",
@@ -9596,6 +9838,20 @@
           "type": "boolean",
           "format": "boolean",
           "description": " 用户头像"
+        },
+        "productID": {
+          "type": "string"
+        },
+        "deviceName": {
+          "type": "string"
+        },
+        "deviceAlias": {
+          "type": "string",
+          "description": "只读"
+        },
+        "deviceMode": {
+          "type": "string",
+          "description": "设备模式 single:单设备 multi:多设备"
         }
       },
       "title": "SceneInfo"
@@ -9653,6 +9909,20 @@
           "type": "boolean",
           "format": "boolean",
           "description": " 用户头像"
+        },
+        "productID": {
+          "type": "string"
+        },
+        "deviceName": {
+          "type": "string"
+        },
+        "deviceAlias": {
+          "type": "string",
+          "description": "只读"
+        },
+        "deviceMode": {
+          "type": "string",
+          "description": "设备模式 single:单设备 multi:多设备"
         }
       },
       "title": "SceneInfoCreateReq"
@@ -9689,6 +9959,18 @@
           "type": "integer",
           "format": "int64",
           "description": "告警id"
+        },
+        "deviceMode": {
+          "type": "string",
+          "description": "设备模式"
+        },
+        "productID": {
+          "type": "string",
+          "description": "产品id"
+        },
+        "deviceName": {
+          "type": "string",
+          "description": "设备名"
         }
       },
       "title": "SceneInfoIndexReq"
@@ -9774,6 +10056,20 @@
           "type": "boolean",
           "format": "boolean",
           "description": " 用户头像"
+        },
+        "productID": {
+          "type": "string"
+        },
+        "deviceName": {
+          "type": "string"
+        },
+        "deviceAlias": {
+          "type": "string",
+          "description": "只读"
+        },
+        "deviceMode": {
+          "type": "string",
+          "description": "设备模式 single:单设备 multi:多设备"
         }
       },
       "title": "SceneInfoUpdateReq"
@@ -9949,6 +10245,18 @@
       },
       "title": "SendOption"
     },
+    "SharePerm": {
+      "type": "object",
+      "properties": {
+        "perm": {
+          "type": "integer",
+          "format": "int64",
+          "default": "3",
+          "description": "1:r(只读) 3(默认):rw(可读可写)"
+        }
+      },
+      "title": "SharePerm"
+    },
     "SlotAreaSaveReq": {
       "type": "object",
       "properties": {
@@ -10048,6 +10356,50 @@
         "devices"
       ]
     },
+    "UserCore": {
+      "type": "object",
+      "properties": {
+        "userID": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 用户id"
+        },
+        "userName": {
+          "type": "string",
+          "description": " 用户名(唯一)"
+        },
+        "email": {
+          "type": "string",
+          "description": " 邮箱"
+        },
+        "phone": {
+          "type": "string",
+          "description": " 手机号"
+        },
+        "lastIP": {
+          "type": "string",
+          "description": " 最后登录ip"
+        },
+        "regIP": {
+          "type": "string",
+          "description": " 注册ip"
+        },
+        "nickName": {
+          "type": "string",
+          "description": " 用户的昵称"
+        },
+        "headImg": {
+          "type": "string",
+          "description": " 用户头像"
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 创建时间"
+        }
+      },
+      "title": "UserCore"
+    },
     "UserDeviceShareIndexReq": {
       "type": "object",
       "properties": {
@@ -10092,24 +10444,31 @@
           "$ref": "#/definitions/DeviceCore",
           "description": "设备信息"
         },
-        "shareduserID": {
+        "sharedUserID": {
           "type": "integer",
           "format": "int64",
           "description": "分享的对象"
         },
+        "sharedUserAccount": {
+          "type": "string"
+        },
         "schemaPerm": {
           "type": "array",
           "items": {
-            "type": "string"
+            "$ref": "#/definitions/SharePerm"
           },
-          "description": "物模型权限,只需要填写需要授权并授权的物模型id"
+          "description": "普通功能权限 1:r(只读) 3:rw(可读可写)"
         },
         "accessPerm": {
           "type": "array",
           "items": {
-            "type": "string"
+            "$ref": "#/definitions/SharePerm"
           },
-          "description": "操作权限 hubLog:设备消息记录,ota:ota升级权限,deviceTiming:设备定时"
+          "description": "系统功能权限 1:r(只读) 3:rw(可读可写)"
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "UserDeviceShareInfo"
@@ -10129,10 +10488,7 @@
           "format": "int64"
         }
       },
-      "title": "UserDeviceShareMultiDeleteReq",
-      "required": [
-        "projectID"
-      ]
+      "title": "UserDeviceShareMultiDeleteReq"
     },
     "UserDeviceShareReadReq": {
       "type": "object",

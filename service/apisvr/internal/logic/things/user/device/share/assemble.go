@@ -1,6 +1,7 @@
 package share
 
 import (
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/types"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 )
@@ -17,8 +18,8 @@ func ToSharePb(in *types.UserDeviceShareInfo) *dm.UserDeviceShareInfo {
 		},
 		SharedUserID: in.SharedUserID,
 		ProjectID:    in.ProjectID,
-		NormalPerm:   in.NormalPerm,
-		SystemPerm:   in.SystemPerm,
+		AccessPerm:   utils.CopySlice[dm.SharePerm](in.AccessPerm),
+		SchemaPerm:   utils.CopySlice[dm.SharePerm](in.SchemaPerm),
 	}
 }
 
@@ -36,8 +37,8 @@ func ToShareTypes(in *dm.UserDeviceShareInfo) *types.UserDeviceShareInfo {
 		SharedUserAccount: in.SharedUserAccount,
 		SharedUserID:      in.SharedUserID,
 		ProjectID:         in.ProjectID,
-		NormalPerm:        in.NormalPerm,
-		SystemPerm:        in.SystemPerm,
+		AccessPerm:        utils.CopySlice[types.SharePerm](in.AccessPerm),
+		SchemaPerm:        utils.CopySlice[types.SharePerm](in.SchemaPerm),
 	}
 }
 func ToSharesTypes(in []*dm.UserDeviceShareInfo) (ret []*types.UserDeviceShareInfo) {
