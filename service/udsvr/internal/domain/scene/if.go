@@ -58,9 +58,9 @@ func (i *If) Validate(t SceneType, repo ValidateRepo) error {
 	case SceneTypeManual:
 		return nil
 	case SceneTypeAuto:
-		if len(i.Triggers) == 0 {
-			return errors.Parameter.AddMsg("自动触发类型需要填写至少一项设备触发或者定时触发")
-		}
+		//if len(i.Triggers) == 0 {
+		//	return errors.Parameter.AddMsg("自动触发类型需要填写至少一项设备触发或者定时触发")
+		//}
 		err := i.Triggers.Validate(repo)
 		if err != nil {
 			return err
