@@ -69,6 +69,12 @@ func (l *UserDeviceShareCreateLogic) UserDeviceShareCreate(in *dm.UserDeviceShar
 		AccessPerm:        utils.CopyMap[relationDB.SharePerm](in.AccessPerm),
 		SchemaPerm:        utils.CopyMap[relationDB.SharePerm](in.SchemaPerm),
 	}
+	if po.AccessPerm == nil {
+		po.AccessPerm = map[string]*relationDB.SharePerm{}
+	}
+	if po.SchemaPerm == nil {
+		po.SchemaPerm = map[string]*relationDB.SharePerm{}
+	}
 	err = relationDB.NewUserDeviceShareRepo(l.ctx).Insert(l.ctx, &po)
 	if err != nil {
 		return nil, err
