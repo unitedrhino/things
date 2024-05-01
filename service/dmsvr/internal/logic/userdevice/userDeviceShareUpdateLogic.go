@@ -48,6 +48,12 @@ func (l *UserDeviceShareUpdateLogic) UserDeviceShareUpdate(in *dm.UserDeviceShar
 	}
 	uds.AccessPerm = utils.CopyMap[relationDB.SharePerm](in.AccessPerm)
 	uds.SchemaPerm = utils.CopyMap[relationDB.SharePerm](in.SchemaPerm)
+	if uds.AccessPerm == nil {
+		uds.AccessPerm = map[string]*relationDB.SharePerm{}
+	}
+	if uds.SchemaPerm == nil {
+		uds.SchemaPerm = map[string]*relationDB.SharePerm{}
+	}
 	if err := relationDB.NewUserDeviceShareRepo(l.ctx).Update(l.ctx, uds); err != nil {
 		return nil, err
 	}
