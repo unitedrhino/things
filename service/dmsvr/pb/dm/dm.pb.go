@@ -902,14 +902,14 @@ type UserDeviceShareInfo struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id                int64        `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Device            *DeviceCore  `protobuf:"bytes,2,opt,name=device,proto3" json:"device,omitempty"`                       //设备信息
-	SharedUserID      int64        `protobuf:"varint,3,opt,name=sharedUserID,proto3" json:"sharedUserID,omitempty"`          //分享的对象
-	SharedUserAccount string       `protobuf:"bytes,7,opt,name=sharedUserAccount,proto3" json:"sharedUserAccount,omitempty"` //分享的账号(只读)
-	SchemaPerm        []*SharePerm `protobuf:"bytes,4,rep,name=schemaPerm,proto3" json:"schemaPerm,omitempty"`               //物模型权限,只需要填写需要授权并授权的物模型id
-	AccessPerm        []*SharePerm `protobuf:"bytes,5,rep,name=accessPerm,proto3" json:"accessPerm,omitempty"`               //操作权限 hubLog:设备消息记录,ota:ota升级权限,deviceTiming:设备定时
-	ProjectID         int64        `protobuf:"varint,6,opt,name=projectID,proto3" json:"projectID,omitempty"`                //设备归属的项目
-	CreatedTime       int64        `protobuf:"varint,8,opt,name=createdTime,proto3" json:"createdTime,omitempty"`
+	Id                int64                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Device            *DeviceCore           `protobuf:"bytes,2,opt,name=device,proto3" json:"device,omitempty"`                                                                                                 //设备信息
+	SharedUserID      int64                 `protobuf:"varint,3,opt,name=sharedUserID,proto3" json:"sharedUserID,omitempty"`                                                                                    //分享的对象
+	SharedUserAccount string                `protobuf:"bytes,7,opt,name=sharedUserAccount,proto3" json:"sharedUserAccount,omitempty"`                                                                           //分享的账号(只读)
+	SchemaPerm        map[string]*SharePerm `protobuf:"bytes,4,rep,name=schemaPerm,proto3" json:"schemaPerm,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` //物模型权限,只需要填写需要授权并授权的物模型id
+	AccessPerm        map[string]*SharePerm `protobuf:"bytes,5,rep,name=accessPerm,proto3" json:"accessPerm,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` //操作权限 hubLog:设备消息记录,ota:ota升级权限,deviceTiming:设备定时
+	ProjectID         int64                 `protobuf:"varint,6,opt,name=projectID,proto3" json:"projectID,omitempty"`                                                                                          //设备归属的项目
+	CreatedTime       int64                 `protobuf:"varint,8,opt,name=createdTime,proto3" json:"createdTime,omitempty"`
 }
 
 func (x *UserDeviceShareInfo) Reset() {
@@ -972,14 +972,14 @@ func (x *UserDeviceShareInfo) GetSharedUserAccount() string {
 	return ""
 }
 
-func (x *UserDeviceShareInfo) GetSchemaPerm() []*SharePerm {
+func (x *UserDeviceShareInfo) GetSchemaPerm() map[string]*SharePerm {
 	if x != nil {
 		return x.SchemaPerm
 	}
 	return nil
 }
 
-func (x *UserDeviceShareInfo) GetAccessPerm() []*SharePerm {
+func (x *UserDeviceShareInfo) GetAccessPerm() map[string]*SharePerm {
 	if x != nil {
 		return x.AccessPerm
 	}
@@ -12347,7 +12347,7 @@ var file_proto_dm_proto_rawDesc = []byte{
 	0x69, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x71, 0x12, 0x10, 0x0a, 0x03, 0x69, 0x64,
 	0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x03, 0x52, 0x03, 0x69, 0x64, 0x73, 0x12, 0x1c, 0x0a, 0x09,
 	0x70, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52,
-	0x09, 0x70, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x49, 0x44, 0x22, 0xbd, 0x02, 0x0a, 0x13, 0x55,
+	0x09, 0x70, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x49, 0x44, 0x22, 0x8d, 0x04, 0x0a, 0x13, 0x55,
 	0x73, 0x65, 0x72, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x53, 0x68, 0x61, 0x72, 0x65, 0x49, 0x6e,
 	0x66, 0x6f, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02,
 	0x69, 0x64, 0x12, 0x26, 0x0a, 0x06, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01,
@@ -12357,17 +12357,30 @@ var file_proto_dm_proto_rawDesc = []byte{
 	0x52, 0x0c, 0x73, 0x68, 0x61, 0x72, 0x65, 0x64, 0x55, 0x73, 0x65, 0x72, 0x49, 0x44, 0x12, 0x2c,
 	0x0a, 0x11, 0x73, 0x68, 0x61, 0x72, 0x65, 0x64, 0x55, 0x73, 0x65, 0x72, 0x41, 0x63, 0x63, 0x6f,
 	0x75, 0x6e, 0x74, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x11, 0x73, 0x68, 0x61, 0x72, 0x65,
-	0x64, 0x55, 0x73, 0x65, 0x72, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x2d, 0x0a, 0x0a,
+	0x64, 0x55, 0x73, 0x65, 0x72, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x47, 0x0a, 0x0a,
 	0x73, 0x63, 0x68, 0x65, 0x6d, 0x61, 0x50, 0x65, 0x72, 0x6d, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x27, 0x2e, 0x64, 0x6d, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65,
+	0x53, 0x68, 0x61, 0x72, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x2e, 0x53, 0x63, 0x68, 0x65, 0x6d, 0x61,
+	0x50, 0x65, 0x72, 0x6d, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x0a, 0x73, 0x63, 0x68, 0x65, 0x6d,
+	0x61, 0x50, 0x65, 0x72, 0x6d, 0x12, 0x47, 0x0a, 0x0a, 0x61, 0x63, 0x63, 0x65, 0x73, 0x73, 0x50,
+	0x65, 0x72, 0x6d, 0x18, 0x05, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x27, 0x2e, 0x64, 0x6d, 0x2e, 0x55,
+	0x73, 0x65, 0x72, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x53, 0x68, 0x61, 0x72, 0x65, 0x49, 0x6e,
+	0x66, 0x6f, 0x2e, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x50, 0x65, 0x72, 0x6d, 0x45, 0x6e, 0x74,
+	0x72, 0x79, 0x52, 0x0a, 0x61, 0x63, 0x63, 0x65, 0x73, 0x73, 0x50, 0x65, 0x72, 0x6d, 0x12, 0x1c,
+	0x0a, 0x09, 0x70, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x49, 0x44, 0x18, 0x06, 0x20, 0x01, 0x28,
+	0x03, 0x52, 0x09, 0x70, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x49, 0x44, 0x12, 0x20, 0x0a, 0x0b,
+	0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x54, 0x69, 0x6d, 0x65, 0x18, 0x08, 0x20, 0x01, 0x28,
+	0x03, 0x52, 0x0b, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x54, 0x69, 0x6d, 0x65, 0x1a, 0x4c,
+	0x0a, 0x0f, 0x53, 0x63, 0x68, 0x65, 0x6d, 0x61, 0x50, 0x65, 0x72, 0x6d, 0x45, 0x6e, 0x74, 0x72,
+	0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03,
+	0x6b, 0x65, 0x79, 0x12, 0x23, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x64, 0x6d, 0x2e, 0x53, 0x68, 0x61, 0x72, 0x65, 0x50, 0x65, 0x72,
+	0x6d, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x1a, 0x4c, 0x0a, 0x0f,
+	0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x50, 0x65, 0x72, 0x6d, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12,
+	0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65,
+	0x79, 0x12, 0x23, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b,
 	0x32, 0x0d, 0x2e, 0x64, 0x6d, 0x2e, 0x53, 0x68, 0x61, 0x72, 0x65, 0x50, 0x65, 0x72, 0x6d, 0x52,
-	0x0a, 0x73, 0x63, 0x68, 0x65, 0x6d, 0x61, 0x50, 0x65, 0x72, 0x6d, 0x12, 0x2d, 0x0a, 0x0a, 0x61,
-	0x63, 0x63, 0x65, 0x73, 0x73, 0x50, 0x65, 0x72, 0x6d, 0x18, 0x05, 0x20, 0x03, 0x28, 0x0b, 0x32,
-	0x0d, 0x2e, 0x64, 0x6d, 0x2e, 0x53, 0x68, 0x61, 0x72, 0x65, 0x50, 0x65, 0x72, 0x6d, 0x52, 0x0a,
-	0x61, 0x63, 0x63, 0x65, 0x73, 0x73, 0x50, 0x65, 0x72, 0x6d, 0x12, 0x1c, 0x0a, 0x09, 0x70, 0x72,
-	0x6f, 0x6a, 0x65, 0x63, 0x74, 0x49, 0x44, 0x18, 0x06, 0x20, 0x01, 0x28, 0x03, 0x52, 0x09, 0x70,
-	0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x49, 0x44, 0x12, 0x20, 0x0a, 0x0b, 0x63, 0x72, 0x65, 0x61,
-	0x74, 0x65, 0x64, 0x54, 0x69, 0x6d, 0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0b, 0x63,
-	0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x54, 0x69, 0x6d, 0x65, 0x22, 0x1f, 0x0a, 0x09, 0x53, 0x68,
+	0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x1f, 0x0a, 0x09, 0x53, 0x68,
 	0x61, 0x72, 0x65, 0x50, 0x65, 0x72, 0x6d, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x65, 0x72, 0x6d, 0x18,
 	0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x70, 0x65, 0x72, 0x6d, 0x22, 0x41, 0x0a, 0x15, 0x55,
 	0x73, 0x65, 0x72, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74,
@@ -14379,7 +14392,7 @@ func file_proto_dm_proto_rawDescGZIP() []byte {
 	return file_proto_dm_proto_rawDescData
 }
 
-var file_proto_dm_proto_msgTypes = make([]protoimpl.MessageInfo, 182)
+var file_proto_dm_proto_msgTypes = make([]protoimpl.MessageInfo, 184)
 var file_proto_dm_proto_goTypes = []interface{}{
 	(*Empty)(nil),                             // 0: dm.Empty
 	(*TimeRange)(nil),                         // 1: dm.TimeRange
@@ -14550,21 +14563,23 @@ var file_proto_dm_proto_goTypes = []interface{}{
 	(*OtaFirmwareDeviceCancelReq)(nil),        // 166: dm.OtaFirmwareDeviceCancelReq
 	(*OtaFirmwareDeviceRetryReq)(nil),         // 167: dm.OtaFirmwareDeviceRetryReq
 	(*PageInfo_OrderBy)(nil),                  // 168: dm.PageInfo.OrderBy
-	nil,                                       // 169: dm.ProtocolConfigInfo.ConfigEntry
-	nil,                                       // 170: dm.GroupInfo.TagsEntry
-	nil,                                       // 171: dm.GroupInfoIndexReq.TagsEntry
-	nil,                                       // 172: dm.GroupInfoUpdateReq.TagsEntry
-	nil,                                       // 173: dm.DeviceInfo.TagsEntry
-	nil,                                       // 174: dm.DeviceInfo.SchemaAliasEntry
-	nil,                                       // 175: dm.DeviceInfo.ProtocolConfEntry
-	nil,                                       // 176: dm.ProductInfo.TagsEntry
-	nil,                                       // 177: dm.ProductInfo.ProtocolConfEntry
-	nil,                                       // 178: dm.ProductInfoIndexReq.TagsEntry
-	nil,                                       // 179: dm.ProductInfoIndexReq.ProtocolConfEntry
-	nil,                                       // 180: dm.DeviceInfoIndexReq.TagsEntry
-	nil,                                       // 181: dm.DeviceCountInfo.CountEntry
-	(*wrapperspb.StringValue)(nil),            // 182: google.protobuf.StringValue
-	(*wrapperspb.Int64Value)(nil),             // 183: google.protobuf.Int64Value
+	nil,                                       // 169: dm.UserDeviceShareInfo.SchemaPermEntry
+	nil,                                       // 170: dm.UserDeviceShareInfo.AccessPermEntry
+	nil,                                       // 171: dm.ProtocolConfigInfo.ConfigEntry
+	nil,                                       // 172: dm.GroupInfo.TagsEntry
+	nil,                                       // 173: dm.GroupInfoIndexReq.TagsEntry
+	nil,                                       // 174: dm.GroupInfoUpdateReq.TagsEntry
+	nil,                                       // 175: dm.DeviceInfo.TagsEntry
+	nil,                                       // 176: dm.DeviceInfo.SchemaAliasEntry
+	nil,                                       // 177: dm.DeviceInfo.ProtocolConfEntry
+	nil,                                       // 178: dm.ProductInfo.TagsEntry
+	nil,                                       // 179: dm.ProductInfo.ProtocolConfEntry
+	nil,                                       // 180: dm.ProductInfoIndexReq.TagsEntry
+	nil,                                       // 181: dm.ProductInfoIndexReq.ProtocolConfEntry
+	nil,                                       // 182: dm.DeviceInfoIndexReq.TagsEntry
+	nil,                                       // 183: dm.DeviceCountInfo.CountEntry
+	(*wrapperspb.StringValue)(nil),            // 184: google.protobuf.StringValue
+	(*wrapperspb.Int64Value)(nil),             // 185: google.protobuf.Int64Value
 }
 var file_proto_dm_proto_depIdxs = []int32{
 	168, // 0: dm.PageInfo.orders:type_name -> dm.PageInfo.OrderBy
@@ -14576,10 +14591,10 @@ var file_proto_dm_proto_depIdxs = []int32{
 	103, // 6: dm.UserDeviceShareIndexReq.device:type_name -> dm.DeviceCore
 	15,  // 7: dm.UserDeviceShareIndexResp.list:type_name -> dm.UserDeviceShareInfo
 	103, // 8: dm.UserDeviceShareInfo.device:type_name -> dm.DeviceCore
-	16,  // 9: dm.UserDeviceShareInfo.schemaPerm:type_name -> dm.SharePerm
-	16,  // 10: dm.UserDeviceShareInfo.accessPerm:type_name -> dm.SharePerm
+	169, // 9: dm.UserDeviceShareInfo.schemaPerm:type_name -> dm.UserDeviceShareInfo.SchemaPermEntry
+	170, // 10: dm.UserDeviceShareInfo.accessPerm:type_name -> dm.UserDeviceShareInfo.AccessPermEntry
 	103, // 11: dm.UserDeviceCollectSave.devices:type_name -> dm.DeviceCore
-	182, // 12: dm.ProductCategory.desc:type_name -> google.protobuf.StringValue
+	184, // 12: dm.ProductCategory.desc:type_name -> google.protobuf.StringValue
 	18,  // 13: dm.ProductCategory.children:type_name -> dm.ProductCategory
 	2,   // 14: dm.ProductCategoryIndexReq.page:type_name -> dm.PageInfo
 	18,  // 15: dm.ProductCategoryIndexResp.list:type_name -> dm.ProductCategory
@@ -14587,7 +14602,7 @@ var file_proto_dm_proto_depIdxs = []int32{
 	27,  // 17: dm.ProtocolInfoIndexResp.list:type_name -> dm.ProtocolInfo
 	28,  // 18: dm.ProtocolInfo.configFields:type_name -> dm.ProtocolConfigField
 	29,  // 19: dm.ProtocolInfo.configInfos:type_name -> dm.ProtocolConfigInfo
-	169, // 20: dm.ProtocolConfigInfo.config:type_name -> dm.ProtocolConfigInfo.ConfigEntry
+	171, // 20: dm.ProtocolConfigInfo.config:type_name -> dm.ProtocolConfigInfo.ConfigEntry
 	31,  // 21: dm.ShadowIndexResp.list:type_name -> dm.ShadowIndex
 	2,   // 22: dm.PropertyLogIndexReq.page:type_name -> dm.PageInfo
 	36,  // 23: dm.PropertyLogIndexResp.list:type_name -> dm.PropertyLogInfo
@@ -14610,8 +14625,8 @@ var file_proto_dm_proto_depIdxs = []int32{
 	2,   // 40: dm.RemoteConfigIndexReq.page:type_name -> dm.PageInfo
 	69,  // 41: dm.RemoteConfigIndexResp.list:type_name -> dm.ProductRemoteConfig
 	69,  // 42: dm.RemoteConfigLastReadResp.info:type_name -> dm.ProductRemoteConfig
-	182, // 43: dm.ProductCustom.transformScript:type_name -> google.protobuf.StringValue
-	182, // 44: dm.ProductCustom.loginAuthScript:type_name -> google.protobuf.StringValue
+	184, // 43: dm.ProductCustom.transformScript:type_name -> google.protobuf.StringValue
+	184, // 44: dm.ProductCustom.loginAuthScript:type_name -> google.protobuf.StringValue
 	78,  // 45: dm.ProductCustom.customTopics:type_name -> dm.CustomTopic
 	80,  // 46: dm.DeviceGatewayBindDevice.sign:type_name -> dm.DeviceGatewaySign
 	103, // 47: dm.DeviceGatewayMultiCreateReq.gateway:type_name -> dm.DeviceCore
@@ -14622,39 +14637,39 @@ var file_proto_dm_proto_depIdxs = []int32{
 	103, // 52: dm.DeviceGatewayIndexResp.list:type_name -> dm.DeviceCore
 	103, // 53: dm.DeviceGatewayMultiDeleteReq.gateway:type_name -> dm.DeviceCore
 	103, // 54: dm.DeviceGatewayMultiDeleteReq.list:type_name -> dm.DeviceCore
-	170, // 55: dm.GroupInfo.tags:type_name -> dm.GroupInfo.TagsEntry
+	172, // 55: dm.GroupInfo.tags:type_name -> dm.GroupInfo.TagsEntry
 	2,   // 56: dm.GroupInfoIndexReq.page:type_name -> dm.PageInfo
-	171, // 57: dm.GroupInfoIndexReq.tags:type_name -> dm.GroupInfoIndexReq.TagsEntry
+	173, // 57: dm.GroupInfoIndexReq.tags:type_name -> dm.GroupInfoIndexReq.TagsEntry
 	85,  // 58: dm.GroupInfoIndexResp.list:type_name -> dm.GroupInfo
-	172, // 59: dm.GroupInfoUpdateReq.tags:type_name -> dm.GroupInfoUpdateReq.TagsEntry
+	174, // 59: dm.GroupInfoUpdateReq.tags:type_name -> dm.GroupInfoUpdateReq.TagsEntry
 	103, // 60: dm.GroupDeviceMultiSaveReq.list:type_name -> dm.DeviceCore
 	2,   // 61: dm.GroupDeviceIndexReq.page:type_name -> dm.PageInfo
 	96,  // 62: dm.GroupDeviceIndexResp.list:type_name -> dm.DeviceInfo
 	103, // 63: dm.GroupDeviceMultiDeleteReq.list:type_name -> dm.DeviceCore
-	182, // 64: dm.DeviceInfo.version:type_name -> google.protobuf.StringValue
+	184, // 64: dm.DeviceInfo.version:type_name -> google.protobuf.StringValue
 	94,  // 65: dm.DeviceInfo.Position:type_name -> dm.Point
-	182, // 66: dm.DeviceInfo.address:type_name -> google.protobuf.StringValue
-	173, // 67: dm.DeviceInfo.tags:type_name -> dm.DeviceInfo.TagsEntry
-	182, // 68: dm.DeviceInfo.deviceAlias:type_name -> google.protobuf.StringValue
-	182, // 69: dm.DeviceInfo.phone:type_name -> google.protobuf.StringValue
-	182, // 70: dm.DeviceInfo.iccid:type_name -> google.protobuf.StringValue
-	174, // 71: dm.DeviceInfo.schemaAlias:type_name -> dm.DeviceInfo.SchemaAliasEntry
-	183, // 72: dm.DeviceInfo.rssi:type_name -> google.protobuf.Int64Value
-	175, // 73: dm.DeviceInfo.protocolConf:type_name -> dm.DeviceInfo.ProtocolConfEntry
+	184, // 66: dm.DeviceInfo.address:type_name -> google.protobuf.StringValue
+	175, // 67: dm.DeviceInfo.tags:type_name -> dm.DeviceInfo.TagsEntry
+	184, // 68: dm.DeviceInfo.deviceAlias:type_name -> google.protobuf.StringValue
+	184, // 69: dm.DeviceInfo.phone:type_name -> google.protobuf.StringValue
+	184, // 70: dm.DeviceInfo.iccid:type_name -> google.protobuf.StringValue
+	176, // 71: dm.DeviceInfo.schemaAlias:type_name -> dm.DeviceInfo.SchemaAliasEntry
+	185, // 72: dm.DeviceInfo.rssi:type_name -> google.protobuf.Int64Value
+	177, // 73: dm.DeviceInfo.protocolConf:type_name -> dm.DeviceInfo.ProtocolConfEntry
 	95,  // 74: dm.DeviceInfo.manufacturer:type_name -> dm.ManufacturerInfo
-	182, // 75: dm.ProductInfo.desc:type_name -> google.protobuf.StringValue
-	182, // 76: dm.ProductInfo.devStatus:type_name -> google.protobuf.StringValue
-	176, // 77: dm.ProductInfo.tags:type_name -> dm.ProductInfo.TagsEntry
+	184, // 75: dm.ProductInfo.desc:type_name -> google.protobuf.StringValue
+	184, // 76: dm.ProductInfo.devStatus:type_name -> google.protobuf.StringValue
+	178, // 77: dm.ProductInfo.tags:type_name -> dm.ProductInfo.TagsEntry
 	27,  // 78: dm.ProductInfo.protocol:type_name -> dm.ProtocolInfo
 	18,  // 79: dm.ProductInfo.category:type_name -> dm.ProductCategory
-	177, // 80: dm.ProductInfo.protocolConf:type_name -> dm.ProductInfo.ProtocolConfEntry
+	179, // 80: dm.ProductInfo.protocolConf:type_name -> dm.ProductInfo.ProtocolConfEntry
 	2,   // 81: dm.ProductInfoIndexReq.page:type_name -> dm.PageInfo
-	178, // 82: dm.ProductInfoIndexReq.tags:type_name -> dm.ProductInfoIndexReq.TagsEntry
-	179, // 83: dm.ProductInfoIndexReq.protocolConf:type_name -> dm.ProductInfoIndexReq.ProtocolConfEntry
+	180, // 82: dm.ProductInfoIndexReq.tags:type_name -> dm.ProductInfoIndexReq.TagsEntry
+	181, // 83: dm.ProductInfoIndexReq.protocolConf:type_name -> dm.ProductInfoIndexReq.ProtocolConfEntry
 	97,  // 84: dm.ProductInfoIndexResp.list:type_name -> dm.ProductInfo
 	103, // 85: dm.DeviceInfoMultiUpdateReq.devices:type_name -> dm.DeviceCore
 	2,   // 86: dm.DeviceInfoIndexReq.page:type_name -> dm.PageInfo
-	180, // 87: dm.DeviceInfoIndexReq.tags:type_name -> dm.DeviceInfoIndexReq.TagsEntry
+	182, // 87: dm.DeviceInfoIndexReq.tags:type_name -> dm.DeviceInfoIndexReq.TagsEntry
 	94,  // 88: dm.DeviceInfoIndexReq.Position:type_name -> dm.Point
 	103, // 89: dm.DeviceInfoIndexReq.devices:type_name -> dm.DeviceCore
 	96,  // 90: dm.DeviceInfoIndexResp.list:type_name -> dm.DeviceInfo
@@ -14662,43 +14677,43 @@ var file_proto_dm_proto_depIdxs = []int32{
 	113, // 92: dm.CommonSchemaCreateReq.info:type_name -> dm.CommonSchemaInfo
 	2,   // 93: dm.CommonSchemaIndexReq.page:type_name -> dm.PageInfo
 	113, // 94: dm.CommonSchemaIndexResp.list:type_name -> dm.CommonSchemaInfo
-	182, // 95: dm.CommonSchemaInfo.name:type_name -> google.protobuf.StringValue
-	182, // 96: dm.CommonSchemaInfo.desc:type_name -> google.protobuf.StringValue
-	182, // 97: dm.CommonSchemaInfo.affordance:type_name -> google.protobuf.StringValue
+	184, // 95: dm.CommonSchemaInfo.name:type_name -> google.protobuf.StringValue
+	184, // 96: dm.CommonSchemaInfo.desc:type_name -> google.protobuf.StringValue
+	184, // 97: dm.CommonSchemaInfo.affordance:type_name -> google.protobuf.StringValue
 	18,  // 98: dm.CommonSchemaInfo.productCategories:type_name -> dm.ProductCategory
 	120, // 99: dm.ProductSchemaUpdateReq.info:type_name -> dm.ProductSchemaInfo
 	120, // 100: dm.ProductSchemaMultiCreateReq.list:type_name -> dm.ProductSchemaInfo
 	120, // 101: dm.ProductSchemaCreateReq.info:type_name -> dm.ProductSchemaInfo
 	2,   // 102: dm.ProductSchemaIndexReq.page:type_name -> dm.PageInfo
 	120, // 103: dm.ProductSchemaIndexResp.list:type_name -> dm.ProductSchemaInfo
-	182, // 104: dm.ProductSchemaInfo.name:type_name -> google.protobuf.StringValue
-	182, // 105: dm.ProductSchemaInfo.desc:type_name -> google.protobuf.StringValue
-	182, // 106: dm.ProductSchemaInfo.affordance:type_name -> google.protobuf.StringValue
+	184, // 104: dm.ProductSchemaInfo.name:type_name -> google.protobuf.StringValue
+	184, // 105: dm.ProductSchemaInfo.desc:type_name -> google.protobuf.StringValue
+	184, // 106: dm.ProductSchemaInfo.affordance:type_name -> google.protobuf.StringValue
 	103, // 107: dm.DeviceProfile.device:type_name -> dm.DeviceCore
 	103, // 108: dm.DeviceProfileReadReq.device:type_name -> dm.DeviceCore
 	103, // 109: dm.DeviceInfoBindReq.device:type_name -> dm.DeviceCore
 	103, // 110: dm.DeviceProfileIndexReq.device:type_name -> dm.DeviceCore
 	124, // 111: dm.DeviceProfileIndexResp.profiles:type_name -> dm.DeviceProfile
 	131, // 112: dm.DeviceCountResp.list:type_name -> dm.DeviceCountInfo
-	181, // 113: dm.DeviceCountInfo.count:type_name -> dm.DeviceCountInfo.CountEntry
+	183, // 113: dm.DeviceCountInfo.count:type_name -> dm.DeviceCountInfo.CountEntry
 	1,   // 114: dm.DeviceInfoCountReq.timeRange:type_name -> dm.TimeRange
 	1,   // 115: dm.DeviceTypeCountReq.timeRange:type_name -> dm.TimeRange
-	182, // 116: dm.Firmware.desc:type_name -> google.protobuf.StringValue
-	182, // 117: dm.Firmware.extData:type_name -> google.protobuf.StringValue
+	184, // 116: dm.Firmware.desc:type_name -> google.protobuf.StringValue
+	184, // 117: dm.Firmware.extData:type_name -> google.protobuf.StringValue
 	139, // 118: dm.Firmware.files:type_name -> dm.OtaFirmwareFile
-	182, // 119: dm.FirmwareInfo.desc:type_name -> google.protobuf.StringValue
-	182, // 120: dm.FirmwareInfo.extData:type_name -> google.protobuf.StringValue
+	184, // 119: dm.FirmwareInfo.desc:type_name -> google.protobuf.StringValue
+	184, // 120: dm.FirmwareInfo.extData:type_name -> google.protobuf.StringValue
 	139, // 121: dm.FirmwareInfo.files:type_name -> dm.OtaFirmwareFile
 	2,   // 122: dm.FirmwareInfoIndexReq.page:type_name -> dm.PageInfo
 	138, // 123: dm.FirmwareInfoIndexResp.list:type_name -> dm.FirmwareInfo
 	2,   // 124: dm.OtaFirmwareFileIndexReq.page:type_name -> dm.PageInfo
-	183, // 125: dm.OtaFirmwareFileIndexReq.size:type_name -> google.protobuf.Int64Value
+	185, // 125: dm.OtaFirmwareFileIndexReq.size:type_name -> google.protobuf.Int64Value
 	146, // 126: dm.OtaFirmwareFileIndexResp.list:type_name -> dm.OtaFirmwareFileInfo
-	182, // 127: dm.FirmwareInfoReadResp.desc:type_name -> google.protobuf.StringValue
-	182, // 128: dm.FirmwareInfoReadResp.extData:type_name -> google.protobuf.StringValue
+	184, // 127: dm.FirmwareInfoReadResp.desc:type_name -> google.protobuf.StringValue
+	184, // 128: dm.FirmwareInfoReadResp.extData:type_name -> google.protobuf.StringValue
 	147, // 129: dm.FirmwareInfoReadResp.files:type_name -> dm.OtaFirmwareFileResp
-	182, // 130: dm.OtaFirmwareInfoCreateReq.extra:type_name -> google.protobuf.StringValue
-	182, // 131: dm.OtaFirmwareInfoUpdateReq.extra:type_name -> google.protobuf.StringValue
+	184, // 130: dm.OtaFirmwareInfoCreateReq.extra:type_name -> google.protobuf.StringValue
+	184, // 131: dm.OtaFirmwareInfoUpdateReq.extra:type_name -> google.protobuf.StringValue
 	2,   // 132: dm.OtaFirmwareInfoIndexReq.page:type_name -> dm.PageInfo
 	156, // 133: dm.OtaFirmwareInfoIndexResp.list:type_name -> dm.OtaFirmwareInfo
 	151, // 134: dm.OtaFirmwareInfo.fileList:type_name -> dm.FirmwareFile
@@ -14709,233 +14724,235 @@ var file_proto_dm_proto_depIdxs = []int32{
 	2,   // 139: dm.OtaJobByDeviceIndexReq.pageInfo:type_name -> dm.PageInfo
 	2,   // 140: dm.OtaFirmwareDeviceIndexReq.pageInfo:type_name -> dm.PageInfo
 	164, // 141: dm.OtaFirmwareDeviceIndexResp.list:type_name -> dm.OtaFirmwareDeviceInfo
-	108, // 142: dm.DeviceManage.rootCheck:input_type -> dm.RootCheckReq
-	96,  // 143: dm.DeviceManage.deviceInfoCreate:input_type -> dm.DeviceInfo
-	96,  // 144: dm.DeviceManage.deviceInfoUpdate:input_type -> dm.DeviceInfo
-	102, // 145: dm.DeviceManage.deviceInfoDelete:input_type -> dm.DeviceInfoDeleteReq
-	106, // 146: dm.DeviceManage.deviceInfoIndex:input_type -> dm.DeviceInfoIndexReq
-	105, // 147: dm.DeviceManage.DeviceInfoMultiUpdate:input_type -> dm.DeviceInfoMultiUpdateReq
-	104, // 148: dm.DeviceManage.deviceInfoRead:input_type -> dm.DeviceInfoReadReq
-	126, // 149: dm.DeviceManage.deviceInfoBind:input_type -> dm.DeviceInfoBindReq
-	103, // 150: dm.DeviceManage.deviceInfoUnbind:input_type -> dm.DeviceCore
-	10,  // 151: dm.DeviceManage.deviceTransfer:input_type -> dm.deviceTransferReq
-	81,  // 152: dm.DeviceManage.deviceGatewayMultiCreate:input_type -> dm.DeviceGatewayMultiCreateReq
-	82,  // 153: dm.DeviceManage.deviceGatewayIndex:input_type -> dm.DeviceGatewayIndexReq
-	84,  // 154: dm.DeviceManage.deviceGatewayMultiDelete:input_type -> dm.DeviceGatewayMultiDeleteReq
-	132, // 155: dm.DeviceManage.deviceInfoCount:input_type -> dm.DeviceInfoCountReq
-	133, // 156: dm.DeviceManage.deviceTypeCount:input_type -> dm.DeviceTypeCountReq
-	129, // 157: dm.DeviceManage.deviceCount:input_type -> dm.DeviceCountReq
-	125, // 158: dm.DeviceManage.deviceProfileRead:input_type -> dm.DeviceProfileReadReq
-	124, // 159: dm.DeviceManage.deviceProfileUpdate:input_type -> dm.DeviceProfile
-	127, // 160: dm.DeviceManage.deviceProfileIndex:input_type -> dm.DeviceProfileIndexReq
-	9,   // 161: dm.ProductManage.productInit:input_type -> dm.ProductInitReq
-	97,  // 162: dm.ProductManage.productInfoCreate:input_type -> dm.ProductInfo
-	97,  // 163: dm.ProductManage.productInfoUpdate:input_type -> dm.ProductInfo
-	98,  // 164: dm.ProductManage.productInfoDelete:input_type -> dm.ProductInfoDeleteReq
-	100, // 165: dm.ProductManage.productInfoIndex:input_type -> dm.ProductInfoIndexReq
-	99,  // 166: dm.ProductManage.productInfoRead:input_type -> dm.ProductInfoReadReq
-	114, // 167: dm.ProductManage.productSchemaUpdate:input_type -> dm.ProductSchemaUpdateReq
-	116, // 168: dm.ProductManage.productSchemaCreate:input_type -> dm.ProductSchemaCreateReq
-	115, // 169: dm.ProductManage.productSchemaMultiCreate:input_type -> dm.ProductSchemaMultiCreateReq
-	117, // 170: dm.ProductManage.productSchemaDelete:input_type -> dm.ProductSchemaDeleteReq
-	118, // 171: dm.ProductManage.productSchemaIndex:input_type -> dm.ProductSchemaIndexReq
-	121, // 172: dm.ProductManage.productSchemaTslImport:input_type -> dm.ProductSchemaTslImportReq
-	122, // 173: dm.ProductManage.productSchemaTslRead:input_type -> dm.ProductSchemaTslReadReq
-	76,  // 174: dm.ProductManage.productCustomRead:input_type -> dm.ProductCustomReadReq
-	77,  // 175: dm.ProductManage.productCustomUpdate:input_type -> dm.ProductCustom
-	18,  // 176: dm.ProductManage.productCategoryCreate:input_type -> dm.ProductCategory
-	18,  // 177: dm.ProductManage.productCategoryUpdate:input_type -> dm.ProductCategory
-	5,   // 178: dm.ProductManage.productCategoryDelete:input_type -> dm.WithID
-	23,  // 179: dm.ProductManage.productCategoryIndex:input_type -> dm.ProductCategoryIndexReq
-	19,  // 180: dm.ProductManage.productCategoryRead:input_type -> dm.ProductCategoryReadReq
-	21,  // 181: dm.ProductManage.productCategorySchemaIndex:input_type -> dm.ProductCategorySchemaIndexReq
-	22,  // 182: dm.ProductManage.productCategorySchemaMultiUpdate:input_type -> dm.ProductCategorySchemaMultiSaveReq
-	22,  // 183: dm.ProductManage.productCategorySchemaMultiCreate:input_type -> dm.ProductCategorySchemaMultiSaveReq
-	22,  // 184: dm.ProductManage.productCategorySchemaMultiDelete:input_type -> dm.ProductCategorySchemaMultiSaveReq
-	109, // 185: dm.SchemaManage.commonSchemaUpdate:input_type -> dm.CommonSchemaUpdateReq
-	110, // 186: dm.SchemaManage.commonSchemaCreate:input_type -> dm.CommonSchemaCreateReq
-	5,   // 187: dm.SchemaManage.commonSchemaDelete:input_type -> dm.WithID
-	111, // 188: dm.SchemaManage.commonSchemaIndex:input_type -> dm.CommonSchemaIndexReq
-	25,  // 189: dm.ProtocolManage.protocolInfoIndex:input_type -> dm.ProtocolInfoIndexReq
-	4,   // 190: dm.ProtocolManage.protocolInfoRead:input_type -> dm.WithIDCode
-	27,  // 191: dm.ProtocolManage.protocolInfoCreate:input_type -> dm.ProtocolInfo
-	27,  // 192: dm.ProtocolManage.protocolInfoUpdate:input_type -> dm.ProtocolInfo
-	5,   // 193: dm.ProtocolManage.protocolInfoDelete:input_type -> dm.WithID
-	85,  // 194: dm.DeviceGroup.groupInfoCreate:input_type -> dm.GroupInfo
-	87,  // 195: dm.DeviceGroup.groupInfoIndex:input_type -> dm.GroupInfoIndexReq
-	5,   // 196: dm.DeviceGroup.groupInfoRead:input_type -> dm.WithID
-	85,  // 197: dm.DeviceGroup.groupInfoUpdate:input_type -> dm.GroupInfo
-	5,   // 198: dm.DeviceGroup.groupInfoDelete:input_type -> dm.WithID
-	90,  // 199: dm.DeviceGroup.groupDeviceMultiCreate:input_type -> dm.GroupDeviceMultiSaveReq
-	90,  // 200: dm.DeviceGroup.groupDeviceMultiUpdate:input_type -> dm.GroupDeviceMultiSaveReq
-	91,  // 201: dm.DeviceGroup.groupDeviceIndex:input_type -> dm.GroupDeviceIndexReq
-	93,  // 202: dm.DeviceGroup.groupDeviceMultiDelete:input_type -> dm.GroupDeviceMultiDeleteReq
-	70,  // 203: dm.RemoteConfig.RemoteConfigCreate:input_type -> dm.RemoteConfigCreateReq
-	71,  // 204: dm.RemoteConfig.RemoteConfigIndex:input_type -> dm.RemoteConfigIndexReq
-	73,  // 205: dm.RemoteConfig.RemoteConfigPushAll:input_type -> dm.RemoteConfigPushAllReq
-	74,  // 206: dm.RemoteConfig.RemoteConfigLastRead:input_type -> dm.RemoteConfigLastReadReq
-	50,  // 207: dm.DeviceMsg.sdkLogIndex:input_type -> dm.SdkLogIndexReq
-	41,  // 208: dm.DeviceMsg.hubLogIndex:input_type -> dm.HubLogIndexReq
-	47,  // 209: dm.DeviceMsg.sendLogIndex:input_type -> dm.SendLogIndexReq
-	44,  // 210: dm.DeviceMsg.statusLogIndex:input_type -> dm.StatusLogIndexReq
-	35,  // 211: dm.DeviceMsg.propertyLogLatestIndex:input_type -> dm.PropertyLogLatestIndexReq
-	34,  // 212: dm.DeviceMsg.propertyLogIndex:input_type -> dm.PropertyLogIndexReq
-	38,  // 213: dm.DeviceMsg.eventLogIndex:input_type -> dm.EventLogIndexReq
-	35,  // 214: dm.DeviceMsg.shadowIndex:input_type -> dm.PropertyLogLatestIndexReq
-	67,  // 215: dm.DeviceMsg.otaPromptIndex:input_type -> dm.OtaPromptIndexReq
-	53,  // 216: dm.DeviceInteract.actionSend:input_type -> dm.ActionSendReq
-	55,  // 217: dm.DeviceInteract.actionRead:input_type -> dm.RespReadReq
-	57,  // 218: dm.DeviceInteract.actionResp:input_type -> dm.ActionRespReq
-	32,  // 219: dm.DeviceInteract.propertyGetReportSend:input_type -> dm.PropertyGetReportSendReq
-	56,  // 220: dm.DeviceInteract.propertyControlSend:input_type -> dm.PropertyControlSendReq
-	64,  // 221: dm.DeviceInteract.propertyControlMultiSend:input_type -> dm.PropertyControlMultiSendReq
-	55,  // 222: dm.DeviceInteract.propertyControlRead:input_type -> dm.RespReadReq
-	59,  // 223: dm.DeviceInteract.gatewayGetFoundSend:input_type -> dm.GatewayGetFoundReq
-	61,  // 224: dm.DeviceInteract.gatewayNotifyBindSend:input_type -> dm.GatewayNotifyBindSendReq
-	62,  // 225: dm.DeviceInteract.sendMsg:input_type -> dm.SendMsgReq
-	152, // 226: dm.OtaManage.otaFirmwareInfoCreate:input_type -> dm.OtaFirmwareInfoCreateReq
-	153, // 227: dm.OtaManage.otaFirmwareInfoUpdate:input_type -> dm.OtaFirmwareInfoUpdateReq
-	5,   // 228: dm.OtaManage.otaFirmwareInfoDelete:input_type -> dm.WithID
-	154, // 229: dm.OtaManage.otaFirmwareInfoIndex:input_type -> dm.OtaFirmwareInfoIndexReq
-	5,   // 230: dm.OtaManage.otaFirmwareInfoRead:input_type -> dm.WithID
-	157, // 231: dm.OtaManage.otaFirmwareJobCreate:input_type -> dm.OtaFirmwareJobInfo
-	160, // 232: dm.OtaManage.otaFirmwareJobIndex:input_type -> dm.OtaFirmwareJobIndexReq
-	5,   // 233: dm.OtaManage.otaFirmwareJobRead:input_type -> dm.WithID
-	157, // 234: dm.OtaManage.otaFirmwareJobUpdate:input_type -> dm.OtaFirmwareJobInfo
-	163, // 235: dm.OtaManage.otaFirmwareDeviceIndex:input_type -> dm.OtaFirmwareDeviceIndexReq
-	166, // 236: dm.OtaManage.otaFirmwareDeviceCancel:input_type -> dm.OtaFirmwareDeviceCancelReq
-	167, // 237: dm.OtaManage.otaFirmwareDeviceRetry:input_type -> dm.OtaFirmwareDeviceRetryReq
-	8,   // 238: dm.OtaManage.otaModuleInfoCreate:input_type -> dm.OtaModuleInfo
-	8,   // 239: dm.OtaManage.otaModuleInfoUpdate:input_type -> dm.OtaModuleInfo
-	5,   // 240: dm.OtaManage.otaModuleInfoDelete:input_type -> dm.WithID
-	6,   // 241: dm.OtaManage.otaModuleInfoIndex:input_type -> dm.OtaModuleInfoIndexReq
-	4,   // 242: dm.OtaManage.otaModuleInfoRead:input_type -> dm.WithIDCode
-	17,  // 243: dm.userDevice.userDeviceCollectMultiCreate:input_type -> dm.UserDeviceCollectSave
-	17,  // 244: dm.userDevice.userDeviceCollectMultiDelete:input_type -> dm.UserDeviceCollectSave
-	0,   // 245: dm.userDevice.userDeviceCollectIndex:input_type -> dm.Empty
-	15,  // 246: dm.userDevice.userDeviceShareCreate:input_type -> dm.UserDeviceShareInfo
-	15,  // 247: dm.userDevice.userDeviceShareUpdate:input_type -> dm.UserDeviceShareInfo
-	5,   // 248: dm.userDevice.userDeviceShareDelete:input_type -> dm.WithID
-	14,  // 249: dm.userDevice.userDeviceShareMultiDelete:input_type -> dm.UserDeviceShareMultiDeleteReq
-	12,  // 250: dm.userDevice.userDeviceShareIndex:input_type -> dm.UserDeviceShareIndexReq
-	11,  // 251: dm.userDevice.userDeviceShareRead:input_type -> dm.UserDeviceShareReadReq
-	10,  // 252: dm.userDevice.userDeviceTransfer:input_type -> dm.deviceTransferReq
-	0,   // 253: dm.DeviceManage.rootCheck:output_type -> dm.Empty
-	0,   // 254: dm.DeviceManage.deviceInfoCreate:output_type -> dm.Empty
-	0,   // 255: dm.DeviceManage.deviceInfoUpdate:output_type -> dm.Empty
-	0,   // 256: dm.DeviceManage.deviceInfoDelete:output_type -> dm.Empty
-	107, // 257: dm.DeviceManage.deviceInfoIndex:output_type -> dm.DeviceInfoIndexResp
-	0,   // 258: dm.DeviceManage.DeviceInfoMultiUpdate:output_type -> dm.Empty
-	96,  // 259: dm.DeviceManage.deviceInfoRead:output_type -> dm.DeviceInfo
-	0,   // 260: dm.DeviceManage.deviceInfoBind:output_type -> dm.Empty
-	0,   // 261: dm.DeviceManage.deviceInfoUnbind:output_type -> dm.Empty
-	0,   // 262: dm.DeviceManage.deviceTransfer:output_type -> dm.Empty
-	0,   // 263: dm.DeviceManage.deviceGatewayMultiCreate:output_type -> dm.Empty
-	83,  // 264: dm.DeviceManage.deviceGatewayIndex:output_type -> dm.DeviceGatewayIndexResp
-	0,   // 265: dm.DeviceManage.deviceGatewayMultiDelete:output_type -> dm.Empty
-	134, // 266: dm.DeviceManage.deviceInfoCount:output_type -> dm.DeviceInfoCount
-	135, // 267: dm.DeviceManage.deviceTypeCount:output_type -> dm.DeviceTypeCountResp
-	130, // 268: dm.DeviceManage.deviceCount:output_type -> dm.DeviceCountResp
-	124, // 269: dm.DeviceManage.deviceProfileRead:output_type -> dm.DeviceProfile
-	0,   // 270: dm.DeviceManage.deviceProfileUpdate:output_type -> dm.Empty
-	128, // 271: dm.DeviceManage.deviceProfileIndex:output_type -> dm.DeviceProfileIndexResp
-	0,   // 272: dm.ProductManage.productInit:output_type -> dm.Empty
-	0,   // 273: dm.ProductManage.productInfoCreate:output_type -> dm.Empty
-	0,   // 274: dm.ProductManage.productInfoUpdate:output_type -> dm.Empty
-	0,   // 275: dm.ProductManage.productInfoDelete:output_type -> dm.Empty
-	101, // 276: dm.ProductManage.productInfoIndex:output_type -> dm.ProductInfoIndexResp
-	97,  // 277: dm.ProductManage.productInfoRead:output_type -> dm.ProductInfo
-	0,   // 278: dm.ProductManage.productSchemaUpdate:output_type -> dm.Empty
-	0,   // 279: dm.ProductManage.productSchemaCreate:output_type -> dm.Empty
-	0,   // 280: dm.ProductManage.productSchemaMultiCreate:output_type -> dm.Empty
-	0,   // 281: dm.ProductManage.productSchemaDelete:output_type -> dm.Empty
-	119, // 282: dm.ProductManage.productSchemaIndex:output_type -> dm.ProductSchemaIndexResp
-	0,   // 283: dm.ProductManage.productSchemaTslImport:output_type -> dm.Empty
-	123, // 284: dm.ProductManage.productSchemaTslRead:output_type -> dm.ProductSchemaTslReadResp
-	77,  // 285: dm.ProductManage.productCustomRead:output_type -> dm.ProductCustom
-	0,   // 286: dm.ProductManage.productCustomUpdate:output_type -> dm.Empty
-	5,   // 287: dm.ProductManage.productCategoryCreate:output_type -> dm.WithID
-	0,   // 288: dm.ProductManage.productCategoryUpdate:output_type -> dm.Empty
-	0,   // 289: dm.ProductManage.productCategoryDelete:output_type -> dm.Empty
-	24,  // 290: dm.ProductManage.productCategoryIndex:output_type -> dm.ProductCategoryIndexResp
-	18,  // 291: dm.ProductManage.productCategoryRead:output_type -> dm.ProductCategory
-	20,  // 292: dm.ProductManage.productCategorySchemaIndex:output_type -> dm.ProductCategorySchemaIndexResp
-	0,   // 293: dm.ProductManage.productCategorySchemaMultiUpdate:output_type -> dm.Empty
-	0,   // 294: dm.ProductManage.productCategorySchemaMultiCreate:output_type -> dm.Empty
-	0,   // 295: dm.ProductManage.productCategorySchemaMultiDelete:output_type -> dm.Empty
-	0,   // 296: dm.SchemaManage.commonSchemaUpdate:output_type -> dm.Empty
-	0,   // 297: dm.SchemaManage.commonSchemaCreate:output_type -> dm.Empty
-	0,   // 298: dm.SchemaManage.commonSchemaDelete:output_type -> dm.Empty
-	112, // 299: dm.SchemaManage.commonSchemaIndex:output_type -> dm.CommonSchemaIndexResp
-	26,  // 300: dm.ProtocolManage.protocolInfoIndex:output_type -> dm.ProtocolInfoIndexResp
-	27,  // 301: dm.ProtocolManage.protocolInfoRead:output_type -> dm.ProtocolInfo
-	5,   // 302: dm.ProtocolManage.protocolInfoCreate:output_type -> dm.WithID
-	0,   // 303: dm.ProtocolManage.protocolInfoUpdate:output_type -> dm.Empty
-	0,   // 304: dm.ProtocolManage.protocolInfoDelete:output_type -> dm.Empty
-	5,   // 305: dm.DeviceGroup.groupInfoCreate:output_type -> dm.WithID
-	88,  // 306: dm.DeviceGroup.groupInfoIndex:output_type -> dm.GroupInfoIndexResp
-	85,  // 307: dm.DeviceGroup.groupInfoRead:output_type -> dm.GroupInfo
-	0,   // 308: dm.DeviceGroup.groupInfoUpdate:output_type -> dm.Empty
-	0,   // 309: dm.DeviceGroup.groupInfoDelete:output_type -> dm.Empty
-	0,   // 310: dm.DeviceGroup.groupDeviceMultiCreate:output_type -> dm.Empty
-	0,   // 311: dm.DeviceGroup.groupDeviceMultiUpdate:output_type -> dm.Empty
-	92,  // 312: dm.DeviceGroup.groupDeviceIndex:output_type -> dm.GroupDeviceIndexResp
-	0,   // 313: dm.DeviceGroup.groupDeviceMultiDelete:output_type -> dm.Empty
-	0,   // 314: dm.RemoteConfig.RemoteConfigCreate:output_type -> dm.Empty
-	72,  // 315: dm.RemoteConfig.RemoteConfigIndex:output_type -> dm.RemoteConfigIndexResp
-	0,   // 316: dm.RemoteConfig.RemoteConfigPushAll:output_type -> dm.Empty
-	75,  // 317: dm.RemoteConfig.RemoteConfigLastRead:output_type -> dm.RemoteConfigLastReadResp
-	51,  // 318: dm.DeviceMsg.sdkLogIndex:output_type -> dm.SdkLogIndexResp
-	42,  // 319: dm.DeviceMsg.hubLogIndex:output_type -> dm.HubLogIndexResp
-	48,  // 320: dm.DeviceMsg.sendLogIndex:output_type -> dm.SendLogIndexResp
-	45,  // 321: dm.DeviceMsg.statusLogIndex:output_type -> dm.StatusLogIndexResp
-	37,  // 322: dm.DeviceMsg.propertyLogLatestIndex:output_type -> dm.PropertyLogIndexResp
-	37,  // 323: dm.DeviceMsg.propertyLogIndex:output_type -> dm.PropertyLogIndexResp
-	40,  // 324: dm.DeviceMsg.eventLogIndex:output_type -> dm.EventLogIndexResp
-	30,  // 325: dm.DeviceMsg.shadowIndex:output_type -> dm.ShadowIndexResp
-	68,  // 326: dm.DeviceMsg.otaPromptIndex:output_type -> dm.OtaPromptIndexResp
-	54,  // 327: dm.DeviceInteract.actionSend:output_type -> dm.ActionSendResp
-	54,  // 328: dm.DeviceInteract.actionRead:output_type -> dm.ActionSendResp
-	0,   // 329: dm.DeviceInteract.actionResp:output_type -> dm.Empty
-	33,  // 330: dm.DeviceInteract.propertyGetReportSend:output_type -> dm.PropertyGetReportSendResp
-	58,  // 331: dm.DeviceInteract.propertyControlSend:output_type -> dm.PropertyControlSendResp
-	66,  // 332: dm.DeviceInteract.propertyControlMultiSend:output_type -> dm.PropertyControlMultiSendResp
-	58,  // 333: dm.DeviceInteract.propertyControlRead:output_type -> dm.PropertyControlSendResp
-	60,  // 334: dm.DeviceInteract.gatewayGetFoundSend:output_type -> dm.GatewayGetFoundResp
-	0,   // 335: dm.DeviceInteract.gatewayNotifyBindSend:output_type -> dm.Empty
-	63,  // 336: dm.DeviceInteract.sendMsg:output_type -> dm.SendMsgResp
-	5,   // 337: dm.OtaManage.otaFirmwareInfoCreate:output_type -> dm.WithID
-	5,   // 338: dm.OtaManage.otaFirmwareInfoUpdate:output_type -> dm.WithID
-	0,   // 339: dm.OtaManage.otaFirmwareInfoDelete:output_type -> dm.Empty
-	155, // 340: dm.OtaManage.otaFirmwareInfoIndex:output_type -> dm.OtaFirmwareInfoIndexResp
-	156, // 341: dm.OtaManage.otaFirmwareInfoRead:output_type -> dm.OtaFirmwareInfo
-	5,   // 342: dm.OtaManage.otaFirmwareJobCreate:output_type -> dm.WithID
-	161, // 343: dm.OtaManage.otaFirmwareJobIndex:output_type -> dm.OtaFirmwareJobIndexResp
-	157, // 344: dm.OtaManage.otaFirmwareJobRead:output_type -> dm.OtaFirmwareJobInfo
-	0,   // 345: dm.OtaManage.otaFirmwareJobUpdate:output_type -> dm.Empty
-	165, // 346: dm.OtaManage.otaFirmwareDeviceIndex:output_type -> dm.OtaFirmwareDeviceIndexResp
-	0,   // 347: dm.OtaManage.otaFirmwareDeviceCancel:output_type -> dm.Empty
-	0,   // 348: dm.OtaManage.otaFirmwareDeviceRetry:output_type -> dm.Empty
-	5,   // 349: dm.OtaManage.otaModuleInfoCreate:output_type -> dm.WithID
-	0,   // 350: dm.OtaManage.otaModuleInfoUpdate:output_type -> dm.Empty
-	0,   // 351: dm.OtaManage.otaModuleInfoDelete:output_type -> dm.Empty
-	7,   // 352: dm.OtaManage.otaModuleInfoIndex:output_type -> dm.OtaModuleInfoIndexResp
-	8,   // 353: dm.OtaManage.otaModuleInfoRead:output_type -> dm.OtaModuleInfo
-	0,   // 354: dm.userDevice.userDeviceCollectMultiCreate:output_type -> dm.Empty
-	0,   // 355: dm.userDevice.userDeviceCollectMultiDelete:output_type -> dm.Empty
-	17,  // 356: dm.userDevice.userDeviceCollectIndex:output_type -> dm.UserDeviceCollectSave
-	5,   // 357: dm.userDevice.userDeviceShareCreate:output_type -> dm.WithID
-	0,   // 358: dm.userDevice.userDeviceShareUpdate:output_type -> dm.Empty
-	0,   // 359: dm.userDevice.userDeviceShareDelete:output_type -> dm.Empty
-	0,   // 360: dm.userDevice.userDeviceShareMultiDelete:output_type -> dm.Empty
-	13,  // 361: dm.userDevice.userDeviceShareIndex:output_type -> dm.UserDeviceShareIndexResp
-	15,  // 362: dm.userDevice.userDeviceShareRead:output_type -> dm.UserDeviceShareInfo
-	0,   // 363: dm.userDevice.userDeviceTransfer:output_type -> dm.Empty
-	253, // [253:364] is the sub-list for method output_type
-	142, // [142:253] is the sub-list for method input_type
-	142, // [142:142] is the sub-list for extension type_name
-	142, // [142:142] is the sub-list for extension extendee
-	0,   // [0:142] is the sub-list for field type_name
+	16,  // 142: dm.UserDeviceShareInfo.SchemaPermEntry.value:type_name -> dm.SharePerm
+	16,  // 143: dm.UserDeviceShareInfo.AccessPermEntry.value:type_name -> dm.SharePerm
+	108, // 144: dm.DeviceManage.rootCheck:input_type -> dm.RootCheckReq
+	96,  // 145: dm.DeviceManage.deviceInfoCreate:input_type -> dm.DeviceInfo
+	96,  // 146: dm.DeviceManage.deviceInfoUpdate:input_type -> dm.DeviceInfo
+	102, // 147: dm.DeviceManage.deviceInfoDelete:input_type -> dm.DeviceInfoDeleteReq
+	106, // 148: dm.DeviceManage.deviceInfoIndex:input_type -> dm.DeviceInfoIndexReq
+	105, // 149: dm.DeviceManage.DeviceInfoMultiUpdate:input_type -> dm.DeviceInfoMultiUpdateReq
+	104, // 150: dm.DeviceManage.deviceInfoRead:input_type -> dm.DeviceInfoReadReq
+	126, // 151: dm.DeviceManage.deviceInfoBind:input_type -> dm.DeviceInfoBindReq
+	103, // 152: dm.DeviceManage.deviceInfoUnbind:input_type -> dm.DeviceCore
+	10,  // 153: dm.DeviceManage.deviceTransfer:input_type -> dm.deviceTransferReq
+	81,  // 154: dm.DeviceManage.deviceGatewayMultiCreate:input_type -> dm.DeviceGatewayMultiCreateReq
+	82,  // 155: dm.DeviceManage.deviceGatewayIndex:input_type -> dm.DeviceGatewayIndexReq
+	84,  // 156: dm.DeviceManage.deviceGatewayMultiDelete:input_type -> dm.DeviceGatewayMultiDeleteReq
+	132, // 157: dm.DeviceManage.deviceInfoCount:input_type -> dm.DeviceInfoCountReq
+	133, // 158: dm.DeviceManage.deviceTypeCount:input_type -> dm.DeviceTypeCountReq
+	129, // 159: dm.DeviceManage.deviceCount:input_type -> dm.DeviceCountReq
+	125, // 160: dm.DeviceManage.deviceProfileRead:input_type -> dm.DeviceProfileReadReq
+	124, // 161: dm.DeviceManage.deviceProfileUpdate:input_type -> dm.DeviceProfile
+	127, // 162: dm.DeviceManage.deviceProfileIndex:input_type -> dm.DeviceProfileIndexReq
+	9,   // 163: dm.ProductManage.productInit:input_type -> dm.ProductInitReq
+	97,  // 164: dm.ProductManage.productInfoCreate:input_type -> dm.ProductInfo
+	97,  // 165: dm.ProductManage.productInfoUpdate:input_type -> dm.ProductInfo
+	98,  // 166: dm.ProductManage.productInfoDelete:input_type -> dm.ProductInfoDeleteReq
+	100, // 167: dm.ProductManage.productInfoIndex:input_type -> dm.ProductInfoIndexReq
+	99,  // 168: dm.ProductManage.productInfoRead:input_type -> dm.ProductInfoReadReq
+	114, // 169: dm.ProductManage.productSchemaUpdate:input_type -> dm.ProductSchemaUpdateReq
+	116, // 170: dm.ProductManage.productSchemaCreate:input_type -> dm.ProductSchemaCreateReq
+	115, // 171: dm.ProductManage.productSchemaMultiCreate:input_type -> dm.ProductSchemaMultiCreateReq
+	117, // 172: dm.ProductManage.productSchemaDelete:input_type -> dm.ProductSchemaDeleteReq
+	118, // 173: dm.ProductManage.productSchemaIndex:input_type -> dm.ProductSchemaIndexReq
+	121, // 174: dm.ProductManage.productSchemaTslImport:input_type -> dm.ProductSchemaTslImportReq
+	122, // 175: dm.ProductManage.productSchemaTslRead:input_type -> dm.ProductSchemaTslReadReq
+	76,  // 176: dm.ProductManage.productCustomRead:input_type -> dm.ProductCustomReadReq
+	77,  // 177: dm.ProductManage.productCustomUpdate:input_type -> dm.ProductCustom
+	18,  // 178: dm.ProductManage.productCategoryCreate:input_type -> dm.ProductCategory
+	18,  // 179: dm.ProductManage.productCategoryUpdate:input_type -> dm.ProductCategory
+	5,   // 180: dm.ProductManage.productCategoryDelete:input_type -> dm.WithID
+	23,  // 181: dm.ProductManage.productCategoryIndex:input_type -> dm.ProductCategoryIndexReq
+	19,  // 182: dm.ProductManage.productCategoryRead:input_type -> dm.ProductCategoryReadReq
+	21,  // 183: dm.ProductManage.productCategorySchemaIndex:input_type -> dm.ProductCategorySchemaIndexReq
+	22,  // 184: dm.ProductManage.productCategorySchemaMultiUpdate:input_type -> dm.ProductCategorySchemaMultiSaveReq
+	22,  // 185: dm.ProductManage.productCategorySchemaMultiCreate:input_type -> dm.ProductCategorySchemaMultiSaveReq
+	22,  // 186: dm.ProductManage.productCategorySchemaMultiDelete:input_type -> dm.ProductCategorySchemaMultiSaveReq
+	109, // 187: dm.SchemaManage.commonSchemaUpdate:input_type -> dm.CommonSchemaUpdateReq
+	110, // 188: dm.SchemaManage.commonSchemaCreate:input_type -> dm.CommonSchemaCreateReq
+	5,   // 189: dm.SchemaManage.commonSchemaDelete:input_type -> dm.WithID
+	111, // 190: dm.SchemaManage.commonSchemaIndex:input_type -> dm.CommonSchemaIndexReq
+	25,  // 191: dm.ProtocolManage.protocolInfoIndex:input_type -> dm.ProtocolInfoIndexReq
+	4,   // 192: dm.ProtocolManage.protocolInfoRead:input_type -> dm.WithIDCode
+	27,  // 193: dm.ProtocolManage.protocolInfoCreate:input_type -> dm.ProtocolInfo
+	27,  // 194: dm.ProtocolManage.protocolInfoUpdate:input_type -> dm.ProtocolInfo
+	5,   // 195: dm.ProtocolManage.protocolInfoDelete:input_type -> dm.WithID
+	85,  // 196: dm.DeviceGroup.groupInfoCreate:input_type -> dm.GroupInfo
+	87,  // 197: dm.DeviceGroup.groupInfoIndex:input_type -> dm.GroupInfoIndexReq
+	5,   // 198: dm.DeviceGroup.groupInfoRead:input_type -> dm.WithID
+	85,  // 199: dm.DeviceGroup.groupInfoUpdate:input_type -> dm.GroupInfo
+	5,   // 200: dm.DeviceGroup.groupInfoDelete:input_type -> dm.WithID
+	90,  // 201: dm.DeviceGroup.groupDeviceMultiCreate:input_type -> dm.GroupDeviceMultiSaveReq
+	90,  // 202: dm.DeviceGroup.groupDeviceMultiUpdate:input_type -> dm.GroupDeviceMultiSaveReq
+	91,  // 203: dm.DeviceGroup.groupDeviceIndex:input_type -> dm.GroupDeviceIndexReq
+	93,  // 204: dm.DeviceGroup.groupDeviceMultiDelete:input_type -> dm.GroupDeviceMultiDeleteReq
+	70,  // 205: dm.RemoteConfig.RemoteConfigCreate:input_type -> dm.RemoteConfigCreateReq
+	71,  // 206: dm.RemoteConfig.RemoteConfigIndex:input_type -> dm.RemoteConfigIndexReq
+	73,  // 207: dm.RemoteConfig.RemoteConfigPushAll:input_type -> dm.RemoteConfigPushAllReq
+	74,  // 208: dm.RemoteConfig.RemoteConfigLastRead:input_type -> dm.RemoteConfigLastReadReq
+	50,  // 209: dm.DeviceMsg.sdkLogIndex:input_type -> dm.SdkLogIndexReq
+	41,  // 210: dm.DeviceMsg.hubLogIndex:input_type -> dm.HubLogIndexReq
+	47,  // 211: dm.DeviceMsg.sendLogIndex:input_type -> dm.SendLogIndexReq
+	44,  // 212: dm.DeviceMsg.statusLogIndex:input_type -> dm.StatusLogIndexReq
+	35,  // 213: dm.DeviceMsg.propertyLogLatestIndex:input_type -> dm.PropertyLogLatestIndexReq
+	34,  // 214: dm.DeviceMsg.propertyLogIndex:input_type -> dm.PropertyLogIndexReq
+	38,  // 215: dm.DeviceMsg.eventLogIndex:input_type -> dm.EventLogIndexReq
+	35,  // 216: dm.DeviceMsg.shadowIndex:input_type -> dm.PropertyLogLatestIndexReq
+	67,  // 217: dm.DeviceMsg.otaPromptIndex:input_type -> dm.OtaPromptIndexReq
+	53,  // 218: dm.DeviceInteract.actionSend:input_type -> dm.ActionSendReq
+	55,  // 219: dm.DeviceInteract.actionRead:input_type -> dm.RespReadReq
+	57,  // 220: dm.DeviceInteract.actionResp:input_type -> dm.ActionRespReq
+	32,  // 221: dm.DeviceInteract.propertyGetReportSend:input_type -> dm.PropertyGetReportSendReq
+	56,  // 222: dm.DeviceInteract.propertyControlSend:input_type -> dm.PropertyControlSendReq
+	64,  // 223: dm.DeviceInteract.propertyControlMultiSend:input_type -> dm.PropertyControlMultiSendReq
+	55,  // 224: dm.DeviceInteract.propertyControlRead:input_type -> dm.RespReadReq
+	59,  // 225: dm.DeviceInteract.gatewayGetFoundSend:input_type -> dm.GatewayGetFoundReq
+	61,  // 226: dm.DeviceInteract.gatewayNotifyBindSend:input_type -> dm.GatewayNotifyBindSendReq
+	62,  // 227: dm.DeviceInteract.sendMsg:input_type -> dm.SendMsgReq
+	152, // 228: dm.OtaManage.otaFirmwareInfoCreate:input_type -> dm.OtaFirmwareInfoCreateReq
+	153, // 229: dm.OtaManage.otaFirmwareInfoUpdate:input_type -> dm.OtaFirmwareInfoUpdateReq
+	5,   // 230: dm.OtaManage.otaFirmwareInfoDelete:input_type -> dm.WithID
+	154, // 231: dm.OtaManage.otaFirmwareInfoIndex:input_type -> dm.OtaFirmwareInfoIndexReq
+	5,   // 232: dm.OtaManage.otaFirmwareInfoRead:input_type -> dm.WithID
+	157, // 233: dm.OtaManage.otaFirmwareJobCreate:input_type -> dm.OtaFirmwareJobInfo
+	160, // 234: dm.OtaManage.otaFirmwareJobIndex:input_type -> dm.OtaFirmwareJobIndexReq
+	5,   // 235: dm.OtaManage.otaFirmwareJobRead:input_type -> dm.WithID
+	157, // 236: dm.OtaManage.otaFirmwareJobUpdate:input_type -> dm.OtaFirmwareJobInfo
+	163, // 237: dm.OtaManage.otaFirmwareDeviceIndex:input_type -> dm.OtaFirmwareDeviceIndexReq
+	166, // 238: dm.OtaManage.otaFirmwareDeviceCancel:input_type -> dm.OtaFirmwareDeviceCancelReq
+	167, // 239: dm.OtaManage.otaFirmwareDeviceRetry:input_type -> dm.OtaFirmwareDeviceRetryReq
+	8,   // 240: dm.OtaManage.otaModuleInfoCreate:input_type -> dm.OtaModuleInfo
+	8,   // 241: dm.OtaManage.otaModuleInfoUpdate:input_type -> dm.OtaModuleInfo
+	5,   // 242: dm.OtaManage.otaModuleInfoDelete:input_type -> dm.WithID
+	6,   // 243: dm.OtaManage.otaModuleInfoIndex:input_type -> dm.OtaModuleInfoIndexReq
+	4,   // 244: dm.OtaManage.otaModuleInfoRead:input_type -> dm.WithIDCode
+	17,  // 245: dm.userDevice.userDeviceCollectMultiCreate:input_type -> dm.UserDeviceCollectSave
+	17,  // 246: dm.userDevice.userDeviceCollectMultiDelete:input_type -> dm.UserDeviceCollectSave
+	0,   // 247: dm.userDevice.userDeviceCollectIndex:input_type -> dm.Empty
+	15,  // 248: dm.userDevice.userDeviceShareCreate:input_type -> dm.UserDeviceShareInfo
+	15,  // 249: dm.userDevice.userDeviceShareUpdate:input_type -> dm.UserDeviceShareInfo
+	5,   // 250: dm.userDevice.userDeviceShareDelete:input_type -> dm.WithID
+	14,  // 251: dm.userDevice.userDeviceShareMultiDelete:input_type -> dm.UserDeviceShareMultiDeleteReq
+	12,  // 252: dm.userDevice.userDeviceShareIndex:input_type -> dm.UserDeviceShareIndexReq
+	11,  // 253: dm.userDevice.userDeviceShareRead:input_type -> dm.UserDeviceShareReadReq
+	10,  // 254: dm.userDevice.userDeviceTransfer:input_type -> dm.deviceTransferReq
+	0,   // 255: dm.DeviceManage.rootCheck:output_type -> dm.Empty
+	0,   // 256: dm.DeviceManage.deviceInfoCreate:output_type -> dm.Empty
+	0,   // 257: dm.DeviceManage.deviceInfoUpdate:output_type -> dm.Empty
+	0,   // 258: dm.DeviceManage.deviceInfoDelete:output_type -> dm.Empty
+	107, // 259: dm.DeviceManage.deviceInfoIndex:output_type -> dm.DeviceInfoIndexResp
+	0,   // 260: dm.DeviceManage.DeviceInfoMultiUpdate:output_type -> dm.Empty
+	96,  // 261: dm.DeviceManage.deviceInfoRead:output_type -> dm.DeviceInfo
+	0,   // 262: dm.DeviceManage.deviceInfoBind:output_type -> dm.Empty
+	0,   // 263: dm.DeviceManage.deviceInfoUnbind:output_type -> dm.Empty
+	0,   // 264: dm.DeviceManage.deviceTransfer:output_type -> dm.Empty
+	0,   // 265: dm.DeviceManage.deviceGatewayMultiCreate:output_type -> dm.Empty
+	83,  // 266: dm.DeviceManage.deviceGatewayIndex:output_type -> dm.DeviceGatewayIndexResp
+	0,   // 267: dm.DeviceManage.deviceGatewayMultiDelete:output_type -> dm.Empty
+	134, // 268: dm.DeviceManage.deviceInfoCount:output_type -> dm.DeviceInfoCount
+	135, // 269: dm.DeviceManage.deviceTypeCount:output_type -> dm.DeviceTypeCountResp
+	130, // 270: dm.DeviceManage.deviceCount:output_type -> dm.DeviceCountResp
+	124, // 271: dm.DeviceManage.deviceProfileRead:output_type -> dm.DeviceProfile
+	0,   // 272: dm.DeviceManage.deviceProfileUpdate:output_type -> dm.Empty
+	128, // 273: dm.DeviceManage.deviceProfileIndex:output_type -> dm.DeviceProfileIndexResp
+	0,   // 274: dm.ProductManage.productInit:output_type -> dm.Empty
+	0,   // 275: dm.ProductManage.productInfoCreate:output_type -> dm.Empty
+	0,   // 276: dm.ProductManage.productInfoUpdate:output_type -> dm.Empty
+	0,   // 277: dm.ProductManage.productInfoDelete:output_type -> dm.Empty
+	101, // 278: dm.ProductManage.productInfoIndex:output_type -> dm.ProductInfoIndexResp
+	97,  // 279: dm.ProductManage.productInfoRead:output_type -> dm.ProductInfo
+	0,   // 280: dm.ProductManage.productSchemaUpdate:output_type -> dm.Empty
+	0,   // 281: dm.ProductManage.productSchemaCreate:output_type -> dm.Empty
+	0,   // 282: dm.ProductManage.productSchemaMultiCreate:output_type -> dm.Empty
+	0,   // 283: dm.ProductManage.productSchemaDelete:output_type -> dm.Empty
+	119, // 284: dm.ProductManage.productSchemaIndex:output_type -> dm.ProductSchemaIndexResp
+	0,   // 285: dm.ProductManage.productSchemaTslImport:output_type -> dm.Empty
+	123, // 286: dm.ProductManage.productSchemaTslRead:output_type -> dm.ProductSchemaTslReadResp
+	77,  // 287: dm.ProductManage.productCustomRead:output_type -> dm.ProductCustom
+	0,   // 288: dm.ProductManage.productCustomUpdate:output_type -> dm.Empty
+	5,   // 289: dm.ProductManage.productCategoryCreate:output_type -> dm.WithID
+	0,   // 290: dm.ProductManage.productCategoryUpdate:output_type -> dm.Empty
+	0,   // 291: dm.ProductManage.productCategoryDelete:output_type -> dm.Empty
+	24,  // 292: dm.ProductManage.productCategoryIndex:output_type -> dm.ProductCategoryIndexResp
+	18,  // 293: dm.ProductManage.productCategoryRead:output_type -> dm.ProductCategory
+	20,  // 294: dm.ProductManage.productCategorySchemaIndex:output_type -> dm.ProductCategorySchemaIndexResp
+	0,   // 295: dm.ProductManage.productCategorySchemaMultiUpdate:output_type -> dm.Empty
+	0,   // 296: dm.ProductManage.productCategorySchemaMultiCreate:output_type -> dm.Empty
+	0,   // 297: dm.ProductManage.productCategorySchemaMultiDelete:output_type -> dm.Empty
+	0,   // 298: dm.SchemaManage.commonSchemaUpdate:output_type -> dm.Empty
+	0,   // 299: dm.SchemaManage.commonSchemaCreate:output_type -> dm.Empty
+	0,   // 300: dm.SchemaManage.commonSchemaDelete:output_type -> dm.Empty
+	112, // 301: dm.SchemaManage.commonSchemaIndex:output_type -> dm.CommonSchemaIndexResp
+	26,  // 302: dm.ProtocolManage.protocolInfoIndex:output_type -> dm.ProtocolInfoIndexResp
+	27,  // 303: dm.ProtocolManage.protocolInfoRead:output_type -> dm.ProtocolInfo
+	5,   // 304: dm.ProtocolManage.protocolInfoCreate:output_type -> dm.WithID
+	0,   // 305: dm.ProtocolManage.protocolInfoUpdate:output_type -> dm.Empty
+	0,   // 306: dm.ProtocolManage.protocolInfoDelete:output_type -> dm.Empty
+	5,   // 307: dm.DeviceGroup.groupInfoCreate:output_type -> dm.WithID
+	88,  // 308: dm.DeviceGroup.groupInfoIndex:output_type -> dm.GroupInfoIndexResp
+	85,  // 309: dm.DeviceGroup.groupInfoRead:output_type -> dm.GroupInfo
+	0,   // 310: dm.DeviceGroup.groupInfoUpdate:output_type -> dm.Empty
+	0,   // 311: dm.DeviceGroup.groupInfoDelete:output_type -> dm.Empty
+	0,   // 312: dm.DeviceGroup.groupDeviceMultiCreate:output_type -> dm.Empty
+	0,   // 313: dm.DeviceGroup.groupDeviceMultiUpdate:output_type -> dm.Empty
+	92,  // 314: dm.DeviceGroup.groupDeviceIndex:output_type -> dm.GroupDeviceIndexResp
+	0,   // 315: dm.DeviceGroup.groupDeviceMultiDelete:output_type -> dm.Empty
+	0,   // 316: dm.RemoteConfig.RemoteConfigCreate:output_type -> dm.Empty
+	72,  // 317: dm.RemoteConfig.RemoteConfigIndex:output_type -> dm.RemoteConfigIndexResp
+	0,   // 318: dm.RemoteConfig.RemoteConfigPushAll:output_type -> dm.Empty
+	75,  // 319: dm.RemoteConfig.RemoteConfigLastRead:output_type -> dm.RemoteConfigLastReadResp
+	51,  // 320: dm.DeviceMsg.sdkLogIndex:output_type -> dm.SdkLogIndexResp
+	42,  // 321: dm.DeviceMsg.hubLogIndex:output_type -> dm.HubLogIndexResp
+	48,  // 322: dm.DeviceMsg.sendLogIndex:output_type -> dm.SendLogIndexResp
+	45,  // 323: dm.DeviceMsg.statusLogIndex:output_type -> dm.StatusLogIndexResp
+	37,  // 324: dm.DeviceMsg.propertyLogLatestIndex:output_type -> dm.PropertyLogIndexResp
+	37,  // 325: dm.DeviceMsg.propertyLogIndex:output_type -> dm.PropertyLogIndexResp
+	40,  // 326: dm.DeviceMsg.eventLogIndex:output_type -> dm.EventLogIndexResp
+	30,  // 327: dm.DeviceMsg.shadowIndex:output_type -> dm.ShadowIndexResp
+	68,  // 328: dm.DeviceMsg.otaPromptIndex:output_type -> dm.OtaPromptIndexResp
+	54,  // 329: dm.DeviceInteract.actionSend:output_type -> dm.ActionSendResp
+	54,  // 330: dm.DeviceInteract.actionRead:output_type -> dm.ActionSendResp
+	0,   // 331: dm.DeviceInteract.actionResp:output_type -> dm.Empty
+	33,  // 332: dm.DeviceInteract.propertyGetReportSend:output_type -> dm.PropertyGetReportSendResp
+	58,  // 333: dm.DeviceInteract.propertyControlSend:output_type -> dm.PropertyControlSendResp
+	66,  // 334: dm.DeviceInteract.propertyControlMultiSend:output_type -> dm.PropertyControlMultiSendResp
+	58,  // 335: dm.DeviceInteract.propertyControlRead:output_type -> dm.PropertyControlSendResp
+	60,  // 336: dm.DeviceInteract.gatewayGetFoundSend:output_type -> dm.GatewayGetFoundResp
+	0,   // 337: dm.DeviceInteract.gatewayNotifyBindSend:output_type -> dm.Empty
+	63,  // 338: dm.DeviceInteract.sendMsg:output_type -> dm.SendMsgResp
+	5,   // 339: dm.OtaManage.otaFirmwareInfoCreate:output_type -> dm.WithID
+	5,   // 340: dm.OtaManage.otaFirmwareInfoUpdate:output_type -> dm.WithID
+	0,   // 341: dm.OtaManage.otaFirmwareInfoDelete:output_type -> dm.Empty
+	155, // 342: dm.OtaManage.otaFirmwareInfoIndex:output_type -> dm.OtaFirmwareInfoIndexResp
+	156, // 343: dm.OtaManage.otaFirmwareInfoRead:output_type -> dm.OtaFirmwareInfo
+	5,   // 344: dm.OtaManage.otaFirmwareJobCreate:output_type -> dm.WithID
+	161, // 345: dm.OtaManage.otaFirmwareJobIndex:output_type -> dm.OtaFirmwareJobIndexResp
+	157, // 346: dm.OtaManage.otaFirmwareJobRead:output_type -> dm.OtaFirmwareJobInfo
+	0,   // 347: dm.OtaManage.otaFirmwareJobUpdate:output_type -> dm.Empty
+	165, // 348: dm.OtaManage.otaFirmwareDeviceIndex:output_type -> dm.OtaFirmwareDeviceIndexResp
+	0,   // 349: dm.OtaManage.otaFirmwareDeviceCancel:output_type -> dm.Empty
+	0,   // 350: dm.OtaManage.otaFirmwareDeviceRetry:output_type -> dm.Empty
+	5,   // 351: dm.OtaManage.otaModuleInfoCreate:output_type -> dm.WithID
+	0,   // 352: dm.OtaManage.otaModuleInfoUpdate:output_type -> dm.Empty
+	0,   // 353: dm.OtaManage.otaModuleInfoDelete:output_type -> dm.Empty
+	7,   // 354: dm.OtaManage.otaModuleInfoIndex:output_type -> dm.OtaModuleInfoIndexResp
+	8,   // 355: dm.OtaManage.otaModuleInfoRead:output_type -> dm.OtaModuleInfo
+	0,   // 356: dm.userDevice.userDeviceCollectMultiCreate:output_type -> dm.Empty
+	0,   // 357: dm.userDevice.userDeviceCollectMultiDelete:output_type -> dm.Empty
+	17,  // 358: dm.userDevice.userDeviceCollectIndex:output_type -> dm.UserDeviceCollectSave
+	5,   // 359: dm.userDevice.userDeviceShareCreate:output_type -> dm.WithID
+	0,   // 360: dm.userDevice.userDeviceShareUpdate:output_type -> dm.Empty
+	0,   // 361: dm.userDevice.userDeviceShareDelete:output_type -> dm.Empty
+	0,   // 362: dm.userDevice.userDeviceShareMultiDelete:output_type -> dm.Empty
+	13,  // 363: dm.userDevice.userDeviceShareIndex:output_type -> dm.UserDeviceShareIndexResp
+	15,  // 364: dm.userDevice.userDeviceShareRead:output_type -> dm.UserDeviceShareInfo
+	0,   // 365: dm.userDevice.userDeviceTransfer:output_type -> dm.Empty
+	255, // [255:366] is the sub-list for method output_type
+	144, // [144:255] is the sub-list for method input_type
+	144, // [144:144] is the sub-list for extension type_name
+	144, // [144:144] is the sub-list for extension extendee
+	0,   // [0:144] is the sub-list for field type_name
 }
 
 func init() { file_proto_dm_proto_init() }
@@ -16979,7 +16996,7 @@ func file_proto_dm_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_proto_dm_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   182,
+			NumMessages:   184,
 			NumExtensions: 0,
 			NumServices:   10,
 		},

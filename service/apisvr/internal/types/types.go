@@ -1298,14 +1298,14 @@ type UserDeviceShareIndexResp struct {
 }
 
 type UserDeviceShareInfo struct {
-	ID                int64        `json:"id,optional"`
-	ProjectID         int64        `json:"projectID,optional"`
-	Device            DeviceCore   `json:"device,optional"`              //设备信息
-	SharedUserID      int64        `json:"sharedUserID,string,optional"` //分享的对象
-	SharedUserAccount string       `json:"sharedUserAccount,optional"`
-	SchemaPerm        []*SharePerm `json:"schemaPerm,optional"` //普通功能权限 1:r(只读) 3:rw(可读可写)
-	AccessPerm        []*SharePerm `json:"accessPerm,optional"` //系统功能权限 1:r(只读) 3:rw(可读可写)
-	CreatedTime       int64        `json:"createdTime,optional"`
+	ID                int64                 `json:"id,optional"`
+	ProjectID         int64                 `json:"projectID,optional"`
+	Device            DeviceCore            `json:"device,optional"`              //设备信息
+	SharedUserID      int64                 `json:"sharedUserID,string,optional"` //分享的对象
+	SharedUserAccount string                `json:"sharedUserAccount,optional"`
+	SchemaPerm        map[string]*SharePerm `json:"schemaPerm,optional"` //普通功能权限 1:r(只读) 3:rw(可读可写)
+	AccessPerm        map[string]*SharePerm `json:"accessPerm,optional"` //系统功能权限 1:r(只读) 3:rw(可读可写)
+	CreatedTime       int64                 `json:"createdTime,optional"`
 }
 
 type UserDeviceShareMultiDeleteReq struct {
