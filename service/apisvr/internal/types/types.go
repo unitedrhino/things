@@ -1168,6 +1168,7 @@ type SceneInfo struct {
 	DeviceName      string           `json:"deviceName,omitempty,optional"`
 	DeviceAlias     string           `json:"deviceAlias,omitempty,optional"` //只读
 	DeviceMode      string           `json:"deviceMode,optional"`            //设备模式 single:单设备 multi:多设备
+	Body            string           `json:"body,optional"`                  //自定义字段
 }
 
 type SceneInfoCreateReq struct {

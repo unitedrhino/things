@@ -69,7 +69,9 @@ func (c *TermProperty) Validate(repo ValidateRepo) error {
 	if p == nil {
 		return errors.Parameter.AddMsg("dataID不存在")
 	}
-	c.DataName = p.Name
+	if c.DataName == "" {
+		c.DataName = p.Name
+	}
 	return nil
 }
 func (c *TermProperty) IsHit(ctx context.Context, columnType TermColumnType, repo TermRepo) bool {

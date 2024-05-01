@@ -75,7 +75,9 @@ func (t *TriggerDevice) Validate(repo ValidateRepo) error {
 		if p == nil {
 			return errors.Parameter.AddMsg("dataID不存在")
 		}
-		t.DataName = p.Name
+		if t.DataName == "" {
+			t.DataName = p.Name
+		}
 		t.SchemaAffordance = schema.DoToAffordanceStr(p)
 		if err := t.TermType.Validate(t.Values); err != nil {
 			return err
@@ -92,7 +94,9 @@ func (t *TriggerDevice) Validate(repo ValidateRepo) error {
 		if p == nil {
 			return errors.Parameter.AddMsg("dataID不存在")
 		}
-		t.DataName = p.Name
+		if t.DataName == "" {
+			t.DataName = p.Name
+		}
 		t.SchemaAffordance = schema.DoToAffordanceStr(p)
 		if err := t.TermType.Validate(t.Values); err != nil {
 			return err

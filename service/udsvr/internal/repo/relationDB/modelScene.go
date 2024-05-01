@@ -21,7 +21,8 @@ type UdSceneInfo struct {
 	Desc        string            `gorm:"column:desc;type:varchar(200);NOT NULL"`               // 描述
 	Type        string            `gorm:"column:type;type:VARCHAR(25);NOT NULL"`                //auto manual
 	//LastRunTime    time.Time         `gorm:"column:last_run_time;index;default:CURRENT_TIMESTAMP;NOT NULL"`
-	Status      int64 `gorm:"column:status;type:BIGINT;default:1"` //状态
+	Status      int64  `gorm:"column:status;type:BIGINT;default:1"` //状态
+	Body        string `gorm:"column:body;type:VARCHAR(1024)"`      // 菜单自定义数据
 	UdSceneIf   `gorm:"embedded;embeddedPrefix:if_"`
 	UdSceneWhen `gorm:"embedded;embeddedPrefix:when_"`
 	UdSceneThen `gorm:"embedded;embeddedPrefix:then_"`

@@ -65,7 +65,9 @@ func (a *ActionDevice) Validate(repo ValidateRepo) error {
 	if p == nil {
 		return errors.Parameter.AddMsg("dataID不存在")
 	}
-	a.DataName = p.Name
+	if a.DataName == "" {
+		a.DataName = p.Name
+	}
 	a.SchemaAffordance = schema.DoToAffordanceStr(p)
 	if a.Value == "" {
 		return errors.Parameter.AddMsg("传的值不能为空:%v")
