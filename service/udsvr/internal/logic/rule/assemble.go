@@ -153,7 +153,8 @@ func ToSceneActionPo(s *scene.Info, in *scene.Action) *relationDB.UdSceneThenAct
 		return nil
 	}
 	po := &relationDB.UdSceneThenAction{
-		ID:      in.ID,
+		//ID:      in.ID,
+		Order:   in.Order,
 		SceneID: s.ID,
 		Type:    in.Type,
 		Delay:   in.Delay,
