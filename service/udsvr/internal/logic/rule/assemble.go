@@ -2,6 +2,7 @@ package rulelogic
 
 import (
 	"context"
+	"fmt"
 	"gitee.com/i-Things/share/oss/common"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/udsvr/internal/domain"
@@ -9,6 +10,7 @@ import (
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/udsvr/internal/svc"
 	"github.com/i-Things/things/service/udsvr/pb/ud"
+	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
@@ -88,7 +90,7 @@ func ToSceneTriggerTimerPo(si *scene.Info, in *scene.Timer) (ret relationDB.UdSc
 	}
 	return relationDB.UdSceneTriggerTimer{
 		ExecAt:     in.ExecAt,
-		ExecRepeat: in.ExecRepeat,
+		ExecRepeat: cast.ToInt64(in.ExecRepeat),
 	}
 }
 
@@ -241,7 +243,7 @@ func ToSceneTriggerDo(in *relationDB.UdSceneIfTrigger) *scene.Trigger {
 func ToSceneTriggerTimerDo(in relationDB.UdSceneTriggerTimer) (ret *scene.Timer) {
 	return &scene.Timer{
 		ExecAt:     in.ExecAt,
-		ExecRepeat: in.ExecRepeat,
+		ExecRepeat: fmt.Sprintf("%07d", in.ExecRepeat),
 	}
 }
 

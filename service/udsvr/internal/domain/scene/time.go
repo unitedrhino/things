@@ -6,6 +6,7 @@ import (
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/tools"
 	"gitee.com/i-Things/share/utils"
+	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
@@ -39,18 +40,18 @@ type TimeRange struct {
 }
 
 type DateRange struct {
-	Type      DateRangeType `json:"type"`                    //日期类型 workday: 工作日 weekend: 周末 holiday: 节假日  customRange:自定义日期范围  customWeek:自定义周末
-	StartDate string        `json:"startDate,omitempty"`     //开始日期 2006-01-02
-	EndDate   string        `json:"endDate,omitempty"`       //结束日期 2006-01-02
-	Repeat    int64         `json:"repeat,string,omitempty"` //重复 二进制周一到周日 11111111 这个参数只有定时触发才有
+	Type      DateRangeType `json:"type"`                //日期类型 workday: 工作日 weekend: 周末 holiday: 节假日  customRange:自定义日期范围  customWeek:自定义周末
+	StartDate string        `json:"startDate,omitempty"` //开始日期 2006-01-02
+	EndDate   string        `json:"endDate,omitempty"`   //结束日期 2006-01-02
+	Repeat    string        `json:"repeat,omitempty"`    //重复 二进制周一到周日 11111111 这个参数只有定时触发才有
 }
 
 type Timers []*Timer
 
 // Timer 定时器类型
 type Timer struct {
-	ExecAt     int64 `json:"execAt"`            //执行的时间点 从0点加起来的秒数 如 1点就是 1*60*60
-	ExecRepeat int64 `json:"execRepeat,string"` //二进制周一到周日 11111111
+	ExecAt     int64  `json:"execAt"`     //执行的时间点 从0点加起来的秒数 如 1点就是 1*60*60
+	ExecRepeat string `json:"execRepeat"` //二进制周一到周日 11111111
 }
 
 //type TimeUnit string
@@ -98,7 +99,8 @@ func (t *DateRange) Validate() error {
 			return errors.Parameter.AddMsg("日期范围结束时间的格式为:2006-01-02")
 		}
 	}
-	if t.Type == DateRangeTypeCustomWeek && t.Repeat == 0 || t.Repeat > 1111111 {
+	repeat := cast.ToInt64(t.Repeat)
+	if t.Type == DateRangeTypeCustomWeek && repeat == 0 || repeat > 1111111 {
 		return errors.Parameter.AddMsg("日期范围重复只能在0 7个二进制为高位")
 	}
 	return nil
@@ -111,7 +113,8 @@ func (t *Timer) Validate() error {
 	if t.ExecAt < 0 || t.ExecAt > 24*60*60 {
 		return errors.Parameter.AddMsg("时间执行时间范围只能在0到24小时之间")
 	}
-	if t.ExecRepeat > 1111111 {
+	repeat := cast.ToInt64(t.ExecRepeat)
+	if repeat > 1111111 {
 		return errors.Parameter.AddMsg("时间重复模式只能在0 7个二进制为高位")
 	}
 	return nil
