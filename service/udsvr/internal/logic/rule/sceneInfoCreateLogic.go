@@ -56,5 +56,11 @@ func (l *SceneInfoCreateLogic) SceneInfoCreate(in *ud.SceneInfo) (*ud.WithID, er
 			l.Error(err)
 		}
 	}
+	if len(do.If.Triggers) == 0 && do.Type == scene.SceneTypeAuto { //立即执行一次
+		_, err = NewSceneManuallyTriggerLogic(l.ctx, l.svcCtx).SceneManuallyTrigger(&ud.WithID{Id: po.ID})
+		if err != nil {
+			return nil, err
+		}
+	}
 	return &ud.WithID{Id: po.ID}, nil
 }

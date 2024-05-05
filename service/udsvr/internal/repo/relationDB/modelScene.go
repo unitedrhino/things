@@ -1,6 +1,7 @@
 package relationDB
 
 import (
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
 	"time"
@@ -19,10 +20,10 @@ type UdSceneInfo struct {
 	HeadImg     string            `gorm:"column:head_img;type:VARCHAR(256);NOT NULL"`           // 头像
 	Name        string            `gorm:"column:name;type:varchar(100);NOT NULL"`               // 名称
 	Desc        string            `gorm:"column:desc;type:varchar(200);NOT NULL"`               // 描述
-	Type        string            `gorm:"column:type;type:VARCHAR(25);NOT NULL"`                //auto manual
+	Type        scene.SceneType   `gorm:"column:type;type:VARCHAR(25);NOT NULL"`                //auto manual
 	//LastRunTime    time.Time         `gorm:"column:last_run_time;index;default:CURRENT_TIMESTAMP;NOT NULL"`
-	Status      int64  `gorm:"column:status;type:BIGINT;default:1"` //状态
-	Body        string `gorm:"column:body;type:VARCHAR(1024)"`      // 菜单自定义数据
+	Status      def.Bool `gorm:"column:status;type:BIGINT;default:1"` //状态
+	Body        string   `gorm:"column:body;type:VARCHAR(1024)"`      // 自定义数据
 	UdSceneIf   `gorm:"embedded;embeddedPrefix:if_"`
 	UdSceneWhen `gorm:"embedded;embeddedPrefix:when_"`
 	UdSceneThen `gorm:"embedded;embeddedPrefix:then_"`
@@ -39,7 +40,7 @@ type UdSceneIf struct {
 
 type UdSceneIfTrigger struct {
 	ID          int64                `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"` // id编号
-	Type        string               `gorm:"column:type;type:VARCHAR(25);NOT NULL"`            //触发类型 device: 设备触发 timer: 定时触发
+	Type        scene.TriggerType    `gorm:"column:type;type:VARCHAR(25);NOT NULL"`            //触发类型 device: 设备触发 timer: 定时触发
 	SceneID     int64                `gorm:"column:scene_id;index;type:bigint"`                // 场景id编号
 	Order       int64                `gorm:"column:order;type:BIGINT;default:1;NOT NULL"`      // 排序序号
 	Status      int64                `gorm:"column:status;type:BIGINT;default:1"`              //状态 同步场景联动的status
@@ -60,17 +61,17 @@ type UdSceneTriggerTimer struct {
 }
 
 type UdSceneTriggerDevice struct {
-	ProductID        string           `gorm:"column:product_id;index;type:VARCHAR(25);default:''"`  //产品id
-	SelectType       scene.SelectType `gorm:"column:select_type;type:VARCHAR(25);default:''"`       //设备选择方式  all: 全部 fixed:指定的设备
-	GroupID          int64            `gorm:"column:group_id;index;type:bigint;default:0"`          //group类型传GroupID
-	DeviceName       string           `gorm:"column:device_name;type:VARCHAR(255);default:''"`      //选择的列表  选择的列表, fixed类型是设备名列表
-	DeviceAlias      string           `gorm:"column:device_alias;type:VARCHAR(255);default:''"`     //设备别名
-	Type             string           `gorm:"column:type;type:VARCHAR(25);default:''"`              //触发类型  connected:上线 disConnected:下线 reportProperty:属性上报 reportEvent: 事件上报
-	DataID           string           `gorm:"column:data_id;type:VARCHAR(255);default:''"`          //选择为属性或事件时需要填该字段 属性的id及事件的id aa.bb.cc
-	DataName         string           `gorm:"column:data_name;type:VARCHAR(255);default:''"`        //对应的物模型定义,只读
-	TermType         string           `gorm:"column:term_type;type:VARCHAR(255);default:''"`        //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
-	Values           []string         `gorm:"column:values;type:json;serializer:json;default:'[]'"` //比较条件列表
-	SchemaAffordance string           `gorm:"column:schema_affordance;type:VARCHAR(500);default:''"`
+	ProductID        string                  `gorm:"column:product_id;index;type:VARCHAR(25);default:''"`  //产品id
+	SelectType       scene.SelectType        `gorm:"column:select_type;type:VARCHAR(25);default:''"`       //设备选择方式  all: 全部 fixed:指定的设备
+	GroupID          int64                   `gorm:"column:group_id;index;type:bigint;default:0"`          //group类型传GroupID
+	DeviceName       string                  `gorm:"column:device_name;type:VARCHAR(255);default:''"`      //选择的列表  选择的列表, fixed类型是设备名列表
+	DeviceAlias      string                  `gorm:"column:device_alias;type:VARCHAR(255);default:''"`     //设备别名
+	Type             scene.TriggerDeviceType `gorm:"column:type;type:VARCHAR(25);default:''"`              //触发类型  connected:上线 disConnected:下线 reportProperty:属性上报 reportEvent: 事件上报
+	DataID           string                  `gorm:"column:data_id;type:VARCHAR(255);default:''"`          //选择为属性或事件时需要填该字段 属性的id及事件的id aa.bb.cc
+	DataName         string                  `gorm:"column:data_name;type:VARCHAR(255);default:''"`        //对应的物模型定义,只读
+	TermType         string                  `gorm:"column:term_type;type:VARCHAR(255);default:''"`        //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
+	Values           []string                `gorm:"column:values;type:json;serializer:json;default:'[]'"` //比较条件列表
+	SchemaAffordance string                  `gorm:"column:schema_affordance;type:VARCHAR(500);default:''"`
 }
 
 type UdSceneWhen struct {

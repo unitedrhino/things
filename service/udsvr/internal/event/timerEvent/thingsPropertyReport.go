@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/domain/application"
 	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
@@ -13,46 +14,43 @@ import (
 	"time"
 )
 
-func (l *TimerHandle) SceneTiming() error {
+func (l *TimerHandle) SceneThingPropertyReport(in application.PropertyReport) error {
 	now := time.Now()
-
 	db := stores.WithNoDebug(l.ctx, relationDB.NewSceneIfTriggerRepo)
-	//db := relationDB.NewSceneIfTriggerRepo(ctx)
-	list, err := db.FindByFilter(l.ctx, relationDB.SceneIfTriggerFilter{Status: def.True,
-		Type:        scene.TriggerTypeTimer,
-		ExecAt:      stores.CmpLte(utils.TimeToDaySec(now)),                                  //小于等于当前时间点(需要执行的)
-		LastRunTime: stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)),                 //当天未执行的
-		ExecRepeat:  stores.CmpOr(stores.CmpBinEq(int64(now.Weekday()), 1), stores.CmpEq(0)), //当天需要执行或只需要执行一次的
+
+	list, err := db.FindByFilter(l.ctx, relationDB.SceneIfTriggerFilter{
+		Status: def.True,
+		Type:   scene.TriggerTypeDevice,
+		Device: &in.Device,
+		DataID: in.Identifier,
 	}, nil)
 	if err != nil {
 		return err
 	}
-
 	for _, v := range list {
 		var po = v
 		do := rulelogic.PoToSceneInfoDo(po.SceneInfo)
 		if po.SceneInfo == nil {
-			logx.WithContext(l.ctx).Errorf("trigger timer not bind scene, trigger:%v", utils.Fmt(po))
+			logx.WithContext(l.ctx).Errorf("trigger device not bind scene, trigger:%v", utils.Fmt(po))
 			relationDB.NewSceneIfTriggerRepo(l.ctx).Delete(l.ctx, po.ID)
+			continue
+		}
+		ps, err := l.svcCtx.ProductSchemaCache.GetData(l.ctx, in.Device.ProductID)
+		if err != nil {
+			l.Error(err)
+			continue
+		}
+		if !do.If.Triggers[0].Device.IsHit(ps, in.Identifier, in.Param) {
 			continue
 		}
 		ctx := ctxs.BindTenantCode(l.ctx, string(v.SceneInfo.TenantCode))
 		if !do.When.IsHit(ctx, now, nil) {
 			continue
 		}
-
 		ctxs.GoNewCtx(ctx, func(ctx context.Context) { //执行任务
-			f := l.LockRunning(ctx, "scene", po.ID)
-			if f == nil { //有正在执行的或redis报错,直接返回,下次重试
-				return
-			}
 			var err error
 			func() {
-				defer f() //数据库执行完成后就可以释放锁了
 				po.LastRunTime = utils.GetEndTime(now)
-				if po.Timer.ExecRepeat == 0 { //不重复执行的只执行一次
-					po.Status = def.False
-				}
 				err = db.Update(ctx, po)
 				if err != nil { //如果失败了下次还可以执行
 					l.Error(err)
@@ -66,7 +64,5 @@ func (l *TimerHandle) SceneTiming() error {
 			l.SceneExec(ctx, do)
 		})
 	}
-
-	l.Debug(list)
 	return nil
 }

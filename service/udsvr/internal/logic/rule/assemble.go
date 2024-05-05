@@ -2,7 +2,6 @@ package rulelogic
 
 import (
 	"context"
-	"fmt"
 	"gitee.com/i-Things/share/oss/common"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/udsvr/internal/domain"
@@ -10,7 +9,6 @@ import (
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/udsvr/internal/svc"
 	"github.com/i-Things/things/service/udsvr/pb/ud"
-	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
@@ -20,8 +18,10 @@ func ToSceneInfoDo(in *ud.SceneInfo) *scene.Info {
 		return nil
 	}
 	do := utils.Copy[scene.Info](in)
-	do.If = utils.UnmarshalNoErr[scene.If](in.If)
-	do.When = utils.UnmarshalNoErr[scene.When](in.When)
+	if do.Type == scene.SceneTypeAuto {
+		do.If = utils.UnmarshalNoErr[scene.If](in.If)
+		do.When = utils.UnmarshalNoErr[scene.When](in.When)
+	}
 	do.Then = utils.UnmarshalNoErr[scene.Then](in.Then)
 	return do
 }
@@ -90,7 +90,7 @@ func ToSceneTriggerTimerPo(si *scene.Info, in *scene.Timer) (ret relationDB.UdSc
 	}
 	return relationDB.UdSceneTriggerTimer{
 		ExecAt:     in.ExecAt,
-		ExecRepeat: cast.ToInt64(in.ExecRepeat),
+		ExecRepeat: utils.BStrToInt64(in.ExecRepeat),
 	}
 }
 
@@ -233,7 +233,7 @@ func ToSceneTriggerDo(in *relationDB.UdSceneIfTrigger) *scene.Trigger {
 		return nil
 	}
 	return &scene.Trigger{
-		Type:   scene.TriggerType(in.Type),
+		Type:   in.Type,
 		Order:  in.Order,
 		Device: ToSceneTriggerDeviceDo(in.Device),
 		Timer:  ToSceneTriggerTimerDo(in.Timer),
@@ -243,7 +243,7 @@ func ToSceneTriggerDo(in *relationDB.UdSceneIfTrigger) *scene.Trigger {
 func ToSceneTriggerTimerDo(in relationDB.UdSceneTriggerTimer) (ret *scene.Timer) {
 	return &scene.Timer{
 		ExecAt:     in.ExecAt,
-		ExecRepeat: fmt.Sprintf("%07d", in.ExecRepeat),
+		ExecRepeat: utils.Int64ToBStr(in.ExecRepeat),
 	}
 }
 

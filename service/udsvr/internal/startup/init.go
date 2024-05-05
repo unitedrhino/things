@@ -4,10 +4,14 @@ import (
 	"context"
 	"fmt"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/domain/application"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/eventBus"
+	"gitee.com/i-Things/share/events/topics"
 	"gitee.com/i-Things/share/tools"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/udsvr/internal/event/timerEvent"
 	"github.com/i-Things/things/service/udsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -21,20 +25,34 @@ func Init(svcCtx *svc.ServiceContext) {
 }
 
 func InitEventBus(svcCtx *svc.ServiceContext) {
+	//err := svcCtx.FastEvent.QueueSubscribe(eventBus.UdRuleTimer, func(ctx context.Context, t time.Time, body []byte) error {
+	//	if t.Add(2 * time.Second).Before(time.Now()) { //2秒过期时间
+	//		return nil
+	//	}
+	//	th := timerEvent.NewSceneHandle(ctx, svcCtx)
+	//	return th.DeviceTimer()
+	//})
+	//logx.Must(err)
 	err := svcCtx.FastEvent.QueueSubscribe(eventBus.UdRuleTimer, func(ctx context.Context, t time.Time, body []byte) error {
 		if t.Add(2 * time.Second).Before(time.Now()) { //2秒过期时间
 			return nil
 		}
-		th := timerEvent.NewTimerHandle(ctx, svcCtx)
-		return th.DeviceTimer()
+		th := timerEvent.NewSceneHandle(ctxs.WithRoot(ctx), svcCtx)
+		return th.SceneTiming()
 	})
 	logx.Must(err)
-	err = svcCtx.FastEvent.QueueSubscribe(eventBus.UdRuleTimer, func(ctx context.Context, t time.Time, body []byte) error {
+	err = svcCtx.FastEvent.QueueSubscribe(topics.ApplicationDeviceReportThingPropertyAllDevice, func(ctx context.Context, t time.Time, body []byte) error {
 		if t.Add(2 * time.Second).Before(time.Now()) { //2秒过期时间
 			return nil
 		}
-		th := timerEvent.NewTimerHandle(ctx, svcCtx)
-		return th.SceneTiming()
+		th := timerEvent.NewSceneHandle(ctxs.WithRoot(ctx), svcCtx)
+		var stu application.PropertyReport
+		err := utils.Unmarshal(body, &stu)
+		if err != nil {
+			logx.WithContext(ctx).Errorf("Subscribe.QueueSubscribe.Unmarshal body:%v err:%v", string(body), err)
+			return err
+		}
+		return th.SceneThingPropertyReport(stu)
 	})
 	logx.Must(err)
 	err = svcCtx.FastEvent.Start()

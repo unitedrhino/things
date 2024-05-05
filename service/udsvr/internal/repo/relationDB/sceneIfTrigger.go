@@ -2,8 +2,11 @@ package relationDB
 
 import (
 	"context"
+	"fmt"
 	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/stores"
+	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -28,15 +31,17 @@ type SceneIfTriggerFilter struct {
 	Status      int64
 	ExecAt      *stores.Cmp
 	LastRunTime *stores.Cmp
-	Repeat      *stores.Cmp
+	ExecRepeat  *stores.Cmp
 	Type        string
+	Device      *devices.Core
+	DataID      string
 }
 
 func (p SceneIfTriggerRepo) fmtFilter(ctx context.Context, f SceneIfTriggerFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	db = f.ExecAt.Where(db, "timer_exec_at")
 	db = f.LastRunTime.Where(db, "last_run_time")
-	db = f.Repeat.Where(db, "timer_exec_repeat")
+	db = f.ExecRepeat.Where(db, "timer_exec_repeat")
 	if f.Status != 0 {
 		db = db.Where("status = ?", f.Status)
 	}
@@ -45,6 +50,12 @@ func (p SceneIfTriggerRepo) fmtFilter(ctx context.Context, f SceneIfTriggerFilte
 	}
 	if f.SceneID != 0 {
 		db = db.Where("scene_id = ?", f.SceneID)
+	}
+	if f.Device != nil {
+		db = db.Where(fmt.Sprintf("select_type=%s and product_id=? and device_name=? and data_id=?",
+			scene.SelectDeviceFixed), f.Device.ProductID, f.Device.DeviceName, f.DataID).
+			Or(fmt.Sprintf("select_type=%s and product_id=? and data_id=?", scene.SelectorDeviceAll),
+				f.Device.ProductID, f.DataID)
 	}
 	return db
 }

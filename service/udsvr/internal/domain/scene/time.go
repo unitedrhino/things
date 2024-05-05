@@ -25,6 +25,7 @@ const (
 type DateRangeType = string
 
 const (
+	DateRangeTypeAllDay      DateRangeType = "allDay"
 	DateRangeTypeWorkDay     DateRangeType = "workday"
 	DateRangeTypeWeekend     DateRangeType = "weekend"
 	DateRangeTypeHoliday     DateRangeType = "holiday"
@@ -86,7 +87,7 @@ func (t *DateRange) Validate() error {
 	if t == nil {
 		return errors.Parameter.AddMsg("日期范围需要填写日期内容")
 	}
-	if !utils.SliceIn(t.Type, DateRangeTypeWorkDay, DateRangeTypeWeekend, DateRangeTypeHoliday, DateRangeTypeCustomRange, DateRangeTypeCustomWeek) {
+	if !utils.SliceIn(t.Type, DateRangeTypeAllDay, DateRangeTypeWorkDay, DateRangeTypeWeekend, DateRangeTypeHoliday, DateRangeTypeCustomRange, DateRangeTypeCustomWeek) {
 		return errors.Parameter.AddMsg("日期范围类型不正确")
 	}
 	if t.Type == DateRangeTypeCustomRange {
@@ -134,6 +135,9 @@ func (t Timers) Validate() error {
 }
 
 func (d *DateRange) IsHit(ctx context.Context, t time.Time, repo WhenRepo) bool {
+	if d.Type == DateRangeTypeAllDay {
+		return true
+	}
 	if d.Type == DateRangeTypeCustomRange {
 		start := utils.FmtDateStr(d.StartDate)
 		end := utils.FmtDateStr(d.EndDate)
@@ -142,15 +146,45 @@ func (d *DateRange) IsHit(ctx context.Context, t time.Time, repo WhenRepo) bool 
 		}
 		return false
 	}
-	h, err := tools.GetHoliday(ctx, t)
-	if err != nil {
-		logx.WithContext(ctx).Error(err)
+	switch d.Type {
+	case DateRangeTypeAllDay:
+		return true
+	case DateRangeTypeWorkDay, DateRangeTypeHoliday:
+		h, err := tools.GetHoliday(ctx, t)
+		if err != nil {
+			logx.WithContext(ctx).Error(err)
+			return false
+		}
+		if d.Type == DateRangeTypeWorkDay {
+			return h.Holiday == tools.HolidayWorkDay
+		} else {
+			return h.Holiday == tools.HolidayFestival
+		}
+	case DateRangeTypeWeekend:
+		weekday := time.Now().Weekday()
+		if utils.SliceIn(weekday, time.Sunday, time.Saturday) {
+			return true
+		}
+	case DateRangeTypeCustomRange:
+		start := utils.FmtDateStr(d.StartDate)
+		end := utils.FmtDateStr(d.EndDate)
+		if t.Before(end) && t.After(start) {
+			return true
+		}
 		return false
+	case DateRangeTypeCustomWeek:
+		weekday := time.Now().Weekday()
+		if weekday == 0 {
+			weekday = 6
+		} else {
+			weekday--
+		}
+		repeat := utils.BStrToInt64(d.Repeat)
+		if repeat&(1<<weekday) > 0 {
+			return true
+		}
 	}
-	if d.Type == DateRangeTypeWorkDay {
-		return h.Holiday == tools.HolidayWorkDay
-	}
-	return true
+	return false
 }
 
 func (d *TimeRange) IsHit(ctx context.Context, t time.Time, repo WhenRepo) bool {

@@ -69,5 +69,14 @@ func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *ud.SceneInfo) (*ud.Empty, err
 	po := ToSceneInfoPo(do)
 	po.SoftTime = old.SoftTime
 	err = db.Update(l.ctx, po)
+	if err != nil {
+		return nil, err
+	}
+	if len(do.If.Triggers) == 0 && do.Type == scene.SceneTypeAuto { //立即执行一次
+		_, err = NewSceneManuallyTriggerLogic(l.ctx, l.svcCtx).SceneManuallyTrigger(&ud.WithID{Id: po.ID})
+		if err != nil {
+			return nil, err
+		}
+	}
 	return &ud.Empty{}, err
 }

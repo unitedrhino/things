@@ -6,7 +6,6 @@ import (
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
-	"reflect"
 )
 
 type SelectType = string
@@ -35,7 +34,7 @@ type TriggerDevice struct {
 	Values           []string `json:"values"`           //比较条件列表
 }
 
-type TriggerDeviceType string
+type TriggerDeviceType = string
 
 const (
 	TriggerDeviceTypeConnected      TriggerDeviceType = "connected"
@@ -139,7 +138,7 @@ func (t TriggerDevices) IsTriggerWithConn(device devices.Core, operator TriggerD
 }
 
 // IsTrigger 判断触发器是否命中属性上报类型
-func (t TriggerDevices) IsTriggerWithProperty(reportInfo *application.PropertyReport) bool {
+func (t TriggerDevices) IsTriggerWithProperty(model *schema.Model, reportInfo *application.PropertyReport) bool {
 	for _, d := range t {
 		//需要排除不是该设备的触发类型
 		if d.Type != TriggerDeviceTypePropertyReport {
@@ -152,34 +151,24 @@ func (t TriggerDevices) IsTriggerWithProperty(reportInfo *application.PropertyRe
 				hit = true
 				break
 			}
-
 			if !hit {
 				return false
 			}
 		}
-		if d.IsHit(reportInfo.Identifier, reportInfo.Param) {
+		if d.IsHit(model, reportInfo.Identifier, reportInfo.Param) {
 			return true
 		}
 	}
 	return false
 }
 
-func (t *TriggerDevice) IsHit(dataID string, param any) bool {
+func (t *TriggerDevice) IsHit(model *schema.Model, dataID string, param any) bool {
 	if t.DataID != dataID {
 		return false
 	}
-	var val = param
-	dataType := schema.DataType(reflect.TypeOf(param).String())
-	if dataType == schema.DataTypeStruct {
-		if len(t.DataID) < 2 { //必须指定到结构体的成员
-			return false
-		}
-		st := param.(application.StructValue)
-		v, ok := st[t.DataID]
-		if !ok { //如果没有获取到该结构体的属性
-			return false
-		}
-		val = v
+	property := model.Property[dataID]
+	if property == nil {
+		return false
 	}
-	return t.TermType.IsHit(dataType, val, t.Values)
+	return t.TermType.IsHit(property.Define.Type, param, t.Values)
 }
