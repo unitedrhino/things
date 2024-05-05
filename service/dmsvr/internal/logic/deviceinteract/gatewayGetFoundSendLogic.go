@@ -3,13 +3,12 @@ package deviceinteractlogic
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgGateway"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
+	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"time"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -33,7 +32,7 @@ func NewGatewayGetFoundSendLogic(ctx context.Context, svcCtx *svc.ServiceContext
 }
 
 // 实时获取网关拓扑关系
-func (l *GatewayGetFoundSendLogic) GatewayGetFoundSend(in *dm.GatewayGetFoundReq) (*dm.GatewayGetFoundResp, error) {
+func (l *GatewayGetFoundSendLogic) GatewayGetFoundSend(in *dm.GatewayGetFoundReq) (*dm.Empty, error) {
 	var protocolCode string
 	var err error
 	if protocolCode, err = CheckIsOnline(l.ctx, l.svcCtx, devices.Core{
@@ -80,24 +79,28 @@ func (l *GatewayGetFoundSendLogic) GatewayGetFoundSend(in *dm.GatewayGetFoundReq
 	if err != nil {
 		return nil, err
 	}
-	if dresp.Payload != nil || len(dresp.Payload.Devices) == 0 {
-		return &dm.GatewayGetFoundResp{}, nil
+	if dresp.Code != errors.OK.GetCode() {
+		return nil, errors.DeviceResp.AddMsgf("设备返回错误: msg:%v code:%v", dresp.Msg, dresp.Code)
 	}
-	var devs []*devices.Core
-	for _, v := range dresp.Payload.Devices {
-		devs = append(devs, &devices.Core{
-			ProductID:  v.ProductID,
-			DeviceName: v.DeviceName,
-		})
-	}
-	diDB := relationDB.NewDeviceInfoRepo(l.ctx)
-	//只获取已经入网的设备,未入网的设备需要网关自己注册或提前入网
-	dis, err := diDB.FindByFilter(l.ctx, relationDB.DeviceFilter{Cores: devs}, nil)
-	if err != nil {
-		return nil, err
-	}
-	//gdDB := relationDB.NewGatewayDeviceRepo(l.ctx)
-	//gdDB.FindByFilter()
-	fmt.Println(dis)
-	return &dm.GatewayGetFoundResp{}, nil
+	return &dm.Empty{}, nil
+	//if dresp.Payload != nil || len(dresp.Payload.Devices) == 0 {
+	//	return &dm.GatewayGetFoundResp{}, nil
+	//}
+	//var devs []*devices.Core
+	//for _, v := range dresp.Payload.Devices {
+	//	devs = append(devs, &devices.Core{
+	//		ProductID:  v.ProductID,
+	//		DeviceName: v.DeviceName,
+	//	})
+	//}
+	//diDB := relationDB.NewDeviceInfoRepo(l.ctx)
+	////只获取已经入网的设备,未入网的设备需要网关自己注册或提前入网
+	//dis, err := diDB.FindByFilter(l.ctx, relationDB.DeviceFilter{Cores: devs}, nil)
+	//if err != nil {
+	//	return nil, err
+	//}
+	////gdDB := relationDB.NewGatewayDeviceRepo(l.ctx)
+	////gdDB.FindByFilter()
+	//fmt.Println(dis)
+	//return &dm.GatewayGetFoundResp{}, nil
 }

@@ -646,6 +646,25 @@ type FirmwareUpdateReq struct {
 	Extra *string `json:"extra,optional"`
 }
 
+type GatewayCanBindIndexReq struct {
+	Gateway *DeviceCore `json:"gateway"` //如果是不同的产品,则传这个字段,上面两个参数填了优先使用
+}
+
+type GatewayCanBindIndexResp struct {
+	SubDevices  []*DeviceCore `json:"subDevices"`  //如果是不同的产品,则传这个字段,上面两个参数填了优先使用
+	UpdatedTime int64         `json:"updatedTime"` //
+}
+
+type GatewayGetFoundReq struct {
+	ProductID  string `json:"productID"`  //产品id (必填)
+	DeviceName string `json:"deviceName"` //设备名(必填)
+}
+
+type GatewayNotifyBindSendReq struct {
+	Gateway    *DeviceCore   `json:"gateway"`    //如果是不同的产品,则传这个字段,上面两个参数填了优先使用
+	SubDevices []*DeviceCore `json:"subDevices"` //如果是不同的产品,则传这个字段,上面两个参数填了优先使用
+}
+
 type GroupDeviceIndexReq struct {
 	Page           *PageInfo `json:"page,optional"`           //分页信息 只获取一个则不填
 	GroupID        int64     `json:"groupID"`                 //分组ID

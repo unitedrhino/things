@@ -67,8 +67,7 @@ service DeviceManage {
   //获取绑定信息的设备信息列表
   rpc deviceGatewayIndex(DeviceGatewayIndexReq)     returns (DeviceGatewayIndexResp);
   //删除网关下子设备
-  rpc deviceGatewayMultiDelete(DeviceGatewayMultiDeleteReq)     returns (Empty);
-
+  rpc deviceGatewayMultiDelete(DeviceGatewayMultiSaveReq)     returns (Empty);
   //设备计数
   rpc deviceInfoCount(DeviceInfoCountReq) returns (DeviceInfoCount);
   //设备类型
@@ -209,6 +208,8 @@ service DeviceMsg {
 
   //主动触发单个设备ota升级推送
   rpc otaPromptIndex(OtaPromptIndexReq) returns (OtaPromptIndexResp);
+  //获取网关可以绑定的子设备列表
+  rpc gatewayCanBindIndex(GatewayCanBindIndexReq)returns(GatewayCanBindIndexResp);
 }
 
 //设备交互
@@ -230,12 +231,13 @@ service DeviceInteract {
   rpc propertyControlMultiSend(PropertyControlMultiSendReq)     returns(PropertyControlMultiSendResp);
   //获取异步调用设备属性的结果
   rpc propertyControlRead(RespReadReq)  returns(PropertyControlSendResp);
-  //实时获取网关拓扑关系
-  rpc gatewayGetFoundSend(GatewayGetFoundReq)returns(GatewayGetFoundResp);
-  //通知网关绑定子设备
-  rpc gatewayNotifyBindSend(GatewayNotifyBindSendReq)returns(Empty);
   //发送消息给设备 -- 调试使用
   rpc sendMsg(SendMsgReq)     returns(SendMsgResp);
+  //获取网关拓扑关系
+  rpc gatewayGetFoundSend(GatewayGetFoundReq)returns(Empty);
+  //通知网关绑定子设备
+  rpc gatewayNotifyBindSend(GatewayNotifyBindSendReq)returns(Empty);
+
 }
 
 //新的ota功能实现
@@ -723,9 +725,7 @@ message GatewayGetFoundReq{
   string  deviceName = 2; //设备名
 }
 
-message GatewayGetFoundResp{
-  repeated DeviceCore devices =1;
-}
+
 
 message GatewayNotifyBindSendReq{
   DeviceCore gateway =1;
@@ -864,9 +864,17 @@ message DeviceGatewayIndexResp{
   int64 total = 2;
 }
 
-message DeviceGatewayMultiDeleteReq{
+message DeviceGatewayMultiSaveReq{
   DeviceCore gateway = 1;
   repeated DeviceCore list = 3;
+}
+message GatewayCanBindIndexReq{
+  DeviceCore gateway = 1;
+}
+
+message GatewayCanBindIndexResp{
+  repeated DeviceCore subDevices = 1;
+  int64 updatedTime =2;//更新时间
 }
 
 message GroupInfo{

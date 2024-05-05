@@ -31,7 +31,7 @@ type (
 	DeviceGatewayIndexReq             = dm.DeviceGatewayIndexReq
 	DeviceGatewayIndexResp            = dm.DeviceGatewayIndexResp
 	DeviceGatewayMultiCreateReq       = dm.DeviceGatewayMultiCreateReq
-	DeviceGatewayMultiDeleteReq       = dm.DeviceGatewayMultiDeleteReq
+	DeviceGatewayMultiSaveReq         = dm.DeviceGatewayMultiSaveReq
 	DeviceGatewaySign                 = dm.DeviceGatewaySign
 	DeviceInfo                        = dm.DeviceInfo
 	DeviceInfoBindReq                 = dm.DeviceInfoBindReq
@@ -63,8 +63,9 @@ type (
 	FirmwareInfoReadReq               = dm.FirmwareInfoReadReq
 	FirmwareInfoReadResp              = dm.FirmwareInfoReadResp
 	FirmwareResp                      = dm.FirmwareResp
+	GatewayCanBindIndexReq            = dm.GatewayCanBindIndexReq
+	GatewayCanBindIndexResp           = dm.GatewayCanBindIndexResp
 	GatewayGetFoundReq                = dm.GatewayGetFoundReq
-	GatewayGetFoundResp               = dm.GatewayGetFoundResp
 	GatewayNotifyBindSendReq          = dm.GatewayNotifyBindSendReq
 	GroupDeviceIndexReq               = dm.GroupDeviceIndexReq
 	GroupDeviceIndexResp              = dm.GroupDeviceIndexResp
@@ -201,6 +202,8 @@ type (
 		ShadowIndex(ctx context.Context, in *PropertyLogLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error)
 		// 主动触发单个设备ota升级推送
 		OtaPromptIndex(ctx context.Context, in *OtaPromptIndexReq, opts ...grpc.CallOption) (*OtaPromptIndexResp, error)
+		// 获取网关可以绑定的子设备列表
+		GatewayCanBindIndex(ctx context.Context, in *GatewayCanBindIndexReq, opts ...grpc.CallOption) (*GatewayCanBindIndexResp, error)
 	}
 
 	defaultDeviceMsg struct {
@@ -319,4 +322,15 @@ func (m *defaultDeviceMsg) OtaPromptIndex(ctx context.Context, in *OtaPromptInde
 // 主动触发单个设备ota升级推送
 func (d *directDeviceMsg) OtaPromptIndex(ctx context.Context, in *OtaPromptIndexReq, opts ...grpc.CallOption) (*OtaPromptIndexResp, error) {
 	return d.svr.OtaPromptIndex(ctx, in)
+}
+
+// 获取网关可以绑定的子设备列表
+func (m *defaultDeviceMsg) GatewayCanBindIndex(ctx context.Context, in *GatewayCanBindIndexReq, opts ...grpc.CallOption) (*GatewayCanBindIndexResp, error) {
+	client := dm.NewDeviceMsgClient(m.cli.Conn())
+	return client.GatewayCanBindIndex(ctx, in, opts...)
+}
+
+// 获取网关可以绑定的子设备列表
+func (d *directDeviceMsg) GatewayCanBindIndex(ctx context.Context, in *GatewayCanBindIndexReq, opts ...grpc.CallOption) (*GatewayCanBindIndexResp, error) {
+	return d.svr.GatewayCanBindIndex(ctx, in)
 }

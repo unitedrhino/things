@@ -73,3 +73,9 @@ func (s *DeviceMsgServer) OtaPromptIndex(ctx context.Context, in *dm.OtaPromptIn
 	l := devicemsglogic.NewOtaPromptIndexLogic(ctx, s.svcCtx)
 	return l.OtaPromptIndex(in)
 }
+
+// 获取网关可以绑定的子设备列表
+func (s *DeviceMsgServer) GatewayCanBindIndex(ctx context.Context, in *dm.GatewayCanBindIndexReq) (*dm.GatewayCanBindIndexResp, error) {
+	l := devicemsglogic.NewGatewayCanBindIndexLogic(ctx, s.svcCtx)
+	return l.GatewayCanBindIndex(in)
+}

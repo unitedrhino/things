@@ -188,6 +188,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/gateway-get-found-send",
+					Handler: thingsdeviceinteract.GatewayGetFoundSendHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/gateway-notify-bind-send",
+					Handler: thingsdeviceinteract.GatewayNotifyBindSendHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/multi-send-property",
 					Handler: thingsdeviceinteract.MultiSendPropertyHandler(serverCtx),
 				},
@@ -244,6 +254,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/event-log/index",
 					Handler: thingsdevicemsg.EventLogIndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/gateway-can-bind-index",
+					Handler: thingsdevicemsg.GatewayCanBindIndexHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,

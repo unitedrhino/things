@@ -31,7 +31,7 @@ type (
 	DeviceGatewayIndexReq             = dm.DeviceGatewayIndexReq
 	DeviceGatewayIndexResp            = dm.DeviceGatewayIndexResp
 	DeviceGatewayMultiCreateReq       = dm.DeviceGatewayMultiCreateReq
-	DeviceGatewayMultiDeleteReq       = dm.DeviceGatewayMultiDeleteReq
+	DeviceGatewayMultiSaveReq         = dm.DeviceGatewayMultiSaveReq
 	DeviceGatewaySign                 = dm.DeviceGatewaySign
 	DeviceInfo                        = dm.DeviceInfo
 	DeviceInfoBindReq                 = dm.DeviceInfoBindReq
@@ -63,8 +63,9 @@ type (
 	FirmwareInfoReadReq               = dm.FirmwareInfoReadReq
 	FirmwareInfoReadResp              = dm.FirmwareInfoReadResp
 	FirmwareResp                      = dm.FirmwareResp
+	GatewayCanBindIndexReq            = dm.GatewayCanBindIndexReq
+	GatewayCanBindIndexResp           = dm.GatewayCanBindIndexResp
 	GatewayGetFoundReq                = dm.GatewayGetFoundReq
-	GatewayGetFoundResp               = dm.GatewayGetFoundResp
 	GatewayNotifyBindSendReq          = dm.GatewayNotifyBindSendReq
 	GroupDeviceIndexReq               = dm.GroupDeviceIndexReq
 	GroupDeviceIndexResp              = dm.GroupDeviceIndexResp
@@ -199,12 +200,12 @@ type (
 		PropertyControlMultiSend(ctx context.Context, in *PropertyControlMultiSendReq, opts ...grpc.CallOption) (*PropertyControlMultiSendResp, error)
 		// 获取异步调用设备属性的结果
 		PropertyControlRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*PropertyControlSendResp, error)
-		// 实时获取网关拓扑关系
-		GatewayGetFoundSend(ctx context.Context, in *GatewayGetFoundReq, opts ...grpc.CallOption) (*GatewayGetFoundResp, error)
-		// 通知网关绑定子设备
-		GatewayNotifyBindSend(ctx context.Context, in *GatewayNotifyBindSendReq, opts ...grpc.CallOption) (*Empty, error)
 		// 发送消息给设备 -- 调试使用
 		SendMsg(ctx context.Context, in *SendMsgReq, opts ...grpc.CallOption) (*SendMsgResp, error)
+		// 获取网关拓扑关系
+		GatewayGetFoundSend(ctx context.Context, in *GatewayGetFoundReq, opts ...grpc.CallOption) (*Empty, error)
+		// 通知网关绑定子设备
+		GatewayNotifyBindSend(ctx context.Context, in *GatewayNotifyBindSendReq, opts ...grpc.CallOption) (*Empty, error)
 	}
 
 	defaultDeviceInteract struct {
@@ -307,14 +308,25 @@ func (d *directDeviceInteract) PropertyControlRead(ctx context.Context, in *Resp
 	return d.svr.PropertyControlRead(ctx, in)
 }
 
-// 实时获取网关拓扑关系
-func (m *defaultDeviceInteract) GatewayGetFoundSend(ctx context.Context, in *GatewayGetFoundReq, opts ...grpc.CallOption) (*GatewayGetFoundResp, error) {
+// 发送消息给设备 -- 调试使用
+func (m *defaultDeviceInteract) SendMsg(ctx context.Context, in *SendMsgReq, opts ...grpc.CallOption) (*SendMsgResp, error) {
+	client := dm.NewDeviceInteractClient(m.cli.Conn())
+	return client.SendMsg(ctx, in, opts...)
+}
+
+// 发送消息给设备 -- 调试使用
+func (d *directDeviceInteract) SendMsg(ctx context.Context, in *SendMsgReq, opts ...grpc.CallOption) (*SendMsgResp, error) {
+	return d.svr.SendMsg(ctx, in)
+}
+
+// 获取网关拓扑关系
+func (m *defaultDeviceInteract) GatewayGetFoundSend(ctx context.Context, in *GatewayGetFoundReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewDeviceInteractClient(m.cli.Conn())
 	return client.GatewayGetFoundSend(ctx, in, opts...)
 }
 
-// 实时获取网关拓扑关系
-func (d *directDeviceInteract) GatewayGetFoundSend(ctx context.Context, in *GatewayGetFoundReq, opts ...grpc.CallOption) (*GatewayGetFoundResp, error) {
+// 获取网关拓扑关系
+func (d *directDeviceInteract) GatewayGetFoundSend(ctx context.Context, in *GatewayGetFoundReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.GatewayGetFoundSend(ctx, in)
 }
 
@@ -327,15 +339,4 @@ func (m *defaultDeviceInteract) GatewayNotifyBindSend(ctx context.Context, in *G
 // 通知网关绑定子设备
 func (d *directDeviceInteract) GatewayNotifyBindSend(ctx context.Context, in *GatewayNotifyBindSendReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.GatewayNotifyBindSend(ctx, in)
-}
-
-// 发送消息给设备 -- 调试使用
-func (m *defaultDeviceInteract) SendMsg(ctx context.Context, in *SendMsgReq, opts ...grpc.CallOption) (*SendMsgResp, error) {
-	client := dm.NewDeviceInteractClient(m.cli.Conn())
-	return client.SendMsg(ctx, in, opts...)
-}
-
-// 发送消息给设备 -- 调试使用
-func (d *directDeviceInteract) SendMsg(ctx context.Context, in *SendMsgReq, opts ...grpc.CallOption) (*SendMsgResp, error) {
-	return d.svr.SendMsg(ctx, in)
 }

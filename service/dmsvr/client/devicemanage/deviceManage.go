@@ -31,7 +31,7 @@ type (
 	DeviceGatewayIndexReq             = dm.DeviceGatewayIndexReq
 	DeviceGatewayIndexResp            = dm.DeviceGatewayIndexResp
 	DeviceGatewayMultiCreateReq       = dm.DeviceGatewayMultiCreateReq
-	DeviceGatewayMultiDeleteReq       = dm.DeviceGatewayMultiDeleteReq
+	DeviceGatewayMultiSaveReq         = dm.DeviceGatewayMultiSaveReq
 	DeviceGatewaySign                 = dm.DeviceGatewaySign
 	DeviceInfo                        = dm.DeviceInfo
 	DeviceInfoBindReq                 = dm.DeviceInfoBindReq
@@ -63,8 +63,9 @@ type (
 	FirmwareInfoReadReq               = dm.FirmwareInfoReadReq
 	FirmwareInfoReadResp              = dm.FirmwareInfoReadResp
 	FirmwareResp                      = dm.FirmwareResp
+	GatewayCanBindIndexReq            = dm.GatewayCanBindIndexReq
+	GatewayCanBindIndexResp           = dm.GatewayCanBindIndexResp
 	GatewayGetFoundReq                = dm.GatewayGetFoundReq
-	GatewayGetFoundResp               = dm.GatewayGetFoundResp
 	GatewayNotifyBindSendReq          = dm.GatewayNotifyBindSendReq
 	GroupDeviceIndexReq               = dm.GroupDeviceIndexReq
 	GroupDeviceIndexResp              = dm.GroupDeviceIndexResp
@@ -207,7 +208,7 @@ type (
 		// 获取绑定信息的设备信息列表
 		DeviceGatewayIndex(ctx context.Context, in *DeviceGatewayIndexReq, opts ...grpc.CallOption) (*DeviceGatewayIndexResp, error)
 		// 删除网关下子设备
-		DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error)
+		DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
 		// 设备计数
 		DeviceInfoCount(ctx context.Context, in *DeviceInfoCountReq, opts ...grpc.CallOption) (*DeviceInfoCount, error)
 		// 设备类型
@@ -368,13 +369,13 @@ func (d *directDeviceManage) DeviceGatewayIndex(ctx context.Context, in *DeviceG
 }
 
 // 删除网关下子设备
-func (m *defaultDeviceManage) DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
+func (m *defaultDeviceManage) DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewDeviceManageClient(m.cli.Conn())
 	return client.DeviceGatewayMultiDelete(ctx, in, opts...)
 }
 
 // 删除网关下子设备
-func (d *directDeviceManage) DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
+func (d *directDeviceManage) DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.DeviceGatewayMultiDelete(ctx, in)
 }
 

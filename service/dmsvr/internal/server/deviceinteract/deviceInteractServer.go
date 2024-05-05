@@ -64,8 +64,14 @@ func (s *DeviceInteractServer) PropertyControlRead(ctx context.Context, in *dm.R
 	return l.PropertyControlRead(in)
 }
 
-// 实时获取网关拓扑关系
-func (s *DeviceInteractServer) GatewayGetFoundSend(ctx context.Context, in *dm.GatewayGetFoundReq) (*dm.GatewayGetFoundResp, error) {
+// 发送消息给设备 -- 调试使用
+func (s *DeviceInteractServer) SendMsg(ctx context.Context, in *dm.SendMsgReq) (*dm.SendMsgResp, error) {
+	l := deviceinteractlogic.NewSendMsgLogic(ctx, s.svcCtx)
+	return l.SendMsg(in)
+}
+
+// 获取网关拓扑关系
+func (s *DeviceInteractServer) GatewayGetFoundSend(ctx context.Context, in *dm.GatewayGetFoundReq) (*dm.Empty, error) {
 	l := deviceinteractlogic.NewGatewayGetFoundSendLogic(ctx, s.svcCtx)
 	return l.GatewayGetFoundSend(in)
 }
@@ -74,10 +80,4 @@ func (s *DeviceInteractServer) GatewayGetFoundSend(ctx context.Context, in *dm.G
 func (s *DeviceInteractServer) GatewayNotifyBindSend(ctx context.Context, in *dm.GatewayNotifyBindSendReq) (*dm.Empty, error) {
 	l := deviceinteractlogic.NewGatewayNotifyBindSendLogic(ctx, s.svcCtx)
 	return l.GatewayNotifyBindSend(in)
-}
-
-// 发送消息给设备 -- 调试使用
-func (s *DeviceInteractServer) SendMsg(ctx context.Context, in *dm.SendMsgReq) (*dm.SendMsgResp, error) {
-	l := deviceinteractlogic.NewSendMsgLogic(ctx, s.svcCtx)
-	return l.SendMsg(in)
 }

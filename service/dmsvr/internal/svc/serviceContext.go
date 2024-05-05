@@ -76,6 +76,7 @@ type ServiceContext struct {
 	WebHook        *sysExport.Webhook
 	Slot           *caches.Cache[slot.Infos]
 	UserSubscribe  *coreExport.UserSubscribe
+	GatewayCanBind *cache.GatewayCanBind
 	NodeID         int64
 }
 
@@ -180,6 +181,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		SchemaRepo:     ccSchemaR,
 		SchemaManaRepo: deviceDataR,
 		DeviceStatus:   cache.NewDeviceStatus(ca),
+		GatewayCanBind: cache.NewGatewayCanBind(ca),
 		HubLogRepo:     hubLogR,
 		SDKLogRepo:     sdkLogR,
 		StatusRepo:     statusR,

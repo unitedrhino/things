@@ -68,7 +68,7 @@ type DeviceManageClient interface {
 	// 获取绑定信息的设备信息列表
 	DeviceGatewayIndex(ctx context.Context, in *DeviceGatewayIndexReq, opts ...grpc.CallOption) (*DeviceGatewayIndexResp, error)
 	// 删除网关下子设备
-	DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error)
+	DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
 	// 设备计数
 	DeviceInfoCount(ctx context.Context, in *DeviceInfoCountReq, opts ...grpc.CallOption) (*DeviceInfoCount, error)
 	// 设备类型
@@ -195,7 +195,7 @@ func (c *deviceManageClient) DeviceGatewayIndex(ctx context.Context, in *DeviceG
 	return out, nil
 }
 
-func (c *deviceManageClient) DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
+func (c *deviceManageClient) DeviceGatewayMultiDelete(ctx context.Context, in *DeviceGatewayMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, DeviceManage_DeviceGatewayMultiDelete_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -284,7 +284,7 @@ type DeviceManageServer interface {
 	// 获取绑定信息的设备信息列表
 	DeviceGatewayIndex(context.Context, *DeviceGatewayIndexReq) (*DeviceGatewayIndexResp, error)
 	// 删除网关下子设备
-	DeviceGatewayMultiDelete(context.Context, *DeviceGatewayMultiDeleteReq) (*Empty, error)
+	DeviceGatewayMultiDelete(context.Context, *DeviceGatewayMultiSaveReq) (*Empty, error)
 	// 设备计数
 	DeviceInfoCount(context.Context, *DeviceInfoCountReq) (*DeviceInfoCount, error)
 	// 设备类型
@@ -336,7 +336,7 @@ func (UnimplementedDeviceManageServer) DeviceGatewayMultiCreate(context.Context,
 func (UnimplementedDeviceManageServer) DeviceGatewayIndex(context.Context, *DeviceGatewayIndexReq) (*DeviceGatewayIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceGatewayIndex not implemented")
 }
-func (UnimplementedDeviceManageServer) DeviceGatewayMultiDelete(context.Context, *DeviceGatewayMultiDeleteReq) (*Empty, error) {
+func (UnimplementedDeviceManageServer) DeviceGatewayMultiDelete(context.Context, *DeviceGatewayMultiSaveReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceGatewayMultiDelete not implemented")
 }
 func (UnimplementedDeviceManageServer) DeviceInfoCount(context.Context, *DeviceInfoCountReq) (*DeviceInfoCount, error) {
@@ -587,7 +587,7 @@ func _DeviceManage_DeviceGatewayIndex_Handler(srv interface{}, ctx context.Conte
 }
 
 func _DeviceManage_DeviceGatewayMultiDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeviceGatewayMultiDeleteReq)
+	in := new(DeviceGatewayMultiSaveReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -599,7 +599,7 @@ func _DeviceManage_DeviceGatewayMultiDelete_Handler(srv interface{}, ctx context
 		FullMethod: DeviceManage_DeviceGatewayMultiDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceManageServer).DeviceGatewayMultiDelete(ctx, req.(*DeviceGatewayMultiDeleteReq))
+		return srv.(DeviceManageServer).DeviceGatewayMultiDelete(ctx, req.(*DeviceGatewayMultiSaveReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2851,6 +2851,7 @@ const (
 	DeviceMsg_EventLogIndex_FullMethodName          = "/dm.DeviceMsg/eventLogIndex"
 	DeviceMsg_ShadowIndex_FullMethodName            = "/dm.DeviceMsg/shadowIndex"
 	DeviceMsg_OtaPromptIndex_FullMethodName         = "/dm.DeviceMsg/otaPromptIndex"
+	DeviceMsg_GatewayCanBindIndex_FullMethodName    = "/dm.DeviceMsg/gatewayCanBindIndex"
 )
 
 // DeviceMsgClient is the client API for DeviceMsg service.
@@ -2873,6 +2874,8 @@ type DeviceMsgClient interface {
 	ShadowIndex(ctx context.Context, in *PropertyLogLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error)
 	// 主动触发单个设备ota升级推送
 	OtaPromptIndex(ctx context.Context, in *OtaPromptIndexReq, opts ...grpc.CallOption) (*OtaPromptIndexResp, error)
+	// 获取网关可以绑定的子设备列表
+	GatewayCanBindIndex(ctx context.Context, in *GatewayCanBindIndexReq, opts ...grpc.CallOption) (*GatewayCanBindIndexResp, error)
 }
 
 type deviceMsgClient struct {
@@ -2964,6 +2967,15 @@ func (c *deviceMsgClient) OtaPromptIndex(ctx context.Context, in *OtaPromptIndex
 	return out, nil
 }
 
+func (c *deviceMsgClient) GatewayCanBindIndex(ctx context.Context, in *GatewayCanBindIndexReq, opts ...grpc.CallOption) (*GatewayCanBindIndexResp, error) {
+	out := new(GatewayCanBindIndexResp)
+	err := c.cc.Invoke(ctx, DeviceMsg_GatewayCanBindIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DeviceMsgServer is the server API for DeviceMsg service.
 // All implementations must embed UnimplementedDeviceMsgServer
 // for forward compatibility
@@ -2984,6 +2996,8 @@ type DeviceMsgServer interface {
 	ShadowIndex(context.Context, *PropertyLogLatestIndexReq) (*ShadowIndexResp, error)
 	// 主动触发单个设备ota升级推送
 	OtaPromptIndex(context.Context, *OtaPromptIndexReq) (*OtaPromptIndexResp, error)
+	// 获取网关可以绑定的子设备列表
+	GatewayCanBindIndex(context.Context, *GatewayCanBindIndexReq) (*GatewayCanBindIndexResp, error)
 	mustEmbedUnimplementedDeviceMsgServer()
 }
 
@@ -3017,6 +3031,9 @@ func (UnimplementedDeviceMsgServer) ShadowIndex(context.Context, *PropertyLogLat
 }
 func (UnimplementedDeviceMsgServer) OtaPromptIndex(context.Context, *OtaPromptIndexReq) (*OtaPromptIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OtaPromptIndex not implemented")
+}
+func (UnimplementedDeviceMsgServer) GatewayCanBindIndex(context.Context, *GatewayCanBindIndexReq) (*GatewayCanBindIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GatewayCanBindIndex not implemented")
 }
 func (UnimplementedDeviceMsgServer) mustEmbedUnimplementedDeviceMsgServer() {}
 
@@ -3193,6 +3210,24 @@ func _DeviceMsg_OtaPromptIndex_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DeviceMsg_GatewayCanBindIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GatewayCanBindIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceMsgServer).GatewayCanBindIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceMsg_GatewayCanBindIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceMsgServer).GatewayCanBindIndex(ctx, req.(*GatewayCanBindIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DeviceMsg_ServiceDesc is the grpc.ServiceDesc for DeviceMsg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -3236,6 +3271,10 @@ var DeviceMsg_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "otaPromptIndex",
 			Handler:    _DeviceMsg_OtaPromptIndex_Handler,
 		},
+		{
+			MethodName: "gatewayCanBindIndex",
+			Handler:    _DeviceMsg_GatewayCanBindIndex_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/dm.proto",
@@ -3249,9 +3288,9 @@ const (
 	DeviceInteract_PropertyControlSend_FullMethodName      = "/dm.DeviceInteract/propertyControlSend"
 	DeviceInteract_PropertyControlMultiSend_FullMethodName = "/dm.DeviceInteract/propertyControlMultiSend"
 	DeviceInteract_PropertyControlRead_FullMethodName      = "/dm.DeviceInteract/propertyControlRead"
+	DeviceInteract_SendMsg_FullMethodName                  = "/dm.DeviceInteract/sendMsg"
 	DeviceInteract_GatewayGetFoundSend_FullMethodName      = "/dm.DeviceInteract/gatewayGetFoundSend"
 	DeviceInteract_GatewayNotifyBindSend_FullMethodName    = "/dm.DeviceInteract/gatewayNotifyBindSend"
-	DeviceInteract_SendMsg_FullMethodName                  = "/dm.DeviceInteract/sendMsg"
 )
 
 // DeviceInteractClient is the client API for DeviceInteract service.
@@ -3272,12 +3311,12 @@ type DeviceInteractClient interface {
 	PropertyControlMultiSend(ctx context.Context, in *PropertyControlMultiSendReq, opts ...grpc.CallOption) (*PropertyControlMultiSendResp, error)
 	// 获取异步调用设备属性的结果
 	PropertyControlRead(ctx context.Context, in *RespReadReq, opts ...grpc.CallOption) (*PropertyControlSendResp, error)
-	// 实时获取网关拓扑关系
-	GatewayGetFoundSend(ctx context.Context, in *GatewayGetFoundReq, opts ...grpc.CallOption) (*GatewayGetFoundResp, error)
-	// 通知网关绑定子设备
-	GatewayNotifyBindSend(ctx context.Context, in *GatewayNotifyBindSendReq, opts ...grpc.CallOption) (*Empty, error)
 	// 发送消息给设备 -- 调试使用
 	SendMsg(ctx context.Context, in *SendMsgReq, opts ...grpc.CallOption) (*SendMsgResp, error)
+	// 获取网关拓扑关系
+	GatewayGetFoundSend(ctx context.Context, in *GatewayGetFoundReq, opts ...grpc.CallOption) (*Empty, error)
+	// 通知网关绑定子设备
+	GatewayNotifyBindSend(ctx context.Context, in *GatewayNotifyBindSendReq, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type deviceInteractClient struct {
@@ -3351,8 +3390,17 @@ func (c *deviceInteractClient) PropertyControlRead(ctx context.Context, in *Resp
 	return out, nil
 }
 
-func (c *deviceInteractClient) GatewayGetFoundSend(ctx context.Context, in *GatewayGetFoundReq, opts ...grpc.CallOption) (*GatewayGetFoundResp, error) {
-	out := new(GatewayGetFoundResp)
+func (c *deviceInteractClient) SendMsg(ctx context.Context, in *SendMsgReq, opts ...grpc.CallOption) (*SendMsgResp, error) {
+	out := new(SendMsgResp)
+	err := c.cc.Invoke(ctx, DeviceInteract_SendMsg_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceInteractClient) GatewayGetFoundSend(ctx context.Context, in *GatewayGetFoundReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, DeviceInteract_GatewayGetFoundSend_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -3363,15 +3411,6 @@ func (c *deviceInteractClient) GatewayGetFoundSend(ctx context.Context, in *Gate
 func (c *deviceInteractClient) GatewayNotifyBindSend(ctx context.Context, in *GatewayNotifyBindSendReq, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, DeviceInteract_GatewayNotifyBindSend_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *deviceInteractClient) SendMsg(ctx context.Context, in *SendMsgReq, opts ...grpc.CallOption) (*SendMsgResp, error) {
-	out := new(SendMsgResp)
-	err := c.cc.Invoke(ctx, DeviceInteract_SendMsg_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -3396,12 +3435,12 @@ type DeviceInteractServer interface {
 	PropertyControlMultiSend(context.Context, *PropertyControlMultiSendReq) (*PropertyControlMultiSendResp, error)
 	// 获取异步调用设备属性的结果
 	PropertyControlRead(context.Context, *RespReadReq) (*PropertyControlSendResp, error)
-	// 实时获取网关拓扑关系
-	GatewayGetFoundSend(context.Context, *GatewayGetFoundReq) (*GatewayGetFoundResp, error)
-	// 通知网关绑定子设备
-	GatewayNotifyBindSend(context.Context, *GatewayNotifyBindSendReq) (*Empty, error)
 	// 发送消息给设备 -- 调试使用
 	SendMsg(context.Context, *SendMsgReq) (*SendMsgResp, error)
+	// 获取网关拓扑关系
+	GatewayGetFoundSend(context.Context, *GatewayGetFoundReq) (*Empty, error)
+	// 通知网关绑定子设备
+	GatewayNotifyBindSend(context.Context, *GatewayNotifyBindSendReq) (*Empty, error)
 	mustEmbedUnimplementedDeviceInteractServer()
 }
 
@@ -3430,14 +3469,14 @@ func (UnimplementedDeviceInteractServer) PropertyControlMultiSend(context.Contex
 func (UnimplementedDeviceInteractServer) PropertyControlRead(context.Context, *RespReadReq) (*PropertyControlSendResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PropertyControlRead not implemented")
 }
-func (UnimplementedDeviceInteractServer) GatewayGetFoundSend(context.Context, *GatewayGetFoundReq) (*GatewayGetFoundResp, error) {
+func (UnimplementedDeviceInteractServer) SendMsg(context.Context, *SendMsgReq) (*SendMsgResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendMsg not implemented")
+}
+func (UnimplementedDeviceInteractServer) GatewayGetFoundSend(context.Context, *GatewayGetFoundReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GatewayGetFoundSend not implemented")
 }
 func (UnimplementedDeviceInteractServer) GatewayNotifyBindSend(context.Context, *GatewayNotifyBindSendReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GatewayNotifyBindSend not implemented")
-}
-func (UnimplementedDeviceInteractServer) SendMsg(context.Context, *SendMsgReq) (*SendMsgResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SendMsg not implemented")
 }
 func (UnimplementedDeviceInteractServer) mustEmbedUnimplementedDeviceInteractServer() {}
 
@@ -3578,6 +3617,24 @@ func _DeviceInteract_PropertyControlRead_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DeviceInteract_SendMsg_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendMsgReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceInteractServer).SendMsg(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceInteract_SendMsg_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceInteractServer).SendMsg(ctx, req.(*SendMsgReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _DeviceInteract_GatewayGetFoundSend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GatewayGetFoundReq)
 	if err := dec(in); err != nil {
@@ -3610,24 +3667,6 @@ func _DeviceInteract_GatewayNotifyBindSend_Handler(srv interface{}, ctx context.
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceInteractServer).GatewayNotifyBindSend(ctx, req.(*GatewayNotifyBindSendReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DeviceInteract_SendMsg_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SendMsgReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DeviceInteractServer).SendMsg(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DeviceInteract_SendMsg_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceInteractServer).SendMsg(ctx, req.(*SendMsgReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3668,16 +3707,16 @@ var DeviceInteract_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _DeviceInteract_PropertyControlRead_Handler,
 		},
 		{
+			MethodName: "sendMsg",
+			Handler:    _DeviceInteract_SendMsg_Handler,
+		},
+		{
 			MethodName: "gatewayGetFoundSend",
 			Handler:    _DeviceInteract_GatewayGetFoundSend_Handler,
 		},
 		{
 			MethodName: "gatewayNotifyBindSend",
 			Handler:    _DeviceInteract_GatewayNotifyBindSend_Handler,
-		},
-		{
-			MethodName: "sendMsg",
-			Handler:    _DeviceInteract_SendMsg_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

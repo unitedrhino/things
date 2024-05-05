@@ -35,7 +35,7 @@ func NewDeviceGatewayMultiDeleteLogic(ctx context.Context, svcCtx *svc.ServiceCo
 }
 
 // 删除分组设备
-func (l *DeviceGatewayMultiDeleteLogic) DeviceGatewayMultiDelete(in *dm.DeviceGatewayMultiDeleteReq) (*dm.Empty, error) {
+func (l *DeviceGatewayMultiDeleteLogic) DeviceGatewayMultiDelete(in *dm.DeviceGatewayMultiSaveReq) (*dm.Empty, error) {
 	devicesDos := logic.ToDeviceCoreDos(in.List)
 	err := l.GdDB.MultiDelete(l.ctx, &devices.Core{
 		ProductID:  in.Gateway.ProductID,

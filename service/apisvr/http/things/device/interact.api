@@ -51,7 +51,28 @@ service api {
     @doc "请求设备获取设备最新属性"
     @handler propertyGetReportSend
     post /property-get-report-send (DeviceInteractPropertyGetReportSendReq) returns (DeviceInteractPropertyGetReportSendResp)
+
+    @doc "通知网关绑定子设备"
+    @handler gatewayNotifyBindSend
+    post /gateway-notify-bind-send (GatewayNotifyBindSendReq) returns ()
+
+
+    @doc "获取网关拓扑关系"
+    @handler gatewayGetFoundSend
+    post /gateway-get-found-send (GatewayGetFoundReq) returns ()
 }
+
+type (
+    GatewayNotifyBindSendReq{
+        Gateway       *DeviceCore `json:"gateway"` //如果是不同的产品,则传这个字段,上面两个参数填了优先使用
+        SubDevices       []*DeviceCore `json:"subDevices"` //如果是不同的产品,则传这个字段,上面两个参数填了优先使用
+    }
+
+    GatewayGetFoundReq{
+        ProductID  string   `json:"productID"`   //产品id (必填)
+        DeviceName string   `json:"deviceName"` //设备名(必填)
+    }
+)
 
 type DeviceInteractPropertyGetReportSendReq {
     ProductID  string   `json:"productID"`   //产品id (必填)
