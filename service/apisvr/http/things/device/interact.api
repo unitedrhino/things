@@ -57,7 +57,7 @@ service api {
     post /gateway-notify-bind-send (GatewayNotifyBindSendReq) returns ()
 
 
-    @doc "获取网关拓扑关系"
+    @doc "请求网关上报拓扑关系"
     @handler gatewayGetFoundSend
     post /gateway-get-found-send (GatewayGetFoundReq) returns ()
 }

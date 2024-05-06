@@ -44,7 +44,6 @@ service api {
 type (
     GatewayCanBindIndexReq{
         Gateway       *DeviceCore `json:"gateway"` //如果是不同的产品,则传这个字段,上面两个参数填了优先使用
-
     }
     GatewayCanBindIndexResp{
         SubDevices       []*DeviceCore `json:"subDevices"` //如果是不同的产品,则传这个字段,上面两个参数填了优先使用
