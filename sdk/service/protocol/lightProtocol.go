@@ -204,6 +204,8 @@ func (p *LightProtocol) RegisterProductIDSync() error {
 	})
 	return err
 }
+
+// 通过外部的产品iD查询iThings的产品iD
 func (p *LightProtocol) GetProductID(productID string) string {
 	p.ProductIDMapMutex.RLock()
 	defer p.ProductIDMapMutex.RUnlock()

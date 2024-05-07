@@ -3,25 +3,26 @@ package devicemanagelogic
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
-	"gitee.com/i-Things/share/domain/deviceAuth"
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgGateway"
 	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
+	"github.com/spf13/cast"
+	"gorm.io/gorm"
+	"time"
+
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
-	"github.com/spf13/cast"
-	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type DeviceGatewayMultiCreateLogic struct {
+type DeviceGatewayMultiUpdateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
@@ -30,8 +31,8 @@ type DeviceGatewayMultiCreateLogic struct {
 	GdDB *relationDB.GatewayDeviceRepo
 }
 
-func NewDeviceGatewayMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeviceGatewayMultiCreateLogic {
-	return &DeviceGatewayMultiCreateLogic{
+func NewDeviceGatewayMultiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeviceGatewayMultiUpdateLogic {
+	return &DeviceGatewayMultiUpdateLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
@@ -41,8 +42,8 @@ func NewDeviceGatewayMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceCo
 	}
 }
 
-// 创建分组设备
-func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGatewayMultiCreateReq) (*dm.Empty, error) {
+// 绑定网关下子设备设备
+func (l *DeviceGatewayMultiUpdateLogic) DeviceGatewayMultiUpdate(in *dm.DeviceGatewayMultiSaveReq) (*dm.Empty, error) {
 	{ //检查是否是网关类型
 		pi, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.Gateway.ProductID}})
 		if err != nil {
@@ -76,33 +77,27 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 			}
 		}
 	}
-	if in.IsAuthSign { //秘钥检查
-		for _, device := range in.List {
-			di, err := l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: device.ProductID, DeviceNames: []string{device.DeviceName}})
-			if err != nil { //检查是否找到
-				return nil, err
-			}
-			if device.Sign == nil {
-				return nil, errors.Parameter.AddMsg("没有填写签名信息")
-			}
-			pi, err := deviceAuth.NewPwdInfo(device.Sign.Signature, device.Sign.SignMethod)
-			if err != nil {
-				return nil, err
-			}
-			sign := fmt.Sprintf("%v;%v;%v;%v", device.ProductID, device.DeviceName, device.Sign.Random, device.Sign.Timestamp)
-			if err := pi.CmpPwd(sign, di.Secret); err != nil {
-				return nil, err
-			}
+	devicesDos := logic.ToDeviceCoreDos(in.List)
+	err := stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+		gd := relationDB.NewGatewayDeviceRepo(tx)
+		err := gd.MultiDelete(l.ctx, &devices.Core{
+			ProductID:  in.Gateway.ProductID,
+			DeviceName: in.Gateway.DeviceName,
+		}, nil)
+		if err != nil {
+			return err
 		}
-	}
-
-	devicesDos := logic.BindToDeviceCoreDos(in.List)
-	err := l.GdDB.MultiInsert(l.ctx, &devices.Core{
-		ProductID:  in.Gateway.ProductID,
-		DeviceName: in.Gateway.DeviceName,
-	}, devicesDos)
+		err = gd.MultiInsert(l.ctx, &devices.Core{
+			ProductID:  in.Gateway.ProductID,
+			DeviceName: in.Gateway.DeviceName,
+		}, devicesDos)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
 	if err != nil {
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
 	req := &msgGateway.Msg{
 		CommonMsg: deviceMsg.NewRespCommonMsg(l.ctx, deviceMsg.Change, "").AddStatus(errors.OK),

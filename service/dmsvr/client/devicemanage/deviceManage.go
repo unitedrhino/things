@@ -205,6 +205,8 @@ type (
 		DeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error)
 		// 绑定网关下子设备设备
 		DeviceGatewayMultiCreate(ctx context.Context, in *DeviceGatewayMultiCreateReq, opts ...grpc.CallOption) (*Empty, error)
+		// 绑定网关下子设备设备
+		DeviceGatewayMultiUpdate(ctx context.Context, in *DeviceGatewayMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
 		// 获取绑定信息的设备信息列表
 		DeviceGatewayIndex(ctx context.Context, in *DeviceGatewayIndexReq, opts ...grpc.CallOption) (*DeviceGatewayIndexResp, error)
 		// 删除网关下子设备
@@ -355,6 +357,17 @@ func (m *defaultDeviceManage) DeviceGatewayMultiCreate(ctx context.Context, in *
 // 绑定网关下子设备设备
 func (d *directDeviceManage) DeviceGatewayMultiCreate(ctx context.Context, in *DeviceGatewayMultiCreateReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.DeviceGatewayMultiCreate(ctx, in)
+}
+
+// 绑定网关下子设备设备
+func (m *defaultDeviceManage) DeviceGatewayMultiUpdate(ctx context.Context, in *DeviceGatewayMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceGatewayMultiUpdate(ctx, in, opts...)
+}
+
+// 绑定网关下子设备设备
+func (d *directDeviceManage) DeviceGatewayMultiUpdate(ctx context.Context, in *DeviceGatewayMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.DeviceGatewayMultiUpdate(ctx, in)
 }
 
 // 获取绑定信息的设备信息列表

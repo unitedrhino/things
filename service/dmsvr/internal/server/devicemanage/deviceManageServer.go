@@ -85,6 +85,12 @@ func (s *DeviceManageServer) DeviceGatewayMultiCreate(ctx context.Context, in *d
 	return l.DeviceGatewayMultiCreate(in)
 }
 
+// 绑定网关下子设备设备
+func (s *DeviceManageServer) DeviceGatewayMultiUpdate(ctx context.Context, in *dm.DeviceGatewayMultiSaveReq) (*dm.Empty, error) {
+	l := devicemanagelogic.NewDeviceGatewayMultiUpdateLogic(ctx, s.svcCtx)
+	return l.DeviceGatewayMultiUpdate(in)
+}
+
 // 获取绑定信息的设备信息列表
 func (s *DeviceManageServer) DeviceGatewayIndex(ctx context.Context, in *dm.DeviceGatewayIndexReq) (*dm.DeviceGatewayIndexResp, error) {
 	l := devicemanagelogic.NewDeviceGatewayIndexLogic(ctx, s.svcCtx)

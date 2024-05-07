@@ -38,6 +38,7 @@ type (
 		SharedDevices     []*devices.Core
 		SharedType        def.SelectType
 		WithManufacturer  bool
+		DeviceType        int64
 	}
 )
 
@@ -138,6 +139,9 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 			uc := ctxs.GetUserCtx(ctx)
 			db = db.WithContext(ctxs.WithRoot(ctx)).Where("tenant_code=? and  project_id=?", uc.TenantCode, uc.ProjectID).Or(scope(db))
 		}
+	}
+	if f.DeviceType != 0 {
+		db = db.Where("product_id in (select product_id from dm_product_info where device_type=?)", f.DeviceType)
 	}
 	return db
 }

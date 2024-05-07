@@ -64,6 +64,8 @@ service DeviceManage {
 
   //绑定网关下子设备设备
   rpc deviceGatewayMultiCreate(DeviceGatewayMultiCreateReq)     returns (Empty);
+  //绑定网关下子设备设备
+  rpc deviceGatewayMultiUpdate(DeviceGatewayMultiSaveReq)     returns (Empty);
   //获取绑定信息的设备信息列表
   rpc deviceGatewayIndex(DeviceGatewayIndexReq)     returns (DeviceGatewayIndexResp);
   //删除网关下子设备
@@ -1078,6 +1080,7 @@ message DeviceInfoIndexReq{
   int64 withShared = 13;//过滤分享的设备(这里只获取分享的设备) 1: 同时获取分享的设备 2:只获取分享的设备
   string tenantCode = 14;//租户过滤
   repeated string versions =15;//版本列表
+  int64  deviceType = 16; //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
 }
 
 message DeviceInfoIndexResp{

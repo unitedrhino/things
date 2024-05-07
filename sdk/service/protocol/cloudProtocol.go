@@ -140,6 +140,14 @@ func (p *CloudProtocol[pConf]) GetConf(key string) *pConf {
 	}
 	return &c.Conf
 }
+func (p *CloudProtocol[pConf]) GetAllConf() (ret []pConf) {
+	p.ConfMapMutex.RLock()
+	defer p.ConfMapMutex.RUnlock()
+	for _, v := range p.ConfMap {
+		ret = append(ret, v.Conf)
+	}
+	return ret
+}
 
 func (p *CloudProtocol[pConf]) RegisterDeviceSync(fieldName string /*自定义协议的对应协议code的字段名*/, f SyncDevicesFunc[pConf]) error {
 	err := p.RegisterTimerHandler(func(ctx context.Context, t time.Time) error {

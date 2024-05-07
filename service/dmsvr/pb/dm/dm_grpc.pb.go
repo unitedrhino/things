@@ -32,6 +32,7 @@ const (
 	DeviceManage_DeviceInfoUnbind_FullMethodName         = "/dm.DeviceManage/deviceInfoUnbind"
 	DeviceManage_DeviceTransfer_FullMethodName           = "/dm.DeviceManage/deviceTransfer"
 	DeviceManage_DeviceGatewayMultiCreate_FullMethodName = "/dm.DeviceManage/deviceGatewayMultiCreate"
+	DeviceManage_DeviceGatewayMultiUpdate_FullMethodName = "/dm.DeviceManage/deviceGatewayMultiUpdate"
 	DeviceManage_DeviceGatewayIndex_FullMethodName       = "/dm.DeviceManage/deviceGatewayIndex"
 	DeviceManage_DeviceGatewayMultiDelete_FullMethodName = "/dm.DeviceManage/deviceGatewayMultiDelete"
 	DeviceManage_DeviceInfoCount_FullMethodName          = "/dm.DeviceManage/deviceInfoCount"
@@ -65,6 +66,8 @@ type DeviceManageClient interface {
 	DeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error)
 	// 绑定网关下子设备设备
 	DeviceGatewayMultiCreate(ctx context.Context, in *DeviceGatewayMultiCreateReq, opts ...grpc.CallOption) (*Empty, error)
+	// 绑定网关下子设备设备
+	DeviceGatewayMultiUpdate(ctx context.Context, in *DeviceGatewayMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
 	// 获取绑定信息的设备信息列表
 	DeviceGatewayIndex(ctx context.Context, in *DeviceGatewayIndexReq, opts ...grpc.CallOption) (*DeviceGatewayIndexResp, error)
 	// 删除网关下子设备
@@ -186,6 +189,15 @@ func (c *deviceManageClient) DeviceGatewayMultiCreate(ctx context.Context, in *D
 	return out, nil
 }
 
+func (c *deviceManageClient) DeviceGatewayMultiUpdate(ctx context.Context, in *DeviceGatewayMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceGatewayMultiUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *deviceManageClient) DeviceGatewayIndex(ctx context.Context, in *DeviceGatewayIndexReq, opts ...grpc.CallOption) (*DeviceGatewayIndexResp, error) {
 	out := new(DeviceGatewayIndexResp)
 	err := c.cc.Invoke(ctx, DeviceManage_DeviceGatewayIndex_FullMethodName, in, out, opts...)
@@ -281,6 +293,8 @@ type DeviceManageServer interface {
 	DeviceTransfer(context.Context, *DeviceTransferReq) (*Empty, error)
 	// 绑定网关下子设备设备
 	DeviceGatewayMultiCreate(context.Context, *DeviceGatewayMultiCreateReq) (*Empty, error)
+	// 绑定网关下子设备设备
+	DeviceGatewayMultiUpdate(context.Context, *DeviceGatewayMultiSaveReq) (*Empty, error)
 	// 获取绑定信息的设备信息列表
 	DeviceGatewayIndex(context.Context, *DeviceGatewayIndexReq) (*DeviceGatewayIndexResp, error)
 	// 删除网关下子设备
@@ -332,6 +346,9 @@ func (UnimplementedDeviceManageServer) DeviceTransfer(context.Context, *DeviceTr
 }
 func (UnimplementedDeviceManageServer) DeviceGatewayMultiCreate(context.Context, *DeviceGatewayMultiCreateReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceGatewayMultiCreate not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceGatewayMultiUpdate(context.Context, *DeviceGatewayMultiSaveReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceGatewayMultiUpdate not implemented")
 }
 func (UnimplementedDeviceManageServer) DeviceGatewayIndex(context.Context, *DeviceGatewayIndexReq) (*DeviceGatewayIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceGatewayIndex not implemented")
@@ -568,6 +585,24 @@ func _DeviceManage_DeviceGatewayMultiCreate_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DeviceManage_DeviceGatewayMultiUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceGatewayMultiSaveReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceGatewayMultiUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceGatewayMultiUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceGatewayMultiUpdate(ctx, req.(*DeviceGatewayMultiSaveReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _DeviceManage_DeviceGatewayIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeviceGatewayIndexReq)
 	if err := dec(in); err != nil {
@@ -762,6 +797,10 @@ var DeviceManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "deviceGatewayMultiCreate",
 			Handler:    _DeviceManage_DeviceGatewayMultiCreate_Handler,
+		},
+		{
+			MethodName: "deviceGatewayMultiUpdate",
+			Handler:    _DeviceManage_DeviceGatewayMultiUpdate_Handler,
 		},
 		{
 			MethodName: "deviceGatewayIndex",
