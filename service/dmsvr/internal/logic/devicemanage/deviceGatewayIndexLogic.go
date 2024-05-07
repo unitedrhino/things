@@ -49,17 +49,18 @@ func (l *DeviceGatewayIndexLogic) DeviceGatewayIndex(in *dm.DeviceGatewayIndexRe
 	if f.Gateway != nil {
 		for _, v := range di {
 			list = append(list, &dm.DeviceCore{
-				ProductID:  v.GatewayProductID,
-				DeviceName: v.GatewayDeviceName,
+				ProductID:  v.ProductID,
+				DeviceName: v.DeviceName,
 			})
 		}
 	} else {
 		for _, v := range di {
 			list = append(list, &dm.DeviceCore{
-				ProductID:  v.ProductID,
-				DeviceName: v.DeviceName,
+				ProductID:  v.GatewayProductID,
+				DeviceName: v.GatewayDeviceName,
 			})
 		}
+
 	}
 	return &dm.DeviceGatewayIndexResp{
 		List:  list,
