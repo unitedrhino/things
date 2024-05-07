@@ -1819,6 +1819,7 @@ var ProductManage_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
+	SchemaManage_CommonSchemaInit_FullMethodName   = "/dm.SchemaManage/commonSchemaInit"
 	SchemaManage_CommonSchemaUpdate_FullMethodName = "/dm.SchemaManage/commonSchemaUpdate"
 	SchemaManage_CommonSchemaCreate_FullMethodName = "/dm.SchemaManage/commonSchemaCreate"
 	SchemaManage_CommonSchemaDelete_FullMethodName = "/dm.SchemaManage/commonSchemaDelete"
@@ -1829,6 +1830,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SchemaManageClient interface {
+	CommonSchemaInit(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
 	// 更新产品物模型
 	CommonSchemaUpdate(ctx context.Context, in *CommonSchemaUpdateReq, opts ...grpc.CallOption) (*Empty, error)
 	// 新增产品
@@ -1845,6 +1847,15 @@ type schemaManageClient struct {
 
 func NewSchemaManageClient(cc grpc.ClientConnInterface) SchemaManageClient {
 	return &schemaManageClient{cc}
+}
+
+func (c *schemaManageClient) CommonSchemaInit(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, SchemaManage_CommonSchemaInit_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *schemaManageClient) CommonSchemaUpdate(ctx context.Context, in *CommonSchemaUpdateReq, opts ...grpc.CallOption) (*Empty, error) {
@@ -1887,6 +1898,7 @@ func (c *schemaManageClient) CommonSchemaIndex(ctx context.Context, in *CommonSc
 // All implementations must embed UnimplementedSchemaManageServer
 // for forward compatibility
 type SchemaManageServer interface {
+	CommonSchemaInit(context.Context, *Empty) (*Empty, error)
 	// 更新产品物模型
 	CommonSchemaUpdate(context.Context, *CommonSchemaUpdateReq) (*Empty, error)
 	// 新增产品
@@ -1902,6 +1914,9 @@ type SchemaManageServer interface {
 type UnimplementedSchemaManageServer struct {
 }
 
+func (UnimplementedSchemaManageServer) CommonSchemaInit(context.Context, *Empty) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CommonSchemaInit not implemented")
+}
 func (UnimplementedSchemaManageServer) CommonSchemaUpdate(context.Context, *CommonSchemaUpdateReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CommonSchemaUpdate not implemented")
 }
@@ -1925,6 +1940,24 @@ type UnsafeSchemaManageServer interface {
 
 func RegisterSchemaManageServer(s grpc.ServiceRegistrar, srv SchemaManageServer) {
 	s.RegisterService(&SchemaManage_ServiceDesc, srv)
+}
+
+func _SchemaManage_CommonSchemaInit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SchemaManageServer).CommonSchemaInit(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SchemaManage_CommonSchemaInit_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SchemaManageServer).CommonSchemaInit(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _SchemaManage_CommonSchemaUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -2006,6 +2039,10 @@ var SchemaManage_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "dm.SchemaManage",
 	HandlerType: (*SchemaManageServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "commonSchemaInit",
+			Handler:    _SchemaManage_CommonSchemaInit_Handler,
+		},
 		{
 			MethodName: "commonSchemaUpdate",
 			Handler:    _SchemaManage_CommonSchemaUpdate_Handler,

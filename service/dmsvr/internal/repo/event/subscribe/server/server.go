@@ -17,10 +17,10 @@ type (
 	}
 )
 
-func NewServer(c conf.EventConf) (Server, error) {
+func NewServer(c conf.EventConf, nodeID int64) (Server, error) {
 	switch c.Mode {
 	case conf.EventModeNats, conf.EventModeNatsJs:
-		return newNatsClient(c)
+		return newNatsClient(c, nodeID)
 	}
 	return nil, errors.Parameter.AddMsgf("mode:%v not support", c.Mode)
 }

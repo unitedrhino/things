@@ -15,6 +15,11 @@ type DataUpdateLogic struct {
 	logx.Logger
 }
 
+func (d *DataUpdateLogic) ProductSchemaUpdate(info *events.DeviceUpdateInfo) error {
+	//TODO implement me
+	panic("implement me")
+}
+
 func NewPublishLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DataUpdateLogic {
 	return &DataUpdateLogic{
 		ctx:    ctx,

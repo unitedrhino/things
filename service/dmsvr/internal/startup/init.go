@@ -52,7 +52,7 @@ func init() {
 
 func InitSubscribe(svcCtx *svc.ServiceContext) {
 	{
-		cli, err := subDev.NewSubDev(svcCtx.Config.Event)
+		cli, err := subDev.NewSubDev(svcCtx.Config.Event, svcCtx.NodeID)
 		logx.Must(err)
 		err = cli.Subscribe(func(ctx context.Context) subDev.InnerSubEvent {
 			return deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx)
@@ -60,7 +60,7 @@ func InitSubscribe(svcCtx *svc.ServiceContext) {
 		logx.Must(err)
 	}
 	{
-		cli, err := server.NewServer(svcCtx.Config.Event)
+		cli, err := server.NewServer(svcCtx.Config.Event, svcCtx.NodeID)
 		logx.Must(err)
 		err = cli.Subscribe(func(ctx context.Context) server.ServerHandle {
 			return serverEvent.NewServerHandle(ctx, svcCtx)

@@ -140,6 +140,7 @@ service ProductManage{
 
 //公共物模型管理
 service SchemaManage{
+  rpc commonSchemaInit(Empty)  returns (Empty);
   //更新产品物模型
   rpc commonSchemaUpdate(CommonSchemaUpdateReq)returns (Empty);
   //新增产品

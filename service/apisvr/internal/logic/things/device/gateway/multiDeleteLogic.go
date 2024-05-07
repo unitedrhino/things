@@ -2,6 +2,7 @@ package gateway
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/logic/things"
@@ -22,7 +23,7 @@ type MultiDeleteLogic struct {
 func NewMultiDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MultiDeleteLogic {
 	return &MultiDeleteLogic{
 		Logger: logx.WithContext(ctx),
-		ctx:    ctx,
+		ctx:    ctxs.WithDefaultRoot(ctx),
 		svcCtx: svcCtx,
 	}
 }

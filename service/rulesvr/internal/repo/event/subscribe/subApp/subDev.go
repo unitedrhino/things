@@ -4,7 +4,6 @@ import (
 	"context"
 	"gitee.com/i-Things/share/conf"
 	"gitee.com/i-Things/share/domain/application"
-	"gitee.com/i-Things/share/errors"
 )
 
 type (
@@ -24,13 +23,6 @@ type (
 	}
 )
 
-func NewSubApp(c conf.EventConf) (SubApp, error) {
-	switch c.Mode {
-	case conf.EventModeNats:
-		return newNatsClient(c.Nats)
-	case conf.EventModeNatsJs:
-		return newNatsJsClient(c.Nats)
-	}
-	return nil, errors.Parameter.AddMsgf("mode:%v not support", c.Mode)
-
+func NewSubApp(c conf.EventConf, nodeID int64) (SubApp, error) {
+	return newNatsClient(c, nodeID)
 }

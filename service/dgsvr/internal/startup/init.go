@@ -26,7 +26,7 @@ func PostInit(svcCtx *svc.ServiceContext) {
 	dl, err := pubDev.NewPubDev(svcCtx.Config.DevLink)
 	logx.Must(err)
 
-	il, err := pubInner.NewPubInner(svcCtx.Config.Event, def.ProtocolCodeIThings)
+	il, err := pubInner.NewPubInner(svcCtx.Config.Event, def.ProtocolCodeIThings, svcCtx.NodeID)
 	logx.Must(err)
 
 	svcCtx.PubDev = dl
@@ -38,7 +38,7 @@ func PostInit(svcCtx *svc.ServiceContext) {
 		return deviceSub.NewDeviceSubServer(svcCtx, ctx)
 	})
 	logx.Must(err)
-	si, err := subInner.NewSubInner(svcCtx.Config.Event)
+	si, err := subInner.NewSubInner(svcCtx.Config.Event, svcCtx.NodeID)
 	logx.Must(err)
 	err = si.SubToDevMsg(func(ctx context.Context) subInner.InnerSubHandle {
 		return innerSub.NewInnerSubServer(svcCtx, ctx)

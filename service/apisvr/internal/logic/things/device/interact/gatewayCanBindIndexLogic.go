@@ -2,6 +2,7 @@ package interact
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 
@@ -20,7 +21,7 @@ type GatewayCanBindIndexLogic struct {
 func NewGatewayCanBindIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GatewayCanBindIndexLogic {
 	return &GatewayCanBindIndexLogic{
 		Logger: logx.WithContext(ctx),
-		ctx:    ctx,
+		ctx:    ctxs.WithDefaultRoot(ctx),
 		svcCtx: svcCtx,
 	}
 }

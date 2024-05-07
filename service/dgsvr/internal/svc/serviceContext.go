@@ -31,6 +31,7 @@ type ServiceContext struct {
 	Script       custom.Repo
 	ProductCache *caches.Cache[dm.ProductInfo]
 	DeviceCache  *caches.Cache[dm.DeviceInfo]
+	NodeID       int64
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -73,7 +74,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			ScriptLang:      ret.ScriptLang,
 		}, nil
 	})
-	serverMsg, err := eventBus.NewFastEvent(c.Event, c.Name)
+	nodeID := utils.GetNodeID(c.CacheRedis, c.Name)
+	serverMsg, err := eventBus.NewFastEvent(c.Event, c.Name, nodeID)
 	logx.Must(err)
 	pc, err := dmExport.NewProductInfoCache(productM, serverMsg)
 	logx.Must(err)
@@ -89,5 +91,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Script:       scriptCache,
 		ProductCache: pc,
 		DeviceCache:  dc,
+		NodeID:       nodeID,
 	}
 }

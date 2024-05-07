@@ -18,7 +18,7 @@ func Init(svcCtx *svc.ServiceContext) {
 }
 
 func Subscribe(svcCtx *svc.ServiceContext) {
-	subAppCli, err := subApp.NewSubApp(svcCtx.Config.Event)
+	subAppCli, err := subApp.NewSubApp(svcCtx.Config.Event, svcCtx.NodeID)
 	logx.Must(err)
 	err = subAppCli.Subscribe(func(ctx context.Context) subApp.AppSubEvent {
 		return appDeviceEvent.NewAppDeviceHandle(ctx, svcCtx)

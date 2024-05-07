@@ -46,6 +46,7 @@ type CloudProtocolConf[pConf ConfImp] struct {
 	ServerName string
 	DmClient   zrpc.Client
 	TimedM     zrpc.Client
+	NodeID     int64
 }
 
 func NewCloudProtocol[pConf ConfImp](c conf.EventConf, pi *dm.ProtocolInfo, pc *CloudProtocolConf[pConf]) (*CloudProtocol[pConf], error) {
@@ -53,6 +54,7 @@ func NewCloudProtocol[pConf ConfImp](c conf.EventConf, pi *dm.ProtocolInfo, pc *
 		ServerName: pc.ServerName,
 		DmClient:   pc.DmClient,
 		TimedM:     pc.TimedM,
+		NodeID:     pc.NodeID,
 	})
 	if err != nil {
 		return nil, err

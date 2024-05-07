@@ -2,6 +2,7 @@ package msg
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/logic"
@@ -21,7 +22,7 @@ type EventLogIndexLogic struct {
 func NewEventLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *EventLogIndexLogic {
 	return &EventLogIndexLogic{
 		Logger: logx.WithContext(ctx),
-		ctx:    ctx,
+		ctx:    ctxs.WithDefaultRoot(ctx),
 		svcCtx: svcCtx,
 	}
 }

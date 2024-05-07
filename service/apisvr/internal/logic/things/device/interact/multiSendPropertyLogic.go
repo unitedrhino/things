@@ -2,6 +2,7 @@ package interact
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"sync"
 
 	"github.com/i-Things/things/service/apisvr/internal/svc"
@@ -22,7 +23,7 @@ type MultiSendPropertyLogic struct {
 func NewMultiSendPropertyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MultiSendPropertyLogic {
 	return &MultiSendPropertyLogic{
 		Logger: logx.WithContext(ctx),
-		ctx:    ctx,
+		ctx:    ctxs.WithDefaultRoot(ctx),
 		svcCtx: svcCtx,
 	}
 }

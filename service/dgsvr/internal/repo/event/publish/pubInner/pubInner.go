@@ -23,10 +23,10 @@ type (
 	}
 )
 
-func NewPubInner(c conf.EventConf, protocolCode string) (PubInner, error) {
+func NewPubInner(c conf.EventConf, protocolCode string, nodeID int64) (PubInner, error) {
 	switch c.Mode {
 	case conf.EventModeNats, conf.EventModeNatsJs:
-		return newNatsClient(c, protocolCode)
+		return newNatsClient(c, protocolCode, nodeID)
 	}
 	return nil, errors.Parameter.AddMsgf("mode:%v not support", c.Mode)
 }

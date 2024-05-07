@@ -2,6 +2,7 @@ package interact
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 
@@ -20,7 +21,7 @@ type GatewayGetFoundSendLogic struct {
 func NewGatewayGetFoundSendLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GatewayGetFoundSendLogic {
 	return &GatewayGetFoundSendLogic{
 		Logger: logx.WithContext(ctx),
-		ctx:    ctx,
+		ctx:    ctxs.WithDefaultRoot(ctx),
 		svcCtx: svcCtx,
 	}
 }

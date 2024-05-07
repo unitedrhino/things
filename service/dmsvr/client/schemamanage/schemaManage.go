@@ -186,6 +186,7 @@ type (
 	WithIDCode                        = dm.WithIDCode
 
 	SchemaManage interface {
+		CommonSchemaInit(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
 		// 更新产品物模型
 		CommonSchemaUpdate(ctx context.Context, in *CommonSchemaUpdateReq, opts ...grpc.CallOption) (*Empty, error)
 		// 新增产品
@@ -217,6 +218,15 @@ func NewDirectSchemaManage(svcCtx *svc.ServiceContext, svr dm.SchemaManageServer
 		svr:    svr,
 		svcCtx: svcCtx,
 	}
+}
+
+func (m *defaultSchemaManage) CommonSchemaInit(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewSchemaManageClient(m.cli.Conn())
+	return client.CommonSchemaInit(ctx, in, opts...)
+}
+
+func (d *directSchemaManage) CommonSchemaInit(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.CommonSchemaInit(ctx, in)
 }
 
 // 更新产品物模型

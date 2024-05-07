@@ -6,6 +6,7 @@ import (
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/eventBus"
 	"gitee.com/i-Things/share/stores"
+	"gitee.com/i-Things/share/utils"
 	deviceinteract "github.com/i-Things/things/service/dmsvr/client/deviceinteract"
 	devicemanage "github.com/i-Things/things/service/dmsvr/client/devicemanage"
 	devicemsg "github.com/i-Things/things/service/dmsvr/client/devicemsg"
@@ -31,6 +32,7 @@ type ServiceContext struct {
 	SceneTimerControl timer.SceneControl
 	Bus               eventBus.Bus
 	DataUpdate        dataUpdate.DataUpdate
+	NodeID            int64
 }
 type Repo struct {
 	Store           kv.Store
@@ -51,6 +53,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceInteract deviceinteract.DeviceInteract
 		deviceMsg      devicemsg.DeviceMsg
 	)
+	nodeID := utils.GetNodeID(c.CacheRedis, c.Name)
+
 	stores.InitConn(c.Database)
 	err := relationDB.Migrate(c.Database)
 	if err != nil {
@@ -92,6 +96,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Bus:        bus,
 		Config:     c,
 		DataUpdate: du,
+		NodeID:     nodeID,
 		SvrClient: SvrClient{
 			ProductM:       productM,
 			DeviceInteract: deviceInteract,

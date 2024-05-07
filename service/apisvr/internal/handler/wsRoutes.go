@@ -822,6 +822,11 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/init",
+					Handler: thingsschemacommon.InitHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/update",
 					Handler: thingsschemacommon.UpdateHandler(serverCtx),
 				},

@@ -2,6 +2,7 @@ package info
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
@@ -21,7 +22,7 @@ type CountLogic struct {
 func NewCountLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CountLogic {
 	return &CountLogic{
 		Logger: logx.WithContext(ctx),
-		ctx:    ctx,
+		ctx:    ctxs.WithDefaultRoot(ctx),
 		svcCtx: svcCtx,
 	}
 }

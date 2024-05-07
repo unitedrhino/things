@@ -11,6 +11,7 @@ import (
 	"gitee.com/i-Things/share/eventBus"
 	"gitee.com/i-Things/share/oss"
 	"gitee.com/i-Things/share/stores"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/client/devicegroup"
 	"github.com/i-Things/things/service/dmsvr/client/deviceinteract"
 	"github.com/i-Things/things/service/dmsvr/client/devicemanage"
@@ -46,6 +47,7 @@ type ServiceContext struct {
 	FastEvent *eventBus.FastEvent
 	Store     kv.Store
 	OssClient *oss.Client
+	NodeID    int64
 	SvrClient
 }
 
@@ -61,6 +63,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceInteract deviceinteract.DeviceInteract
 		deviceMsg      devicemsg.DeviceMsg
 	)
+	nodeID := utils.GetNodeID(c.CacheRedis, c.Name)
 	stores.InitConn(c.Database)
 	logx.Must(relationDB.Migrate(c.Database))
 	timedM = timedmanage.NewTimedManage(zrpc.MustNewClient(c.TimedJobRpc.Conf))
@@ -81,7 +84,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceInteract = dmdirect.NewDeviceInteract(c.DmRpc.RunProxy)
 		deviceG = dmdirect.NewDeviceGroup(c.DmRpc.RunProxy)
 	}
-	serverMsg, err := eventBus.NewFastEvent(c.Event, c.Name)
+	serverMsg, err := eventBus.NewFastEvent(c.Event, c.Name, nodeID)
 	logx.Must(err)
 	dic, err := dmExport.NewDeviceInfoCache(deviceM, serverMsg)
 	logx.Must(err)
@@ -97,6 +100,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		FastEvent: serverMsg,
 		Store:     kv.NewStore(c.CacheRedis),
 		OssClient: ossClient,
+		NodeID:    nodeID,
 		SvrClient: SvrClient{
 			TimedM:             timedM,
 			AreaM:              areaM,

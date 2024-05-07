@@ -110,7 +110,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		logx.Errorf("NewOss err err:%v", err)
 		os.Exit(-1)
 	}
-	serverMsg, err := eventBus.NewFastEvent(c.Event, c.Name)
+	serverMsg, err := eventBus.NewFastEvent(c.Event, c.Name, nodeID)
 	logx.Must(err)
 
 	ccSchemaR, err := caches.NewCache(caches.CacheConfig[schema.Model]{
@@ -133,7 +133,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	})
 	logx.Must(err)
 	deviceDataR := schemaDataRepo.NewDeviceDataRepo(c.TSDB, ccSchemaR.GetData, ca)
-	pd, err := pubDev.NewPubDev(c.Event)
+	pd, err := pubDev.NewPubDev(c.Event, nodeID)
 	if err != nil {
 		logx.Error("NewPubDev err", err)
 		os.Exit(-1)

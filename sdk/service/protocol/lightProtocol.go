@@ -53,10 +53,11 @@ type LightProtocolConf struct {
 	ServerName string
 	DmClient   zrpc.Client
 	TimedM     zrpc.Client
+	NodeID     int64
 }
 
 func NewLightProtocol(c conf.EventConf, pi *dm.ProtocolInfo, pc *LightProtocolConf) (*LightProtocol, error) {
-	e, err := eventBus.NewFastEvent(c, pc.ServerName)
+	e, err := eventBus.NewFastEvent(c, pc.ServerName, pc.NodeID)
 	if err != nil {
 		return nil, err
 	}

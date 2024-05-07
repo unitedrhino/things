@@ -22,6 +22,11 @@ func NewSchemaManageServer(svcCtx *svc.ServiceContext) *SchemaManageServer {
 	}
 }
 
+func (s *SchemaManageServer) CommonSchemaInit(ctx context.Context, in *dm.Empty) (*dm.Empty, error) {
+	l := schemamanagelogic.NewCommonSchemaInitLogic(ctx, s.svcCtx)
+	return l.CommonSchemaInit(in)
+}
+
 // 更新产品物模型
 func (s *SchemaManageServer) CommonSchemaUpdate(ctx context.Context, in *dm.CommonSchemaUpdateReq) (*dm.Empty, error) {
 	l := schemamanagelogic.NewCommonSchemaUpdateLogic(ctx, s.svcCtx)

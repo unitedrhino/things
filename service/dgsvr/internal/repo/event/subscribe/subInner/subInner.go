@@ -17,10 +17,10 @@ type (
 	}
 )
 
-func NewSubInner(c conf.EventConf) (SubInner, error) {
+func NewSubInner(c conf.EventConf, nodeID int64) (SubInner, error) {
 	switch c.Mode {
 	case conf.EventModeNats, conf.EventModeNatsJs:
-		return newNatsClient(c)
+		return newNatsClient(c, nodeID)
 	}
 	return nil, errors.Parameter.AddMsgf("mode:%v not support", c.Mode)
 }

@@ -21,8 +21,8 @@ type (
 	}
 )
 
-func newNatsClient(conf conf.EventConf) (*NatsClient, error) {
-	nc, err := clients.NewNatsClient2(conf.Mode, conf.Nats.Consumer, conf.Nats)
+func newNatsClient(conf conf.EventConf, nodeID int64) (*NatsClient, error) {
+	nc, err := clients.NewNatsClient2(conf.Mode, conf.Nats.Consumer, conf.Nats, nodeID)
 	if err != nil {
 		return nil, err
 	}

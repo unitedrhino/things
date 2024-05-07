@@ -3,7 +3,6 @@ package gateway
 import (
 	"context"
 	"gitee.com/i-Things/share/ctxs"
-	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/logic"
@@ -25,16 +24,12 @@ type IndexLogic struct {
 func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic {
 	return &IndexLogic{
 		Logger: logx.WithContext(ctx),
-		ctx:    ctx,
+		ctx:    ctxs.WithDefaultRoot(ctx),
 		svcCtx: svcCtx,
 	}
 }
 
 func (l *IndexLogic) Index(req *types.DeviceGateWayIndexReq) (resp *types.DeviceGateWayIndexResp, err error) {
-	uc := ctxs.GetUserCtxNoNil(l.ctx)
-	if uc.TenantCode == def.TenantCodeDefault {
-		l.ctx = ctxs.WithRoot(l.ctx)
-	}
 	dmReq := &dm.DeviceGatewayIndexReq{
 		Gateway: &dm.DeviceCore{
 			ProductID:  req.GateWayProductID,

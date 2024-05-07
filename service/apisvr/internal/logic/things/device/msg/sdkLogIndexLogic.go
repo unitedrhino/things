@@ -2,6 +2,7 @@ package msg
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 
 	"gitee.com/i-Things/share/errors"
@@ -22,7 +23,7 @@ type SdkLogIndexLogic struct {
 func NewSdkLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SdkLogIndexLogic {
 	return &SdkLogIndexLogic{
 		Logger: logx.WithContext(ctx),
-		ctx:    ctx,
+		ctx:    ctxs.WithDefaultRoot(ctx),
 		svcCtx: svcCtx,
 	}
 }

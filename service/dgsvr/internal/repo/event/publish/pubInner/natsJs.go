@@ -19,8 +19,8 @@ type (
 	}
 )
 
-func newNatsClient(conf conf.EventConf, protocolCode string) (PubInner, error) {
-	nc, err := clients.NewNatsClient2(conf.Mode, conf.Nats.Consumer, conf.Nats)
+func newNatsClient(conf conf.EventConf, protocolCode string, nodeID int64) (PubInner, error) {
+	nc, err := clients.NewNatsClient2(conf.Mode, conf.Nats.Consumer, conf.Nats, nodeID)
 	if err != nil {
 		return nil, err
 	}
