@@ -100,7 +100,7 @@ func (m GatewayDeviceRepo) MultiDelete(ctx context.Context, gateway *devices.Cor
 		return db
 	}
 	db := m.db.WithContext(ctx).Model(&DmGatewayDevice{})
-	db = db.Where("gateway_product_id=? and gateway_device_name`=?", gateway.ProductID, gateway.DeviceName).Where(scope(db))
+	db = db.Where("gateway_product_id=? and gateway_device_name=?", gateway.ProductID, gateway.DeviceName).Where(scope(db))
 	err := db.Delete(&DmGatewayDevice{}).Error
 	return stores.ErrFmt(err)
 }
