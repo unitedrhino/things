@@ -1,6 +1,8 @@
 package logic
 
 import (
+	"context"
+	"gitee.com/i-Things/share/caches"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgGateway"
@@ -11,7 +13,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 )
 
-func ToDeviceInfo(in *relationDB.DmDeviceInfo) *dm.DeviceInfo {
+func ToDeviceInfo(ctx context.Context, in *relationDB.DmDeviceInfo, ProductCache *caches.Cache[dm.ProductInfo]) *dm.DeviceInfo {
 	if in == nil {
 		return nil
 	}
@@ -20,6 +22,15 @@ func ToDeviceInfo(in *relationDB.DmDeviceInfo) *dm.DeviceInfo {
 	}
 	if in.LogLevel == def.Unknown {
 		in.LogLevel = def.LogClose
+	}
+	var (
+		productName string
+		deviceType  int64 = def.DeviceTypeDevice
+	)
+	pi, err := ProductCache.GetData(ctx, in.ProductID)
+	if err == nil {
+		deviceType = pi.DeviceType
+		productName = pi.ProductName
 	}
 	//return utils.Copy[dm.DeviceInfo](in)
 
@@ -54,6 +65,8 @@ func ToDeviceInfo(in *relationDB.DmDeviceInfo) *dm.DeviceInfo {
 		ProtocolConf:   in.ProtocolConf,
 		Status:         in.Status,
 		Manufacturer:   utils.Copy[dm.ManufacturerInfo](in.Manufacturer),
+		ProductName:    productName,
+		DeviceType:     deviceType,
 	}
 }
 

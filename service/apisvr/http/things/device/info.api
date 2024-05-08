@@ -90,6 +90,8 @@ type (
         TenantCode string `json:"tenantCode,optional"`
         ProductID string `json:"productID"`                                               //产品id 只读
         ProjectID int64 `json:"projectID,string,optional"`                                               //项目id 只读
+        ProductName string `json:"productName,optional"`
+        DeviceType int64    `json:"deviceType,optional"`//设备类型:1:设备,2:网关,3:子设备
         AreaID int64 `json:"areaID,string,optional"`                                                     //项目区域id 只读
         DeviceName string `json:"deviceName"`                                             //设备名称 读写
         DeviceAlias *string `json:"deviceAlias,optional"`                                  //设备别名 读写
@@ -187,6 +189,7 @@ type (
         ProductCategoryID int64 `json:"productCategoryID,optional"`
         WithShared int64 `json:"withShared,optional,range=[0:2]"`                                         // 过滤分享的设备1: 同时获取分享的设备 2:只获取分享的设备
         Versions []string `json:"versions,optional"`
+        Gateway *DeviceCore `json:"gateway,optional"`//过滤网关
     }
     DeviceInfoIndexResp  {
         List []*DeviceInfo `json:"list"`    //设备信息

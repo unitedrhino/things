@@ -33,6 +33,7 @@ type (
 		DeviceAlias       string
 		Versions          []string
 		Cores             []*devices.Core
+		Gateway           *devices.Core
 		WithProduct       bool
 		ProductCategoryID int64
 		SharedDevices     []*devices.Core
@@ -79,6 +80,7 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	if f.DeviceName != "" {
 		db = db.Where("device_name like ?", "%"+f.DeviceName+"%")
 	}
+
 	if len(f.Cores) != 0 {
 		scope := func(db *gorm.DB) *gorm.DB {
 			for i, d := range f.Cores {
@@ -142,6 +144,11 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	}
 	if f.DeviceType != 0 {
 		db = db.Where("product_id in (select product_id from dm_product_info where device_type=?)", f.DeviceType)
+	}
+	if f.Gateway != nil {
+		db = db.Where("(product_id, device_name) in (select product_id,device_name from dm_gateway_device"+
+			" where gateway_product_id=? and gateway_device_name=? and deleted_time=0)",
+			f.Gateway.ProductID, f.Gateway.DeviceName)
 	}
 	return db
 }

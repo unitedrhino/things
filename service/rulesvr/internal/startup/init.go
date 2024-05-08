@@ -2,9 +2,7 @@ package startup
 
 import (
 	"context"
-	"gitee.com/i-Things/share/events/topics"
 	"github.com/i-Things/things/service/rulesvr/internal/event/appDeviceEvent"
-	"github.com/i-Things/things/service/rulesvr/internal/event/busEvent/sceneChange"
 	"github.com/i-Things/things/service/rulesvr/internal/event/dataUpdateEvent"
 	"github.com/i-Things/things/service/rulesvr/internal/repo/event/subscribe/dataUpdate"
 	"github.com/i-Things/things/service/rulesvr/internal/repo/event/subscribe/subApp"
@@ -33,6 +31,6 @@ func Subscribe(svcCtx *svc.ServiceContext) {
 }
 
 func InitEventBus(svcCtx *svc.ServiceContext) {
-	svcCtx.Bus.Subscribe(topics.RuleSceneInfoDelete, sceneChange.EventsHandle(svcCtx, topics.RuleSceneInfoDelete))
-	svcCtx.Bus.Subscribe(topics.RuleSceneInfoUpdate, sceneChange.EventsHandle(svcCtx, topics.RuleSceneInfoUpdate))
+	//svcCtx.Bus.Subscribe(topics.RuleSceneInfoDelete, sceneChange.EventsHandle(svcCtx, topics.RuleSceneInfoDelete))
+	//svcCtx.Bus.Subscribe(topics.RuleSceneInfoUpdate, sceneChange.EventsHandle(svcCtx, topics.RuleSceneInfoUpdate))
 }

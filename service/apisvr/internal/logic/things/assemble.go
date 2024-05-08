@@ -111,6 +111,8 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		Status:         v.Status,
 		Manufacturer:   utils.Copy[types.ManufacturerInfo](v.Manufacturer),
 		Owner:          owner,
+		ProductName:    v.ProductName,
+		DeviceType:     v.DeviceType,
 	}
 }
 

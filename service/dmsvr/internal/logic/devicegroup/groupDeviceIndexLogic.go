@@ -51,7 +51,7 @@ func (l *GroupDeviceIndexLogic) GroupDeviceIndex(in *dm.GroupDeviceIndexReq) (*d
 			l.Errorf("%s.GroupInfo.DeviceInfoRead failure err=%+v", utils.FuncName(), err)
 			continue
 		}
-		dd := logic.ToDeviceInfo(di)
+		dd := logic.ToDeviceInfo(l.ctx, di, l.svcCtx.ProductCache)
 		list = append(list, dd)
 	}
 

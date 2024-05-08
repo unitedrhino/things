@@ -195,7 +195,7 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Empty, 
 		l.Errorf("DeviceInfoUpdate.DeviceInfo.Update err=%+v", err)
 		return nil, err
 	}
-	err = l.svcCtx.DeviceCache.SetData(l.ctx, dmExport.GenDeviceInfoKey(dmDiPo.ProductID, dmDiPo.DeviceName), logic.ToDeviceInfo(dmDiPo))
+	err = l.svcCtx.DeviceCache.SetData(l.ctx, dmExport.GenDeviceInfoKey(dmDiPo.ProductID, dmDiPo.DeviceName), logic.ToDeviceInfo(l.ctx, dmDiPo, l.svcCtx.ProductCache))
 	if err != nil {
 		l.Error(err)
 	}
