@@ -175,7 +175,10 @@ func (d DeviceInfoRepo) UpdateWithField(ctx context.Context, f DeviceFilter, upd
 
 func (d DeviceInfoRepo) UpdateOfflineStatus(ctx context.Context, f DeviceFilter) error {
 	db := d.fmtFilter(ctx, f)
-	err := db.Model(&DmDeviceInfo{}).Update("is_online", def.False).Error
+	err := db.Model(&DmDeviceInfo{}).Updates(map[string]any{
+		"is_online": def.False,
+		"status":    def.DeviceStatusOffline,
+	}).Error
 	return stores.ErrFmt(err)
 }
 

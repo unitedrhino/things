@@ -160,19 +160,22 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 				Status:    status,
 				Timestamp: msg.Timestamp.UnixMilli(),
 			}
-			err = l.svcCtx.WebHook.Publish(l.svcCtx.WithDeviceTenant(l.ctx, appMsg.Device), sysExport.CodeDmDeviceConn, appMsg)
-			if err != nil {
-				l.Error(err)
-			}
-			err = l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDeviceConn, appMsg, map[string]any{
-				"productID":  ld.ProductID,
-				"deviceName": ld.DeviceName,
-			}, map[string]any{
-				"productID": ld.ProductID,
-			}, map[string]any{})
-			if err != nil {
-				l.Error(err)
-			}
+			utils.Go(ctx, func() {
+				err = l.svcCtx.WebHook.Publish(l.svcCtx.WithDeviceTenant(l.ctx, appMsg.Device), sysExport.CodeDmDeviceConn, appMsg)
+				if err != nil {
+					l.Error(err)
+				}
+				err = l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDeviceConn, appMsg, map[string]any{
+					"productID":  ld.ProductID,
+					"deviceName": ld.DeviceName,
+				}, map[string]any{
+					"productID": ld.ProductID,
+				}, map[string]any{})
+				if err != nil {
+					l.Error(err)
+				}
+			})
+
 			if status == def.ConnectedStatus {
 
 				di, err := l.svcCtx.DeviceCache.GetData(ctx, dmExport.GenDeviceInfoKey(ld.ProductID, ld.DeviceName))
@@ -180,7 +183,7 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 					log.Error(err)
 					continue
 				}
-				var updates = map[string]any{"is_online": def.True, "last_login": msg.Timestamp}
+				var updates = map[string]any{"is_online": def.True, "last_login": msg.Timestamp, "status": def.DeviceStatusOnline}
 				if di.FirstLogin == 0 {
 					updates["first_login"] = msg.Timestamp
 				}
