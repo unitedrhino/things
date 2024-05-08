@@ -25,7 +25,7 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 	}
 }
 
-func (l *UpdateLogic) Update(req *types.DeviceInfoSaveReq) error {
+func (l *UpdateLogic) Update(req *types.DeviceInfo) error {
 	_, err := l.svcCtx.DeviceM.DeviceInfoUpdate(l.ctx, ToRpcDeviceInfo(req))
 	if err != nil {
 		er := errors.Fmt(err)

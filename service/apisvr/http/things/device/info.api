@@ -19,10 +19,10 @@ info(
 service api {
     @doc "新增设备"
     @handler create
-    post /create (DeviceInfoSaveReq) returns ()
+    post /create (DeviceInfo) returns ()
     @doc "更新设备"
     @handler update
-    post /update (DeviceInfoSaveReq) returns ()
+    post /update (DeviceInfo) returns ()
     @doc "批量更新设备"
     @handler multiUpdate
     post /multi-update (DeviceInfoMultiUpdateReq) returns ()

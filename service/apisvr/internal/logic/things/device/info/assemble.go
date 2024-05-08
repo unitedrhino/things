@@ -6,6 +6,6 @@ import (
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 )
 
-func ToRpcDeviceInfo(req *types.DeviceInfoSaveReq) *dm.DeviceInfo {
+func ToRpcDeviceInfo(req *types.DeviceInfo) *dm.DeviceInfo {
 	return utils.Copy[dm.DeviceInfo](req)
 }

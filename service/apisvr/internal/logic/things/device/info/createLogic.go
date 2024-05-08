@@ -24,7 +24,7 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 	}
 }
 
-func (l *CreateLogic) Create(req *types.DeviceInfoSaveReq) error {
+func (l *CreateLogic) Create(req *types.DeviceInfo) error {
 	_, err := l.svcCtx.DeviceM.DeviceInfoCreate(l.ctx, ToRpcDeviceInfo(req))
 	if err != nil {
 		er := errors.Fmt(err)
