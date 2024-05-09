@@ -195,10 +195,11 @@ func ToSceneActionDo(in *relationDB.UdSceneThenAction) *scene.Action {
 		return nil
 	}
 	do := &scene.Action{
-		ID:    in.ID,
-		Order: in.Order,
-		Type:  in.Type,
-		Delay: in.Delay,
+		ID:     in.ID,
+		Order:  in.Order,
+		Type:   in.Type,
+		Delay:  in.Delay,
+		Notify: in.Notify,
 	}
 	do.Device = &scene.ActionDevice{
 		//ProjectID:        int64(in.Device.ProjectID),
