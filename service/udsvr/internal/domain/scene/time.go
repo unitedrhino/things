@@ -91,7 +91,7 @@ func (t *TimeRange) Validate() error {
 	if t == nil {
 		return errors.Parameter.AddMsg("时间范围需要填写时间内容")
 	}
-	if !utils.SliceIn(t.Type, TimeRangeTypeAllDay, TimeRangeTypeCustomRange) {
+	if !utils.SliceIn(t.Type, TimeRangeTypeAllDay, TimeRangeTypeCustomRange, TimeRangeTypeLight, TimeRangeTypeNight) {
 		return errors.Parameter.AddMsg("时间范围类型不正确")
 	}
 	if t.Type == TimeRangeTypeCustomRange {
