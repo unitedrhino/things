@@ -50,6 +50,7 @@ service DeviceManage {
   rpc deviceInfoCreate(DeviceInfo)     returns (Empty);
   //更新设备
   rpc deviceInfoUpdate(DeviceInfo)     returns (Empty);
+  rpc deviceOnlineMultiFix(deviceOnlineMultiFixReq)returns (Empty);
   //删除设备
   rpc deviceInfoDelete(DeviceInfoDeleteReq)     returns (Empty);
   //获取设备信息列表
@@ -1043,6 +1044,16 @@ message ProductInfoIndexReq{
 message ProductInfoIndexResp{
   repeated ProductInfo list = 1;//产品信息
   int64  total = 2;//总数(只有分页的时候会返回)
+}
+
+message deviceOnlineMultiFixReq{
+    repeated deviceOnlineMultiFix devices =1;
+}
+
+message deviceOnlineMultiFix{
+  DeviceCore device =1;
+  int64 isOnline =2;
+  int64 connectAt =3;
 }
 
 message DeviceInfoDeleteReq{

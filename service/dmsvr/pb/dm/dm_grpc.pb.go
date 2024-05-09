@@ -24,6 +24,7 @@ const (
 	DeviceManage_RootCheck_FullMethodName                = "/dm.DeviceManage/rootCheck"
 	DeviceManage_DeviceInfoCreate_FullMethodName         = "/dm.DeviceManage/deviceInfoCreate"
 	DeviceManage_DeviceInfoUpdate_FullMethodName         = "/dm.DeviceManage/deviceInfoUpdate"
+	DeviceManage_DeviceOnlineMultiFix_FullMethodName     = "/dm.DeviceManage/deviceOnlineMultiFix"
 	DeviceManage_DeviceInfoDelete_FullMethodName         = "/dm.DeviceManage/deviceInfoDelete"
 	DeviceManage_DeviceInfoIndex_FullMethodName          = "/dm.DeviceManage/deviceInfoIndex"
 	DeviceManage_DeviceInfoMultiUpdate_FullMethodName    = "/dm.DeviceManage/DeviceInfoMultiUpdate"
@@ -53,6 +54,7 @@ type DeviceManageClient interface {
 	DeviceInfoCreate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Empty, error)
 	// 更新设备
 	DeviceInfoUpdate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Empty, error)
+	DeviceOnlineMultiFix(ctx context.Context, in *DeviceOnlineMultiFixReq, opts ...grpc.CallOption) (*Empty, error)
 	// 删除设备
 	DeviceInfoDelete(ctx context.Context, in *DeviceInfoDeleteReq, opts ...grpc.CallOption) (*Empty, error)
 	// 获取设备信息列表
@@ -111,6 +113,15 @@ func (c *deviceManageClient) DeviceInfoCreate(ctx context.Context, in *DeviceInf
 func (c *deviceManageClient) DeviceInfoUpdate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, DeviceManage_DeviceInfoUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceManageClient) DeviceOnlineMultiFix(ctx context.Context, in *DeviceOnlineMultiFixReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceOnlineMultiFix_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -280,6 +291,7 @@ type DeviceManageServer interface {
 	DeviceInfoCreate(context.Context, *DeviceInfo) (*Empty, error)
 	// 更新设备
 	DeviceInfoUpdate(context.Context, *DeviceInfo) (*Empty, error)
+	DeviceOnlineMultiFix(context.Context, *DeviceOnlineMultiFixReq) (*Empty, error)
 	// 删除设备
 	DeviceInfoDelete(context.Context, *DeviceInfoDeleteReq) (*Empty, error)
 	// 获取设备信息列表
@@ -322,6 +334,9 @@ func (UnimplementedDeviceManageServer) DeviceInfoCreate(context.Context, *Device
 }
 func (UnimplementedDeviceManageServer) DeviceInfoUpdate(context.Context, *DeviceInfo) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoUpdate not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceOnlineMultiFix(context.Context, *DeviceOnlineMultiFixReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceOnlineMultiFix not implemented")
 }
 func (UnimplementedDeviceManageServer) DeviceInfoDelete(context.Context, *DeviceInfoDeleteReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoDelete not implemented")
@@ -437,6 +452,24 @@ func _DeviceManage_DeviceInfoUpdate_Handler(srv interface{}, ctx context.Context
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceManageServer).DeviceInfoUpdate(ctx, req.(*DeviceInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceManage_DeviceOnlineMultiFix_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceOnlineMultiFixReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceOnlineMultiFix(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceOnlineMultiFix_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceOnlineMultiFix(ctx, req.(*DeviceOnlineMultiFixReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -765,6 +798,10 @@ var DeviceManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "deviceInfoUpdate",
 			Handler:    _DeviceManage_DeviceInfoUpdate_Handler,
+		},
+		{
+			MethodName: "deviceOnlineMultiFix",
+			Handler:    _DeviceManage_DeviceOnlineMultiFix_Handler,
 		},
 		{
 			MethodName: "deviceInfoDelete",

@@ -7,11 +7,13 @@ import (
 	"gitee.com/i-Things/share/clients"
 	"gitee.com/i-Things/share/conf"
 	"gitee.com/i-Things/share/ctxs"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/events/topics"
 	"gitee.com/i-Things/share/utils"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/timex"
@@ -27,6 +29,7 @@ type MqttProtocol struct {
 	*LightProtocol
 	client       *clients.MqttClient
 	DevSubHandle map[string]DevHandle
+	ConnHandle   ConnHandle
 }
 
 func NewMqttProtocol(c conf.EventConf, pi *dm.ProtocolInfo, pc *LightProtocolConf, mqttc conf.DevLinkConf) (*MqttProtocol, error) {
@@ -101,6 +104,7 @@ const (
 )
 
 func (m *MqttProtocol) SubscribeDevConn(handle ConnHandle) error {
+	m.ConnHandle = handle
 	newTopic := fmt.Sprintf("$share/%s/%s", m.ServerName, "$SYS/brokers/+/clients/#")
 	m.DevSubHandle[newTopic] = func(ctx context.Context, topic string, payload []byte) error {
 		var (
@@ -132,6 +136,7 @@ func (m *MqttProtocol) SubscribeDevConn(handle ConnHandle) error {
 		if err != nil {
 			return nil //不是该类型的设备
 		}
+		newDo.ClientID = fmt.Sprintf("%s&%s", newDo.ProductID, newDo.DeviceName)
 		switch do.Action {
 		case ActionConnected:
 			err = m.FastEvent.Publish(ctx, topics.DeviceUpStatusConnected, newDo)
@@ -147,6 +152,51 @@ func (m *MqttProtocol) SubscribeDevConn(handle ConnHandle) error {
 		return err
 	}
 	return nil
+}
+
+func (m *MqttProtocol) RegisterDeviceOnlineCheck() error {
+	err := m.RegisterTimerHandler(func(ctx context.Context, t time.Time) error {
+		var total int64 = 10000
+		var limit int64 = 1000
+		var page int64 = 1
+		for page*limit < total {
+			infos, to, err := m.client.GetOnlineClients(ctx, clients.GetOnlineClientsFilter{}, &def.PageInfo{
+				Page: 1,
+				Size: 200,
+			})
+			if err != nil {
+				logx.WithContext(ctx).Error(err)
+				return err
+			}
+			total = to
+			page++
+			var needOnlineDevices []*dm.DeviceOnlineMultiFix
+			for _, info := range infos {
+				i, err := m.ConnHandle(ctx, *info)
+				if err != nil {
+					continue
+				}
+				di, err := m.DeviceCache.GetData(ctx, dmExport.GenDeviceInfoKey(i.ProductID, i.DeviceName))
+				if err != nil {
+					continue
+				}
+				if di.IsOnline != def.True {
+					needOnlineDevices = append(needOnlineDevices, &dm.DeviceOnlineMultiFix{
+						Device: &dm.DeviceCore{
+							ProductID:  di.ProductID,
+							DeviceName: di.DeviceName,
+						},
+						IsOnline:  def.True,
+						ConnectAt: info.Timestamp,
+					})
+				}
+			}
+			_, err = m.DeviceM.DeviceOnlineMultiFix(ctx, &dm.DeviceOnlineMultiFixReq{Devices: needOnlineDevices})
+			return err
+		}
+		return nil
+	})
+	return err
 }
 
 func (m *MqttProtocol) subscribeWithFunc(cli mqtt.Client, topic string, handle func(ctx context.Context, topic string, payload []byte) error) error {

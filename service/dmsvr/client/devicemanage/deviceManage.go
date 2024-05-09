@@ -42,6 +42,8 @@ type (
 	DeviceInfoIndexResp               = dm.DeviceInfoIndexResp
 	DeviceInfoMultiUpdateReq          = dm.DeviceInfoMultiUpdateReq
 	DeviceInfoReadReq                 = dm.DeviceInfoReadReq
+	DeviceOnlineMultiFix              = dm.DeviceOnlineMultiFix
+	DeviceOnlineMultiFixReq           = dm.DeviceOnlineMultiFixReq
 	DeviceProfile                     = dm.DeviceProfile
 	DeviceProfileIndexReq             = dm.DeviceProfileIndexReq
 	DeviceProfileIndexResp            = dm.DeviceProfileIndexResp
@@ -192,6 +194,7 @@ type (
 		DeviceInfoCreate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Empty, error)
 		// 更新设备
 		DeviceInfoUpdate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Empty, error)
+		DeviceOnlineMultiFix(ctx context.Context, in *DeviceOnlineMultiFixReq, opts ...grpc.CallOption) (*Empty, error)
 		// 删除设备
 		DeviceInfoDelete(ctx context.Context, in *DeviceInfoDeleteReq, opts ...grpc.CallOption) (*Empty, error)
 		// 获取设备信息列表
@@ -275,6 +278,15 @@ func (m *defaultDeviceManage) DeviceInfoUpdate(ctx context.Context, in *DeviceIn
 // 更新设备
 func (d *directDeviceManage) DeviceInfoUpdate(ctx context.Context, in *DeviceInfo, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.DeviceInfoUpdate(ctx, in)
+}
+
+func (m *defaultDeviceManage) DeviceOnlineMultiFix(ctx context.Context, in *DeviceOnlineMultiFixReq, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceOnlineMultiFix(ctx, in, opts...)
+}
+
+func (d *directDeviceManage) DeviceOnlineMultiFix(ctx context.Context, in *DeviceOnlineMultiFixReq, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.DeviceOnlineMultiFix(ctx, in)
 }
 
 // 删除设备

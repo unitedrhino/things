@@ -42,7 +42,8 @@ type LightProtocol struct {
 	FastEvent         *eventBus.FastEvent
 	Pi                *dm.ProtocolInfo
 	ServerName        string
-	ProductIDMap      map[string]string
+	ProductIDMap      map[string]string //key 是外部的产品ID,value是内部的产品ID
+	IThingsProductIDs []string          //iThings 的产品ID列表
 	ProductIDMapMutex sync.RWMutex
 	LightSvrClient
 	ThirdProductIDFieldName string
@@ -194,11 +195,13 @@ func (p *LightProtocol) RegisterProductIDSync() error {
 		p.ProductIDMapMutex.Lock()
 		defer p.ProductIDMapMutex.Unlock()
 		p.ProductIDMap = map[string]string{}
+		p.IThingsProductIDs = nil
 		for _, pi := range pis.List {
 			id := pi.ProtocolConf[p.ThirdProductIDFieldName]
 			if id == "" {
 				continue
 			}
+			p.IThingsProductIDs = append(p.IThingsProductIDs, pi.ProductID)
 			p.ProductIDMap[id] = pi.ProductID
 		}
 		return nil
@@ -211,4 +214,10 @@ func (p *LightProtocol) GetProductID(productID string) string {
 	p.ProductIDMapMutex.RLock()
 	defer p.ProductIDMapMutex.RUnlock()
 	return p.ProductIDMap[productID]
+}
+
+func (p *LightProtocol) GetIThingsProductIDs() []string {
+	p.ProductIDMapMutex.RLock()
+	defer p.ProductIDMapMutex.RUnlock()
+	return p.IThingsProductIDs
 }

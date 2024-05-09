@@ -40,6 +40,11 @@ func (s *DeviceManageServer) DeviceInfoUpdate(ctx context.Context, in *dm.Device
 	return l.DeviceInfoUpdate(in)
 }
 
+func (s *DeviceManageServer) DeviceOnlineMultiFix(ctx context.Context, in *dm.DeviceOnlineMultiFixReq) (*dm.Empty, error) {
+	l := devicemanagelogic.NewDeviceOnlineMultiFixLogic(ctx, s.svcCtx)
+	return l.DeviceOnlineMultiFix(in)
+}
+
 // 删除设备
 func (s *DeviceManageServer) DeviceInfoDelete(ctx context.Context, in *dm.DeviceInfoDeleteReq) (*dm.Empty, error) {
 	l := devicemanagelogic.NewDeviceInfoDeleteLogic(ctx, s.svcCtx)
