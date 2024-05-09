@@ -2,7 +2,6 @@ package relationDB
 
 import (
 	"context"
-	"fmt"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/stores"
@@ -52,9 +51,9 @@ func (p SceneIfTriggerRepo) fmtFilter(ctx context.Context, f SceneIfTriggerFilte
 		db = db.Where("scene_id = ?", f.SceneID)
 	}
 	if f.Device != nil {
-		db = db.Where(fmt.Sprintf("select_type=%s and product_id=? and device_name=? and data_id=?",
-			scene.SelectDeviceFixed), f.Device.ProductID, f.Device.DeviceName, f.DataID).
-			Or(fmt.Sprintf("select_type=%s and product_id=? and data_id=?", scene.SelectorDeviceAll),
+		db = db.Where("device_select_type=? and device_product_id=? and device_device_name=? and device_data_id=?",
+			scene.SelectDeviceFixed, f.Device.ProductID, f.Device.DeviceName, f.DataID).
+			Or("device_select_type=? and device_product_id=? and device_data_id=?", scene.SelectorDeviceAll,
 				f.Device.ProductID, f.DataID)
 	}
 	return db

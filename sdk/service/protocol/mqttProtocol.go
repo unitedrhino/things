@@ -54,6 +54,8 @@ func (m *MqttProtocol) PublishToDev(ctx context.Context, topic string, payload [
 	err := m.client.Publish(topic, 1, false, payload)
 	if err != nil {
 		logx.WithContext(ctx).Errorf("%s.Publish failure err:%v topic:%v", err, topic)
+	} else {
+		logx.WithContext(ctx).Infof("%s.Publish  topic:%v payload:%v", topic, string(payload))
 	}
 	return err
 }
