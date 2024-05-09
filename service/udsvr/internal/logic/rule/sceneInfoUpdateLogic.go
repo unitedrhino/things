@@ -3,6 +3,7 @@ package rulelogic
 import (
 	"context"
 	"fmt"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/oss"
 	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
@@ -72,7 +73,7 @@ func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *ud.SceneInfo) (*ud.Empty, err
 	if err != nil {
 		return nil, err
 	}
-	if len(do.If.Triggers) == 0 && do.Type == scene.SceneTypeAuto { //立即执行一次
+	if len(do.If.Triggers) == 0 && do.Type == scene.SceneTypeAuto && do.Status == def.True { //立即执行一次
 		_, err = NewSceneManuallyTriggerLogic(l.ctx, l.svcCtx).SceneManuallyTrigger(&ud.WithID{Id: po.ID})
 		if err != nil {
 			return nil, err
