@@ -220,6 +220,7 @@ type (
 		DeviceTypeCount(ctx context.Context, in *DeviceTypeCountReq, opts ...grpc.CallOption) (*DeviceTypeCountResp, error)
 		DeviceCount(ctx context.Context, in *DeviceCountReq, opts ...grpc.CallOption) (*DeviceCountResp, error)
 		DeviceProfileRead(ctx context.Context, in *DeviceProfileReadReq, opts ...grpc.CallOption) (*DeviceProfile, error)
+		DeviceProfileDelete(ctx context.Context, in *DeviceProfileReadReq, opts ...grpc.CallOption) (*Empty, error)
 		DeviceProfileUpdate(ctx context.Context, in *DeviceProfile, opts ...grpc.CallOption) (*Empty, error)
 		DeviceProfileIndex(ctx context.Context, in *DeviceProfileIndexReq, opts ...grpc.CallOption) (*DeviceProfileIndexResp, error)
 	}
@@ -442,6 +443,15 @@ func (m *defaultDeviceManage) DeviceProfileRead(ctx context.Context, in *DeviceP
 
 func (d *directDeviceManage) DeviceProfileRead(ctx context.Context, in *DeviceProfileReadReq, opts ...grpc.CallOption) (*DeviceProfile, error) {
 	return d.svr.DeviceProfileRead(ctx, in)
+}
+
+func (m *defaultDeviceManage) DeviceProfileDelete(ctx context.Context, in *DeviceProfileReadReq, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceProfileDelete(ctx, in, opts...)
+}
+
+func (d *directDeviceManage) DeviceProfileDelete(ctx context.Context, in *DeviceProfileReadReq, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.DeviceProfileDelete(ctx, in)
 }
 
 func (m *defaultDeviceManage) DeviceProfileUpdate(ctx context.Context, in *DeviceProfile, opts ...grpc.CallOption) (*Empty, error) {

@@ -40,6 +40,7 @@ const (
 	DeviceManage_DeviceTypeCount_FullMethodName          = "/dm.DeviceManage/deviceTypeCount"
 	DeviceManage_DeviceCount_FullMethodName              = "/dm.DeviceManage/deviceCount"
 	DeviceManage_DeviceProfileRead_FullMethodName        = "/dm.DeviceManage/deviceProfileRead"
+	DeviceManage_DeviceProfileDelete_FullMethodName      = "/dm.DeviceManage/deviceProfileDelete"
 	DeviceManage_DeviceProfileUpdate_FullMethodName      = "/dm.DeviceManage/deviceProfileUpdate"
 	DeviceManage_DeviceProfileIndex_FullMethodName       = "/dm.DeviceManage/deviceProfileIndex"
 )
@@ -80,6 +81,7 @@ type DeviceManageClient interface {
 	DeviceTypeCount(ctx context.Context, in *DeviceTypeCountReq, opts ...grpc.CallOption) (*DeviceTypeCountResp, error)
 	DeviceCount(ctx context.Context, in *DeviceCountReq, opts ...grpc.CallOption) (*DeviceCountResp, error)
 	DeviceProfileRead(ctx context.Context, in *DeviceProfileReadReq, opts ...grpc.CallOption) (*DeviceProfile, error)
+	DeviceProfileDelete(ctx context.Context, in *DeviceProfileReadReq, opts ...grpc.CallOption) (*Empty, error)
 	DeviceProfileUpdate(ctx context.Context, in *DeviceProfile, opts ...grpc.CallOption) (*Empty, error)
 	DeviceProfileIndex(ctx context.Context, in *DeviceProfileIndexReq, opts ...grpc.CallOption) (*DeviceProfileIndexResp, error)
 }
@@ -263,6 +265,15 @@ func (c *deviceManageClient) DeviceProfileRead(ctx context.Context, in *DevicePr
 	return out, nil
 }
 
+func (c *deviceManageClient) DeviceProfileDelete(ctx context.Context, in *DeviceProfileReadReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceProfileDelete_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *deviceManageClient) DeviceProfileUpdate(ctx context.Context, in *DeviceProfile, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, DeviceManage_DeviceProfileUpdate_FullMethodName, in, out, opts...)
@@ -317,6 +328,7 @@ type DeviceManageServer interface {
 	DeviceTypeCount(context.Context, *DeviceTypeCountReq) (*DeviceTypeCountResp, error)
 	DeviceCount(context.Context, *DeviceCountReq) (*DeviceCountResp, error)
 	DeviceProfileRead(context.Context, *DeviceProfileReadReq) (*DeviceProfile, error)
+	DeviceProfileDelete(context.Context, *DeviceProfileReadReq) (*Empty, error)
 	DeviceProfileUpdate(context.Context, *DeviceProfile) (*Empty, error)
 	DeviceProfileIndex(context.Context, *DeviceProfileIndexReq) (*DeviceProfileIndexResp, error)
 	mustEmbedUnimplementedDeviceManageServer()
@@ -382,6 +394,9 @@ func (UnimplementedDeviceManageServer) DeviceCount(context.Context, *DeviceCount
 }
 func (UnimplementedDeviceManageServer) DeviceProfileRead(context.Context, *DeviceProfileReadReq) (*DeviceProfile, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceProfileRead not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceProfileDelete(context.Context, *DeviceProfileReadReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceProfileDelete not implemented")
 }
 func (UnimplementedDeviceManageServer) DeviceProfileUpdate(context.Context, *DeviceProfile) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceProfileUpdate not implemented")
@@ -744,6 +759,24 @@ func _DeviceManage_DeviceProfileRead_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DeviceManage_DeviceProfileDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceProfileReadReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceProfileDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceProfileDelete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceProfileDelete(ctx, req.(*DeviceProfileReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _DeviceManage_DeviceProfileUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeviceProfile)
 	if err := dec(in); err != nil {
@@ -862,6 +895,10 @@ var DeviceManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "deviceProfileRead",
 			Handler:    _DeviceManage_DeviceProfileRead_Handler,
+		},
+		{
+			MethodName: "deviceProfileDelete",
+			Handler:    _DeviceManage_DeviceProfileDelete_Handler,
 		},
 		{
 			MethodName: "deviceProfileUpdate",

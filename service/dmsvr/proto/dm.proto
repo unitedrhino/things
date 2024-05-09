@@ -79,6 +79,7 @@ service DeviceManage {
   rpc deviceCount(DeviceCountReq) returns (DeviceCountResp);
 
   rpc deviceProfileRead(DeviceProfileReadReq)returns(DeviceProfile);
+  rpc deviceProfileDelete(DeviceProfileReadReq)returns(Empty);
   rpc deviceProfileUpdate(DeviceProfile)returns(Empty);
   rpc deviceProfileIndex(DeviceProfileIndexReq)returns(DeviceProfileIndexResp);
 }

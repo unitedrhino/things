@@ -130,6 +130,11 @@ func (s *DeviceManageServer) DeviceProfileRead(ctx context.Context, in *dm.Devic
 	return l.DeviceProfileRead(in)
 }
 
+func (s *DeviceManageServer) DeviceProfileDelete(ctx context.Context, in *dm.DeviceProfileReadReq) (*dm.Empty, error) {
+	l := devicemanagelogic.NewDeviceProfileDeleteLogic(ctx, s.svcCtx)
+	return l.DeviceProfileDelete(in)
+}
+
 func (s *DeviceManageServer) DeviceProfileUpdate(ctx context.Context, in *dm.DeviceProfile) (*dm.Empty, error) {
 	l := devicemanagelogic.NewDeviceProfileUpdateLogic(ctx, s.svcCtx)
 	return l.DeviceProfileUpdate(in)
