@@ -36,6 +36,7 @@ func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *ud.SceneInfo) (*ud.Empty, err
 	if err != nil {
 		return nil, err
 	}
+	var doUpdate bool
 	if in.Name != "" {
 		old.Name = in.Name
 	}
@@ -47,12 +48,15 @@ func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *ud.SceneInfo) (*ud.Empty, err
 	}
 	if in.If != "" {
 		old.UdSceneIf = newPo.UdSceneIf
+		doUpdate = true
 	}
 	if in.When != "" {
 		old.UdSceneWhen = newPo.UdSceneWhen
+		doUpdate = true
 	}
 	if in.Then != "" {
 		old.UdSceneThen = newPo.UdSceneThen
+		doUpdate = true
 	}
 	if in.HeadImg != "" && in.IsUpdateHeadImg { //如果填了参数且不等于原来的,说明修改头像,需要处理
 		nwePath := oss.GenFilePath(l.ctx, l.svcCtx.Config.Name, oss.BusinessScene, oss.SceneHeadIng, fmt.Sprintf("%d/%s", old.ID, oss.GetFileNameWithPath(in.HeadImg)))
@@ -63,9 +67,11 @@ func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *ud.SceneInfo) (*ud.Empty, err
 		old.HeadImg = path
 	}
 	do := PoToSceneInfoDo(old)
-	err = do.Validate(scene.ValidateRepo{Ctx: l.ctx, DeviceCache: l.svcCtx.DeviceCache, ProductSchemaCache: l.svcCtx.ProductSchemaCache})
-	if err != nil {
-		return nil, err
+	if doUpdate {
+		err = do.Validate(scene.ValidateRepo{Ctx: l.ctx, DeviceCache: l.svcCtx.DeviceCache, ProductSchemaCache: l.svcCtx.ProductSchemaCache})
+		if err != nil {
+			return nil, err
+		}
 	}
 	po := ToSceneInfoPo(do)
 	po.SoftTime = old.SoftTime
