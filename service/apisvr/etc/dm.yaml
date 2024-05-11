@@ -36,6 +36,8 @@ AuthWhite:
       Password: iThings
     - UserName: pwumeisvr
       Password: iThings
+    - UserName: paliyunsvr
+      Password: iThings
 OssConf:
   OssType: minio
   PublicBucketName: ithings-public
