@@ -6,6 +6,10 @@ Timeout: 1000000
 MaxBytes: 1000000000
 Port: 7788
 NodeID: 1
+Etcd:
+  Hosts:
+    - 127.0.0.1:2379
+  Key: things.api
 Log:
   Encoding: plain
   #Mode: file
