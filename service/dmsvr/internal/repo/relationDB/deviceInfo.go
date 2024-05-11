@@ -123,7 +123,7 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 		//f.Position 形如：point(116.393 39.905)
 		db = db.Where(f.Position.Range("position", f.Range))
 	}
-	if f.SharedType != 0 && len(f.SharedDevices) > 0 { //如果要获取共享设备
+	if f.SharedType != 0 && len(f.SharedDevices) > 0 && ctxs.GetUserCtx(ctx) != nil { //如果要获取共享设备
 		scope := func(db *gorm.DB) *gorm.DB {
 			for i, d := range f.SharedDevices {
 				if i == 0 {
