@@ -9,6 +9,7 @@ import (
 	"gitee.com/i-Things/share/domain/deviceMsg/msgOta"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/oss/common"
+	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -32,11 +33,11 @@ func NewSendMessageToDevicesLogic(ctx context.Context, svcCtx *svc.ServiceContex
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
-		OjDB:   relationDB.NewOtaJobRepo(ctx),
-		OtDB:   relationDB.NewOtaFirmwareDeviceRepo(ctx),
-		DiDB:   relationDB.NewDeviceInfoRepo(ctx),
-		OfDB:   relationDB.NewOtaFirmwareInfoRepo(ctx),
-		OffDB:  relationDB.NewOtaFirmwareFileRepo(ctx),
+		OjDB:   stores.WithNoDebug(ctx, relationDB.NewOtaJobRepo),
+		OtDB:   stores.WithNoDebug(ctx, relationDB.NewOtaFirmwareDeviceRepo),
+		DiDB:   stores.WithNoDebug(ctx, relationDB.NewDeviceInfoRepo),
+		OfDB:   stores.WithNoDebug(ctx, relationDB.NewOtaFirmwareInfoRepo),
+		OffDB:  stores.WithNoDebug(ctx, relationDB.NewOtaFirmwareFileRepo),
 	}
 }
 
@@ -45,7 +46,7 @@ func (l *SendMessageToDevicesLogic) PushMessageToDevices(jobInfo *relationDB.DmO
 	if jobInfo.IsNeedPush != def.True { //只有需要推送的才推送
 		return nil
 	}
-	deviceList, err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).FindByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
+	deviceList, err := stores.WithNoDebug(l.ctx, relationDB.NewOtaFirmwareDeviceRepo).FindByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
 		FirmwareID: jobInfo.FirmwareID,
 		JobID:      jobInfo.ID,
 		ProductID:  firmware.ProductID,
