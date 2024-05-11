@@ -3,6 +3,7 @@ package rulelogic
 import (
 	"context"
 	"gitee.com/i-Things/share/oss/common"
+	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/udsvr/internal/domain"
 	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
@@ -28,8 +29,9 @@ func ToSceneInfoDo(in *ud.SceneInfo) *scene.Info {
 
 func ToSceneInfoPo(in *scene.Info) *relationDB.UdSceneInfo {
 	return &relationDB.UdSceneInfo{
-		ID:   in.ID,
-		Type: in.Type,
+		ID:     in.ID,
+		Type:   in.Type,
+		AreaID: stores.AreaID(in.AreaID),
 		//AreaIDs: in.AreaIDs,
 		FlowPath:    in.FlowPath,
 		Name:        in.Name,
@@ -118,6 +120,7 @@ func PoToSceneInfoDo(in *relationDB.UdSceneInfo) *scene.Info {
 	}
 	return &scene.Info{
 		ID:          in.ID,
+		AreaID:      int64(in.AreaID),
 		Name:        in.Name,
 		Tag:         in.Tag,
 		HeadImg:     in.HeadImg,

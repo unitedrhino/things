@@ -97,6 +97,7 @@ message SceneInfo{
   int64 id = 1;//场景id
   string name =3;//场景名
   string desc = 4;//描述
+  int64 areaID =21;//区域id
   repeated SceneFlowInfo FlowPath =15; //执行的流程
   string tag =12;//标签 admin: 管理员 normal: 普通
   int64 createdTime = 5;//创建时间 秒级时间戳 只读

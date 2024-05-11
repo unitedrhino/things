@@ -37,9 +37,9 @@ type SceneInfoFilter struct {
 
 func (p SceneInfoRepo) fmtFilter(ctx context.Context, f SceneInfoFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
-	//if f.AreaID != 0 {
-	//	db = db.Where("area_id = ?", f.AreaID)
-	//}
+	if f.AreaID != 0 {
+		db = db.Where("area_id = ?", f.AreaID)
+	}
 	if f.DeviceMode != "" {
 		db = db.Where("device_mode=?", f.DeviceMode)
 	}

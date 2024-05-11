@@ -1175,8 +1175,9 @@ type SceneFlowInfo struct {
 type SceneInfo struct {
 	ID              int64            `json:"id,optional"`
 	Name            string           `json:"name,optional"`
-	Status          int64            `json:"status,optional"` //状态: 1启用 2禁用
-	Tag             string           `json:"tag,optional"`    //标签 admin: 管理员 normal: 普通
+	AreaID          int64            `json:"areaID,string,optional"` //项目区域id 只读
+	Status          int64            `json:"status,optional"`        //状态: 1启用 2禁用
+	Tag             string           `json:"tag,optional"`           //标签 admin: 管理员 normal: 普通
 	Type            string           `json:"type,optional"`
 	FlowPath        []*SceneFlowInfo `json:"flowPath,optional"` //执行路径
 	Desc            string           `json:"desc,optional"`
