@@ -113,4 +113,5 @@ type UdSceneActionDevice struct {
 	Value            string                 `gorm:"column:value;index;type:VARCHAR(500);default:''"`
 	DataName         string                 `gorm:"column:data_name;type:VARCHAR(500);default:''"` //对应的物模型定义,只读
 	SchemaAffordance string                 `gorm:"column:schema_affordance;type:VARCHAR(500);default:''"`
+	Values           scene.DeviceValues     `gorm:"column:values;type:json;serializer:json"`
 }

@@ -32,8 +32,17 @@ type ActionDevice struct {
 	Type             ActionDeviceType `json:"type"`                  // 云端向设备发起属性控制: propertyControl  应用调用设备行为:action  todo:通知设备上报
 	DataID           string           `json:"dataID"`                // 属性的id及事件的id
 	DataName         string           `json:"dataName"`              //对应的物模型定义,只读
+	Values           DeviceValues     `json:"values"`                //如果需要控制
 	SchemaAffordance string           `json:"schemaAffordance"`      //只读,返回物模型定义
 	Value            string           `json:"value"`                 //传的值
+}
+
+type DeviceValues = []*DeviceValue
+type DeviceValue struct {
+	DataID           string `json:"dataID"`           // 属性的id及事件的id
+	DataName         string `json:"dataName"`         //对应的物模型定义,只读
+	SchemaAffordance string `json:"schemaAffordance"` //只读,返回物模型定义
+	Value            string `json:"value"`            //传的值
 }
 
 func (a *ActionDevice) Validate(repo ValidateRepo) error {
@@ -45,13 +54,13 @@ func (a *ActionDevice) Validate(repo ValidateRepo) error {
 	if a.ProductID == "" {
 		return errors.Parameter.AddMsgf("产品id不能为空:%v", a.ProductID)
 	}
-	if !utils.SliceIn(a.SelectType, SelectorDeviceAll, SelectDeviceFixed, SelectGroup) {
+	if !utils.SliceIn(a.SelectType, SelectorDeviceAll, SelectArea, SelectDeviceFixed, SelectGroup) {
 		return errors.Parameter.AddMsg("执行的设备选择方式不支持:" + string(a.SelectType))
 	}
 	if !utils.SliceIn(a.Type, ActionDeviceTypePropertyControl, ActionDeviceTypeAction) {
 		return errors.Parameter.AddMsg("云端向设备发起属性控制的方式不支持:" + string(a.Type))
 	}
-	if a.DataID == "" { //todo 这里需要添加校验,是否存在
+	if a.DataID == "" && len(a.Values) == 0 { //todo 这里需要添加校验,是否存在
 		return errors.Parameter.AddMsg("dataID不能为空")
 	}
 	if repo.Info.DeviceMode != DeviceModeSingle {
@@ -61,17 +70,34 @@ func (a *ActionDevice) Validate(repo ValidateRepo) error {
 	if err != nil {
 		return err
 	}
-	p := v.Property[a.DataID]
-	if p == nil {
-		return errors.Parameter.AddMsg("dataID不存在")
+	if a.DataID != "" {
+		p := v.Property[a.DataID]
+		if p == nil {
+			return errors.Parameter.AddMsg("dataID不存在")
+		}
+		if a.DataName == "" {
+			a.DataName = p.Name
+		}
+		a.SchemaAffordance = schema.DoToAffordanceStr(p)
+		if a.Value == "" {
+			return errors.Parameter.AddMsg("传的值不能为空:%v")
+		}
+	} else if len(a.Values) != 0 {
+		for _, val := range a.Values {
+			p := v.Property[val.DataID]
+			if p == nil {
+				return errors.Parameter.AddMsg("dataID不存在")
+			}
+			if val.DataName == "" {
+				val.DataName = p.Name
+			}
+			val.SchemaAffordance = schema.DoToAffordanceStr(p)
+			if val.Value == "" {
+				return errors.Parameter.AddMsg("传的值不能为空:%v")
+			}
+		}
 	}
-	if a.DataName == "" {
-		a.DataName = p.Name
-	}
-	a.SchemaAffordance = schema.DoToAffordanceStr(p)
-	if a.Value == "" {
-		return errors.Parameter.AddMsg("传的值不能为空:%v")
-	}
+
 	return nil
 }
 
@@ -86,9 +112,17 @@ func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 		deviceList  []devices.Core
 	)
 
-	toData := func(dataID string, Value any) string {
-		var data = map[string]any{
-			dataID: Value,
+	toData := func() string {
+		if a.DataID != "" {
+			var data = map[string]any{
+				a.DataID: a.Value,
+			}
+			ret, _ := json.Marshal(data)
+			return string(ret)
+		}
+		var data = map[string]any{}
+		for _, val := range a.Values {
+			data[val.DataID] = val.Value
 		}
 		ret, _ := json.Marshal(data)
 		return string(ret)
@@ -100,7 +134,7 @@ func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 				IsAsync:    true,
 				ProductID:  device.ProductID,
 				DeviceName: device.DeviceName,
-				Data:       toData(a.DataID, a.Value), //todo 这里需要根据dataID来生成
+				Data:       toData(),
 			})
 			if err != nil {
 				logx.WithContext(ctx).Errorf("%s.DeviceInfoIndex SendProperty:%#v err:%v", utils.FuncName(), a, err)
@@ -130,7 +164,12 @@ func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 			DeviceName: a.DeviceName,
 		})
 	case SelectorDeviceAll:
+		var areaIDs []int64
+		if repo.Info.AreaID != 0 {
+			areaIDs = []int64{repo.Info.AreaID}
+		}
 		ret, err := repo.DeviceM.DeviceInfoIndex(ctx, &devicemanage.DeviceInfoIndexReq{
+			AreaIDs:   areaIDs,
 			ProductID: a.ProductID,
 		})
 		if err != nil {

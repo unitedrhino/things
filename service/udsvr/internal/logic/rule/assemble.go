@@ -181,6 +181,7 @@ func ToSceneActionPo(s *scene.Info, in *scene.Action) *relationDB.UdSceneThenAct
 			DataID:           in.Device.DataID,
 			Value:            in.Device.Value,
 			SchemaAffordance: in.Device.SchemaAffordance,
+			Values:           in.Device.Values,
 		}
 	}
 	return po
@@ -217,6 +218,7 @@ func ToSceneActionDo(in *relationDB.UdSceneThenAction) *scene.Action {
 		DataName:         in.Device.DataName,
 		Value:            in.Device.Value,
 		SchemaAffordance: in.Device.SchemaAffordance,
+		Values:           in.Device.Values,
 	}
 
 	return do

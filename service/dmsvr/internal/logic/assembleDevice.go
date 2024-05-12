@@ -131,7 +131,7 @@ func ToGatewayDevice(gateway *devices.Core, subDevice []*devices.Core) (ret []*r
 	return
 }
 
-func ToGatewayPayload(status int32, in []*devices.Core) *msgGateway.GatewayPayload {
+func ToGatewayPayload(status def.GatewayStatus, in []*devices.Core) *msgGateway.GatewayPayload {
 	var ret = msgGateway.GatewayPayload{Status: status}
 	for _, v := range in {
 		ret.Devices = append(ret.Devices, &msgGateway.Device{

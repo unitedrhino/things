@@ -55,6 +55,7 @@ type TermRepo struct {
 }
 
 type ActionRepo struct {
+	Info           *Info
 	UserID         int64
 	DeviceInteract deviceinteract.DeviceInteract
 	DeviceM        devicemanage.DeviceManage

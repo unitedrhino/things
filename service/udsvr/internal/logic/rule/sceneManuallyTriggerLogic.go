@@ -37,6 +37,7 @@ func (l *SceneManuallyTriggerLogic) SceneManuallyTrigger(in *ud.WithID) (*ud.Emp
 	do := PoToSceneInfoDo(si)
 	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) { //异步执行
 		err = do.Then.Execute(ctx, scene.ActionRepo{
+			Info:           do,
 			DeviceInteract: l.svcCtx.DeviceInteract,
 			DeviceM:        l.svcCtx.DeviceM,
 			DeviceG:        l.svcCtx.DeviceG,
