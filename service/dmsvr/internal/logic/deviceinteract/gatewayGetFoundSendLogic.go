@@ -33,6 +33,7 @@ func NewGatewayGetFoundSendLogic(ctx context.Context, svcCtx *svc.ServiceContext
 
 // 实时获取网关拓扑关系
 func (l *GatewayGetFoundSendLogic) GatewayGetFoundSend(in *dm.GatewayGetFoundReq) (*dm.Empty, error) {
+	return &dm.Empty{}, nil
 	var protocolCode string
 	var err error
 	if protocolCode, err = CheckIsOnline(l.ctx, l.svcCtx, devices.Core{
