@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"gitee.com/i-Things/share/devices"
+	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 	"time"
@@ -36,6 +37,9 @@ func (d *GatewayCanBind) GetDevices(ctx context.Context, gateway devices.Core) (
 	vals, err := d.cache.Get(genGatewayCanBindCacheKey(gateway))
 	if err != nil {
 		return nil, err
+	}
+	if vals == "" {
+		return nil, errors.NotFind
 	}
 	var ret GatewayCanBindStu
 	err = json.Unmarshal([]byte(vals), &ret)
