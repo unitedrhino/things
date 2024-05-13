@@ -160,7 +160,6 @@ func (n *NatsClient) queueSubscribeDevPublish(topic string,
 	handleFunc func(ctx context.Context, msg *deviceMsg.PublishMsg) error) error {
 	_, err := n.client.QueueSubscribe(topic, ThingsDeliverGroup,
 		func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
-			natsMsg.Ack()
 			ctx = ctxs.WithRoot(ctx)
 			defer utils.Recover(ctx)
 			ele, err := deviceMsg.GetDevPublish(ctx, msg)
