@@ -29,7 +29,7 @@ AuthWhite:
     - 192.168.1.1
     - 172.19.0.8
 Event:
-  Mode: natsJs
+  
   Nats:
     Url: nats://127.0.0.1:4222
     Consumer: dmsvr

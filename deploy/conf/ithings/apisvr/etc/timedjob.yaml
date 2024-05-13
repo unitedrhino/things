@@ -1,7 +1,7 @@
 Name: timedjob.rpc
 ListenOn: 0.0.0.0:3256
 Event:
-  Mode: natsJs
+  
   Nats:
     Url: nats://nats:4222
 #Etcd:

@@ -17,6 +17,6 @@ DmRpc:
   Conf:
     Timeout: 1000000
 Event:
-  Mode: natsJs
+  
   Nats:
     Url: nats://nats:4222
