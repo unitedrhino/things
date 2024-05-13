@@ -20,7 +20,7 @@ type (
 )
 
 const (
-	ThingsDDDeliverGroup = "things_dd_group"
+	ThingsDDDeliverGroup = "things_dg_group"
 )
 
 func newNatsClient(conf conf.EventConf, nodeID int64) (SubInner, error) {

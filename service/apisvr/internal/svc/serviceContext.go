@@ -171,21 +171,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		}
 	}
 
-	//if c.TimedSchedulerRpc.Enable {
-	//	if c.TimedSchedulerRpc.Mode == conf.ClientModeGrpc {
-	//		timedSchedule = timedscheduler.NewTimedscheduler(zrpc.MustNewClient(c.TimedSchedulerRpc.Conf))
-	//	} else {
-	//		timedSchedule = timedschedulerdirect.NewScheduler(c.TimedSchedulerRpc.RunProxy)
-	//	}
-	//}
-	//if c.TimedJobRpc.Enable {
-	//	if c.TimedJobRpc.Mode == conf.ClientModeGrpc {
-	//		timedJob = timedmanage.NewTimedManage(zrpc.MustNewClient(c.TimedJobRpc.Conf))
-	//	} else {
-	//		timedJob = timedjobdirect.NewTimedJob(c.TimedJobRpc.RunProxy)
-	//	}
-	//}
-
 	ossClient, err := oss.NewOssClient(c.OssConf)
 	if err != nil {
 		logx.Errorf("NewOss err err:%v", err)
