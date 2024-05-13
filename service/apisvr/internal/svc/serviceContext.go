@@ -12,7 +12,9 @@ import (
 	"gitee.com/i-Things/share/caches"
 	"gitee.com/i-Things/share/conf"
 	"gitee.com/i-Things/share/ctxs"
+	"gitee.com/i-Things/share/eventBus"
 	"gitee.com/i-Things/share/oss"
+	"gitee.com/i-Things/share/utils"
 	"gitee.com/i-Things/share/verify"
 	ws "gitee.com/i-Things/share/websocket"
 	"github.com/i-Things/things/service/apisvr/internal/config"
@@ -29,7 +31,9 @@ import (
 	"github.com/i-Things/things/service/dmsvr/client/remoteconfig"
 	"github.com/i-Things/things/service/dmsvr/client/schemamanage"
 	"github.com/i-Things/things/service/dmsvr/client/userdevice"
+	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/dmdirect"
+	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/i-Things/things/service/rulesvr/client/alarmcenter"
 	"github.com/i-Things/things/service/rulesvr/client/scenelinkage"
 	"github.com/i-Things/things/service/udsvr/client/rule"
@@ -76,6 +80,8 @@ type ServiceContext struct {
 	Captcha        *verify.Captcha
 	OssClient      *oss.Client
 	OtaM           otamanage.OtaManage
+	ProductCache   *caches.Cache[dm.ProductInfo]
+	DeviceCache    *caches.Cache[dm.DeviceInfo]
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -185,7 +191,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		logx.Errorf("NewOss err err:%v", err)
 		os.Exit(-1)
 	}
-
+	nodeID := utils.GetNodeID(c.CacheRedis, c.Name)
+	serverMsg, err := eventBus.NewFastEvent(c.Event, c.Name, nodeID)
+	logx.Must(err)
+	pc, err := dmExport.NewProductInfoCache(productM, serverMsg)
+	logx.Must(err)
+	dc, err := dmExport.NewDeviceInfoCache(deviceM, serverMsg)
+	logx.Must(err)
 	captcha := verify.NewCaptcha(c.Captcha.ImgHeight, c.Captcha.ImgWidth,
 		c.Captcha.KeyLong, c.CacheRedis, time.Duration(c.Captcha.KeepTime)*time.Second)
 	return &ServiceContext{
@@ -200,6 +212,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		OssClient:      ossClient,
 		OtaM:           otaM,
 		Ws:             ws.MustNewServer(c.RestConf),
+		ProductCache:   pc,
+		DeviceCache:    dc,
 		SvrClient: SvrClient{
 			UserM:     ur,
 			ProjectM:  projectM,

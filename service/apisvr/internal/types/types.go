@@ -110,8 +110,9 @@ type DeviceAuthRootCheckReq struct {
 }
 
 type DeviceCore struct {
-	ProductID  string `json:"productID"`  //产品ID
-	DeviceName string `json:"deviceName"` //设备名称
+	ProductID   string `json:"productID"` //产品ID
+	ProductName string `json:"productName,optional,omitempty"`
+	DeviceName  string `json:"deviceName"` //设备名称
 }
 
 type DeviceCountInfo struct {

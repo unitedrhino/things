@@ -54,6 +54,7 @@ type(
     }
     DeviceCore {
         ProductID string `json:"productID"`      //产品ID
+        ProductName string `json:"productName,optional,omitempty"`
         DeviceName string `json:"deviceName"`    //设备名称
     }
 

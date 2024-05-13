@@ -28,6 +28,16 @@ func NewGatewayCanBindIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext
 
 func (l *GatewayCanBindIndexLogic) GatewayCanBindIndex(req *types.GatewayCanBindIndexReq) (resp *types.GatewayCanBindIndexResp, err error) {
 	ret, err := l.svcCtx.DeviceMsg.GatewayCanBindIndex(l.ctx, utils.Copy[dm.GatewayCanBindIndexReq](req))
-
-	return utils.Copy[types.GatewayCanBindIndexResp](ret), err
+	if err != nil {
+		return nil, err
+	}
+	resp = utils.Copy[types.GatewayCanBindIndexResp](ret)
+	for i, v := range resp.SubDevices {
+		pi, err := l.svcCtx.ProductCache.GetData(l.ctx, v.ProductID)
+		if err != nil {
+			return nil, err
+		}
+		resp.SubDevices[i].ProductName = pi.ProductName
+	}
+	return resp, err
 }
