@@ -85,7 +85,7 @@ func ThirdProtoAccessAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *
 			}
 			cli, err := zrpc.NewClient(conf)
 			if err != nil {
-				logx.WithContext(runCtx).Errorf("NewClient ProtocolInfo:%#v err:%v", v, err)
+				logx.WithContext(runCtx).Debugf("NewClient ProtocolInfo:%#v err:%v", v, err)
 				return
 			}
 			defer cli.Conn().Close()
