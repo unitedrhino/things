@@ -2,6 +2,7 @@ package device
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
@@ -29,10 +30,32 @@ func init() {
 		Cost(func(key string, value struct{}) uint32 {
 			return 1
 		}).
-		WithTTL(time.Minute).
+		WithTTL(time.Minute * 10).
 		Build()
 	logx.Must(err)
 
+}
+
+func protocolBlackCheck(svcCtx *svc.ServiceContext, p *dm.ProtocolInfo) {
+	var conf = svcCtx.Config.DgRpc.Conf
+	if p.EtcdKey != "" {
+		conf.Etcd = svcCtx.Config.Etcd
+		conf.Etcd.Key = p.EtcdKey
+	} else if p.Endpoints != nil {
+		conf.Endpoints = p.Endpoints
+	} else { //如果都没有配置,那么就不走这个服务校验
+		return
+	}
+	cli, err := zrpc.NewClient(conf)
+	if err != nil {
+		if strings.Contains(err.Error(), "is already started") { //协议组件连接超时,加入黑名单
+			protocolBlack.Set(p.Code, struct{}{})
+		}
+		return
+	}
+	//如果连接上了,则删除黑名单
+	protocolBlack.Delete(p.Code)
+	defer cli.Conn().Close()
 }
 func ThirdProtoLoginAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *types.DeviceAuthLoginReq, cert []byte) error {
 	pi, err := svcCtx.ProtocolM.ProtocolInfoIndex(ctx, &dm.ProtocolInfoIndexReq{TransProtocol: def.ProtocolMqtt, NotCodes: []string{def.ProtocolCodeIThings}})
@@ -44,6 +67,10 @@ func ThirdProtoLoginAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *t
 	var runCtx, cancel = context.WithCancel(ctx)
 	for _, v := range pi.List {
 		if _, ok := protocolBlack.Get(v.Code); ok { //黑名单
+			p := v
+			ctxs.GoNewCtx(ctx, func(ctx2 context.Context) {
+				protocolBlackCheck(svcCtx, p)
+			})
 			continue
 		}
 		wait.Add(1)
@@ -101,6 +128,10 @@ func ThirdProtoAccessAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *
 			continue
 		}
 		if _, ok := protocolBlack.Get(v.Code); ok { //黑名单
+			p := v
+			ctxs.GoNewCtx(ctx, func(ctx2 context.Context) {
+				protocolBlackCheck(svcCtx, p)
+			})
 			continue
 		}
 		wait.Add(1)
