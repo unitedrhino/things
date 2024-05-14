@@ -143,6 +143,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		logx.Error("NewPubApp err", err)
 		os.Exit(-1)
 	}
+
 	timedM = timedmanage.NewTimedManage(zrpc.MustNewClient(c.TimedJobRpc.Conf))
 	areaM = areamanage.NewAreaManage(zrpc.MustNewClient(c.SysRpc.Conf))
 	userM := usermanage.NewUserManage(zrpc.MustNewClient(c.SysRpc.Conf))
