@@ -17,10 +17,11 @@ type ProductSchemaRepo struct {
 type (
 	ProductSchemaFilter struct {
 		ID                int64
-		ProductID         string   //产品id  必填
-		ProductIDs        []string //产品id列表
-		Type              int64    //物模型类型 1:property属性 2:event事件 3:action行为
-		Tag               int64    //过滤条件: 物模型标签 1:自定义 2:可选 3:必选
+		ProductID         string     //产品id  必填
+		ProductIDs        []string   //产品id列表
+		Type              int64      //物模型类型 1:property属性 2:event事件 3:action行为
+		Tag               schema.Tag //过滤条件: 物模型标签 1:自定义 2:可选 3:必选
+		Tags              []schema.Tag
 		Identifiers       []string //过滤标识符列表
 		Name              string
 		IsCanSceneLinkage int64
@@ -61,6 +62,9 @@ func (p ProductSchemaRepo) fmtFilter(ctx context.Context, f ProductSchemaFilter)
 	}
 	if f.Tag != 0 {
 		db = db.Where("tag=?", f.Tag)
+	}
+	if len(f.Tags) != 0 {
+		db = db.Where("tag in ?", f.Tags)
 	}
 	if len(f.Identifiers) != 0 {
 		db = db.Where("identifier in ?", f.Identifiers)

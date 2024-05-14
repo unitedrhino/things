@@ -2,6 +2,7 @@ package schemamanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
@@ -57,7 +58,7 @@ func (l *CommonSchemaIndexLogic) CommonSchemaIndex(in *dm.CommonSchemaIndexReq) 
 		filter.Identifiers = append(filter.Identifiers, ids...)
 	}
 	if len(in.ProductIDs) != 0 {
-		rst, err := relationDB.NewProductSchemaRepo(l.ctx).FindByFilter(l.ctx, relationDB.ProductSchemaFilter{ProductIDs: in.ProductIDs, Tag: 2}, nil)
+		rst, err := relationDB.NewProductSchemaRepo(l.ctx).FindByFilter(l.ctx, relationDB.ProductSchemaFilter{ProductIDs: in.ProductIDs, Tags: []int64{schema.TagOptional, schema.TagRequired}}, nil)
 		if err != nil {
 			return nil, err
 		}
@@ -69,6 +70,9 @@ func (l *CommonSchemaIndexLogic) CommonSchemaIndex(in *dm.CommonSchemaIndexReq) 
 			if v == len(in.ProductIDs) { //每个产品都有的物模型
 				filter.Identifiers = append(filter.Identifiers, k)
 			}
+		}
+		if len(filter.Identifiers) == 0 {
+			return &dm.CommonSchemaIndexResp{}, nil
 		}
 	}
 
