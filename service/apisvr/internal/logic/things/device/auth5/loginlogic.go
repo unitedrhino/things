@@ -78,7 +78,7 @@ func (l *LoginLogic) Login(req *types.DeviceAuth5LoginReq) (resp *types.DeviceAu
 		Certificate: req.Certificate,
 	}, cert)
 	if err != nil {
-		return nil, err
+		return &types.DeviceAuth5LoginResp{Result: "deny"}, nil
 	}
 	return &types.DeviceAuth5LoginResp{
 		Result:      "allow",

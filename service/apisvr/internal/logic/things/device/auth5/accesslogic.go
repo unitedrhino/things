@@ -55,7 +55,7 @@ func (l *AccessLogic) Access(req *types.DeviceAuth5AccessReq) (resp *types.Devic
 		Ip:       req.Ip,
 	}, access)
 	if err != nil {
-		return nil, err
+		return &types.DeviceAuth5AccessResp{Result: "deny"}, nil
 	}
 	return &types.DeviceAuth5AccessResp{Result: "allow"}, nil
 }
