@@ -154,35 +154,36 @@ type DeviceGateWayMultiDeleteReq struct {
 }
 
 type DeviceInfo struct {
+	ID             int64                              `json:"id,optional,omitempty"`
 	TenantCode     string                             `json:"tenantCode,optional"`
 	ProductID      string                             `json:"productID"`                 //产品id 只读
 	ProjectID      int64                              `json:"projectID,string,optional"` //项目id 只读
 	ProductName    string                             `json:"productName,optional"`
-	DeviceType     int64                              `json:"deviceType,optional"`                 //设备类型:1:设备,2:网关,3:子设备
-	AreaID         int64                              `json:"areaID,string,optional"`              //项目区域id 只读
-	DeviceName     string                             `json:"deviceName"`                          //设备名称 读写
-	DeviceAlias    *string                            `json:"deviceAlias,optional"`                //设备别名 读写
-	Secret         string                             `json:"secret,optional"`                     //设备秘钥 只读
-	Cert           string                             `json:"cert,optional"`                       // 设备证书  只读
-	Imei           string                             `json:"imei,optional"`                       // IMEI号信息 只读
-	Mac            string                             `json:"mac,optional"`                        // MAC号信息 只读
-	Version        *string                            `json:"version,optional"`                    // 固件版本  读写
-	HardInfo       string                             `json:"hardInfo,optional"`                   // 模组硬件型号 只读
-	SoftInfo       string                             `json:"softInfo,optional"`                   // 模组软件版本 只读
-	MobileOperator int64                              `json:"mobileOperator,optional,range=[0:4]"` //移动运营商:1)移动 2)联通 3)电信 4)广电
-	Phone          *string                            `json:"phone,optional"`                      //手机号
-	Iccid          *string                            `json:"iccid,optional"`                      //SIM卡卡号
-	Position       *Point                             `json:"position,optional"`                   //设备定位,默认百度坐标系
-	Address        *string                            `json:"address,optional"`                    //所在地址
-	Tags           []*Tag                             `json:"tags,optional"`                       // 设备tag
-	SchemaAlias    map[string]string                  `json:"schemaAlias,optional"`                //设备物模型别名,如果是结构体类型则key为xxx.xxx
-	IsOnline       int64                              `json:"isOnline,optional,range=[0:2]"`       // 在线状态  1离线 2在线 只读
-	FirstLogin     int64                              `json:"firstLogin,optional,string"`          //激活时间 只读
-	LastLogin      int64                              `json:"lastLogin,optional,string"`           //最后上线时间 只读
-	LogLevel       int64                              `json:"logLevel,optional,range=[0:5]"`       // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
-	Rssi           int64                              `json:"rssi,optional"`                       //信号强度
-	CreatedTime    int64                              `json:"createdTime,optional,string"`         //创建时间 只读
-	Status         int64                              `json:"status,optional"`                     //设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)
+	DeviceType     int64                              `json:"deviceType,optional"`                           //设备类型:1:设备,2:网关,3:子设备
+	AreaID         int64                              `json:"areaID,string,optional"`                        //项目区域id 只读
+	DeviceName     string                             `json:"deviceName"`                                    //设备名称 读写
+	DeviceAlias    *string                            `json:"deviceAlias,optional"`                          //设备别名 读写
+	Secret         string                             `json:"secret,optional,omitempty"`                     //设备秘钥 只读
+	Cert           string                             `json:"cert,optional,omitempty"`                       // 设备证书  只读
+	Imei           string                             `json:"imei,optional,omitempty"`                       // IMEI号信息 只读
+	Mac            string                             `json:"mac,optional,omitempty"`                        // MAC号信息 只读
+	Version        *string                            `json:"version,optional,omitempty"`                    // 固件版本  读写
+	HardInfo       string                             `json:"hardInfo,optional,omitempty"`                   // 模组硬件型号 只读
+	SoftInfo       string                             `json:"softInfo,optional,omitempty"`                   // 模组软件版本 只读
+	MobileOperator int64                              `json:"mobileOperator,optional,range=[0:4],omitempty"` //移动运营商:1)移动 2)联通 3)电信 4)广电
+	Phone          *string                            `json:"phone,optional,omitempty"`                      //手机号
+	Iccid          *string                            `json:"iccid,optional,omitempty"`                      //SIM卡卡号
+	Position       *Point                             `json:"position,optional,omitempty"`                   //设备定位,默认百度坐标系
+	Address        *string                            `json:"address,optional,omitempty"`                    //所在地址
+	Tags           []*Tag                             `json:"tags,optional"`                                 // 设备tag
+	SchemaAlias    map[string]string                  `json:"schemaAlias,optional"`                          //设备物模型别名,如果是结构体类型则key为xxx.xxx
+	IsOnline       int64                              `json:"isOnline,optional,range=[0:2]"`                 // 在线状态  1离线 2在线 只读
+	FirstLogin     int64                              `json:"firstLogin,optional,string"`                    //激活时间 只读
+	LastLogin      int64                              `json:"lastLogin,optional,string"`                     //最后上线时间 只读
+	LogLevel       int64                              `json:"logLevel,optional,range=[0:5]"`                 // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+	Rssi           int64                              `json:"rssi,optional,omitempty"`                       //信号强度
+	CreatedTime    int64                              `json:"createdTime,optional,string"`                   //创建时间 只读
+	Status         int64                              `json:"status,optional"`                               //设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)
 	IsEnable       int64                              `json:"isEnable,optional"`
 	WithProperties map[string]*DeviceInfoWithProperty `json:"withProperties,optional,omitempty"` //获取的属性列表,如果不传withProperty,则不会返回
 	ProtocolConf   []*Tag                             `json:"protocolConf,optional,omitempty"`   //协议配置

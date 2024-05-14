@@ -964,6 +964,7 @@ message ManufacturerInfo {
 }
 
 message DeviceInfo {
+  int64 id =34;
   string tenantCode =26;//租户号,只有default租户能查到这个字段
   string productID = 1; //产品id 只读
   int64 projectID = 2; //项目id 只读

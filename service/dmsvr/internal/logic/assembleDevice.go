@@ -35,6 +35,7 @@ func ToDeviceInfo(ctx context.Context, in *relationDB.DmDeviceInfo, ProductCache
 	//return utils.Copy[dm.DeviceInfo](in)
 
 	return &dm.DeviceInfo{
+		Id:             in.ID,
 		TenantCode:     string(in.TenantCode),
 		ProductID:      in.ProductID,
 		DeviceName:     in.DeviceName,

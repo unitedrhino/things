@@ -78,6 +78,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		}
 	}
 	return &types.DeviceInfo{
+		ID:             v.Id,
 		TenantCode:     v.TenantCode,
 		ProductID:      v.ProductID,          //产品id 只读
 		DeviceName:     v.DeviceName,         //设备名称 读写
