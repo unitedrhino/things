@@ -41,7 +41,6 @@ func (l *LoginLogic) Login(req *types.DeviceAuth5LoginReq) (resp *types.DeviceAu
 		if err != nil {
 			return nil, errors.Parameter.AddDetail("certificate can base64 decode")
 		}
-
 	}
 	// superuser
 	_, err = l.svcCtx.DeviceM.RootCheck(l.ctx, &dm.RootCheckReq{
