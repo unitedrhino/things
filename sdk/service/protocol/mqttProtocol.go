@@ -156,6 +156,7 @@ func (m *MqttProtocol) SubscribeDevConn(handle ConnHandle) error {
 
 func (m *MqttProtocol) RegisterDeviceOnlineCheck() error {
 	err := m.RegisterTimerHandler(func(ctx context.Context, t time.Time) error {
+		logx.WithContext(ctx).Infof("online sync")
 		var total int64 = 10000
 		var limit int64 = 1000
 		var page int64 = 1
