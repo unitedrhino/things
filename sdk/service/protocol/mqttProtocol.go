@@ -27,7 +27,7 @@ type ConnHandle func(ctx context.Context, info devices.DevConn) (devices.DevConn
 
 type MqttProtocol struct {
 	*LightProtocol
-	client       *clients.MqttClient
+	MqttClient   *clients.MqttClient
 	DevSubHandle map[string]DevHandle
 	ConnHandle   ConnHandle
 }
@@ -44,7 +44,7 @@ func NewMqttProtocol(c conf.EventConf, pi *dm.ProtocolInfo, pc *LightProtocolCon
 	if err != nil {
 		return nil, err
 	}
-	return &MqttProtocol{LightProtocol: lightProto, client: mc, DevSubHandle: make(map[string]DevHandle)}, nil
+	return &MqttProtocol{LightProtocol: lightProto, MqttClient: mc, DevSubHandle: make(map[string]DevHandle)}, nil
 }
 
 func (m *MqttProtocol) SubscribeDevMsg(topic string, handle DevHandle) error {
@@ -54,7 +54,7 @@ func (m *MqttProtocol) SubscribeDevMsg(topic string, handle DevHandle) error {
 }
 
 func (m *MqttProtocol) PublishToDev(ctx context.Context, topic string, payload []byte) error {
-	err := m.client.Publish(topic, 1, false, payload)
+	err := m.MqttClient.Publish(topic, 1, false, payload)
 	if err != nil {
 		logx.WithContext(ctx).Errorf("PublishToDev failure err:%v topic:%v", err, topic)
 	} else {
@@ -161,7 +161,7 @@ func (m *MqttProtocol) RegisterDeviceOnlineCheck() error {
 		var limit int64 = 1000
 		var page int64 = 1
 		for page*limit < total {
-			infos, to, err := m.client.GetOnlineClients(ctx, clients.GetOnlineClientsFilter{}, &def.PageInfo{
+			infos, to, err := m.MqttClient.GetOnlineClients(ctx, clients.GetOnlineClientsFilter{}, &def.PageInfo{
 				Page: 1,
 				Size: 200,
 			})
@@ -201,7 +201,7 @@ func (m *MqttProtocol) RegisterDeviceOnlineCheck() error {
 }
 
 func (m *MqttProtocol) subscribeWithFunc(cli mqtt.Client, topic string, handle func(ctx context.Context, topic string, payload []byte) error) error {
-	return m.client.Subscribe(cli, topic,
+	return m.MqttClient.Subscribe(cli, topic,
 		1, func(client mqtt.Client, message mqtt.Message) {
 			go func() {
 				ctx, cancel := context.WithTimeout(context.Background(), 50*time.Second)
