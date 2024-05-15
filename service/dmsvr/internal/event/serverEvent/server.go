@@ -184,6 +184,10 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 					log.Error(err)
 					continue
 				}
+				if di.IsOnline == def.True {
+					log.Infof("already online:%#v", msg)
+					continue
+				}
 				var updates = map[string]any{"is_online": def.True, "last_login": msg.Timestamp, "status": def.DeviceStatusOnline}
 				if di.FirstLogin.Valid == false {
 					updates["first_login"] = msg.Timestamp
@@ -213,7 +217,6 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 					l.Errorf("%s.pubApp productID:%v deviceName:%v err:%v",
 						utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 				}
-
 			}
 
 		}
