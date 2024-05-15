@@ -179,14 +179,13 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 			})
 
 			if status == def.ConnectedStatus {
-
-				di, err := l.svcCtx.DeviceCache.GetData(ctx, dmExport.GenDeviceInfoKey(ld.ProductID, ld.DeviceName))
+				di, err := relationDB.NewDeviceInfoRepo(ctx).FindOneByFilter(ctx, relationDB.DeviceFilter{Cores: []*devices.Core{{ProductID: ld.ProductID, DeviceName: ld.DeviceName}}})
 				if err != nil {
 					log.Error(err)
 					continue
 				}
 				var updates = map[string]any{"is_online": def.True, "last_login": msg.Timestamp, "status": def.DeviceStatusOnline}
-				if di.FirstLogin == 0 {
+				if di.FirstLogin.Valid == false {
 					updates["first_login"] = msg.Timestamp
 				}
 				err = relationDB.NewDeviceInfoRepo(ctx).UpdateWithField(ctx,
@@ -216,6 +215,7 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 				}
 
 			}
+
 		}
 		diDB := relationDB.NewDeviceInfoRepo(ctx)
 		if len(OffLineDevices) > 0 {
