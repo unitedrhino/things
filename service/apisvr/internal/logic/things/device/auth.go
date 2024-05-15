@@ -11,92 +11,71 @@ import (
 	"github.com/i-Things/things/service/dgsvr/client/deviceauth"
 	"github.com/i-Things/things/service/dgsvr/pb/dg"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
-	"github.com/maypok86/otter"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/zrpc"
-	"strings"
 	"sync"
 	"time"
 )
 
 var (
-	protocolBlack otter.Cache[string, struct{}]
+	protocolLink sync.Map
 )
 
-func init() {
-	var err error
-	protocolBlack, err = otter.MustBuilder[string, struct{}](100).
-		CollectStats().
-		Cost(func(key string, value struct{}) uint32 {
-			return 1
-		}).
-		WithTTL(time.Minute * 10).
-		Build()
-	logx.Must(err)
-
-}
-
-func protocolBlackCheck(svcCtx *svc.ServiceContext, p *dm.ProtocolInfo) {
-	var conf = svcCtx.Config.DgRpc.Conf
-	if p.EtcdKey != "" {
-		conf.Etcd = svcCtx.Config.Etcd
-		conf.Etcd.Key = p.EtcdKey
-	} else if p.Endpoints != nil {
-		conf.Endpoints = p.Endpoints
-	} else { //如果都没有配置,那么就不走这个服务校验
-		return
-	}
-	cli, err := zrpc.NewClient(conf)
-	if err != nil {
-		if strings.Contains(err.Error(), "is already started") { //协议组件连接超时,加入黑名单
-			protocolBlack.Set(p.Code, struct{}{})
+func Init(svcCtx *svc.ServiceContext) {
+	ctx := ctxs.WithRoot(context.Background())
+	utils.Go(ctx, func() {
+		ticket := time.NewTicker(time.Minute)
+		run := func() {
+			pi, err := svcCtx.ProtocolM.ProtocolInfoIndex(ctx, &dm.ProtocolInfoIndexReq{TransProtocol: def.ProtocolMqtt, NotCodes: []string{def.ProtocolCodeIThings}})
+			if err != nil {
+				logx.WithContext(ctx).Error(err)
+				return
+			}
+			for _, p := range pi.List {
+				var conf = svcCtx.Config.DgRpc.Conf
+				if p.EtcdKey != "" {
+					conf.Etcd = svcCtx.Config.Etcd
+					conf.Etcd.Key = p.EtcdKey
+				} else if p.Endpoints != nil {
+					conf.Endpoints = p.Endpoints
+				} else { //如果都没有配置,那么就不走这个服务校验
+					return
+				}
+				cli, err := zrpc.NewClient(conf)
+				if err == nil {
+					val, ok := protocolLink.Load(p.Code)
+					protocolLink.Store(p.Code, cli)
+					if ok {
+						time.Sleep(time.Second * 3) //避免刚取出来的连接失效,所以需要延时关闭
+						val.(zrpc.Client).Conn().Close()
+					}
+				} else {
+					val, ok := protocolLink.LoadAndDelete(p.Code)
+					if ok {
+						time.Sleep(time.Second * 3) //避免刚取出来的连接失效,所以需要延时关闭
+						val.(zrpc.Client).Conn().Close()
+					}
+				}
+			}
 		}
-		return
-	}
-	//如果连接上了,则删除黑名单
-	protocolBlack.Delete(p.Code)
-	defer cli.Conn().Close()
+		run()
+		for range ticket.C {
+			run()
+		}
+	})
 }
+
 func ThirdProtoLoginAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *types.DeviceAuthLoginReq, cert []byte) error {
-	pi, err := svcCtx.ProtocolM.ProtocolInfoIndex(ctx, &dm.ProtocolInfoIndexReq{TransProtocol: def.ProtocolMqtt, NotCodes: []string{def.ProtocolCodeIThings}})
-	if err != nil {
-		return err
-	}
 	var wait sync.WaitGroup
 	var succ bool
 	var runCtx, cancel = context.WithCancel(ctx)
-	for _, v := range pi.List {
-		if _, ok := protocolBlack.Get(v.Code); ok { //黑名单
-			p := v
-			ctxs.GoNewCtx(ctx, func(ctx2 context.Context) {
-				protocolBlackCheck(svcCtx, p)
-			})
-			continue
-		}
+	protocolLink.Range(func(key, value any) bool {
+		cli := value.(zrpc.Client)
 		wait.Add(1)
-		go func(v *dm.ProtocolInfo) {
-			utils.Recover(ctx)
-			defer wait.Done()
-			var conf = svcCtx.Config.DgRpc.Conf
-			if v.EtcdKey != "" {
-				conf.Etcd = svcCtx.Config.Etcd
-				conf.Etcd.Key = v.EtcdKey
-			} else if v.Endpoints != nil {
-				conf.Endpoints = v.Endpoints
-			} else { //如果都没有配置,那么就不走这个服务校验
-				return
-			}
-			cli, err := zrpc.NewClient(conf)
-			if err != nil {
-				logx.WithContext(runCtx).Errorf("NewClient ProtocolInfo:%#v err:%v", v, err)
-				if strings.Contains(err.Error(), "is already started") { //协议组件连接超时,加入黑名单
-					protocolBlack.Set(v.Code, struct{}{})
-				}
-				return
-			}
-			defer cli.Conn().Close()
+		utils.Go(ctx, func() {
+			defer func() { wait.Done() }()
 			da := deviceauth.NewDeviceAuth(cli)
-			_, err = da.LoginAuth(runCtx, &dg.LoginAuthReq{Username: req.Username, //用户名
+			_, err := da.LoginAuth(runCtx, &dg.LoginAuthReq{Username: req.Username, //用户名
 				Password:    req.Password, //密码
 				ClientID:    req.ClientID, //clientID
 				Ip:          req.Ip,       //访问的ip地址
@@ -106,9 +85,11 @@ func ThirdProtoLoginAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *t
 				succ = true
 				cancel()
 			}
-		}(v)
-	}
+		})
+		return true
+	})
 	wait.Wait()
+	cancel()
 	if succ {
 		return nil
 	}
@@ -116,51 +97,16 @@ func ThirdProtoLoginAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *t
 }
 
 func ThirdProtoAccessAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *types.DeviceAuthAccessReq, action string) error {
-	pi, err := svcCtx.ProtocolM.ProtocolInfoIndex(ctx, &dm.ProtocolInfoIndexReq{TransProtocol: def.ProtocolMqtt})
-	if err != nil {
-		return err
-	}
 	var wait sync.WaitGroup
 	var succ bool
 	var runCtx, cancel = context.WithCancel(ctx)
-	for _, v := range pi.List {
-		if v.Code == def.ProtocolCodeIThings {
-			continue
-		}
-		if _, ok := protocolBlack.Get(v.Code); ok { //黑名单
-			p := v
-			ctxs.GoNewCtx(ctx, func(ctx2 context.Context) {
-				protocolBlackCheck(svcCtx, p)
-			})
-			continue
-		}
+	protocolLink.Range(func(key, value any) bool {
+		cli := value.(zrpc.Client)
 		wait.Add(1)
-		go func(v *dm.ProtocolInfo) {
-			logx.Errorf("start p:%#v", v)
-			defer func() {
-				logx.Errorf("end p:%#v", v)
-			}()
-			defer wait.Done()
-			var conf = svcCtx.Config.DgRpc.Conf
-			if v.EtcdKey != "" {
-				conf.Etcd = svcCtx.Config.Etcd
-				conf.Etcd.Key = v.EtcdKey
-			} else if v.Endpoints != nil {
-				conf.Endpoints = v.Endpoints
-			} else { //如果都没有配置,那么就不走这个服务校验
-				return
-			}
-			cli, err := zrpc.NewClient(conf, zrpc.WithTimeout(time.Second))
-			if err != nil {
-				logx.WithContext(runCtx).Debugf("NewClient ProtocolInfo:%#v err:%v", v, err)
-				if strings.Contains(err.Error(), "is already started") { //协议组件连接超时,加入黑名单
-					protocolBlack.Set(v.Code, struct{}{})
-				}
-				return
-			}
-			defer cli.Conn().Close()
+		utils.Go(ctx, func() {
+			defer func() { wait.Done() }()
 			da := deviceauth.NewDeviceAuth(cli)
-			_, err = da.AccessAuth(runCtx, &dg.AccessAuthReq{
+			_, err := da.AccessAuth(runCtx, &dg.AccessAuthReq{
 				Username: req.Username,
 				Topic:    req.Topic,
 				ClientID: req.ClientID,
@@ -168,12 +114,13 @@ func ThirdProtoAccessAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *
 				Ip:       req.Ip,
 			})
 			if err == nil {
-				logx.WithContext(runCtx).Infof("AccessAuth ProtocolInfo:%#v succ", v)
+				logx.WithContext(runCtx).Infof("AccessAuth ProtocolKey:%v succ", key)
 				succ = true
 				cancel()
 			}
-		}(v)
-	}
+		})
+		return true
+	})
 	wait.Wait()
 	if succ {
 		return nil

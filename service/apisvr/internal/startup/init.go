@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/logic"
+	"github.com/i-Things/things/service/apisvr/internal/logic/things/device"
 	"github.com/i-Things/things/service/apisvr/internal/svc"
 	"github.com/i-Things/things/service/apisvr/internal/types"
 )
@@ -15,6 +16,11 @@ func StartOtaChanWalk(s *svc.ServiceContext) {
 		})
 	}
 }
+
+func Init(svcCtx *svc.ServiceContext) {
+	device.Init(svcCtx)
+}
+
 func init() {
 	var (
 		TagsTypes []*types.Tag

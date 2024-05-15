@@ -56,6 +56,6 @@ func runApi(apiCtx ApiCtx) ApiCtx {
 	//		utils.FuncName(), err)
 	//}
 	//ota附件处理
-	startup.StartOtaChanWalk(apiCtx.SvcCtx)
+	startup.Init(apiCtx.SvcCtx)
 	return apiCtx
 }
