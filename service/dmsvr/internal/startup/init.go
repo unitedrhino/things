@@ -132,14 +132,14 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		return otaEvent.NewOtaEvent(svcCtx, ctxs.WithRoot(ctx)).DeviceUpgradePush()
 	})
 	logx.Must(err)
-	//err = svcCtx.FastEvent.QueueSubscribe(eventBus.DmDeviceOnlineStatusChange, func(ctx context.Context, t time.Time, body []byte) error {
-	//	now := time.Now().Add(time.Second * 2) //两秒前的丢弃
-	//	if now.Before(t) {
-	//		return nil
-	//	}
-	//	return serverEvent.NewServerHandle(ctxs.WithRoot(ctx), svcCtx).OnlineStatusHandle()
-	//})
-	//logx.Must(err)
+	err = svcCtx.FastEvent.QueueSubscribe(eventBus.DmDeviceOnlineStatusChange, func(ctx context.Context, t time.Time, body []byte) error {
+		now := time.Now().Add(time.Second * 2) //两秒前的丢弃
+		if now.Before(t) {
+			return nil
+		}
+		return serverEvent.NewServerHandle(ctxs.WithRoot(ctx), svcCtx).OnlineStatusHandle()
+	})
+	logx.Must(err)
 	err = svcCtx.FastEvent.Start()
 	logx.Must(err)
 }
