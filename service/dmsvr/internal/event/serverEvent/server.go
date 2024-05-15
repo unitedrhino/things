@@ -127,6 +127,7 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 	if len(insertList) == 0 && len(removeList) == 0 {
 		return nil
 	}
+	l.Infof("insertList:%v removeList:%v", utils.Fmt(insertList), utils.Fmt(removeList))
 	//入库异步处理
 	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
 		var ( //这里是最后更新数据库状态的设备列表
