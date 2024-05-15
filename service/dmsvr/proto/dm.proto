@@ -893,6 +893,7 @@ message GroupInfo{
   map<string, string> tags = 7;
   string productID = 8;
   string productName = 9;
+  repeated DeviceCore devices =11;
 //  DeviceInfoCount deviceInfoCount =11;
 }
 

@@ -696,16 +696,17 @@ type GroupDeviceMultiSaveReq struct {
 }
 
 type GroupInfo struct {
-	ID          int64  `json:"id,optional"`                 //分组ID
-	ParentID    int64  `json:"parentID,optional"`           //父组ID
-	ProjectID   int64  `json:"projectID,string,optional"`   //项目ID
-	AreaID      int64  `json:"areaID,string,optional"`      //区域ID
-	Name        string `json:"name,optional"`               //分组名称
-	ProductID   string `json:"productID,optional"`          //产品ID
-	ProductName string `json:"productName,optional"`        //产品ID
-	CreatedTime int64  `json:"createdTime,string,optional"` //创建时间
-	Desc        string `json:"desc,optional"`               //分组描述
-	Tags        []*Tag `json:"tags,optional"`               //分组tag
+	ID          int64         `json:"id,optional"`                 //分组ID
+	ParentID    int64         `json:"parentID,optional"`           //父组ID
+	ProjectID   int64         `json:"projectID,string,optional"`   //项目ID
+	AreaID      int64         `json:"areaID,string,optional"`      //区域ID
+	Name        string        `json:"name,optional"`               //分组名称
+	ProductID   string        `json:"productID,optional"`          //产品ID
+	ProductName string        `json:"productName,optional"`        //产品ID
+	CreatedTime int64         `json:"createdTime,string,optional"` //创建时间
+	Desc        string        `json:"desc,optional"`               //分组描述
+	Tags        []*Tag        `json:"tags,optional"`               //分组tag
+	Devices     []*DeviceCore `json:"devices,optional,omitempty"`
 }
 
 type GroupInfoIndexReq struct {

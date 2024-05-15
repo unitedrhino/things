@@ -26,19 +26,13 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 	}
 }
 
-func (l *CreateLogic) Create(req *types.GroupInfo) error {
+func (l *CreateLogic) Create(req *types.GroupInfo) (*types.WithID, error) {
 
-	_, err := l.svcCtx.DeviceG.GroupInfoCreate(l.ctx, &dm.GroupInfo{
-		AreaID:    req.AreaID,
-		Name:      req.Name,
-		ParentID:  req.ParentID,
-		ProductID: req.ProductID,
-		Desc:      req.Desc,
-	})
+	ret, err := l.svcCtx.DeviceG.GroupInfoCreate(l.ctx, utils.Copy[dm.GroupInfo](req))
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.ManageDevice req=%v err=%+v", utils.FuncName(), req, er)
-		return er
+		return nil, er
 	}
-	return nil
+	return utils.Copy[types.WithID](ret), err
 }

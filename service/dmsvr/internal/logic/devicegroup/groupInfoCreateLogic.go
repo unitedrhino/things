@@ -4,10 +4,12 @@ import (
 	"context"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"gorm.io/gorm"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -91,13 +93,35 @@ func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfo) (*dm.WithID, er
 	po := relationDB.DmGroupInfo{
 		ParentID:  in.ParentID,
 		ProductID: in.ProductID,
+		AreaID:    stores.AreaID(in.AreaID),
 		Name:      in.Name,
 		Desc:      in.Desc,
 		Tags:      in.Tags,
 	}
-	err = l.GiDB.Insert(l.ctx, &po)
+	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+		err := relationDB.NewGroupInfoRepo(tx).Insert(l.ctx, &po)
+		if err != nil {
+			return err
+		}
+		if len(in.Devices) > 0 {
+			list := make([]*relationDB.DmGroupDevice, 0, len(in.Devices))
+			for _, v := range in.Devices {
+				list = append(list, &relationDB.DmGroupDevice{
+					GroupID:    po.ID,
+					ProductID:  v.ProductID,
+					DeviceName: v.DeviceName,
+					AreaID:     po.AreaID,
+				})
+			}
+			err = relationDB.NewGroupDeviceRepo(tx).MultiInsert(l.ctx, list)
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	})
 	if err != nil {
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
 
 	return &dm.WithID{Id: po.ID}, nil

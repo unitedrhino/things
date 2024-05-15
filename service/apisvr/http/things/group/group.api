@@ -16,7 +16,7 @@ info(
 service api {
     @doc "创建分组"
     @handler create
-    post /create (GroupInfo) returns ()
+    post /create (GroupInfo) returns (WithID)
 
     @doc "获取分组列表"
     @handler index
@@ -71,6 +71,7 @@ type (
         CreatedTime int64  `json:"createdTime,string,optional"`     //创建时间
         Desc string `json:"desc,optional"`   //分组描述
         Tags []*Tag `json:"tags,optional"`                 //分组tag
+        Devices []*DeviceCore `json:"devices,optional,omitempty"`
     }
 
 
