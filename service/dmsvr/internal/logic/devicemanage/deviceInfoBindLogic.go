@@ -48,8 +48,8 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 		return nil, err
 	}
 	uc := ctxs.GetUserCtxNoNil(l.ctx)
-	if di.TenantCode != def.TenantCodeDefault || (string(di.TenantCode) == uc.TenantCode &&
-		int64(di.ProjectID) == uc.ProjectID) {
+	if (di.TenantCode != def.TenantCodeDefault && string(di.TenantCode) != uc.TenantCode) || (string(di.TenantCode) == uc.TenantCode &&
+		int64(di.ProjectID) != uc.ProjectID) { //如果在其他租户下 则已经被绑定 或 在本租户下,但是不在一个项目下也不允许绑定
 		//只有归属于default租户和自己租户的才可以
 		return nil, errors.DeviceBound
 	}
