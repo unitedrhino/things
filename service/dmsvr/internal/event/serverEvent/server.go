@@ -62,6 +62,7 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 	if len(devs) == 0 {
 		return nil
 	}
+	var now = time.Now()
 	var clientIDSet = map[string][]*deviceStatus.ConnectMsg{}
 	for _, v := range devs {
 		if _, ok := clientIDSet[v.ClientID]; ok {
@@ -72,8 +73,8 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 	}
 	var removeList []*deviceStatus.ConnectMsg
 	var insertList []*deviceStatus.ConnectMsg
-	var t = time.Now().Add(-time.Second * 5)
-	var older = time.Now().Add(-time.Second * 10) //10秒以外的直接入库,可能是服务挂了引起
+	var t = now.Add(-time.Second * 5)
+	var older = now.Add(-time.Second * 10) //10秒以外的直接入库,可能是服务挂了引起
 	for _, v := range clientIDSet {
 		if len(v) == 1 && v[0].Timestamp.Before(t) { //如果5秒过去了,还没有反复的登入登出,则入库
 			removeList = append(removeList, v...)

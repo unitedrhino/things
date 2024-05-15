@@ -24,7 +24,7 @@ func NewDeviceStatus(store kv.Store) *DeviceStatus {
 }
 
 func (d *DeviceStatus) Lock(ctx context.Context) (bool, error) {
-	ok, err := d.cache.SetnxExCtx(ctx, genOnlineLockKey(), time.Now().Format("2006-01-02 15:04:05.999"), 5)
+	ok, err := d.cache.SetnxExCtx(ctx, genOnlineLockKey(), time.Now().Format("2006-01-02 15:04:05.999"), 30)
 	return ok, err
 }
 

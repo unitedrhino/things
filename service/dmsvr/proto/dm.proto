@@ -1097,7 +1097,7 @@ message DeviceInfoIndexReq{
   repeated string versions =15;//版本列表
   int64  deviceType = 16; //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
   DeviceCore gateway = 17;//获取网关下子设备列表
-
+ int64 groupID =18;
 }
 
 message DeviceInfoIndexResp{
