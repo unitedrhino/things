@@ -18,7 +18,8 @@ import (
 )
 
 var (
-	protocolLink sync.Map
+	protocolLink      = map[string]zrpc.Client{}
+	protocolLinkMutex sync.RWMutex
 )
 
 func Init(svcCtx *svc.ServiceContext) {
@@ -42,20 +43,24 @@ func Init(svcCtx *svc.ServiceContext) {
 					return
 				}
 				cli, err := zrpc.NewClient(conf)
-				if err == nil {
-					val, ok := protocolLink.Load(p.Code)
-					protocolLink.Store(p.Code, cli)
-					if ok {
-						time.Sleep(time.Second * 3) //避免刚取出来的连接失效,所以需要延时关闭
-						val.(zrpc.Client).Conn().Close()
+				func() {
+					protocolLinkMutex.Lock()
+					defer protocolLinkMutex.Unlock()
+					if err == nil {
+						val, ok := protocolLink[p.Code]
+						protocolLink[p.Code] = cli
+						if ok {
+							time.Sleep(time.Second * 3) //避免刚取出来的连接失效,所以需要延时关闭
+							val.(zrpc.Client).Conn().Close()
+						}
+					} else {
+						val, ok := protocolLink[p.Code]
+						if ok {
+							time.Sleep(time.Second * 3) //避免刚取出来的连接失效,所以需要延时关闭
+							val.(zrpc.Client).Conn().Close()
+						}
 					}
-				} else {
-					val, ok := protocolLink.LoadAndDelete(p.Code)
-					if ok {
-						time.Sleep(time.Second * 3) //避免刚取出来的连接失效,所以需要延时关闭
-						val.(zrpc.Client).Conn().Close()
-					}
-				}
+				}()
 			}
 		}
 		run()
@@ -69,8 +74,9 @@ func ThirdProtoLoginAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *t
 	var wait sync.WaitGroup
 	var succ bool
 	var runCtx, cancel = context.WithCancel(ctx)
-	protocolLink.Range(func(key, value any) bool {
-		cli := value.(zrpc.Client)
+	protocolLinkMutex.RLock()
+	defer protocolLinkMutex.RUnlock()
+	for key, cli := range protocolLink {
 		wait.Add(1)
 		utils.Go(ctx, func() {
 			defer func() { wait.Done() }()
@@ -83,11 +89,11 @@ func ThirdProtoLoginAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *t
 			})
 			if err == nil {
 				succ = true
+				logx.WithContext(runCtx).Infof("LoginAuth ProtocolKey:%v succ", key)
 				cancel()
 			}
 		})
-		return true
-	})
+	}
 	wait.Wait()
 	cancel()
 	if succ {
@@ -100,8 +106,9 @@ func ThirdProtoAccessAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *
 	var wait sync.WaitGroup
 	var succ bool
 	var runCtx, cancel = context.WithCancel(ctx)
-	protocolLink.Range(func(key, value any) bool {
-		cli := value.(zrpc.Client)
+	protocolLinkMutex.RLock()
+	defer protocolLinkMutex.RUnlock()
+	for key, cli := range protocolLink {
 		wait.Add(1)
 		utils.Go(ctx, func() {
 			defer func() { wait.Done() }()
@@ -119,9 +126,9 @@ func ThirdProtoAccessAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *
 				cancel()
 			}
 		})
-		return true
-	})
+	}
 	wait.Wait()
+	cancel()
 	if succ {
 		return nil
 	}
