@@ -54,6 +54,7 @@ func (l *ProductSchemaUpdateLogic) ruleCheck(in *dm.ProductSchemaUpdateReq) (*re
 		return nil, nil, errors.Parameter.AddMsg("功能标签不支持修改")
 	}
 	newPo := logic.ToProductSchemaPo(in.Info)
+	newPo.ID = po.ID
 	if in.Info.Affordance != nil && po.Tag == schema.TagCustom {
 		po.Affordance = newPo.Affordance
 	}

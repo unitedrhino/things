@@ -87,7 +87,7 @@ func (p ProductSchemaRepo) FindOneByFilter(ctx context.Context, f ProductSchemaF
 }
 
 func (p ProductSchemaRepo) Update(ctx context.Context, data *DmProductSchema) error {
-	err := p.db.WithContext(ctx).Where("product_id = ?", data.ProductID).Save(data).Error
+	err := p.db.WithContext(ctx).Omit("product_id", "identifier").Where("product_id = ? and identifier = ?", data.ProductID, data.Identifier).Save(data).Error
 	return stores.ErrFmt(err)
 }
 

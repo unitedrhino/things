@@ -38,7 +38,7 @@ func (p GatewayDeviceRepo) fmtFilter(ctx context.Context, f GatewayDeviceFilter)
 	}
 	if len(f.SubDevices) != 0 {
 		db = db.Where(fmt.Sprintf("(product_id, device_name) in (%s)", utils.JoinWithFunc(f.SubDevices, ",", func(in *devices.Core) string {
-			return fmt.Sprintf("(%s)")
+			return fmt.Sprintf("('%s','%s')", in.ProductID, in.DeviceName)
 		})))
 	}
 	return db

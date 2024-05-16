@@ -287,10 +287,10 @@ func (l *GatewayLogic) HandleStatus(msg *deviceMsg.PublishMsg) (respMsg *msgGate
 	l.Debugf("%s", utils.FuncName())
 	var resp = msgGateway.Msg{
 		CommonMsg: deviceMsg.NewRespCommonMsg(l.ctx, l.dreq.Method, l.dreq.MsgToken),
+		Payload:   l.dreq.Payload,
 	}
 	resp.AddStatus(errors.OK)
 	var (
-		isOnline   = int64(def.False)
 		payload    msgGateway.GatewayPayload
 		appConnMsg = application.ConnectMsg{
 			Device: devices.Core{
@@ -303,7 +303,6 @@ func (l *GatewayLogic) HandleStatus(msg *deviceMsg.PublishMsg) (respMsg *msgGate
 
 	switch l.dreq.Method {
 	case deviceMsg.Online:
-		isOnline = def.True
 		err = l.svcCtx.PubApp.DeviceStatusConnected(l.ctx, appConnMsg)
 		if err != nil {
 			l.Errorf("%s.DeviceStatusConnected productID:%v deviceName:%v err:%v",
@@ -320,23 +319,86 @@ func (l *GatewayLogic) HandleStatus(msg *deviceMsg.PublishMsg) (respMsg *msgGate
 		resp.AddStatus(err)
 		return &resp, err
 	}
+	var subDevices []*devices.Core
 	for _, v := range l.dreq.Payload.Devices {
-		//更新对应设备的online状态
-		_, err := devicemanage.NewDeviceManageServer(l.svcCtx).DeviceInfoUpdate(l.ctx, &dm.DeviceInfo{
+		subDevices = append(subDevices, &devices.Core{
 			ProductID:  v.ProductID,
 			DeviceName: v.DeviceName,
-			IsOnline:   isOnline,
 		})
-		if err != nil {
-			l.Errorf("%s.LogRepo.DeviceInfoUpdate productID:%v deviceName:%v err:%v",
-				utils.FuncName(), v.ProductID, v.DeviceName, err)
-		}
+	}
+	gs, err := relationDB.NewGatewayDeviceRepo(l.ctx).CountByFilter(l.ctx, relationDB.GatewayDeviceFilter{SubDevices: subDevices, Gateway: &devices.Core{
+		ProductID:  msg.ProductID,
+		DeviceName: msg.DeviceName,
+	}})
+	if err != nil {
+		resp.AddStatus(err)
+		return &resp, err
+	}
+	if int(gs) != len(l.dreq.Payload.Devices) {
+		err := errors.DeviceNotBound
+		resp.AddStatus(err)
+		return &resp, err
+	}
+
+	for _, v := range l.dreq.Payload.Devices {
 		payload.Devices = append(payload.Devices, &msgGateway.Device{
 			ProductID:  v.ProductID,
 			DeviceName: v.DeviceName,
 			Code:       errors.Fmt(err).GetCode(),
 			Msg:        errors.Fmt(err).GetMsg(),
 		})
+	}
+	if l.dreq.Method == deviceMsg.Online {
+		for _, v := range l.dreq.Payload.Devices {
+			di, err := relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.DeviceFilter{Cores: []*devices.Core{{ProductID: v.ProductID, DeviceName: v.DeviceName}}})
+			if err != nil {
+				l.Error(err)
+				continue
+			}
+			if di.IsOnline == def.True {
+				l.Infof("already online:%#v", msg)
+				continue
+			}
+			var updates = map[string]any{"is_online": def.True, "last_login": msg.Timestamp, "status": def.DeviceStatusOnline}
+			if di.FirstLogin.Valid == false {
+				updates["first_login"] = msg.Timestamp
+			}
+			err = relationDB.NewDeviceInfoRepo(l.ctx).UpdateWithField(l.ctx,
+				relationDB.DeviceFilter{Cores: []*devices.Core{{ProductID: v.ProductID, DeviceName: v.DeviceName}}}, updates)
+			if err != nil {
+				l.Error(err)
+			}
+			err = l.svcCtx.DeviceCache.SetData(l.ctx, dmExport.GenDeviceInfoKey(v.ProductID, v.DeviceName), nil)
+			if err != nil {
+				l.Error(err)
+			}
+			//err = l.svcCtx.PubApp.DeviceStatusConnected(l.ctx, appMsg)
+			//if err != nil {
+			//	l.Errorf("%s.pubApp productID:%v deviceName:%v err:%v",
+			//		utils.FuncName(), v.ProductID, v.DeviceName, err)
+			//}
+		}
+	} else {
+		var ( //这里是最后更新数据库状态的设备列表
+			OffLineDevices []*devices.Core
+		)
+		for _, v := range l.dreq.Payload.Devices {
+			OffLineDevices = append(OffLineDevices, &devices.Core{
+				ProductID:  v.ProductID,
+				DeviceName: v.DeviceName,
+			})
+		}
+		diDB := relationDB.NewDeviceInfoRepo(l.ctx)
+		err = diDB.UpdateOfflineStatus(l.ctx, relationDB.DeviceFilter{Cores: OffLineDevices})
+		if err != nil {
+			l.Error(err)
+		}
+		for _, v := range OffLineDevices { //清除缓存
+			err := l.svcCtx.DeviceCache.SetData(l.ctx, dmExport.GenDeviceInfoKey(v.ProductID, v.DeviceName), nil)
+			if err != nil {
+				l.Error(err)
+			}
+		}
 	}
 	return &resp, err
 }
