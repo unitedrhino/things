@@ -251,7 +251,7 @@ func (l *OtaFirmwareJobCreateLogic) getDevice(in *dm.OtaFirmwareJobInfo, fi *rel
 //			JobID:      dmOtaJob.ID,
 //			SrcVersion: device.Version,
 //			ProductID:  device.ProductID,
-//			Status: msgOta.UpgradeStatusQueued,
+//			Msg: msgOta.UpgradeStatusQueued,
 //		}
 //		err := l.OtDB.Insert(l.ctx, &dmOtaTask)
 //		if err != nil {

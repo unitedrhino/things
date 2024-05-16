@@ -38,7 +38,7 @@ func (l *OtaPromptIndexLogic) OtaPromptIndex(in *dm.OtaPromptIndexReq) (*dm.OtaP
 	//	if err != nil {
 	//		return nil, err
 	//	}
-	//	if taskDeviceInfo.Status == 401 || taskDeviceInfo.Status == 501 {
+	//	if taskDeviceInfo.Msg == 401 || taskDeviceInfo.Msg == 501 {
 	//		//升级中和升级成功的不能重新升级
 	//		return nil, errors.OtaRetryStatusError
 	//	}

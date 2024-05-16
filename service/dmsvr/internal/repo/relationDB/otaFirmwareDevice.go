@@ -31,7 +31,7 @@ type OtaFirmwareDeviceFilter struct {
 	DeviceName       string
 	DeviceNames      []string
 	WithScheduleTime bool
-	//Status     int64
+	//Msg     int64
 	Statues      []int64
 	SrcVersion   string
 	WithFirmware bool

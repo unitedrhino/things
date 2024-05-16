@@ -10,6 +10,7 @@ import (
 	"gitee.com/i-Things/share/domain/deviceMsg/msgGateway"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
@@ -111,36 +112,75 @@ func (l *GatewayLogic) HandleRegister(msg *deviceMsg.PublishMsg, resp *msgGatewa
 		}
 	}
 	for _, v := range l.dreq.Payload.Devices {
-		//更新对应设备的online状态
-		_, err := devicemanage.NewDeviceManageServer(l.svcCtx).DeviceInfoCreate(l.ctx, &dm.DeviceInfo{
-			ProductID:  v.ProductID,
-			DeviceName: v.DeviceName,
-		})
+		_, err := l.svcCtx.DeviceCache.GetData(l.ctx, dmExport.GenDeviceInfoKey(v.ProductID, v.DeviceName))
 		if err != nil {
-			l.Errorf("%s.DeviceM.DeviceInfoCreate productID:%v deviceName:%v err:%v",
+			if errors.Cmp(err, errors.NotFind) {
+				_, err = devicemanage.NewDeviceManageServer(l.svcCtx).DeviceInfoCreate(l.ctx, &dm.DeviceInfo{
+					ProductID:  v.ProductID,
+					DeviceName: v.DeviceName,
+				})
+			}
+			if err != nil {
+				l.Errorf("%s.DeviceM.DeviceInfoCreate productID:%v deviceName:%v err:%v",
+					utils.FuncName(), v.ProductID, v.DeviceName, err)
+				payload.Devices = append(payload.Devices, &msgGateway.Device{
+					ProductID:  v.ProductID,
+					DeviceName: v.DeviceName,
+					Code:       errors.Fmt(err).GetCode(),
+					Msg:        errors.Fmt(err).GetMsg(),
+				})
+				resp.AddStatus(err)
+				continue
+			}
+		}
+		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, dmExport.GenDeviceInfoKey(v.ProductID, v.DeviceName))
+		if err != nil {
+			l.Errorf("%s.DeviceM.DeviceInfoRead productID:%v deviceName:%v err:%v",
 				utils.FuncName(), v.ProductID, v.DeviceName, err)
 			payload.Devices = append(payload.Devices, &msgGateway.Device{
 				ProductID:  v.ProductID,
 				DeviceName: v.DeviceName,
-				Result:     errors.Fmt(err).GetCode(),
-				Status:     errors.Fmt(err).GetMsg(),
+				Code:       errors.Fmt(err).GetCode(),
+				Msg:        errors.Fmt(err).GetMsg(),
 			})
+			resp.AddStatus(err)
 			continue
 		}
-		di, err := devicemanage.NewDeviceManageServer(l.svcCtx).DeviceInfoRead(l.ctx, &dm.DeviceInfoReadReq{
-			ProductID:  v.ProductID,
-			DeviceName: v.DeviceName,
+		c, err := relationDB.NewGatewayDeviceRepo(l.ctx).CountByFilter(l.ctx, relationDB.GatewayDeviceFilter{
+			SubDevice: &devices.Core{
+				ProductID:  v.ProductID,
+				DeviceName: v.DeviceName,
+			},
+			SubDevices: nil,
 		})
 		if err != nil {
-			l.Errorf("%s.DeviceM.DeviceInfoRead productID:%v deviceName:%v err:%v",
-				utils.FuncName(), v.ProductID, v.DeviceName, err)
+			payload.Devices = append(payload.Devices, &msgGateway.Device{
+				ProductID:  v.ProductID,
+				DeviceName: v.DeviceName,
+				Code:       errors.Fmt(err).GetCode(),
+				Msg:        errors.Fmt(err).GetMsg(),
+			})
+			resp.AddStatus(err)
+			continue
 		}
+		if c != 0 {
+			err = errors.DeviceBound
+			payload.Devices = append(payload.Devices, &msgGateway.Device{
+				ProductID:  v.ProductID,
+				DeviceName: v.DeviceName,
+				Code:       errors.Fmt(err).GetCode(),
+				Msg:        errors.Fmt(err).GetMsg(),
+			})
+			resp.AddStatus(err)
+			continue
+		}
+		err = errors.OK
 		payload.Devices = append(payload.Devices, &msgGateway.Device{
 			ProductID:    v.ProductID,
 			DeviceName:   v.DeviceName,
 			DeviceSecret: di.GetSecret(),
-			Result:       errors.Fmt(err).GetCode(),
-			Status:       errors.Fmt(err).GetMsg(),
+			Code:         errors.Fmt(err).GetCode(),
+			Msg:          errors.Fmt(err).GetMsg(),
 		})
 	}
 	resp.Payload = &payload
@@ -233,7 +273,7 @@ func (l *GatewayLogic) HandleTopo(msg *deviceMsg.PublishMsg) (respMsg *msgGatewa
 				payload.Devices = append(payload.Devices, &msgGateway.Device{
 					ProductID:  device.ProductID,
 					DeviceName: device.DeviceName,
-					Result:     errors.OK.Code,
+					Code:       errors.OK.Code,
 				})
 			}
 			resp.Payload = &payload
@@ -300,8 +340,8 @@ func (l *GatewayLogic) HandleStatus(msg *deviceMsg.PublishMsg) (respMsg *msgGate
 		payload.Devices = append(payload.Devices, &msgGateway.Device{
 			ProductID:  v.ProductID,
 			DeviceName: v.DeviceName,
-			Result:     errors.Fmt(err).GetCode(),
-			Status:     errors.Fmt(err).GetMsg(),
+			Code:       errors.Fmt(err).GetCode(),
+			Msg:        errors.Fmt(err).GetMsg(),
 		})
 	}
 	return &resp, err

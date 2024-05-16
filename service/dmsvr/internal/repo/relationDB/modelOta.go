@@ -13,7 +13,7 @@ import (
 //	Type        int64  `gorm:"column:type;type:smallint;default:1;NOT NULL"`         // 升级范围1全部设备2定向升级
 //	UpgradeType int64  `gorm:"column:upgrade_type;type:smallint;default:1;NOT NULL"` // 升级策略:1静态升级2动态升级
 //	AutoRepeat  int64  `gorm:"column:auto_repeat;type:smallint;default:1;NOT NULL"`  // 是否自动重试,1:不,2自动重试
-//	Status      int64  `gorm:"column:status;type:smallint;default:1;NOT NULL"`       // 升级状态:1未升级2升级中3完成4已取消
+//	Msg      int64  `gorm:"column:status;type:smallint;default:1;NOT NULL"`       // 升级状态:1未升级2升级中3完成4已取消
 //	DeviceList  string `gorm:"column:device_list;type:json;NOT NULL"`                // 指定升级设备
 //	VersionList string `gorm:"column:version_list;type:json;NOT NULL"`               // 指定待升级版本
 //	stores.Time
