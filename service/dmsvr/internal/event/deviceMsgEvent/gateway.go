@@ -146,14 +146,14 @@ func (l *GatewayLogic) HandleRegister(msg *deviceMsg.PublishMsg, resp *msgGatewa
 			resp.AddStatus(err)
 			continue
 		}
-		c, err := relationDB.NewGatewayDeviceRepo(l.ctx).CountByFilter(l.ctx, relationDB.GatewayDeviceFilter{
+		c, err := relationDB.NewGatewayDeviceRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.GatewayDeviceFilter{
 			SubDevice: &devices.Core{
 				ProductID:  v.ProductID,
 				DeviceName: v.DeviceName,
 			},
 			SubDevices: nil,
 		})
-		if err != nil {
+		if err == nil && !(c.GatewayProductID == msg.ProductID && c.GatewayDeviceName == msg.DeviceName) { //绑定了其他设备
 			payload.Devices = append(payload.Devices, &msgGateway.Device{
 				ProductID:  v.ProductID,
 				DeviceName: v.DeviceName,
@@ -162,17 +162,11 @@ func (l *GatewayLogic) HandleRegister(msg *deviceMsg.PublishMsg, resp *msgGatewa
 			})
 			resp.AddStatus(err)
 			continue
-		}
-		if c != 0 {
-			err = errors.DeviceBound
-			payload.Devices = append(payload.Devices, &msgGateway.Device{
-				ProductID:  v.ProductID,
-				DeviceName: v.DeviceName,
-				Code:       errors.Fmt(err).GetCode(),
-				Msg:        errors.Fmt(err).GetMsg(),
-			})
-			resp.AddStatus(err)
-			continue
+		} else {
+			if !errors.Cmp(err, errors.NotFind) {
+				resp.AddStatus(err)
+				continue
+			}
 		}
 		err = errors.OK
 		payload.Devices = append(payload.Devices, &msgGateway.Device{
