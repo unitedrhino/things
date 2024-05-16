@@ -129,6 +129,11 @@ func (p *LightProtocol) RegisterDeviceMsgDownHandler(
 			logx.WithContext(ctx).Infof("mqtt.SubDevMsg protocolCode:%v Handle:%s Type:%v Payload:%v",
 				info.ProtocolCode, info.Handle, info.Type, string(info.Payload))
 			err := handle(ctx, info)
+			if err != nil {
+				logx.WithContext(ctx).Errorf("mqtt.SubDevMsg protocolCode:%v Handle:%s Type:%v Payload:%v err:%v",
+					info.ProtocolCode, info.Handle, info.Type, string(info.Payload), err)
+			}
+
 			return err
 		})
 	return err
@@ -163,7 +168,7 @@ func (p *LightProtocol) RegisterTimerHandler(f func(ctx context.Context, t time.
 		_, err := p.TimedM.TaskInfoCreate(ctx, &timedmanage.TaskInfo{
 			GroupCode: def.TimedIThingsQueueGroupCode,                                //组编码
 			Type:      1,                                                             //任务类型 1 定时任务 2 延时任务
-			Name:      fmt.Sprintf("自定义协议-%s-定时任务-数据同步", p.Pi.Name),     // 任务名称
+			Name:      fmt.Sprintf("自定义协议-%s-定时任务-数据同步", p.Pi.Name),                  // 任务名称
 			Code:      p.genCode(),                                                   //任务编码
 			Params:    fmt.Sprintf(`{"topic":"%s","payload":""}`, p.genTimerTopic()), // 任务参数,延时任务如果没有传任务参数会拿数据库的参数来执行
 			CronExpr:  "@every 10m",                                                  // cron执行表达式
