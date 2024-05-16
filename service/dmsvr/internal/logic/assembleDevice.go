@@ -54,7 +54,7 @@ func ToDeviceInfo(ctx context.Context, in *relationDB.DmDeviceInfo, ProductCache
 		SoftInfo:       in.SoftInfo,
 		Position:       ToDmPoint(&in.Position),
 		Address:        &wrappers.StringValue{Value: in.Address},
-		Rssi:           nil,
+		Rssi:           &wrappers.Int64Value{Value: in.Rssi},
 		Tags:           in.Tags,
 		SchemaAlias:    in.SchemaAlias,
 		IsOnline:       in.IsOnline,
