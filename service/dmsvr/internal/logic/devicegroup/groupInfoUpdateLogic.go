@@ -36,6 +36,9 @@ func (l *GroupInfoUpdateLogic) GroupInfoUpdate(in *dm.GroupInfo) (*dm.Empty, err
 	record.Desc = in.Desc
 	record.Name = in.Name
 	record.Tags = in.Tags
+	if record.Tags == nil {
+		record.Tags = map[string]string{}
+	}
 	err = l.GiDB.Update(l.ctx, record)
 	if err != nil {
 		return nil, errors.Parameter.AddMsg(err.Error())
