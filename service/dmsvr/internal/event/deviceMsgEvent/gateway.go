@@ -163,7 +163,7 @@ func (l *GatewayLogic) HandleRegister(msg *deviceMsg.PublishMsg, resp *msgGatewa
 			resp.AddStatus(err)
 			continue
 		} else {
-			if !errors.Cmp(err, errors.NotFind) {
+			if err != nil && !errors.Cmp(err, errors.NotFind) {
 				resp.AddStatus(err)
 				continue
 			}
