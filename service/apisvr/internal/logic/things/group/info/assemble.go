@@ -17,6 +17,7 @@ func ToGroupInfoTypes(in *dm.GroupInfo) *types.GroupInfo {
 		Name:        in.Name,
 		CreatedTime: in.CreatedTime,
 		Desc:        in.Desc,
+		DeviceCount: in.DeviceCount,
 		Tags:        logic.ToTagsType(in.Tags),
 	}
 }

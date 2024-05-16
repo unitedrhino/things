@@ -70,8 +70,10 @@ type (
         ProductName string `json:"productName,optional"`       //产品ID
         CreatedTime int64  `json:"createdTime,string,optional"`     //创建时间
         Desc string `json:"desc,optional"`   //分组描述
+        DeviceCount int64 `json:"deviceCount,optional"` //设备数量统计
         Tags []*Tag `json:"tags,optional"`                 //分组tag
         Devices []*DeviceCore `json:"devices,optional,omitempty"`
+    
     }
 
 

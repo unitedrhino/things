@@ -52,5 +52,6 @@ func (l *GroupDeviceMultiUpdateLogic) GroupDeviceMultiUpdate(in *dm.GroupDeviceM
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
+	relationDB.NewGroupInfoRepo(l.ctx).UpdateGroupDeviceCount(l.ctx, in.GroupID)
 	return &dm.Empty{}, nil
 }

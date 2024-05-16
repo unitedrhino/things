@@ -21,6 +21,7 @@ func ToGroupInfoPb(ro *relationDB.DmGroupInfo, c *dm.DeviceInfoCount) *dm.GroupI
 		ProductName: productName,
 		Name:        ro.Name,
 		ProductID:   ro.ProductID,
+		DeviceCount: ro.DeviceCount,
 		Desc:        ro.Desc,
 		CreatedTime: ro.CreatedTime.Unix(),
 		Tags:        ro.Tags,

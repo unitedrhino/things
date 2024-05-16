@@ -894,6 +894,7 @@ message GroupInfo{
   string productID = 8;
   string productName = 9;
   repeated DeviceCore devices =11;
+  int64 deviceCount = 12;
 //  DeviceInfoCount deviceInfoCount =11;
 }
 

@@ -32,5 +32,6 @@ func (l *GroupDeviceMultiDeleteLogic) GroupDeviceMultiDelete(in *dm.GroupDeviceM
 	if err != nil {
 		return nil, err
 	}
+	relationDB.NewGroupInfoRepo(l.ctx).UpdateGroupDeviceCount(l.ctx, in.GroupID)
 	return &dm.Empty{}, nil
 }

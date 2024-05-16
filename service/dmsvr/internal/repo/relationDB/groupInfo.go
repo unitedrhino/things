@@ -55,6 +55,12 @@ func (g GroupInfoRepo) Insert(ctx context.Context, data *DmGroupInfo) error {
 	return stores.ErrFmt(result.Error)
 }
 
+func (g GroupInfoRepo) UpdateGroupDeviceCount(ctx context.Context, id int64) error {
+	subQuery := g.db.WithContext(ctx).Model(&DmGroupDevice{}).Select("count(1)").Where("group_id=?", id)
+	result := g.db.WithContext(ctx).Model(&DmGroupInfo{}).Where("id=?", id).Update("device_count", subQuery)
+	return stores.ErrFmt(result.Error)
+}
+
 func (g GroupInfoRepo) FindOneByFilter(ctx context.Context, f GroupInfoFilter) (*DmGroupInfo, error) {
 	var result DmGroupInfo
 	db := g.fmtFilter(ctx, f)

@@ -94,12 +94,13 @@ func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfo) (*dm.WithID, er
 		return nil, errors.OutRange.WithMsgf("子分组嵌套不能超过%d层", def.DeviceGroupLevel)
 	}
 	po := relationDB.DmGroupInfo{
-		ParentID:  in.ParentID,
-		ProductID: in.ProductID,
-		AreaID:    stores.AreaID(in.AreaID),
-		Name:      in.Name,
-		Desc:      in.Desc,
-		Tags:      in.Tags,
+		ParentID:    in.ParentID,
+		ProductID:   in.ProductID,
+		AreaID:      stores.AreaID(in.AreaID),
+		Name:        in.Name,
+		Desc:        in.Desc,
+		Tags:        in.Tags,
+		DeviceCount: int64(len(in.Devices)),
 	}
 	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
 		err := relationDB.NewGroupInfoRepo(tx).Insert(l.ctx, &po)

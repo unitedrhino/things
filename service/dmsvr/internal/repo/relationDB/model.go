@@ -219,6 +219,7 @@ type DmGroupInfo struct {
 	Desc       string            `gorm:"column:desc;type:varchar(200);default:''"`                                       // 描述
 	Tags       map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"`                    // 分组标签
 	stores.NoDelTime
+	DeviceCount int64              `gorm:"column:device_count;type:bigint;default:0;"` //设备数量统计
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:tc_ac"`
 	ProductInfo *DmProductInfo     `gorm:"foreignKey:ProductID;references:ProductID"`
 }
