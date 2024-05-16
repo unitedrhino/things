@@ -72,6 +72,9 @@ func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfo) (*dm.WithID, er
 	if in.AreaID == 0 {
 		in.AreaID = def.NotClassified
 	}
+	if in.ParentID == 0 {
+		in.ParentID = def.RootNode
+	}
 	find, err := l.CheckGroupInfo(in)
 	if err != nil {
 		l.Errorf("%s.CheckGroupInfo in=%v\n", utils.FuncName(), in)
