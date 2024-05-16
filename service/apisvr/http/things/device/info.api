@@ -192,6 +192,7 @@ type (
         Versions []string `json:"versions,optional"`
         Gateway *DeviceCore `json:"gateway,optional"`//过滤网关
         GroupID int64 `json:"groupID,optional,string"`
+        Devices []*DeviceCore `json:"devices"`
     }
     DeviceInfoIndexResp  {
         List []*DeviceInfo `json:"list"`    //设备信息
