@@ -144,17 +144,17 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 		}
 	}
 	if f.DeviceType != 0 {
-		subQuery := db.Model(&DmProductInfo{}).Select("product_id").Where("device_type=?", f.DeviceType)
+		subQuery := d.db.Model(&DmProductInfo{}).Select("product_id").Where("device_type=?", f.DeviceType)
 		db = db.Where("product_id in (?)", subQuery)
 	}
 	if f.Gateway != nil {
-		subQuery := db.Model(&DmGatewayDevice{}).Select("product_id, device_name").
+		subQuery := d.db.Model(&DmGatewayDevice{}).Select("product_id, device_name").
 			Where(" gateway_product_id=? and gateway_device_name=?", f.Gateway.ProductID, f.Gateway.DeviceName)
 		db = db.Where("(product_id, device_name) in (?)",
 			subQuery)
 	}
 	if f.GroupID != 0 {
-		subQuery := db.Model(&DmGroupDevice{}).Select("product_id, device_name").Where("group_id=?", f.GroupID)
+		subQuery := d.db.Model(&DmGroupDevice{}).Select("product_id, device_name").Where("group_id=?", f.GroupID)
 		db = db.Where("(product_id, device_name) in (?)",
 			subQuery)
 	}
