@@ -80,6 +80,73 @@ func (l *ThingLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) 
 }
 
 // 设备属性上报
+func (l *ThingLogic) HandlePackReport(msg *deviceMsg.PublishMsg, req msgThing.Req) (respMsg *deviceMsg.PublishMsg, err error) {
+	tp, err := req.VerifyReqParam(l.schema, schema.ParamProperty)
+	if err != nil {
+		return l.DeviceResp(msg, err, nil), err
+	} else if len(tp) == 0 {
+		err := errors.Parameter.AddMsgf("查不到物模型:%v", req.Params)
+		return l.DeviceResp(msg, err, nil), err
+	}
+
+	params, err := msgThing.ToVal(tp)
+	if err != nil {
+		return l.DeviceResp(msg, err, nil), err
+	}
+	timeStamp := req.GetTimeStamp(msg.Timestamp)
+	core := devices.Core{
+		ProductID:  msg.ProductID,
+		DeviceName: msg.DeviceName,
+	}
+
+	paramValues, err := msgThing.ToParamValues(tp)
+	if err != nil {
+		return l.DeviceResp(msg, err, nil), err
+	}
+	ctx := ctxs.CopyCtx(l.ctx)
+	utils.Go(ctx, func() {
+		startTime := time.Now()
+		for identifier, param := range paramValues {
+			appMsg := application.PropertyReport{
+				Device: core, Timestamp: timeStamp.UnixMilli(),
+				Identifier: identifier, Param: param,
+			}
+			//应用事件通知-设备物模型属性上报通知 ↓↓↓
+			err := l.svcCtx.PubApp.DeviceThingPropertyReport(ctx, appMsg)
+			if err != nil {
+				logx.WithContext(ctx).Errorf("%s.DeviceThingPropertyReport  identifier:%v, param:%v,err:%v", utils.FuncName(), identifier, param, err)
+			}
+			err = l.svcCtx.WebHook.Publish(l.svcCtx.WithDeviceTenant(l.ctx, core), sysExport.CodeDmDevicePropertyReport, appMsg)
+			if err != nil {
+				l.Error(err)
+			}
+			err = l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDevicePropertyReport, appMsg, map[string]any{
+				"productID":  core.ProductID,
+				"deviceName": core.DeviceName,
+				"identifier": identifier,
+			}, map[string]any{
+				"productID":  core.ProductID,
+				"deviceName": core.DeviceName,
+			})
+			if err != nil {
+				l.Error(err)
+			}
+		}
+		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).Infof("%s.DeviceThingPropertyReport startTime:%v",
+			utils.FuncName(), startTime)
+	})
+
+	//插入多条设备物模型属性数据
+	err = l.repo.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, params, timeStamp)
+	if err != nil {
+		l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
+		return l.DeviceResp(msg, errors.Database.AddDetail(err), nil), err
+	}
+
+	return l.DeviceResp(msg, errors.OK, nil), nil
+}
+
+// 设备属性上报
 func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThing.Req) (respMsg *deviceMsg.PublishMsg, err error) {
 	tp, err := req.VerifyReqParam(l.schema, schema.ParamProperty)
 	if err != nil {

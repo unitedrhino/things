@@ -160,7 +160,7 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 			subQuery)
 	}
 	if f.NotGroupID != 0 {
-		subQuery := d.db.Model(&DmGroupDevice{}).Select("product_id, device_name").Where("group_id=?", f.GroupID)
+		subQuery := d.db.Model(&DmGroupDevice{}).Select("product_id, device_name").Where("group_id=?", f.NotGroupID)
 		db = db.Where("(product_id, device_name) not in (?)",
 			subQuery)
 	}
