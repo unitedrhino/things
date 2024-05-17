@@ -146,7 +146,7 @@ func (p *LightProtocol) DevPubMsg(ctx context.Context, publishMsg *devices.DevPu
 		logx.Errorf("%s.publish  err:%v", utils.FuncName(), err)
 		return err
 	} else {
-		logx.Infof("%s.publish", utils.FuncName(), publishMsg)
+		logx.Infof("%s.publish msg:%v", utils.FuncName(), publishMsg)
 	}
 
 	return nil

@@ -6,9 +6,8 @@ import (
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
 	"github.com/i-Things/things/service/dmsvr/dmExport"
-	devicemanage "github.com/i-Things/things/service/dmsvr/internal/server/devicemanage"
+	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
 )
 
 func CheckIsOnline(ctx context.Context, svcCtx *svc.ServiceContext, core devices.Core) (protocolCode string, err error) {
@@ -31,20 +30,22 @@ func CheckIsOnline(ctx context.Context, svcCtx *svc.ServiceContext, core devices
 		return info.ProtocolCode, nil
 	}
 	//子设备需要查询网关的在线状态
-	gateways, err := devicemanage.NewDeviceManageServer(svcCtx).DeviceGatewayIndex(ctx, &dm.DeviceGatewayIndexReq{SubDevice: &dm.DeviceCore{
+	g, err := relationDB.NewGatewayDeviceRepo(ctx).FindOneByFilter(ctx, relationDB.GatewayDeviceFilter{SubDevice: &devices.Core{
 		ProductID:  dev.ProductID,
 		DeviceName: dev.DeviceName,
 	}})
 	if err != nil {
+		if errors.Cmp(err, errors.NotFind) {
+			return info.ProtocolCode, errors.NotFind.AddMsg("子设备未绑定网关")
+		}
 		return info.ProtocolCode, err
 	}
-	if len(gateways.List) == 0 {
-		return info.ProtocolCode, errors.NotFind.AddMsg("子设备未绑定网关")
+	di, err := svcCtx.DeviceCache.GetData(ctx, dmExport.GenDeviceInfoKey(g.ProductID, g.DeviceName))
+	if err != nil {
+		return info.ProtocolCode, err
 	}
-	//for _, g := range gateways.List {
-	//	//if g.IsOnline == def.True {
-	//	//	return info.ProtocolCode, nil
-	//	//}
-	//}
+	if di.IsOnline == def.True {
+		return info.ProtocolCode, nil
+	}
 	return info.ProtocolCode, errors.NotOnline.AddMsg("网关未在线")
 }
