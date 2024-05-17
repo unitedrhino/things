@@ -50,7 +50,7 @@ func (l *ProductSchemaUpdateLogic) ruleCheck(in *dm.ProductSchemaUpdateReq) (*re
 		}
 		return nil, nil, err
 	}
-	if po.Tag != in.Info.Tag {
+	if in.Info.Tag != 0 && po.Tag != in.Info.Tag {
 		return nil, nil, errors.Parameter.AddMsg("功能标签不支持修改")
 	}
 	newPo := logic.ToProductSchemaPo(in.Info)

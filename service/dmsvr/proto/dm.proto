@@ -1100,6 +1100,7 @@ message DeviceInfoIndexReq{
   int64  deviceType = 16; //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
   DeviceCore gateway = 17;//获取网关下子设备列表
  int64 groupID =18;
+  int64 notGroupID =19;
 }
 
 message DeviceInfoIndexResp{

@@ -221,6 +221,7 @@ type DeviceInfoIndexReq struct {
 	Versions          []string      `json:"versions,optional"`
 	Gateway           *DeviceCore   `json:"gateway,optional"` //过滤网关
 	GroupID           int64         `json:"groupID,optional,string"`
+	NotGroupID        int64         `json:"notGroupID,optional,string"`
 	Devices           []*DeviceCore `json:"devices,optional"`
 }
 

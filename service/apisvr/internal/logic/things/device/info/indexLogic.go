@@ -48,6 +48,7 @@ func (l *IndexLogic) Index(req *types.DeviceInfoIndexReq) (resp *types.DeviceInf
 		Gateway:           utils.Copy[dm.DeviceCore](req.Gateway),
 		GroupID:           req.GroupID,
 		Devices:           utils.CopySlice[dm.DeviceCore](req.Devices),
+		NotGroupID:        req.NotGroupID,
 	}
 	dmResp, err := l.svcCtx.DeviceM.DeviceInfoIndex(l.ctx, dmReq)
 	if err != nil {
