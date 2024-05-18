@@ -5,7 +5,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 )
 
-func ToGroupInfoPb(ro *relationDB.DmGroupInfo, c *dm.DeviceInfoCount) *dm.GroupInfo {
+func ToGroupInfoPb(ro *relationDB.DmGroupInfo) *dm.GroupInfo {
 	if ro == nil {
 		return nil
 	}
