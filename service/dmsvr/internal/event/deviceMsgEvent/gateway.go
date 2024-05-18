@@ -252,6 +252,7 @@ func (l *GatewayLogic) HandleTopo(msg *deviceMsg.PublishMsg) (respMsg *msgGatewa
 				resp.AddStatus(err)
 				return &resp, err
 			}
+			return &resp, nil
 		case deviceMsg.GetTopo:
 			deviceList, err := devicemanage.NewDeviceManageServer(l.svcCtx).DeviceGatewayIndex(l.ctx, &dm.DeviceGatewayIndexReq{
 				Gateway: &dm.DeviceCore{
