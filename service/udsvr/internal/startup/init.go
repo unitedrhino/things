@@ -34,7 +34,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 	//})
 	//logx.Must(err)
 	err := svcCtx.FastEvent.QueueSubscribe(eventBus.UdRuleTimer, func(ctx context.Context, t time.Time, body []byte) error {
-		if t.Add(2 * time.Second).Before(time.Now()) { //2秒过期时间
+		if t.Before(time.Now().Add(-time.Second * 2)) { //2秒之前的跳过
 			return nil
 		}
 		th := timerEvent.NewSceneHandle(ctxs.WithRoot(ctx), svcCtx)
@@ -42,7 +42,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 	})
 	logx.Must(err)
 	err = svcCtx.FastEvent.QueueSubscribe(topics.ApplicationDeviceReportThingPropertyAllDevice, func(ctx context.Context, t time.Time, body []byte) error {
-		if t.Add(2 * time.Second).Before(time.Now()) { //2秒过期时间
+		if t.Before(time.Now().Add(-time.Second * 2)) { //2秒之前的跳过
 			return nil
 		}
 		th := timerEvent.NewSceneHandle(ctxs.WithRoot(ctx), svcCtx)

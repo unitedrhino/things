@@ -183,7 +183,7 @@ func (p *LightProtocol) RegisterTimerHandler(f func(ctx context.Context, t time.
 	})
 	p.TimerHandles = append(p.TimerHandles, f)
 	err := p.FastEvent.Subscribe(p.genTimerTopic(), func(ctx context.Context, t time.Time, body []byte) error {
-		if t.Before(time.Now().Add(time.Second * 10)) { //10秒之前的跳过
+		if t.Before(time.Now().Add(-time.Second * 2)) { //2秒之前的跳过
 			return nil
 		}
 		err := f(ctxs.WithRoot(context.Background()), t)
