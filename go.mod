@@ -11,6 +11,8 @@ replace (
 	github.com/taosdata/driver-go/v3 => github.com/i-Things/driver-go/v3 v3.10.5
 )
 
+
+
 require (
 	gitee.com/i-Things/core v0.0.1
 	gitee.com/i-Things/share v0.1.10
