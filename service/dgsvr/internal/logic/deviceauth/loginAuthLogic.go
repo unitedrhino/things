@@ -8,11 +8,9 @@ import (
 	"gitee.com/i-Things/share/domain/deviceAuth"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/dmExport"
-	"time"
-
 	"github.com/i-Things/things/service/dgsvr/internal/svc"
 	"github.com/i-Things/things/service/dgsvr/pb/dg"
+	"github.com/i-Things/things/service/dmsvr/dmExport"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -110,9 +108,9 @@ func (l *LoginAuthLogic) LoginAuth(in *dg.LoginAuthReq) (*dg.Response, error) {
 	if lg.ProductID != inLg.ProductID || lg.DeviceName != inLg.DeviceName {
 		return nil, errors.Parameter.AddDetail("userName'clientID not equal real client id")
 	}
-	if lg.Expiry < time.Now().Unix() {
-		return nil, errors.SignatureExpired
-	}
+	//if lg.Expiry < time.Now().Unix() {
+	//	return nil, errors.SignatureExpired
+	//}
 
 	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, dmExport.GenDeviceInfoKey(lg.ProductID, lg.DeviceName))
 	if err != nil {
