@@ -40,7 +40,7 @@ func (l *GatewayNotifyBindSendLogic) GatewayNotifyBindSend(in *dm.GatewayNotifyB
 	}
 	MsgToken := devices.GenMsgToken(l.ctx)
 	req := msgGateway.Msg{
-		CommonMsg: &deviceMsg.CommonMsg{
+		CommonMsg: deviceMsg.CommonMsg{
 			Method:    deviceMsg.NotifyBind,
 			MsgToken:  MsgToken,
 			Timestamp: time.Now().UnixMilli(),

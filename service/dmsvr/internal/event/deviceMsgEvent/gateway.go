@@ -184,7 +184,7 @@ func (l *GatewayLogic) HandleRegister(msg *deviceMsg.PublishMsg, resp *msgGatewa
 func (l *GatewayLogic) HandleTopo(msg *deviceMsg.PublishMsg) (respMsg *msgGateway.Msg, err error) {
 	l.Debugf("%s", utils.FuncName())
 	var resp = msgGateway.Msg{
-		CommonMsg: deviceMsg.NewRespCommonMsg(l.ctx, l.dreq.Method, l.dreq.MsgToken),
+		CommonMsg: *deviceMsg.NewRespCommonMsg(l.ctx, l.dreq.Method, l.dreq.MsgToken),
 	}
 	resp.AddStatus(errors.OK)
 	rsp, err := func() (respMsg *msgGateway.Msg, err error) {
@@ -286,7 +286,7 @@ func (l *GatewayLogic) HandleTopo(msg *deviceMsg.PublishMsg) (respMsg *msgGatewa
 func (l *GatewayLogic) HandleStatus(msg *deviceMsg.PublishMsg) (respMsg *msgGateway.Msg, err error) {
 	l.Debugf("%s", utils.FuncName())
 	var resp = msgGateway.Msg{
-		CommonMsg: deviceMsg.NewRespCommonMsg(l.ctx, l.dreq.Method, l.dreq.MsgToken),
+		CommonMsg: *deviceMsg.NewRespCommonMsg(l.ctx, l.dreq.Method, l.dreq.MsgToken),
 		Payload:   l.dreq.Payload,
 	}
 	resp.AddStatus(errors.OK)

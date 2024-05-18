@@ -100,7 +100,7 @@ func (l *DeviceGatewayMultiUpdateLogic) DeviceGatewayMultiUpdate(in *dm.DeviceGa
 		return nil, err
 	}
 	req := &msgGateway.Msg{
-		CommonMsg: deviceMsg.NewRespCommonMsg(l.ctx, deviceMsg.Change, "").AddStatus(errors.OK),
+		CommonMsg: *deviceMsg.NewRespCommonMsg(l.ctx, deviceMsg.Change, "").AddStatus(errors.OK),
 		Payload:   logic.ToGatewayPayload(def.GatewayBind, devicesDos),
 	}
 	respBytes, _ := json.Marshal(req)

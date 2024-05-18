@@ -48,7 +48,7 @@ func (d *DeviceDataRepo) InitProduct(ctx context.Context, t *schema.Model, produ
 func (d *DeviceDataRepo) CreateProperty(ctx context.Context, p *schema.Property, productID string) error {
 	err := d.createPropertyStable(ctx, p, productID)
 	if err != nil {
-		logx.WithContext(ctx).Errorf("%s.createPropertyStable product_id:%v,properties:%v,err:%v",
+		logx.WithContext(ctx).Errorf("%s.createPropertyStable product_id:%v,properties:%#v,err:%v",
 			utils.FuncName(), productID, p, err)
 		return errors.Database.AddDetail(err)
 	}
