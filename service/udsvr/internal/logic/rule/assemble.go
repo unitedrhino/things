@@ -111,6 +111,7 @@ func ToSceneTriggerDevicePo(in *scene.TriggerDevice) (ret relationDB.UdSceneTrig
 		TermType:         string(in.TermType),
 		Values:           in.Values,
 		SchemaAffordance: in.SchemaAffordance,
+		Body:             in.Body,
 	}
 }
 
@@ -170,7 +171,7 @@ func ToSceneActionPo(s *scene.Info, in *scene.Action) *relationDB.UdSceneThenAct
 	if in.Device != nil {
 		po.Device = relationDB.UdSceneActionDevice{
 			//ProjectID:        int64(in.Device.ProjectID),
-			//AreaID:           int64(in.Device.AreaID),
+			AreaID:           in.Device.AreaID,
 			ProductID:        in.Device.ProductID,
 			SelectType:       in.Device.SelectType,
 			DeviceName:       in.Device.DeviceName,
@@ -182,6 +183,7 @@ func ToSceneActionPo(s *scene.Info, in *scene.Action) *relationDB.UdSceneThenAct
 			Value:            in.Device.Value,
 			SchemaAffordance: in.Device.SchemaAffordance,
 			Values:           in.Device.Values,
+			Body:             in.Device.Body,
 		}
 	}
 	return po
@@ -207,7 +209,7 @@ func ToSceneActionDo(in *relationDB.UdSceneThenAction) *scene.Action {
 	}
 	do.Device = &scene.ActionDevice{
 		//ProjectID:        int64(in.Device.ProjectID),
-		//AreaID:           int64(in.Device.AreaID),
+		AreaID:           in.Device.AreaID,
 		ProductID:        in.Device.ProductID,
 		SelectType:       in.Device.SelectType,
 		DeviceName:       in.Device.DeviceName,
@@ -219,6 +221,7 @@ func ToSceneActionDo(in *relationDB.UdSceneThenAction) *scene.Action {
 		Value:            in.Device.Value,
 		SchemaAffordance: in.Device.SchemaAffordance,
 		Values:           in.Device.Values,
+		Body:             in.Device.Body,
 	}
 
 	return do
@@ -265,6 +268,7 @@ func ToSceneTriggerDeviceDo(in relationDB.UdSceneTriggerDevice) (ret *scene.Trig
 		TermType:         scene.CmpType(in.TermType),
 		Values:           in.Values,
 		SchemaAffordance: in.SchemaAffordance,
+		Body:             in.Body,
 	}
 }
 

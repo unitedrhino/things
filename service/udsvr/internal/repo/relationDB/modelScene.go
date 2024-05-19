@@ -73,6 +73,7 @@ type UdSceneTriggerDevice struct {
 	TermType         string                  `gorm:"column:term_type;type:VARCHAR(255);default:''"`        //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
 	Values           []string                `gorm:"column:values;type:json;serializer:json;default:'[]'"` //比较条件列表
 	SchemaAffordance string                  `gorm:"column:schema_affordance;type:VARCHAR(500);default:''"`
+	Body             string                  `gorm:"column:body;type:VARCHAR(1024)"` // 自定义数据
 }
 
 type UdSceneWhen struct {
@@ -102,7 +103,7 @@ func (m *UdSceneThenAction) TableName() string {
 
 type UdSceneActionDevice struct {
 	//ProjectID        int64                  `gorm:"column:project_id;type:bigint;default:2;NOT NULL"`  // 项目ID(雪花ID)
-	//AreaID           int64                  `gorm:"column:area_id;type:bigint;default:2;NOT NULL"`     // 项目区域ID(雪花ID)
+	AreaID           int64                  `gorm:"column:area_id;type:bigint;default:2;NOT NULL"`       // 项目区域ID(雪花ID)
 	ProductID        string                 `gorm:"column:product_id;index;type:VARCHAR(25);default:''"` //产品id
 	SelectType       scene.SelectType       `gorm:"column:select_type;type:VARCHAR(25);default:''"`      //设备选择方式
 	DeviceName       string                 `gorm:"column:device_name;type:VARCHAR(255);"`               //选择的列表  选择的列表, fixed类型是设备名列表
@@ -114,4 +115,5 @@ type UdSceneActionDevice struct {
 	DataName         string                 `gorm:"column:data_name;type:VARCHAR(500);default:''"` //对应的物模型定义,只读
 	SchemaAffordance string                 `gorm:"column:schema_affordance;type:VARCHAR(500);default:''"`
 	Values           scene.DeviceValues     `gorm:"column:values;type:json;serializer:json"`
+	Body             string                 `gorm:"column:body;type:VARCHAR(1024)"` // 自定义数据
 }
