@@ -83,8 +83,10 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 		}
 		if len(v) > 1 {
 			var (
-				connected    []*deviceStatus.ConnectMsg
-				disconnected []*deviceStatus.ConnectMsg
+				connected          []*deviceStatus.ConnectMsg
+				disconnected       []*deviceStatus.ConnectMsg
+				recordConnected    []*deviceStatus.ConnectMsg
+				recordDisConnected []*deviceStatus.ConnectMsg
 			)
 			for _, one := range v {
 				if one.Timestamp.Before(older) { //历史的直接入库即可
@@ -98,10 +100,13 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 					disconnected = append(disconnected, one)
 				}
 			}
+			recordConnected = connected
+			recordDisConnected = disconnected
 			//如果存在同时上线和下线的情况,则需要过滤了
 			var hasShake bool
 			for len(connected) > 0 && len(disconnected) > 0 {
 				hasShake = true
+
 				//删除最后一个
 				removeList = append(removeList, connected[len(connected)-1], disconnected[len(disconnected)-1])
 				//更新缓存
@@ -109,7 +114,7 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 				disconnected = disconnected[:len(disconnected)-1]
 			}
 			if hasShake {
-				l.Errorf("设备上下线出现抖动症状:设备信息: connected:%v disconnected:%v", utils.Fmt(connected), utils.Fmt(disconnected))
+				l.Errorf("设备上下线出现抖动症状:设备信息: connected:%v disconnected:%v", utils.Fmt(recordConnected), utils.Fmt(recordDisConnected))
 			}
 			var conns = connected
 			conns = append(conns, disconnected...)
