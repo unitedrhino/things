@@ -217,6 +217,18 @@ func (d DeviceInfoRepo) FindByFilter(ctx context.Context, f DeviceFilter, page *
 	return results, nil
 }
 
+func (d DeviceInfoRepo) FindProductIDsByFilter(ctx context.Context, f DeviceFilter) ([]string, error) {
+	var results []*DmDeviceInfo
+	db := d.fmtFilter(ctx, f).Model(&DmDeviceInfo{})
+	err := db.Distinct("product_id").Select("product_id").Find(&results).Error
+	if err != nil {
+		return nil, stores.ErrFmt(err)
+	}
+	return utils.ToSliceWithFunc(results, func(in *DmDeviceInfo) string {
+		return in.ProductID
+	}), nil
+}
+
 func (d DeviceInfoRepo) CountByFilter(ctx context.Context, f DeviceFilter) (size int64, err error) {
 	db := d.fmtFilter(ctx, f).Model(&DmDeviceInfo{})
 	err = db.Count(&size).Error

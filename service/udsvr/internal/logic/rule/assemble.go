@@ -172,6 +172,7 @@ func ToSceneActionPo(s *scene.Info, in *scene.Action) *relationDB.UdSceneThenAct
 		po.Device = relationDB.UdSceneActionDevice{
 			//ProjectID:        int64(in.Device.ProjectID),
 			AreaID:           in.Device.AreaID,
+			AreaName:         in.Device.AreaName,
 			ProductID:        in.Device.ProductID,
 			SelectType:       in.Device.SelectType,
 			DeviceName:       in.Device.DeviceName,
@@ -210,6 +211,7 @@ func ToSceneActionDo(in *relationDB.UdSceneThenAction) *scene.Action {
 	do.Device = &scene.ActionDevice{
 		//ProjectID:        int64(in.Device.ProjectID),
 		AreaID:           in.Device.AreaID,
+		AreaName:         in.Device.AreaName,
 		ProductID:        in.Device.ProductID,
 		SelectType:       in.Device.SelectType,
 		DeviceName:       in.Device.DeviceName,

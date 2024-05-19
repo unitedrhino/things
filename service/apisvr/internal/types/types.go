@@ -28,6 +28,8 @@ type CommonSchemaIndexReq struct {
 	IsCanSceneLinkage         int64     `json:"isCanSceneLinkage,optional"` //是否可以场景联动
 	FuncGroup                 int64     `json:"funcGroup,optional"`         // 功能分类: 1:普通功能 2:系统功能
 	UserPerm                  int64     `json:"userPerm,optional"`          //用户权限操作: 1:r(只读) 3:rw(可读可写)
+	GroupID                   int64     `json:"groupID,optional"`
+	AreaID                    int64     `json:"areaID,optional,string"`
 }
 
 type CommonSchemaIndexResp struct {

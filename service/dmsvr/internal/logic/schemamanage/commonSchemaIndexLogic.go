@@ -52,11 +52,36 @@ func (l *CommonSchemaIndexLogic) CommonSchemaIndex(in *dm.CommonSchemaIndexReq) 
 		if err != nil {
 			return nil, err
 		}
+		if len(pcs) == 0 {
+			return &dm.CommonSchemaIndexResp{}, nil
+		}
 		ids := utils.ToSliceWithFunc(pcs, func(in *relationDB.DmProductCategorySchema) string {
 			return in.Identifier
 		})
 		filter.Identifiers = append(filter.Identifiers, ids...)
 	}
+	if in.AreaID != 0 {
+		cols, err := relationDB.NewDeviceInfoRepo(l.ctx).FindProductIDsByFilter(l.ctx, relationDB.DeviceFilter{AreaIDs: []int64{in.AreaID}})
+		if err != nil {
+			return nil, err
+		}
+		if len(cols) == 0 {
+			return &dm.CommonSchemaIndexResp{}, nil
+		}
+		in.ProductIDs = append(in.ProductIDs, cols...)
+	}
+
+	if in.GroupID != 0 {
+		cols, err := relationDB.NewDeviceInfoRepo(l.ctx).FindProductIDsByFilter(l.ctx, relationDB.DeviceFilter{GroupID: in.GroupID})
+		if err != nil {
+			return nil, err
+		}
+		if len(cols) == 0 {
+			return &dm.CommonSchemaIndexResp{}, nil
+		}
+		in.ProductIDs = append(in.ProductIDs, cols...)
+	}
+
 	if len(in.ProductIDs) != 0 {
 		rst, err := relationDB.NewProductSchemaRepo(l.ctx).FindByFilter(l.ctx, relationDB.ProductSchemaFilter{ProductIDs: in.ProductIDs, Tags: []int64{schema.TagOptional, schema.TagRequired}}, nil)
 		if err != nil {

@@ -24,6 +24,7 @@ const (
 type ActionDevice struct {
 	ProjectID        int64            `json:"-"`                     //项目id
 	AreaID           int64            `json:"areaID,string"`         //涉及到的区域ID
+	AreaName         string           `json:"areaName"`              //区域的名字
 	ProductID        string           `json:"productID"`             //产品id
 	SelectType       SelectType       `json:"selectType"`            //设备选择方式
 	DeviceName       string           `json:"deviceName"`            //选择的设备列表 指定设备的时候才需要填写(如果设备换到其他区域里,这里删除该设备)
