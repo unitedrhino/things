@@ -33,6 +33,7 @@ type TriggerDevice struct {
 	DataName         string   `json:"dataName"`         //对应的物模型定义,只读
 	TermType         CmpType  `json:"termType"`         //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
 	Values           []string `json:"values"`           //比较条件列表
+	Body             string   `json:"body,omitempty"`   //自定义字段
 }
 
 type TriggerDeviceType = string

@@ -30,11 +30,12 @@ type ActionDevice struct {
 	DeviceAlias      string           `json:"deviceAlias,omitempty"` //设备别名,只读
 	GroupID          int64            `json:"groupID"`               //分组id
 	Type             ActionDeviceType `json:"type"`                  // 云端向设备发起属性控制: propertyControl  应用调用设备行为:action  todo:通知设备上报
-	DataID           string           `json:"dataID"`                // 属性的id及事件的id
+	DataID           string           `json:"dataID"`                // 属性的id及事件的id,不填则取values里面的
 	DataName         string           `json:"dataName"`              //对应的物模型定义,只读
-	Values           DeviceValues     `json:"values"`                //如果需要控制
 	SchemaAffordance string           `json:"schemaAffordance"`      //只读,返回物模型定义
 	Value            string           `json:"value"`                 //传的值
+	Values           DeviceValues     `json:"values"`                //如果需要控制多个参数
+	Body             string           `json:"body,omitempty"`        //自定义字段
 }
 
 type DeviceValues = []*DeviceValue
