@@ -109,7 +109,7 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 				disconnected = disconnected[:len(disconnected)-1]
 			}
 			if hasShake {
-				l.Errorf("设备上下线出现抖动症状:设备信息:%#v", v[0])
+				l.Errorf("设备上下线出现抖动症状:设备信息: connected:%#v disconnected:%#v", connected, disconnected)
 			}
 			var conns = connected
 			conns = append(conns, disconnected...)
