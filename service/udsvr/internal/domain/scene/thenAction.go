@@ -17,6 +17,7 @@ const (
 	ActionExecutorDelay  ActionType = "delay"  //延迟
 	ActionExecutorDevice ActionType = "device" //设备输出
 	ActionExecutorAlarm  ActionType = "alarm"  //告警 todo
+	ActionExecutorScene  ActionType = "scene"  //执行另一个场景
 )
 
 type Actions []*Action
