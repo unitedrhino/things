@@ -152,7 +152,6 @@ func (l *GatewayLogic) HandleRegister(msg *deviceMsg.PublishMsg, resp *msgGatewa
 				ProductID:  v.ProductID,
 				DeviceName: v.DeviceName,
 			},
-			SubDevices: nil,
 		})
 		if err == nil && !(c.GatewayProductID == msg.ProductID && c.GatewayDeviceName == msg.DeviceName) { //绑定了其他设备
 			payload.Devices = append(payload.Devices, &msgGateway.Device{
