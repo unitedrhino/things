@@ -232,9 +232,6 @@ func (l *GatewayLogic) HandleTopo(msg *deviceMsg.PublishMsg) (respMsg *msgGatewa
 				resp.AddStatus(err)
 				return &resp, err
 			}
-			if len(devs) == 0 {
-				return &resp, err
-			}
 			var ca cache.GatewayCanBindStu
 			ca.Gateway = devices.Core{
 				ProductID:  msg.ProductID,
