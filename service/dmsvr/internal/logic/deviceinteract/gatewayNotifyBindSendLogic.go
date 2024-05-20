@@ -68,7 +68,6 @@ func (l *GatewayNotifyBindSendLogic) GatewayNotifyBindSend(in *dm.GatewayNotifyB
 		DeviceName:   in.Gateway.DeviceName,
 		ProtocolCode: protocolCode,
 	}
-	err = l.svcCtx.PubDev.PublishToDev(l.ctx, &reqMsg)
 	var resp []byte
 	resp, err = l.svcCtx.PubDev.ReqToDeviceSync(l.ctx, &reqMsg, func(payload []byte) bool {
 		var dresp msgThing.Resp
