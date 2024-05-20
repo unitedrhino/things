@@ -2,7 +2,6 @@ package svc
 
 import (
 	"context"
-	"gitee.com/i-Things/core/service/apisvr/coreExport"
 	"gitee.com/i-Things/core/service/syssvr/client/areamanage"
 	"gitee.com/i-Things/core/service/syssvr/client/common"
 	"gitee.com/i-Things/core/service/syssvr/client/datamanage"
@@ -16,6 +15,7 @@ import (
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/domain/slot"
 	"gitee.com/i-Things/share/domain/tenant"
+	ws "gitee.com/i-Things/share/websocket"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/event/publish/pubApp"
@@ -75,7 +75,7 @@ type ServiceContext struct {
 	TenantCache    *caches.Cache[tenant.Info]
 	WebHook        *sysExport.Webhook
 	Slot           *caches.Cache[slot.Infos]
-	UserSubscribe  *coreExport.UserSubscribe
+	UserSubscribe  *ws.UserSubscribe
 	GatewayCanBind *cache.GatewayCanBind
 	NodeID         int64
 }
@@ -178,7 +178,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Cache:          ca,
 		UserM:          userM,
 		DataM:          dataM,
-		UserSubscribe:  coreExport.NewUserSubscribe(ca, serverMsg),
+		UserSubscribe:  ws.NewUserSubscribe(ca, serverMsg),
 		SchemaRepo:     ccSchemaR,
 		SchemaManaRepo: deviceDataR,
 		DeviceStatus:   cache.NewDeviceStatus(ca),

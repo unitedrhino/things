@@ -11,6 +11,7 @@ import (
 	"gitee.com/i-Things/share/domain/deviceMsg/msgGateway"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -43,38 +44,17 @@ func NewDeviceGatewayMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceCo
 
 // 创建分组设备
 func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGatewayMultiCreateReq) (*dm.Empty, error) {
-	{ //检查是否是网关类型
-		pi, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.Gateway.ProductID}})
-		if err != nil {
-			if errors.Cmp(err, errors.NotFind) {
-				return nil, errors.Parameter.AddDetail("not find GatewayProductID id:" + cast.ToString(in.Gateway.ProductID))
-			}
-			return nil, errors.Database.AddDetail(err)
+	_, err := FilterCanBindSubDevices(l.ctx, l.svcCtx, &devices.Core{
+		ProductID:  in.Gateway.ProductID,
+		DeviceName: in.Gateway.DeviceName,
+	}, utils.ToSliceWithFunc(in.List, func(in *dm.DeviceGatewayBindDevice) *devices.Core {
+		return &devices.Core{
+			ProductID:  in.ProductID,
+			DeviceName: in.DeviceName,
 		}
-		if pi.DeviceType != def.DeviceTypeGateway {
-			return nil, errors.Parameter.AddMsg("子设备只能由网关设备进行绑定")
-		}
-	}
-	{ //检查设备是否都是子设备类型
-		var (
-			deviceProductList []string
-			deviceProductMap  = map[string]struct{}{}
-		)
-		for _, v := range in.List {
-			deviceProductMap[v.ProductID] = struct{}{}
-		}
-		deviceProductList = utils.SetToSlice(deviceProductMap)
-		products, err := l.PiDB.FindByFilter(l.ctx, relationDB.ProductFilter{
-			ProductIDs: deviceProductList,
-		}, nil)
-		if err != nil {
-			return nil, errors.Database.AddDetail(err)
-		}
-		for _, v := range products {
-			if v.DeviceType != def.DeviceTypeSubset {
-				return nil, errors.Parameter.AddMsg("网关只能绑定子设备类型")
-			}
-		}
+	}), CheckDeviceExist|CheckDeviceType|CheckDeviceStrict)
+	if err != nil {
+		return nil, err
 	}
 	if in.IsAuthSign { //秘钥检查
 		for _, device := range in.List {
@@ -97,7 +77,7 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 	}
 
 	devicesDos := logic.BindToDeviceCoreDos(in.List)
-	err := l.GdDB.MultiInsert(l.ctx, &devices.Core{
+	err = l.GdDB.MultiInsert(l.ctx, &devices.Core{
 		ProductID:  in.Gateway.ProductID,
 		DeviceName: in.Gateway.DeviceName,
 	}, devicesDos)
@@ -123,4 +103,82 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 		return nil, er
 	}
 	return &dm.Empty{}, nil
+}
+
+type CheckDevice int64
+
+const (
+	CheckDeviceExist CheckDevice = 1 << iota
+	CheckDeviceType
+	CheckDeviceStrict //严格模式
+)
+
+func FilterCanBindSubDevices(ctx context.Context, svcCtx *svc.ServiceContext, gateway *devices.Core, subDevices []*devices.Core, checkDevice CheckDevice) (ret []*devices.Core, err error) {
+	{ //检查是否是网关类型
+		pi, err := relationDB.NewProductInfoRepo(ctx).FindOneByFilter(ctx, relationDB.ProductFilter{ProductIDs: []string{gateway.ProductID}})
+		if err != nil {
+			if errors.Cmp(err, errors.NotFind) {
+				return nil, errors.Parameter.AddDetail("not find GatewayProductID id:" + cast.ToString(gateway.ProductID))
+			}
+			return nil, errors.Database.AddDetail(err)
+		}
+		if pi.DeviceType != def.DeviceTypeGateway {
+			return nil, errors.Parameter.AddMsg("子设备只能由网关设备进行绑定")
+		}
+	}
+
+	if checkDevice&CheckDeviceType == CheckDeviceType { //检查设备是否都是子设备类型
+		var (
+			deviceProductList []string
+			deviceProductMap  = map[string]struct{}{}
+		)
+		for _, v := range subDevices {
+			deviceProductMap[v.ProductID] = struct{}{}
+		}
+		deviceProductList = utils.SetToSlice(deviceProductMap)
+		products, err := relationDB.NewProductInfoRepo(ctx).FindByFilter(ctx, relationDB.ProductFilter{
+			ProductIDs: deviceProductList,
+		}, nil)
+		if err != nil {
+			return nil, errors.Database.AddDetail(err)
+		}
+		for _, v := range products {
+			if v.DeviceType != def.DeviceTypeSubset {
+				return nil, errors.Parameter.AddMsg("网关只能绑定子设备类型")
+			}
+		}
+	}
+	for _, subDevice := range subDevices { //检查是否有子设备绑定了其他网关
+		if checkDevice&CheckDeviceExist == CheckDeviceExist { //检查设备是否都是子设备类型
+			_, err := svcCtx.DeviceCache.GetData(ctx, dmExport.GenDeviceInfoKey(subDevice.ProductID, subDevice.DeviceName))
+			if err != nil {
+				if checkDevice&CheckDeviceStrict == CheckDeviceStrict {
+					return nil, err
+				}
+				continue
+			}
+		}
+		c, err := relationDB.NewGatewayDeviceRepo(ctx).FindOneByFilter(ctx, relationDB.GatewayDeviceFilter{
+			SubDevice: &devices.Core{
+				ProductID:  subDevice.ProductID,
+				DeviceName: subDevice.DeviceName,
+			}})
+		if err == nil && !(c.GatewayProductID == gateway.ProductID && c.GatewayDeviceName == gateway.DeviceName) { //绑定了其他设备
+			if checkDevice&CheckDeviceStrict == CheckDeviceStrict {
+				return nil, err
+			}
+			continue
+		} else {
+			if err != nil && !errors.Cmp(err, errors.NotFind) {
+				if checkDevice&CheckDeviceStrict == CheckDeviceStrict {
+					return nil, err
+				}
+				continue
+			}
+		}
+		//未绑定或就是该网关绑定的
+		ret = append(ret, subDevice)
+	}
+	return ret, nil
+
 }

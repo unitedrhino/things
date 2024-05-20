@@ -12,6 +12,7 @@ import (
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
+	devicemanagelogic "github.com/i-Things/things/service/dmsvr/internal/logic/devicemanage"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	devicemanage "github.com/i-Things/things/service/dmsvr/internal/server/devicemanage"
@@ -225,24 +226,22 @@ func (l *GatewayLogic) HandleTopo(msg *deviceMsg.PublishMsg) (respMsg *msgGatewa
 			}
 			resp.Payload = &msgGateway.GatewayPayload{Devices: l.dreq.Payload.Devices.GetCore()}
 		case deviceMsg.Found:
-			//过滤已经入网的设备
-			devs, err := relationDB.NewDeviceInfoRepo(l.ctx).FindByFilter(l.ctx,
-				relationDB.DeviceFilter{Cores: l.dreq.Payload.Devices.GetDevCore()}, nil)
+			var devs []*devices.Core
+			devs, err = devicemanagelogic.FilterCanBindSubDevices(l.ctx, l.svcCtx, &devices.Core{
+				ProductID:  msg.ProductID,
+				DeviceName: msg.DeviceName,
+			}, l.dreq.Payload.Devices.GetDevCore(), devicemanagelogic.CheckDeviceType)
 			if err != nil {
 				resp.AddStatus(err)
 				return &resp, err
 			}
-			var ca cache.GatewayCanBindStu
-			ca.Gateway = devices.Core{
-				ProductID:  msg.ProductID,
-				DeviceName: msg.DeviceName,
-			}
-			ca.UpdatedTime = time.Now().Unix()
-			for _, v := range devs {
-				ca.SubDevices = append(ca.SubDevices, &devices.Core{
-					ProductID:  v.ProductID,
-					DeviceName: v.DeviceName,
-				})
+			var ca = cache.GatewayCanBindStu{
+				Gateway: devices.Core{
+					ProductID:  msg.ProductID,
+					DeviceName: msg.DeviceName,
+				},
+				SubDevices:  devs,
+				UpdatedTime: time.Now().Unix(),
 			}
 			err = l.svcCtx.GatewayCanBind.Update(l.ctx, &ca)
 			if err != nil {
