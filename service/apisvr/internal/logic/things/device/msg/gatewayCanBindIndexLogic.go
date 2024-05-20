@@ -36,7 +36,7 @@ func (l *GatewayCanBindIndexLogic) GatewayCanBindIndex(req *types.GatewayCanBind
 	for _, v := range ret.SubDevices {
 		pi, err := l.svcCtx.ProductCache.GetData(l.ctx, v.ProductID)
 		if err != nil {
-			return nil, err
+			continue
 		}
 		resp.SubDevices = append(resp.SubDevices, &types.DeviceCore{
 			ProductID:   v.ProductID,
