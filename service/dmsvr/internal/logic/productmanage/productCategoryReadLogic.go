@@ -38,6 +38,11 @@ func (l *ProductCategoryReadLogic) ProductCategoryRead(in *dm.ProductCategoryRea
 			ID:   def.RootNode,
 			Name: "全部产品品类",
 		}
+	case def.NotClassified:
+		po = &relationDB.DmProductCategory{
+			ID:   def.NotClassified,
+			Name: "自定义",
+		}
 	default:
 		po, err = relationDB.NewProductCategoryRepo(l.ctx).FindOne(l.ctx, in.Id)
 		if err != nil {
