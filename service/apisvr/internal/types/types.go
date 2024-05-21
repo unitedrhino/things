@@ -29,6 +29,7 @@ type CommonSchemaIndexReq struct {
 	FuncGroup                 int64     `json:"funcGroup,optional"`         // 功能分类: 1:普通功能 2:系统功能
 	UserPerm                  int64     `json:"userPerm,optional"`          //用户权限操作: 1:r(只读) 3:rw(可读可写)
 	GroupID                   int64     `json:"groupID,optional"`
+	GroupIDs                  []int64   `json:"groupIDs,optional"`
 	AreaID                    int64     `json:"areaID,optional,string"`
 }
 

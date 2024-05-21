@@ -1189,6 +1189,7 @@ message CommonSchemaIndexReq{
   int64 userPerm =15;//用户权限操作: 1:r(只读) 3:rw(可读可写)
   int64 areaID =16;//过滤区域下设备共有的物模型
   int64 groupID =17;//过滤分组下设备共有的物模型
+  repeated int64 groupIDs =18;//过滤分组下设备共有的物模型
 }
 
 message CommonSchemaIndexResp{

@@ -41,6 +41,7 @@ type (
 		WithManufacturer  bool
 		DeviceType        int64
 		GroupID           int64
+		GroupIDs          []int64
 		NotGroupID        int64
 	}
 )
@@ -156,6 +157,11 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	}
 	if f.GroupID != 0 {
 		subQuery := d.db.Model(&DmGroupDevice{}).Select("product_id, device_name").Where("group_id=?", f.GroupID)
+		db = db.Where("(product_id, device_name) in (?)",
+			subQuery)
+	}
+	if len(f.GroupIDs) > 0 {
+		subQuery := d.db.Model(&DmGroupDevice{}).Select("product_id, device_name").Where("group_id in ?", f.GroupIDs)
 		db = db.Where("(product_id, device_name) in (?)",
 			subQuery)
 	}
