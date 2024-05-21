@@ -95,7 +95,7 @@ type DmProductInfo struct {
 	ProductType  int64             `gorm:"column:product_type;type:smallint;default:1"`                          // 产品状态:1:开发中,2:审核中,3:已发布
 	AuthMode     int64             `gorm:"column:auth_mode;type:smallint;default:1"`                             // 认证方式:1:账密认证,2:秘钥认证
 	DeviceType   int64             `gorm:"column:device_type;index;type:smallint;default:1"`                     // 设备类型:1:设备,2:网关,3:子设备
-	CategoryID   int64             `gorm:"column:category_id;type:integer;default:1"`                            // 产品品类
+	CategoryID   int64             `gorm:"column:category_id;type:integer;default:2"`                            // 产品品类 2:未分类
 	NetType      int64             `gorm:"column:net_type;type:smallint;default:1"`                              // 通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
 	ProtocolCode string            `gorm:"column:protocol_code;type:varchar(100);default:iThings"`               //协议code,默认iThings  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
 	AutoRegister int64             `gorm:"column:auto_register;type:smallint;default:1"`                         // 动态注册:1:关闭,2:打开,3:打开并自动创建设备
