@@ -5,13 +5,14 @@ import (
 	"encoding/json"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
-	"gitee.com/i-Things/share/domain/application"
+	"gitee.com/i-Things/share/domain/deviceAuth"
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgGateway"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
 	devicemanagelogic "github.com/i-Things/things/service/dmsvr/internal/logic/devicemanage"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
@@ -279,42 +280,29 @@ func (l *GatewayLogic) HandleTopo(msg *deviceMsg.PublishMsg) (respMsg *msgGatewa
 	return rsp, err
 }
 
+var (
+	ActionMap = map[string]string{
+		deviceMsg.Online:  devices.ActionConnected,
+		deviceMsg.Offline: devices.ActionDisconnected,
+	}
+)
+
 func (l *GatewayLogic) HandleStatus(msg *deviceMsg.PublishMsg) (respMsg *msgGateway.Msg, err error) {
 	l.Debugf("%s", utils.FuncName())
+
 	var resp = msgGateway.Msg{
 		CommonMsg: *deviceMsg.NewRespCommonMsg(l.ctx, l.dreq.Method, l.dreq.MsgToken),
 		Payload:   l.dreq.Payload,
 	}
 	resp.AddStatus(errors.OK)
-	var (
-		payload    msgGateway.GatewayPayload
-		appConnMsg = application.ConnectMsg{
-			Device: devices.Core{
-				ProductID:  msg.ProductID,
-				DeviceName: msg.DeviceName,
-			},
-			Timestamp: msg.Timestamp,
-		}
-	)
-
-	switch l.dreq.Method {
-	case deviceMsg.Online:
-		err = l.svcCtx.PubApp.DeviceStatusConnected(l.ctx, appConnMsg)
-		if err != nil {
-			l.Errorf("%s.DeviceStatusConnected productID:%v deviceName:%v err:%v",
-				utils.FuncName(), msg.ProductID, msg.DeviceName, err)
-		}
-	case deviceMsg.Offline:
-		err = l.svcCtx.PubApp.DeviceStatusDisConnected(l.ctx, appConnMsg)
-		if err != nil {
-			l.Errorf("%s.DeviceStatusDisConnected productID:%v deviceName:%v err:%v",
-				utils.FuncName(), msg.ProductID, msg.DeviceName, err)
-		}
-	default:
-		err := errors.Parameter.AddDetailf("not support method :%s", l.dreq.Method)
+	if !utils.SliceIn(l.dreq.Method, deviceMsg.Offline, deviceMsg.Online) {
+		err = errors.Parameter.AddMsg("method not support")
 		resp.AddStatus(err)
 		return &resp, err
 	}
+	var (
+		payload msgGateway.GatewayPayload
+	)
 	var subDevices []*devices.Core
 	for _, v := range l.dreq.Payload.Devices {
 		subDevices = append(subDevices, &devices.Core{
@@ -340,60 +328,16 @@ func (l *GatewayLogic) HandleStatus(msg *deviceMsg.PublishMsg) (respMsg *msgGate
 		payload.Devices = append(payload.Devices, &msgGateway.Device{
 			ProductID:  v.ProductID,
 			DeviceName: v.DeviceName,
-			Code:       errors.Fmt(err).GetCode(),
-			Msg:        errors.Fmt(err).GetMsg(),
 		})
-	}
-	if l.dreq.Method == deviceMsg.Online {
-		for _, v := range l.dreq.Payload.Devices {
-			di, err := relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.DeviceFilter{Cores: []*devices.Core{{ProductID: v.ProductID, DeviceName: v.DeviceName}}})
-			if err != nil {
-				l.Error(err)
-				continue
-			}
-			if di.IsOnline == def.True {
-				l.Infof("already online:%#v", msg)
-				continue
-			}
-			var updates = map[string]any{"is_online": def.True, "last_login": msg.Timestamp, "status": def.DeviceStatusOnline}
-			if di.FirstLogin.Valid == false {
-				updates["first_login"] = msg.Timestamp
-			}
-			err = relationDB.NewDeviceInfoRepo(l.ctx).UpdateWithField(l.ctx,
-				relationDB.DeviceFilter{Cores: []*devices.Core{{ProductID: v.ProductID, DeviceName: v.DeviceName}}}, updates)
-			if err != nil {
-				l.Error(err)
-			}
-			err = l.svcCtx.DeviceCache.SetData(l.ctx, dmExport.GenDeviceInfoKey(v.ProductID, v.DeviceName), nil)
-			if err != nil {
-				l.Error(err)
-			}
-			//err = l.svcCtx.PubApp.DeviceStatusConnected(l.ctx, appMsg)
-			//if err != nil {
-			//	l.Errorf("%s.pubApp productID:%v deviceName:%v err:%v",
-			//		utils.FuncName(), v.ProductID, v.DeviceName, err)
-			//}
-		}
-	} else {
-		var ( //这里是最后更新数据库状态的设备列表
-			OffLineDevices []*devices.Core
-		)
-		for _, v := range l.dreq.Payload.Devices {
-			OffLineDevices = append(OffLineDevices, &devices.Core{
-				ProductID:  v.ProductID,
-				DeviceName: v.DeviceName,
-			})
-		}
-		diDB := relationDB.NewDeviceInfoRepo(l.ctx)
-		err = diDB.UpdateOfflineStatus(l.ctx, relationDB.DeviceFilter{Cores: OffLineDevices})
+		//更新在线状态
+		err := l.svcCtx.DeviceStatus.AddDevice(l.ctx, &deviceStatus.ConnectMsg{
+			ClientID:  deviceAuth.GenClientID(v.ProductID, v.DeviceName),
+			Timestamp: l.dreq.GetTimeStamp(),
+			Action:    ActionMap[l.dreq.Method],
+			Reason:    "gateway report",
+		})
 		if err != nil {
 			l.Error(err)
-		}
-		for _, v := range OffLineDevices { //清除缓存
-			err := l.svcCtx.DeviceCache.SetData(l.ctx, dmExport.GenDeviceInfoKey(v.ProductID, v.DeviceName), nil)
-			if err != nil {
-				l.Error(err)
-			}
 		}
 	}
 	return &resp, err

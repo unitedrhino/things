@@ -15,7 +15,7 @@ type ConnectMsg struct {
 	Username  string
 	Timestamp time.Time
 	Address   string
-	Action    string
+	Action    devices.Action
 	Reason    string
 }
 
