@@ -42,6 +42,10 @@ type (
 	DeviceInfoIndexResp               = dm.DeviceInfoIndexResp
 	DeviceInfoMultiUpdateReq          = dm.DeviceInfoMultiUpdateReq
 	DeviceInfoReadReq                 = dm.DeviceInfoReadReq
+	DeviceModuleVersion               = dm.DeviceModuleVersion
+	DeviceModuleVersionIndexReq       = dm.DeviceModuleVersionIndexReq
+	DeviceModuleVersionIndexResp      = dm.DeviceModuleVersionIndexResp
+	DeviceModuleVersionReadReq        = dm.DeviceModuleVersionReadReq
 	DeviceOnlineMultiFix              = dm.DeviceOnlineMultiFix
 	DeviceOnlineMultiFixReq           = dm.DeviceOnlineMultiFixReq
 	DeviceProfile                     = dm.DeviceProfile
@@ -206,6 +210,8 @@ type (
 		DeviceInfoBind(ctx context.Context, in *DeviceInfoBindReq, opts ...grpc.CallOption) (*Empty, error)
 		DeviceInfoUnbind(ctx context.Context, in *DeviceCore, opts ...grpc.CallOption) (*Empty, error)
 		DeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error)
+		DeviceModuleVersionRead(ctx context.Context, in *DeviceModuleVersionReadReq, opts ...grpc.CallOption) (*DeviceModuleVersion, error)
+		DeviceModuleVersionIndex(ctx context.Context, in *DeviceModuleVersionIndexReq, opts ...grpc.CallOption) (*DeviceModuleVersionIndexResp, error)
 		// 绑定网关下子设备设备
 		DeviceGatewayMultiCreate(ctx context.Context, in *DeviceGatewayMultiCreateReq, opts ...grpc.CallOption) (*Empty, error)
 		// 绑定网关下子设备设备
@@ -359,6 +365,24 @@ func (m *defaultDeviceManage) DeviceTransfer(ctx context.Context, in *DeviceTran
 
 func (d *directDeviceManage) DeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.DeviceTransfer(ctx, in)
+}
+
+func (m *defaultDeviceManage) DeviceModuleVersionRead(ctx context.Context, in *DeviceModuleVersionReadReq, opts ...grpc.CallOption) (*DeviceModuleVersion, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceModuleVersionRead(ctx, in, opts...)
+}
+
+func (d *directDeviceManage) DeviceModuleVersionRead(ctx context.Context, in *DeviceModuleVersionReadReq, opts ...grpc.CallOption) (*DeviceModuleVersion, error) {
+	return d.svr.DeviceModuleVersionRead(ctx, in)
+}
+
+func (m *defaultDeviceManage) DeviceModuleVersionIndex(ctx context.Context, in *DeviceModuleVersionIndexReq, opts ...grpc.CallOption) (*DeviceModuleVersionIndexResp, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceModuleVersionIndex(ctx, in, opts...)
+}
+
+func (d *directDeviceManage) DeviceModuleVersionIndex(ctx context.Context, in *DeviceModuleVersionIndexReq, opts ...grpc.CallOption) (*DeviceModuleVersionIndexResp, error) {
+	return d.svr.DeviceModuleVersionIndex(ctx, in)
 }
 
 // 绑定网关下子设备设备

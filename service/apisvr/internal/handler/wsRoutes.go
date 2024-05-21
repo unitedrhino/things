@@ -10,6 +10,7 @@ import (
 	thingsdevicegateway "github.com/i-Things/things/service/apisvr/internal/handler/things/device/gateway"
 	thingsdeviceinfo "github.com/i-Things/things/service/apisvr/internal/handler/things/device/info"
 	thingsdeviceinteract "github.com/i-Things/things/service/apisvr/internal/handler/things/device/interact"
+	thingsdevicemoduleversion "github.com/i-Things/things/service/apisvr/internal/handler/things/device/module/version"
 	thingsdevicemsg "github.com/i-Things/things/service/apisvr/internal/handler/things/device/msg"
 	thingsdeviceprofile "github.com/i-Things/things/service/apisvr/internal/handler/things/device/profile"
 	thingsgroupdevice "github.com/i-Things/things/service/apisvr/internal/handler/things/group/device"
@@ -245,6 +246,25 @@ func RegisterWsHandlers(server *ws.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		ws.WithPrefix("/api/v1/things/device/interact"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckTokenWare, serverCtx.InitCtxsWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsdevicemoduleversion.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/read",
+					Handler: thingsdevicemoduleversion.ReadHandler(serverCtx),
+				},
+			}...,
+		),
+		ws.WithPrefix("/api/v1/things/device/version"),
 	)
 
 	server.AddRoutes(

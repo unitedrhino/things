@@ -84,6 +84,16 @@ func (s *DeviceManageServer) DeviceTransfer(ctx context.Context, in *dm.DeviceTr
 	return l.DeviceTransfer(in)
 }
 
+func (s *DeviceManageServer) DeviceModuleVersionRead(ctx context.Context, in *dm.DeviceModuleVersionReadReq) (*dm.DeviceModuleVersion, error) {
+	l := devicemanagelogic.NewDeviceModuleVersionReadLogic(ctx, s.svcCtx)
+	return l.DeviceModuleVersionRead(in)
+}
+
+func (s *DeviceManageServer) DeviceModuleVersionIndex(ctx context.Context, in *dm.DeviceModuleVersionIndexReq) (*dm.DeviceModuleVersionIndexResp, error) {
+	l := devicemanagelogic.NewDeviceModuleVersionIndexLogic(ctx, s.svcCtx)
+	return l.DeviceModuleVersionIndex(in)
+}
+
 // 绑定网关下子设备设备
 func (s *DeviceManageServer) DeviceGatewayMultiCreate(ctx context.Context, in *dm.DeviceGatewayMultiCreateReq) (*dm.Empty, error) {
 	l := devicemanagelogic.NewDeviceGatewayMultiCreateLogic(ctx, s.svcCtx)

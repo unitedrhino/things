@@ -61,7 +61,10 @@ service DeviceManage {
   rpc deviceInfoRead(DeviceInfoReadReq)     returns (DeviceInfo);
   rpc deviceInfoBind(DeviceInfoBindReq)returns(Empty);
   rpc deviceInfoUnbind(DeviceCore)returns(Empty);
-  rpc deviceTransfer(deviceTransferReq)returns(Empty);
+  rpc deviceTransfer(DeviceTransferReq)returns(Empty);
+
+  rpc deviceModuleVersionRead(DeviceModuleVersionReadReq)returns (DeviceModuleVersion);
+  rpc deviceModuleVersionIndex(DeviceModuleVersionIndexReq)returns (DeviceModuleVersionIndexResp);
 
   //绑定网关下子设备设备
   rpc deviceGatewayMultiCreate(DeviceGatewayMultiCreateReq)     returns (Empty);
@@ -82,6 +85,7 @@ service DeviceManage {
   rpc deviceProfileDelete(DeviceProfileReadReq)returns(Empty);
   rpc deviceProfileUpdate(DeviceProfile)returns(Empty);
   rpc deviceProfileIndex(DeviceProfileIndexReq)returns(DeviceProfileIndexResp);
+
 }
 
 //产品管理
@@ -304,7 +308,7 @@ service userDevice{
   //获取设备分享的详情
   rpc userDeviceShareRead(UserDeviceShareReadReq)returns(UserDeviceShareInfo);
 
-  rpc userDeviceTransfer(deviceTransferReq)returns(Empty);
+  rpc userDeviceTransfer(DeviceTransferReq)returns(Empty);
 }
 
 
@@ -334,8 +338,35 @@ message ProductInitReq{
   repeated string   productIDs = 2; //产品id,不填初始化所有产品
 }
 
+message DeviceModuleVersionReadReq{
+  int64 id = 1;//填id或者以下三个参数
+  string productID = 2;
+  string deviceName = 3;
+  string moduleCode = 4;
+}
+message DeviceModuleVersion{
+   int64 id = 1;
+   string productID = 2;
+   string deviceName = 3;
+   string moduleCode = 4;
+   string version = 5;
+}
 
-message deviceTransferReq{
+message DeviceModuleVersionIndexReq{
+  PageInfo page = 1;
+  string productID = 2;
+  string deviceName = 3;
+  string moduleCode = 4;
+}
+
+message DeviceModuleVersionIndexResp{
+  int64 total = 1;
+  repeated DeviceModuleVersion list = 2;
+}
+
+
+
+message DeviceTransferReq{
   DeviceCore device = 1;//设备信息
   int64  transferTo = 2;//转让给: 1: 某个人 2: 自己的某个项目
   int64 userID =3;//用户id

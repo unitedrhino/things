@@ -42,6 +42,10 @@ type (
 	DeviceInfoIndexResp               = dm.DeviceInfoIndexResp
 	DeviceInfoMultiUpdateReq          = dm.DeviceInfoMultiUpdateReq
 	DeviceInfoReadReq                 = dm.DeviceInfoReadReq
+	DeviceModuleVersion               = dm.DeviceModuleVersion
+	DeviceModuleVersionIndexReq       = dm.DeviceModuleVersionIndexReq
+	DeviceModuleVersionIndexResp      = dm.DeviceModuleVersionIndexResp
+	DeviceModuleVersionReadReq        = dm.DeviceModuleVersionReadReq
 	DeviceOnlineMultiFix              = dm.DeviceOnlineMultiFix
 	DeviceOnlineMultiFixReq           = dm.DeviceOnlineMultiFixReq
 	DeviceProfile                     = dm.DeviceProfile

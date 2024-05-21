@@ -1,0 +1,61 @@
+info(
+    title: "设备管理模块"
+    desc: "设备管理模块"
+    author: "杨磊"
+    email: "603685348@qq.com"
+    version: "v1"
+)
+
+
+@server(
+    group: things/device/module/version
+    prefix: /api/v1/things/device/version
+//    accessCode: "thingsDevice"
+//    accessName: "设备信息"
+//    accessGroup: "设备管理"
+//    accessDesc: "管理设备"
+    middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
+)
+service api {
+    @doc(
+        summary: "获取设备模块版本详情"
+        isNeedAuth: "false"
+        isAuthTenant: "true"
+    )
+    @handler index
+    post /index (DeviceModuleVersionIndexReq) returns (DeviceModuleVersionIndexResp)
+    @doc(
+        summary: "获取设备模块版本列表"
+        isNeedAuth: "false"
+        isAuthTenant: "true"
+    )
+    @handler read
+    post /read (DeviceModuleVersionReadReq) returns (DeviceModuleVersion)
+}
+
+type (
+    DeviceModuleVersion  {
+        ID    int64  `json:"id,optional,omitempty"`
+        ProductID string `json:"productID,optional"`                                              //产品id 只读
+        ProductName string `json:"productName,optional"`
+        ModuleCode int64    `json:"moduleCode,optional"`
+        Version string `json:"version,optional"`
+    }
+    DeviceModuleVersionIndexReq {
+        Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
+        ProductID string `json:"productID,optional"`                                              //产品id 只读
+        ProductName string `json:"productName,optional"`
+        ModuleCode int64    `json:"moduleCode,optional"`
+    }
+    DeviceModuleVersionIndexResp{
+        List []*DeviceModuleVersion `json:"list"`    //设备信息
+        Total int64 `json:"total"`          //总数(只有分页的时候会返回)
+    }
+
+    DeviceModuleVersionReadReq{
+        ID    int64  `json:"id,optional,omitempty"`
+        ProductID string `json:"productID,optional"`                                              //产品id 只读
+        ProductName string `json:"productName,optional"`
+        ModuleCode int64    `json:"moduleCode,optional"`
+    }
+)

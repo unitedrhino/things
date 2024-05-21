@@ -12,3 +12,4 @@ import "device/gateway.api"  //设备网关子设备模块相关接口
 import "device/info.api"  //设备管理模块相关接口
 import "device/interact.api"  //设备交互相关接口
 import "device/profile.api"  //设备配置
+import "device/moduleVersion.api"

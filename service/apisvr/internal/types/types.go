@@ -355,6 +355,33 @@ type DeviceInteractSendPropertyResp struct {
 	MsgToken string `json:"msgToken"` //调用id
 }
 
+type DeviceModuleVersion struct {
+	ID          int64  `json:"id,optional,omitempty"`
+	ProductID   string `json:"productID,optional"` //产品id 只读
+	ProductName string `json:"productName,optional"`
+	ModuleCode  int64  `json:"moduleCode,optional"`
+	Version     string `json:"version,optional"`
+}
+
+type DeviceModuleVersionIndexReq struct {
+	Page        *PageInfo `json:"page,optional"`      //分页信息 只获取一个则不填
+	ProductID   string    `json:"productID,optional"` //产品id 只读
+	ProductName string    `json:"productName,optional"`
+	ModuleCode  int64     `json:"moduleCode,optional"`
+}
+
+type DeviceModuleVersionIndexResp struct {
+	List  []*DeviceModuleVersion `json:"list"`  //设备信息
+	Total int64                  `json:"total"` //总数(只有分页的时候会返回)
+}
+
+type DeviceModuleVersionReadReq struct {
+	ID          int64  `json:"id,optional,omitempty"`
+	ProductID   string `json:"productID,optional"` //产品id 只读
+	ProductName string `json:"productName,optional"`
+	ModuleCode  int64  `json:"moduleCode,optional"`
+}
+
 type DeviceMsgEventLogIndexReq struct {
 	DeviceNames []string  `json:"deviceNames,optional"`                //设备名(不填获取产品下所有设备)
 	ProductID   string    `json:"productID,optional"`                  //产品id 获取产品id下的所有设备信息

@@ -59,8 +59,10 @@ func (m *DmDeviceInfo) TableName() string {
 }
 
 type DmDeviceModuleVersion struct {
+	ID         int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	ProductID  string `gorm:"column:product_id;type:varchar(100);uniqueIndex:product_id_deviceName;NOT NULL"`  // 产品id
 	DeviceName string `gorm:"column:device_name;uniqueIndex:product_id_deviceName;type:varchar(100);NOT NULL"` // 设备名称
+	ModuleCode string `gorm:"column:module_code;type:varchar(64);uniqueIndex:product_id_deviceName"`           // 固件名称
 	Version    string `gorm:"column:version;type:varchar(64);NOT NULL;uniqueIndex:product_id_deviceName"`      // 固件版本
 	stores.NoDelTime
 }

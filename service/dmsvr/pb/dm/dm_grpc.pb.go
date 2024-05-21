@@ -32,6 +32,8 @@ const (
 	DeviceManage_DeviceInfoBind_FullMethodName           = "/dm.DeviceManage/deviceInfoBind"
 	DeviceManage_DeviceInfoUnbind_FullMethodName         = "/dm.DeviceManage/deviceInfoUnbind"
 	DeviceManage_DeviceTransfer_FullMethodName           = "/dm.DeviceManage/deviceTransfer"
+	DeviceManage_DeviceModuleVersionRead_FullMethodName  = "/dm.DeviceManage/deviceModuleVersionRead"
+	DeviceManage_DeviceModuleVersionIndex_FullMethodName = "/dm.DeviceManage/deviceModuleVersionIndex"
 	DeviceManage_DeviceGatewayMultiCreate_FullMethodName = "/dm.DeviceManage/deviceGatewayMultiCreate"
 	DeviceManage_DeviceGatewayMultiUpdate_FullMethodName = "/dm.DeviceManage/deviceGatewayMultiUpdate"
 	DeviceManage_DeviceGatewayIndex_FullMethodName       = "/dm.DeviceManage/deviceGatewayIndex"
@@ -67,6 +69,8 @@ type DeviceManageClient interface {
 	DeviceInfoBind(ctx context.Context, in *DeviceInfoBindReq, opts ...grpc.CallOption) (*Empty, error)
 	DeviceInfoUnbind(ctx context.Context, in *DeviceCore, opts ...grpc.CallOption) (*Empty, error)
 	DeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error)
+	DeviceModuleVersionRead(ctx context.Context, in *DeviceModuleVersionReadReq, opts ...grpc.CallOption) (*DeviceModuleVersion, error)
+	DeviceModuleVersionIndex(ctx context.Context, in *DeviceModuleVersionIndexReq, opts ...grpc.CallOption) (*DeviceModuleVersionIndexResp, error)
 	// 绑定网关下子设备设备
 	DeviceGatewayMultiCreate(ctx context.Context, in *DeviceGatewayMultiCreateReq, opts ...grpc.CallOption) (*Empty, error)
 	// 绑定网关下子设备设备
@@ -187,6 +191,24 @@ func (c *deviceManageClient) DeviceInfoUnbind(ctx context.Context, in *DeviceCor
 func (c *deviceManageClient) DeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, DeviceManage_DeviceTransfer_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceManageClient) DeviceModuleVersionRead(ctx context.Context, in *DeviceModuleVersionReadReq, opts ...grpc.CallOption) (*DeviceModuleVersion, error) {
+	out := new(DeviceModuleVersion)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceModuleVersionRead_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceManageClient) DeviceModuleVersionIndex(ctx context.Context, in *DeviceModuleVersionIndexReq, opts ...grpc.CallOption) (*DeviceModuleVersionIndexResp, error) {
+	out := new(DeviceModuleVersionIndexResp)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceModuleVersionIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -314,6 +336,8 @@ type DeviceManageServer interface {
 	DeviceInfoBind(context.Context, *DeviceInfoBindReq) (*Empty, error)
 	DeviceInfoUnbind(context.Context, *DeviceCore) (*Empty, error)
 	DeviceTransfer(context.Context, *DeviceTransferReq) (*Empty, error)
+	DeviceModuleVersionRead(context.Context, *DeviceModuleVersionReadReq) (*DeviceModuleVersion, error)
+	DeviceModuleVersionIndex(context.Context, *DeviceModuleVersionIndexReq) (*DeviceModuleVersionIndexResp, error)
 	// 绑定网关下子设备设备
 	DeviceGatewayMultiCreate(context.Context, *DeviceGatewayMultiCreateReq) (*Empty, error)
 	// 绑定网关下子设备设备
@@ -370,6 +394,12 @@ func (UnimplementedDeviceManageServer) DeviceInfoUnbind(context.Context, *Device
 }
 func (UnimplementedDeviceManageServer) DeviceTransfer(context.Context, *DeviceTransferReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceTransfer not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceModuleVersionRead(context.Context, *DeviceModuleVersionReadReq) (*DeviceModuleVersion, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceModuleVersionRead not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceModuleVersionIndex(context.Context, *DeviceModuleVersionIndexReq) (*DeviceModuleVersionIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceModuleVersionIndex not implemented")
 }
 func (UnimplementedDeviceManageServer) DeviceGatewayMultiCreate(context.Context, *DeviceGatewayMultiCreateReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceGatewayMultiCreate not implemented")
@@ -611,6 +641,42 @@ func _DeviceManage_DeviceTransfer_Handler(srv interface{}, ctx context.Context, 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceManageServer).DeviceTransfer(ctx, req.(*DeviceTransferReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceManage_DeviceModuleVersionRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceModuleVersionReadReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceModuleVersionRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceModuleVersionRead_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceModuleVersionRead(ctx, req.(*DeviceModuleVersionReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceManage_DeviceModuleVersionIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceModuleVersionIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceModuleVersionIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceModuleVersionIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceModuleVersionIndex(ctx, req.(*DeviceModuleVersionIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -863,6 +929,14 @@ var DeviceManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "deviceTransfer",
 			Handler:    _DeviceManage_DeviceTransfer_Handler,
+		},
+		{
+			MethodName: "deviceModuleVersionRead",
+			Handler:    _DeviceManage_DeviceModuleVersionRead_Handler,
+		},
+		{
+			MethodName: "deviceModuleVersionIndex",
+			Handler:    _DeviceManage_DeviceModuleVersionIndex_Handler,
 		},
 		{
 			MethodName: "deviceGatewayMultiCreate",
