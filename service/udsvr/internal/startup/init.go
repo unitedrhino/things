@@ -52,8 +52,6 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 			logx.WithContext(ctx).Errorf("Subscribe.QueueSubscribe.Unmarshal body:%v err:%v", string(body), err)
 			return err
 		}
-		//todo 压测模式先停止
-		return nil
 		return th.SceneThingPropertyReport(stu)
 	})
 	logx.Must(err)

@@ -40,7 +40,7 @@ func (l *GatewayCanBindIndexLogic) GatewayCanBindIndex(in *dm.GatewayCanBindInde
 	if err != nil {
 		return nil, err
 	}
-	var subMap map[devices.Core]struct{}
+	var subMap = map[devices.Core]struct{}{}
 	for _, v := range subDevices {
 		subMap[devices.Core{
 			ProductID:  v.ProductID,
