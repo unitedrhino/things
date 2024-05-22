@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"golang.org/x/sync/errgroup"
 	"sync"
 
@@ -99,9 +100,39 @@ func (l *PropertyControlMultiSendLogic) MultiSendOneProductProperty(in *dm.Prope
 }
 
 func (l *PropertyControlMultiSendLogic) MultiSendMultiProductProperty(in *dm.PropertyControlMultiSendReq) ([]*dm.PropertyControlSendMsg, error) {
-	var productMap = map[string][]string{} //key是产品id,value是产品下的设备列表
+	var productMap = map[string]map[string]struct{}{} //key是产品id,value是产品下的设备列表
 	for _, v := range in.Devices {
-		productMap[v.ProductID] = append(productMap[v.ProductID], v.DeviceName)
+		if productMap[v.ProductID] == nil {
+			productMap[v.ProductID] = map[string]struct{}{v.DeviceName: {}}
+		} else {
+			productMap[v.ProductID][v.DeviceName] = struct{}{}
+		}
+	}
+	if in.AreaID != 0 {
+		dis, err := relationDB.NewDeviceInfoRepo(l.ctx).FindByFilter(l.ctx, relationDB.DeviceFilter{AreaIDs: []int64{in.AreaID}}, nil)
+		if err != nil {
+			return nil, err
+		}
+		for _, v := range dis {
+			if productMap[v.ProductID] == nil {
+				productMap[v.ProductID] = map[string]struct{}{v.DeviceName: {}}
+			} else {
+				productMap[v.ProductID][v.DeviceName] = struct{}{}
+			}
+		}
+	}
+	if in.GroupID != 0 {
+		dis, err := relationDB.NewDeviceInfoRepo(l.ctx).FindByFilter(l.ctx, relationDB.DeviceFilter{GroupIDs: []int64{in.GroupID}}, nil)
+		if err != nil {
+			return nil, err
+		}
+		for _, v := range dis {
+			if productMap[v.ProductID] == nil {
+				productMap[v.ProductID] = map[string]struct{}{v.DeviceName: {}}
+			} else {
+				productMap[v.ProductID][v.DeviceName] = struct{}{}
+			}
+		}
 	}
 	var group errgroup.Group
 	var newIn = dm.PropertyControlMultiSendReq{
@@ -113,7 +144,7 @@ func (l *PropertyControlMultiSendLogic) MultiSendMultiProductProperty(in *dm.Pro
 	for k, v := range productMap {
 		in := newIn
 		in.ProductID = k
-		in.DeviceNames = v
+		in.DeviceNames = utils.SetToSlice(v)
 		group.Go(func() error {
 			li, err := l.MultiSendOneProductProperty(&in)
 			if err != nil {

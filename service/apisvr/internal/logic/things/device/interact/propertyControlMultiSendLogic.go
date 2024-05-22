@@ -34,6 +34,11 @@ func NewPropertyControlMultiSendLogic(ctx context.Context, svcCtx *svc.ServiceCo
 }
 
 func (l *PropertyControlMultiSendLogic) PropertyControlMultiSend(req *types.DeviceInteractMultiSendPropertyReq) (resp *types.DeviceInteractMultiSendPropertyResp, err error) {
+	ret, err := l.svcCtx.DeviceInteract.PropertyControlMultiSend(l.ctx, utils.Copy[dm.PropertyControlMultiSendReq](req))
+	if err != nil {
+		return nil, err
+	}
+	return utils.Copy[types.DeviceInteractMultiSendPropertyResp](ret), nil
 	if (req.ProductID != "" && len(req.DeviceNames) != 0) || len(req.Devices) != 0 {
 		err := l.SendProperty(req.ProductID, req.DeviceNames, req.Devices, req.Data, req.ShadowControl)
 		return &types.DeviceInteractMultiSendPropertyResp{List: l.retMsg}, err
