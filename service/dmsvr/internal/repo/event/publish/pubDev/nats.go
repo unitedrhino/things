@@ -36,7 +36,7 @@ func (n *NatsClient) PublishToDev(ctx context.Context, respMsg *deviceMsg.Publis
 	}
 	defer func() {
 		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).
-			Infof("PublishToDev startTime:%v", startTime)
+			Infof("PublishToDev msg:%v", respMsg)
 	}()
 	err := n.client.Publish(ctx, fmt.Sprintf(topics.DeviceDownMsg, respMsg.ProtocolCode, respMsg.Handle, respMsg.ProductID, respMsg.DeviceName), devices.PublishToDev(
 		respMsg.Handle, respMsg.Type, respMsg.Payload, respMsg.ProtocolCode,

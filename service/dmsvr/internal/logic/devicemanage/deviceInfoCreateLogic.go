@@ -47,7 +47,7 @@ func NewDeviceInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 发现返回true 没有返回false
 */
 func (l *DeviceInfoCreateLogic) CheckDevice(in *dm.DeviceInfo) (bool, error) {
-	_, err := l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductID, DeviceNames: []string{in.DeviceName}})
+	_, err := l.svcCtx.DeviceCache.GetData(l.ctx, dmExport.GenDeviceInfoKey(in.ProductID, in.DeviceName))
 	if err == nil {
 		return true, nil
 	}
@@ -60,8 +60,8 @@ func (l *DeviceInfoCreateLogic) CheckDevice(in *dm.DeviceInfo) (bool, error) {
 /*
 发现返回true 没有返回false
 */
-func (l *DeviceInfoCreateLogic) CheckProduct(in *dm.DeviceInfo) (*relationDB.DmProductInfo, error) {
-	pi, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
+func (l *DeviceInfoCreateLogic) CheckProduct(in *dm.DeviceInfo) (*dm.ProductInfo, error) {
+	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, in.ProductID)
 	if err == nil {
 		return pi, nil
 	}
