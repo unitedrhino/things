@@ -64,3 +64,12 @@ func (l *SceneInfoCreateLogic) SceneInfoCreate(in *ud.SceneInfo) (*ud.WithID, er
 	}
 	return &ud.WithID{Id: po.ID}, nil
 }
+func GetSceneInfo(svcCtx svc.ServiceContext) func(ctx context.Context, sceneID int64) (info *scene.Info, err error) {
+	return func(ctx context.Context, sceneID int64) (info *scene.Info, err error) {
+		po, err := relationDB.NewSceneInfoRepo(ctx).FindOne(ctx, sceneID)
+		if err != nil {
+			return nil, err
+		}
+		return PoToSceneInfoDo(po), nil
+	}
+}

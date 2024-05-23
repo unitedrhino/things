@@ -42,6 +42,7 @@ type ValidateRepo struct {
 	Ctx                context.Context
 	DeviceCache        *caches.Cache[dm.DeviceInfo]
 	ProductSchemaCache *caches.Cache[schema.Model]
+	GetSceneInfo       func(ctx context.Context, sceneID int64) (*Info, error)
 	Info               *Info
 }
 

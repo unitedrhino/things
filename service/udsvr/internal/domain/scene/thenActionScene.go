@@ -14,6 +14,7 @@ type ActionScene struct {
 }
 
 func (a *ActionScene) Validate(repo ValidateRepo) error {
+
 	if a == nil {
 		return nil
 	}
