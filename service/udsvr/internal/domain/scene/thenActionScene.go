@@ -2,6 +2,7 @@ package scene
 
 import (
 	"context"
+	"gitee.com/i-Things/share/errors"
 )
 
 /*
@@ -14,9 +15,12 @@ type ActionScene struct {
 }
 
 func (a *ActionScene) Validate(repo ValidateRepo) error {
-
-	if a == nil {
-		return nil
+	s, err := repo.GetSceneInfo(repo.Ctx, a.SceneID)
+	if err != nil {
+		return err
+	}
+	if s.Type != SceneTypeManual {
+		return errors.Parameter.AddMsg("只能执行manual类型的场景")
 	}
 	return nil
 }

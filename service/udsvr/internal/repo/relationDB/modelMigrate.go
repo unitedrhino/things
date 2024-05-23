@@ -7,9 +7,9 @@ import (
 )
 
 func Migrate(c conf.Database) error {
-	if c.IsInitTable == false {
-		return nil
-	}
+	//if c.IsInitTable == false {
+	//	return nil
+	//}
 	db := stores.GetCommonConn(context.TODO())
 	return db.AutoMigrate(
 		&UdSceneInfo{},

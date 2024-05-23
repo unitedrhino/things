@@ -35,7 +35,7 @@ func (l *SceneInfoCreateLogic) SceneInfoCreate(in *ud.SceneInfo) (*ud.WithID, er
 	if do.Status == 0 {
 		do.Status = def.True
 	}
-	err := do.Validate(scene.ValidateRepo{Ctx: l.ctx, DeviceCache: l.svcCtx.DeviceCache, ProductSchemaCache: l.svcCtx.ProductSchemaCache})
+	err := do.Validate(scene.ValidateRepo{Ctx: l.ctx, DeviceCache: l.svcCtx.DeviceCache, ProductSchemaCache: l.svcCtx.ProductSchemaCache, GetSceneInfo: GetSceneInfo})
 	if err != nil {
 		return nil, err
 	}
@@ -64,12 +64,10 @@ func (l *SceneInfoCreateLogic) SceneInfoCreate(in *ud.SceneInfo) (*ud.WithID, er
 	}
 	return &ud.WithID{Id: po.ID}, nil
 }
-func GetSceneInfo(svcCtx svc.ServiceContext) func(ctx context.Context, sceneID int64) (info *scene.Info, err error) {
-	return func(ctx context.Context, sceneID int64) (info *scene.Info, err error) {
-		po, err := relationDB.NewSceneInfoRepo(ctx).FindOne(ctx, sceneID)
-		if err != nil {
-			return nil, err
-		}
-		return PoToSceneInfoDo(po), nil
+func GetSceneInfo(ctx context.Context, sceneID int64) (info *scene.Info, err error) {
+	po, err := relationDB.NewSceneInfoRepo(ctx).FindOne(ctx, sceneID)
+	if err != nil {
+		return nil, err
 	}
+	return PoToSceneInfoDo(po), nil
 }

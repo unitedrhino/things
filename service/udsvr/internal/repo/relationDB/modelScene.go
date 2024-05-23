@@ -95,6 +95,7 @@ type UdSceneThenAction struct {
 	Delay      int64               `gorm:"column:delay;type:bigint"`
 	Device     UdSceneActionDevice `gorm:"embedded;embeddedPrefix:device_"`
 	Notify     *scene.ActionNotify `gorm:"column:notify;type:json;serializer:json"`
+	Scene      UdSceneActionScene  `gorm:"embedded;embeddedPrefix:scene_"`
 }
 
 func (m *UdSceneThenAction) TableName() string {
@@ -117,4 +118,8 @@ type UdSceneActionDevice struct {
 	SchemaAffordance string                 `gorm:"column:schema_affordance;type:VARCHAR(500);default:''"`
 	Values           scene.DeviceValues     `gorm:"column:values;type:json;serializer:json"`
 	Body             string                 `gorm:"column:body;type:VARCHAR(1024)"` // 自定义数据
+}
+
+type UdSceneActionScene struct {
+	SceneID int64 `gorm:"column:scene_id;index;type:bigint"` // 场景id编号
 }
