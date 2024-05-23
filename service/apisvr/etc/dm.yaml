@@ -35,7 +35,7 @@ AuthWhite:
       Password: iThings
     - UserName: pwumeisvr
       Password: iThings
-    - UserName: paliyunsvr
+    - UserName: paliMqttsvr
       Password: iThings
 OssConf:
   OssType: minio

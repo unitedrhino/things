@@ -122,9 +122,17 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 					ResultCode: errors.Fmt(err).GetCode(),
 				})
 			}
-
 		})
 	}()
+	if in.ShadowControl == shadow.ControlOnlyCloudWithLog {
+		//插入多条设备物模型属性数据
+		err = l.svcCtx.SchemaManaRepo.InsertPropertiesData(l.ctx, l.model, in.ProductID, in.DeviceName, req.Params, time.Now())
+		if err != nil {
+			l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
+			return nil, err
+		}
+		return &dm.PropertyControlSendResp{}, nil
+	}
 	if in.ShadowControl == shadow.ControlOnly || (!isOnline && in.ShadowControl == shadow.ControlAuto) {
 		//设备影子模式
 		err = shadow.CheckEnableShadow(param, l.model)
