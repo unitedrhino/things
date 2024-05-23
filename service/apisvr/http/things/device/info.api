@@ -75,7 +75,7 @@ service api {
         isAuthTenant: "true"
     )
     @handler canBind
-    post /canBind (DeviceInfoCanBindReq) returns ()
+    post /can-bind (DeviceInfoCanBindReq) returns ()
     @doc(
         summary: "解绑设备"
         isNeedAuth: "true"
