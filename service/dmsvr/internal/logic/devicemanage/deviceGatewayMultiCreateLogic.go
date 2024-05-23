@@ -44,7 +44,11 @@ func NewDeviceGatewayMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceCo
 
 // 创建分组设备
 func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGatewayMultiCreateReq) (*dm.Empty, error) {
-	_, err := FilterCanBindSubDevices(l.ctx, l.svcCtx, &devices.Core{
+	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, in.Gateway.ProductID)
+	if err != nil {
+		return nil, err
+	}
+	_, err = FilterCanBindSubDevices(l.ctx, l.svcCtx, &devices.Core{
 		ProductID:  in.Gateway.ProductID,
 		DeviceName: in.Gateway.DeviceName,
 	}, utils.ToSliceWithFunc(in.List, func(in *dm.DeviceGatewayBindDevice) *devices.Core {
@@ -90,12 +94,13 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 	}
 	respBytes, _ := json.Marshal(req)
 	msg := deviceMsg.PublishMsg{
-		Handle:     devices.Gateway,
-		Type:       msgGateway.TypeTopo,
-		Payload:    respBytes,
-		Timestamp:  time.Now().UnixMilli(),
-		ProductID:  in.Gateway.ProductID,
-		DeviceName: in.Gateway.DeviceName,
+		Handle:       devices.Gateway,
+		Type:         msgGateway.TypeTopo,
+		Payload:      respBytes,
+		Timestamp:    time.Now().UnixMilli(),
+		ProductID:    in.Gateway.ProductID,
+		DeviceName:   in.Gateway.DeviceName,
+		ProtocolCode: pi.ProtocolCode,
 	}
 	er := l.svcCtx.PubDev.PublishToDev(l.ctx, &msg)
 	if er != nil {

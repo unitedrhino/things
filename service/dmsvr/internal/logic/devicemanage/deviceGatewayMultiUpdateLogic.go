@@ -44,14 +44,14 @@ func NewDeviceGatewayMultiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceCo
 
 // 绑定网关下子设备设备
 func (l *DeviceGatewayMultiUpdateLogic) DeviceGatewayMultiUpdate(in *dm.DeviceGatewayMultiSaveReq) (*dm.Empty, error) {
-	{ //检查是否是网关类型
-		pi, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.Gateway.ProductID}})
-		if err != nil {
-			if errors.Cmp(err, errors.NotFind) {
-				return nil, errors.Parameter.AddDetail("not find GatewayProductID id:" + cast.ToString(in.Gateway.ProductID))
-			}
-			return nil, errors.Database.AddDetail(err)
+	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, in.Gateway.ProductID)
+	if err != nil {
+		if errors.Cmp(err, errors.NotFind) {
+			return nil, errors.Parameter.AddDetail("not find GatewayProductID id:" + cast.ToString(in.Gateway.ProductID))
 		}
+		return nil, errors.Database.AddDetail(err)
+	}
+	{ //检查是否是网关类型
 		if pi.DeviceType != def.DeviceTypeGateway {
 			return nil, errors.Parameter.AddMsg("子设备只能由网关设备进行绑定")
 		}
@@ -78,7 +78,7 @@ func (l *DeviceGatewayMultiUpdateLogic) DeviceGatewayMultiUpdate(in *dm.DeviceGa
 		}
 	}
 	devicesDos := logic.ToDeviceCoreDos(in.List)
-	err := stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
 		gd := relationDB.NewGatewayDeviceRepo(tx)
 		err := gd.MultiDelete(l.ctx, &devices.Core{
 			ProductID:  in.Gateway.ProductID,
@@ -105,12 +105,13 @@ func (l *DeviceGatewayMultiUpdateLogic) DeviceGatewayMultiUpdate(in *dm.DeviceGa
 	}
 	respBytes, _ := json.Marshal(req)
 	msg := deviceMsg.PublishMsg{
-		Handle:     devices.Gateway,
-		Type:       msgGateway.TypeTopo,
-		Payload:    respBytes,
-		Timestamp:  time.Now().UnixMilli(),
-		ProductID:  in.Gateway.ProductID,
-		DeviceName: in.Gateway.DeviceName,
+		Handle:       devices.Gateway,
+		Type:         msgGateway.TypeTopo,
+		Payload:      respBytes,
+		Timestamp:    time.Now().UnixMilli(),
+		ProductID:    in.Gateway.ProductID,
+		DeviceName:   in.Gateway.DeviceName,
+		ProtocolCode: pi.ProtocolCode,
 	}
 	er := l.svcCtx.PubDev.PublishToDev(l.ctx, &msg)
 	if er != nil {
