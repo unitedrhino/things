@@ -7,6 +7,7 @@ import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
+	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -55,6 +56,6 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceCore) (*dm.Empty, 
 	di.ProjectID = stores.ProjectID(dpi.DefaultProjectID)
 	di.AreaID = stores.AreaID(def.NotClassified)
 	err = diDB.Update(ctxs.WithRoot(l.ctx), di)
-
+	l.svcCtx.DeviceCache.SetData(l.ctx, dmExport.GenDeviceInfoKey(di.ProductID, di.DeviceName), nil)
 	return &dm.Empty{}, err
 }
