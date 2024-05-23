@@ -1,91 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="测试计划">
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="属性控制">
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="用户定义的变量">
         <collectionProp name="Arguments.arguments"/>
       </elementProp>
-      <boolProp name="TestPlan.functional_mode">false</boolProp>
-      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
     </TestPlan>
     <hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="属性推送">
-        <intProp name="ThreadGroup.num_threads">500</intProp>
-        <intProp name="ThreadGroup.ramp_time">1</intProp>
-        <longProp name="ThreadGroup.duration">1</longProp>
-        <longProp name="ThreadGroup.delay">1</longProp>
-        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
-        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="循环控制器">
-          <intProp name="LoopController.loops">-1</intProp>
-          <boolProp name="LoopController.continue_forever">false</boolProp>
-        </elementProp>
-      </ThreadGroup>
-      <hashTree>
-        <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 预处理程序">
-          <stringProp name="scriptLanguage">beanshell</stringProp>
-          <stringProp name="parameters"></stringProp>
-          <stringProp name="filename"></stringProp>
-          <stringProp name="cacheKey">true</stringProp>
-          <stringProp name="script">String groupId = ((ctx.getThread().getThreadName().toString()) .split(&quot; &quot;)[1]).split(&quot;-&quot;)[1];
-vars.put(&quot;groupId&quot;,groupId);</stringProp>
-        </JSR223PreProcessor>
-        <hashTree/>
-        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="仅一次控制器"/>
-        <hashTree>
-          <net.xmeter.samplers.ConnectSampler guiclass="net.xmeter.gui.ConnectSamplerUI" testclass="net.xmeter.samplers.ConnectSampler" testname="属性推送MQTT Connect">
-            <stringProp name="mqtt.server">39.108.230.16</stringProp>
-            <stringProp name="mqtt.port">1883</stringProp>
-            <stringProp name="mqtt.version">3.1</stringProp>
-            <stringProp name="mqtt.conn_timeout">10</stringProp>
-            <stringProp name="mqtt.protocol">TCP</stringProp>
-            <stringProp name="mqtt.ws_path"></stringProp>
-            <boolProp name="mqtt.dual_ssl_authentication">false</boolProp>
-            <stringProp name="mqtt.clientcert_file_path"></stringProp>
-            <stringProp name="mqtt.clientcert_password"></stringProp>
-            <stringProp name="mqtt.user_name">dgsvr</stringProp>
-            <stringProp name="mqtt.password">iThings</stringProp>
-            <stringProp name="mqtt.client_id_prefix">26GOsI5N0vS&amp;test${groupId}</stringProp>
-            <boolProp name="mqtt.client_id_suffix">true</boolProp>
-            <stringProp name="mqtt.conn_keep_alive">300</stringProp>
-            <stringProp name="mqtt.conn_attampt_max">0</stringProp>
-            <stringProp name="mqtt.reconn_attampt_max">0</stringProp>
-            <stringProp name="mqtt.conn_clean_session">true</stringProp>
-            <stringProp name="TestPlan.comments">开源测试环境</stringProp>
-          </net.xmeter.samplers.ConnectSampler>
-          <hashTree/>
-        </hashTree>
-        <net.xmeter.samplers.PubSampler guiclass="net.xmeter.gui.PubSamplerUI" testclass="net.xmeter.samplers.PubSampler" testname="属性推送">
-          <stringProp name="mqtt.topic_name">$thing/up/property/26GOsI5N0vS/test${groupId}</stringProp>
-          <stringProp name="mqtt.qos_level">1</stringProp>
-          <boolProp name="mqtt.add_timestamp">false</boolProp>
-          <stringProp name="mqtt.message_type">String</stringProp>
-          <stringProp name="mqtt.message_type_fixed_length">1024</stringProp>
-          <stringProp name="mqtt.message_to_sent">{
-  &quot;method&quot;: &quot;report&quot;,
-  &quot;msgToken&quot;: &quot;${__RandomString(20,asdfghjklqwertyuiopzxcvbnm,)}&quot;,
-  &quot;params&quot;: {
-    &quot;bool&quot;: true,
-    &quot;int64&quot;: ${groupId},
-    &quot;float64&quot;: 12.34234,
-    &quot;string&quot;: &quot;stringBody&quot;,
-    &quot;position&quot;: {
-      &quot;longitude&quot;: 0.012334992177784441,
-      &quot;latitude&quot;: 50.045040130615234
-    }
-  }
-}</stringProp>
-          <boolProp name="mqtt.retained_message">false</boolProp>
-        </net.xmeter.samplers.PubSampler>
-        <hashTree>
-          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="固定定时器" enabled="true">
-            <stringProp name="ConstantTimer.delay">200</stringProp>
-          </ConstantTimer>
-          <hashTree/>
-        </hashTree>
-      </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="属性订阅">
-        <intProp name="ThreadGroup.num_threads">500</intProp>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="属性控制订阅">
+        <intProp name="ThreadGroup.num_threads">100</intProp>
         <stringProp name="ThreadGroup.ramp_time">0.000001</stringProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
@@ -107,7 +30,7 @@ vars.put(&quot;groupId&quot;,groupId);</stringProp>
         <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="仅一次控制器"/>
         <hashTree>
           <net.xmeter.samplers.ConnectSampler guiclass="net.xmeter.gui.ConnectSamplerUI" testclass="net.xmeter.samplers.ConnectSampler" testname="属性订阅MQTT Connect">
-            <stringProp name="mqtt.server">39.108.230.16</stringProp>
+            <stringProp name="mqtt.server">172.21.3.132</stringProp>
             <stringProp name="mqtt.port">1883</stringProp>
             <stringProp name="mqtt.version">3.1</stringProp>
             <stringProp name="mqtt.conn_timeout">10</stringProp>
@@ -137,20 +60,119 @@ vars.put(&quot;groupId&quot;,groupId);</stringProp>
           <stringProp name="mqtt.sample_condition_value">1</stringProp>
         </net.xmeter.samplers.SubSampler>
         <hashTree>
-          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON提取器">
+            <stringProp name="JSONPostProcessor.referenceNames">msgToken</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.msgToken</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+            <stringProp name="JSONPostProcessor.defaultValues">null</stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+        </hashTree>
+        <net.xmeter.samplers.PubSampler guiclass="net.xmeter.gui.PubSamplerUI" testclass="net.xmeter.samplers.PubSampler" testname="属性控制回复推送">
+          <stringProp name="mqtt.topic_name">$thing/up/property/26GOsI5N0vS/test${groupId}</stringProp>
+          <stringProp name="mqtt.qos_level">1</stringProp>
+          <boolProp name="mqtt.add_timestamp">false</boolProp>
+          <stringProp name="mqtt.message_type">String</stringProp>
+          <stringProp name="mqtt.message_type_fixed_length">1024</stringProp>
+          <stringProp name="mqtt.message_to_sent">{
+  &quot;method&quot;: &quot;controlReply&quot;,
+  &quot;msgToken&quot;: &quot;${msgToken}&quot;,
+  &quot;groupId&quot;:${groupId},
+  &quot;code&quot;: 200,
+  &quot;msg&quot;:&quot;ok&quot;
+}</stringProp>
+          <boolProp name="mqtt.retained_message">false</boolProp>
+        </net.xmeter.samplers.PubSampler>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="http属性控制">
+        <intProp name="ThreadGroup.num_threads">10</intProp>
+        <intProp name="ThreadGroup.ramp_time">20</intProp>
+        <longProp name="ThreadGroup.duration">1000000</longProp>
+        <longProp name="ThreadGroup.delay">10</longProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="循环控制器">
+          <intProp name="LoopController.loops">-1</intProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 预处理程序">
+          <stringProp name="scriptLanguage">beanshell</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="script">String groupId = ((ctx.getThread().getThreadName().toString()) .split(&quot; &quot;)[1]).split(&quot;-&quot;)[1];
+vars.put(&quot;groupId&quot;,groupId);</stringProp>
+        </JSR223PreProcessor>
+        <hashTree/>
+        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="仅一次控制器"/>
+        <hashTree>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="固定定时器">
+            <stringProp name="ConstantTimer.delay">5000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP请求">
+          <stringProp name="HTTPSampler.domain">172.21.3.132</stringProp>
+          <stringProp name="HTTPSampler.port">7777</stringProp>
+          <stringProp name="HTTPSampler.protocol">http</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <stringProp name="HTTPSampler.path">/api/v1/things/device/interact/property-control-send</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;productID&quot;: &quot;26GOsI5N0vS&quot;,&#xd;
+    &quot;deviceName&quot;: &quot;test${groupId}&quot;,&#xd;
+    &quot;data&quot;:&quot;{\n    \&quot;bool\&quot;: true,\n    \&quot;int64\&quot;: ${groupId},\n    \&quot;float64\&quot;: 12.34234,\n    \&quot;string\&quot;: \&quot;stringBody\&quot;,\n    \&quot;position\&quot;: {\n      \&quot;longitude\&quot;: 0.012334992177784441,\n      \&quot;latitude\&quot;: 50.045040130615234\n    }\n  }&quot;&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP信息头管理器">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">iThings-token</stringProp>
+                <stringProp name="Header.value">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiIxNzQwMzU4MDU3MDM4MTg4NTQ0IiwiQWNjb3VudCI6ImFkbWluaXN0cmF0b3IiLCJSb2xlSURzIjpbMSwzLDExXSwiVGVuYW50Q29kZSI6IlwiZGVmYXVsdFwiIiwiSXNBZG1pbiI6MSwiSXNBbGxEYXRhIjoxLCJleHAiOjE3NDk1OTg0NTksImlhdCI6MTcxMzU5ODQ1OX0.X1uHwUDxYxWP2tx7pC9CjXKSaze-xMztiJAosVVPFhY</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">iThings-app-code</stringProp>
+                <stringProp name="Header.value">core</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">iThings-user-role</stringProp>
+                <stringProp name="Header.value">1</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言">
             <collectionProp name="Asserion.test_strings">
               <stringProp name="948638433">&quot;code&quot;:200,</stringProp>
             </collectionProp>
-            <stringProp name="Assertion.custom_message">订阅失败</stringProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
             <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
             <boolProp name="Assertion.assume_success">false</boolProp>
             <intProp name="Assertion.test_type">2</intProp>
-            <stringProp name="Assertion.scope">all</stringProp>
           </ResponseAssertion>
           <hashTree/>
         </hashTree>
       </hashTree>
-      <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="聚合报告" enabled="true">
+      <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="聚合报告">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
@@ -187,7 +209,7 @@ vars.put(&quot;groupId&quot;,groupId);</stringProp>
         <stringProp name="filename"></stringProp>
       </ResultCollector>
       <hashTree/>
-      <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="汇总报告" enabled="true">
+      <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="汇总报告">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
@@ -224,7 +246,7 @@ vars.put(&quot;groupId&quot;,groupId);</stringProp>
         <stringProp name="filename"></stringProp>
       </ResultCollector>
       <hashTree/>
-      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="查看结果树" enabled="true">
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="查看结果树">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>

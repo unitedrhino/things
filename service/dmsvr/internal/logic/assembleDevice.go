@@ -26,11 +26,13 @@ func ToDeviceInfo(ctx context.Context, in *relationDB.DmDeviceInfo, ProductCache
 	var (
 		productName string
 		deviceType  int64 = def.DeviceTypeDevice
+		netType     int64 = def.Unknown
 	)
 	pi, err := ProductCache.GetData(ctx, in.ProductID)
 	if err == nil {
 		deviceType = pi.DeviceType
 		productName = pi.ProductName
+		netType = pi.NetType
 	}
 	//return utils.Copy[dm.DeviceInfo](in)
 
@@ -68,6 +70,7 @@ func ToDeviceInfo(ctx context.Context, in *relationDB.DmDeviceInfo, ProductCache
 		Manufacturer:   utils.Copy[dm.ManufacturerInfo](in.Manufacturer),
 		ProductName:    productName,
 		DeviceType:     deviceType,
+		NetType:        netType,
 	}
 }
 

@@ -130,6 +130,7 @@ type (
         Profiles map[string]string  `json:"profiles,optional,omitempty"`
         Manufacturer *ManufacturerInfo `json:"manufacturer,optional,omitempty"`//制造商信息
         Owner *UserCore `json:"owner,optional,omitempty"`
+        NetType int64 `json:"netType,optional,range=[0:8]"`                                           //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
     }
     DeviceInfoWithProperty {
         Value string `json:"value"`             //获取到的值

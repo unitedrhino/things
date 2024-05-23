@@ -193,6 +193,7 @@ type DeviceInfo struct {
 	Profiles       map[string]string                  `json:"profiles,optional,omitempty"`
 	Manufacturer   *ManufacturerInfo                  `json:"manufacturer,optional,omitempty"` //制造商信息
 	Owner          *UserCore                          `json:"owner,optional,omitempty"`
+	NetType        int64                              `json:"netType,optional,range=[0:8]"` //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
 }
 
 type DeviceInfoBindReq struct {
@@ -1028,7 +1029,7 @@ type ProductInfo struct {
 	AuthMode           int64            `json:"authMode,optional,range=[0:2]"`         //认证方式:1:账密认证,2:秘钥认证
 	DeviceType         int64            `json:"deviceType,optional,range=[0:3]"`       //设备类型:1:设备,2:网关,3:子设备
 	CategoryID         int64            `json:"categoryID,optional"`                   //产品品类
-	NetType            int64            `json:"netType,optional,range=[0:6]"`          //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
+	NetType            int64            `json:"netType,optional,range=[0:8]"`          //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
 	ProtocolCode       string           `json:"protocolCode,optional"`                 //协议code,默认iThings  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
 	AutoRegister       int64            `json:"autoRegister,optional,range=[0:3]"`     //动态注册:1:关闭,2:打开,3:打开并自动创建设备
 	Secret             string           `json:"secret,optional"`                       //动态注册产品秘钥 只读
