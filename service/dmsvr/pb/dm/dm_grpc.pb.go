@@ -30,6 +30,7 @@ const (
 	DeviceManage_DeviceInfoMultiUpdate_FullMethodName    = "/dm.DeviceManage/DeviceInfoMultiUpdate"
 	DeviceManage_DeviceInfoRead_FullMethodName           = "/dm.DeviceManage/deviceInfoRead"
 	DeviceManage_DeviceInfoBind_FullMethodName           = "/dm.DeviceManage/deviceInfoBind"
+	DeviceManage_DeviceInfoCanBind_FullMethodName        = "/dm.DeviceManage/deviceInfoCanBind"
 	DeviceManage_DeviceInfoUnbind_FullMethodName         = "/dm.DeviceManage/deviceInfoUnbind"
 	DeviceManage_DeviceTransfer_FullMethodName           = "/dm.DeviceManage/deviceTransfer"
 	DeviceManage_DeviceModuleVersionRead_FullMethodName  = "/dm.DeviceManage/deviceModuleVersionRead"
@@ -67,6 +68,7 @@ type DeviceManageClient interface {
 	// 获取设备信息详情
 	DeviceInfoRead(ctx context.Context, in *DeviceInfoReadReq, opts ...grpc.CallOption) (*DeviceInfo, error)
 	DeviceInfoBind(ctx context.Context, in *DeviceInfoBindReq, opts ...grpc.CallOption) (*Empty, error)
+	DeviceInfoCanBind(ctx context.Context, in *DeviceInfoCanBindReq, opts ...grpc.CallOption) (*Empty, error)
 	DeviceInfoUnbind(ctx context.Context, in *DeviceCore, opts ...grpc.CallOption) (*Empty, error)
 	DeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error)
 	DeviceModuleVersionRead(ctx context.Context, in *DeviceModuleVersionReadReq, opts ...grpc.CallOption) (*DeviceModuleVersion, error)
@@ -173,6 +175,15 @@ func (c *deviceManageClient) DeviceInfoRead(ctx context.Context, in *DeviceInfoR
 func (c *deviceManageClient) DeviceInfoBind(ctx context.Context, in *DeviceInfoBindReq, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, DeviceManage_DeviceInfoBind_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceManageClient) DeviceInfoCanBind(ctx context.Context, in *DeviceInfoCanBindReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceInfoCanBind_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -334,6 +345,7 @@ type DeviceManageServer interface {
 	// 获取设备信息详情
 	DeviceInfoRead(context.Context, *DeviceInfoReadReq) (*DeviceInfo, error)
 	DeviceInfoBind(context.Context, *DeviceInfoBindReq) (*Empty, error)
+	DeviceInfoCanBind(context.Context, *DeviceInfoCanBindReq) (*Empty, error)
 	DeviceInfoUnbind(context.Context, *DeviceCore) (*Empty, error)
 	DeviceTransfer(context.Context, *DeviceTransferReq) (*Empty, error)
 	DeviceModuleVersionRead(context.Context, *DeviceModuleVersionReadReq) (*DeviceModuleVersion, error)
@@ -388,6 +400,9 @@ func (UnimplementedDeviceManageServer) DeviceInfoRead(context.Context, *DeviceIn
 }
 func (UnimplementedDeviceManageServer) DeviceInfoBind(context.Context, *DeviceInfoBindReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoBind not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceInfoCanBind(context.Context, *DeviceInfoCanBindReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoCanBind not implemented")
 }
 func (UnimplementedDeviceManageServer) DeviceInfoUnbind(context.Context, *DeviceCore) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoUnbind not implemented")
@@ -605,6 +620,24 @@ func _DeviceManage_DeviceInfoBind_Handler(srv interface{}, ctx context.Context, 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceManageServer).DeviceInfoBind(ctx, req.(*DeviceInfoBindReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceManage_DeviceInfoCanBind_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceInfoCanBindReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceInfoCanBind(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceInfoCanBind_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceInfoCanBind(ctx, req.(*DeviceInfoCanBindReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -921,6 +954,10 @@ var DeviceManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "deviceInfoBind",
 			Handler:    _DeviceManage_DeviceInfoBind_Handler,
+		},
+		{
+			MethodName: "deviceInfoCanBind",
+			Handler:    _DeviceManage_DeviceInfoCanBind_Handler,
 		},
 		{
 			MethodName: "deviceInfoUnbind",

@@ -35,6 +35,7 @@ type (
 	DeviceGatewaySign                 = dm.DeviceGatewaySign
 	DeviceInfo                        = dm.DeviceInfo
 	DeviceInfoBindReq                 = dm.DeviceInfoBindReq
+	DeviceInfoCanBindReq              = dm.DeviceInfoCanBindReq
 	DeviceInfoCount                   = dm.DeviceInfoCount
 	DeviceInfoCountReq                = dm.DeviceInfoCountReq
 	DeviceInfoDeleteReq               = dm.DeviceInfoDeleteReq

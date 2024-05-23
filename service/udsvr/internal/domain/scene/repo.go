@@ -61,6 +61,7 @@ type ActionRepo struct {
 	DeviceM        devicemanage.DeviceManage
 	DeviceG        devicegroup.DeviceGroup
 	NotifyM        notifymanage.NotifyManage
+	SceneExec      func(ctx context.Context, sceneID int64) error
 }
 
 type AlarmRepo interface {

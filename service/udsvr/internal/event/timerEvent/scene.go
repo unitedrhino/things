@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
+	rulelogic "github.com/i-Things/things/service/udsvr/internal/logic/rule"
 	"github.com/i-Things/things/service/udsvr/internal/svc"
+	"github.com/i-Things/things/service/udsvr/pb/ud"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
@@ -47,6 +49,10 @@ func (l *TimerHandle) SceneExec(ctx context.Context, do *scene.Info) error {
 		DeviceInteract: l.svcCtx.DeviceInteract,
 		DeviceM:        l.svcCtx.DeviceM,
 		DeviceG:        l.svcCtx.DeviceG,
+		SceneExec: func(ctx context.Context, sceneID int64) error {
+			_, err := rulelogic.NewSceneManuallyTriggerLogic(ctx, l.svcCtx).SceneManuallyTrigger(&ud.WithID{Id: sceneID})
+			return err
+		},
 	})
 	return err
 }

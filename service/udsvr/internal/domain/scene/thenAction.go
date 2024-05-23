@@ -30,6 +30,7 @@ type Action struct {
 	Alarm  *ActionAlarm  `json:"alarm,omitempty"`  //todo
 	Notify *ActionNotify `json:"notify,omitempty"` //消息通知
 	Device *ActionDevice `json:"device,omitempty"`
+	Scene  *ActionScene  `json:"scene,omitempty"`
 }
 
 func (t *Action) GetFlowInfo() (ret *FlowInfo) {
@@ -83,6 +84,11 @@ func (a *Action) Validate(repo ValidateRepo) error {
 			return errors.Parameter.AddMsg("对应的操作类型下没有进行配置:" + string(a.Type))
 		}
 		return a.Notify.Validate(repo)
+	case ActionExecutorScene:
+		if a.Scene == nil {
+			return errors.Parameter.AddMsg("对应的操作类型下没有进行配置:" + string(a.Type))
+		}
+		return a.Scene.Validate(repo)
 	//case ActionExecutorAlarm:
 	//	if a.Alarm == nil {
 	//		return errors.Parameter.AddMsg("对应的操作类型下没有进行配置:" + string(a.Type))
@@ -107,6 +113,12 @@ func (a *Action) Execute(ctx context.Context, repo ActionRepo) error {
 		}
 	case ActionExecutorNotify:
 		err := a.Notify.Execute(ctx, repo)
+		if err != nil {
+			logx.WithContext(ctx).Errorf("%s.Execute Action:%#v err:%v", utils.FuncName(), a, err)
+			return err
+		}
+	case ActionExecutorScene:
+		err := a.Scene.Execute(ctx, repo)
 		if err != nil {
 			logx.WithContext(ctx).Errorf("%s.Execute Action:%#v err:%v", utils.FuncName(), a, err)
 			return err

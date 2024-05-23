@@ -120,6 +120,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/canBind",
+					Handler: thingsdeviceinfo.CanBindHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/count",
 					Handler: thingsdeviceinfo.CountHandler(serverCtx),
 				},

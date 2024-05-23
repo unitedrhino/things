@@ -201,6 +201,10 @@ type DeviceInfoBindReq struct {
 	ProtocolCode string     `json:"protocolCode,optional"`
 }
 
+type DeviceInfoCanBindReq struct {
+	Device DeviceCore `json:"device"`
+}
+
 type DeviceInfoDeleteReq struct {
 	ProductID  string `json:"productID"`  //产品id 只读
 	DeviceName string `json:"deviceName"` //设备名称 读写

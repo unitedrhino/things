@@ -35,6 +35,7 @@ type (
 	DeviceGatewaySign                 = dm.DeviceGatewaySign
 	DeviceInfo                        = dm.DeviceInfo
 	DeviceInfoBindReq                 = dm.DeviceInfoBindReq
+	DeviceInfoCanBindReq              = dm.DeviceInfoCanBindReq
 	DeviceInfoCount                   = dm.DeviceInfoCount
 	DeviceInfoCountReq                = dm.DeviceInfoCountReq
 	DeviceInfoDeleteReq               = dm.DeviceInfoDeleteReq
@@ -208,6 +209,7 @@ type (
 		// 获取设备信息详情
 		DeviceInfoRead(ctx context.Context, in *DeviceInfoReadReq, opts ...grpc.CallOption) (*DeviceInfo, error)
 		DeviceInfoBind(ctx context.Context, in *DeviceInfoBindReq, opts ...grpc.CallOption) (*Empty, error)
+		DeviceInfoCanBind(ctx context.Context, in *DeviceInfoCanBindReq, opts ...grpc.CallOption) (*Empty, error)
 		DeviceInfoUnbind(ctx context.Context, in *DeviceCore, opts ...grpc.CallOption) (*Empty, error)
 		DeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error)
 		DeviceModuleVersionRead(ctx context.Context, in *DeviceModuleVersionReadReq, opts ...grpc.CallOption) (*DeviceModuleVersion, error)
@@ -347,6 +349,15 @@ func (m *defaultDeviceManage) DeviceInfoBind(ctx context.Context, in *DeviceInfo
 
 func (d *directDeviceManage) DeviceInfoBind(ctx context.Context, in *DeviceInfoBindReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.DeviceInfoBind(ctx, in)
+}
+
+func (m *defaultDeviceManage) DeviceInfoCanBind(ctx context.Context, in *DeviceInfoCanBindReq, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceInfoCanBind(ctx, in, opts...)
+}
+
+func (d *directDeviceManage) DeviceInfoCanBind(ctx context.Context, in *DeviceInfoCanBindReq, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.DeviceInfoCanBind(ctx, in)
 }
 
 func (m *defaultDeviceManage) DeviceInfoUnbind(ctx context.Context, in *DeviceCore, opts ...grpc.CallOption) (*Empty, error) {

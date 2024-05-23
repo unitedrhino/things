@@ -60,6 +60,7 @@ service DeviceManage {
   //获取设备信息详情
   rpc deviceInfoRead(DeviceInfoReadReq)     returns (DeviceInfo);
   rpc deviceInfoBind(DeviceInfoBindReq)returns(Empty);
+  rpc deviceInfoCanBind(DeviceInfoCanBindReq)returns(Empty);
   rpc deviceInfoUnbind(DeviceCore)returns(Empty);
   rpc deviceTransfer(DeviceTransferReq)returns(Empty);
 
@@ -1300,6 +1301,10 @@ message DeviceProfile{
 message DeviceProfileReadReq{
   DeviceCore device =1;
   string code=2;
+}
+
+message DeviceInfoCanBindReq{
+  DeviceCore device =1;
 }
 
 message DeviceInfoBindReq{

@@ -70,6 +70,13 @@ service api {
     @handler bind
     post /bind (DeviceInfoBindReq) returns ()
     @doc(
+        summary: "是否可以绑定设备"
+        isNeedAuth: "false"
+        isAuthTenant: "true"
+    )
+    @handler canBind
+    post /canBind (DeviceInfoCanBindReq) returns ()
+    @doc(
         summary: "解绑设备"
         isNeedAuth: "true"
         isAuthTenant: "true"
@@ -134,6 +141,10 @@ type (
         UserID int64  `json:"userID,string,optional"`
         ProjectID int64  `json:"projectID,string,optional"`
         IsCleanData int64 `json:"isCleanData"`//是否清除数据:1是 2否
+    }
+
+    DeviceInfoCanBindReq{
+        Device DeviceCore `json:"device"`
     }
 
     DeviceInfoBindReq{
