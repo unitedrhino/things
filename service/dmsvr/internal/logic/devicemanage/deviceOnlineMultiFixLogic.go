@@ -5,7 +5,6 @@ import (
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
-	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"time"
 
@@ -34,7 +33,10 @@ func (l *DeviceOnlineMultiFixLogic) DeviceOnlineMultiFix(in *dm.DeviceOnlineMult
 		log := logx.WithContext(ctx)
 		for _, device := range in.Devices {
 			ld := device.Device
-			di, err := l.svcCtx.DeviceCache.GetData(ctx, dmExport.GenDeviceInfoKey(ld.ProductID, ld.DeviceName))
+			di, err := l.svcCtx.DeviceCache.GetData(ctx, devices.Core{
+				ProductID:  ld.ProductID,
+				DeviceName: ld.DeviceName,
+			})
 			if err != nil {
 				log.Error(err)
 				continue
@@ -49,7 +51,10 @@ func (l *DeviceOnlineMultiFixLogic) DeviceOnlineMultiFix(in *dm.DeviceOnlineMult
 			if err != nil {
 				log.Error(err)
 			}
-			err = l.svcCtx.DeviceCache.SetData(ctx, dmExport.GenDeviceInfoKey(ld.ProductID, ld.DeviceName), nil)
+			err = l.svcCtx.DeviceCache.SetData(ctx, devices.Core{
+				ProductID:  ld.ProductID,
+				DeviceName: ld.DeviceName,
+			}, nil)
 			if err != nil {
 				log.Error(err)
 			}

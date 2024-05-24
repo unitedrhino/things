@@ -7,6 +7,7 @@ import (
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
 	"gitee.com/i-Things/share/caches"
 	"gitee.com/i-Things/share/conf"
+	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/eventBus"
 	"gitee.com/i-Things/share/oss"
@@ -38,8 +39,8 @@ type SvrClient struct {
 	NotifyM            notifymanage.NotifyManage
 	AreaM              areamanage.AreaManage
 	ProjectM           projectmanage.ProjectManage
-	DeviceCache        *caches.Cache[dm.DeviceInfo]
-	ProductSchemaCache *caches.Cache[schema.Model]
+	DeviceCache        *caches.Cache[dm.DeviceInfo, devices.Core]
+	ProductSchemaCache *caches.Cache[schema.Model, string]
 }
 
 type ServiceContext struct {

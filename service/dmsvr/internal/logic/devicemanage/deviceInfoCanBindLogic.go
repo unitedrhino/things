@@ -4,8 +4,8 @@ import (
 	"context"
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
-	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 
@@ -27,7 +27,10 @@ func NewDeviceInfoCanBindLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 }
 
 func (l *DeviceInfoCanBindLogic) DeviceInfoCanBind(in *dm.DeviceInfoCanBindReq) (*dm.Empty, error) {
-	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, dmExport.GenDeviceInfoKey(in.Device.ProductID, in.Device.DeviceName))
+	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
+		ProductID:  in.Device.ProductID,
+		DeviceName: in.Device.DeviceName,
+	})
 	if err != nil {
 		return nil, err
 	}

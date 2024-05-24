@@ -57,7 +57,7 @@ type ServiceContext struct {
 	GroupID        *utils.SnowFlake
 	OssClient      *oss.Client
 	TimedM         timedmanage.TimedManage
-	SchemaRepo     *caches.Cache[schema.Model]
+	SchemaRepo     *caches.Cache[schema.Model, string]
 	SchemaManaRepo msgThing.SchemaDataRepo
 	HubLogRepo     deviceLog.HubRepo
 	StatusRepo     deviceLog.StatusRepo
@@ -70,11 +70,11 @@ type ServiceContext struct {
 	UserM          usermanage.UserManage
 	DataM          datamanage.DataManage
 	ProjectM       projectmanage.ProjectManage
-	ProductCache   *caches.Cache[dm.ProductInfo]
-	DeviceCache    *caches.Cache[dm.DeviceInfo]
-	TenantCache    *caches.Cache[tenant.Info]
+	ProductCache   *caches.Cache[dm.ProductInfo, string]
+	DeviceCache    *caches.Cache[dm.DeviceInfo, devices.Core]
+	TenantCache    *caches.Cache[tenant.Info, string]
 	WebHook        *sysExport.Webhook
-	Slot           *caches.Cache[slot.Infos]
+	Slot           *caches.Cache[slot.Infos, string]
 	UserSubscribe  *ws.UserSubscribe
 	GatewayCanBind *cache.GatewayCanBind
 	NodeID         int64
@@ -113,7 +113,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	serverMsg, err := eventBus.NewFastEvent(c.Event, c.Name, nodeID)
 	logx.Must(err)
 
-	ccSchemaR, err := caches.NewCache(caches.CacheConfig[schema.Model]{
+	ccSchemaR, err := caches.NewCache(caches.CacheConfig[schema.Model, string]{
 		KeyType:   eventBus.ServerCacheKeyDmSchema,
 		FastEvent: serverMsg,
 		GetData: func(ctx context.Context, key string) (*schema.Model, error) {
@@ -194,7 +194,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 }
 
 func (s *ServiceContext) WithDeviceTenant(ctx context.Context, dev devices.Core) context.Context {
-	di, err := s.DeviceCache.GetData(ctx, dev.ProductID+":"+dev.DeviceName)
+	di, err := s.DeviceCache.GetData(ctx, dev)
 	if err != nil {
 		return ctx
 	}

@@ -13,7 +13,6 @@ import (
 	"gitee.com/i-Things/share/events/topics"
 	"gitee.com/i-Things/share/utils"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/timex"
@@ -177,7 +176,10 @@ func (m *MqttProtocol) RegisterDeviceOnlineCheck() error {
 				if err != nil {
 					continue
 				}
-				di, err := m.DeviceCache.GetData(ctx, dmExport.GenDeviceInfoKey(i.ProductID, i.DeviceName))
+				di, err := m.DeviceCache.GetData(ctx, devices.Core{
+					ProductID:  i.ProductID,
+					DeviceName: i.DeviceName,
+				})
 				if err != nil {
 					continue
 				}

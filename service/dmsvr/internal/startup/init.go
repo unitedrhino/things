@@ -23,7 +23,6 @@ import (
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
-	"strings"
 	"time"
 )
 
@@ -70,7 +69,7 @@ func InitSubscribe(svcCtx *svc.ServiceContext) {
 }
 
 func InitCache(svcCtx *svc.ServiceContext) {
-	productCache, err := caches.NewCache(caches.CacheConfig[dm.ProductInfo]{
+	productCache, err := caches.NewCache(caches.CacheConfig[dm.ProductInfo, string]{
 		KeyType:   eventBus.ServerCacheKeyDmProduct,
 		FastEvent: svcCtx.FastEvent,
 		GetData: func(ctx context.Context, key string) (*dm.ProductInfo, error) {
@@ -87,15 +86,14 @@ func InitCache(svcCtx *svc.ServiceContext) {
 	})
 	logx.Must(err)
 	svcCtx.ProductCache = productCache
-	deviceCache, err := caches.NewCache(caches.CacheConfig[dm.DeviceInfo]{
+	deviceCache, err := caches.NewCache(caches.CacheConfig[dm.DeviceInfo, devices.Core]{
 		KeyType:   eventBus.ServerCacheKeyDmDevice,
 		FastEvent: svcCtx.FastEvent,
-		GetData: func(ctx context.Context, key string) (*dm.DeviceInfo, error) {
+		GetData: func(ctx context.Context, key devices.Core) (*dm.DeviceInfo, error) {
 			ctx = ctxs.WithRoot(ctx)
 			db := relationDB.NewDeviceInfoRepo(ctx)
-			productID, deviceName, _ := strings.Cut(key, ":")
 			di, err := db.FindOneByFilter(ctx, relationDB.DeviceFilter{
-				ProductID: productID, DeviceNames: []string{deviceName}})
+				ProductID: key.ProductID, DeviceNames: []string{key.DeviceName}})
 			if err != nil {
 				return nil, err
 			}

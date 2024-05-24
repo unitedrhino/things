@@ -17,7 +17,6 @@ import (
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/events/topics"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/serverDo"
@@ -202,7 +201,10 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 				if err != nil {
 					log.Error(err)
 				}
-				err = l.svcCtx.DeviceCache.SetData(ctx, dmExport.GenDeviceInfoKey(ld.ProductID, ld.DeviceName), nil)
+				err = l.svcCtx.DeviceCache.SetData(ctx, devices.Core{
+					ProductID:  ld.ProductID,
+					DeviceName: ld.DeviceName,
+				}, nil)
 				if err != nil {
 					log.Error(err)
 				}
@@ -232,7 +234,7 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 				log.Error(err)
 			}
 			for _, v := range OffLineDevices { //清除缓存
-				err := l.svcCtx.DeviceCache.SetData(ctx, dmExport.GenDeviceInfoKey(v.ProductID, v.DeviceName), nil)
+				err := l.svcCtx.DeviceCache.SetData(ctx, *v, nil)
 				if err != nil {
 					log.Error(err)
 				}

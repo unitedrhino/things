@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/share/caches"
 	"gitee.com/i-Things/share/conf"
+	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/eventBus"
 	"gitee.com/i-Things/share/utils"
@@ -29,8 +30,8 @@ type ServiceContext struct {
 	ProductM     productmanage.ProductManage
 	DeviceM      devicemanage.DeviceManage
 	Script       custom.Repo
-	ProductCache *caches.Cache[dm.ProductInfo]
-	DeviceCache  *caches.Cache[dm.DeviceInfo]
+	ProductCache *caches.Cache[dm.ProductInfo, string]
+	DeviceCache  *caches.Cache[dm.DeviceInfo, devices.Core]
 	NodeID       int64
 }
 

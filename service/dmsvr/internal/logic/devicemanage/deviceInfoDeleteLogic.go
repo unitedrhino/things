@@ -6,7 +6,6 @@ import (
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/eventBus"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -52,7 +51,10 @@ func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*d
 		l.Errorf("%s.DeviceInfo.Delete err=%+v", utils.FuncName(), err)
 		return nil, errors.System.AddDetail(err)
 	}
-	err = l.svcCtx.DeviceCache.SetData(l.ctx, dmExport.GenDeviceInfoKey(di.ProductID, di.DeviceName), nil)
+	err = l.svcCtx.DeviceCache.SetData(l.ctx, devices.Core{
+		ProductID:  di.ProductID,
+		DeviceName: di.DeviceName,
+	}, nil)
 	if err != nil {
 		l.Error(err)
 	}

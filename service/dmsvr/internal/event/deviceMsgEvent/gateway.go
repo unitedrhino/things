@@ -10,7 +10,6 @@ import (
 	"gitee.com/i-Things/share/domain/deviceMsg/msgGateway"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
 	devicemanagelogic "github.com/i-Things/things/service/dmsvr/internal/logic/devicemanage"
@@ -114,7 +113,10 @@ func (l *GatewayLogic) HandleRegister(msg *deviceMsg.PublishMsg, resp *msgGatewa
 		}
 	}
 	for _, v := range l.dreq.Payload.Devices {
-		_, err := l.svcCtx.DeviceCache.GetData(l.ctx, dmExport.GenDeviceInfoKey(v.ProductID, v.DeviceName))
+		_, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
+			ProductID:  v.ProductID,
+			DeviceName: v.DeviceName,
+		})
 		if err != nil {
 			if errors.Cmp(err, errors.NotFind) {
 				_, err = devicemanage.NewDeviceManageServer(l.svcCtx).DeviceInfoCreate(l.ctx, &dm.DeviceInfo{
@@ -135,7 +137,10 @@ func (l *GatewayLogic) HandleRegister(msg *deviceMsg.PublishMsg, resp *msgGatewa
 				continue
 			}
 		}
-		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, dmExport.GenDeviceInfoKey(v.ProductID, v.DeviceName))
+		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
+			ProductID:  v.ProductID,
+			DeviceName: v.DeviceName,
+		})
 		if err != nil {
 			l.Errorf("%s.DeviceM.DeviceInfoRead productID:%v deviceName:%v err:%v",
 				utils.FuncName(), v.ProductID, v.DeviceName, err)

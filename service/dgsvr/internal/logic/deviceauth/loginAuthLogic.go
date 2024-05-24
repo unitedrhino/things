@@ -5,13 +5,12 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
+	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceAuth"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dgsvr/internal/svc"
 	"github.com/i-Things/things/service/dgsvr/pb/dg"
-	"github.com/i-Things/things/service/dmsvr/dmExport"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -112,7 +111,10 @@ func (l *LoginAuthLogic) LoginAuth(in *dg.LoginAuthReq) (*dg.Response, error) {
 	//	return nil, errors.SignatureExpired
 	//}
 
-	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, dmExport.GenDeviceInfoKey(lg.ProductID, lg.DeviceName))
+	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
+		ProductID:  lg.ProductID,
+		DeviceName: lg.DeviceName,
+	})
 	if err != nil {
 		return nil, err
 	}

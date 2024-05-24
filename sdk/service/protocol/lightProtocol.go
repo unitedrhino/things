@@ -29,9 +29,9 @@ import (
 type LightSvrClient struct {
 	ProtocolM      protocolmanage.ProtocolManage
 	ProductM       productmanage.ProductManage
-	ProductCache   *caches.Cache[dm.ProductInfo]
-	DeviceCache    *caches.Cache[dm.DeviceInfo]
-	SchemaCache    *caches.Cache[schema.Model]
+	ProductCache   *caches.Cache[dm.ProductInfo, string]
+	DeviceCache    *caches.Cache[dm.DeviceInfo, devices.Core]
+	SchemaCache    *caches.Cache[schema.Model, string]
 	DeviceM        devicemanage.DeviceManage
 	DeviceInteract deviceinteract.DeviceInteract
 	TimedM         timedmanage.TimedManage

@@ -11,7 +11,6 @@ import (
 	"gitee.com/i-Things/share/domain/deviceMsg/msgGateway"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -155,7 +154,7 @@ func FilterCanBindSubDevices(ctx context.Context, svcCtx *svc.ServiceContext, ga
 	}
 	for _, subDevice := range subDevices { //检查是否有子设备绑定了其他网关
 		if checkDevice&CheckDeviceExist == CheckDeviceExist { //检查设备是否都是子设备类型
-			_, err := svcCtx.DeviceCache.GetData(ctx, dmExport.GenDeviceInfoKey(subDevice.ProductID, subDevice.DeviceName))
+			_, err := svcCtx.DeviceCache.GetData(ctx, *subDevice)
 			if err != nil {
 				if checkDevice&CheckDeviceStrict == CheckDeviceStrict {
 					return nil, err

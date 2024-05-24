@@ -40,8 +40,8 @@ type DeviceRepo interface {
 
 type ValidateRepo struct {
 	Ctx                context.Context
-	DeviceCache        *caches.Cache[dm.DeviceInfo]
-	ProductSchemaCache *caches.Cache[schema.Model]
+	DeviceCache        *caches.Cache[dm.DeviceInfo, devices.Core]
+	ProductSchemaCache *caches.Cache[schema.Model, string]
 	GetSceneInfo       func(ctx context.Context, sceneID int64) (*Info, error)
 	Info               *Info
 }

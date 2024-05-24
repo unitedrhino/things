@@ -12,6 +12,7 @@ import (
 	"gitee.com/i-Things/share/caches"
 	"gitee.com/i-Things/share/conf"
 	"gitee.com/i-Things/share/ctxs"
+	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/eventBus"
 	"gitee.com/i-Things/share/oss"
 	"gitee.com/i-Things/share/utils"
@@ -80,8 +81,8 @@ type ServiceContext struct {
 	Captcha        *verify.Captcha
 	OssClient      *oss.Client
 	OtaM           otamanage.OtaManage
-	ProductCache   *caches.Cache[dm.ProductInfo]
-	DeviceCache    *caches.Cache[dm.DeviceInfo]
+	ProductCache   *caches.Cache[dm.ProductInfo, string]
+	DeviceCache    *caches.Cache[dm.DeviceInfo, devices.Core]
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {

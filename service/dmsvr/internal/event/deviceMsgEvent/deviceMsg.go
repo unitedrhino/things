@@ -9,7 +9,6 @@ import (
 	"gitee.com/i-Things/share/domain/application"
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -119,7 +118,10 @@ func (l *DeviceMsgHandle) deviceResp(respMsg *deviceMsg.PublishMsg) {
 func (l *DeviceMsgHandle) FixDisconnect(msg *deviceMsg.PublishMsg) {
 	return
 	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
-		di, err := l.svcCtx.DeviceCache.GetData(ctx, dmExport.GenDeviceInfoKey(msg.ProductID, msg.DeviceName))
+		di, err := l.svcCtx.DeviceCache.GetData(ctx, devices.Core{
+			ProductID:  msg.ProductID,
+			DeviceName: msg.DeviceName,
+		})
 		if err != nil {
 			l.Error(err)
 			return
@@ -134,7 +136,10 @@ func (l *DeviceMsgHandle) FixDisconnect(msg *deviceMsg.PublishMsg) {
 			if err != nil {
 				l.Error(err)
 			}
-			err = l.svcCtx.DeviceCache.SetData(ctx, dmExport.GenDeviceInfoKey(msg.ProductID, msg.DeviceName), nil)
+			err = l.svcCtx.DeviceCache.SetData(ctx, devices.Core{
+				ProductID:  msg.ProductID,
+				DeviceName: msg.DeviceName,
+			}, nil)
 			if err != nil {
 				l.Error(err)
 			}

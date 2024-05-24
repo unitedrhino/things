@@ -5,7 +5,6 @@ import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
-	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 )
@@ -15,7 +14,7 @@ func CheckIsOnline(ctx context.Context, svcCtx *svc.ServiceContext, core devices
 	if err != nil {
 		return "", err
 	}
-	dev, err := svcCtx.DeviceCache.GetData(ctx, dmExport.GenDeviceInfoKey(core.ProductID, core.DeviceName))
+	dev, err := svcCtx.DeviceCache.GetData(ctx, core)
 	if err != nil {
 		return info.ProtocolCode, err
 	}
@@ -40,7 +39,7 @@ func CheckIsOnline(ctx context.Context, svcCtx *svc.ServiceContext, core devices
 		}
 		return info.ProtocolCode, err
 	}
-	di, err := svcCtx.DeviceCache.GetData(ctx, dmExport.GenDeviceInfoKey(g.ProductID, g.DeviceName))
+	di, err := svcCtx.DeviceCache.GetData(ctx, devices.Core{ProductID: g.ProductID, DeviceName: g.DeviceName})
 	if err != nil {
 		return info.ProtocolCode, err
 	}

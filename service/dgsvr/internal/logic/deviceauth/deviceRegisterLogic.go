@@ -8,7 +8,6 @@ import (
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/service/dgsvr/internal/svc"
@@ -74,7 +73,10 @@ func (l *DeviceRegisterLogic) DeviceRegister(in *dg.DeviceRegisterReq) (*dg.Devi
 		return nil, errors.NotEnable.AddMsg("设备动态注册未启动")
 	}
 	//检查设备是否已注册
-	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, dmExport.GenDeviceInfoKey(in.ProductID, in.DeviceName))
+	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
+		ProductID:  in.ProductID,
+		DeviceName: in.DeviceName,
+	})
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {
 			//检查设备自动创建是否开启， 开启则自动创建设备，未开启则返回错误

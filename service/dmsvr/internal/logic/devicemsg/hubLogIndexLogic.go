@@ -41,14 +41,15 @@ func (l *HubLogIndexLogic) HubLogIndex(in *dm.HubLogIndexReq) (*dm.HubLogIndexRe
 		Page:      in.Page.GetPage(),
 		Size:      in.Page.GetSize(),
 	}
-	logs, err := l.svcCtx.HubLogRepo.GetDeviceLog(l.ctx, filter, page)
-	if err != nil {
-		return nil, errors.Database.AddDetail(err)
-	}
 	total, err := l.svcCtx.HubLogRepo.GetCountLog(l.ctx, filter, page)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
+	logs, err := l.svcCtx.HubLogRepo.GetDeviceLog(l.ctx, filter, page)
+	if err != nil {
+		return nil, errors.Database.AddDetail(err)
+	}
+
 	var data []*dm.HubLogInfo
 	for _, v := range logs {
 		data = append(data, ToDataHubLogIndex(v))

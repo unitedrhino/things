@@ -13,7 +13,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 )
 
-func ToDeviceInfo(ctx context.Context, in *relationDB.DmDeviceInfo, ProductCache *caches.Cache[dm.ProductInfo]) *dm.DeviceInfo {
+func ToDeviceInfo(ctx context.Context, in *relationDB.DmDeviceInfo, ProductCache *caches.Cache[dm.ProductInfo, string]) *dm.DeviceInfo {
 	if in == nil {
 		return nil
 	}

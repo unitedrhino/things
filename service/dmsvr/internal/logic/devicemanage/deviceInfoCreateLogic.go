@@ -9,7 +9,6 @@ import (
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -47,7 +46,10 @@ func NewDeviceInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 发现返回true 没有返回false
 */
 func (l *DeviceInfoCreateLogic) CheckDevice(in *dm.DeviceInfo) (bool, error) {
-	_, err := l.svcCtx.DeviceCache.GetData(l.ctx, dmExport.GenDeviceInfoKey(in.ProductID, in.DeviceName))
+	_, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
+		ProductID:  in.ProductID,
+		DeviceName: in.DeviceName,
+	})
 	if err == nil {
 		return true, nil
 	}
@@ -99,7 +101,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 	}
 	uc := ctxs.GetUserCtxNoNil(l.ctx)
 	projectID := stores.ProjectID(uc.ProjectID)
-	if projectID == 0 { //如果没有传项目,则分配到未分类项目中
+	if projectID == 0 || projectID == def.NotClassified { //如果没有传项目,则分配到未分类项目中
 		ti, err := l.svcCtx.TenantCache.GetData(l.ctx, uc.TenantCode)
 		if err != nil {
 			return nil, err
@@ -209,7 +211,10 @@ func (l *DeviceInfoCreateLogic) InitDevice(in devices.Info) error {
 	if err != nil {
 		return errors.Database.AddDetail(err)
 	}
-	err = l.svcCtx.DeviceCache.SetData(l.ctx, dmExport.GenDeviceInfoKey(in.ProductID, in.DeviceName), nil)
+	err = l.svcCtx.DeviceCache.SetData(l.ctx, devices.Core{
+		ProductID:  in.ProductID,
+		DeviceName: in.DeviceName,
+	}, nil)
 	if err != nil {
 		l.Error(err)
 	}
