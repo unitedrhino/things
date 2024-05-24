@@ -88,6 +88,10 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 	if err != nil {
 		return nil, err
 	}
+	if len(params) == 0 {
+		l.Infof("控制的属性在设备中都不存在,req:%v", utils.Fmt(in))
+		return &dm.PropertyControlSendResp{}, nil
+	}
 	err = req.FmtReqParam(l.model, schema.ParamProperty)
 	if err != nil {
 		return nil, err
