@@ -77,10 +77,12 @@ func ThirdProtoLoginAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *t
 	protocolLinkMutex.RLock()
 	defer protocolLinkMutex.RUnlock()
 	for key, cli := range protocolLink {
+		k := key
+		c := cli
 		wait.Add(1)
 		utils.Go(ctx, func() {
 			defer func() { wait.Done() }()
-			da := deviceauth.NewDeviceAuth(cli)
+			da := deviceauth.NewDeviceAuth(c)
 			_, err := da.LoginAuth(runCtx, &dg.LoginAuthReq{Username: req.Username, //用户名
 				Password:    req.Password, //密码
 				ClientID:    req.ClientID, //clientID
@@ -89,7 +91,7 @@ func ThirdProtoLoginAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *t
 			})
 			if err == nil {
 				succ = true
-				logx.WithContext(runCtx).Infof("LoginAuth ProtocolKey:%v succ", key)
+				logx.WithContext(runCtx).Infof("LoginAuth ProtocolKey:%v succ", k)
 				cancel()
 			}
 		})
@@ -109,10 +111,12 @@ func ThirdProtoAccessAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *
 	protocolLinkMutex.RLock()
 	defer protocolLinkMutex.RUnlock()
 	for key, cli := range protocolLink {
+		k := key
+		c := cli
 		wait.Add(1)
 		utils.Go(ctx, func() {
 			defer func() { wait.Done() }()
-			da := deviceauth.NewDeviceAuth(cli)
+			da := deviceauth.NewDeviceAuth(c)
 			_, err := da.AccessAuth(runCtx, &dg.AccessAuthReq{
 				Username: req.Username,
 				Topic:    req.Topic,
@@ -121,7 +125,7 @@ func ThirdProtoAccessAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *
 				Ip:       req.Ip,
 			})
 			if err == nil {
-				logx.WithContext(runCtx).Infof("AccessAuth ProtocolKey:%v succ", key)
+				logx.WithContext(runCtx).Infof("AccessAuth ProtocolKey:%v succ", k)
 				succ = true
 				cancel()
 			}
