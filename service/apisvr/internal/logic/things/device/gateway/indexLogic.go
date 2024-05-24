@@ -61,7 +61,7 @@ func (l *IndexLogic) Index(req *types.DeviceGateWayIndexReq) (resp *types.Device
 		pis = append(pis, pi)
 	}
 	return &types.DeviceGateWayIndexResp{
-		Total: ret.Total,
+		Total: dmResp.Total,
 		List:  pis,
 	}, nil
 }
