@@ -231,6 +231,7 @@ type DeviceInfoIndexReq struct {
 	GroupID           int64         `json:"groupID,optional,string"`
 	NotGroupID        int64         `json:"notGroupID,optional,string"`
 	Devices           []*DeviceCore `json:"devices,optional"`
+	WithOwner         bool          `json:"withOwner,optional"` //同时获取拥有人的信息
 }
 
 type DeviceInfoIndexResp struct {
