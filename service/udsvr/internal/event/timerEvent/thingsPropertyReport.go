@@ -29,12 +29,14 @@ func (l *TimerHandle) SceneThingPropertyReport(in application.PropertyReport) er
 	}
 	for _, v := range list {
 		var po = v
-		do := rulelogic.PoToSceneInfoDo(po.SceneInfo)
 		if po.SceneInfo == nil {
 			logx.WithContext(l.ctx).Errorf("trigger device not bind scene, trigger:%v", utils.Fmt(po))
 			relationDB.NewSceneIfTriggerRepo(l.ctx).Delete(l.ctx, po.ID)
 			continue
 		}
+		po.SceneInfo.Triggers = append(po.SceneInfo.Triggers, po)
+		do := rulelogic.PoToSceneInfoDo(po.SceneInfo)
+
 		ps, err := l.svcCtx.ProductSchemaCache.GetData(l.ctx, in.Device.ProductID)
 		if err != nil {
 			l.Error(err)
