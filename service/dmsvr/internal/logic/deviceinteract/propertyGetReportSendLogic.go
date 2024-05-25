@@ -57,7 +57,7 @@ func (l *PropertyGetReportSendLogic) PropertyGetReportSend(in *dm.PropertyGetRep
 		return nil, err
 	}
 
-	MsgToken := devices.GenMsgToken(l.ctx)
+	MsgToken := devices.GenMsgToken(l.ctx, l.svcCtx.NodeID)
 
 	req := msgThing.Req{
 		CommonMsg: deviceMsg.CommonMsg{

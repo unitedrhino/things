@@ -41,7 +41,7 @@ func (l *GatewayNotifyBindSendLogic) GatewayNotifyBindSend(in *dm.GatewayNotifyB
 	}); err != nil {
 		return nil, err
 	}
-	MsgToken := devices.GenMsgToken(l.ctx)
+	MsgToken := devices.GenMsgToken(l.ctx, l.svcCtx.NodeID)
 	req := msgGateway.Msg{
 		CommonMsg: deviceMsg.CommonMsg{
 			Method:    deviceMsg.NotifyBind,

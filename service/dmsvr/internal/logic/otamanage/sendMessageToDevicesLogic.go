@@ -65,7 +65,7 @@ func (l *SendMessageToDevicesLogic) PushMessageToDevices(jobInfo *relationDB.DmO
 	if err != nil {
 		return err
 	}
-	MsgToken := devices.GenMsgToken(l.ctx)
+	MsgToken := devices.GenMsgToken(l.ctx, l.svcCtx.NodeID)
 	upgradeMsg := deviceMsg.CommonMsg{
 		MsgToken:  MsgToken,
 		Method:    msgOta.TypeUpgrade,

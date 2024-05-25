@@ -49,7 +49,7 @@ func (l *DeviceGatewayMultiDeleteLogic) DeviceGatewayMultiDelete(in *dm.DeviceGa
 		return nil, err
 	}
 	req := &msgGateway.Msg{
-		CommonMsg: *deviceMsg.NewRespCommonMsg(l.ctx, deviceMsg.Change, "").AddStatus(errors.OK),
+		CommonMsg: *deviceMsg.NewRespCommonMsg(l.ctx, deviceMsg.Change, devices.GenMsgToken(l.ctx, l.svcCtx.NodeID)).AddStatus(errors.OK),
 		Payload:   logic.ToGatewayPayload(def.GatewayUnbind, devicesDos),
 	}
 	respBytes, _ := json.Marshal(req)

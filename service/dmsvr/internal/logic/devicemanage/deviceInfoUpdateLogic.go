@@ -206,7 +206,7 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Empty, 
 		if err != nil {
 			return nil, err
 		}
-		resp := deviceMsg.NewRespCommonMsg(l.ctx, deviceMsg.GetStatus, "")
+		resp := deviceMsg.NewRespCommonMsg(l.ctx, deviceMsg.GetStatus, devices.GenMsgToken(l.ctx, l.svcCtx.NodeID))
 		resp.Data = map[string]any{"logLevel": di.LogLevel}
 
 		msg := deviceMsg.PublishMsg{

@@ -74,7 +74,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 		return nil, errors.Parameter.AddDetail(
 			"SendProperty data not right:", in.Data)
 	}
-	MsgToken := devices.GenMsgToken(l.ctx)
+	MsgToken := devices.GenMsgToken(l.ctx, l.svcCtx.NodeID)
 
 	req := msgThing.Req{
 		CommonMsg: deviceMsg.CommonMsg{

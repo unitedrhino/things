@@ -70,7 +70,7 @@ func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (ret *dm.ActionSendRe
 	req := msgThing.Req{
 		CommonMsg: deviceMsg.CommonMsg{
 			Method:    deviceMsg.Action,
-			MsgToken:  devices.GenMsgToken(l.ctx),
+			MsgToken:  devices.GenMsgToken(l.ctx, l.svcCtx.NodeID),
 			Timestamp: time.Now().UnixMilli(),
 		},
 		ActionID: in.ActionID,

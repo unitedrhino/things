@@ -97,7 +97,7 @@ func (l *OtaPromptIndexLogic) OtaPromptIndex(in *dm.OtaPromptIndexReq) (*dm.OtaP
 	return &dm.OtaPromptIndexResp{}, nil
 }
 func (l *OtaPromptIndexLogic) DeviceResp(msg *dm.SendMsgReq, err error, data any) *dm.SendMsgReq {
-	MsgToken := devices.GenMsgToken(l.ctx)
+	MsgToken := devices.GenMsgToken(l.ctx, l.svcCtx.NodeID)
 	resp := &deviceMsg.CommonMsg{
 		Method:    "reportInfo",
 		MsgToken:  MsgToken,
