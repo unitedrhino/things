@@ -194,6 +194,7 @@ func (m *MqttProtocol) RegisterDeviceOnlineCheck() error {
 					})
 				}
 			}
+			logx.WithContext(ctx).Infof("fixOnline %v", utils.Fmt(needOnlineDevices))
 			_, err = m.DeviceM.DeviceOnlineMultiFix(ctx, &dm.DeviceOnlineMultiFixReq{Devices: needOnlineDevices})
 			return err
 		}
