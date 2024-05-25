@@ -90,7 +90,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 	}
 	if len(params) == 0 {
 		l.Infof("控制的属性在设备中都不存在,req:%v", utils.Fmt(in))
-		return &dm.PropertyControlSendResp{}, nil
+		return &dm.PropertyControlSendResp{Code: errors.OK.Code, Msg: errors.OK.GetMsg()}, nil
 	}
 	err = req.FmtReqParam(l.model, schema.ParamProperty)
 	if err != nil {
@@ -107,7 +107,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 			l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
 			return nil, err
 		}
-		return &dm.PropertyControlSendResp{}, nil
+		return &dm.PropertyControlSendResp{Code: errors.OK.Code, Msg: errors.OK.GetMsg()}, nil
 	}
 	defer func() {
 		ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
@@ -135,7 +135,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 			l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
 			return nil, err
 		}
-		return &dm.PropertyControlSendResp{}, nil
+		return &dm.PropertyControlSendResp{Code: errors.OK.Code, Msg: errors.OK.GetMsg()}, nil
 	}
 	if in.ShadowControl == shadow.ControlOnly || (!isOnline && in.ShadowControl == shadow.ControlAuto) {
 		//设备影子模式
@@ -147,7 +147,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 		if err != nil {
 			return nil, err
 		}
-		return &dm.PropertyControlSendResp{}, nil
+		return &dm.PropertyControlSendResp{Code: errors.OK.Code, Msg: errors.OK.GetMsg()}, nil
 	}
 
 	payload, _ := json.Marshal(req)

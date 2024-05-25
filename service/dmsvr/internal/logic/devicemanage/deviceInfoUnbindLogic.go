@@ -9,6 +9,7 @@ import (
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
+	"gorm.io/gorm"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
@@ -55,7 +56,20 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceCore) (*dm.Empty, 
 	di.TenantCode = def.TenantCodeDefault
 	di.ProjectID = stores.ProjectID(dpi.DefaultProjectID)
 	di.AreaID = stores.AreaID(def.NotClassified)
-	err = diDB.Update(ctxs.WithRoot(l.ctx), di)
+	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+		err := relationDB.NewDeviceInfoRepo(tx).Update(ctxs.WithRoot(l.ctx), di)
+		if err != nil {
+			return err
+		}
+		err = relationDB.NewUserDeviceShareRepo(tx).DeleteByFilter(l.ctx, relationDB.UserDeviceShareFilter{
+			ProductID:  di.ProductID,
+			DeviceName: di.DeviceName,
+		})
+		return err
+	})
+	if err != nil {
+		return nil, err
+	}
 	l.svcCtx.DeviceCache.SetData(l.ctx, devices.Core{
 		ProductID:  di.ProductID,
 		DeviceName: di.DeviceName,
