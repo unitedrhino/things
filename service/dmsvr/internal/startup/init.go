@@ -104,6 +104,10 @@ func InitCache(svcCtx *svc.ServiceContext) {
 	})
 	logx.Must(err)
 	svcCtx.DeviceCache = deviceCache
+
+	relationDB.ClearDeviceInfo = func(ctx context.Context, dev devices.Core) error {
+		return svcCtx.DeviceCache.SetData(ctx, dev, nil)
+	}
 }
 
 func InitEventBus(svcCtx *svc.ServiceContext) {

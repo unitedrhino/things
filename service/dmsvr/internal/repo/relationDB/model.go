@@ -1,11 +1,15 @@
 package relationDB
 
 import (
+	"context"
 	"database/sql"
+	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/productCustom"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/protocol"
+	"github.com/zeromicro/go-zero/core/logx"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -56,6 +60,34 @@ type DmDeviceInfo struct {
 
 func (m *DmDeviceInfo) TableName() string {
 	return "dm_device_info"
+}
+
+var ClearDeviceInfo func(ctx context.Context, dev devices.Core) error
+
+func (u *DmDeviceInfo) AfterSave(tx *gorm.DB) (err error) {
+	if ClearDeviceInfo != nil {
+		err := ClearDeviceInfo(tx.Statement.Context, devices.Core{
+			ProductID:  u.ProductID,
+			DeviceName: u.DeviceName,
+		})
+		if err != nil {
+			logx.WithContext(tx.Statement.Context).Error(err, u)
+		}
+	}
+	return nil
+}
+
+func (u *DmDeviceInfo) AfterDelete(tx *gorm.DB) (err error) {
+	if ClearDeviceInfo != nil {
+		err := ClearDeviceInfo(tx.Statement.Context, devices.Core{
+			ProductID:  u.ProductID,
+			DeviceName: u.DeviceName,
+		})
+		if err != nil {
+			logx.WithContext(tx.Statement.Context).Error(err, u)
+		}
+	}
+	return nil
 }
 
 type DmDeviceModuleVersion struct {
