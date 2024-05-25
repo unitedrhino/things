@@ -100,7 +100,7 @@ func InitCache(svcCtx *svc.ServiceContext) {
 			pb := logic.ToDeviceInfo(ctx, di, svcCtx.ProductCache)
 			return pb, err
 		},
-		ExpireTime: 10 * time.Minute,
+		ExpireTime: 3 * time.Minute,
 	})
 	logx.Must(err)
 	svcCtx.DeviceCache = deviceCache

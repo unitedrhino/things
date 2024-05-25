@@ -49,16 +49,12 @@ func (l *PropertyControlMultiSendLogic) PropertyControlMultiSend(in *dm.Property
 func (l *PropertyControlMultiSendLogic) MultiSendOneProductProperty(in *dm.PropertyControlMultiSendReq) ([]*dm.PropertyControlSendMsg, error) {
 	list := make([]*dm.PropertyControlSendMsg, 0)
 	sigSend := NewPropertyControlSendLogic(l.ctx, l.svcCtx)
-	err := sigSend.initMsg(in.ProductID)
-	if err != nil {
-		return nil, err
-	}
 	var wg sync.WaitGroup
 	var mu sync.Mutex
-	for _, v := range in.DeviceNames {
+	for _, dev := range in.DeviceNames {
+		v := dev
 		wg.Add(1)
-		go func(v string) {
-			defer utils.Recover(l.ctx)
+		utils.Go(l.ctx, func() {
 			defer wg.Done()
 			ret, err := sigSend.PropertyControlSend(&dm.PropertyControlSendReq{
 				ProductID:  in.ProductID,
@@ -66,7 +62,6 @@ func (l *PropertyControlMultiSendLogic) MultiSendOneProductProperty(in *dm.Prope
 				Data:       in.Data,
 				IsAsync:    false,
 			})
-
 			if err != nil {
 				myErr, _ := err.(*errors.CodeError)
 				msg := &dm.PropertyControlSendMsg{
@@ -79,7 +74,6 @@ func (l *PropertyControlMultiSendLogic) MultiSendOneProductProperty(in *dm.Prope
 				list = append(list, msg)
 				return
 			}
-
 			msg := &dm.PropertyControlSendMsg{
 				ProductID:  in.ProductID,
 				DeviceName: v,
@@ -92,11 +86,10 @@ func (l *PropertyControlMultiSendLogic) MultiSendOneProductProperty(in *dm.Prope
 			mu.Lock()
 			defer mu.Unlock()
 			list = append(list, msg)
-		}(v)
+		})
 	}
-
 	wg.Wait()
-	return list, err
+	return list, nil
 }
 
 func (l *PropertyControlMultiSendLogic) MultiSendMultiProductProperty(in *dm.PropertyControlMultiSendReq) ([]*dm.PropertyControlSendMsg, error) {

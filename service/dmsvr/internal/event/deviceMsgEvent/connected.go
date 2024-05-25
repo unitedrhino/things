@@ -4,13 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"gitee.com/i-Things/share/def"
-	"gitee.com/i-Things/share/devices"
-	"gitee.com/i-Things/share/domain/application"
 	"gitee.com/i-Things/share/domain/deviceAuth"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -62,31 +59,31 @@ func (l *ConnectedLogic) Handle(msg *deviceStatus.ConnectMsg) error {
 	}
 	err = l.svcCtx.DeviceStatus.AddDevice(l.ctx, msg)
 	return err
-	l.di, err = l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: ld.ProductID, DeviceNames: []string{ld.DeviceName}})
-	if err != nil {
-		return err
-	}
-	l.UpdateLoginTime()
-	err = l.svcCtx.StatusRepo.Insert(l.ctx, &deviceLog.Status{
-		ProductID:  ld.ProductID,
-		Status:     def.ConnectedStatus,
-		Timestamp:  msg.Timestamp, // 操作时间
-		DeviceName: ld.DeviceName,
-	})
-	if err != nil {
-		l.Errorf("%s.HubLogRepo.insert productID:%v deviceName:%v err:%v",
-			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
-	}
-	err = l.svcCtx.PubApp.DeviceStatusConnected(l.ctx, application.ConnectMsg{
-		Device: devices.Core{
-			ProductID:  ld.ProductID,
-			DeviceName: ld.DeviceName,
-		},
-		Timestamp: msg.Timestamp.UnixMilli(),
-	})
-	if err != nil {
-		l.Errorf("%s.PubApp.DeviceStatusConnected productID:%v deviceName:%v err:%v",
-			utils.FuncName(), ld.ProductID, ld.DeviceName, err)
-	}
-	return nil
+	//l.di, err = l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: ld.ProductID, DeviceNames: []string{ld.DeviceName}})
+	//if err != nil {
+	//	return err
+	//}
+	//l.UpdateLoginTime()
+	//err = l.svcCtx.StatusRepo.Insert(l.ctx, &deviceLog.Status{
+	//	ProductID:  ld.ProductID,
+	//	Status:     def.ConnectedStatus,
+	//	Timestamp:  msg.Timestamp, // 操作时间
+	//	DeviceName: ld.DeviceName,
+	//})
+	//if err != nil {
+	//	l.Errorf("%s.HubLogRepo.insert productID:%v deviceName:%v err:%v",
+	//		utils.FuncName(), ld.ProductID, ld.DeviceName, err)
+	//}
+	//err = l.svcCtx.PubApp.DeviceStatusConnected(l.ctx, application.ConnectMsg{
+	//	Device: devices.Core{
+	//		ProductID:  ld.ProductID,
+	//		DeviceName: ld.DeviceName,
+	//	},
+	//	Timestamp: msg.Timestamp.UnixMilli(),
+	//})
+	//if err != nil {
+	//	l.Errorf("%s.PubApp.DeviceStatusConnected productID:%v deviceName:%v err:%v",
+	//		utils.FuncName(), ld.ProductID, ld.DeviceName, err)
+	//}
+	//return nil
 }

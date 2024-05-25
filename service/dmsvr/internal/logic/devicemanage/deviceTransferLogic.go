@@ -5,6 +5,7 @@ import (
 	"gitee.com/i-Things/core/service/syssvr/pb/sys"
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
@@ -97,6 +98,12 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 		}
 		return nil
 	})
-
+	err = l.svcCtx.DeviceCache.SetData(l.ctx, devices.Core{
+		ProductID:  in.Device.ProductID,
+		DeviceName: in.Device.DeviceName,
+	}, nil)
+	if err != nil {
+		l.Error(err)
+	}
 	return &dm.Empty{}, err
 }

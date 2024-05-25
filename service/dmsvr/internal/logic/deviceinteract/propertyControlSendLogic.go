@@ -195,7 +195,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 	if err != nil {
 		return nil, err
 	}
-
+	logx.Errorf("resp:%v", resp)
 	return &dm.PropertyControlSendResp{
 		MsgToken: dresp.MsgToken,
 		Msg:      dresp.Msg,

@@ -197,7 +197,7 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Empty, 
 	err = l.svcCtx.DeviceCache.SetData(l.ctx, devices.Core{
 		ProductID:  dmDiPo.ProductID,
 		DeviceName: dmDiPo.DeviceName,
-	}, logic.ToDeviceInfo(l.ctx, dmDiPo, l.svcCtx.ProductCache))
+	}, nil)
 	if err != nil {
 		l.Error(err)
 	}
