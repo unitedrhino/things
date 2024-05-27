@@ -4,12 +4,10 @@ import (
 	"context"
 	"fmt"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
-	"gitee.com/i-Things/share/caches"
 	"gitee.com/i-Things/share/conf"
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
-	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/eventBus"
 	"gitee.com/i-Things/share/events/topics"
@@ -29,9 +27,9 @@ import (
 type LightSvrClient struct {
 	ProtocolM      protocolmanage.ProtocolManage
 	ProductM       productmanage.ProductManage
-	ProductCache   *caches.Cache[dm.ProductInfo, string]
-	DeviceCache    *caches.Cache[dm.DeviceInfo, devices.Core]
-	SchemaCache    *caches.Cache[schema.Model, string]
+	ProductCache   dmExport.ProductCacheT
+	DeviceCache    dmExport.DeviceCacheT
+	SchemaCache    dmExport.SchemaCacheT
 	DeviceM        devicemanage.DeviceManage
 	DeviceInteract deviceinteract.DeviceInteract
 	TimedM         timedmanage.TimedManage

@@ -26,6 +26,7 @@ type ActionDevice struct {
 	AreaID           int64            `json:"areaID,string"`         //涉及到的区域ID
 	AreaName         string           `json:"areaName"`              //区域的名字
 	ProductID        string           `json:"productID"`             //产品id
+	ProductName      string           `json:"productName"`           //产品名称--填写产品ID的时候会自动补充
 	SelectType       SelectType       `json:"selectType"`            //设备选择方式
 	DeviceName       string           `json:"deviceName"`            //选择的设备列表 指定设备的时候才需要填写(如果设备换到其他区域里,这里删除该设备)
 	DeviceAlias      string           `json:"deviceAlias,omitempty"` //设备别名,只读
@@ -53,15 +54,22 @@ func (a *ActionDevice) Validate(repo ValidateRepo) error {
 		a.DeviceName = repo.Info.DeviceName
 		a.SelectType = SelectDeviceFixed
 	}
+
 	if a.ProductID == "" {
 		return errors.Parameter.AddMsgf("产品id不能为空:%v", a.ProductID)
 	}
+	pi, err := repo.ProductCache.GetData(repo.Ctx, a.ProductID)
+	if err != nil {
+		return err
+	}
+	a.ProductName = pi.ProductName
 	if !utils.SliceIn(a.SelectType, SelectorDeviceAll, SelectArea, SelectDeviceFixed, SelectGroup) {
 		return errors.Parameter.AddMsg("执行的设备选择方式不支持:" + string(a.SelectType))
 	}
 	if !utils.SliceIn(a.Type, ActionDeviceTypePropertyControl, ActionDeviceTypeAction) {
 		return errors.Parameter.AddMsg("云端向设备发起属性控制的方式不支持:" + string(a.Type))
 	}
+
 	if a.DataID == "" && len(a.Values) == 0 { //todo 这里需要添加校验,是否存在
 		return errors.Parameter.AddMsg("dataID不能为空")
 	}

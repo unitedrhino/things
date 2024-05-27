@@ -6,6 +6,7 @@ import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
@@ -86,6 +87,7 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		DeviceType:        in.DeviceType,
 		GroupID:           in.GroupID,
 		NotGroupID:        in.NotGroupID,
+		Agency:            utils.Copy[stores.IDPathFilter](in.Agency),
 	}
 	if err := ctxs.IsRoot(l.ctx); err == nil { //default租户才可以查看其他租户的设备
 		ctxs.GetUserCtx(l.ctx).AllTenant = true

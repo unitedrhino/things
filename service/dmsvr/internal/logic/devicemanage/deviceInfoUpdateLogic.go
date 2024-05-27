@@ -39,6 +39,9 @@ func NewDeviceInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, data *dm.DeviceInfo) error {
+	if data.Agency != nil {
+		old.Agency = utils.Copy2[stores.IDPath](data.Agency)
+	}
 	if data.AreaID != 0 && data.AreaID != int64(old.AreaID) {
 		old.AreaID = stores.AreaID(data.AreaID)
 		//err := l.svcCtx.StatusRepo.ModifyDeviceArea(l.ctx, devices.Core{

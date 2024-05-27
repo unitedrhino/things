@@ -5,10 +5,7 @@ import (
 	"gitee.com/i-Things/core/service/syssvr/client/notifymanage"
 	"gitee.com/i-Things/core/service/syssvr/client/projectmanage"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
-	"gitee.com/i-Things/share/caches"
 	"gitee.com/i-Things/share/conf"
-	"gitee.com/i-Things/share/devices"
-	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/eventBus"
 	"gitee.com/i-Things/share/oss"
 	"gitee.com/i-Things/share/stores"
@@ -20,7 +17,6 @@ import (
 	"github.com/i-Things/things/service/dmsvr/client/productmanage"
 	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/dmdirect"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/i-Things/things/service/udsvr/internal/config"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -39,8 +35,9 @@ type SvrClient struct {
 	NotifyM            notifymanage.NotifyManage
 	AreaM              areamanage.AreaManage
 	ProjectM           projectmanage.ProjectManage
-	DeviceCache        *caches.Cache[dm.DeviceInfo, devices.Core]
-	ProductSchemaCache *caches.Cache[schema.Model, string]
+	DeviceCache        dmExport.DeviceCacheT
+	ProductCache       dmExport.ProductCacheT
+	ProductSchemaCache dmExport.SchemaCacheT
 }
 
 type ServiceContext struct {
@@ -89,6 +86,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	logx.Must(err)
 	dic, err := dmExport.NewDeviceInfoCache(deviceM, serverMsg)
 	logx.Must(err)
+	pic, err := dmExport.NewProductInfoCache(productM, serverMsg)
+	logx.Must(err)
 	psc, err := dmExport.NewSchemaInfoCache(productM, serverMsg)
 	logx.Must(err)
 	ossClient, err := oss.NewOssClient(c.OssConf)
@@ -113,6 +112,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			DeviceM:            deviceM,
 			DeviceG:            deviceG,
 			DeviceCache:        dic,
+			ProductCache:       pic,
 			ProductSchemaCache: psc,
 		},
 	}

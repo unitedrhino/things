@@ -11,7 +11,9 @@ import (
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 )
 
-func NewProductInfoCache(pm productmanage.ProductManage, fastEvent *eventBus.FastEvent) (*caches.Cache[dm.ProductInfo, string], error) {
+type ProductCacheT = *caches.Cache[dm.ProductInfo, string]
+
+func NewProductInfoCache(pm productmanage.ProductManage, fastEvent *eventBus.FastEvent) (ProductCacheT, error) {
 	return caches.NewCache(caches.CacheConfig[dm.ProductInfo, string]{
 		KeyType:   eventBus.ServerCacheKeyDmProduct,
 		FastEvent: fastEvent,
@@ -22,11 +24,9 @@ func NewProductInfoCache(pm productmanage.ProductManage, fastEvent *eventBus.Fas
 	})
 }
 
-func GenDeviceInfoKey(productID, deviceName string) string {
-	return productID + ":" + deviceName
-}
+type DeviceCacheT = *caches.Cache[dm.DeviceInfo, devices.Core]
 
-func NewDeviceInfoCache(devM devicemanage.DeviceManage, fastEvent *eventBus.FastEvent) (*caches.Cache[dm.DeviceInfo, devices.Core], error) {
+func NewDeviceInfoCache(devM devicemanage.DeviceManage, fastEvent *eventBus.FastEvent) (DeviceCacheT, error) {
 	return caches.NewCache(caches.CacheConfig[dm.DeviceInfo, devices.Core]{
 		KeyType:   eventBus.ServerCacheKeyDmDevice,
 		FastEvent: fastEvent,
@@ -37,7 +37,9 @@ func NewDeviceInfoCache(devM devicemanage.DeviceManage, fastEvent *eventBus.Fast
 	})
 }
 
-func NewSchemaInfoCache(pm productmanage.ProductManage, fastEvent *eventBus.FastEvent) (*caches.Cache[schema.Model, string], error) {
+type SchemaCacheT = *caches.Cache[schema.Model, string]
+
+func NewSchemaInfoCache(pm productmanage.ProductManage, fastEvent *eventBus.FastEvent) (SchemaCacheT, error) {
 	return caches.NewCache(caches.CacheConfig[schema.Model, string]{
 		KeyType:   eventBus.ServerCacheKeyDmSchema,
 		FastEvent: fastEvent,

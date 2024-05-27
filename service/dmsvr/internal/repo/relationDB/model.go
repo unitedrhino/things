@@ -53,6 +53,7 @@ type DmDeviceInfo struct {
 	IsEnable       int64             `gorm:"column:isEnable;type:smallint;default:1;"`                             //是否启用: 1:是 2:否
 	ManufacturerID int64             `gorm:"column:manufacturer_id;type:bigint;default:1;NOT NULL"`                //制造商信息
 	stores.NoDelTime
+	Agency       stores.IDPath       `gorm:"embedded;embeddedPrefix:agency_"` //代理的id,如果为空,则未参与分销
 	DeletedTime  stores.DeletedTime  `gorm:"column:deleted_time;default:0;uniqueIndex:product_id_deviceName"`
 	ProductInfo  *DmProductInfo      `gorm:"foreignKey:ProductID;references:ProductID"` // 添加外键
 	Manufacturer *DmManufacturerInfo `gorm:"foreignKey:ID;references:ManufacturerID"`   // 添加外键
@@ -65,7 +66,7 @@ func (m *DmDeviceInfo) TableName() string {
 var ClearDeviceInfo func(ctx context.Context, dev devices.Core) error
 
 func (u *DmDeviceInfo) AfterSave(tx *gorm.DB) (err error) {
-	if ClearDeviceInfo != nil {
+	if ClearDeviceInfo != nil && u.DeviceName != "" {
 		err := ClearDeviceInfo(tx.Statement.Context, devices.Core{
 			ProductID:  u.ProductID,
 			DeviceName: u.DeviceName,
@@ -78,7 +79,7 @@ func (u *DmDeviceInfo) AfterSave(tx *gorm.DB) (err error) {
 }
 
 func (u *DmDeviceInfo) AfterDelete(tx *gorm.DB) (err error) {
-	if ClearDeviceInfo != nil {
+	if ClearDeviceInfo != nil && u.DeviceName != "" {
 		err := ClearDeviceInfo(tx.Statement.Context, devices.Core{
 			ProductID:  u.ProductID,
 			DeviceName: u.DeviceName,

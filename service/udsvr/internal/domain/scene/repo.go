@@ -2,7 +2,6 @@ package scene
 
 import (
 	"gitee.com/i-Things/core/service/syssvr/client/notifymanage"
-	"gitee.com/i-Things/share/caches"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/schema"
@@ -10,7 +9,7 @@ import (
 	deviceinteract "github.com/i-Things/things/service/dmsvr/client/deviceinteract"
 	devicemanage "github.com/i-Things/things/service/dmsvr/client/devicemanage"
 	devicemsg "github.com/i-Things/things/service/dmsvr/client/devicemsg"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"github.com/i-Things/things/service/dmsvr/dmExport"
 )
 import "context"
 
@@ -40,8 +39,9 @@ type DeviceRepo interface {
 
 type ValidateRepo struct {
 	Ctx                context.Context
-	DeviceCache        *caches.Cache[dm.DeviceInfo, devices.Core]
-	ProductSchemaCache *caches.Cache[schema.Model, string]
+	DeviceCache        dmExport.DeviceCacheT
+	ProductCache       dmExport.ProductCacheT
+	ProductSchemaCache dmExport.SchemaCacheT
 	GetSceneInfo       func(ctx context.Context, sceneID int64) (*Info, error)
 	Info               *Info
 }

@@ -106,11 +106,12 @@ type UdSceneActionDevice struct {
 	//ProjectID        int64                  `gorm:"column:project_id;type:bigint;default:2;NOT NULL"`  // 项目ID(雪花ID)
 	AreaID           int64                  `gorm:"column:area_id;type:bigint;default:2;NOT NULL"` // 项目区域ID(雪花ID)
 	AreaName         string                 `gorm:"column:area_name;index;type:VARCHAR(100);default:''"`
-	ProductID        string                 `gorm:"column:product_id;index;type:VARCHAR(25);default:''"` //产品id
-	SelectType       scene.SelectType       `gorm:"column:select_type;type:VARCHAR(25);default:''"`      //设备选择方式
-	DeviceName       string                 `gorm:"column:device_name;type:VARCHAR(255);"`               //选择的列表  选择的列表, fixed类型是设备名列表
-	DeviceAlias      string                 `gorm:"column:device_alias;type:VARCHAR(255);"`              //设备别名
-	GroupID          int64                  `gorm:"column:group_id;index;type:bigint"`                   //group类型传GroupID
+	ProductID        string                 `gorm:"column:product_id;index;type:VARCHAR(25);default:''"`    //产品id
+	ProductName      string                 `gorm:"column:product_name;index;type:VARCHAR(200);default:''"` //产品id
+	SelectType       scene.SelectType       `gorm:"column:select_type;type:VARCHAR(25);default:''"`         //设备选择方式
+	DeviceName       string                 `gorm:"column:device_name;type:VARCHAR(255);"`                  //选择的列表  选择的列表, fixed类型是设备名列表
+	DeviceAlias      string                 `gorm:"column:device_alias;type:VARCHAR(255);"`                 //设备别名
+	GroupID          int64                  `gorm:"column:group_id;index;type:bigint"`                      //group类型传GroupID
 	Type             scene.ActionDeviceType `gorm:"column:type;type:VARCHAR(25);default:''"`
 	DataID           string                 `gorm:"column:data_id;index;type:VARCHAR(100);default:''"`
 	Value            string                 `gorm:"column:value;index;type:VARCHAR(500);default:''"`

@@ -12,7 +12,6 @@ import (
 	"gitee.com/i-Things/share/caches"
 	"gitee.com/i-Things/share/conf"
 	"gitee.com/i-Things/share/ctxs"
-	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/eventBus"
 	"gitee.com/i-Things/share/oss"
 	"gitee.com/i-Things/share/utils"
@@ -34,7 +33,6 @@ import (
 	"github.com/i-Things/things/service/dmsvr/client/userdevice"
 	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/dmdirect"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/i-Things/things/service/rulesvr/client/alarmcenter"
 	"github.com/i-Things/things/service/rulesvr/client/scenelinkage"
 	"github.com/i-Things/things/service/udsvr/client/rule"
@@ -81,8 +79,8 @@ type ServiceContext struct {
 	Captcha        *verify.Captcha
 	OssClient      *oss.Client
 	OtaM           otamanage.OtaManage
-	ProductCache   *caches.Cache[dm.ProductInfo, string]
-	DeviceCache    *caches.Cache[dm.DeviceInfo, devices.Core]
+	ProductCache   dmExport.ProductCacheT
+	DeviceCache    dmExport.DeviceCacheT
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {

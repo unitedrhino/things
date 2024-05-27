@@ -42,6 +42,11 @@ message WithID{
   int64 id = 1;
 }
 
+message IDPath{
+  int64 id =1;
+  string idPath=2;
+}
+
 //设备管理
 service DeviceManage {
   //鉴定是否是root账号(提供给mqtt broker)
@@ -1035,6 +1040,7 @@ message DeviceInfo {
   ManufacturerInfo manufacturer =32; //制造商信息
   int64  deviceType = 33; //设备类型:1:设备,2:网关,3:子设备
   int64 netType =35;//网络类型
+  IDPath agency =36;//过滤分销商的数据
 }
 
 message ProductInfo{
@@ -1134,8 +1140,9 @@ message DeviceInfoIndexReq{
   repeated string versions =15;//版本列表
   int64  deviceType = 16; //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
   DeviceCore gateway = 17;//获取网关下子设备列表
- int64 groupID =18;
+  int64 groupID =18;
   int64 notGroupID =19;
+  IDPath agency =20;//过滤分销商的数据
 }
 
 message DeviceInfoIndexResp{

@@ -24,7 +24,6 @@ import (
 	"github.com/i-Things/things/service/dmsvr/internal/repo/tdengine/schemaDataRepo"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/tdengine/sendLogRepo"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/tdengine/statusLogRepo"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 	"github.com/zeromicro/go-zero/zrpc"
 	"os"
@@ -57,7 +56,7 @@ type ServiceContext struct {
 	GroupID        *utils.SnowFlake
 	OssClient      *oss.Client
 	TimedM         timedmanage.TimedManage
-	SchemaRepo     *caches.Cache[schema.Model, string]
+	SchemaRepo     dmExport.SchemaCacheT
 	SchemaManaRepo msgThing.SchemaDataRepo
 	HubLogRepo     deviceLog.HubRepo
 	StatusRepo     deviceLog.StatusRepo
@@ -70,8 +69,8 @@ type ServiceContext struct {
 	UserM          usermanage.UserManage
 	DataM          datamanage.DataManage
 	ProjectM       projectmanage.ProjectManage
-	ProductCache   *caches.Cache[dm.ProductInfo, string]
-	DeviceCache    *caches.Cache[dm.DeviceInfo, devices.Core]
+	ProductCache   dmExport.ProductCacheT
+	DeviceCache    dmExport.DeviceCacheT
 	TenantCache    *caches.Cache[tenant.Info, string]
 	WebHook        *sysExport.Webhook
 	Slot           *caches.Cache[slot.Infos, string]

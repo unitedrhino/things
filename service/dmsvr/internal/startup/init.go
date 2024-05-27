@@ -82,7 +82,7 @@ func InitCache(svcCtx *svc.ServiceContext) {
 			pb := logic.ToProductInfo(ctx, svcCtx, pi)
 			return pb, err
 		},
-		ExpireTime: 10 * time.Minute,
+		ExpireTime: 3 * time.Minute,
 	})
 	logx.Must(err)
 	svcCtx.ProductCache = productCache

@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"gitee.com/i-Things/share/caches"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgGateway"
@@ -13,7 +12,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 )
 
-func ToDeviceInfo(ctx context.Context, in *relationDB.DmDeviceInfo, ProductCache *caches.Cache[dm.ProductInfo, string]) *dm.DeviceInfo {
+func ToDeviceInfo(ctx context.Context, in *relationDB.DmDeviceInfo, ProductCache dmExport.ProductCacheT) *dm.DeviceInfo {
 	if in == nil {
 		return nil
 	}
