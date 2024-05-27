@@ -111,13 +111,13 @@ func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfo) (*dm.WithID, er
 		}
 		po.IDPath = cast.ToString(po.ID) + "-"
 		if po.ParentID != 0 && po.ParentID != def.RootNode {
-			parent, err := relationDB.NewGroupInfoRepo(l.ctx).FindOne(l.ctx, in.ParentID)
+			parent, err := relationDB.NewGroupInfoRepo(tx).FindOne(l.ctx, in.ParentID)
 			if err != nil {
 				return err
 			}
 			po.IDPath = parent.IDPath + po.IDPath
 		}
-		err = relationDB.NewGroupInfoRepo(l.ctx).Update(l.ctx, &po)
+		err = relationDB.NewGroupInfoRepo(tx).Update(l.ctx, &po)
 		if err != nil {
 			return err
 		}
