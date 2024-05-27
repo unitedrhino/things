@@ -16,6 +16,7 @@ import (
 	"gitee.com/i-Things/share/domain/slot"
 	"gitee.com/i-Things/share/domain/tenant"
 	ws "gitee.com/i-Things/share/websocket"
+	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/event/publish/pubApp"
