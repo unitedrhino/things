@@ -8,6 +8,7 @@ import (
 	"gitee.com/i-Things/share/events"
 	"gitee.com/i-Things/share/utils"
 	"github.com/golang/protobuf/ptypes/wrappers"
+	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 )
