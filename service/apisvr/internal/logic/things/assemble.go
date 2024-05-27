@@ -98,6 +98,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		ProtocolConf:   logic.ToTagsType(v.Tags),
 		SchemaAlias:    v.SchemaAlias, //设备物模型别名,如果是结构体类型则key为xxx.xxx
 		IsOnline:       v.IsOnline,    //在线状态 1离线 2在线 只读
+		FirstBind:      v.FirstBind,
 		FirstLogin:     v.FirstLogin,  //激活时间 只读
 		LastLogin:      v.LastLogin,   //最后上线时间 只读
 		LogLevel:       v.LogLevel,    //日志级别 1)关闭 2)错误 3)告警 4)信息 5)调试  读写

@@ -2,12 +2,14 @@ package devicemanagelogic
 
 import (
 	"context"
+	"database/sql"
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
+	"time"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
@@ -66,6 +68,9 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 	di.AreaID = stores.AreaID(in.AreaID)
 	if di.AreaID == 0 {
 		di.AreaID = def.NotClassified
+	}
+	if di.FirstBind.Valid {
+		di.FirstBind = sql.NullTime{Time: time.Now(), Valid: true}
 	}
 	err = diDB.Update(ctxs.WithRoot(l.ctx), di)
 	l.svcCtx.DeviceCache.SetData(l.ctx, devices.Core{

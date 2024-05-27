@@ -62,6 +62,7 @@ func ToDeviceInfo(ctx context.Context, in *relationDB.DmDeviceInfo, ProductCache
 		IsOnline:       in.IsOnline,
 		IsEnable:       in.IsEnable,
 		FirstLogin:     utils.GetNullTime(in.FirstLogin),
+		FirstBind:      utils.GetNullTime(in.FirstBind),
 		LastLogin:      utils.GetNullTime(in.LastLogin),
 		LogLevel:       in.LogLevel,
 		CreatedTime:    in.CreatedTime.Unix(),

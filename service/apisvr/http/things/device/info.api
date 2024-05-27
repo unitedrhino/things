@@ -119,6 +119,7 @@ type (
         SchemaAlias    map[string]string       `json:"schemaAlias,optional"` //设备物模型别名,如果是结构体类型则key为xxx.xxx
         IsOnline int64 `json:"isOnline,optional,range=[0:2]"`                                         // 在线状态  1离线 2在线 只读
         FirstLogin int64 `json:"firstLogin,optional,string"`                              //激活时间 只读
+        FirstBind int64 `json:"firstBind,optional,string"`
         LastLogin int64 `json:"lastLogin,optional,string"`                                //最后上线时间 只读
         LogLevel int64 `json:"logLevel,optional,range=[0:5]"`                                         // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
         Rssi int64  `json:"rssi,optional,omitempty"`//信号强度

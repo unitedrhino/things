@@ -182,11 +182,12 @@ type DeviceInfo struct {
 	SchemaAlias    map[string]string                  `json:"schemaAlias,optional"`                          //设备物模型别名,如果是结构体类型则key为xxx.xxx
 	IsOnline       int64                              `json:"isOnline,optional,range=[0:2]"`                 // 在线状态  1离线 2在线 只读
 	FirstLogin     int64                              `json:"firstLogin,optional,string"`                    //激活时间 只读
-	LastLogin      int64                              `json:"lastLogin,optional,string"`                     //最后上线时间 只读
-	LogLevel       int64                              `json:"logLevel,optional,range=[0:5]"`                 // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
-	Rssi           int64                              `json:"rssi,optional,omitempty"`                       //信号强度
-	CreatedTime    int64                              `json:"createdTime,optional,string"`                   //创建时间 只读
-	Status         int64                              `json:"status,optional"`                               //设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)
+	FirstBind      int64                              `json:"firstBind,optional,string"`
+	LastLogin      int64                              `json:"lastLogin,optional,string"`     //最后上线时间 只读
+	LogLevel       int64                              `json:"logLevel,optional,range=[0:5]"` // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+	Rssi           int64                              `json:"rssi,optional,omitempty"`       //信号强度
+	CreatedTime    int64                              `json:"createdTime,optional,string"`   //创建时间 只读
+	Status         int64                              `json:"status,optional"`               //设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)
 	IsEnable       int64                              `json:"isEnable,optional"`
 	WithProperties map[string]*DeviceInfoWithProperty `json:"withProperties,optional,omitempty"` //获取的属性列表,如果不传withProperty,则不会返回
 	ProtocolConf   []*Tag                             `json:"protocolConf,optional,omitempty"`   //协议配置

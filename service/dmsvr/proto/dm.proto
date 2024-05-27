@@ -1027,6 +1027,7 @@ message DeviceInfo {
   map<string, string> tags = 16;//设备标签
   int64 isOnline = 17; //在线状态  1离线 2在线 只读
   int64 firstLogin = 18; //激活时间 只读
+  int64 firstBind = 37; //第一次绑定的时间
   int64 lastLogin = 19; //最后上线时间 只读
   int64 logLevel = 20; // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
   google.protobuf.StringValue  deviceAlias = 21; //设备别名 读写
