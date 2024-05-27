@@ -36,7 +36,7 @@ func (p ProductInfoRepo) fmtFilter(ctx context.Context, f ProductFilter) *gorm.D
 	if f.DeviceType != 0 {
 		db = db.Where("device_type=?", f.DeviceType)
 	}
-	if len(f.DeviceTypes) == 0 {
+	if len(f.DeviceTypes) != 0 {
 		db = db.Where("device_type in ?", f.DeviceTypes)
 	}
 	if len(f.CategoryIDs) != 0 {

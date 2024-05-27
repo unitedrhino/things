@@ -152,7 +152,7 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 		subQuery := d.db.Model(&DmProductInfo{}).Select("product_id").Where("device_type=?", f.DeviceType)
 		db = db.Where("product_id in (?)", subQuery)
 	}
-	if len(f.DeviceTypes) == 0 {
+	if len(f.DeviceTypes) != 0 {
 		subQuery := d.db.Model(&DmProductInfo{}).Select("product_id").Where("device_type in ?", f.DeviceTypes)
 		db = db.Where("product_id in (?)", subQuery)
 	}
