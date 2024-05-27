@@ -121,7 +121,6 @@ type (
 	ProductCategory                   = dm.ProductCategory
 	ProductCategoryIndexReq           = dm.ProductCategoryIndexReq
 	ProductCategoryIndexResp          = dm.ProductCategoryIndexResp
-	ProductCategoryReadReq            = dm.ProductCategoryReadReq
 	ProductCategorySchemaIndexReq     = dm.ProductCategorySchemaIndexReq
 	ProductCategorySchemaIndexResp    = dm.ProductCategorySchemaIndexResp
 	ProductCategorySchemaMultiSaveReq = dm.ProductCategorySchemaMultiSaveReq
@@ -191,6 +190,7 @@ type (
 	UserDeviceShareMultiDeleteReq     = dm.UserDeviceShareMultiDeleteReq
 	UserDeviceShareReadReq            = dm.UserDeviceShareReadReq
 	WithID                            = dm.WithID
+	WithIDChildren                    = dm.WithIDChildren
 	WithIDCode                        = dm.WithIDCode
 
 	ProductManage interface {
@@ -231,7 +231,7 @@ type (
 		// 获取产品信息列表
 		ProductCategoryIndex(ctx context.Context, in *ProductCategoryIndexReq, opts ...grpc.CallOption) (*ProductCategoryIndexResp, error)
 		// 获取产品信息详情
-		ProductCategoryRead(ctx context.Context, in *ProductCategoryReadReq, opts ...grpc.CallOption) (*ProductCategory, error)
+		ProductCategoryRead(ctx context.Context, in *WithIDChildren, opts ...grpc.CallOption) (*ProductCategory, error)
 		// 获取产品品类下的物模型列表,绑定的物模型会自动添加到该产品品类及子分类的产品中,并不支持删除
 		ProductCategorySchemaIndex(ctx context.Context, in *ProductCategorySchemaIndexReq, opts ...grpc.CallOption) (*ProductCategorySchemaIndexResp, error)
 		ProductCategorySchemaMultiUpdate(ctx context.Context, in *ProductCategorySchemaMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
@@ -468,13 +468,13 @@ func (d *directProductManage) ProductCategoryIndex(ctx context.Context, in *Prod
 }
 
 // 获取产品信息详情
-func (m *defaultProductManage) ProductCategoryRead(ctx context.Context, in *ProductCategoryReadReq, opts ...grpc.CallOption) (*ProductCategory, error) {
+func (m *defaultProductManage) ProductCategoryRead(ctx context.Context, in *WithIDChildren, opts ...grpc.CallOption) (*ProductCategory, error) {
 	client := dm.NewProductManageClient(m.cli.Conn())
 	return client.ProductCategoryRead(ctx, in, opts...)
 }
 
 // 获取产品信息详情
-func (d *directProductManage) ProductCategoryRead(ctx context.Context, in *ProductCategoryReadReq, opts ...grpc.CallOption) (*ProductCategory, error) {
+func (d *directProductManage) ProductCategoryRead(ctx context.Context, in *WithIDChildren, opts ...grpc.CallOption) (*ProductCategory, error) {
 	return d.svr.ProductCategoryRead(ctx, in)
 }
 

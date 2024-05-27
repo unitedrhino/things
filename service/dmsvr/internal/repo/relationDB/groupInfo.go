@@ -15,6 +15,7 @@ type GroupInfoFilter struct {
 	AreaID      int64
 	Names       []string
 	ParentID    int64
+	IDPath      string
 	Name        string
 	Tags        map[string]string
 	WithProduct bool
@@ -40,6 +41,9 @@ func (p GroupInfoRepo) fmtFilter(ctx context.Context, f GroupInfoFilter) *gorm.D
 	}
 	if f.Name != "" {
 		db = db.Where("name like ?", "%"+f.Name+"%")
+	}
+	if f.IDPath != "" {
+		db = db.Where("id_path like ?", f.IDPath+"%")
 	}
 	if f.Tags != nil {
 		for k, v := range f.Tags {

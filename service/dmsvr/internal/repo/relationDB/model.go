@@ -261,6 +261,7 @@ type DmGroupInfo struct {
 	ProjectID  stores.ProjectID  `gorm:"column:project_id;uniqueIndex:tc_ac;type:bigint;default:2;NOT NULL"`             // 项目ID(雪花ID)
 	AreaID     stores.AreaID     `gorm:"column:area_id;uniqueIndex:tc_ac;type:bigint;default:2;NOT NULL"`                // 项目区域ID(雪花ID)
 	ParentID   int64             `gorm:"column:parent_id;type:bigint;default:0;NOT NULL"`                                // 父组ID 0-根组
+	IDPath     string            `gorm:"column:id_path;type:varchar(100);NOT NULL"`                                      // 1-2-3-的格式记录顶级区域到当前区域的路径
 	ProductID  string            `gorm:"column:product_id;type:varchar(100);default:'';NOT NULL"`                        // 产品id,为空则不限定分组内的产品类型
 	Name       string            `gorm:"column:name;uniqueIndex:tc_ac;default:'';type:varchar(100);NOT NULL"`            // 分组名称
 	Desc       string            `gorm:"column:desc;type:varchar(200);default:''"`                                       // 描述

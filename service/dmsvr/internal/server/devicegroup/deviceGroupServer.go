@@ -35,7 +35,7 @@ func (s *DeviceGroupServer) GroupInfoIndex(ctx context.Context, in *dm.GroupInfo
 }
 
 // 获取分组信息详情
-func (s *DeviceGroupServer) GroupInfoRead(ctx context.Context, in *dm.WithID) (*dm.GroupInfo, error) {
+func (s *DeviceGroupServer) GroupInfoRead(ctx context.Context, in *dm.WithIDChildren) (*dm.GroupInfo, error) {
 	l := devicegrouplogic.NewGroupInfoReadLogic(ctx, s.svcCtx)
 	return l.GroupInfoRead(in)
 }

@@ -41,6 +41,10 @@ message WithIDCode{
 message WithID{
   int64 id = 1;
 }
+message  WithIDChildren{
+  int64 id =1;         // id
+  bool withChildren =2;
+}
 
 message IDPath{
   int64 id =1;
@@ -140,7 +144,7 @@ service ProductManage{
   //获取产品信息列表
   rpc productCategoryIndex(ProductCategoryIndexReq)     returns (ProductCategoryIndexResp);
   //获取产品信息详情
-  rpc productCategoryRead(ProductCategoryReadReq)     returns (ProductCategory);
+  rpc productCategoryRead(WithIDChildren)     returns (ProductCategory);
   //获取产品品类下的物模型列表,绑定的物模型会自动添加到该产品品类及子分类的产品中,并不支持删除
   rpc productCategorySchemaIndex(ProductCategorySchemaIndexReq) returns(ProductCategorySchemaIndexResp);
   rpc productCategorySchemaMultiUpdate(ProductCategorySchemaMultiSaveReq) returns(Empty);
@@ -182,7 +186,7 @@ service DeviceGroup {
   //获取分组信息列表
   rpc groupInfoIndex(GroupInfoIndexReq)     returns (GroupInfoIndexResp);
   //获取分组信息详情
-  rpc groupInfoRead(WithID)     returns (GroupInfo);
+  rpc groupInfoRead(WithIDChildren)     returns (GroupInfo);
   //更新分组
   rpc groupInfoUpdate(GroupInfo)     returns (Empty);
   //删除分组
@@ -433,10 +437,7 @@ message ProductCategory{
   repeated ProductCategory children =7;//子节点
 }
 
-message ProductCategoryReadReq{
-  int64 id = 1;
-  bool withChildren = 2;//是否返回子节点
-}
+
 
 message ProductCategorySchemaIndexResp{
   repeated string   identifiers = 5; //过滤标识符列表
@@ -934,6 +935,7 @@ message GroupInfo{
   string productName = 9;
   repeated DeviceCore devices =11;
   int64 deviceCount = 12;
+  repeated GroupInfo children =13;
 //  DeviceInfoCount deviceInfoCount =11;
 }
 

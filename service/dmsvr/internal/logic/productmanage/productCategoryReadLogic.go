@@ -27,7 +27,7 @@ func NewProductCategoryReadLogic(ctx context.Context, svcCtx *svc.ServiceContext
 }
 
 // 获取产品信息详情
-func (l *ProductCategoryReadLogic) ProductCategoryRead(in *dm.ProductCategoryReadReq) (*dm.ProductCategory, error) {
+func (l *ProductCategoryReadLogic) ProductCategoryRead(in *dm.WithIDChildren) (*dm.ProductCategory, error) {
 	var (
 		po  *relationDB.DmProductCategory
 		err error

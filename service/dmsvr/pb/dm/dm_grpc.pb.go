@@ -1092,7 +1092,7 @@ type ProductManageClient interface {
 	// 获取产品信息列表
 	ProductCategoryIndex(ctx context.Context, in *ProductCategoryIndexReq, opts ...grpc.CallOption) (*ProductCategoryIndexResp, error)
 	// 获取产品信息详情
-	ProductCategoryRead(ctx context.Context, in *ProductCategoryReadReq, opts ...grpc.CallOption) (*ProductCategory, error)
+	ProductCategoryRead(ctx context.Context, in *WithIDChildren, opts ...grpc.CallOption) (*ProductCategory, error)
 	// 获取产品品类下的物模型列表,绑定的物模型会自动添加到该产品品类及子分类的产品中,并不支持删除
 	ProductCategorySchemaIndex(ctx context.Context, in *ProductCategorySchemaIndexReq, opts ...grpc.CallOption) (*ProductCategorySchemaIndexResp, error)
 	ProductCategorySchemaMultiUpdate(ctx context.Context, in *ProductCategorySchemaMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
@@ -1279,7 +1279,7 @@ func (c *productManageClient) ProductCategoryIndex(ctx context.Context, in *Prod
 	return out, nil
 }
 
-func (c *productManageClient) ProductCategoryRead(ctx context.Context, in *ProductCategoryReadReq, opts ...grpc.CallOption) (*ProductCategory, error) {
+func (c *productManageClient) ProductCategoryRead(ctx context.Context, in *WithIDChildren, opts ...grpc.CallOption) (*ProductCategory, error) {
 	out := new(ProductCategory)
 	err := c.cc.Invoke(ctx, ProductManage_ProductCategoryRead_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -1365,7 +1365,7 @@ type ProductManageServer interface {
 	// 获取产品信息列表
 	ProductCategoryIndex(context.Context, *ProductCategoryIndexReq) (*ProductCategoryIndexResp, error)
 	// 获取产品信息详情
-	ProductCategoryRead(context.Context, *ProductCategoryReadReq) (*ProductCategory, error)
+	ProductCategoryRead(context.Context, *WithIDChildren) (*ProductCategory, error)
 	// 获取产品品类下的物模型列表,绑定的物模型会自动添加到该产品品类及子分类的产品中,并不支持删除
 	ProductCategorySchemaIndex(context.Context, *ProductCategorySchemaIndexReq) (*ProductCategorySchemaIndexResp, error)
 	ProductCategorySchemaMultiUpdate(context.Context, *ProductCategorySchemaMultiSaveReq) (*Empty, error)
@@ -1435,7 +1435,7 @@ func (UnimplementedProductManageServer) ProductCategoryDelete(context.Context, *
 func (UnimplementedProductManageServer) ProductCategoryIndex(context.Context, *ProductCategoryIndexReq) (*ProductCategoryIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductCategoryIndex not implemented")
 }
-func (UnimplementedProductManageServer) ProductCategoryRead(context.Context, *ProductCategoryReadReq) (*ProductCategory, error) {
+func (UnimplementedProductManageServer) ProductCategoryRead(context.Context, *WithIDChildren) (*ProductCategory, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductCategoryRead not implemented")
 }
 func (UnimplementedProductManageServer) ProductCategorySchemaIndex(context.Context, *ProductCategorySchemaIndexReq) (*ProductCategorySchemaIndexResp, error) {
@@ -1806,7 +1806,7 @@ func _ProductManage_ProductCategoryIndex_Handler(srv interface{}, ctx context.Co
 }
 
 func _ProductManage_ProductCategoryRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProductCategoryReadReq)
+	in := new(WithIDChildren)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1818,7 +1818,7 @@ func _ProductManage_ProductCategoryRead_Handler(srv interface{}, ctx context.Con
 		FullMethod: ProductManage_ProductCategoryRead_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductManageServer).ProductCategoryRead(ctx, req.(*ProductCategoryReadReq))
+		return srv.(ProductManageServer).ProductCategoryRead(ctx, req.(*WithIDChildren))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2518,7 +2518,7 @@ type DeviceGroupClient interface {
 	// 获取分组信息列表
 	GroupInfoIndex(ctx context.Context, in *GroupInfoIndexReq, opts ...grpc.CallOption) (*GroupInfoIndexResp, error)
 	// 获取分组信息详情
-	GroupInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*GroupInfo, error)
+	GroupInfoRead(ctx context.Context, in *WithIDChildren, opts ...grpc.CallOption) (*GroupInfo, error)
 	// 更新分组
 	GroupInfoUpdate(ctx context.Context, in *GroupInfo, opts ...grpc.CallOption) (*Empty, error)
 	// 删除分组
@@ -2559,7 +2559,7 @@ func (c *deviceGroupClient) GroupInfoIndex(ctx context.Context, in *GroupInfoInd
 	return out, nil
 }
 
-func (c *deviceGroupClient) GroupInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*GroupInfo, error) {
+func (c *deviceGroupClient) GroupInfoRead(ctx context.Context, in *WithIDChildren, opts ...grpc.CallOption) (*GroupInfo, error) {
 	out := new(GroupInfo)
 	err := c.cc.Invoke(ctx, DeviceGroup_GroupInfoRead_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -2631,7 +2631,7 @@ type DeviceGroupServer interface {
 	// 获取分组信息列表
 	GroupInfoIndex(context.Context, *GroupInfoIndexReq) (*GroupInfoIndexResp, error)
 	// 获取分组信息详情
-	GroupInfoRead(context.Context, *WithID) (*GroupInfo, error)
+	GroupInfoRead(context.Context, *WithIDChildren) (*GroupInfo, error)
 	// 更新分组
 	GroupInfoUpdate(context.Context, *GroupInfo) (*Empty, error)
 	// 删除分组
@@ -2657,7 +2657,7 @@ func (UnimplementedDeviceGroupServer) GroupInfoCreate(context.Context, *GroupInf
 func (UnimplementedDeviceGroupServer) GroupInfoIndex(context.Context, *GroupInfoIndexReq) (*GroupInfoIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoIndex not implemented")
 }
-func (UnimplementedDeviceGroupServer) GroupInfoRead(context.Context, *WithID) (*GroupInfo, error) {
+func (UnimplementedDeviceGroupServer) GroupInfoRead(context.Context, *WithIDChildren) (*GroupInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoRead not implemented")
 }
 func (UnimplementedDeviceGroupServer) GroupInfoUpdate(context.Context, *GroupInfo) (*Empty, error) {
@@ -2728,7 +2728,7 @@ func _DeviceGroup_GroupInfoIndex_Handler(srv interface{}, ctx context.Context, d
 }
 
 func _DeviceGroup_GroupInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(WithID)
+	in := new(WithIDChildren)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -2740,7 +2740,7 @@ func _DeviceGroup_GroupInfoRead_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: DeviceGroup_GroupInfoRead_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceGroupServer).GroupInfoRead(ctx, req.(*WithID))
+		return srv.(DeviceGroupServer).GroupInfoRead(ctx, req.(*WithIDChildren))
 	}
 	return interceptor(ctx, in, info, handler)
 }

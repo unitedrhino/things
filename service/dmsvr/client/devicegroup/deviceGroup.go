@@ -121,7 +121,6 @@ type (
 	ProductCategory                   = dm.ProductCategory
 	ProductCategoryIndexReq           = dm.ProductCategoryIndexReq
 	ProductCategoryIndexResp          = dm.ProductCategoryIndexResp
-	ProductCategoryReadReq            = dm.ProductCategoryReadReq
 	ProductCategorySchemaIndexReq     = dm.ProductCategorySchemaIndexReq
 	ProductCategorySchemaIndexResp    = dm.ProductCategorySchemaIndexResp
 	ProductCategorySchemaMultiSaveReq = dm.ProductCategorySchemaMultiSaveReq
@@ -191,6 +190,7 @@ type (
 	UserDeviceShareMultiDeleteReq     = dm.UserDeviceShareMultiDeleteReq
 	UserDeviceShareReadReq            = dm.UserDeviceShareReadReq
 	WithID                            = dm.WithID
+	WithIDChildren                    = dm.WithIDChildren
 	WithIDCode                        = dm.WithIDCode
 
 	DeviceGroup interface {
@@ -199,7 +199,7 @@ type (
 		// 获取分组信息列表
 		GroupInfoIndex(ctx context.Context, in *GroupInfoIndexReq, opts ...grpc.CallOption) (*GroupInfoIndexResp, error)
 		// 获取分组信息详情
-		GroupInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*GroupInfo, error)
+		GroupInfoRead(ctx context.Context, in *WithIDChildren, opts ...grpc.CallOption) (*GroupInfo, error)
 		// 更新分组
 		GroupInfoUpdate(ctx context.Context, in *GroupInfo, opts ...grpc.CallOption) (*Empty, error)
 		// 删除分组
@@ -260,13 +260,13 @@ func (d *directDeviceGroup) GroupInfoIndex(ctx context.Context, in *GroupInfoInd
 }
 
 // 获取分组信息详情
-func (m *defaultDeviceGroup) GroupInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*GroupInfo, error) {
+func (m *defaultDeviceGroup) GroupInfoRead(ctx context.Context, in *WithIDChildren, opts ...grpc.CallOption) (*GroupInfo, error) {
 	client := dm.NewDeviceGroupClient(m.cli.Conn())
 	return client.GroupInfoRead(ctx, in, opts...)
 }
 
 // 获取分组信息详情
-func (d *directDeviceGroup) GroupInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*GroupInfo, error) {
+func (d *directDeviceGroup) GroupInfoRead(ctx context.Context, in *WithIDChildren, opts ...grpc.CallOption) (*GroupInfo, error) {
 	return d.svr.GroupInfoRead(ctx, in)
 }
 

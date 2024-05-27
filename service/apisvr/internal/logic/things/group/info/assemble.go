@@ -6,6 +6,17 @@ import (
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 )
 
+func ToGroupInfosTypes(in []*dm.GroupInfo) []*types.GroupInfo {
+	if len(in) == 0 {
+		return nil
+	}
+	glist := make([]*types.GroupInfo, 0, len(in))
+	for _, v := range in {
+		glist = append(glist, ToGroupInfoTypes(v))
+	}
+	return glist
+}
+
 func ToGroupInfoTypes(in *dm.GroupInfo) *types.GroupInfo {
 	return &types.GroupInfo{
 		AreaID:      in.AreaID,
@@ -19,6 +30,7 @@ func ToGroupInfoTypes(in *dm.GroupInfo) *types.GroupInfo {
 		Desc:        in.Desc,
 		DeviceCount: in.DeviceCount,
 		Tags:        logic.ToTagsType(in.Tags),
+		Children:    ToGroupInfosTypes(in.Children),
 	}
 }
 func ToGroupInfoPbTypes(in *types.GroupInfo) *dm.GroupInfo {

@@ -9,6 +9,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"github.com/spf13/cast"
 	"gorm.io/gorm"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -102,8 +103,21 @@ func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfo) (*dm.WithID, er
 		Tags:        in.Tags,
 		DeviceCount: int64(len(in.Devices)),
 	}
+
 	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
 		err := relationDB.NewGroupInfoRepo(tx).Insert(l.ctx, &po)
+		if err != nil {
+			return err
+		}
+		po.IDPath = cast.ToString(po.ID) + "-"
+		if po.ParentID != 0 && po.ParentID != def.RootNode {
+			parent, err := relationDB.NewGroupInfoRepo(l.ctx).FindOne(l.ctx, in.ParentID)
+			if err != nil {
+				return err
+			}
+			po.IDPath = parent.IDPath + po.IDPath
+		}
+		err = relationDB.NewGroupInfoRepo(l.ctx).Update(l.ctx, &po)
 		if err != nil {
 			return err
 		}

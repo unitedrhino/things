@@ -121,7 +121,6 @@ type (
 	ProductCategory                   = dm.ProductCategory
 	ProductCategoryIndexReq           = dm.ProductCategoryIndexReq
 	ProductCategoryIndexResp          = dm.ProductCategoryIndexResp
-	ProductCategoryReadReq            = dm.ProductCategoryReadReq
 	ProductCategorySchemaIndexReq     = dm.ProductCategorySchemaIndexReq
 	ProductCategorySchemaIndexResp    = dm.ProductCategorySchemaIndexResp
 	ProductCategorySchemaMultiSaveReq = dm.ProductCategorySchemaMultiSaveReq
@@ -191,6 +190,7 @@ type (
 	UserDeviceShareMultiDeleteReq     = dm.UserDeviceShareMultiDeleteReq
 	UserDeviceShareReadReq            = dm.UserDeviceShareReadReq
 	WithID                            = dm.WithID
+	WithIDChildren                    = dm.WithIDChildren
 	WithIDCode                        = dm.WithIDCode
 
 	DeviceManage interface {
