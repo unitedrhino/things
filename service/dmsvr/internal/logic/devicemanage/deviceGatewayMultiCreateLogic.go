@@ -130,7 +130,9 @@ func FilterCanBindSubDevices(ctx context.Context, svcCtx *svc.ServiceContext, ga
 			return nil, errors.Parameter.AddMsg("子设备只能由网关设备进行绑定")
 		}
 	}
-
+	if len(subDevices) == 0 {
+		return []*devices.Core{}, nil
+	}
 	if checkDevice&CheckDeviceType == CheckDeviceType { //检查设备是否都是子设备类型
 		var (
 			deviceProductList []string
