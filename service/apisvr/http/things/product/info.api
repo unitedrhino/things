@@ -44,7 +44,7 @@ type (
         ProductImg string `json:"productImg,optional"`                        //产品图片
         IsUpdateProductImg bool `json:"isUpdateProductImg,omitempty,optional"` //只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
         AuthMode int64 `json:"authMode,optional,range=[0:2]"`                                         //认证方式:1:账密认证,2:秘钥认证
-        DeviceType int64 `json:"deviceType,optional,range=[0:3]"`                                     //设备类型:1:设备,2:网关,3:子设备
+        DeviceType int64 `json:"deviceType,optional,range=[0:3]"`
         CategoryID int64 `json:"categoryID,optional"`                                     //产品品类
         NetType int64 `json:"netType,optional,range=[0:8]"`                                           //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
         ProtocolCode string `json:"protocolCode,optional"`                                       //协议code,默认iThings  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
@@ -73,6 +73,7 @@ type (
         Page *PageInfo `json:"page,optional"`           //分页信息,只获取一个则不填
         ProductName string `json:"productName,optional"` //过滤产品名称
         DeviceType int64 `json:"deviceType,optional,range=[0:3]"`    //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
+        DeviceTypes []int64 `json:"deviceTypes,optional"`                                     //设备类型:1:设备,2:网关,3:子设备//设备类型:1:设备,2:网关,3:子设备
         ProductIDs []string  `json:"productIDs,optional"`    //过滤产品id列表
         Tags []*Tag `json:"tags,optional"`            // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
         ProtocolCode string `json:"protocolCode,optional"`                                       //协议code,默认iThings  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya

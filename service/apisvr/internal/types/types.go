@@ -217,6 +217,7 @@ type DeviceInfoIndexReq struct {
 	ProductID         string        `json:"productID,optional"`            //产品id 为空时获取所有产品
 	DeviceName        string        `json:"deviceName,optional"`           //过滤条件:模糊查询 设备名
 	DeviceAlias       string        `json:"deviceAlias,optional"`          //过滤条件:模糊查询 设备别名
+	DeviceTypes       []int64       `json:"deviceTypes,optional"`          //设备类型:1:设备,2:网关,3:子设备//设备类型:1:设备,2:网关,3:子设备
 	Position          *Point        `json:"position,optional"`             //设备定位,默认百度坐标系，用于获取以该点为中心，Range范围内的设备列表，与Range连用
 	Range             int64         `json:"range,optional"`                //过滤条件:距离坐标点固定范围内的设备 单位：米
 	Tags              []*Tag        `json:"tags,optional"`                 // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
@@ -1029,15 +1030,15 @@ type ProductInfo struct {
 	ProductImg         string           `json:"productImg,optional"`                   //产品图片
 	IsUpdateProductImg bool             `json:"isUpdateProductImg,omitempty,optional"` //只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
 	AuthMode           int64            `json:"authMode,optional,range=[0:2]"`         //认证方式:1:账密认证,2:秘钥认证
-	DeviceType         int64            `json:"deviceType,optional,range=[0:3]"`       //设备类型:1:设备,2:网关,3:子设备
-	CategoryID         int64            `json:"categoryID,optional"`                   //产品品类
-	NetType            int64            `json:"netType,optional,range=[0:8]"`          //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
-	ProtocolCode       string           `json:"protocolCode,optional"`                 //协议code,默认iThings  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
-	AutoRegister       int64            `json:"autoRegister,optional,range=[0:3]"`     //动态注册:1:关闭,2:打开,3:打开并自动创建设备
-	Secret             string           `json:"secret,optional"`                       //动态注册产品秘钥 只读
-	Desc               *string          `json:"desc,optional"`                         //描述
-	Tags               []*Tag           `json:"tags,optional"`                         // 产品tag
-	ProtocolConf       []*Tag           `json:"protocolConf,optional,omitempty"`       //协议配置
+	DeviceType         int64            `json:"deviceType,optional,range=[0:3]"`
+	CategoryID         int64            `json:"categoryID,optional"`               //产品品类
+	NetType            int64            `json:"netType,optional,range=[0:8]"`      //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
+	ProtocolCode       string           `json:"protocolCode,optional"`             //协议code,默认iThings  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
+	AutoRegister       int64            `json:"autoRegister,optional,range=[0:3]"` //动态注册:1:关闭,2:打开,3:打开并自动创建设备
+	Secret             string           `json:"secret,optional"`                   //动态注册产品秘钥 只读
+	Desc               *string          `json:"desc,optional"`                     //描述
+	Tags               []*Tag           `json:"tags,optional"`                     // 产品tag
+	ProtocolConf       []*Tag           `json:"protocolConf,optional,omitempty"`   //协议配置
 	Protocol           *ProtocolInfo    `json:"protocol,omitempty"`
 	Category           *ProductCategory `json:"category,omitempty"`
 }
@@ -1050,6 +1051,7 @@ type ProductInfoIndexReq struct {
 	Page         *PageInfo `json:"page,optional"`                   //分页信息,只获取一个则不填
 	ProductName  string    `json:"productName,optional"`            //过滤产品名称
 	DeviceType   int64     `json:"deviceType,optional,range=[0:3]"` //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
+	DeviceTypes  []int64   `json:"deviceTypes,optional"`            //设备类型:1:设备,2:网关,3:子设备//设备类型:1:设备,2:网关,3:子设备
 	ProductIDs   []string  `json:"productIDs,optional"`             //过滤产品id列表
 	Tags         []*Tag    `json:"tags,optional"`                   // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
 	ProtocolCode string    `json:"protocolCode,optional"`           //协议code,默认iThings  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya

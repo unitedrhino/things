@@ -40,6 +40,7 @@ type (
 		SharedType        def.SelectType
 		WithManufacturer  bool
 		DeviceType        int64
+		DeviceTypes       []int64
 		GroupID           int64
 		GroupIDs          []int64
 		NotGroupID        int64
@@ -149,6 +150,10 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	}
 	if f.DeviceType != 0 {
 		subQuery := d.db.Model(&DmProductInfo{}).Select("product_id").Where("device_type=?", f.DeviceType)
+		db = db.Where("product_id in (?)", subQuery)
+	}
+	if len(f.DeviceTypes) == 0 {
+		subQuery := d.db.Model(&DmProductInfo{}).Select("product_id").Where("device_type in ?", f.DeviceTypes)
 		db = db.Where("product_id in (?)", subQuery)
 	}
 	if f.Gateway != nil {

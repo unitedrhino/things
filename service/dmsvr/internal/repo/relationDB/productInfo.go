@@ -15,6 +15,7 @@ type ProductInfoRepo struct {
 
 type ProductFilter struct {
 	DeviceType   int64
+	DeviceTypes  []int64
 	ProductName  string
 	ProductIDs   []string
 	ProductNames []string
@@ -34,6 +35,9 @@ func (p ProductInfoRepo) fmtFilter(ctx context.Context, f ProductFilter) *gorm.D
 	db := p.db.WithContext(ctx)
 	if f.DeviceType != 0 {
 		db = db.Where("device_type=?", f.DeviceType)
+	}
+	if len(f.DeviceTypes) == 0 {
+		db = db.Where("device_type in ?", f.DeviceTypes)
 	}
 	if len(f.CategoryIDs) != 0 {
 		db = db.Where("category_id in ?", f.CategoryIDs)

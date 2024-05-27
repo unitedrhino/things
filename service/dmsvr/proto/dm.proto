@@ -1079,6 +1079,7 @@ message ProductInfoReadReq{
 message ProductInfoIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填
   int64  deviceType = 2; //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
+  repeated int64 deviceTypes =10;
   string  productName = 3; //过滤条件: 产品名称
   repeated string   productIDs = 4; //过滤产品id列表
   map<string, string> tags = 5;//key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
@@ -1141,6 +1142,7 @@ message DeviceInfoIndexReq{
   string tenantCode = 14;//租户过滤
   repeated string versions =15;//版本列表
   int64  deviceType = 16; //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
+  repeated int64 deviceTypes =21;
   DeviceCore gateway = 17;//获取网关下子设备列表
   int64 groupID =18;
   int64 notGroupID =19;
