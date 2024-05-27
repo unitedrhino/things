@@ -84,7 +84,7 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	if f.DeviceName != "" {
 		db = db.Where("device_name like ?", "%"+f.DeviceName+"%")
 	}
-	db = f.Agency.Filter("agency", db)
+	//db = f.Agency.Filter("agency", db)
 
 	if len(f.Cores) != 0 {
 		scope := func(db *gorm.DB) *gorm.DB {
