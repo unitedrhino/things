@@ -91,8 +91,13 @@ func ToSceneTriggerTimerPo(si *scene.Info, in *scene.Timer) (ret relationDB.UdSc
 		return relationDB.UdSceneTriggerTimer{}
 	}
 	return relationDB.UdSceneTriggerTimer{
-		ExecAt:     in.ExecAt,
-		ExecRepeat: utils.BStrToInt64(in.ExecRepeat),
+		ExecAt:        in.ExecAt,
+		ExecRepeat:    utils.BStrToInt64(in.ExecRepeat),
+		ExecType:      in.ExecType,
+		ExecLoopStart: in.ExecLoopStart,
+		ExecLoopEnd:   in.ExecLoopEnd,
+		ExecLoop:      in.ExecLoop,
+		RepeatType:    in.RepeatType,
 	}
 }
 
