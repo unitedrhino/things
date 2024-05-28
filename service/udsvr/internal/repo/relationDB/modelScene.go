@@ -88,7 +88,7 @@ type UdSceneWhen struct {
 }
 
 type UdSceneThen struct {
-	Actions []*UdSceneThenAction `gorm:"foreignKey:SceneID;references:ID"`
+	Actions []*UdSceneThenAction `gorm:"foreignKey:scene_id;references:ID"`
 }
 
 type UdSceneThenAction struct {
