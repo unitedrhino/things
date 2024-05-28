@@ -37,6 +37,7 @@ func (t Triggers) Validate(repo ValidateRepo) error {
 	}
 	return nil
 }
+
 func (t *Trigger) Validate(repo ValidateRepo) error {
 	if t == nil {
 		return errors.Parameter.AddMsg("需要填写触发内容")
