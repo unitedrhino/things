@@ -31,6 +31,7 @@ type CommonSchemaIndexReq struct {
 	GroupID                   int64     `json:"groupID,optional"`
 	GroupIDs                  []int64   `json:"groupIDs,optional"`
 	AreaID                    int64     `json:"areaID,optional,string"`
+	PropertyMode              string    `json:"propertyMode,optional"` //属性类型可用 读写类型: 1:r(只读) 2:rw(可读可写)
 }
 
 type CommonSchemaIndexResp struct {
@@ -1128,6 +1129,7 @@ type ProductSchemaIndexReq struct {
 	IsCanSceneLinkage int64     `json:"isCanSceneLinkage,optional"` //是否可以场景联动
 	FuncGroup         int64     `json:"funcGroup,optional"`         // 功能分类: 1:普通功能 2:系统功能
 	UserPerm          int64     `json:"userPerm,optional"`          //用户权限操作: 1:r(只读) 3:rw(可读可写)
+	PropertyMode      string    `json:"propertyMode,optional"`      //属性类型可用 读写类型: 1:r(只读) 2:rw(可读可写)
 }
 
 type ProductSchemaIndexResp struct {

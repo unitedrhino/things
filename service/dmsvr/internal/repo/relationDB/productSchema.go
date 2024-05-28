@@ -27,6 +27,7 @@ type (
 		IsCanSceneLinkage int64
 		FuncGroup         int64
 		UserPerm          int64
+		PropertyMode      string
 	}
 )
 
@@ -50,6 +51,10 @@ func (p ProductSchemaRepo) fmtFilter(ctx context.Context, f ProductSchemaFilter)
 	}
 	if f.ID != 0 {
 		db = db.Where("id=?", f.ID)
+	}
+	if f.PropertyMode != "" {
+		db = db.Where("JSON_CONTAINS(affordance, JSON_OBJECT('mode',?))",
+			f.PropertyMode)
 	}
 	if len(f.ProductIDs) != 0 {
 		db = db.Where("product_id in ?", f.ProductIDs)

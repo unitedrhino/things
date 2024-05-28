@@ -20,6 +20,7 @@ type (
 		IsCanSceneLinkage int64
 		FuncGroup         int64
 		UserPerm          int64
+		PropertyMode      string
 	}
 )
 
@@ -37,6 +38,10 @@ func (p CommonSchemaRepo) fmtFilter(ctx context.Context, f CommonSchemaFilter) *
 	}
 	if f.UserPerm != 0 {
 		db = db.Where("user_auth = ?", f.UserPerm)
+	}
+	if f.PropertyMode != "" {
+		db = db.Where("JSON_CONTAINS(affordance, JSON_OBJECT('mode',?))",
+			f.PropertyMode)
 	}
 	if f.Name != "" {
 		db = db.Where("name like ?", "%"+f.Name+"%")

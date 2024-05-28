@@ -55,6 +55,8 @@ type (
         GroupID int64 `json:"groupID,optional"`
         GroupIDs []int64 `json:"groupIDs,optional"`
         AreaID int64 `json:"areaID,optional,string"`
+        PropertyMode string  `json:"propertyMode,optional"`//属性类型可用 读写类型: 1:r(只读) 2:rw(可读可写)
+
     }
     CommonSchemaIndexResp {
         List []*CommonSchemaInfo `json:"list"`           //分页信息,只获取一个则不填

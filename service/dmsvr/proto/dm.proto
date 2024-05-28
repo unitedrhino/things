@@ -1206,6 +1206,7 @@ message CommonSchemaIndexReq{
   int64 areaID =16;//过滤区域下设备共有的物模型
   int64 groupID =17;//过滤分组下设备共有的物模型
   repeated int64 groupIDs =18;//过滤分组下设备共有的物模型
+  string  propertyMode =19;//属性类型可用 读写类型: 1:r(只读) 2:rw(可读可写)
 }
 
 message CommonSchemaIndexResp{
@@ -1264,6 +1265,7 @@ message ProductSchemaIndexReq{
   int64 isCanSceneLinkage =8;//是否支持场景联动控制
   int64 funcGroup =14; // 功能分类: 1:普通功能 2:系统功能
   int64 userPerm =15;//用户权限操作: 1:r(只读) 3:rw(可读可写)
+  string  propertyMode =16;//属性类型可用 读写类型: 1:r(只读) 2:rw(可读可写)
 }
 
 message ProductSchemaIndexResp{
