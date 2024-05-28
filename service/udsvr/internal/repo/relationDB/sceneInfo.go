@@ -65,7 +65,35 @@ func (p SceneInfoRepo) fmtFilter(ctx context.Context, f SceneInfoFilter) *gorm.D
 }
 
 func (p SceneInfoRepo) Insert(ctx context.Context, data *UdSceneInfo) error {
-	err := p.db.WithContext(ctx).Create(data).Error
+	err := p.db.Transaction(func(tx *gorm.DB) error {
+		triggers := data.Triggers
+		actions := data.Actions
+		data.Triggers = nil
+		data.Actions = nil
+		err := p.db.WithContext(ctx).Create(data).Error
+		if err != nil {
+			return err
+		}
+		if len(triggers) != 0 {
+			for i := range triggers {
+				triggers[i].SceneID = data.ID
+			}
+			err = NewSceneIfTriggerRepo(tx).MultiInsert(ctx, triggers)
+			if err != nil {
+				return err
+			}
+		}
+		if len(actions) != 0 {
+			for i := range actions {
+				actions[i].SceneID = data.ID
+			}
+			err = NewSceneActionRepo(tx).MultiInsert(ctx, actions)
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	})
 	return stores.ErrFmt(err)
 }
 
