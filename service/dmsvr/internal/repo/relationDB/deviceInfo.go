@@ -44,7 +44,7 @@ type (
 		GroupID           int64
 		GroupIDs          []int64
 		NotGroupID        int64
-		Agency            *stores.IDPathFilter
+		Distributor       *stores.IDPathFilter
 	}
 )
 
@@ -54,6 +54,7 @@ func NewDeviceInfoRepo(in any) *DeviceInfoRepo {
 
 func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB {
 	db := d.db.WithContext(ctx)
+	db = f.Distributor.Filter(db, "distributor")
 	if f.WithProduct {
 		db = db.Preload("ProductInfo")
 	}
@@ -264,8 +265,8 @@ func (d DeviceInfoRepo) CountGroupByField(ctx context.Context, f DeviceFilter, c
 	return result, stores.ErrFmt(err)
 }
 
-func (d DeviceInfoRepo) MultiUpdate(ctx context.Context, devices []*devices.Core, info *DmDeviceInfo) error {
+func (d DeviceInfoRepo) MultiUpdate(ctx context.Context, devices []*devices.Core, info *DmDeviceInfo, columns ...string) error {
 	db := d.fmtFilter(ctx, DeviceFilter{Cores: devices}).Model(&DmDeviceInfo{})
-	err := db.Updates(info).Error
+	err := db.Select(columns).Updates(info).Error
 	return stores.ErrFmt(err)
 }

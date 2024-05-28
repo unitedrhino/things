@@ -13,8 +13,6 @@ import (
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
-	"gitee.com/i-Things/share/domain/slot"
-	"gitee.com/i-Things/share/domain/tenant"
 	ws "gitee.com/i-Things/share/websocket"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/cache"
@@ -72,9 +70,10 @@ type ServiceContext struct {
 	ProjectM       projectmanage.ProjectManage
 	ProductCache   *caches.Cache[dm.ProductInfo, string]
 	DeviceCache    *caches.Cache[dm.DeviceInfo, devices.Core]
-	TenantCache    *caches.Cache[tenant.Info, string]
+	TenantCache    sysExport.TenantCacheT
+	ProjectCache   sysExport.ProjectCacheT
 	WebHook        *sysExport.Webhook
-	Slot           *caches.Cache[slot.Infos, string]
+	Slot           sysExport.SlotCacheT
 	UserSubscribe  *ws.UserSubscribe
 	GatewayCanBind *cache.GatewayCanBind
 	NodeID         int64
@@ -160,6 +159,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	//	}, Timestamp: time.Now().UnixMilli()})
 	Slot, err := sysExport.NewSlotCache(common.NewCommon(zrpc.MustNewClient(c.SysRpc.Conf)))
 	logx.Must(err)
+	projectC, err := sysExport.NewProjectInfoCache(projectmanage.NewProjectManage(zrpc.MustNewClient(c.SysRpc.Conf)), serverMsg)
+	logx.Must(err)
 	return &ServiceContext{
 		FastEvent:      serverMsg,
 		TenantCache:    tenantCache,
@@ -190,6 +191,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		WebHook:        webHook,
 		NodeID:         nodeID,
 		Slot:           Slot,
+		ProjectCache:   projectC,
 	}
 }
 

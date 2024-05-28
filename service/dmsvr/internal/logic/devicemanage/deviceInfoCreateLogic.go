@@ -109,14 +109,14 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 		projectID = stores.ProjectID(ti.DefaultProjectID)
 	}
 	di := relationDB.DmDeviceInfo{
-		ProjectID:  projectID,
-		ProductID:  in.ProductID,  // 产品id
-		DeviceName: in.DeviceName, // 设备名称
-		Position:   logic.ToStorePoint(in.Position),
-		AreaID:     def.NotClassified, //设备默认都是未分类
-		Status:     def.DeviceStatusInactive,
-		IsEnable:   def.True,
-		Agency:     utils.Copy2[stores.IDPath](in.Agency),
+		ProjectID:   projectID,
+		ProductID:   in.ProductID,  // 产品id
+		DeviceName:  in.DeviceName, // 设备名称
+		Position:    logic.ToStorePoint(in.Position),
+		AreaID:      def.NotClassified, //设备默认都是未分类
+		Status:      def.DeviceStatusInactive,
+		IsEnable:    def.True,
+		Distributor: utils.Copy2[stores.IDPath](in.Distributor),
 	}
 	if in.IsEnable != 0 {
 		di.IsEnable = in.IsEnable

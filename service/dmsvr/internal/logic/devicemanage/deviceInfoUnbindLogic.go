@@ -55,6 +55,7 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceCore) (*dm.Empty, 
 	}
 	di.TenantCode = def.TenantCodeDefault
 	di.ProjectID = stores.ProjectID(dpi.DefaultProjectID)
+	di.UserID = 0
 	di.AreaID = stores.AreaID(def.NotClassified)
 	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
 		err := relationDB.NewDeviceInfoRepo(tx).Update(ctxs.WithRoot(l.ctx), di)

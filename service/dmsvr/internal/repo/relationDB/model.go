@@ -50,11 +50,12 @@ type DmDeviceInfo struct {
 	FirstBind      sql.NullTime      `gorm:"column:first_bind"`                                                    // 首次绑定事件
 	LastLogin      sql.NullTime      `gorm:"column:last_login"`                                                    // 最后上线时间
 	LogLevel       int64             `gorm:"column:log_level;type:smallint;default:1;NOT NULL"`                    // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
+	UserID         int64             `gorm:"column:user_id;type:BIGINT;default:0"`                                 // 用户id
 	Status         int64             `gorm:"column:status;type:smallint;default:1;NOT NULL"`                       // 设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中) 5-禁用
 	IsEnable       int64             `gorm:"column:isEnable;type:smallint;default:1;"`                             //是否启用: 1:是 2:否
 	ManufacturerID int64             `gorm:"column:manufacturer_id;type:bigint;default:1;NOT NULL"`                //制造商信息
 	stores.NoDelTime
-	Agency       stores.IDPath       `gorm:"embedded;embeddedPrefix:agency_"` //代理的id,如果为空,则未参与分销
+	Distributor  stores.IDPath       `gorm:"embedded;embeddedPrefix:distributor_"` //代理的id,如果为空,则未参与分销
 	DeletedTime  stores.DeletedTime  `gorm:"column:deleted_time;default:0;uniqueIndex:product_id_deviceName"`
 	ProductInfo  *DmProductInfo      `gorm:"foreignKey:ProductID;references:ProductID"` // 添加外键
 	Manufacturer *DmManufacturerInfo `gorm:"foreignKey:ID;references:ManufacturerID"`   // 添加外键

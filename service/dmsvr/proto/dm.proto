@@ -1043,7 +1043,7 @@ message DeviceInfo {
   ManufacturerInfo manufacturer =32; //制造商信息
   int64  deviceType = 33; //设备类型:1:设备,2:网关,3:子设备
   int64 netType =35;//网络类型
-  IDPath agency =36;//过滤分销商的数据
+  IDPath distributor =36;//过滤分销商的数据
 }
 
 message ProductInfo{
@@ -1121,9 +1121,10 @@ message DeviceInfoReadReq{
   bool withManufacturer =3;//同时获取制造商信息
 }
 
-message DeviceInfoMultiUpdateReq{
+message DeviceInfoMultiUpdateReq {
   repeated DeviceCore   devices = 1; //产品id
   int64 areaID = 2; //项目区域id
+  IDPath distributor =20;//分销商的数据
 }
 
 message DeviceInfoIndexReq{
@@ -1147,7 +1148,7 @@ message DeviceInfoIndexReq{
   DeviceCore gateway = 17;//获取网关下子设备列表
   int64 groupID =18;
   int64 notGroupID =19;
-  IDPath agency =20;//过滤分销商的数据
+  IDPath distributor =20;//过滤分销商的数据
 }
 
 message DeviceInfoIndexResp{

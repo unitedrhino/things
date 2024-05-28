@@ -72,6 +72,7 @@ func ToDeviceInfo(ctx context.Context, in *relationDB.DmDeviceInfo, ProductCache
 		ProductName:    productName,
 		DeviceType:     deviceType,
 		NetType:        netType,
+		Distributor:    utils.Copy[dm.IDPath](&in.Distributor),
 	}
 }
 

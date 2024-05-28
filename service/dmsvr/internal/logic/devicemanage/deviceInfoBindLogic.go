@@ -42,6 +42,14 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 		}
 		in.Device.ProductID = pi.ProductID
 	}
+	uc := ctxs.GetUserCtxNoNil(l.ctx)
+	projectI, err := l.svcCtx.ProjectCache.GetData(l.ctx, uc.ProjectID)
+	if err != nil {
+		return nil, err
+	}
+	if projectI.AdminUserID != uc.UserID {
+		return nil, errors.Permissions.AddMsg("只有管理员才可以绑定设备")
+	}
 	diDB := relationDB.NewDeviceInfoRepo(l.ctx)
 	di, err := diDB.FindOneByFilter(ctxs.WithRoot(l.ctx), relationDB.DeviceFilter{
 		ProductID:   in.Device.ProductID,
@@ -50,7 +58,6 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 	if err != nil {
 		return nil, err
 	}
-	uc := ctxs.GetUserCtxNoNil(l.ctx)
 	if (di.TenantCode != def.TenantCodeDefault && string(di.TenantCode) != uc.TenantCode) || (string(di.TenantCode) == uc.TenantCode &&
 		int64(di.ProjectID) != uc.ProjectID) { //如果在其他租户下 则已经被绑定 或 在本租户下,但是不在一个项目下也不允许绑定
 		//只有归属于default租户和自己租户的才可以
@@ -62,6 +69,7 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 	}
 	di.TenantCode = stores.TenantCode(uc.TenantCode)
 	di.ProjectID = stores.ProjectID(uc.ProjectID)
+	di.UserID = projectI.AdminUserID
 	if in.AreaID == 0 {
 		in.AreaID = def.NotClassified
 	}
