@@ -240,7 +240,6 @@ type DeviceInfoIndexReq struct {
 type DeviceInfoIndexResp struct {
 	List  []*DeviceInfo `json:"list"`  //设备信息
 	Total int64         `json:"total"` //总数(只有分页的时候会返回)
-	Num   int64         `json:"num"`   //返回的数量
 }
 
 type DeviceInfoMultiUpdateReq struct {
@@ -747,7 +746,8 @@ type GroupInfo struct {
 	CreatedTime int64         `json:"createdTime,string,optional"`         //创建时间
 	Desc        string        `json:"desc,optional,omitempty"`             //分组描述
 	DeviceCount int64         `json:"deviceCount,optional,omitempty"`      //设备数量统计
-	Tags        []*Tag        `json:"tags,optional,omitempty"`             //分组tag
+	IsLeaf      int64         `json:"isLeaf,optional"`
+	Tags        []*Tag        `json:"tags,optional,omitempty"` //分组tag
 	Devices     []*DeviceCore `json:"devices,optional,omitempty"`
 	Children    []*GroupInfo  `json:"children,optional,omitempty"`
 }
@@ -979,6 +979,7 @@ type ProductCategory struct {
 	Desc            *string            `json:"desc,optional"`                      //描述
 	HeadImg         string             `json:"headImg,optional"`                   // 用户头像
 	IsUpdateHeadImg bool               `json:"isUpdateHeadImg,omitempty,optional"` // 用户头像
+	IsLeaf          int64              `json:"isLeaf,optional"`
 	Children        []*ProductCategory `json:"children,optional"`
 }
 

@@ -63,6 +63,7 @@ type (
         Desc *string `json:"desc,optional"`                       //描述
         HeadImg  string `json:"headImg,optional"`        // 用户头像
         IsUpdateHeadImg  bool `json:"isUpdateHeadImg,omitempty,optional"`        // 用户头像
+        IsLeaf int64 `json:"isLeaf,optional"`
         Children []*ProductCategory `json:"children,optional"`
     }
 

@@ -115,6 +115,13 @@ func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfo) (*dm.WithID, er
 			if err != nil {
 				return err
 			}
+			if parent.IsLeaf == def.True {
+				parent.IsLeaf = def.False
+				err = relationDB.NewGroupInfoRepo(tx).Update(l.ctx, parent)
+				if err != nil {
+					return err
+				}
+			}
 			po.IDPath = parent.IDPath + po.IDPath
 		}
 		err = relationDB.NewGroupInfoRepo(tx).Update(l.ctx, &po)

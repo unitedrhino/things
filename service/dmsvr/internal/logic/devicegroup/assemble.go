@@ -25,5 +25,6 @@ func ToGroupInfoPb(ro *relationDB.DmGroupInfo) *dm.GroupInfo {
 		Desc:        ro.Desc,
 		CreatedTime: ro.CreatedTime.Unix(),
 		Tags:        ro.Tags,
+		IsLeaf:      ro.IsLeaf,
 	}
 }

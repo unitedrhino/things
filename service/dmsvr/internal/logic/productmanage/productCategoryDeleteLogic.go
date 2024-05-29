@@ -2,7 +2,10 @@ package productmanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
+	"gorm.io/gorm"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
@@ -26,6 +29,27 @@ func NewProductCategoryDeleteLogic(ctx context.Context, svcCtx *svc.ServiceConte
 
 // 删除产品
 func (l *ProductCategoryDeleteLogic) ProductCategoryDelete(in *dm.WithID) (*dm.Empty, error) {
-	err := relationDB.NewProductCategoryRepo(l.ctx).Delete(l.ctx, in.Id)
+	po, err := relationDB.NewProductCategoryRepo(l.ctx).FindOne(l.ctx, in.Id)
+	if err != nil {
+		return nil, err
+	}
+	stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+		if po.ParentID != 0 {
+			c, err := relationDB.NewProductCategoryRepo(tx).CountByFilter(l.ctx, relationDB.ProductCategoryFilter{ParentID: po.ParentID})
+			if err != nil {
+				return err
+			}
+			if c == 0 { //下面没有子节点了
+				err = relationDB.NewProductCategoryRepo(tx).UpdateWithField(l.ctx,
+					relationDB.ProductCategoryFilter{ID: po.ParentID}, map[string]any{"is_leaf": def.True})
+				if err != nil {
+					return err
+				}
+			}
+		}
+		err := relationDB.NewProductCategoryRepo(l.ctx).Delete(l.ctx, in.Id)
+		return err
+	})
+
 	return &dm.Empty{}, err
 }

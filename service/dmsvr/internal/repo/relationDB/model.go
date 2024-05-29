@@ -158,6 +158,7 @@ type DmProductCategory struct {
 	HeadImg  string `gorm:"column:head_img;type:varchar(200)"`                     // 图片
 	ParentID int64  `gorm:"column:parent_id;type:bigint;NOT NULL"`                 // 上级区域ID(雪花ID)
 	IDPath   string `gorm:"column:id_path;type:varchar(100);NOT NULL"`             // 1-2-3-的格式记录顶级区域到当前区域的路径
+	IsLeaf   int64  `gorm:"column:is_leaf;type:bigint;default:1;NOT NULL"`         //是否是叶子节点
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:pn"`
 }
@@ -264,6 +265,7 @@ type DmGroupInfo struct {
 	AreaID     stores.AreaID     `gorm:"column:area_id;uniqueIndex:tc_ac;type:bigint;default:2;NOT NULL"`                // 项目区域ID(雪花ID)
 	ParentID   int64             `gorm:"column:parent_id;type:bigint;default:0;NOT NULL"`                                // 父组ID 0-根组
 	IDPath     string            `gorm:"column:id_path;type:varchar(100);NOT NULL"`                                      // 1-2-3-的格式记录顶级区域到当前区域的路径
+	IsLeaf     int64             `gorm:"column:is_leaf;type:bigint;default:1;NOT NULL"`                                  //是否是叶子节点
 	ProductID  string            `gorm:"column:product_id;type:varchar(100);default:'';NOT NULL"`                        // 产品id,为空则不限定分组内的产品类型
 	Name       string            `gorm:"column:name;uniqueIndex:tc_ac;default:'';type:varchar(100);NOT NULL"`            // 分组名称
 	Desc       string            `gorm:"column:desc;type:varchar(200);default:''"`                                       // 描述

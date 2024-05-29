@@ -27,12 +27,16 @@ type ProductCategoryFilter struct {
 	Name     string
 	IDPath   string
 	ParentID int64
+	ID       int64
 }
 
 func (p ProductCategoryRepo) fmtFilter(ctx context.Context, f ProductCategoryFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if f.Name != "" {
 		db = db.Where("name like ?", "%"+f.Name+"%")
+	}
+	if f.ID != 0 {
+		db = db.Where("id = ?", f.ID)
 	}
 	if f.ParentID != 0 {
 		db = db.Where("parent_id = ?", f.ParentID)
@@ -77,6 +81,12 @@ func (p ProductCategoryRepo) CountByFilter(ctx context.Context, f ProductCategor
 
 func (p ProductCategoryRepo) Update(ctx context.Context, data *DmProductCategory) error {
 	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
+	return stores.ErrFmt(err)
+}
+
+func (d ProductCategoryRepo) UpdateWithField(ctx context.Context, f ProductCategoryFilter, updates map[string]any) error {
+	db := d.fmtFilter(ctx, f)
+	err := db.Model(&DmProductCategory{}).Updates(updates).Error
 	return stores.ErrFmt(err)
 }
 

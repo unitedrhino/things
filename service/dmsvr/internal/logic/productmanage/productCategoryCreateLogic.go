@@ -6,9 +6,11 @@ import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/oss"
+	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/spf13/cast"
+	"gorm.io/gorm"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
@@ -51,16 +53,24 @@ func (l *ProductCategoryCreateLogic) ProductCategoryCreate(in *dm.ProductCategor
 		po.HeadImg = path
 	}
 	po.IDPath = cast.ToString(po.ID) + "-"
-	if po.ParentID != 0 && po.ParentID != def.RootNode {
-		parent, err := relationDB.NewProductCategoryRepo(l.ctx).FindOne(l.ctx, in.ParentID)
-		if err != nil {
-			return nil, err
+	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+		if po.ParentID != 0 && po.ParentID != def.RootNode {
+			parent, err := relationDB.NewProductCategoryRepo(tx).FindOne(l.ctx, in.ParentID)
+			if err != nil {
+				return err
+			}
+			po.IDPath = parent.IDPath + po.IDPath
+			if parent.IsLeaf == def.True {
+				parent.IsLeaf = def.False
+				err = relationDB.NewProductCategoryRepo(tx).Update(l.ctx, parent)
+				if err != nil {
+					return err
+				}
+			}
 		}
-		po.IDPath = parent.IDPath + po.IDPath
-	}
-	err = relationDB.NewProductCategoryRepo(l.ctx).Update(l.ctx, &po)
-	if err != nil {
-		return nil, err
-	}
+		err = relationDB.NewProductCategoryRepo(tx).Update(l.ctx, &po)
+		return err
+	})
+
 	return &dm.WithID{Id: po.ID}, err
 }

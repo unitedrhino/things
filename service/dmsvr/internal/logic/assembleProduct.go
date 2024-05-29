@@ -134,6 +134,7 @@ func ToProductCategoryPb(ctx context.Context, svcCtx *svc.ServiceContext, info *
 		ParentID: info.ParentID,
 		IdPath:   utils.GetIDPath(info.IDPath),
 		Desc:     utils.ToRpcNullString(info.Desc),
+		IsLeaf:   info.IsLeaf,
 	}
 	if children != nil {
 		var idMap = map[int64][]*dm.ProductCategory{}

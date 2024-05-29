@@ -71,6 +71,7 @@ type (
         CreatedTime int64  `json:"createdTime,string,optional"`     //创建时间
         Desc string `json:"desc,optional,omitempty"`   //分组描述
         DeviceCount int64 `json:"deviceCount,optional,omitempty"` //设备数量统计
+        IsLeaf int64 `json:"isLeaf,optional"`
         Tags []*Tag `json:"tags,optional,omitempty"`                 //分组tag
         Devices []*DeviceCore `json:"devices,optional,omitempty"`
         Children []*GroupInfo `json:"children,optional,omitempty"`

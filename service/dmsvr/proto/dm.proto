@@ -434,6 +434,7 @@ message ProductCategory{
   bool isUpdateHeadImg = 5;//只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
   google.protobuf.StringValue desc = 6;
   repeated int64 idPath =9;
+  int64 isLeaf =10;
   repeated ProductCategory children =7;//子节点
 }
 
@@ -935,7 +936,8 @@ message GroupInfo{
   string productName = 9;
   repeated DeviceCore devices =11;
   int64 deviceCount = 12;
-  repeated GroupInfo children =13;
+  int64 isLeaf =13;
+  repeated GroupInfo children =14;
 //  DeviceInfoCount deviceInfoCount =11;
 }
 

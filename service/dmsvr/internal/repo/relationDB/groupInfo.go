@@ -13,6 +13,7 @@ type GroupInfoRepo struct {
 
 type GroupInfoFilter struct {
 	AreaID      int64
+	ID          int64
 	Names       []string
 	ParentID    int64
 	IDPath      string
@@ -29,6 +30,9 @@ func (p GroupInfoRepo) fmtFilter(ctx context.Context, f GroupInfoFilter) *gorm.D
 	db := p.db.WithContext(ctx)
 	if f.WithProduct {
 		db = db.Preload("ProductInfo")
+	}
+	if f.ID != 0 {
+		db = db.Where("id = ?", f.ID)
 	}
 	if f.AreaID != 0 {
 		db = db.Where("area_id=?", f.AreaID)
@@ -103,6 +107,12 @@ func (p GroupInfoRepo) CountByFilter(ctx context.Context, f GroupInfoFilter) (si
 
 func (g GroupInfoRepo) Update(ctx context.Context, data *DmGroupInfo) error {
 	err := g.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
+	return stores.ErrFmt(err)
+}
+
+func (d GroupInfoRepo) UpdateWithField(ctx context.Context, f GroupInfoFilter, updates map[string]any) error {
+	db := d.fmtFilter(ctx, f)
+	err := db.Model(&DmGroupInfo{}).Updates(updates).Error
 	return stores.ErrFmt(err)
 }
 
