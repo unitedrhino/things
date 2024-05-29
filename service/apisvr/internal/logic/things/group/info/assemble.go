@@ -34,6 +34,7 @@ func ToGroupInfoTypes(in *dm.GroupInfo) *types.GroupInfo {
 		Children:    ToGroupInfosTypes(in.Children),
 	}
 }
+
 func ToGroupInfoPbTypes(in *types.GroupInfo) *dm.GroupInfo {
 	return &dm.GroupInfo{
 		AreaID:      in.AreaID,
