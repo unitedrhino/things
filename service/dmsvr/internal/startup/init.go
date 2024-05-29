@@ -9,6 +9,7 @@ import (
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
+	"gitee.com/i-Things/share/domain/application"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/eventBus"
 	"gitee.com/i-Things/share/utils"
@@ -16,6 +17,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/internal/event/otaEvent"
 	"github.com/i-Things/things/service/dmsvr/internal/event/serverEvent"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
+	devicemanagelogic "github.com/i-Things/things/service/dmsvr/internal/logic/devicemanage"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/event/subscribe/server"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/event/subscribe/subDev"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
@@ -124,6 +126,48 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		})
 		logx.WithContext(ctx).Infof("DeviceGroupHandle value:%v err:%v", utils.Fmt(value), err)
 		return err
+	})
+	logx.Must(err)
+	err = svcCtx.FastEvent.Subscribe(eventBus.CoreUserDelete, func(ctx context.Context, t time.Time, body []byte) error {
+		var value application.IDs
+		err := json.Unmarshal(body, &value)
+		if err != nil {
+			return err
+		}
+		logx.WithContext(ctx).Infof("CoreUserDelete value:%v err:%v", utils.Fmt(value), err)
+		ctx = ctxs.WithRoot(ctx)
+		dis, err := relationDB.NewDeviceInfoRepo(ctx).FindByFilter(ctx, relationDB.DeviceFilter{UserIDs: value.IDs}, nil)
+		for _, v := range dis {
+			_, err := devicemanagelogic.NewDeviceInfoUnbindLogic(ctx, svcCtx).DeviceInfoUnbind(&dm.DeviceCore{
+				ProductID:  v.ProductID,
+				DeviceName: v.DeviceName,
+			})
+			if err != nil {
+				logx.WithContext(ctx).Errorf("DeviceInfoUnbind dev:%v err:%v", utils.Fmt(v), err)
+			}
+		}
+		return nil
+	})
+	logx.Must(err)
+	err = svcCtx.FastEvent.Subscribe(eventBus.CoreProjectDelete, func(ctx context.Context, t time.Time, body []byte) error {
+		var value application.IDs
+		err := json.Unmarshal(body, &value)
+		if err != nil {
+			return err
+		}
+		logx.WithContext(ctx).Infof("CoreProjectDelete value:%v err:%v", utils.Fmt(value), err)
+		ctx = ctxs.WithRoot(ctx)
+		dis, err := relationDB.NewDeviceInfoRepo(ctx).FindByFilter(ctx, relationDB.DeviceFilter{ProjectIDs: value.IDs}, nil)
+		for _, v := range dis {
+			_, err := devicemanagelogic.NewDeviceInfoUnbindLogic(ctx, svcCtx).DeviceInfoUnbind(&dm.DeviceCore{
+				ProductID:  v.ProductID,
+				DeviceName: v.DeviceName,
+			})
+			if err != nil {
+				logx.WithContext(ctx).Errorf("DeviceInfoUnbind dev:%v err:%v", utils.Fmt(v), err)
+			}
+		}
+		return nil
 	})
 	logx.Must(err)
 	err = svcCtx.FastEvent.Subscribe(eventBus.DmOtaJobDelayRun, func(ctx context.Context, t time.Time, body []byte) error {

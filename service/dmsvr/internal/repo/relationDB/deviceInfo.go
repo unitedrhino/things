@@ -43,6 +43,8 @@ type (
 		DeviceTypes       []int64
 		GroupID           int64
 		GroupIDs          []int64
+		UserID            int64
+		UserIDs           []int64
 		NotGroupID        int64
 		Distributor       *stores.IDPathFilter
 	}
@@ -124,6 +126,14 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 
 	if f.IsOnline != 0 {
 		db = db.Where("is_online = ?", f.IsOnline)
+	}
+
+	if len(f.UserIDs) != 0 {
+		db = db.Where("user_id in ?", f.UserIDs)
+	}
+
+	if f.UserID != 0 {
+		db = db.Where("user_id = ?", f.UserID)
 	}
 
 	if f.Range > 0 {
