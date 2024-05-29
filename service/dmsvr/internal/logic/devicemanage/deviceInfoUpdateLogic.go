@@ -163,6 +163,9 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 	if data.MobileOperator != 0 {
 		old.MobileOperator = data.MobileOperator
 	}
+	if data.Distributor != nil {
+		old.Distributor = utils.Copy2[stores.IDPath](data.Distributor)
+	}
 	if data.Iccid != nil {
 		old.Iccid = utils.AnyToNullString(data.Iccid)
 	}

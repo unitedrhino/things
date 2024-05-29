@@ -75,6 +75,5 @@ func (l *IndexLogic) Index(req *types.DeviceInfoIndexReq) (resp *types.DeviceInf
 	return &types.DeviceInfoIndexResp{
 		Total: dmResp.Total,
 		List:  pis,
-		Num:   int64(len(pis)),
 	}, nil
 }
