@@ -301,6 +301,7 @@ type DeviceInteractMultiSendPropertyReq struct {
 	ProductID     string        `json:"productID,optional"`      //产品id
 	DeviceNames   []string      `json:"deviceNames,optional"`    //设备名列表
 	Devices       []*DeviceCore `json:"devices,optional"`        //如果是不同的产品,则传这个字段,上面两个参数填了优先使用
+	IsAsync       bool          `json:"isAsync,optional"`        //是否异步操作 异步情况通过获取接口来获取
 	ShadowControl int64         `json:"shadowControl,optional"`  //设备影子控制 0:自动,当设备不在线的时候设置设备影子,设备在线时直接下发给设备 1:只实时下发,不在线报错 2:如果有设备影子只修改影子,没有的也不下发
 	Data          string        `json:"data"`                    //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
 }

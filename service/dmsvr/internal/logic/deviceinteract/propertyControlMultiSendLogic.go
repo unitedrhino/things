@@ -60,7 +60,7 @@ func (l *PropertyControlMultiSendLogic) MultiSendOneProductProperty(in *dm.Prope
 				ProductID:  in.ProductID,
 				DeviceName: v,
 				Data:       in.Data,
-				IsAsync:    false,
+				IsAsync:    in.IsAsync,
 			})
 			if err != nil {
 				myErr, _ := err.(*errors.CodeError)
