@@ -208,6 +208,7 @@ type (
         GroupID int64 `json:"groupID,optional,string"`
         NotGroupID int64 `json:"notGroupID,optional,string"`
         Devices []*DeviceCore `json:"devices,optional"`
+        Status int64 `json:"status,optional"` //设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)
         WithOwner bool  `json:"withOwner,optional"`//同时获取拥有人的信息
     }
     DeviceInfoIndexResp  {
