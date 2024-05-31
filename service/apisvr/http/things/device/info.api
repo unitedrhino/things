@@ -192,6 +192,8 @@ type (
         TenantCode string `json:"tenantCode,optional"`
         ProductID string `json:"productID,optional"`      //产品id 为空时获取所有产品
         DeviceName string `json:"deviceName,optional"`    //过滤条件:模糊查询 设备名
+        DeviceNames []string `json:"deviceNames,optional"`    //过滤条件:精准查询 设备名
+
         DeviceAlias string `json:"deviceAlias,optional"`  //过滤条件:模糊查询 设备别名
         DeviceTypes []int64 `json:"deviceTypes,optional"`                                     //设备类型:1:设备,2:网关,3:子设备//设备类型:1:设备,2:网关,3:子设备
         Position *Point `json:"position,optional"`        //设备定位,默认百度坐标系，用于获取以该点为中心，Range范围内的设备列表，与Range连用
