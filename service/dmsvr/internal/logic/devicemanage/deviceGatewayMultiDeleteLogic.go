@@ -40,6 +40,14 @@ func (l *DeviceGatewayMultiDeleteLogic) DeviceGatewayMultiDelete(in *dm.DeviceGa
 	if err != nil {
 		return nil, err
 	}
+	_, err = NewDeviceInfoMultiUpdateLogic(l.ctx, l.svcCtx).DeviceInfoMultiUpdate(&dm.DeviceInfoMultiUpdateReq{
+		Devices: in.List,
+		AreaID:  def.NotClassified,
+	})
+	if err != nil {
+		return nil, err
+	}
+
 	devicesDos := logic.ToDeviceCoreDos(in.List)
 	err = l.GdDB.MultiDelete(l.ctx, &devices.Core{
 		ProductID:  in.Gateway.ProductID,
