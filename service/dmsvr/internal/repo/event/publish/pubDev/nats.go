@@ -68,7 +68,7 @@ func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqMsg *deviceMsg.Publ
 	for dead.After(time.Now()) {
 		msg, err := handle.GetMsg(dead.Sub(time.Now()))
 		if err != nil {
-			logx.WithContext(ctx).Errorf("%s.GetMsg failure err:%v", utils.FuncName(), err)
+			logx.WithContext(ctx).Errorf("%s.GetMsg failure endTime:%v req:%v err:%v", utils.FuncName(), dead, reqMsg, err)
 			return nil, err
 		}
 		if msg.Handle != reqMsg.Handle || msg.Type != reqMsg.Type { //不是订阅的topic
