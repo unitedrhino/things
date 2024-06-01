@@ -58,6 +58,7 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceCore) (*dm.Empty, 
 	di.UserID = 0
 	di.AreaID = stores.AreaID(def.NotClassified)
 	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+
 		err := relationDB.NewDeviceInfoRepo(tx).Update(ctxs.WithRoot(l.ctx), di)
 		if err != nil {
 			return err
@@ -66,6 +67,14 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceCore) (*dm.Empty, 
 			ProductID:  di.ProductID,
 			DeviceName: di.DeviceName,
 		})
+		if err != nil {
+			return err
+		}
+		err = relationDB.NewDeviceProfileRepo(tx).DeleteByFilter(ctxs.WithRoot(l.ctx),
+			relationDB.DeviceProfileFilter{Device: devices.Core{
+				ProductID:  di.ProductID,
+				DeviceName: di.DeviceName,
+			}})
 		return err
 	})
 	if err != nil {
@@ -75,5 +84,6 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceCore) (*dm.Empty, 
 		ProductID:  di.ProductID,
 		DeviceName: di.DeviceName,
 	}, nil)
+
 	return &dm.Empty{}, err
 }

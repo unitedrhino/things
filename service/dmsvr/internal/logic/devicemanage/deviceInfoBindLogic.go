@@ -81,9 +81,23 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 		di.FirstBind = sql.NullTime{Time: time.Now(), Valid: true}
 	}
 	err = diDB.Update(ctxs.WithRoot(l.ctx), di)
+	if err != nil {
+		return nil, err
+	}
 	l.svcCtx.DeviceCache.SetData(l.ctx, devices.Core{
 		ProductID:  di.ProductID,
 		DeviceName: di.DeviceName,
 	}, nil)
+	{ //清除之前的日志
+		err = l.svcCtx.SendRepo.DeleteDevice(l.ctx, di.ProductID, di.DeviceName)
+		if err != nil {
+			l.Error(err)
+		}
+		err = l.svcCtx.StatusRepo.DeleteDevice(l.ctx, di.ProductID, di.DeviceName)
+		if err != nil {
+			l.Error(err)
+		}
+	}
+
 	return &dm.Empty{}, err
 }
