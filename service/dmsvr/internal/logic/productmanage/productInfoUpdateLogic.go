@@ -39,6 +39,9 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 	if data.ProductName != "" {
 		old.ProductName = data.ProductName
 	}
+	if data.TrialTime != nil {
+		old.TrialTime = utils.ToNullTime2(data.TrialTime)
+	}
 	if data.AuthMode != def.Unknown {
 		old.AuthMode = data.AuthMode
 	}

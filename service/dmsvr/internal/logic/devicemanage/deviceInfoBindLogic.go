@@ -42,6 +42,10 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 		}
 		in.Device.ProductID = pi.ProductID
 	}
+	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, in.Device.ProductID)
+	if err != nil {
+		return nil, err
+	}
 	uc := ctxs.GetUserCtxNoNil(l.ctx)
 	projectI, err := l.svcCtx.ProjectCache.GetData(l.ctx, uc.ProjectID)
 	if err != nil {
@@ -79,6 +83,12 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 	}
 	if di.FirstBind.Valid {
 		di.FirstBind = sql.NullTime{Time: time.Now(), Valid: true}
+	}
+	if pi.TrialTime.GetValue() != 0 && !di.ExpTime.Valid {
+		di.ExpTime = sql.NullTime{
+			Time:  time.Now().Add(time.Hour * 24 * time.Duration(pi.TrialTime.GetValue())),
+			Valid: true,
+		}
 	}
 	err = diDB.Update(ctxs.WithRoot(l.ctx), di)
 	if err != nil {

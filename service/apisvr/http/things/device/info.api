@@ -16,6 +16,7 @@ info(
 //    accessDesc: "管理设备"
     middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
 )
+
 service api {
     @doc "新增设备"
     @handler create
@@ -121,6 +122,7 @@ type (
         FirstLogin int64 `json:"firstLogin,optional,string"`                              //激活时间 只读
         FirstBind int64 `json:"firstBind,optional,string"`
         LastLogin int64 `json:"lastLogin,optional,string"`                                //最后上线时间 只读
+        ExpTime int64 `json:"expTime,optional,string"` //到期时间
         LogLevel int64 `json:"logLevel,optional,range=[0:5]"`                                         // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
         Rssi int64  `json:"rssi,optional,omitempty"`//信号强度
         CreatedTime int64 `json:"createdTime,optional,string"`                            //创建时间 只读

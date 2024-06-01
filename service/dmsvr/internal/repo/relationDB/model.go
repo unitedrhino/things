@@ -52,8 +52,9 @@ type DmDeviceInfo struct {
 	LogLevel       int64             `gorm:"column:log_level;type:smallint;default:1;NOT NULL"`                    // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
 	UserID         int64             `gorm:"column:user_id;type:BIGINT;default:0"`                                 // 用户id
 	Status         int64             `gorm:"column:status;type:smallint;default:1;NOT NULL"`                       // 设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中) 5-禁用
-	IsEnable       int64             `gorm:"column:isEnable;type:smallint;default:1;"`                             //是否启用: 1:是 2:否
+	IsEnable       int64             `gorm:"column:is_enable;type:smallint;default:1;"`                            //是否启用: 1:是 2:否
 	ManufacturerID int64             `gorm:"column:manufacturer_id;type:bigint;default:1;NOT NULL"`                //制造商信息
+	ExpTime        sql.NullTime      `gorm:"column:exp_time"`                                                      //过期时间,为0不限制
 	stores.NoDelTime
 	Distributor  stores.IDPath       `gorm:"embedded;embeddedPrefix:distributor_"` //代理的id,如果为空,则未参与分销
 	DeletedTime  stores.DeletedTime  `gorm:"column:deleted_time;default:0;uniqueIndex:product_id_deviceName"`
@@ -136,6 +137,7 @@ type DmProductInfo struct {
 	AutoRegister int64             `gorm:"column:auto_register;type:smallint;default:1"`                         // 动态注册:1:关闭,2:打开,3:打开并自动创建设备
 	Secret       string            `gorm:"column:secret;type:varchar(50)"`                                       // 动态注册产品秘钥
 	Desc         string            `gorm:"column:description;type:varchar(200)"`                                 // 描述
+	TrialTime    sql.NullTime      `gorm:"column:trial_time"`                                                    //试用时间(单位为天,为0不限制)
 	DevStatus    string            `gorm:"column:dev_status;type:varchar(20);NOT NULL"`                          // 产品状态
 	Tags         map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"`          // 产品标签
 	ProtocolConf map[string]string `gorm:"column:protocol_conf;type:json;serializer:json;NOT NULL;default:'{}'"` //自定义协议配置

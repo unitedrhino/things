@@ -74,6 +74,7 @@ func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relatio
 		Desc:        in.Desc.GetValue(),
 		DevStatus:   in.DevStatus.GetValue(),
 		Secret:      utils.GetRandomBase64(20),
+		TrialTime:   utils.ToNullTime2(in.TrialTime),
 	}
 	if in.AutoRegister != def.Unknown {
 		pi.AutoRegister = in.AutoRegister

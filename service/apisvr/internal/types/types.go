@@ -185,6 +185,7 @@ type DeviceInfo struct {
 	FirstLogin     int64                              `json:"firstLogin,optional,string"`                    //激活时间 只读
 	FirstBind      int64                              `json:"firstBind,optional,string"`
 	LastLogin      int64                              `json:"lastLogin,optional,string"`     //最后上线时间 只读
+	ExpTime        int64                              `json:"expTime,optional,string"`       //到期时间
 	LogLevel       int64                              `json:"logLevel,optional,range=[0:5]"` // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
 	Rssi           int64                              `json:"rssi,optional,omitempty"`       //信号强度
 	CreatedTime    int64                              `json:"createdTime,optional,string"`   //创建时间 只读
@@ -1042,6 +1043,7 @@ type ProductInfo struct {
 	ProtocolCode       string           `json:"protocolCode,optional"`             //协议code,默认iThings  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
 	AutoRegister       int64            `json:"autoRegister,optional,range=[0:3]"` //动态注册:1:关闭,2:打开,3:打开并自动创建设备
 	Secret             string           `json:"secret,optional"`                   //动态注册产品秘钥 只读
+	TrialTime          int64            `json:"trialTime,optional,string"`         //试用时间(单位为天,为0不限制)
 	Desc               *string          `json:"desc,optional"`                     //描述
 	Tags               []*Tag           `json:"tags,optional"`                     // 产品tag
 	ProtocolConf       []*Tag           `json:"protocolConf,optional,omitempty"`   //协议配置

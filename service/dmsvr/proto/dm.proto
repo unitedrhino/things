@@ -1048,6 +1048,7 @@ message DeviceInfo {
   int64  deviceType = 33; //设备类型:1:设备,2:网关,3:子设备
   int64 netType =35;//网络类型
   IDPath distributor =36;//过滤分销商的数据
+  google.protobuf.Int64Value  expTime =38; //到期时间,如果为0,则不限制
 }
 
 message ProductInfo{
@@ -1069,6 +1070,7 @@ message ProductInfo{
   ProtocolInfo protocol = 16;
   ProductCategory category = 17;
   map<string,string>protocolConf =18;
+  google.protobuf.Int64Value  trialTime =38; //试用时间(单位为天,为0不限制)
 }
 
 message ProductInfoDeleteReq{
