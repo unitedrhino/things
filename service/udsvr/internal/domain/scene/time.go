@@ -69,7 +69,7 @@ type Timer struct {
 	ExecAt        int64      `json:"execAt"`        //执行的时间点 从0点加起来的秒数 如 1点就是 1*60*60
 	ExecLoopStart int64      `json:"execLoopStart"` //循环执行起始时间配置
 	ExecLoopEnd   int64      `json:"execLoopEnd"`
-	ExecLoop      int64      `json:"execLoop"`
+	ExecLoop      int64      `json:"execLoop"` //循环时间间隔
 	RepeatType    RepeatType `json:"repeatType"`
 	ExecRepeat    string     `json:"execRepeat"` //二进制周一到周日 11111111
 }

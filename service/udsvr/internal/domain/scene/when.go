@@ -9,7 +9,7 @@ import (
 type When struct {
 	ValidRanges   WhenRanges `json:"validRanges,omitempty"`   //生效时间段
 	InvalidRanges WhenRanges `json:"invalidRanges,omitempty"` //无效时间段(最高优先级)
-	Conditions    Conditions `json:"conditions,omitempty"`    //条件 todo(暂不支持)
+	Conditions    Conditions `json:"conditions,omitempty"`    //条件
 }
 
 type WhenRanges []WhenRange
