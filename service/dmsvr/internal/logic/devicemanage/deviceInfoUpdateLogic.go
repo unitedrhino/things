@@ -81,8 +81,8 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 		old.ProjectID = stores.ProjectID(data.ProjectID)
 	}
 
-	if data.ExpTime != 0 {
-		old.ExpTime = utils.ToNullTime(data.ExpTime)
+	if data.ExpTime != nil {
+		old.ExpTime = utils.ToNullTime2(data.ExpTime)
 	}
 
 	if data.Tags != nil {

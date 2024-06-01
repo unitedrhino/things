@@ -64,7 +64,7 @@ func ToDeviceInfo(ctx context.Context, in *relationDB.DmDeviceInfo, ProductCache
 		FirstLogin:     utils.GetNullTime(in.FirstLogin),
 		FirstBind:      utils.GetNullTime(in.FirstBind),
 		LastLogin:      utils.GetNullTime(in.LastLogin),
-		ExpTime:        utils.GetNullTime(in.ExpTime),
+		ExpTime:        utils.TimeToNullInt(in.ExpTime),
 		LogLevel:       in.LogLevel,
 		CreatedTime:    in.CreatedTime.Unix(),
 		ProtocolConf:   in.ProtocolConf,
