@@ -44,7 +44,7 @@ type LightProtocol struct {
 	IThingsProductIDs []string          //iThings 的产品ID列表
 	ProductIDMapMutex sync.RWMutex
 	LightSvrClient
-	ThirdProductIDFieldName string
+	ThirdProductIDFieldName devices.ProtocolKey
 	taskCreateOnce          sync.Once
 }
 
@@ -190,7 +190,7 @@ func (p *LightProtocol) RegisterTimerHandler(f func(ctx context.Context, t time.
 	return err
 }
 func (p *LightProtocol) RegisterProductIDSync() error {
-	p.ThirdProductIDFieldName = "productID"
+	p.ThirdProductIDFieldName = devices.ProtocolKeyProductID
 	err := p.RegisterTimerHandler(func(ctx context.Context, t time.Time) error {
 		pis, err := p.ProductM.ProductInfoIndex(ctx, &dm.ProductInfoIndexReq{
 			ProtocolCode: p.Pi.Code,

@@ -31,7 +31,7 @@ func NewUserDeviceShareCreateLogic(ctx context.Context, svcCtx *svc.ServiceConte
 
 // 分享设备
 func (l *UserDeviceShareCreateLogic) UserDeviceShareCreate(in *dm.UserDeviceShareInfo) (*dm.WithID, error) {
-	di, err := relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.Device.ProductID, DeviceName: in.Device.DeviceName})
+	di, err := relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.Device.ProductID, DeviceNames: []string{in.Device.DeviceName}})
 	if err != nil {
 		return nil, err
 	}
