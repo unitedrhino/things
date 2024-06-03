@@ -2,6 +2,7 @@ package otamanagelogic
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
@@ -41,11 +42,20 @@ func NewSendMessageToDevicesLogic(ctx context.Context, svcCtx *svc.ServiceContex
 	}
 }
 
+func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirmwareJob) error {
+	//firmware := jobInfo.Firmware
+	//if jobInfo.IsNeedPush != def.True { //只有需要推送的才推送
+	//	return nil
+	//}
+	//if firmware.
+	return nil
+}
 func (l *SendMessageToDevicesLogic) PushMessageToDevices(jobInfo *relationDB.DmOtaFirmwareJob) error {
 	firmware := jobInfo.Firmware
 	if jobInfo.IsNeedPush != def.True { //只有需要推送的才推送
 		return nil
 	}
+
 	deviceList, err := stores.WithNoDebug(l.ctx, relationDB.NewOtaFirmwareDeviceRepo).FindByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
 		FirmwareID: jobInfo.FirmwareID,
 		JobID:      jobInfo.ID,
@@ -93,6 +103,10 @@ func (l *SendMessageToDevicesLogic) PushMessageToDevices(jobInfo *relationDB.DmO
 		}
 		device.Status = msgOta.DeviceStatusNotified
 		device.Detail = "主动推送"
+		device.PushTime = sql.NullTime{
+			Time:  time.Now(),
+			Valid: true,
+		}
 		err = relationDB.NewOtaFirmwareDeviceRepo(l.ctx).Update(l.ctx, device)
 		if err != nil {
 			return err
@@ -101,7 +115,7 @@ func (l *SendMessageToDevicesLogic) PushMessageToDevices(jobInfo *relationDB.DmO
 	return nil
 }
 
-func GenUpgradeParams(ctx context.Context, svcCtx *svc.ServiceContext, firmware *relationDB.DmOtaFirmwareInfo, files []*relationDB.DmOtaFirmwareFile) (*msgOta.UpgradeParams, error) {
+func GenUpgradeParams(ctx context.Context, svcCtx *svc.ServiceContext, firmware *relationDB.DmOtaFirmwareInfo, files []*relationDB.DmOtaFirmwareFile) (*msgOta.UpgradeData, error) {
 	if len(files) == 0 {
 		return nil, errors.System.AddDetail("升级包下没有文件")
 	}
@@ -110,7 +124,7 @@ func GenUpgradeParams(ctx context.Context, svcCtx *svc.ServiceContext, firmware 
 		if err != nil {
 			return nil, err
 		}
-		data := msgOta.UpgradeParams{
+		data := msgOta.UpgradeData{
 			Version:    firmware.Version,
 			IsDiff:     firmware.IsDiff,
 			SignMethod: firmware.SignMethod,
@@ -125,7 +139,7 @@ func GenUpgradeParams(ctx context.Context, svcCtx *svc.ServiceContext, firmware 
 		}
 		return &data, nil
 	}
-	var data = msgOta.UpgradeParams{
+	var data = msgOta.UpgradeData{
 		Version:    firmware.Version,
 		IsDiff:     firmware.IsDiff,
 		SignMethod: firmware.SignMethod,

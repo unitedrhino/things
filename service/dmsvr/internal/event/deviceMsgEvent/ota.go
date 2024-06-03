@@ -74,7 +74,7 @@ func (l *OtaLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publish
 }
 
 // 固件升级消息上行 上报版本、模块信息
-func (l *OtaLogic) HandleUpgrade(msg *deviceMsg.PublishMsg) (respData *msgOta.UpgradeParams, err error) {
+func (l *OtaLogic) HandleUpgrade(msg *deviceMsg.PublishMsg) (respData *msgOta.UpgradeData, err error) {
 	err = utils.Unmarshal([]byte(msg.Payload), &l.dreq)
 	if err != nil {
 		return nil, errors.Parameter.AddDetail("ota topic is err:" + msg.Topic)

@@ -115,6 +115,7 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 			if !errors.Cmp(err, errors.NotFind) {
 				return err
 			}
+			old.Version = data.Version.GetValue()
 		} else {
 			if df.DestVersion == data.Version.GetValue() { //版本号一致才是升级成功
 				old.Version = data.Version.GetValue()
