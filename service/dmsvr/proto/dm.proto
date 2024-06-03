@@ -318,7 +318,10 @@ service userDevice{
   //获取设备分享的详情
   rpc userDeviceShareRead(UserDeviceShareReadReq)returns(UserDeviceShareInfo);
 
+  //转让设备
   rpc userDeviceTransfer(DeviceTransferReq)returns(Empty);
+
+//  rpc userDeviceOtaGetVersion(UserDeviceOtaGetVersionReq)returns(userDeviceOtaGetVersionResp);
 }
 
 
@@ -1598,7 +1601,7 @@ message OtaFirmwareJobInfo{
       最多可传入 10 个版本号。
   */
   repeated string srcVersions =6; // 待升级版本号列表。最多可传入10个版本号。用逗号分隔多个版本号
-  int64 retryInterval =7;         // 设备升级失败后，自动重试的时间间隔，单位为分钟。 动态升级 静态升级
+  int64 retryInterval =7;         // 设备升级失败后，自动重试的时间间隔，单位为分钟。 动态升级 静态升级 -1 为不重试
   int64 retryCount =8;               // 自动重试次数。1/2/5次 动态升级 静态升级
   int64 timeoutInMinutes =9;  // 设备升级超时时间，单位为分钟。 动态升级 静态升级
   int64 maximumPerMinute =10;  // 每分钟最多向多少个设备推送升级包下载URL。 动态升级 静态升级

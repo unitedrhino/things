@@ -2,6 +2,7 @@ package deviceMsgEvent
 
 import (
 	"context"
+	"database/sql"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	otamanagelogic "github.com/i-Things/things/service/dmsvr/internal/logic/otamanage"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
@@ -150,6 +151,10 @@ func (l *OtaLogic) HandleProgress(msg *deviceMsg.PublishMsg) (err error) {
 	df.Status = msgOta.DeviceStatusInProgress
 	if l.preq.Params.Step < 0 {
 		df.Status = msgOta.DeviceStatusFailure
+		df.LastFailureTime = sql.NullTime{
+			Time:  time.Now(),
+			Valid: true,
+		}
 	}
 	err = relationDB.NewOtaFirmwareDeviceRepo(l.ctx).Update(l.ctx, df)
 	if err != nil {

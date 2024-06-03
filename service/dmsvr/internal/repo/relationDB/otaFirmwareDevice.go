@@ -3,9 +3,11 @@ package relationDB
 import (
 	"context"
 	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/domain/deviceMsg/msgOta"
 	"gitee.com/i-Things/share/stores"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
+	"time"
 )
 
 /*
@@ -32,11 +34,14 @@ type OtaFirmwareDeviceFilter struct {
 	DeviceNames      []string
 	WithScheduleTime bool
 	//Msg     int64
-	Statues      []int64
-	SrcVersion   string
-	WithFirmware bool
-	WithFiles    bool
-	IsOnline     int64
+	Statues         []int64
+	SrcVersion      string
+	WithFirmware    bool
+	WithFiles       bool
+	IsOnline        int64
+	RetryCount      *stores.Cmp
+	PushTime        *stores.Cmp
+	LastFailureTime *stores.Cmp
 }
 
 func (p OtaFirmwareDeviceRepo) fmtFilter(ctx context.Context, f OtaFirmwareDeviceFilter) *gorm.DB {
@@ -44,11 +49,15 @@ func (p OtaFirmwareDeviceRepo) fmtFilter(ctx context.Context, f OtaFirmwareDevic
 	if f.FirmwareID != 0 {
 		db = db.Where("firmware_id = ?", f.FirmwareID)
 	}
+	db = f.LastFailureTime.Where(db, "last_failure_time")
+	db = f.RetryCount.Where(db, "retry_count")
+	db = f.PushTime.Where(db, "push_time")
 	if f.JobID != 0 {
 		db = db.Where("job_id = ?", f.JobID)
 	}
 	if f.IsOnline != 0 && f.ProductID != "" {
-		db = db.Where("device_name in (select device_name from dm_device_info where is_online=? and product_id = ?)", f.IsOnline, f.ProductID)
+		subSelect := p.db.WithContext(ctx).Model(&DmDeviceInfo{}).Select("device_name").Where("is_online=? and product_id = ?", f.IsOnline, f.ProductID)
+		db = db.Where("device_name in (?)", subSelect)
 	}
 	if f.ProductID != "" {
 		db = db.Where("product_id = ?", f.ProductID)
@@ -111,6 +120,21 @@ func (p OtaFirmwareDeviceRepo) CountByFilter(ctx context.Context, f OtaFirmwareD
 
 func (p OtaFirmwareDeviceRepo) Update(ctx context.Context, data *DmOtaFirmwareDevice) error {
 	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
+	return stores.ErrFmt(err)
+}
+
+func (p OtaFirmwareDeviceRepo) UpdateStatusByFilter(ctx context.Context, f OtaFirmwareDeviceFilter, status int64) error {
+	db := p.fmtFilter(ctx, f).Model(&DmOtaFirmwareDevice{})
+	update := map[string]any{
+		"status": status,
+	}
+	if status == msgOta.DeviceStatusFailure {
+		update["last_failure_time"] = time.Now()
+	}
+	if status == msgOta.DeviceStatusQueued {
+		update["retry_count"] = gorm.Expr("retry_count+1")
+	}
+	err := db.Updates(update).Error
 	return stores.ErrFmt(err)
 }
 

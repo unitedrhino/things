@@ -43,14 +43,44 @@ func NewSendMessageToDevicesLogic(ctx context.Context, svcCtx *svc.ServiceContex
 }
 
 func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirmwareJob) error {
-	//firmware := jobInfo.Firmware
-	//if jobInfo.IsNeedPush != def.True { //只有需要推送的才推送
-	//	return nil
-	//}
-	//if firmware.
+	firmware := jobInfo.Firmware
+	if jobInfo.IsNeedPush != def.True { //只有需要推送的才推送
+		return nil
+	}
+	{ //处理超时设备,置为失败
+		err := stores.WithNoDebug(l.ctx, relationDB.NewOtaFirmwareDeviceRepo).UpdateStatusByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
+			FirmwareID: jobInfo.FirmwareID,
+			JobID:      jobInfo.ID,
+			ProductID:  firmware.ProductID,
+			PushTime:   stores.CmpGte(time.Now().Add(time.Duration(jobInfo.TimeoutInMinutes) * time.Minute)),
+			Statues:    []int64{msgOta.DeviceStatusNotified, msgOta.DeviceStatusInProgress}, //只处理待推送的设备
+		}, msgOta.DeviceStatusFailure) //如果超过了超时时间,则修改为失败
+		if err != nil {
+			l.Error(err)
+		}
+	}
+
+	if jobInfo.RetryCount > 0 { //处理重试设备
+		err := stores.WithNoDebug(l.ctx, relationDB.NewOtaFirmwareDeviceRepo).UpdateStatusByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
+			FirmwareID:      jobInfo.FirmwareID,
+			JobID:           jobInfo.ID,
+			ProductID:       firmware.ProductID,
+			LastFailureTime: stores.CmpLt(time.Now().Add(time.Minute * time.Duration(jobInfo.RetryInterval))), //失败间隔
+			RetryCount:      stores.CmpLt(jobInfo.RetryCount),                                                 //重试次数
+			Statues:         []int64{msgOta.DeviceStatusFailure},                                              //需要重试的设备更换为待推送
+		}, msgOta.DeviceStatusQueued) //如果超过了超时时间,则修改为失败
+		if err != nil {
+			l.Error(err)
+		}
+	}
+
 	return nil
 }
 func (l *SendMessageToDevicesLogic) PushMessageToDevices(jobInfo *relationDB.DmOtaFirmwareJob) error {
+	err := l.DevicesTimeout(jobInfo)
+	if err != nil {
+		l.Error(err)
+	}
 	firmware := jobInfo.Firmware
 	if jobInfo.IsNeedPush != def.True { //只有需要推送的才推送
 		return nil
@@ -66,7 +96,9 @@ func (l *SendMessageToDevicesLogic) PushMessageToDevices(jobInfo *relationDB.DmO
 		Page: 1,
 		Size: jobInfo.MaximumPerMinute/(60/5) + 1, //任务5秒钟推送一次
 	})
-
+	if err != nil {
+		return err
+	}
 	firmwareFiles, err := l.OffDB.FindByFilter(l.ctx, relationDB.OtaFirmwareFileFilter{FirmwareID: jobInfo.FirmwareID}, nil)
 	if err != nil {
 		return err
