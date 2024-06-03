@@ -105,6 +105,7 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 		old.Mac = data.Mac
 	}
 	if data.Version != nil && old.Version != data.Version.GetValue() {
+		old.Version = data.Version.GetValue()
 		//如果不一样则需要判断是否是ota升级的,如果是,则需要更新升级状态
 		df, err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
 			ProductID:   old.ProductID,
@@ -115,10 +116,8 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 			if !errors.Cmp(err, errors.NotFind) {
 				return err
 			}
-			old.Version = data.Version.GetValue()
 		} else {
 			if df.DestVersion == data.Version.GetValue() { //版本号一致才是升级成功
-				old.Version = data.Version.GetValue()
 				df.Step = 100
 				df.Status = msgOta.DeviceStatusSuccess
 				err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).Update(l.ctx, df)
