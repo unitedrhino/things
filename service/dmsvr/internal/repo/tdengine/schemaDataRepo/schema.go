@@ -61,7 +61,9 @@ func (S *SchemaStore) GetStableNameList(
 		return []string{}
 	}
 	for _, v := range t.Property {
-		tables = append(tables, S.GetPropertyStableName(v.Tag, productID, v.Identifier))
+		if v.Tag == schema.TagCustom {
+			tables = append(tables, S.GetPropertyStableName(v.Tag, productID, v.Identifier))
+		}
 	}
 	return
 }
