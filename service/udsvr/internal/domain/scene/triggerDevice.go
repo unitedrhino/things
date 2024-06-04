@@ -6,6 +6,7 @@ import (
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"strings"
 )
 
 type SelectType = string
@@ -72,7 +73,8 @@ func (t *TriggerDevice) Validate(repo ValidateRepo) error {
 		if err != nil {
 			return err
 		}
-		p := v.Event[t.DataID]
+		dataIDs := strings.Split(t.DataID, ".")
+		p := v.Event[dataIDs[0]]
 		if p == nil {
 			return errors.Parameter.AddMsg("dataID不存在")
 		}
@@ -91,7 +93,8 @@ func (t *TriggerDevice) Validate(repo ValidateRepo) error {
 		if err != nil {
 			return err
 		}
-		p := v.Property[t.DataID]
+		dataIDs := strings.Split(t.DataID, ".")
+		p := v.Property[dataIDs[0]]
 		if p == nil {
 			return errors.Parameter.AddMsg("dataID不存在")
 		}

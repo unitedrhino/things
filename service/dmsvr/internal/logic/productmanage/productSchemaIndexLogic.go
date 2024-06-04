@@ -34,6 +34,7 @@ func (l *ProductSchemaIndexLogic) ProductSchemaIndex(in *dm.ProductSchemaIndexRe
 	filter := relationDB.ProductSchemaFilter{
 		ProductID:         in.ProductID,
 		Type:              in.Type,
+		Types:             in.Types,
 		Tag:               in.Tag,
 		Identifiers:       in.Identifiers,
 		Name:              in.Name,

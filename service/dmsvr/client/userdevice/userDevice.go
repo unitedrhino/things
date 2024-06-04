@@ -210,6 +210,7 @@ type (
 		UserDeviceShareIndex(ctx context.Context, in *UserDeviceShareIndexReq, opts ...grpc.CallOption) (*UserDeviceShareIndexResp, error)
 		// 获取设备分享的详情
 		UserDeviceShareRead(ctx context.Context, in *UserDeviceShareReadReq, opts ...grpc.CallOption) (*UserDeviceShareInfo, error)
+		// 转让设备
 		UserDeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error)
 	}
 
@@ -331,11 +332,13 @@ func (d *directUserDevice) UserDeviceShareRead(ctx context.Context, in *UserDevi
 	return d.svr.UserDeviceShareRead(ctx, in)
 }
 
+// 转让设备
 func (m *defaultUserDevice) UserDeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewUserDeviceClient(m.cli.Conn())
 	return client.UserDeviceTransfer(ctx, in, opts...)
 }
 
+// 转让设备
 func (d *directUserDevice) UserDeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.UserDeviceTransfer(ctx, in)
 }

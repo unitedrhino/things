@@ -14,7 +14,8 @@ type CommonSchemaRepo struct {
 type (
 	CommonSchemaFilter struct {
 		ID                int64
-		Type              int64    //物模型类型 1:property属性 2:event事件 3:action行为
+		Type              int64 //物模型类型 1:property属性 2:event事件 3:action行为
+		Types             []int64
 		Identifiers       []string //过滤标识符列表
 		Name              string
 		IsCanSceneLinkage int64
@@ -51,6 +52,9 @@ func (p CommonSchemaRepo) fmtFilter(ctx context.Context, f CommonSchemaFilter) *
 	}
 	if f.Type != 0 {
 		db = db.Where("type=?", f.Type)
+	}
+	if len(f.Types) != 0 {
+		db = db.Where("type in ?", f.Types)
 	}
 	if len(f.Identifiers) != 0 {
 		db = db.Where("identifier in ?", f.Identifiers)

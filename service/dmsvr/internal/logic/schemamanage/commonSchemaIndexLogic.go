@@ -33,6 +33,7 @@ func NewCommonSchemaIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 func (l *CommonSchemaIndexLogic) CommonSchemaIndex(in *dm.CommonSchemaIndexReq) (*dm.CommonSchemaIndexResp, error) {
 	filter := relationDB.CommonSchemaFilter{
 		Type:              in.Type,
+		Types:             in.Types,
 		Name:              in.Name,
 		Identifiers:       in.Identifiers,
 		IsCanSceneLinkage: in.IsCanSceneLinkage,

@@ -1206,6 +1206,7 @@ message CommonSchemaIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填
   repeated string productIDs = 2; //有这个属性的产品id列表
   int64  type = 3; //物模型类型 1:property属性 2:event事件 3:action行为
+  repeated int64 types =20;
   repeated string   identifiers = 5; //过滤标识符列表
   string name =6;//标识符名字过滤
   bool withProductCategory =4;
@@ -1270,6 +1271,7 @@ message ProductSchemaIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填
   string productID = 2; //产品id  必填
   int64  type = 3; //物模型类型 1:property属性 2:event事件 3:action行为
+  repeated int64 types =17;
   int64  tag = 4; //过滤条件: 物模型标签 1:自定义 2:可选 3:必选
   repeated string   identifiers = 5; //过滤标识符列表
   string name =6;//标识符名字过滤

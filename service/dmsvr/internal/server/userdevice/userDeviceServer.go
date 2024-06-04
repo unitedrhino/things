@@ -74,6 +74,7 @@ func (s *UserDeviceServer) UserDeviceShareRead(ctx context.Context, in *dm.UserD
 	return l.UserDeviceShareRead(in)
 }
 
+// 转让设备
 func (s *UserDeviceServer) UserDeviceTransfer(ctx context.Context, in *dm.DeviceTransferReq) (*dm.Empty, error) {
 	l := userdevicelogic.NewUserDeviceTransferLogic(ctx, s.svcCtx)
 	return l.UserDeviceTransfer(in)

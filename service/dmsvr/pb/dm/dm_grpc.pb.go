@@ -4729,6 +4729,7 @@ type UserDeviceClient interface {
 	UserDeviceShareIndex(ctx context.Context, in *UserDeviceShareIndexReq, opts ...grpc.CallOption) (*UserDeviceShareIndexResp, error)
 	// 获取设备分享的详情
 	UserDeviceShareRead(ctx context.Context, in *UserDeviceShareReadReq, opts ...grpc.CallOption) (*UserDeviceShareInfo, error)
+	// 转让设备
 	UserDeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error)
 }
 
@@ -4850,6 +4851,7 @@ type UserDeviceServer interface {
 	UserDeviceShareIndex(context.Context, *UserDeviceShareIndexReq) (*UserDeviceShareIndexResp, error)
 	// 获取设备分享的详情
 	UserDeviceShareRead(context.Context, *UserDeviceShareReadReq) (*UserDeviceShareInfo, error)
+	// 转让设备
 	UserDeviceTransfer(context.Context, *DeviceTransferReq) (*Empty, error)
 	mustEmbedUnimplementedUserDeviceServer()
 }
