@@ -9,7 +9,6 @@ import (
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgOta"
 	"gitee.com/i-Things/share/errors"
-	"gitee.com/i-Things/share/oss/common"
 	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -152,7 +151,7 @@ func GenUpgradeParams(ctx context.Context, svcCtx *svc.ServiceContext, firmware 
 		return nil, errors.System.AddDetail("升级包下没有文件")
 	}
 	if len(files) == 1 { //单文件模式
-		url, err := svcCtx.OssClient.PrivateBucket().SignedGetUrl(ctx, files[0].FilePath, 60*20, common.OptionKv{})
+		url, err := svcCtx.OssClient.PublicBucket().GetUrl(files[0].FilePath)
 		if err != nil {
 			return nil, err
 		}
@@ -178,7 +177,7 @@ func GenUpgradeParams(ctx context.Context, svcCtx *svc.ServiceContext, firmware 
 		Extra:      firmware.Extra,
 	}
 	for _, f := range files {
-		url, err := svcCtx.OssClient.PrivateBucket().SignedGetUrl(ctx, f.FilePath, 60*20, common.OptionKv{})
+		url, err := svcCtx.OssClient.PublicBucket().GetUrl(f.FilePath)
 		if err != nil {
 			return nil, err
 		}

@@ -645,11 +645,11 @@ type FirmwareCreateReq struct {
 	Name           string   `json:"name"`
 	Version        string   `json:"version"`
 	SignMethod     string   `json:"signMethod"`
-	Desc           string   `json:"desc"`
+	Desc           string   `json:"desc,optional"`
 	IsDiff         int64    `json:"isDiff"`
 	SrcVersion     string   `json:"srcVersion"`
 	IsNeedToVerify int64    `json:"isNeedToVerify"`
-	Extra          string   `json:"extra"`
+	Extra          string   `json:"extra,optional"`
 	ModuleCode     string   `json:"moduleCode,optional"`
 	FilePaths      []string `json:"filePaths"`
 }

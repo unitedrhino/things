@@ -7,7 +7,6 @@ import (
 	"gitee.com/i-Things/share/domain/deviceMsg/msgOta"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/oss"
-	"github.com/hashicorp/go-uuid"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -86,14 +85,13 @@ func (l *OtaFirmwareInfoCreateLogic) OtaFirmwareInfoCreate(in *dm.OtaFirmwareInf
 	var files []*relationDB.DmOtaFirmwareFile
 	if len(in.FilePaths) > 0 {
 		for _, filePath := range in.FilePaths {
-			uid, _ := uuid.GenerateUUID()
-			nwePath := oss.GenFilePath(l.ctx, l.svcCtx.Config.Name, oss.BusinessOta, oss.SceneFirmware, fmt.Sprintf("%s/%s/%s", in.ProductID, uid, oss.GetFileNameWithPath(filePath)))
-			path, err := l.svcCtx.OssClient.PrivateBucket().CopyFromTempBucket(filePath, nwePath)
+			nwePath := oss.GenFilePath(l.ctx, l.svcCtx.Config.Name, oss.BusinessOta, oss.SceneFirmware, fmt.Sprintf("%s/%s/%s", in.ProductID, in.Version, oss.GetFileNameWithPath(filePath)))
+			path, err := l.svcCtx.OssClient.PublicBucket().CopyFromTempBucket(filePath, nwePath)
 			if err != nil {
 				return nil, errors.System.AddDetail(err)
 			}
 
-			OtaFirmwareInfoFileInfo, err := l.svcCtx.OssClient.PrivateBucket().GetObjectInfo(l.ctx, path)
+			OtaFirmwareInfoFileInfo, err := l.svcCtx.OssClient.PublicBucket().GetObjectInfo(l.ctx, path)
 			if err != nil {
 				logx.Error(err)
 				return nil, err
