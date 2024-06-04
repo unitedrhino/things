@@ -141,10 +141,10 @@ func (p *LightProtocol) DevPubMsg(ctx context.Context, publishMsg *devices.DevPu
 	publishMsg.ProtocolCode = p.Pi.Code
 	err := p.FastEvent.Publish(ctx, fmt.Sprintf(topics.DeviceUpMsg, publishMsg.Handle, publishMsg.ProductID, publishMsg.DeviceName), publishMsg)
 	if err != nil {
-		logx.Errorf("%s.publish  err:%v", utils.FuncName(), err)
+		logx.WithContext(ctx).Errorf("%s.publish  err:%v", utils.FuncName(), err)
 		return err
 	} else {
-		logx.Infof("%s.publish msg:%v", utils.FuncName(), publishMsg)
+		logx.WithContext(ctx).Infof("%s.publish msg:%v", utils.FuncName(), publishMsg)
 	}
 
 	return nil
