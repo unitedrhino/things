@@ -93,6 +93,8 @@ func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relatio
 	}
 	if in.CategoryID != 0 {
 		pi.CategoryID = in.CategoryID
+	} else {
+		pi.CategoryID = def.NotClassified
 	}
 	if in.NetType != def.Unknown {
 		pi.NetType = in.NetType
@@ -196,5 +198,18 @@ func (l *ProductInfoCreateLogic) InitProduct(pi *relationDB.DmProductInfo) error
 		l.Errorf("%s.SendRepo.InitProduct failure,err:%v", utils.FuncName(), err)
 		return errors.Database.AddDetail(err)
 	}
+	return nil
+}
+
+func CategorySchemaCreate(ctx context.Context, svcCtx *svc.ServiceContext, productID string, categoryID int64) error {
+	//pc, err := relationDB.NewProductCategoryRepo(ctx).FindOne(ctx, categoryID)
+	//if err != nil {
+	//	return err
+	//}
+	//pcs, err := relationDB.NewProductCategorySchemaRepo(ctx).FindByFilter(ctx, relationDB.ProductCategorySchemaFilter{ProductCategoryIDs: utils.GetIDPath(pc.IDPath)}, nil)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//ProductCategoryIDs = append(ProductCategoryIDs, utils.GetIDPath(pc.IDPath)...)
 	return nil
 }

@@ -84,6 +84,14 @@ func (m GatewayDeviceRepo) MultiInsert(ctx context.Context, gateway *devices.Cor
 	return stores.ErrFmt(err)
 }
 
+func (m GatewayDeviceRepo) DeleteDevAll(ctx context.Context, dev devices.Core) error {
+	db := m.db.WithContext(ctx).Model(&DmGatewayDevice{})
+	db = db.Where("(gateway_product_id=? and gateway_device_name=?) or (product_id = ? and device_name = ?)",
+		dev.ProductID, dev.DeviceName, dev.ProductID, dev.DeviceName)
+	err := db.Delete(&DmGatewayDevice{}).Error
+	return stores.ErrFmt(err)
+}
+
 // 批量插入 LightStrategyDevice 记录
 func (m GatewayDeviceRepo) MultiDelete(ctx context.Context, gateway *devices.Core, subDevice []*devices.Core) error {
 	if len(subDevice) < 1 {

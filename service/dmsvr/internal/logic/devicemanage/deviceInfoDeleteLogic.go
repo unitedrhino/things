@@ -5,8 +5,10 @@ import (
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/eventBus"
+	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
+	"gorm.io/gorm"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
@@ -32,6 +34,7 @@ func NewDeviceInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 
 // 删除设备
 func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*dm.Empty, error) {
+
 	di, err := l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductID, DeviceNames: []string{in.DeviceName}})
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {
@@ -46,10 +49,21 @@ func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*d
 	if err != nil {
 		return nil, err
 	}
-	err = l.DiDB.Delete(l.ctx, di.ID)
+	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+		err := relationDB.NewDeviceInfoRepo(tx).Delete(l.ctx, di.ID)
+		if err != nil {
+			l.Errorf("%s.DeviceInfo.Delete err=%+v", utils.FuncName(), err)
+			return err
+		}
+		err = relationDB.NewGatewayDeviceRepo(l.ctx).DeleteDevAll(l.ctx, devices.Core{
+			ProductID:  di.ProductID,
+			DeviceName: di.DeviceName,
+		})
+		return err
+	})
 	if err != nil {
 		l.Errorf("%s.DeviceInfo.Delete err=%+v", utils.FuncName(), err)
-		return nil, errors.System.AddDetail(err)
+		return nil, err
 	}
 	err = l.svcCtx.DeviceCache.SetData(l.ctx, devices.Core{
 		ProductID:  di.ProductID,

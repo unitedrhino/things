@@ -59,8 +59,8 @@ const (
 type ExecType = string
 
 const (
-	ExecTypeAt   = "at"   //在时间点执行(默认)
-	ExecTypeLoop = "loop" //间隔时间执行
+	ExecTypeAt   ExecType = "at"   //在时间点执行(默认)
+	ExecTypeLoop ExecType = "loop" //间隔时间执行
 )
 
 // Timer 定时器类型
