@@ -55,6 +55,10 @@ func (t *TriggerDevice) Validate(repo ValidateRepo) error {
 		t.DeviceName = repo.Info.DeviceName
 		t.SelectType = SelectDeviceFixed
 	}
+	err := t.StateKeep.Validate()
+	if err != nil {
+		return err
+	}
 	if t.ProductID == "" {
 		return errors.Parameter.AddMsg("设备触发类型产品未选择,产品id为:" + t.ProductID)
 	}
