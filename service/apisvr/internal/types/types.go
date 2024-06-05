@@ -32,7 +32,7 @@ type CommonSchemaIndexReq struct {
 	GroupID                   int64     `json:"groupID,optional"`
 	GroupIDs                  []int64   `json:"groupIDs,optional"`
 	AreaID                    int64     `json:"areaID,optional,string"`
-	PropertyMode              string    `json:"propertyMode,optional"` //属性类型可用 读写类型: 1:r(只读) 2:rw(可读可写)
+	PropertyMode              string    `json:"propertyMode,optional"` //属性类型可用 读写类型: r(只读) rw(可读可写)
 }
 
 type CommonSchemaIndexResp struct {
@@ -197,6 +197,7 @@ type DeviceInfo struct {
 	Profiles       map[string]string                  `json:"profiles,optional,omitempty"`
 	Manufacturer   *ManufacturerInfo                  `json:"manufacturer,optional,omitempty"` //制造商信息
 	Owner          *UserCore                          `json:"owner,optional,omitempty"`
+	RatedPower     int64                              `json:"ratedPower,optional,omitempty"`
 	NetType        int64                              `json:"netType,optional,range=[0:8]"` //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
 }
 

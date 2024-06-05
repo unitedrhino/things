@@ -137,7 +137,9 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 	if data.Rssi != nil {
 		old.Rssi = data.Rssi.GetValue()
 	}
-
+	if data.RatedPower != 0 {
+		old.RatedPower = data.RatedPower
+	}
 	if data.IsOnline != def.Unknown {
 		old.IsOnline = data.IsOnline
 		old.Status = data.IsOnline + 1

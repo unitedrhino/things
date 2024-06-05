@@ -121,6 +121,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 		AreaID:      areaID, //设备默认都是未分类
 		Status:      def.DeviceStatusInactive,
 		IsEnable:    def.True,
+		RatedPower:  in.RatedPower,
 		Distributor: utils.Copy2[stores.IDPath](in.Distributor),
 	}
 	if in.IsEnable != 0 {

@@ -6927,7 +6927,7 @@ type DeviceInfo struct {
 	Iccid          *wrapperspb.StringValue `protobuf:"bytes,24,opt,name=iccid,proto3" json:"iccid,omitempty"`                                                                                                     //SIM卡卡号
 	SchemaAlias    map[string]string       `protobuf:"bytes,25,rep,name=schemaAlias,proto3" json:"schemaAlias,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` //设备物模型别名,如果是结构体类型则key为xxx.xxx
 	Rssi           *wrapperspb.Int64Value  `protobuf:"bytes,27,opt,name=rssi,proto3" json:"rssi,omitempty"`                                                                                                       // 设备信号（信号极好[-55— 0]，信号好[-70— -55]，信号一般[-85— -70]，信号差[-100— -85]）
-	RatedPower     int64                   `protobuf:"varint,28,opt,name=ratedPower,proto3" json:"ratedPower,omitempty"`                                                                                          // 额定功率:单位k/wh
+	RatedPower     int64                   `protobuf:"varint,28,opt,name=ratedPower,proto3" json:"ratedPower,omitempty"`                                                                                          // 额定功率:单位w/h
 	ProtocolConf   map[string]string       `protobuf:"bytes,29,rep,name=protocolConf,proto3" json:"protocolConf,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	Status         int64                   `protobuf:"varint,30,opt,name=status,proto3" json:"status,omitempty"`            //设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)
 	IsEnable       int64                   `protobuf:"varint,31,opt,name=isEnable,proto3" json:"isEnable,omitempty"`        //是否启用
