@@ -101,19 +101,24 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 	}
 	uc := ctxs.GetUserCtxNoNil(l.ctx)
 	projectID := stores.ProjectID(uc.ProjectID)
+	areaID := stores.AreaID(def.NotClassified)
 	if projectID == 0 || projectID == def.NotClassified { //如果没有传项目,则分配到未分类项目中
 		ti, err := l.svcCtx.TenantCache.GetData(l.ctx, uc.TenantCode)
 		if err != nil {
 			return nil, err
 		}
 		projectID = stores.ProjectID(ti.DefaultProjectID)
+		if ti.DefaultAreaID != 0 {
+			areaID = stores.AreaID(ti.DefaultAreaID)
+		}
 	}
+
 	di := relationDB.DmDeviceInfo{
 		ProjectID:   projectID,
 		ProductID:   in.ProductID,  // 产品id
 		DeviceName:  in.DeviceName, // 设备名称
 		Position:    logic.ToStorePoint(in.Position),
-		AreaID:      def.NotClassified, //设备默认都是未分类
+		AreaID:      areaID, //设备默认都是未分类
 		Status:      def.DeviceStatusInactive,
 		IsEnable:    def.True,
 		Distributor: utils.Copy2[stores.IDPath](in.Distributor),
