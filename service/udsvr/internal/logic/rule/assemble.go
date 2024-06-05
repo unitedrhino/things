@@ -110,13 +110,14 @@ func ToSceneTriggerDevicePo(in *scene.TriggerDevice) (ret relationDB.UdSceneTrig
 		SelectType:       in.SelectType,
 		DeviceName:       in.DeviceName,
 		DeviceAlias:      in.DeviceAlias,
-		Type:             string(in.Type),
+		Type:             in.Type,
 		DataID:           in.DataID,
 		DataName:         in.DataName,
 		TermType:         string(in.TermType),
 		Values:           in.Values,
 		SchemaAffordance: in.SchemaAffordance,
 		Body:             in.Body,
+		StateKeep:        utils.Copy[relationDB.UdStateKeep](in.StateKeep),
 	}
 }
 
@@ -272,16 +273,17 @@ func ToSceneTriggerTimerDo(in relationDB.UdSceneTriggerTimer) (ret *scene.Timer)
 func ToSceneTriggerDeviceDo(in relationDB.UdSceneTriggerDevice) (ret *scene.TriggerDevice) {
 	return &scene.TriggerDevice{
 		ProductID:        in.ProductID,
-		SelectType:       scene.SelectType(in.SelectType),
+		SelectType:       in.SelectType,
 		DeviceName:       in.DeviceName,
 		DeviceAlias:      in.DeviceAlias,
-		Type:             scene.TriggerDeviceType(in.Type),
+		Type:             in.Type,
 		DataID:           in.DataID,
 		DataName:         in.DataName,
 		TermType:         scene.CmpType(in.TermType),
 		Values:           in.Values,
 		SchemaAffordance: in.SchemaAffordance,
 		Body:             in.Body,
+		StateKeep:        utils.Copy[scene.StateKeep](in.StateKeep),
 	}
 }
 

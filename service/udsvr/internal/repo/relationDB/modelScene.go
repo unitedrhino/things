@@ -79,6 +79,13 @@ type UdSceneTriggerDevice struct {
 	Values           []string                `gorm:"column:values;type:json;serializer:json;default:'[]'"` //比较条件列表
 	SchemaAffordance string                  `gorm:"column:schema_affordance;type:VARCHAR(500);default:''"`
 	Body             string                  `gorm:"column:body;type:VARCHAR(1024)"` // 自定义数据
+	StateKeep        *UdStateKeep            `gorm:"embedded;embeddedPrefix:state_keep_"`
+}
+
+// StateKeep 状态保持
+type UdStateKeep struct {
+	Type  scene.StateKeepType `gorm:"column:type;type:VARCHAR(25);default:''"` //持续时间: duration  重复次数 repeating
+	Value int64               `gorm:"column:value;type:bigint;default:0"`      //持续的时间或重复的次数
 }
 
 type UdSceneWhen struct {
