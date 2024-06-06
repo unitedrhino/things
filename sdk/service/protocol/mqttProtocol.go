@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"gitee.com/i-Things/share/caches"
 	"gitee.com/i-Things/share/clients"
 	"gitee.com/i-Things/share/conf"
 	"gitee.com/i-Things/share/ctxs"
@@ -101,6 +102,13 @@ const (
 	ActionConnected    = "connected"
 	ActionDisconnected = "disconnected"
 )
+const (
+	DeviceClientID = "device:clientID"
+)
+
+func GenDeviceTopicKey(dev devices.Core) string {
+	return fmt.Sprintf("%v:%v", dev.ProductID, dev.DeviceName)
+}
 
 func (m *MqttProtocol) SubscribeDevConn(handle ConnHandle) error {
 	m.ConnHandle = handle
@@ -134,6 +142,13 @@ func (m *MqttProtocol) SubscribeDevConn(handle ConnHandle) error {
 		newDo, err := handle(ctx, do)
 		if err != nil {
 			return nil //不是该类型的设备
+		}
+		err = caches.GetStore().Hset(DeviceClientID, GenDeviceTopicKey(devices.Core{
+			ProductID:  newDo.ProductID,
+			DeviceName: newDo.DeviceName,
+		}), do.ClientID)
+		if err != nil {
+			logx.Error(err)
 		}
 		newDo.ClientID = fmt.Sprintf("%s&%s", newDo.ProductID, newDo.DeviceName)
 		switch do.Action {
