@@ -12,6 +12,7 @@ import (
 // 连接和断连消息信息
 type ConnectMsg struct {
 	ClientID  string
+	Device    *devices.Core
 	Username  string
 	Timestamp time.Time
 	Address   string

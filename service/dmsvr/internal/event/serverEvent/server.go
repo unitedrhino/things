@@ -137,16 +137,25 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 		var ( //这里是最后更新数据库状态的设备列表
 			OffLineDevices []*devices.Core
 		)
+
 		var log = logx.WithContext(ctx)
 		for _, msg := range insertList {
 			status := int64(def.ConnectedStatus)
 			if msg.Action == devices.ActionDisconnected {
 				status = def.DisConnectedStatus
 			}
-			ld, err := deviceAuth.GetClientIDInfo(msg.ClientID)
-			if err != nil {
-				log.Error(err)
-				continue
+			var ld *deviceAuth.LoginDevice
+			if msg.Device != nil {
+				ld = &deviceAuth.LoginDevice{
+					ProductID:  msg.Device.ProductID,
+					DeviceName: msg.Device.DeviceName,
+				}
+			} else {
+				ld, err = deviceAuth.GetClientIDInfo(msg.ClientID)
+				if err != nil {
+					log.Error(err)
+					continue
+				}
 			}
 			err = l.svcCtx.StatusRepo.Insert(ctx, &deviceLog.Status{
 				ProductID:  ld.ProductID,
@@ -215,6 +224,24 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 						utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 				}
 			} else {
+				di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
+					ProductID:  ld.ProductID,
+					DeviceName: ld.DeviceName,
+				})
+				if err != nil {
+					l.Error(err)
+				} else if di.DeviceType == def.DeviceTypeGateway { //如果是网关类型下线,则需要把子设备全部下线
+					subDevs, err := relationDB.NewGatewayDeviceRepo(l.ctx).FindByFilter(l.ctx,
+						relationDB.GatewayDeviceFilter{Gateway: &devices.Core{ProductID: ld.ProductID, DeviceName: ld.DeviceName}}, nil)
+					if err != nil {
+						l.Error(err)
+					} else {
+						for _, v := range subDevs {
+							insertList = append(insertList, &deviceStatus.ConnectMsg{
+								Device: &devices.Core{ProductID: v.ProductID, DeviceName: v.DeviceName}})
+						}
+					}
+				}
 				OffLineDevices = append(OffLineDevices, &devices.Core{
 					ProductID:  ld.ProductID,
 					DeviceName: ld.DeviceName,
