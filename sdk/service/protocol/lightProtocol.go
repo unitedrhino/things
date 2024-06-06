@@ -126,7 +126,7 @@ func (p *LightProtocol) RegisterDeviceMsgDownHandler(
 			info := devices.GetPublish(body)
 			logx.WithContext(ctx).Infof("mqtt.SubDevMsg protocolCode:%v Handle:%s Type:%v Payload:%v",
 				info.ProtocolCode, info.Handle, info.Type, string(info.Payload))
-			err := handle(ctx, info)
+			err := handle(ctxs.WithRoot(ctx), info)
 			if err != nil {
 				logx.WithContext(ctx).Errorf("mqtt.SubDevMsg protocolCode:%v Handle:%s Type:%v Payload:%v err:%v",
 					info.ProtocolCode, info.Handle, info.Type, string(info.Payload), err)
