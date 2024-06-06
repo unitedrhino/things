@@ -45,16 +45,17 @@ func ToDmDevicesInfoReq(diDeviceBasicInfoDo *msgThing.DeviceBasicInfo) (dmDevice
 	}
 
 	return &dm.DeviceInfo{
-		ProductID:  diDeviceBasicInfoDo.ProductID,
-		DeviceName: diDeviceBasicInfoDo.DeviceName,
-		Imei:       diDeviceBasicInfoDo.Imei,
-		Mac:        diDeviceBasicInfoDo.Mac,
-		Version:    utils.ToRpcNullString(diDeviceBasicInfoDo.Version),
-		HardInfo:   diDeviceBasicInfoDo.HardInfo,
-		SoftInfo:   diDeviceBasicInfoDo.SoftInfo,
-		Position:   position,
-		Tags:       diDeviceBasicInfoDo.Tags,
-		Rssi:       utils.ToRpcNullInt64(diDeviceBasicInfoDo.Rssi),
-		Iccid:      utils.ToRpcNullString(diDeviceBasicInfoDo.Iccid),
+		ProductID:      diDeviceBasicInfoDo.ProductID,
+		DeviceName:     diDeviceBasicInfoDo.DeviceName,
+		Imei:           diDeviceBasicInfoDo.Imei,
+		Mac:            diDeviceBasicInfoDo.Mac,
+		Version:        utils.ToRpcNullString(diDeviceBasicInfoDo.Version),
+		HardInfo:       diDeviceBasicInfoDo.HardInfo,
+		MobileOperator: diDeviceBasicInfoDo.MobileOperator,
+		SoftInfo:       diDeviceBasicInfoDo.SoftInfo,
+		Position:       position,
+		Tags:           diDeviceBasicInfoDo.Tags,
+		Rssi:           utils.ToRpcNullInt64(diDeviceBasicInfoDo.Rssi),
+		Iccid:          utils.ToRpcNullString(diDeviceBasicInfoDo.Iccid),
 	}
 }
