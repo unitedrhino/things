@@ -103,7 +103,8 @@ const (
 	ActionDisconnected = "disconnected"
 )
 const (
-	DeviceClientID = "device:clientID"
+	DeviceMqttDevice   = "device:mqtt:device"
+	DeviceMqttClientID = "device:mqtt:clientID"
 )
 
 func GenDeviceTopicKey(dev devices.Core) string {
@@ -143,10 +144,15 @@ func (m *MqttProtocol) SubscribeDevConn(handle ConnHandle) error {
 		if err != nil {
 			return nil //不是该类型的设备
 		}
-		err = caches.GetStore().Hset(DeviceClientID, GenDeviceTopicKey(devices.Core{
+		dev := devices.Core{
 			ProductID:  newDo.ProductID,
 			DeviceName: newDo.DeviceName,
-		}), do.ClientID)
+		}
+		err = caches.GetStore().Hset(DeviceMqttDevice, GenDeviceTopicKey(dev), utils.MarshalNoErr(do))
+		if err != nil {
+			logx.Error(err)
+		}
+		err = caches.GetStore().Hset(DeviceMqttClientID, do.ClientID, utils.MarshalNoErr(dev))
 		if err != nil {
 			logx.Error(err)
 		}
