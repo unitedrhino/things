@@ -135,11 +135,13 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 	//入库异步处理
 	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
 		var ( //这里是最后更新数据库状态的设备列表
-			OffLineDevices []*devices.Core
+			OffLineDevices  []*devices.Core
+			subDeviceInsert []*deviceStatus.ConnectMsg
 		)
 
 		var log = logx.WithContext(ctx)
-		for _, msg := range insertList {
+
+		handleMsg := func(msg *deviceStatus.ConnectMsg) {
 			status := int64(def.ConnectedStatus)
 			if msg.Action == devices.ActionDisconnected {
 				status = def.DisConnectedStatus
@@ -154,7 +156,7 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 				ld, err = deviceAuth.GetClientIDInfo(msg.ClientID)
 				if err != nil {
 					log.Error(err)
-					continue
+					return
 				}
 			}
 			err = l.svcCtx.StatusRepo.Insert(ctx, &deviceLog.Status{
@@ -195,11 +197,11 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 				di, err := relationDB.NewDeviceInfoRepo(ctx).FindOneByFilter(ctx, relationDB.DeviceFilter{Cores: []*devices.Core{{ProductID: ld.ProductID, DeviceName: ld.DeviceName}}})
 				if err != nil {
 					log.Error(err)
-					continue
+					return
 				}
 				if di.IsOnline == def.True {
 					log.Infof("already online:%#v", msg)
-					continue
+					return
 				}
 				var updates = map[string]any{"is_online": def.True, "last_login": msg.Timestamp, "status": def.DeviceStatusOnline}
 				if di.FirstLogin.Valid == false {
@@ -237,7 +239,7 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 						l.Error(err)
 					} else {
 						for _, v := range subDevs {
-							insertList = append(insertList, &deviceStatus.ConnectMsg{
+							subDeviceInsert = append(subDeviceInsert, &deviceStatus.ConnectMsg{Action: msg.Action,
 								Device: &devices.Core{ProductID: v.ProductID, DeviceName: v.DeviceName}})
 						}
 					}
@@ -253,6 +255,16 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 				}
 			}
 
+		}
+		for _, msg := range insertList {
+			handleMsg(msg)
+		}
+		if len(subDeviceInsert) != 0 {
+			//子设备下线
+			l.Infof("子设备下线: %v", utils.Fmt(subDeviceInsert))
+			for _, msg := range subDeviceInsert {
+				handleMsg(msg)
+			}
 		}
 		diDB := relationDB.NewDeviceInfoRepo(ctx)
 		if len(OffLineDevices) > 0 {

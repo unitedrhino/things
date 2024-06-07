@@ -46,5 +46,5 @@ func CheckIsOnline(ctx context.Context, svcCtx *svc.ServiceContext, core devices
 	if di.IsOnline == def.True {
 		return info.ProtocolCode, nil
 	}
-	return info.ProtocolCode, errors.NotOnline.AddMsg("网关未在线")
+	return info.ProtocolCode, errors.NotOnline.WithMsg("网关未在线")
 }
