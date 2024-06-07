@@ -2,6 +2,8 @@ package svc
 
 import (
 	"context"
+	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
+	"gitee.com/i-Things/share/clients"
 	"gitee.com/i-Things/share/conf"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/eventBus"
@@ -23,8 +25,10 @@ import (
 type ServiceContext struct {
 	Config       config.Config
 	PubDev       pubDev.PubDev
+	MqttClient   *clients.MqttClient
 	PubInner     pubInner.PubInner
 	FastEvent    *eventBus.FastEvent
+	TimedM       timedmanage.TimedManage
 	ProductM     productmanage.ProductManage
 	DeviceM      devicemanage.DeviceManage
 	Script       custom.Repo
@@ -37,6 +41,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	var (
 		productM productmanage.ProductManage
 		deviceM  devicemanage.DeviceManage
+		timedM   timedmanage.TimedManage
 	)
 	/*
 		// move to startup.PostInit()
@@ -80,10 +85,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	logx.Must(err)
 	dc, err := dmExport.NewDeviceInfoCache(deviceM, serverMsg)
 	logx.Must(err)
+	mc, err := clients.NewMqttClient(c.DevLink.Mqtt)
+	logx.Must(err)
+	timedM = timedmanage.NewTimedManage(zrpc.MustNewClient(c.TimedJobRpc.Conf))
 	return &ServiceContext{
 		Config: c,
 		// PubDev:   dl,
 		// PubInner: il,
+		MqttClient:   mc,
 		FastEvent:    serverMsg,
 		ProductM:     productM,
 		DeviceM:      deviceM,
@@ -91,5 +100,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		ProductCache: pc,
 		DeviceCache:  dc,
 		NodeID:       nodeID,
+		TimedM:       timedM,
 	}
 }

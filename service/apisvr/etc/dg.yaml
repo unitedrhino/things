@@ -39,3 +39,13 @@ DmRpc:
 #  Endpoint: http://127.0.0.1:14268/api/traces
 #  Sampler: 1.0
 #  Batcher: jaeger
+
+TimedJobRpc:
+  Enable: true
+  Mode: grpc
+  Conf:
+    Timeout: 1000000
+    Etcd:
+      Hosts:
+        - 127.0.0.1:2379
+      Key: timedjob.rpc

@@ -3,12 +3,14 @@ package deviceSub
 import (
 	"context"
 	"encoding/json"
+	"gitee.com/i-Things/share/caches"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceAuth"
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgExt"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/sdk/service/protocol"
 	"github.com/i-Things/things/service/dgsvr/internal/domain/custom"
 	"github.com/i-Things/things/service/dgsvr/internal/event/innerSub"
 	deviceauthlogic "github.com/i-Things/things/service/dgsvr/internal/logic/deviceauth"
@@ -167,9 +169,21 @@ func (s *DeviceSubServer) getDevPublish(topic string, payload []byte) (*devices.
 
 func (s *DeviceSubServer) Connected(info *devices.DevConn) error {
 	s.Infof("%s info:%v", utils.FuncName(), utils.Fmt(info))
-	_, err := deviceAuth.GetLoginDevice(info.UserName)
+	newDo, err := deviceAuth.GetLoginDevice(info.UserName)
 	if err != nil { //只传送设备的消息
 		return nil
+	}
+	dev := devices.Core{
+		ProductID:  newDo.ProductID,
+		DeviceName: newDo.DeviceName,
+	}
+	err = caches.GetStore().Hset(protocol.DeviceMqttDevice, protocol.GenDeviceTopicKey(dev), utils.MarshalNoErr(info))
+	if err != nil {
+		logx.Error(err)
+	}
+	err = caches.GetStore().Hset(protocol.DeviceMqttClientID, info.ClientID, utils.MarshalNoErr(dev))
+	if err != nil {
+		logx.Error(err)
 	}
 	return s.svcCtx.PubInner.PubConn(s.ctx, pubInner.Connect, info)
 }

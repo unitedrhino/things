@@ -8,7 +8,6 @@ import (
 	"gitee.com/i-Things/share/clients"
 	"gitee.com/i-Things/share/conf"
 	"gitee.com/i-Things/share/ctxs"
-	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/events/topics"
@@ -172,56 +171,6 @@ func (m *MqttProtocol) SubscribeDevConn(handle ConnHandle) error {
 		return err
 	}
 	return nil
-}
-
-func (m *MqttProtocol) RegisterDeviceOnlineCheck() error {
-	err := m.RegisterTimerHandler(func(ctx context.Context, t time.Time) error {
-		logx.WithContext(ctx).Infof("online sync")
-		var total int64 = 10000
-		var limit int64 = 1000
-		var page int64 = 1
-		for page*limit < total {
-			infos, to, err := m.MqttClient.GetOnlineClients(ctx, clients.GetOnlineClientsFilter{}, &def.PageInfo{
-				Page: 1,
-				Size: 200,
-			})
-			if err != nil {
-				logx.WithContext(ctx).Error(err)
-				return err
-			}
-			total = to
-			page++
-			var needOnlineDevices []*dm.DeviceOnlineMultiFix
-			for _, info := range infos {
-				i, err := m.ConnHandle(ctx, *info)
-				if err != nil {
-					continue
-				}
-				di, err := m.DeviceCache.GetData(ctx, devices.Core{
-					ProductID:  i.ProductID,
-					DeviceName: i.DeviceName,
-				})
-				if err != nil {
-					continue
-				}
-				if di.IsOnline != def.True {
-					needOnlineDevices = append(needOnlineDevices, &dm.DeviceOnlineMultiFix{
-						Device: &dm.DeviceCore{
-							ProductID:  di.ProductID,
-							DeviceName: di.DeviceName,
-						},
-						IsOnline:  def.True,
-						ConnectAt: info.Timestamp,
-					})
-				}
-			}
-			logx.WithContext(ctx).Infof("fixOnline %v", utils.Fmt(needOnlineDevices))
-			_, err = m.DeviceM.DeviceOnlineMultiFix(ctx, &dm.DeviceOnlineMultiFixReq{Devices: needOnlineDevices})
-			return err
-		}
-		return nil
-	})
-	return err
 }
 
 func (m *MqttProtocol) subscribeWithFunc(cli mqtt.Client, topic string, handle func(ctx context.Context, topic string, payload []byte) error) error {
