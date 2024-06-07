@@ -113,7 +113,7 @@ func (l *GatewayLogic) HandleRegister(msg *deviceMsg.PublishMsg, resp *msgGatewa
 		}
 	}
 	for _, v := range l.dreq.Payload.Devices {
-		_, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
+		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
 			ProductID:  v.ProductID,
 			DeviceName: v.DeviceName,
 		})
@@ -136,22 +136,6 @@ func (l *GatewayLogic) HandleRegister(msg *deviceMsg.PublishMsg, resp *msgGatewa
 				resp.AddStatus(err)
 				continue
 			}
-		}
-		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
-			ProductID:  v.ProductID,
-			DeviceName: v.DeviceName,
-		})
-		if err != nil {
-			l.Errorf("%s.DeviceM.DeviceInfoRead productID:%v deviceName:%v err:%v",
-				utils.FuncName(), v.ProductID, v.DeviceName, err)
-			payload.Devices = append(payload.Devices, &msgGateway.Device{
-				ProductID:  v.ProductID,
-				DeviceName: v.DeviceName,
-				Code:       errors.Fmt(err).GetCode(),
-				Msg:        errors.Fmt(err).GetMsg(),
-			})
-			resp.AddStatus(err)
-			continue
 		}
 		c, err := relationDB.NewGatewayDeviceRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.GatewayDeviceFilter{
 			SubDevice: &devices.Core{

@@ -305,10 +305,10 @@ func (m *DmGroupDevice) TableName() string {
 type DmGatewayDevice struct {
 	TenantCode        stores.TenantCode `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"` // 租户编码
 	ID                int64             `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	GatewayProductID  string            `gorm:"column:gateway_product_id;uniqueIndex:gpi_pdn_pi_dn;type:varchar(100);NOT NULL"`  // 网关产品id
-	GatewayDeviceName string            `gorm:"column:gateway_device_name;uniqueIndex:gpi_pdn_pi_dn;type:varchar(100);NOT NULL"` // 网关设备名称
-	ProductID         string            `gorm:"column:product_id;uniqueIndex:gpi_pdn_pi_dn;type:varchar(100);NOT NULL"`          // 子设备产品id
-	DeviceName        string            `gorm:"column:device_name;uniqueIndex:gpi_pdn_pi_dn;type:varchar(100);NOT NULL"`         // 子设备名称
+	GatewayProductID  string            `gorm:"column:gateway_product_id;type:varchar(100);NOT NULL"`                    // 网关产品id
+	GatewayDeviceName string            `gorm:"column:gateway_device_name;type:varchar(100);NOT NULL"`                   // 网关设备名称
+	ProductID         string            `gorm:"column:product_id;uniqueIndex:gpi_pdn_pi_dn;type:varchar(100);NOT NULL"`  // 子设备产品id
+	DeviceName        string            `gorm:"column:device_name;uniqueIndex:gpi_pdn_pi_dn;type:varchar(100);NOT NULL"` // 子设备名称
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:gpi_pdn_pi_dn"`
 	Device      *DmDeviceInfo      `gorm:"foreignKey:ProductID,DeviceName;references:ProductID,DeviceName"`
