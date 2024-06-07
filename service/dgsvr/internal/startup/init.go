@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
+	"gitee.com/i-Things/share/clients"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/eventBus"
@@ -35,7 +36,9 @@ func PostInit(svcCtx *svc.ServiceContext) {
 
 	svcCtx.PubDev = dl
 	svcCtx.PubInner = il
-
+	mc, err := clients.NewMqttClient(svcCtx.Config.DevLink.Mqtt)
+	logx.Must(err)
+	svcCtx.MqttClient = mc
 	sd, err := subDev.NewSubDev(svcCtx.Config.DevLink)
 	logx.Must(err)
 	err = sd.SubDevMsg(func(ctx context.Context) subDev.DevSubHandle {

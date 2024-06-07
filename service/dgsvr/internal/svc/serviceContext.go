@@ -85,14 +85,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	logx.Must(err)
 	dc, err := dmExport.NewDeviceInfoCache(deviceM, serverMsg)
 	logx.Must(err)
-	mc, err := clients.NewMqttClient(c.DevLink.Mqtt)
-	logx.Must(err)
 	timedM = timedmanage.NewTimedManage(zrpc.MustNewClient(c.TimedJobRpc.Conf))
 	return &ServiceContext{
 		Config: c,
 		// PubDev:   dl,
 		// PubInner: il,
-		MqttClient:   mc,
 		FastEvent:    serverMsg,
 		ProductM:     productM,
 		DeviceM:      deviceM,
