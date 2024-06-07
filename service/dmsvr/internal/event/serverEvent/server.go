@@ -222,7 +222,7 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 
 				err = l.svcCtx.PubApp.DeviceStatusConnected(ctx, appMsg)
 				if err != nil {
-					l.Errorf("%s.pubApp productID:%v deviceName:%v err:%v",
+					log.Errorf("%s.pubApp productID:%v deviceName:%v err:%v",
 						utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 				}
 			} else {
@@ -231,12 +231,12 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 					DeviceName: ld.DeviceName,
 				})
 				if err != nil {
-					l.Error(err)
+					log.Error(err)
 				} else if di.DeviceType == def.DeviceTypeGateway { //如果是网关类型下线,则需要把子设备全部下线
 					subDevs, err := relationDB.NewGatewayDeviceRepo(l.ctx).FindByFilter(l.ctx,
 						relationDB.GatewayDeviceFilter{Gateway: &devices.Core{ProductID: ld.ProductID, DeviceName: ld.DeviceName}}, nil)
 					if err != nil {
-						l.Error(err)
+						log.Error(err)
 					} else {
 						for _, v := range subDevs {
 							subDeviceInsert = append(subDeviceInsert, &deviceStatus.ConnectMsg{Action: msg.Action,
@@ -250,7 +250,7 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 				})
 				err = l.svcCtx.PubApp.DeviceStatusDisConnected(ctx, appMsg)
 				if err != nil {
-					l.Errorf("%s.pubApp productID:%v deviceName:%v err:%v",
+					log.Errorf("%s.pubApp productID:%v deviceName:%v err:%v",
 						utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 				}
 			}
@@ -261,7 +261,7 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 		}
 		if len(subDeviceInsert) != 0 {
 			//子设备下线
-			l.Infof("子设备下线: %v", utils.Fmt(subDeviceInsert))
+			log.Infof("子设备下线: %v", utils.Fmt(subDeviceInsert))
 			for _, msg := range subDeviceInsert {
 				handleMsg(msg)
 			}
