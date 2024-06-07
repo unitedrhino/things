@@ -178,6 +178,15 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 		di.Phone = utils.AnyToNullString(in.Phone)
 	}
 
+	if ctxs.IsRoot(l.ctx) == nil {
+		if in.Status != 0 {
+			di.Status = in.Status
+		}
+		if in.IsOnline != 0 {
+			di.IsOnline = in.IsOnline
+		}
+	}
+
 	err = l.InitDevice(devices.Info{
 		ProductID:  di.ProductID,
 		DeviceName: di.DeviceName,
