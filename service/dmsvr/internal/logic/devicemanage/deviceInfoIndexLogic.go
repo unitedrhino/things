@@ -70,6 +70,7 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 	filter := relationDB.DeviceFilter{
 		TenantCode:        in.TenantCode,
 		ProductID:         in.ProductID,
+		ProductIDs:        in.ProductIDs,
 		AreaIDs:           in.AreaIDs,
 		DeviceName:        in.DeviceName,
 		DeviceNames:       in.DeviceNames,

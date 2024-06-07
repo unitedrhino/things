@@ -21,6 +21,7 @@ type (
 		TenantCodes       []string
 		ProjectIDs        []int64
 		ProductID         string
+		ProductIDs        []string
 		AreaIDs           []int64
 		NotAreaIDs        []int64
 		DeviceName        string
@@ -76,6 +77,9 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	//业务过滤条件
 	if f.ProductID != "" {
 		db = db.Where("product_id = ?", f.ProductID)
+	}
+	if len(f.ProductIDs) != 0 {
+		db = db.Where("product_id in ?", f.ProductIDs)
 	}
 	if len(f.NotAreaIDs) != 0 {
 		db = db.Where("area_id not in ?", f.NotAreaIDs)

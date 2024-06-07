@@ -34,7 +34,8 @@ func (l *IndexLogic) Index(req *types.DeviceInfoIndexReq) (resp *types.DeviceInf
 	dmReq := &dm.DeviceInfoIndexReq{
 		TenantCode:        req.TenantCode,
 		ProductID:         req.ProductID, //产品id
-		AreaIDs:           req.AreaIDs,   //项目区域ids
+		ProductIDs:        req.ProductIDs,
+		AreaIDs:           req.AreaIDs, //项目区域ids
 		DeviceName:        req.DeviceName,
 		Tags:              logic.ToTagsMap(req.Tags),
 		Page:              logic.ToDmPageRpc(req.Page),
