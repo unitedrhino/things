@@ -2,6 +2,7 @@ package devicemanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/eventBus"
@@ -24,6 +25,7 @@ type DeviceInfoDeleteLogic struct {
 }
 
 func NewDeviceInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeviceInfoDeleteLogic {
+	ctx = ctxs.WithDefaultRoot(ctx)
 	return &DeviceInfoDeleteLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
@@ -34,7 +36,9 @@ func NewDeviceInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 
 // 删除设备
 func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*dm.Empty, error) {
-
+	if err := ctxs.IsAdmin(l.ctx); err != nil {
+		return nil, err
+	}
 	di, err := l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductID, DeviceNames: []string{in.DeviceName}})
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {

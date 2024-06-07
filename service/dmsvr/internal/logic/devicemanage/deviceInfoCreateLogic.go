@@ -75,7 +75,9 @@ func (l *DeviceInfoCreateLogic) CheckProduct(in *dm.DeviceInfo) (*dm.ProductInfo
 
 // 新增设备
 func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Empty, err error) {
-
+	if err := ctxs.IsAdmin(l.ctx); err != nil {
+		return nil, err
+	}
 	if in.ProductID == "" && in.ProductName != "" { //通过唯一的产品名 查找唯一的产品ID
 		if pid, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductNames: []string{in.ProductName}}); err != nil {
 			return nil, err
