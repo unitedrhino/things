@@ -93,3 +93,9 @@ func (p ExampleRepo) MultiInsert(ctx context.Context, data []*DmExample) error {
 	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmExample{}).Create(data).Error
 	return stores.ErrFmt(err)
 }
+
+func (d ExampleRepo) UpdateWithField(ctx context.Context, f ExampleFilter, updates map[string]any) error {
+	db := d.fmtFilter(ctx, f)
+	err := db.Model(&DmExample{}).Updates(updates).Error
+	return stores.ErrFmt(err)
+}
