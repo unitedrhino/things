@@ -113,7 +113,7 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 				case msgOta.DeviceStatusConfirm, msgOta.DeviceStatusQueued:
 					if in.IsOverwriteMode != def.True { //如果是不覆盖则直接失败
 						status = msgOta.DeviceStatusFailure
-						detail = "其他任务正在升级中"
+						detail = "其他任务正在等待升级中"
 					} else {
 						od.Status = msgOta.DeviceStatusCanceled
 						od.Detail = "其他任务启动取消该任务"

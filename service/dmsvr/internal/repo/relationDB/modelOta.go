@@ -186,7 +186,7 @@ type DmOtaFirmwareDevice struct {
 	FirmwareID      int64        `gorm:"column:firmware_id;uniqueIndex:tc_un"`                    // 升级包ID
 	SrcVersion      string       `gorm:"column:src_version;type:varchar(125)"`                    // 设备的原固件版本
 	DestVersion     string       `gorm:"column:dest_version;type:varchar(125)"`                   // 设备的目标固件版本
-	ProductID       string       `gorm:"column:product_id;type:varchar(20)" `                     // 设备所属产品的productID
+	ProductID       string       `gorm:"column:product_id;type:varchar(20);uniqueIndex:tc_un"`    // 设备所属产品的productID
 	DeviceName      string       `gorm:"column:device_name;type:varchar(100);uniqueIndex:tc_un" ` // 设备名称
 	JobID           int64        `gorm:"column:job_id;type:BIGINT" `                              // 升级批次ID
 	Step            int64        `gorm:"column:step;type:BIGINT"`                                 // 当前的升级进度  0-100%    -1：升级失败。-2：下载失败。-3：校验失败。-4：烧写失败。
