@@ -22,13 +22,15 @@ const (
 
 // TermProperty 物模型类型 属性
 type TermProperty struct {
-	ProductID   string   `json:"productID"` //产品id
-	DeviceName  string   `json:"deviceName"`
-	DeviceAlias string   `json:"deviceAlias"`
-	DataID      string   `json:"dataID"` //属性的id   aa.bb.cc
-	DataName    string   `json:"dataName"`
-	TermType    CmpType  `json:"termType"` //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
-	Values      []string `json:"values"`   //条件值 参数根据动态条件类型会有多个参数
+	AreaID           int64    `json:"areaID"`    //仅做记录
+	ProductID        string   `json:"productID"` //产品id
+	DeviceName       string   `json:"deviceName"`
+	DeviceAlias      string   `json:"deviceAlias"`
+	DataID           string   `json:"dataID"` //属性的id   aa.bb.cc
+	DataName         string   `json:"dataName"`
+	SchemaAffordance string   `json:"schemaAffordance"` //只读,返回物模型定义
+	TermType         CmpType  `json:"termType"`         //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
+	Values           []string `json:"values"`           //条件值 参数根据动态条件类型会有多个参数
 }
 
 func (t TermColumnType) Validate() error {
@@ -69,6 +71,7 @@ func (c *TermProperty) Validate(repo ValidateRepo) error {
 	if p == nil {
 		return errors.Parameter.AddMsg("dataID不存在")
 	}
+	c.SchemaAffordance = schema.DoToAffordanceStr(p)
 	if c.DataName == "" {
 		c.DataName = p.Name
 	}

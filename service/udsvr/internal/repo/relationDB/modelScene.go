@@ -116,7 +116,7 @@ func (m *UdSceneThenAction) TableName() string {
 
 type UdSceneActionDevice struct {
 	//ProjectID        int64                  `gorm:"column:project_id;type:bigint;default:2;NOT NULL"`  // 项目ID(雪花ID)
-	AreaID           int64                  `gorm:"column:area_id;type:bigint;default:2;NOT NULL"` // 项目区域ID(雪花ID)
+	AreaID           int64                  `gorm:"column:area_id;type:bigint;default:2;"` // 项目区域ID(雪花ID)
 	AreaName         string                 `gorm:"column:area_name;index;type:VARCHAR(100);default:''"`
 	ProductID        string                 `gorm:"column:product_id;index;type:VARCHAR(25);default:''"`    //产品id
 	ProductName      string                 `gorm:"column:product_name;index;type:VARCHAR(200);default:''"` //产品id
@@ -135,4 +135,6 @@ type UdSceneActionDevice struct {
 
 type UdSceneActionScene struct {
 	SceneID int64 `gorm:"column:scene_id;index;type:bigint"` // 场景id编号
+	AreaID  int64 `gorm:"column:area_id;type:bigint;"`       // 项目区域ID(雪花ID)
+
 }

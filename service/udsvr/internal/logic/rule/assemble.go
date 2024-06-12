@@ -175,7 +175,7 @@ func ToSceneActionPo(s *scene.Info, in *scene.Action) *relationDB.UdSceneThenAct
 		Notify:  in.Notify,
 	}
 	if in.Scene != nil {
-		po.Scene = relationDB.UdSceneActionScene{SceneID: in.Scene.SceneID}
+		po.Scene = relationDB.UdSceneActionScene{SceneID: in.Scene.SceneID, AreaID: in.Scene.AreaID}
 	}
 	if in.Device != nil {
 		po.Device = relationDB.UdSceneActionDevice{
@@ -218,7 +218,7 @@ func ToSceneActionDo(in *relationDB.UdSceneThenAction) *scene.Action {
 		Delay:  in.Delay,
 		Notify: in.Notify,
 	}
-	do.Scene = &scene.ActionScene{SceneID: in.Scene.SceneID}
+	do.Scene = &scene.ActionScene{SceneID: in.Scene.SceneID, AreaID: in.Scene.AreaID}
 	do.Device = &scene.ActionDevice{
 		//ProjectID:        int64(in.Device.ProjectID),
 		AreaID:           in.Device.AreaID,
