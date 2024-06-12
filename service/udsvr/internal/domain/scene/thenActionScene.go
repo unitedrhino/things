@@ -11,7 +11,7 @@ import (
 */
 
 type ActionScene struct {
-	AreaID  int64 `json:"areaID"` //仅做记录
+	AreaID  int64 `json:"areaID,string"` //仅做记录
 	SceneID int64 `json:"sceneID"`
 }
 

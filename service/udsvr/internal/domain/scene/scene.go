@@ -29,7 +29,7 @@ const (
 // 多设备的场景联动
 type Info struct {
 	ID          int64       `json:"id"`
-	AreaID      int64       `json:"areaID"`
+	AreaID      int64       `json:"areaID,string"`
 	HeadImg     string      `json:"headImg"`               // 头像
 	FlowPath    []*FlowInfo `json:"flowPath"`              //执行路径
 	DeviceMode  DeviceMode  `json:"deviceMode"`            //设备模式: 1:单设备 2:多设备

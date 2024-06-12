@@ -22,8 +22,8 @@ const (
 
 // TermProperty 物模型类型 属性
 type TermProperty struct {
-	AreaID           int64    `json:"areaID"`    //仅做记录
-	ProductID        string   `json:"productID"` //产品id
+	AreaID           int64    `json:"areaID,string"` //仅做记录
+	ProductID        string   `json:"productID"`     //产品id
 	DeviceName       string   `json:"deviceName"`
 	DeviceAlias      string   `json:"deviceAlias"`
 	DataID           string   `json:"dataID"` //属性的id   aa.bb.cc
