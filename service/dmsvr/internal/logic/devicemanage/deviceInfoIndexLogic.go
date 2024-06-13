@@ -5,7 +5,6 @@ import (
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
-	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
@@ -64,7 +63,7 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 			})
 		}
 		if len(udss) == 0 && in.WithShared == def.SelectTypeOnly {
-			return nil, errors.NotFind
+			return &dm.DeviceInfoIndexResp{}, nil
 		}
 	}
 
@@ -81,7 +80,7 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 			})
 		}
 		if len(udss) == 0 && in.WithCollect == def.SelectTypeOnly {
-			return nil, errors.NotFind
+			return &dm.DeviceInfoIndexResp{}, nil
 		}
 	}
 

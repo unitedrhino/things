@@ -200,5 +200,5 @@ func (s *ServiceContext) WithDeviceTenant(ctx context.Context, dev devices.Core)
 	if err != nil {
 		return ctx
 	}
-	return ctxs.BindTenantCode(ctx, di.TenantCode)
+	return ctxs.BindTenantCode(ctx, di.TenantCode, di.ProjectID)
 }

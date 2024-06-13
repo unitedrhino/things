@@ -2,6 +2,7 @@ package area
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
@@ -28,7 +29,7 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 
 func (l *CreateLogic) Create(req *types.SlotAreaSaveReq) error {
 	if req.ParentAreaID != def.RootNode {
-		dmRep, err := l.svcCtx.DeviceM.DeviceInfoIndex(l.ctx, &dm.DeviceInfoIndexReq{
+		dmRep, err := l.svcCtx.DeviceM.DeviceInfoIndex(ctxs.WithRoot(l.ctx), &dm.DeviceInfoIndexReq{
 			Page:    &dm.PageInfo{Page: 1, Size: 2}, //只需要知道是否有设备即可
 			AreaIDs: []int64{req.ParentAreaID}})
 		if err != nil {
