@@ -112,7 +112,7 @@ func GenDeviceTopicKey(dev devices.Core) string {
 }
 
 func UpdateDeviceActivity(dev devices.Core) {
-	err := caches.GetStore().Hset(DeviceLastActivity, GenDeviceTopicKey(dev), time.Now().Format(time.RFC3339))
+	_, err := caches.GetStore().Zadd(DeviceLastActivity, time.Now().Unix(), GenDeviceTopicKey(dev))
 	if err != nil {
 		logx.Error(err)
 	}
