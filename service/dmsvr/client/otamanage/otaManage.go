@@ -89,6 +89,7 @@ type (
 	IDPath                            = dm.IDPath
 	ManufacturerInfo                  = dm.ManufacturerInfo
 	OtaFirmwareDeviceCancelReq        = dm.OtaFirmwareDeviceCancelReq
+	OtaFirmwareDeviceConfirmReq       = dm.OtaFirmwareDeviceConfirmReq
 	OtaFirmwareDeviceIndexReq         = dm.OtaFirmwareDeviceIndexReq
 	OtaFirmwareDeviceIndexResp        = dm.OtaFirmwareDeviceIndexResp
 	OtaFirmwareDeviceInfo             = dm.OtaFirmwareDeviceInfo
@@ -218,6 +219,8 @@ type (
 		OtaFirmwareDeviceCancel(ctx context.Context, in *OtaFirmwareDeviceCancelReq, opts ...grpc.CallOption) (*Empty, error)
 		// 重新升级指定批次下升级失败或升级取消的设备升级作业
 		OtaFirmwareDeviceRetry(ctx context.Context, in *OtaFirmwareDeviceRetryReq, opts ...grpc.CallOption) (*Empty, error)
+		// app确认设备升级
+		OtaFirmwareDeviceConfirm(ctx context.Context, in *OtaFirmwareDeviceConfirmReq, opts ...grpc.CallOption) (*Empty, error)
 		OtaModuleInfoCreate(ctx context.Context, in *OtaModuleInfo, opts ...grpc.CallOption) (*WithID, error)
 		OtaModuleInfoUpdate(ctx context.Context, in *OtaModuleInfo, opts ...grpc.CallOption) (*Empty, error)
 		OtaModuleInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
@@ -378,6 +381,17 @@ func (m *defaultOtaManage) OtaFirmwareDeviceRetry(ctx context.Context, in *OtaFi
 // 重新升级指定批次下升级失败或升级取消的设备升级作业
 func (d *directOtaManage) OtaFirmwareDeviceRetry(ctx context.Context, in *OtaFirmwareDeviceRetryReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.OtaFirmwareDeviceRetry(ctx, in)
+}
+
+// app确认设备升级
+func (m *defaultOtaManage) OtaFirmwareDeviceConfirm(ctx context.Context, in *OtaFirmwareDeviceConfirmReq, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewOtaManageClient(m.cli.Conn())
+	return client.OtaFirmwareDeviceConfirm(ctx, in, opts...)
+}
+
+// app确认设备升级
+func (d *directOtaManage) OtaFirmwareDeviceConfirm(ctx context.Context, in *OtaFirmwareDeviceConfirmReq, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.OtaFirmwareDeviceConfirm(ctx, in)
 }
 
 func (m *defaultOtaManage) OtaModuleInfoCreate(ctx context.Context, in *OtaModuleInfo, opts ...grpc.CallOption) (*WithID, error) {

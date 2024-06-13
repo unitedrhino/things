@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/pb/timedjob"
 	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgOta"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/eventBus"
@@ -74,6 +75,8 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 	for _, v := range devicePos {
 		deviceNames = append(deviceNames, v.DeviceName)
 	}
+	var confirmDevices []*devices.Core
+
 	err = stores.GetCommonConn(l.ctx).Transaction(func(tx *gorm.DB) error {
 		err = relationDB.NewOtaJobRepo(tx).Insert(l.ctx, &dmOtaJob)
 		if err != nil {
@@ -124,6 +127,12 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 					}
 				}
 			}
+			if od.Status == msgOta.DeviceStatusConfirm {
+				confirmDevices = append(confirmDevices, &devices.Core{
+					ProductID:  od.ProductID,
+					DeviceName: od.DeviceName,
+				})
+			}
 			otaDevices = append(otaDevices, &relationDB.DmOtaFirmwareDevice{
 				FirmwareID:  in.FirmwareID,
 				ProductID:   device.ProductID,
@@ -136,6 +145,11 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 			})
 		}
 		err = otDB.MultiInsert(l.ctx, otaDevices)
+		if err != nil {
+			return err
+		}
+		err = relationDB.NewDeviceInfoRepo(tx).UpdateWithField(l.ctx, relationDB.DeviceFilter{Cores: confirmDevices},
+			map[string]any{"need_confirm_job_id": dmOtaJob.ID, "need_confirm_version": fi.Version})
 		if err != nil {
 			return err
 		}
@@ -155,6 +169,14 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 		})
 		if err != nil {
 			l.Error(err)
+		}
+	}
+	if len(confirmDevices) > 0 {
+		for _, v := range confirmDevices {
+			err := l.svcCtx.DeviceCache.SetData(l.ctx, *v, nil)
+			if err != nil {
+				l.Error(err)
+			}
 		}
 	}
 	return &dm.WithID{Id: dmOtaJob.ID}, err

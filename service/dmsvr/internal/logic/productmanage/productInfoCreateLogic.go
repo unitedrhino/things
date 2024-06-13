@@ -138,7 +138,7 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Empt
 		return nil, errors.Duplicate.WithMsgf("产品名称重复:%s", in.ProductName).AddDetail("ProductName:" + in.ProductName)
 	}
 	if in.ProductID != "" {
-		expr := `[0-9A-Za-z]{5,20}`
+		expr := `[0-9A-Za-z]{2,20}`
 		match, _ := regexp.MatchString(expr, in.ProductID)
 		//fmt.Println(match)
 		if !match {
@@ -151,7 +151,10 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Empt
 			return nil, errors.Duplicate.WithMsgf("产品id重复:%s", in.ProductID).AddDetail("ProductID:" + in.ProductID)
 		}
 	} else {
-		productID := l.svcCtx.ProductID.GetSnowflakeId() // 产品id
+		productID, err := relationDB.NewProductIDRepo(l.ctx).GenID(l.ctx)
+		if err != nil {
+			return nil, err
+		}
 		in.ProductID = deviceAuth.GetStrProductID(productID)
 	}
 	pi, err := l.ConvProductPbToPo(in)

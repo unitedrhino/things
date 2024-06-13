@@ -89,6 +89,7 @@ type (
 	IDPath                            = dm.IDPath
 	ManufacturerInfo                  = dm.ManufacturerInfo
 	OtaFirmwareDeviceCancelReq        = dm.OtaFirmwareDeviceCancelReq
+	OtaFirmwareDeviceConfirmReq       = dm.OtaFirmwareDeviceConfirmReq
 	OtaFirmwareDeviceIndexReq         = dm.OtaFirmwareDeviceIndexReq
 	OtaFirmwareDeviceIndexResp        = dm.OtaFirmwareDeviceIndexResp
 	OtaFirmwareDeviceInfo             = dm.OtaFirmwareDeviceInfo

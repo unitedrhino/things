@@ -81,42 +81,45 @@ func (p ProductInfoRepo) Insert(ctx context.Context, data *DmProductInfo) error 
 		if err != nil {
 			return err
 		}
-		var ProductCategoryIDs = []int64{data.CategoryID}
-		if !(data.CategoryID == 0 || data.CategoryID == 1) {
-			pcDB := NewProductCategoryRepo(tx)
-			pcs, err := pcDB.FindOne(ctx, data.CategoryID)
+
+		if data.CategoryID != def.NotClassified {
+			var ProductCategoryIDs = []int64{data.CategoryID}
+			if data.CategoryID > def.NotClassified {
+				pcDB := NewProductCategoryRepo(tx)
+				pcs, err := pcDB.FindOne(ctx, data.CategoryID)
+				if err != nil {
+					return err
+				}
+				ProductCategoryIDs = append(ProductCategoryIDs, utils.GetIDPath(pcs.IDPath)...)
+			}
+			pcs, err := NewProductCategorySchemaRepo(tx).FindByFilter(ctx, ProductCategorySchemaFilter{ProductCategoryIDs: ProductCategoryIDs}, nil)
 			if err != nil {
 				return err
 			}
-			ProductCategoryIDs = append(ProductCategoryIDs, utils.GetIDPath(pcs.IDPath)...)
-		}
-		pcs, err := NewProductCategorySchemaRepo(tx).FindByFilter(ctx, ProductCategorySchemaFilter{ProductCategoryIDs: ProductCategoryIDs}, nil)
-		if err != nil {
-			return err
-		}
-		if len(pcs) == 0 {
-			return nil
-		}
-		identifiers := utils.ToSliceWithFunc(pcs, func(in *DmProductCategorySchema) string {
-			return in.Identifier
-		})
-		ids, err := NewCommonSchemaRepo(tx).FindByFilter(ctx, CommonSchemaFilter{Identifiers: identifiers}, nil)
-		if err != nil {
-			return err
-		}
-		if len(ids) == 0 {
-			return nil
-		}
-		var schemas []*DmProductSchema
-		for _, v := range ids {
-			v.ID = 0
-			v.Tag = schema.TagRequired
-			schemas = append(schemas, &DmProductSchema{
-				ProductID:    data.ProductID,
-				DmSchemaCore: v.DmSchemaCore,
+			if len(pcs) == 0 {
+				return nil
+			}
+			identifiers := utils.ToSliceWithFunc(pcs, func(in *DmProductCategorySchema) string {
+				return in.Identifier
 			})
+			ids, err := NewCommonSchemaRepo(tx).FindByFilter(ctx, CommonSchemaFilter{Identifiers: identifiers}, nil)
+			if err != nil {
+				return err
+			}
+			if len(ids) == 0 {
+				return nil
+			}
+			var schemas []*DmProductSchema
+			for _, v := range ids {
+				v.ID = 0
+				v.Tag = schema.TagRequired
+				schemas = append(schemas, &DmProductSchema{
+					ProductID:    data.ProductID,
+					DmSchemaCore: v.DmSchemaCore,
+				})
+			}
+			err = NewProductSchemaRepo(tx).MultiInsert(ctx, schemas)
 		}
-		err = NewProductSchemaRepo(tx).MultiInsert(ctx, schemas)
 		return err
 	})
 	return stores.ErrFmt(err)

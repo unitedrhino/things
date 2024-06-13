@@ -78,46 +78,47 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		}
 	}
 	return &types.DeviceInfo{
-		ID:             v.Id,
-		TenantCode:     v.TenantCode,
-		ProductID:      v.ProductID,          //产品id 只读
-		DeviceName:     v.DeviceName,         //设备名称 读写
-		DeviceAlias:    &v.DeviceAlias.Value, //设备别名 读写
-		Secret:         v.Secret,             //设备秘钥 只读
-		Cert:           v.Cert,               //设备证书 只读
-		IsEnable:       v.IsEnable,
-		Imei:           v.Imei,                        //IMEI号信息 只读
-		Mac:            v.Mac,                         //MAC号信息 只读
-		Version:        utils.ToNullString(v.Version), //固件版本 读写
-		Rssi:           utils.ToEmptyInt64(v.Rssi),
-		HardInfo:       v.HardInfo,               //模组硬件型号 只读
-		SoftInfo:       v.SoftInfo,               //模组软件版本 只读
-		Position:       position,                 //设别定位（百度坐标）
-		Address:        &v.Address.Value,         //详细地址
-		Tags:           logic.ToTagsType(v.Tags), //设备标签
-		ProtocolConf:   logic.ToTagsType(v.Tags),
-		SchemaAlias:    v.SchemaAlias, //设备物模型别名,如果是结构体类型则key为xxx.xxx
-		IsOnline:       v.IsOnline,    //在线状态 1离线 2在线 只读
-		FirstBind:      v.FirstBind,
-		FirstLogin:     v.FirstLogin,  //激活时间 只读
-		LastLogin:      v.LastLogin,   //最后上线时间 只读
-		LogLevel:       v.LogLevel,    //日志级别 1)关闭 2)错误 3)告警 4)信息 5)调试  读写
-		CreatedTime:    v.CreatedTime, //创建时间 只读
-		MobileOperator: v.MobileOperator,
-		Phone:          utils.ToNullString(v.Phone),
-		Iccid:          utils.ToNullString(v.Iccid),
-		ProjectID:      v.ProjectID, //项目id 只读
-		AreaID:         v.AreaID,    //项目区域id 只读
-		WithProperties: properties,
-		Profiles:       profiles,
-		Status:         v.Status,
-		Manufacturer:   utils.Copy[types.ManufacturerInfo](v.Manufacturer),
-		Owner:          owner,
-		ProductName:    v.ProductName,
-		DeviceType:     v.DeviceType,
-		NetType:        v.NetType,
-		ExpTime:        utils.ToEmptyInt64(v.ExpTime),
-		RatedPower:     v.RatedPower,
+		ID:                 v.Id,
+		TenantCode:         v.TenantCode,
+		ProductID:          v.ProductID,          //产品id 只读
+		DeviceName:         v.DeviceName,         //设备名称 读写
+		DeviceAlias:        &v.DeviceAlias.Value, //设备别名 读写
+		Secret:             v.Secret,             //设备秘钥 只读
+		Cert:               v.Cert,               //设备证书 只读
+		IsEnable:           v.IsEnable,
+		Imei:               v.Imei,                        //IMEI号信息 只读
+		Mac:                v.Mac,                         //MAC号信息 只读
+		Version:            utils.ToNullString(v.Version), //固件版本 读写
+		Rssi:               utils.ToEmptyInt64(v.Rssi),
+		HardInfo:           v.HardInfo,               //模组硬件型号 只读
+		SoftInfo:           v.SoftInfo,               //模组软件版本 只读
+		Position:           position,                 //设别定位（百度坐标）
+		Address:            &v.Address.Value,         //详细地址
+		Tags:               logic.ToTagsType(v.Tags), //设备标签
+		ProtocolConf:       logic.ToTagsType(v.Tags),
+		SchemaAlias:        v.SchemaAlias, //设备物模型别名,如果是结构体类型则key为xxx.xxx
+		IsOnline:           v.IsOnline,    //在线状态 1离线 2在线 只读
+		FirstBind:          v.FirstBind,
+		FirstLogin:         v.FirstLogin,  //激活时间 只读
+		LastLogin:          v.LastLogin,   //最后上线时间 只读
+		LogLevel:           v.LogLevel,    //日志级别 1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+		CreatedTime:        v.CreatedTime, //创建时间 只读
+		MobileOperator:     v.MobileOperator,
+		Phone:              utils.ToNullString(v.Phone),
+		Iccid:              utils.ToNullString(v.Iccid),
+		ProjectID:          v.ProjectID, //项目id 只读
+		AreaID:             v.AreaID,    //项目区域id 只读
+		WithProperties:     properties,
+		Profiles:           profiles,
+		Status:             v.Status,
+		Manufacturer:       utils.Copy[types.ManufacturerInfo](v.Manufacturer),
+		Owner:              owner,
+		ProductName:        v.ProductName,
+		DeviceType:         v.DeviceType,
+		NetType:            v.NetType,
+		ExpTime:            utils.ToEmptyInt64(v.ExpTime),
+		RatedPower:         v.RatedPower,
+		NeedConfirmVersion: v.NeedConfirmVersion,
 	}
 }
 

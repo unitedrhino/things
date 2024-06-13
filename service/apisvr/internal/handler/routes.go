@@ -428,6 +428,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/confirm",
+					Handler: thingsotafirmwaredevice.ConfirmHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/index",
 					Handler: thingsotafirmwaredevice.IndexHandler(serverCtx),
 				},

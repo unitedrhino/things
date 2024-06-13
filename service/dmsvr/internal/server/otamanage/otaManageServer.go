@@ -94,6 +94,12 @@ func (s *OtaManageServer) OtaFirmwareDeviceRetry(ctx context.Context, in *dm.Ota
 	return l.OtaFirmwareDeviceRetry(in)
 }
 
+// app确认设备升级
+func (s *OtaManageServer) OtaFirmwareDeviceConfirm(ctx context.Context, in *dm.OtaFirmwareDeviceConfirmReq) (*dm.Empty, error) {
+	l := otamanagelogic.NewOtaFirmwareDeviceConfirmLogic(ctx, s.svcCtx)
+	return l.OtaFirmwareDeviceConfirm(in)
+}
+
 func (s *OtaManageServer) OtaModuleInfoCreate(ctx context.Context, in *dm.OtaModuleInfo) (*dm.WithID, error) {
 	l := otamanagelogic.NewOtaModuleInfoCreateLogic(ctx, s.svcCtx)
 	return l.OtaModuleInfoCreate(in)

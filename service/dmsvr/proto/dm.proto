@@ -289,6 +289,9 @@ service OtaManage{
   rpc otaFirmwareDeviceCancel(OtaFirmwareDeviceCancelReq) returns(Empty);
   //重新升级指定批次下升级失败或升级取消的设备升级作业
   rpc otaFirmwareDeviceRetry(OtaFirmwareDeviceRetryReq) returns(Empty);
+  //app确认设备升级
+  rpc otaFirmwareDeviceConfirm(OtaFirmwareDeviceConfirmReq) returns(Empty);
+
 
   rpc otaModuleInfoCreate(OtaModuleInfo)returns(WithID);
   rpc otaModuleInfoUpdate(OtaModuleInfo)returns(Empty);
@@ -1052,6 +1055,9 @@ message DeviceInfo {
   int64 netType =35;//网络类型
   IDPath distributor =36;//过滤分销商的数据
   google.protobuf.Int64Value  expTime =38; //到期时间,如果为0,则不限制
+  int64 NeedConfirmJobID =39;//需要app确认升级的任务ID,为0是没有
+  string NeedConfirmVersion =40;//待确认升级的版本
+  int64 userID =41;//拥有者的用户ID
 }
 
 message ProductInfo{
@@ -1734,6 +1740,10 @@ message OtaFirmwareDeviceRetryReq{
   repeated string deviceNames = 3;
 }
 
+message OtaFirmwareDeviceConfirmReq{
+  string productID =1;
+  string deviceName =2;
+}
 
 
 

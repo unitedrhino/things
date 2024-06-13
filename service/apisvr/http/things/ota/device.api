@@ -22,6 +22,10 @@ service api{
     @doc "重新升级指定批次下升级失败或升级取消的设备升级作业"
     @handler retry
     post /retry(OtaFirmwareDeviceRetryReq)
+
+    @doc "确认升级设备"
+    @handler confirm
+    post /confirm(OtaFirmwareDeviceConfirmReq)
 }
 // OTATaskByJobIndexReq 表示根据作业索引的OTA任务请求。
 type OtaFirmwareDeviceIndexReq  {
@@ -29,6 +33,11 @@ type OtaFirmwareDeviceIndexReq  {
     JobID      int64        `json:"jobID,optional"`      // 作业ID
     FirmwareID int64        `json:"firmwareID,optional"` // 任务状态
     DeviceName string       `json:"deviceName,optional"` // 设备名称
+}
+
+type OtaFirmwareDeviceConfirmReq{
+    ProductID string `json:"productID"`
+    DeviceName string `json:"deviceName"`
 }
 
 // OtaUpTaskInfo 表示OTA任务的信息。

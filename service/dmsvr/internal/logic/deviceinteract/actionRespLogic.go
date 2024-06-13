@@ -9,6 +9,7 @@ import (
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"time"
@@ -42,7 +43,14 @@ func (l *ActionRespLogic) initMsg(productID string) error {
 
 // 回复调用设备行为
 func (l *ActionRespLogic) ActionResp(in *dm.ActionRespReq) (*dm.Empty, error) {
-	err := l.initMsg(in.ProductID)
+	_, err := logic.Auth(l.ctx, l.svcCtx, devices.Core{
+		ProductID:  in.ProductID,
+		DeviceName: in.DeviceName,
+	})
+	if err != nil { //有权限就行
+		return nil, err
+	}
+	err = l.initMsg(in.ProductID)
 	if err != nil {
 		return nil, err
 	}

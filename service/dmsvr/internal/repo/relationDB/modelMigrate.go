@@ -43,6 +43,7 @@ func Migrate(c conf.Database) error {
 		&DmOtaFirmwareDevice{},
 		&DmUserDeviceCollect{},
 		&DmUserDeviceShare{},
+		&DmProductID{},
 	)
 	if err != nil {
 		return err
@@ -70,6 +71,10 @@ func migrateTableColumn() error {
 	if err := db.CreateInBatches(&MigrateManufacturerInfo, 100).Error; err != nil {
 		return err
 	}
+	if err := db.Create(&DmProductID{ID: 100}).Error; err != nil {
+		return err
+	}
+
 	return nil
 }
 

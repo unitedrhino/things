@@ -3985,23 +3985,24 @@ var DeviceInteract_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	OtaManage_OtaFirmwareInfoCreate_FullMethodName   = "/dm.OtaManage/otaFirmwareInfoCreate"
-	OtaManage_OtaFirmwareInfoUpdate_FullMethodName   = "/dm.OtaManage/otaFirmwareInfoUpdate"
-	OtaManage_OtaFirmwareInfoDelete_FullMethodName   = "/dm.OtaManage/otaFirmwareInfoDelete"
-	OtaManage_OtaFirmwareInfoIndex_FullMethodName    = "/dm.OtaManage/otaFirmwareInfoIndex"
-	OtaManage_OtaFirmwareInfoRead_FullMethodName     = "/dm.OtaManage/otaFirmwareInfoRead"
-	OtaManage_OtaFirmwareJobCreate_FullMethodName    = "/dm.OtaManage/otaFirmwareJobCreate"
-	OtaManage_OtaFirmwareJobIndex_FullMethodName     = "/dm.OtaManage/otaFirmwareJobIndex"
-	OtaManage_OtaFirmwareJobRead_FullMethodName      = "/dm.OtaManage/otaFirmwareJobRead"
-	OtaManage_OtaFirmwareJobUpdate_FullMethodName    = "/dm.OtaManage/otaFirmwareJobUpdate"
-	OtaManage_OtaFirmwareDeviceIndex_FullMethodName  = "/dm.OtaManage/otaFirmwareDeviceIndex"
-	OtaManage_OtaFirmwareDeviceCancel_FullMethodName = "/dm.OtaManage/otaFirmwareDeviceCancel"
-	OtaManage_OtaFirmwareDeviceRetry_FullMethodName  = "/dm.OtaManage/otaFirmwareDeviceRetry"
-	OtaManage_OtaModuleInfoCreate_FullMethodName     = "/dm.OtaManage/otaModuleInfoCreate"
-	OtaManage_OtaModuleInfoUpdate_FullMethodName     = "/dm.OtaManage/otaModuleInfoUpdate"
-	OtaManage_OtaModuleInfoDelete_FullMethodName     = "/dm.OtaManage/otaModuleInfoDelete"
-	OtaManage_OtaModuleInfoIndex_FullMethodName      = "/dm.OtaManage/otaModuleInfoIndex"
-	OtaManage_OtaModuleInfoRead_FullMethodName       = "/dm.OtaManage/otaModuleInfoRead"
+	OtaManage_OtaFirmwareInfoCreate_FullMethodName    = "/dm.OtaManage/otaFirmwareInfoCreate"
+	OtaManage_OtaFirmwareInfoUpdate_FullMethodName    = "/dm.OtaManage/otaFirmwareInfoUpdate"
+	OtaManage_OtaFirmwareInfoDelete_FullMethodName    = "/dm.OtaManage/otaFirmwareInfoDelete"
+	OtaManage_OtaFirmwareInfoIndex_FullMethodName     = "/dm.OtaManage/otaFirmwareInfoIndex"
+	OtaManage_OtaFirmwareInfoRead_FullMethodName      = "/dm.OtaManage/otaFirmwareInfoRead"
+	OtaManage_OtaFirmwareJobCreate_FullMethodName     = "/dm.OtaManage/otaFirmwareJobCreate"
+	OtaManage_OtaFirmwareJobIndex_FullMethodName      = "/dm.OtaManage/otaFirmwareJobIndex"
+	OtaManage_OtaFirmwareJobRead_FullMethodName       = "/dm.OtaManage/otaFirmwareJobRead"
+	OtaManage_OtaFirmwareJobUpdate_FullMethodName     = "/dm.OtaManage/otaFirmwareJobUpdate"
+	OtaManage_OtaFirmwareDeviceIndex_FullMethodName   = "/dm.OtaManage/otaFirmwareDeviceIndex"
+	OtaManage_OtaFirmwareDeviceCancel_FullMethodName  = "/dm.OtaManage/otaFirmwareDeviceCancel"
+	OtaManage_OtaFirmwareDeviceRetry_FullMethodName   = "/dm.OtaManage/otaFirmwareDeviceRetry"
+	OtaManage_OtaFirmwareDeviceConfirm_FullMethodName = "/dm.OtaManage/otaFirmwareDeviceConfirm"
+	OtaManage_OtaModuleInfoCreate_FullMethodName      = "/dm.OtaManage/otaModuleInfoCreate"
+	OtaManage_OtaModuleInfoUpdate_FullMethodName      = "/dm.OtaManage/otaModuleInfoUpdate"
+	OtaManage_OtaModuleInfoDelete_FullMethodName      = "/dm.OtaManage/otaModuleInfoDelete"
+	OtaManage_OtaModuleInfoIndex_FullMethodName       = "/dm.OtaManage/otaModuleInfoIndex"
+	OtaManage_OtaModuleInfoRead_FullMethodName        = "/dm.OtaManage/otaModuleInfoRead"
 )
 
 // OtaManageClient is the client API for OtaManage service.
@@ -4035,6 +4036,8 @@ type OtaManageClient interface {
 	OtaFirmwareDeviceCancel(ctx context.Context, in *OtaFirmwareDeviceCancelReq, opts ...grpc.CallOption) (*Empty, error)
 	// 重新升级指定批次下升级失败或升级取消的设备升级作业
 	OtaFirmwareDeviceRetry(ctx context.Context, in *OtaFirmwareDeviceRetryReq, opts ...grpc.CallOption) (*Empty, error)
+	// app确认设备升级
+	OtaFirmwareDeviceConfirm(ctx context.Context, in *OtaFirmwareDeviceConfirmReq, opts ...grpc.CallOption) (*Empty, error)
 	OtaModuleInfoCreate(ctx context.Context, in *OtaModuleInfo, opts ...grpc.CallOption) (*WithID, error)
 	OtaModuleInfoUpdate(ctx context.Context, in *OtaModuleInfo, opts ...grpc.CallOption) (*Empty, error)
 	OtaModuleInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
@@ -4158,6 +4161,15 @@ func (c *otaManageClient) OtaFirmwareDeviceRetry(ctx context.Context, in *OtaFir
 	return out, nil
 }
 
+func (c *otaManageClient) OtaFirmwareDeviceConfirm(ctx context.Context, in *OtaFirmwareDeviceConfirmReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, OtaManage_OtaFirmwareDeviceConfirm_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *otaManageClient) OtaModuleInfoCreate(ctx context.Context, in *OtaModuleInfo, opts ...grpc.CallOption) (*WithID, error) {
 	out := new(WithID)
 	err := c.cc.Invoke(ctx, OtaManage_OtaModuleInfoCreate_FullMethodName, in, out, opts...)
@@ -4234,6 +4246,8 @@ type OtaManageServer interface {
 	OtaFirmwareDeviceCancel(context.Context, *OtaFirmwareDeviceCancelReq) (*Empty, error)
 	// 重新升级指定批次下升级失败或升级取消的设备升级作业
 	OtaFirmwareDeviceRetry(context.Context, *OtaFirmwareDeviceRetryReq) (*Empty, error)
+	// app确认设备升级
+	OtaFirmwareDeviceConfirm(context.Context, *OtaFirmwareDeviceConfirmReq) (*Empty, error)
 	OtaModuleInfoCreate(context.Context, *OtaModuleInfo) (*WithID, error)
 	OtaModuleInfoUpdate(context.Context, *OtaModuleInfo) (*Empty, error)
 	OtaModuleInfoDelete(context.Context, *WithID) (*Empty, error)
@@ -4281,6 +4295,9 @@ func (UnimplementedOtaManageServer) OtaFirmwareDeviceCancel(context.Context, *Ot
 }
 func (UnimplementedOtaManageServer) OtaFirmwareDeviceRetry(context.Context, *OtaFirmwareDeviceRetryReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OtaFirmwareDeviceRetry not implemented")
+}
+func (UnimplementedOtaManageServer) OtaFirmwareDeviceConfirm(context.Context, *OtaFirmwareDeviceConfirmReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OtaFirmwareDeviceConfirm not implemented")
 }
 func (UnimplementedOtaManageServer) OtaModuleInfoCreate(context.Context, *OtaModuleInfo) (*WithID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OtaModuleInfoCreate not implemented")
@@ -4526,6 +4543,24 @@ func _OtaManage_OtaFirmwareDeviceRetry_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OtaManage_OtaFirmwareDeviceConfirm_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OtaFirmwareDeviceConfirmReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OtaManageServer).OtaFirmwareDeviceConfirm(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OtaManage_OtaFirmwareDeviceConfirm_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OtaManageServer).OtaFirmwareDeviceConfirm(ctx, req.(*OtaFirmwareDeviceConfirmReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _OtaManage_OtaModuleInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(OtaModuleInfo)
 	if err := dec(in); err != nil {
@@ -4670,6 +4705,10 @@ var OtaManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "otaFirmwareDeviceRetry",
 			Handler:    _OtaManage_OtaFirmwareDeviceRetry_Handler,
+		},
+		{
+			MethodName: "otaFirmwareDeviceConfirm",
+			Handler:    _OtaManage_OtaFirmwareDeviceConfirm_Handler,
 		},
 		{
 			MethodName: "otaModuleInfoCreate",
