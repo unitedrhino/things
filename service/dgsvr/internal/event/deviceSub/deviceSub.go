@@ -185,6 +185,7 @@ func (s *DeviceSubServer) Connected(info *devices.DevConn) error {
 	if err != nil {
 		logx.Error(err)
 	}
+	protocol.UpdateDeviceActivity(dev)
 	return s.svcCtx.PubInner.PubConn(s.ctx, pubInner.Connect, info)
 }
 

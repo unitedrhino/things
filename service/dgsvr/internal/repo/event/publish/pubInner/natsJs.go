@@ -9,6 +9,7 @@ import (
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/events/topics"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/sdk/service/protocol"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -35,6 +36,10 @@ func (n *NatsJsClient) DevPubGateway(ctx context.Context, publishMsg *devices.De
 }
 
 func (n *NatsJsClient) DevPubMsg(ctx context.Context, publishMsg *devices.DevPublish) error {
+	protocol.UpdateDeviceActivity(devices.Core{
+		ProductID:  publishMsg.ProductID,
+		DeviceName: publishMsg.DeviceName,
+	})
 	publishMsg.ProtocolCode = n.protocolCode
 	pubStr, _ := json.Marshal(publishMsg)
 	err := n.publish(ctx,

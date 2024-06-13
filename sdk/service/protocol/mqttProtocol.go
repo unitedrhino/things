@@ -104,10 +104,18 @@ const (
 const (
 	DeviceMqttDevice   = "device:mqtt:device"
 	DeviceMqttClientID = "device:mqtt:clientID"
+	DeviceLastActivity = "device:lastActivity"
 )
 
 func GenDeviceTopicKey(dev devices.Core) string {
 	return fmt.Sprintf("%v:%v", dev.ProductID, dev.DeviceName)
+}
+
+func UpdateDeviceActivity(dev devices.Core) {
+	err := caches.GetStore().Hset(DeviceLastActivity, GenDeviceTopicKey(dev), time.Now().Format(time.RFC3339))
+	if err != nil {
+		logx.Error(err)
+	}
 }
 
 func (m *MqttProtocol) SubscribeDevConn(handle ConnHandle) error {
@@ -159,6 +167,7 @@ func (m *MqttProtocol) SubscribeDevConn(handle ConnHandle) error {
 		if err != nil {
 			logx.Error(err)
 		}
+		UpdateDeviceActivity(dev)
 		newDo.ClientID = fmt.Sprintf("%s&%s", newDo.ProductID, newDo.DeviceName)
 		switch do.Action {
 		case ActionConnected:

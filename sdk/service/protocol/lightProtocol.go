@@ -139,6 +139,10 @@ func (p *LightProtocol) RegisterDeviceMsgDownHandler(
 
 func (p *LightProtocol) DevPubMsg(ctx context.Context, publishMsg *devices.DevPublish) error {
 	publishMsg.ProtocolCode = p.Pi.Code
+	UpdateDeviceActivity(devices.Core{
+		ProductID:  publishMsg.ProductID,
+		DeviceName: publishMsg.DeviceName,
+	})
 	err := p.FastEvent.Publish(ctx, fmt.Sprintf(topics.DeviceUpMsg, publishMsg.Handle, publishMsg.ProductID, publishMsg.DeviceName), publishMsg)
 	if err != nil {
 		logx.WithContext(ctx).Errorf("%s.publish  err:%v", utils.FuncName(), err)
