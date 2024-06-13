@@ -36,7 +36,7 @@ func (l *TimerHandle) SceneTiming() error {
 			relationDB.NewSceneIfTriggerRepo(l.ctx).Delete(l.ctx, po.ID)
 			continue
 		}
-		ctx := ctxs.BindTenantCode(l.ctx, string(v.SceneInfo.TenantCode))
+		ctx := ctxs.BindTenantCode(l.ctx, string(v.SceneInfo.TenantCode), 0)
 		if !do.When.IsHit(ctx, now, nil) {
 			continue
 		}

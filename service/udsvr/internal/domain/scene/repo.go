@@ -63,14 +63,15 @@ type ActionRepo struct {
 	DeviceG        devicegroup.DeviceGroup
 	NotifyM        notifymanage.NotifyManage
 	SceneExec      func(ctx context.Context, sceneID int64) error
+	AlarmExec      func(ctx context.Context, in AlarmSerial) error
 }
 
-type AlarmRepo interface {
-	//告警触发
-	AlarmTrigger(ctx context.Context, in TriggerSerial) error
-	//告警解除
-	AlarmRelieve(ctx context.Context, in AlarmRelieve) error
-}
-type Serial interface {
-	GenSerial() string
-}
+//type AlarmRepo interface {
+//	//告警触发
+//	AlarmTrigger(ctx context.Context, in AlarmSerial) error
+//	//告警解除
+//	AlarmRelieve(ctx context.Context, in AlarmRelieve) error
+//}
+//type Serial interface {
+//	GenSerial() string
+//}

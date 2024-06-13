@@ -45,7 +45,7 @@ func (l *TimerHandle) SceneThingPropertyReport(in application.PropertyReport) er
 		if !do.If.Triggers[0].Device.IsHit(ps, in.Identifier, in.Param) {
 			continue
 		}
-		ctx := ctxs.BindTenantCode(l.ctx, string(v.SceneInfo.TenantCode))
+		ctx := ctxs.BindTenantCode(l.ctx, string(v.SceneInfo.TenantCode), int64(v.SceneInfo.ProjectID))
 		if !do.When.IsHit(ctx, now, nil) {
 			continue
 		}
