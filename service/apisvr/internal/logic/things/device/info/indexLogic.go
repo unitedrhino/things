@@ -45,6 +45,7 @@ func (l *IndexLogic) Index(req *types.DeviceInfoIndexReq) (resp *types.DeviceInf
 		IsOnline:          req.IsOnline,
 		ProductCategoryID: req.ProductCategoryID,
 		WithShared:        req.WithShared,
+		WithCollect:       req.WithCollect,
 		Versions:          req.Versions,
 		Gateway:           utils.Copy[dm.DeviceCore](req.Gateway),
 		GroupID:           req.GroupID,

@@ -40,6 +40,7 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		err        error
 		cores      []*devices.Core
 		shared     []*devices.Core
+		collect    []*devices.Core
 		sharedType int64 = in.WithShared
 	)
 	if len(in.Devices) != 0 {
@@ -67,6 +68,23 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		}
 	}
 
+	if in.WithCollect != 0 {
+		uc := ctxs.GetUserCtx(l.ctx)
+		udss, err := relationDB.NewUserDeviceCollectRepo(l.ctx).FindByFilter(l.ctx, relationDB.UserDeviceCollectFilter{UserID: uc.UserID}, nil)
+		if err != nil {
+			return nil, err
+		}
+		for _, v := range udss {
+			collect = append(collect, &devices.Core{
+				ProductID:  v.ProductID,
+				DeviceName: v.DeviceName,
+			})
+		}
+		if len(udss) == 0 && in.WithCollect == def.SelectTypeOnly {
+			return nil, errors.NotFind
+		}
+	}
+
 	filter := relationDB.DeviceFilter{
 		TenantCode:        in.TenantCode,
 		ProductID:         in.ProductID,
@@ -85,6 +103,8 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		Versions:          in.Versions,
 		SharedDevices:     shared,
 		SharedType:        sharedType,
+		CollectType:       in.WithCollect,
+		CollectDevices:    collect,
 		DeviceType:        in.DeviceType,
 		DeviceTypes:       in.DeviceTypes,
 		GroupID:           in.GroupID,

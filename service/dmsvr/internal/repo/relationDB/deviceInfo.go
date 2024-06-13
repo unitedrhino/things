@@ -40,6 +40,8 @@ type (
 		ProductCategoryID int64
 		SharedDevices     []*devices.Core
 		SharedType        def.SelectType
+		CollectDevices    []*devices.Core
+		CollectType       def.SelectType
 		WithManufacturer  bool
 		DeviceType        int64
 		DeviceTypes       []int64
@@ -149,25 +151,7 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 		//f.Position 形如：point(116.393 39.905)
 		db = db.Where(f.Position.Range("position", f.Range))
 	}
-	if f.SharedType != 0 && len(f.SharedDevices) > 0 && ctxs.GetUserCtx(ctx) != nil { //如果要获取共享设备
-		scope := func(db *gorm.DB) *gorm.DB {
-			for i, d := range f.SharedDevices {
-				if i == 0 {
-					db = db.Where("product_id = ? and device_name = ?", d.ProductID, d.DeviceName)
-					continue
-				}
-				db = db.Or("product_id = ? and device_name = ?", d.ProductID, d.DeviceName)
-			}
-			return db
-		}
-		switch f.SharedType {
-		case def.SelectTypeOnly: //直接过滤这几个设备
-			db = db.WithContext(ctxs.WithAllProject(ctx)).Where(scope(db))
-		case def.SelectTypeAll: //同时获取普通设备
-			uc := ctxs.GetUserCtx(ctx)
-			db = db.WithContext(ctxs.WithRoot(ctx)).Where("tenant_code=? and  project_id=?", uc.TenantCode, uc.ProjectID).Or(scope(db))
-		}
-	}
+
 	if f.DeviceType != 0 {
 		subQuery := d.db.Model(&DmProductInfo{}).Select("product_id").Where("device_type=?", f.DeviceType)
 		db = db.Where("product_id in (?)", subQuery)
@@ -196,6 +180,45 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 		subQuery := d.db.Model(&DmGroupDevice{}).Select("product_id, device_name").Where("group_id=?", f.NotGroupID)
 		db = db.Where("(product_id, device_name) not in (?)",
 			subQuery)
+	}
+
+	if f.SharedType != 0 && len(f.SharedDevices) > 0 && ctxs.GetUserCtx(ctx) != nil { //如果要获取共享设备
+		scope := func(db *gorm.DB) *gorm.DB {
+			for i, d := range f.SharedDevices {
+				if i == 0 {
+					db = db.Where("product_id = ? and device_name = ?", d.ProductID, d.DeviceName)
+					continue
+				}
+				db = db.Or("product_id = ? and device_name = ?", d.ProductID, d.DeviceName)
+			}
+			return db
+		}
+		switch f.SharedType {
+		case def.SelectTypeOnly: //直接过滤这几个设备
+			db = db.WithContext(ctxs.WithAllProject(ctx)).Where(scope(db))
+		case def.SelectTypeAll: //同时获取普通设备
+			uc := ctxs.GetUserCtx(ctx)
+			db = db.WithContext(ctxs.WithRoot(ctx)).Where("tenant_code=? and  project_id=?", uc.TenantCode, uc.ProjectID).Or(scope(db))
+		}
+	}
+
+	if f.CollectType != 0 && len(f.CollectDevices) > 0 && ctxs.GetUserCtx(ctx) != nil { //如果要获取收藏的设备
+		scope := func(db *gorm.DB) *gorm.DB {
+			for i, d := range f.CollectDevices {
+				if i == 0 {
+					db = db.Where("product_id = ? and device_name = ?", d.ProductID, d.DeviceName)
+					continue
+				}
+				db = db.Or("product_id = ? and device_name = ?", d.ProductID, d.DeviceName)
+			}
+			return db
+		}
+		switch f.CollectType {
+		case def.SelectTypeOnly: //直接过滤这几个设备
+			db = db.WithContext(ctx).Where(scope(db))
+		case def.SelectTypeAll: //同时获取普通设备
+			db = db.WithContext(ctx).Or(scope(db))
+		}
 	}
 	return db
 }
