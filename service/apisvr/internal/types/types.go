@@ -440,13 +440,14 @@ type DeviceMsgHubLogIndexResp struct {
 }
 
 type DeviceMsgHubLogInfo struct {
-	Timestamp  int64  `json:"timestamp,string"`
-	Action     string `json:"action"` //connected:上线 disconnected:下线  property:属性 event:事件 action:操作 thing:物模型提交的操作为匹配的日志
-	RequestID  string `json:"requestID"`
-	TraceID    string `json:"traceID"`
-	Topic      string `json:"topic"`
-	Content    string `json:"content"`
-	ResultCode int64  `json:"resultCode,string"`
+	Timestamp   int64  `json:"timestamp,string"`
+	Action      string `json:"action"` //connected:上线 disconnected:下线  property:属性 event:事件 action:操作 thing:物模型提交的操作为匹配的日志
+	RequestID   string `json:"requestID"`
+	TraceID     string `json:"traceID"`
+	Topic       string `json:"topic"`
+	Content     string `json:"content"`
+	ResultCode  int64  `json:"resultCode,string"`
+	RespPayload string `json:"respPayload"`
 }
 
 type DeviceMsgPropertyIndexResp struct {

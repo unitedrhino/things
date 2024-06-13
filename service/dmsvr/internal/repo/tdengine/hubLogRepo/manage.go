@@ -10,7 +10,7 @@ func (h *HubLogRepo) InitProduct(ctx context.Context, productID string) (err err
 	h.once.Do(func() {
 		sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s "+
 			"(`ts` timestamp,`content` BINARY(5000),`topic` BINARY(500), `action` BINARY(100),"+
-			" `request_id` BINARY(100), `trace_id` BINARY(100), `result_type` BIGINT)"+
+			" `request_id` BINARY(100), `trace_id` BINARY(100), `result_type` BIGINT,`resp_payload` BINARY(5000))"+
 			"TAGS (`product_id` BINARY(50),`device_name`  BINARY(50));",
 			h.GetLogStableName())
 		_, err = h.t.ExecContext(ctx, sql)

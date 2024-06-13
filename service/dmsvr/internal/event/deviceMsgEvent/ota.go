@@ -61,15 +61,16 @@ func (l *OtaLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publish
 		respMsg = nil
 	}
 	l.svcCtx.HubLogRepo.Insert(l.ctx, &deviceLog.Hub{
-		ProductID:  msg.ProductID,
-		Action:     "otaLog",
-		Timestamp:  l.dreq.GetTimeStamp(), // 操作时间
-		DeviceName: msg.DeviceName,
-		TraceID:    utils.TraceIdFromContext(l.ctx),
-		RequestID:  l.dreq.MsgToken,
-		Content:    string(msg.Payload),
-		Topic:      msg.Topic,
-		ResultCode: errors.Fmt(err).GetCode(),
+		ProductID:   msg.ProductID,
+		Action:      "otaLog",
+		Timestamp:   l.dreq.GetTimeStamp(), // 操作时间
+		DeviceName:  msg.DeviceName,
+		TraceID:     utils.TraceIdFromContext(l.ctx),
+		RequestID:   l.dreq.MsgToken,
+		Content:     string(msg.Payload),
+		Topic:       msg.Topic,
+		ResultCode:  errors.Fmt(err).GetCode(),
+		RespPayload: respMsg.GetPayload(),
 	})
 	return
 }

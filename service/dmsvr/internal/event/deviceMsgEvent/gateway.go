@@ -63,15 +63,16 @@ func (l *GatewayLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Pub
 	}
 	respStr, _ := json.Marshal(resp)
 	l.svcCtx.HubLogRepo.Insert(l.ctx, &deviceLog.Hub{
-		ProductID:  msg.ProductID,
-		Action:     "gateway",
-		Timestamp:  time.Now(), // 记录当前时间
-		DeviceName: msg.DeviceName,
-		TraceID:    utils.TraceIdFromContext(l.ctx),
-		RequestID:  l.dreq.MsgToken,
-		Content:    string(msg.Payload),
-		Topic:      msg.Topic,
-		ResultCode: errors.Fmt(err).GetCode(),
+		ProductID:   msg.ProductID,
+		Action:      "gateway",
+		Timestamp:   time.Now(), // 记录当前时间
+		DeviceName:  msg.DeviceName,
+		TraceID:     utils.TraceIdFromContext(l.ctx),
+		RequestID:   l.dreq.MsgToken,
+		Content:     string(msg.Payload),
+		Topic:       msg.Topic,
+		ResultCode:  errors.Fmt(err).GetCode(),
+		RespPayload: respMsg.GetPayload(),
 	})
 	return &deviceMsg.PublishMsg{
 		Handle:       msg.Handle,

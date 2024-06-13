@@ -80,13 +80,13 @@ func (h *HubLogRepo) GetDeviceLog(ctx context.Context, filter deviceLog.HubFilte
 
 func (h *HubLogRepo) Insert(ctx context.Context, data *deviceLog.Hub) error {
 	sql := fmt.Sprintf(" %s using %s tags('%s','%s')(`ts`, `content`, `topic`, `action`,"+
-		" `request_id`, `trace_id`, `result_type`) values (?,?,?,?,?,?,?);",
+		" `request_id`, `trace_id`, `result_type`,`resp_payload`) values (?,?,?,?,?,?,?,?);",
 		h.GetLogTableName(data.ProductID, data.DeviceName), h.GetLogStableName(), data.ProductID, data.DeviceName)
 	//if _, err := h.t.ExecContext(ctx, sql, data.Timestamp, data.Content, data.Topic, data.Action,
 	//	data.RequestID, data.TraceID, data.ResultCode); err != nil {
 	//	return err
 	//}
 	h.t.AsyncInsert(sql, data.Timestamp, data.Content, data.Topic, data.Action,
-		data.RequestID, data.TraceID, data.ResultCode)
+		data.RequestID, data.TraceID, data.ResultCode, data.RespPayload)
 	return nil
 }

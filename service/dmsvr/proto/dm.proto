@@ -632,6 +632,7 @@ message HubLogInfo{
   string topic = 5;//主题
   string content = 6;//具体内容
   int64 resultCode = 7;//请求结果状态
+  string respPayload =8;//返回的内容
 }
 
 

@@ -47,13 +47,14 @@ func (l *HubLogIndexLogic) HubLogIndex(req *types.DeviceMsgHubLogIndexReq) (resp
 	info := make([]*types.DeviceMsgHubLogInfo, 0, len(dmResp.List))
 	for _, v := range dmResp.List {
 		info = append(info, &types.DeviceMsgHubLogInfo{
-			Timestamp:  v.Timestamp,
-			Action:     v.Action,
-			RequestID:  v.RequestID,
-			TraceID:    v.TraceID,
-			Topic:      v.Topic,
-			Content:    v.Content,
-			ResultCode: v.ResultCode,
+			Timestamp:   v.Timestamp,
+			Action:      v.Action,
+			RequestID:   v.RequestID,
+			TraceID:     v.TraceID,
+			Topic:       v.Topic,
+			Content:     v.Content,
+			ResultCode:  v.ResultCode,
+			RespPayload: v.RespPayload,
 		})
 	}
 	return &types.DeviceMsgHubLogIndexResp{List: info, Total: dmResp.Total}, err

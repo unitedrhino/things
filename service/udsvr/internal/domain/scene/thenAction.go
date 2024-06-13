@@ -27,7 +27,7 @@ type Action struct {
 	Order  int64         `json:"order"`
 	Type   ActionType    `json:"type"`             //执行器类型 notify: 通知 delay:延迟  device:设备输出  alarm: 告警
 	Delay  int64         `json:"delay,omitempty"`  //秒数
-	Alarm  *ActionAlarm  `json:"alarm,omitempty"`  //todo
+	Alarm  *ActionAlarm  `json:"alarm,omitempty"`  //告警
 	Notify *ActionNotify `json:"notify,omitempty"` //消息通知
 	Device *ActionDevice `json:"device,omitempty"`
 	Scene  *ActionScene  `json:"scene,omitempty"`

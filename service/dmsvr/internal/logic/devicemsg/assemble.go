@@ -7,13 +7,14 @@ import (
 
 func ToDataHubLogIndex(log *deviceLog.Hub) *dm.HubLogInfo {
 	return &dm.HubLogInfo{
-		Timestamp:  log.Timestamp.UnixMilli(),
-		Action:     log.Action,
-		RequestID:  log.RequestID,
-		TraceID:    log.TraceID,
-		Topic:      log.Topic,
-		Content:    log.Content,
-		ResultCode: log.ResultCode,
+		Timestamp:   log.Timestamp.UnixMilli(),
+		Action:      log.Action,
+		RequestID:   log.RequestID,
+		TraceID:     log.TraceID,
+		Topic:       log.Topic,
+		Content:     log.Content,
+		ResultCode:  log.ResultCode,
+		RespPayload: log.RespPayload,
 	}
 }
 

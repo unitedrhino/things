@@ -82,6 +82,7 @@ type (
         Topic string `json:"topic"`
         Content string `json:"content"`
         ResultCode int64 `json:"resultCode,string"`
+        RespPayload string  `json:"respPayload"`
     }
 
 
