@@ -115,7 +115,7 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 					detail = "其他任务正在升级中"
 				case msgOta.DeviceStatusFailure:
 					od.Detail = od.Detail + "-其他任务启动"
-					od.RetryCount = 99999 //不再重试
+					od.Status = msgOta.DeviceStatusCanceled
 					err := otDB.Update(l.ctx, od)
 					if err != nil {
 						return err
@@ -200,7 +200,7 @@ func (l *OtaFirmwareJobCreateLogic) getDevice(in *dm.OtaFirmwareJobInfo, fi *rel
 			return nil, err
 		}
 		for _, v := range ret {
-			if v.Device != nil {
+			if v.Device != nil && v.Device.Version != fi.Version {
 				devices = append(devices, v.Device)
 			}
 		}
@@ -209,7 +209,12 @@ func (l *OtaFirmwareJobCreateLogic) getDevice(in *dm.OtaFirmwareJobInfo, fi *rel
 		if err != nil {
 			return nil, err
 		}
-		devices = append(devices, ret...)
+		for _, v := range ret {
+			if v.Version == fi.Version {
+				continue
+			}
+			devices = append(devices, ret...)
+		}
 	case msgOta.AllUpgrade, msgOta.GrayUpgrade:
 		f := relationDB.DeviceFilter{ProductID: fi.ProductID, Versions: in.SrcVersions, TenantCodes: in.TenantCodes}
 		var page *def.PageInfo

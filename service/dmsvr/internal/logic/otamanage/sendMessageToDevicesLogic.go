@@ -72,6 +72,44 @@ func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirm
 			l.Error(err)
 		}
 	}
+	err := stores.WithNoDebug(l.ctx, relationDB.NewOtaFirmwareDeviceRepo).UpdateStatusByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
+		FirmwareID: jobInfo.FirmwareID,
+		JobID:      jobInfo.ID,
+		ProductID:  firmware.ProductID,
+		RetryCount: stores.CmpGte(jobInfo.RetryCount),   //重试次数
+		Statues:    []int64{msgOta.DeviceStatusFailure}, //需要重试的设备更换为待推送
+	}, msgOta.DeviceStatusCanceled, "超过重试次数,取消升级") //如果超过了超时时间,则修改为失败
+	if err != nil {
+		l.Error(err)
+	}
+	func() {
+		total, err := stores.WithNoDebug(l.ctx, relationDB.NewOtaFirmwareDeviceRepo).CountByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
+			FirmwareID: jobInfo.FirmwareID,
+			JobID:      jobInfo.ID,
+		})
+		if err != nil {
+			l.Error(err)
+			return
+		}
+		finished, err := stores.WithNoDebug(l.ctx, relationDB.NewOtaFirmwareDeviceRepo).CountByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
+			FirmwareID: jobInfo.FirmwareID,
+			JobID:      jobInfo.ID,
+			Statues:    []int64{msgOta.DeviceStatusCanceled, msgOta.DeviceStatusSuccess},
+		})
+		if err != nil {
+			l.Error(err)
+			return
+		}
+		if total == finished { //任务完成
+			newJob := *jobInfo
+			newJob.Status = msgOta.JobStatusCompleted
+			err = stores.WithNoDebug(l.ctx, relationDB.NewOtaJobRepo).Update(l.ctx, &newJob)
+			if err != nil {
+				l.Error(err)
+				return
+			}
+		}
+	}()
 
 	return nil
 }
