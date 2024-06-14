@@ -21,7 +21,6 @@ const (
 type TriggerDevices []*TriggerDevice
 
 type TriggerDevice struct {
-	AreaID           int64             `json:"areaID,string"`         //涉及到的区域ID
 	StateKeep        *StateKeep        `json:"stateKeep,omitempty"`   //状态保持
 	ProductID        string            `json:"productID,omitempty"`   //产品id
 	SelectType       SelectType        `json:"selectType"`            //设备选择方式  all: 全部 fixed:指定的设备

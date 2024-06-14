@@ -35,6 +35,9 @@ func (l *SceneInfoCreateLogic) SceneInfoCreate(in *ud.SceneInfo) (*ud.WithID, er
 	if do.Status == 0 {
 		do.Status = def.True
 	}
+	if do.AreaID == 0 {
+		return nil, errors.Parameter.AddMsg("areaID必填")
+	}
 	err := do.Validate(scene.ValidateRepo{Ctx: l.ctx, DeviceCache: l.svcCtx.DeviceCache, ProductCache: l.svcCtx.ProductCache, ProductSchemaCache: l.svcCtx.ProductSchemaCache, GetSceneInfo: GetSceneInfo})
 	if err != nil {
 		return nil, err

@@ -21,6 +21,7 @@ type Triggers []*Trigger
 type Trigger struct {
 	Type   TriggerType    `json:"type"`
 	Order  int64          `json:"order"`
+	AreaID int64          `json:"areaID,string"`    //涉及到的区域ID
 	Device *TriggerDevice `json:"device,omitempty"` //设备触发
 	Timer  *Timer         `json:"timer,omitempty"`  //定时触发
 }
