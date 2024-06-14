@@ -125,14 +125,15 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 							return err
 						}
 					}
+					if od.Status == msgOta.DeviceStatusConfirm {
+						confirmDevices = append(confirmDevices, &devices.Core{
+							ProductID:  od.ProductID,
+							DeviceName: od.DeviceName,
+						})
+					}
 				}
 			}
-			if od.Status == msgOta.DeviceStatusConfirm {
-				confirmDevices = append(confirmDevices, &devices.Core{
-					ProductID:  od.ProductID,
-					DeviceName: od.DeviceName,
-				})
-			}
+
 			otaDevices = append(otaDevices, &relationDB.DmOtaFirmwareDevice{
 				FirmwareID:  in.FirmwareID,
 				ProductID:   device.ProductID,
