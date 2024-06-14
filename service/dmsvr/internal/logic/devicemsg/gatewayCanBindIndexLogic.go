@@ -36,7 +36,7 @@ func (l *GatewayCanBindIndexLogic) GatewayCanBindIndex(in *dm.GatewayCanBindInde
 	if err != nil {
 		return nil, err
 	}
-	subDevices, err := relationDB.NewGatewayDeviceRepo(l.ctx).FindByFilter(l.ctx, relationDB.GatewayDeviceFilter{Gateway: &gateway}, nil)
+	subDevices, err := relationDB.NewGatewayDeviceRepo(l.ctx).FindByFilter(l.ctx, relationDB.GatewayDeviceFilter{SubDevices: ret.SubDevices}, nil)
 	if err != nil {
 		return nil, err
 	}
