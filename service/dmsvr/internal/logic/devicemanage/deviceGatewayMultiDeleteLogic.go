@@ -3,6 +3,7 @@ package devicemanagelogic
 import (
 	"context"
 	"encoding/json"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg"
@@ -40,7 +41,8 @@ func (l *DeviceGatewayMultiDeleteLogic) DeviceGatewayMultiDelete(in *dm.DeviceGa
 	if err != nil {
 		return nil, err
 	}
-	_, err = NewDeviceInfoMultiUpdateLogic(l.ctx, l.svcCtx).DeviceInfoMultiUpdate(&dm.DeviceInfoMultiUpdateReq{
+	//todo debug
+	_, err = NewDeviceInfoMultiUpdateLogic(ctxs.WithRoot(l.ctx), l.svcCtx).DeviceInfoMultiUpdate(&dm.DeviceInfoMultiUpdateReq{
 		Devices: in.List,
 		AreaID:  def.NotClassified,
 	})
