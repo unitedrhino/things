@@ -53,6 +53,10 @@ func (l *TimerHandle) SceneExec(ctx context.Context, do *scene.Info) error {
 			_, err := rulelogic.NewSceneManuallyTriggerLogic(ctx, l.svcCtx).SceneManuallyTrigger(&ud.WithID{Id: sceneID})
 			return err
 		},
+		AlarmExec: func(ctx context.Context, in scene.AlarmSerial) error {
+			l.Error("not support yet")
+			return nil
+		},
 	})
 	return err
 }

@@ -41,6 +41,14 @@ func (l *SceneManuallyTriggerLogic) SceneManuallyTrigger(in *ud.WithID) (*ud.Emp
 			DeviceInteract: l.svcCtx.DeviceInteract,
 			DeviceM:        l.svcCtx.DeviceM,
 			DeviceG:        l.svcCtx.DeviceG,
+			SceneExec: func(ctx context.Context, sceneID int64) error {
+				l.Error("not support yet")
+				return nil
+			},
+			AlarmExec: func(ctx context.Context, in scene.AlarmSerial) error {
+				l.Error("not support yet")
+				return nil
+			},
 		})
 		if err != nil {
 			logx.WithContext(ctx).Error(err)
