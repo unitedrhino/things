@@ -36,6 +36,7 @@ type OtaFirmwareDeviceFilter struct {
 	//Msg     int64
 	Statues         []int64
 	SrcVersion      string
+	DestVersion     string
 	WithFirmware    bool
 	WithFiles       bool
 	IsOnline        int64
@@ -76,6 +77,9 @@ func (p OtaFirmwareDeviceRepo) fmtFilter(ctx context.Context, f OtaFirmwareDevic
 	}
 	if f.SrcVersion != "" {
 		db = db.Where("src_version=?", f.SrcVersion)
+	}
+	if f.DestVersion != "" {
+		db = db.Where("dest_version=?", f.DestVersion)
 	}
 	if f.WithFirmware {
 		db = db.Preload("Firmware")
