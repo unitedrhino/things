@@ -90,7 +90,7 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 			ProductID:   fi.ProductID,
 			DeviceNames: deviceNames,
 			Statues: []int64{
-				msgOta.DeviceStatusConfirm, msgOta.DeviceStatusInProgress, msgOta.DeviceStatusQueued, msgOta.DeviceStatusNotified},
+				msgOta.DeviceStatusConfirm, msgOta.DeviceStatusInProgress, msgOta.DeviceStatusQueued, msgOta.DeviceStatusNotified, msgOta.DeviceStatusFailure},
 		}, nil)
 		if err != nil {
 			return err
@@ -113,6 +113,13 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 				case msgOta.DeviceStatusInProgress, msgOta.DeviceStatusNotified:
 					status = msgOta.DeviceStatusFailure
 					detail = "其他任务正在升级中"
+				case msgOta.DeviceStatusFailure:
+					od.Detail = od.Detail + "-其他任务启动"
+					od.RetryCount = 99999 //不再重试
+					err := otDB.Update(l.ctx, od)
+					if err != nil {
+						return err
+					}
 				case msgOta.DeviceStatusConfirm, msgOta.DeviceStatusQueued:
 					if in.IsOverwriteMode != def.True { //如果是不覆盖则直接失败
 						status = msgOta.DeviceStatusFailure
