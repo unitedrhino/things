@@ -87,7 +87,7 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 				mutex.Lock()
 				defer mutex.Unlock()
 				diDatas = append(diDatas, &diData)
-				l.Infof("%s.get data=%+v", utils.FuncName(), diData)
+				l.Debugf("%s.get data=%+v", utils.FuncName(), diData)
 			}(dataID)
 		})
 	}
