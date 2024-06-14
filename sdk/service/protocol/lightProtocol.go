@@ -145,7 +145,7 @@ func (p *LightProtocol) DevPubMsg(ctx context.Context, publishMsg *devices.DevPu
 	})
 	err := p.FastEvent.Publish(ctx, fmt.Sprintf(topics.DeviceUpMsg, publishMsg.Handle, publishMsg.ProductID, publishMsg.DeviceName), publishMsg)
 	if err != nil {
-		logx.WithContext(ctx).Errorf("%s.publish  err:%v", utils.FuncName(), err)
+		logx.WithContext(ctx).Errorf("devPublishToCloud  err:%v", utils.FuncName(), err)
 		return err
 	} else {
 		logx.WithContext(ctx).Infof("devPublishToCloud msg:%v", utils.FuncName(), publishMsg)
