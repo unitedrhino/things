@@ -113,7 +113,6 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 			DestVersion: data.Version.GetValue(),
 			Statues:     []int64{msgOta.DeviceStatusInProgress, msgOta.DeviceStatusNotified},
 		})
-		l.Error(df, old) //todo debug
 		if err != nil {
 			if !errors.Cmp(err, errors.NotFind) {
 				return err
