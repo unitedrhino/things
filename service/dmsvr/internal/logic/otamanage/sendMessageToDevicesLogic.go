@@ -51,9 +51,9 @@ func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirm
 			FirmwareID: jobInfo.FirmwareID,
 			JobID:      jobInfo.ID,
 			ProductID:  firmware.ProductID,
-			PushTime:   stores.CmpGte(time.Now().Add(time.Duration(jobInfo.TimeoutInMinutes) * time.Minute)),
+			PushTime:   stores.CmpLte(time.Now().Add(-time.Duration(jobInfo.TimeoutInMinutes) * time.Minute)),
 			Statues:    []int64{msgOta.DeviceStatusNotified, msgOta.DeviceStatusInProgress}, //只处理待推送的设备
-		}, msgOta.DeviceStatusFailure) //如果超过了超时时间,则修改为失败
+		}, msgOta.DeviceStatusFailure, "设备超时") //如果超过了超时时间,则修改为失败
 		if err != nil {
 			l.Error(err)
 		}
@@ -64,10 +64,10 @@ func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirm
 			FirmwareID:      jobInfo.FirmwareID,
 			JobID:           jobInfo.ID,
 			ProductID:       firmware.ProductID,
-			LastFailureTime: stores.CmpLt(time.Now().Add(time.Minute * time.Duration(jobInfo.RetryInterval))), //失败间隔
-			RetryCount:      stores.CmpLt(jobInfo.RetryCount),                                                 //重试次数
-			Statues:         []int64{msgOta.DeviceStatusFailure},                                              //需要重试的设备更换为待推送
-		}, msgOta.DeviceStatusQueued) //如果超过了超时时间,则修改为失败
+			LastFailureTime: stores.CmpLte(time.Now().Add(-time.Minute * time.Duration(jobInfo.RetryInterval))), //失败间隔
+			RetryCount:      stores.CmpLt(jobInfo.RetryCount),                                                   //重试次数
+			Statues:         []int64{msgOta.DeviceStatusFailure},                                                //需要重试的设备更换为待推送
+		}, msgOta.DeviceStatusQueued, "重试推送") //如果超过了超时时间,则修改为失败
 		if err != nil {
 			l.Error(err)
 		}

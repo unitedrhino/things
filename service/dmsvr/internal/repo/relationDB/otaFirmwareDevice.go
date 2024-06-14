@@ -123,7 +123,7 @@ func (p OtaFirmwareDeviceRepo) Update(ctx context.Context, data *DmOtaFirmwareDe
 	return stores.ErrFmt(err)
 }
 
-func (p OtaFirmwareDeviceRepo) UpdateStatusByFilter(ctx context.Context, f OtaFirmwareDeviceFilter, status int64) error {
+func (p OtaFirmwareDeviceRepo) UpdateStatusByFilter(ctx context.Context, f OtaFirmwareDeviceFilter, status int64, detail string) error {
 	db := p.fmtFilter(ctx, f).Model(&DmOtaFirmwareDevice{})
 	update := map[string]any{
 		"status": status,
@@ -133,6 +133,9 @@ func (p OtaFirmwareDeviceRepo) UpdateStatusByFilter(ctx context.Context, f OtaFi
 	}
 	if status == msgOta.DeviceStatusQueued {
 		update["retry_count"] = gorm.Expr("retry_count+1")
+	}
+	if detail != "" {
+		update["detail"] = detail
 	}
 	err := db.Updates(update).Error
 	return stores.ErrFmt(err)
