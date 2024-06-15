@@ -55,7 +55,10 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceCore) (*dm.Empty, 
 	}
 	di.TenantCode = def.TenantCodeDefault
 	di.ProjectID = stores.ProjectID(dpi.DefaultProjectID)
-	di.UserID = 0
+	if di.ProjectID == 0 {
+		di.ProjectID = def.NotClassified
+	}
+	di.UserID = def.RootNode
 	di.AreaID = stores.AreaID(def.NotClassified)
 	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
 

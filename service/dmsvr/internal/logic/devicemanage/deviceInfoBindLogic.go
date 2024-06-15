@@ -51,8 +51,8 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 	if err != nil {
 		return nil, err
 	}
-	if projectI.AdminUserID != uc.UserID {
-		return nil, errors.Permissions.AddMsg("只有管理员才可以绑定设备")
+	if uc.ProjectAuth == nil || uc.ProjectAuth[uc.ProjectID] == nil {
+		return nil, errors.Permissions.AddMsg("无权限")
 	}
 	diDB := relationDB.NewDeviceInfoRepo(l.ctx)
 	di, err := diDB.FindOneByFilter(ctxs.WithRoot(l.ctx), relationDB.DeviceFilter{

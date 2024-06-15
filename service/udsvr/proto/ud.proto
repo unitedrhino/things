@@ -40,11 +40,14 @@ service rule {
   rpc alarmInfoRead(WithID)returns(AlarmInfo);
 
   //告警关联场景联动
-  rpc alarmSceneMultiUpdate(alarmSceneMultiUpdateReq)returns(Empty);//绑定场景联动
-  rpc alarmSceneDelete(alarmSceneDeleteReq)returns(Empty);//解绑场景联动
+  rpc alarmSceneMultiUpdate(AlarmSceneMultiUpdateReq)returns(Empty);//绑定场景联动
+  rpc alarmSceneDelete(AlarmSceneDeleteReq)returns(Empty);//解绑场景联动
+  rpc alarmSceneIndex(WithID)returns(AlarmSceneMultiUpdateReq);//解绑场景联动
 
   //告警记录
   rpc alarmRecordIndex(AlarmRecordIndexReq)returns(AlarmRecordIndexResp);
+  rpc alarmRecordDeal(AlarmRecordDealReq)returns(Empty);//处理告警
+
 }
 
 
@@ -52,7 +55,6 @@ message AlarmRecordIndexReq{
   int64 alarmID = 1;//告警配置ID
   PageInfo page       = 2;  // 分页信息 获取全部不填
   TimeRange timeRange = 3;       // 时间范围
-
 }
 message AlarmRecordIndexResp{
   repeated AlarmRecord list =1;
@@ -70,16 +72,20 @@ message AlarmRecord{
   int64 level = 8;//告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
   int64 lastAlarm = 9;//最新告警时间
   int64 createdTime = 10;//创建时间
-  int64 dealState = 11;//告警记录状态（1无告警 2告警中 3已处理）
+  int64 dealState = 11;//告警记录状态（1无告警 2告警中 3已处理 4 无效）
 }
 
-message  alarmSceneDeleteReq{
-  int64 alarmID = 1;//告警配置ID
+message AlarmRecordDealReq{
+  int64 handle = 1; //1 无效(告警无效) 2 派单(走工作流)
+}
+
+message  AlarmSceneDeleteReq{
+  int64 id = 1;//告警配置ID
   int64 sceneID = 2;//场景id
 }
 
-message  alarmSceneMultiUpdateReq{
-  int64 alarmID = 1;//告警配置ID
+message  AlarmSceneMultiUpdateReq{
+  int64 id = 1;//告警配置ID
   repeated int64 sceneIDs = 2;//场景id
 }
 
@@ -100,8 +106,6 @@ message AlarmInfo{
 message AlarmInfoIndexReq{
   PageInfo page       = 1;  // 分页信息 只获取一个则不填
   string name = 2;//告警配置名称 模糊查询
-  int64 sceneID = 3;//场景ID过滤
-  repeated int64 alarmIDs =4;//告警id列表
 }
 
 message AlarmInfoIndexResp{
