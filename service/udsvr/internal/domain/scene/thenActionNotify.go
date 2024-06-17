@@ -42,7 +42,7 @@ func (a *ActionNotify) Validate(repo ValidateRepo) error {
 	return nil
 }
 func (a *ActionNotify) Execute(ctx context.Context, repo ActionRepo) error {
-	_, err := repo.NotifyM.NotifyInfoSend(ctx, &sys.NotifyInfoSendReq{
+	_, err := repo.NotifyM.NotifyConfigSend(ctx, &sys.NotifyConfigSendReq{
 		UserIDs:    []int64{repo.UserID},
 		Accounts:   a.Accounts,
 		NotifyCode: a.NotifyCode,
