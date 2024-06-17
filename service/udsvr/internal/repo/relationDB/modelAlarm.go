@@ -7,15 +7,22 @@ import (
 
 // 告警配置信息表
 type UdAlarmInfo struct {
-	ID            int64             `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
-	TenantCode    stores.TenantCode `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`     // 租户编码
-	ProjectID     stores.ProjectID  `gorm:"column:project_id;type:bigint;default:0;NOT NULL"` // 项目ID(雪花ID)
-	Name          string            `gorm:"column:name;uniqueIndex;type:VARCHAR(100);NOT NULL"`
-	Desc          string            `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`
-	Level         int64             `gorm:"column:level;type:SMALLINT;NOT NULL"`                          // 告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
-	Status        int64             `gorm:"column:status;type:SMALLINT;default:1"`                        // 状态 1:启用,2:禁用
-	TemplateCodes []string          `gorm:"column:template_codes;type:json;serializer:json;default:'[]'"` // 短信通知模版编码
+	ID         int64             `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
+	TenantCode stores.TenantCode `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`     // 租户编码
+	ProjectID  stores.ProjectID  `gorm:"column:project_id;type:bigint;default:0;NOT NULL"` // 项目ID(雪花ID)
+	Name       string            `gorm:"column:name;uniqueIndex;type:VARCHAR(100);NOT NULL"`
+	Desc       string            `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`
+	Level      int64             `gorm:"column:level;type:SMALLINT;NOT NULL"`                    // 告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
+	Status     int64             `gorm:"column:status;type:SMALLINT;default:1"`                  // 状态 1:启用,2:禁用
+	Notifies   []*UdAlarmNotify  `gorm:"column:notifies;type:json;serializer:json;default:'[]'"` // 短信通知模版编码
 	stores.Time
+}
+
+type UdAlarmNotify struct {
+	Type         string   `json:"type"`         //通知类型
+	TemplateCode string   `json:"templateCode"` //模版code,不选就是默认的
+	UserIDs      []int64  `json:"userIDs"`      //指定用户ID
+	Accounts     []string `json:"accounts"`     //账号
 }
 
 func (m *UdAlarmInfo) TableName() string {

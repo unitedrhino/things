@@ -19,17 +19,22 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Rule_SceneInfoCreate_FullMethodName      = "/ud.rule/sceneInfoCreate"
-	Rule_SceneInfoUpdate_FullMethodName      = "/ud.rule/sceneInfoUpdate"
-	Rule_SceneInfoDelete_FullMethodName      = "/ud.rule/sceneInfoDelete"
-	Rule_SceneInfoIndex_FullMethodName       = "/ud.rule/sceneInfoIndex"
-	Rule_SceneInfoRead_FullMethodName        = "/ud.rule/sceneInfoRead"
-	Rule_SceneManuallyTrigger_FullMethodName = "/ud.rule/sceneManuallyTrigger"
-	Rule_DeviceTimerCreate_FullMethodName    = "/ud.rule/deviceTimerCreate"
-	Rule_DeviceTimerUpdate_FullMethodName    = "/ud.rule/deviceTimerUpdate"
-	Rule_DeviceTimerDelete_FullMethodName    = "/ud.rule/deviceTimerDelete"
-	Rule_DeviceTimerRead_FullMethodName      = "/ud.rule/deviceTimerRead"
-	Rule_DeviceTimerIndex_FullMethodName     = "/ud.rule/deviceTimerIndex"
+	Rule_SceneInfoCreate_FullMethodName       = "/ud.rule/sceneInfoCreate"
+	Rule_SceneInfoUpdate_FullMethodName       = "/ud.rule/sceneInfoUpdate"
+	Rule_SceneInfoDelete_FullMethodName       = "/ud.rule/sceneInfoDelete"
+	Rule_SceneInfoIndex_FullMethodName        = "/ud.rule/sceneInfoIndex"
+	Rule_SceneInfoRead_FullMethodName         = "/ud.rule/sceneInfoRead"
+	Rule_SceneManuallyTrigger_FullMethodName  = "/ud.rule/sceneManuallyTrigger"
+	Rule_AlarmInfoCreate_FullMethodName       = "/ud.rule/alarmInfoCreate"
+	Rule_AlarmInfoUpdate_FullMethodName       = "/ud.rule/alarmInfoUpdate"
+	Rule_AlarmInfoDelete_FullMethodName       = "/ud.rule/alarmInfoDelete"
+	Rule_AlarmInfoIndex_FullMethodName        = "/ud.rule/alarmInfoIndex"
+	Rule_AlarmInfoRead_FullMethodName         = "/ud.rule/alarmInfoRead"
+	Rule_AlarmSceneMultiCreate_FullMethodName = "/ud.rule/alarmSceneMultiCreate"
+	Rule_AlarmSceneDelete_FullMethodName      = "/ud.rule/alarmSceneDelete"
+	Rule_AlarmSceneIndex_FullMethodName       = "/ud.rule/alarmSceneIndex"
+	Rule_AlarmRecordIndex_FullMethodName      = "/ud.rule/alarmRecordIndex"
+	Rule_AlarmRecordDeal_FullMethodName       = "/ud.rule/alarmRecordDeal"
 )
 
 // RuleClient is the client API for Rule service.
@@ -43,12 +48,18 @@ type RuleClient interface {
 	SceneInfoIndex(ctx context.Context, in *SceneInfoIndexReq, opts ...grpc.CallOption) (*SceneInfoIndexResp, error)
 	SceneInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*SceneInfo, error)
 	SceneManuallyTrigger(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
-	// 设备定时
-	DeviceTimerCreate(ctx context.Context, in *DeviceTimerInfo, opts ...grpc.CallOption) (*WithID, error)
-	DeviceTimerUpdate(ctx context.Context, in *DeviceTimerInfo, opts ...grpc.CallOption) (*Empty, error)
-	DeviceTimerDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
-	DeviceTimerRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*DeviceTimerInfo, error)
-	DeviceTimerIndex(ctx context.Context, in *DeviceTimerIndexReq, opts ...grpc.CallOption) (*DeviceTimerIndexResp, error)
+	AlarmInfoCreate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*WithID, error)
+	AlarmInfoUpdate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*Empty, error)
+	AlarmInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
+	AlarmInfoIndex(ctx context.Context, in *AlarmInfoIndexReq, opts ...grpc.CallOption) (*AlarmInfoIndexResp, error)
+	AlarmInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*AlarmInfo, error)
+	// 告警关联场景联动
+	AlarmSceneMultiCreate(ctx context.Context, in *AlarmSceneMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
+	AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteReq, opts ...grpc.CallOption) (*Empty, error)
+	AlarmSceneIndex(ctx context.Context, in *AlarmSceneIndexReq, opts ...grpc.CallOption) (*AlarmSceneMultiSaveReq, error)
+	// 告警记录
+	AlarmRecordIndex(ctx context.Context, in *AlarmRecordIndexReq, opts ...grpc.CallOption) (*AlarmRecordIndexResp, error)
+	AlarmRecordDeal(ctx context.Context, in *AlarmRecordDealReq, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type ruleClient struct {
@@ -113,45 +124,90 @@ func (c *ruleClient) SceneManuallyTrigger(ctx context.Context, in *WithID, opts 
 	return out, nil
 }
 
-func (c *ruleClient) DeviceTimerCreate(ctx context.Context, in *DeviceTimerInfo, opts ...grpc.CallOption) (*WithID, error) {
+func (c *ruleClient) AlarmInfoCreate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*WithID, error) {
 	out := new(WithID)
-	err := c.cc.Invoke(ctx, Rule_DeviceTimerCreate_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Rule_AlarmInfoCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *ruleClient) DeviceTimerUpdate(ctx context.Context, in *DeviceTimerInfo, opts ...grpc.CallOption) (*Empty, error) {
+func (c *ruleClient) AlarmInfoUpdate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
-	err := c.cc.Invoke(ctx, Rule_DeviceTimerUpdate_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Rule_AlarmInfoUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *ruleClient) DeviceTimerDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+func (c *ruleClient) AlarmInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
-	err := c.cc.Invoke(ctx, Rule_DeviceTimerDelete_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Rule_AlarmInfoDelete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *ruleClient) DeviceTimerRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*DeviceTimerInfo, error) {
-	out := new(DeviceTimerInfo)
-	err := c.cc.Invoke(ctx, Rule_DeviceTimerRead_FullMethodName, in, out, opts...)
+func (c *ruleClient) AlarmInfoIndex(ctx context.Context, in *AlarmInfoIndexReq, opts ...grpc.CallOption) (*AlarmInfoIndexResp, error) {
+	out := new(AlarmInfoIndexResp)
+	err := c.cc.Invoke(ctx, Rule_AlarmInfoIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *ruleClient) DeviceTimerIndex(ctx context.Context, in *DeviceTimerIndexReq, opts ...grpc.CallOption) (*DeviceTimerIndexResp, error) {
-	out := new(DeviceTimerIndexResp)
-	err := c.cc.Invoke(ctx, Rule_DeviceTimerIndex_FullMethodName, in, out, opts...)
+func (c *ruleClient) AlarmInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*AlarmInfo, error) {
+	out := new(AlarmInfo)
+	err := c.cc.Invoke(ctx, Rule_AlarmInfoRead_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ruleClient) AlarmSceneMultiCreate(ctx context.Context, in *AlarmSceneMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, Rule_AlarmSceneMultiCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ruleClient) AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, Rule_AlarmSceneDelete_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ruleClient) AlarmSceneIndex(ctx context.Context, in *AlarmSceneIndexReq, opts ...grpc.CallOption) (*AlarmSceneMultiSaveReq, error) {
+	out := new(AlarmSceneMultiSaveReq)
+	err := c.cc.Invoke(ctx, Rule_AlarmSceneIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ruleClient) AlarmRecordIndex(ctx context.Context, in *AlarmRecordIndexReq, opts ...grpc.CallOption) (*AlarmRecordIndexResp, error) {
+	out := new(AlarmRecordIndexResp)
+	err := c.cc.Invoke(ctx, Rule_AlarmRecordIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ruleClient) AlarmRecordDeal(ctx context.Context, in *AlarmRecordDealReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, Rule_AlarmRecordDeal_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -169,12 +225,18 @@ type RuleServer interface {
 	SceneInfoIndex(context.Context, *SceneInfoIndexReq) (*SceneInfoIndexResp, error)
 	SceneInfoRead(context.Context, *WithID) (*SceneInfo, error)
 	SceneManuallyTrigger(context.Context, *WithID) (*Empty, error)
-	// 设备定时
-	DeviceTimerCreate(context.Context, *DeviceTimerInfo) (*WithID, error)
-	DeviceTimerUpdate(context.Context, *DeviceTimerInfo) (*Empty, error)
-	DeviceTimerDelete(context.Context, *WithID) (*Empty, error)
-	DeviceTimerRead(context.Context, *WithID) (*DeviceTimerInfo, error)
-	DeviceTimerIndex(context.Context, *DeviceTimerIndexReq) (*DeviceTimerIndexResp, error)
+	AlarmInfoCreate(context.Context, *AlarmInfo) (*WithID, error)
+	AlarmInfoUpdate(context.Context, *AlarmInfo) (*Empty, error)
+	AlarmInfoDelete(context.Context, *WithID) (*Empty, error)
+	AlarmInfoIndex(context.Context, *AlarmInfoIndexReq) (*AlarmInfoIndexResp, error)
+	AlarmInfoRead(context.Context, *WithID) (*AlarmInfo, error)
+	// 告警关联场景联动
+	AlarmSceneMultiCreate(context.Context, *AlarmSceneMultiSaveReq) (*Empty, error)
+	AlarmSceneDelete(context.Context, *AlarmSceneDeleteReq) (*Empty, error)
+	AlarmSceneIndex(context.Context, *AlarmSceneIndexReq) (*AlarmSceneMultiSaveReq, error)
+	// 告警记录
+	AlarmRecordIndex(context.Context, *AlarmRecordIndexReq) (*AlarmRecordIndexResp, error)
+	AlarmRecordDeal(context.Context, *AlarmRecordDealReq) (*Empty, error)
 	mustEmbedUnimplementedRuleServer()
 }
 
@@ -200,20 +262,35 @@ func (UnimplementedRuleServer) SceneInfoRead(context.Context, *WithID) (*SceneIn
 func (UnimplementedRuleServer) SceneManuallyTrigger(context.Context, *WithID) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SceneManuallyTrigger not implemented")
 }
-func (UnimplementedRuleServer) DeviceTimerCreate(context.Context, *DeviceTimerInfo) (*WithID, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeviceTimerCreate not implemented")
+func (UnimplementedRuleServer) AlarmInfoCreate(context.Context, *AlarmInfo) (*WithID, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlarmInfoCreate not implemented")
 }
-func (UnimplementedRuleServer) DeviceTimerUpdate(context.Context, *DeviceTimerInfo) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeviceTimerUpdate not implemented")
+func (UnimplementedRuleServer) AlarmInfoUpdate(context.Context, *AlarmInfo) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlarmInfoUpdate not implemented")
 }
-func (UnimplementedRuleServer) DeviceTimerDelete(context.Context, *WithID) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeviceTimerDelete not implemented")
+func (UnimplementedRuleServer) AlarmInfoDelete(context.Context, *WithID) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlarmInfoDelete not implemented")
 }
-func (UnimplementedRuleServer) DeviceTimerRead(context.Context, *WithID) (*DeviceTimerInfo, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeviceTimerRead not implemented")
+func (UnimplementedRuleServer) AlarmInfoIndex(context.Context, *AlarmInfoIndexReq) (*AlarmInfoIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlarmInfoIndex not implemented")
 }
-func (UnimplementedRuleServer) DeviceTimerIndex(context.Context, *DeviceTimerIndexReq) (*DeviceTimerIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeviceTimerIndex not implemented")
+func (UnimplementedRuleServer) AlarmInfoRead(context.Context, *WithID) (*AlarmInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlarmInfoRead not implemented")
+}
+func (UnimplementedRuleServer) AlarmSceneMultiCreate(context.Context, *AlarmSceneMultiSaveReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlarmSceneMultiCreate not implemented")
+}
+func (UnimplementedRuleServer) AlarmSceneDelete(context.Context, *AlarmSceneDeleteReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlarmSceneDelete not implemented")
+}
+func (UnimplementedRuleServer) AlarmSceneIndex(context.Context, *AlarmSceneIndexReq) (*AlarmSceneMultiSaveReq, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlarmSceneIndex not implemented")
+}
+func (UnimplementedRuleServer) AlarmRecordIndex(context.Context, *AlarmRecordIndexReq) (*AlarmRecordIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlarmRecordIndex not implemented")
+}
+func (UnimplementedRuleServer) AlarmRecordDeal(context.Context, *AlarmRecordDealReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlarmRecordDeal not implemented")
 }
 func (UnimplementedRuleServer) mustEmbedUnimplementedRuleServer() {}
 
@@ -336,92 +413,182 @@ func _Rule_SceneManuallyTrigger_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Rule_DeviceTimerCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeviceTimerInfo)
+func _Rule_AlarmInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AlarmInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RuleServer).DeviceTimerCreate(ctx, in)
+		return srv.(RuleServer).AlarmInfoCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Rule_DeviceTimerCreate_FullMethodName,
+		FullMethod: Rule_AlarmInfoCreate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RuleServer).DeviceTimerCreate(ctx, req.(*DeviceTimerInfo))
+		return srv.(RuleServer).AlarmInfoCreate(ctx, req.(*AlarmInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Rule_DeviceTimerUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeviceTimerInfo)
+func _Rule_AlarmInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AlarmInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RuleServer).DeviceTimerUpdate(ctx, in)
+		return srv.(RuleServer).AlarmInfoUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Rule_DeviceTimerUpdate_FullMethodName,
+		FullMethod: Rule_AlarmInfoUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RuleServer).DeviceTimerUpdate(ctx, req.(*DeviceTimerInfo))
+		return srv.(RuleServer).AlarmInfoUpdate(ctx, req.(*AlarmInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Rule_DeviceTimerDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Rule_AlarmInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(WithID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RuleServer).DeviceTimerDelete(ctx, in)
+		return srv.(RuleServer).AlarmInfoDelete(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Rule_DeviceTimerDelete_FullMethodName,
+		FullMethod: Rule_AlarmInfoDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RuleServer).DeviceTimerDelete(ctx, req.(*WithID))
+		return srv.(RuleServer).AlarmInfoDelete(ctx, req.(*WithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Rule_DeviceTimerRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Rule_AlarmInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AlarmInfoIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RuleServer).AlarmInfoIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Rule_AlarmInfoIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RuleServer).AlarmInfoIndex(ctx, req.(*AlarmInfoIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Rule_AlarmInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(WithID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RuleServer).DeviceTimerRead(ctx, in)
+		return srv.(RuleServer).AlarmInfoRead(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Rule_DeviceTimerRead_FullMethodName,
+		FullMethod: Rule_AlarmInfoRead_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RuleServer).DeviceTimerRead(ctx, req.(*WithID))
+		return srv.(RuleServer).AlarmInfoRead(ctx, req.(*WithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Rule_DeviceTimerIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeviceTimerIndexReq)
+func _Rule_AlarmSceneMultiCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AlarmSceneMultiSaveReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RuleServer).DeviceTimerIndex(ctx, in)
+		return srv.(RuleServer).AlarmSceneMultiCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Rule_DeviceTimerIndex_FullMethodName,
+		FullMethod: Rule_AlarmSceneMultiCreate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RuleServer).DeviceTimerIndex(ctx, req.(*DeviceTimerIndexReq))
+		return srv.(RuleServer).AlarmSceneMultiCreate(ctx, req.(*AlarmSceneMultiSaveReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Rule_AlarmSceneDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AlarmSceneDeleteReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RuleServer).AlarmSceneDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Rule_AlarmSceneDelete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RuleServer).AlarmSceneDelete(ctx, req.(*AlarmSceneDeleteReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Rule_AlarmSceneIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AlarmSceneIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RuleServer).AlarmSceneIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Rule_AlarmSceneIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RuleServer).AlarmSceneIndex(ctx, req.(*AlarmSceneIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Rule_AlarmRecordIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AlarmRecordIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RuleServer).AlarmRecordIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Rule_AlarmRecordIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RuleServer).AlarmRecordIndex(ctx, req.(*AlarmRecordIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Rule_AlarmRecordDeal_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AlarmRecordDealReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RuleServer).AlarmRecordDeal(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Rule_AlarmRecordDeal_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RuleServer).AlarmRecordDeal(ctx, req.(*AlarmRecordDealReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -458,24 +625,44 @@ var Rule_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Rule_SceneManuallyTrigger_Handler,
 		},
 		{
-			MethodName: "deviceTimerCreate",
-			Handler:    _Rule_DeviceTimerCreate_Handler,
+			MethodName: "alarmInfoCreate",
+			Handler:    _Rule_AlarmInfoCreate_Handler,
 		},
 		{
-			MethodName: "deviceTimerUpdate",
-			Handler:    _Rule_DeviceTimerUpdate_Handler,
+			MethodName: "alarmInfoUpdate",
+			Handler:    _Rule_AlarmInfoUpdate_Handler,
 		},
 		{
-			MethodName: "deviceTimerDelete",
-			Handler:    _Rule_DeviceTimerDelete_Handler,
+			MethodName: "alarmInfoDelete",
+			Handler:    _Rule_AlarmInfoDelete_Handler,
 		},
 		{
-			MethodName: "deviceTimerRead",
-			Handler:    _Rule_DeviceTimerRead_Handler,
+			MethodName: "alarmInfoIndex",
+			Handler:    _Rule_AlarmInfoIndex_Handler,
 		},
 		{
-			MethodName: "deviceTimerIndex",
-			Handler:    _Rule_DeviceTimerIndex_Handler,
+			MethodName: "alarmInfoRead",
+			Handler:    _Rule_AlarmInfoRead_Handler,
+		},
+		{
+			MethodName: "alarmSceneMultiCreate",
+			Handler:    _Rule_AlarmSceneMultiCreate_Handler,
+		},
+		{
+			MethodName: "alarmSceneDelete",
+			Handler:    _Rule_AlarmSceneDelete_Handler,
+		},
+		{
+			MethodName: "alarmSceneIndex",
+			Handler:    _Rule_AlarmSceneIndex_Handler,
+		},
+		{
+			MethodName: "alarmRecordIndex",
+			Handler:    _Rule_AlarmRecordIndex_Handler,
+		},
+		{
+			MethodName: "alarmRecordDeal",
+			Handler:    _Rule_AlarmRecordDeal_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

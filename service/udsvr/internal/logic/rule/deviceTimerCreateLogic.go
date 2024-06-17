@@ -2,17 +2,11 @@ package rulelogic
 
 import (
 	"context"
-	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
-	"github.com/i-Things/things/service/udsvr/internal/domain"
 	"github.com/i-Things/things/service/udsvr/internal/domain/deviceTimer"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
-	"time"
-
 	"github.com/i-Things/things/service/udsvr/internal/svc"
-	"github.com/i-Things/things/service/udsvr/pb/ud"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -30,32 +24,32 @@ func NewDeviceTimerCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 	}
 }
 
-// 设备定时
-func (l *DeviceTimerCreateLogic) DeviceTimerCreate(in *ud.DeviceTimerInfo) (*ud.WithID, error) {
-	po := relationDB.UdDeviceTimerInfo{
-		ProductID:   in.Device.ProductID,
-		DeviceName:  in.Device.DeviceName,
-		TriggerType: in.TriggerType,
-		ExecAt:      in.ExecAt,
-		ExecRepeat:  in.ExecRepeat,
-		ActionType:  in.ActionType,
-		DataID:      in.DataID,
-		Value:       in.Value,
-		Name:        in.Name,
-		LastRunTime: domain.GenLastRunTime(time.Now(), in.ExecAt),
-		Status:      in.Status,
-	}
-	if po.Status == 0 {
-		po.Status = def.Enable
-	}
-	err := DeviceTimerCheck(l.ctx, &po)
-	if err != nil {
-		return nil, err
-	}
-	relationDB.NewDeviceTimerInfoRepo(l.ctx).Insert(l.ctx, &po)
-
-	return &ud.WithID{Id: po.ID}, nil
-}
+//// 设备定时
+//func (l *DeviceTimerCreateLogic) DeviceTimerCreate(in *ud.DeviceTimerInfo) (*ud.WithID, error) {
+//	po := relationDB.UdDeviceTimerInfo{
+//		ProductID:   in.Device.ProductID,
+//		DeviceName:  in.Device.DeviceName,
+//		TriggerType: in.TriggerType,
+//		ExecAt:      in.ExecAt,
+//		ExecRepeat:  in.ExecRepeat,
+//		ActionType:  in.ActionType,
+//		DataID:      in.DataID,
+//		Value:       in.Value,
+//		Name:        in.Name,
+//		LastRunTime: domain.GenLastRunTime(time.Now(), in.ExecAt),
+//		Status:      in.Status,
+//	}
+//	if po.Status == 0 {
+//		po.Status = def.Enable
+//	}
+//	err := DeviceTimerCheck(l.ctx, &po)
+//	if err != nil {
+//		return nil, err
+//	}
+//	relationDB.NewDeviceTimerInfoRepo(l.ctx).Insert(l.ctx, &po)
+//
+//	return &ud.WithID{Id: po.ID}, nil
+//}
 
 func DeviceTimerCheck(ctx context.Context, po *relationDB.UdDeviceTimerInfo) error {
 	switch po.TriggerType {

@@ -53,28 +53,54 @@ func (s *RuleServer) SceneManuallyTrigger(ctx context.Context, in *ud.WithID) (*
 	return l.SceneManuallyTrigger(in)
 }
 
-// 设备定时
-func (s *RuleServer) DeviceTimerCreate(ctx context.Context, in *ud.DeviceTimerInfo) (*ud.WithID, error) {
-	l := rulelogic.NewDeviceTimerCreateLogic(ctx, s.svcCtx)
-	return l.DeviceTimerCreate(in)
+func (s *RuleServer) AlarmInfoCreate(ctx context.Context, in *ud.AlarmInfo) (*ud.WithID, error) {
+	l := rulelogic.NewAlarmInfoCreateLogic(ctx, s.svcCtx)
+	return l.AlarmInfoCreate(in)
 }
 
-func (s *RuleServer) DeviceTimerUpdate(ctx context.Context, in *ud.DeviceTimerInfo) (*ud.Empty, error) {
-	l := rulelogic.NewDeviceTimerUpdateLogic(ctx, s.svcCtx)
-	return l.DeviceTimerUpdate(in)
+func (s *RuleServer) AlarmInfoUpdate(ctx context.Context, in *ud.AlarmInfo) (*ud.Empty, error) {
+	l := rulelogic.NewAlarmInfoUpdateLogic(ctx, s.svcCtx)
+	return l.AlarmInfoUpdate(in)
 }
 
-func (s *RuleServer) DeviceTimerDelete(ctx context.Context, in *ud.WithID) (*ud.Empty, error) {
-	l := rulelogic.NewDeviceTimerDeleteLogic(ctx, s.svcCtx)
-	return l.DeviceTimerDelete(in)
+func (s *RuleServer) AlarmInfoDelete(ctx context.Context, in *ud.WithID) (*ud.Empty, error) {
+	l := rulelogic.NewAlarmInfoDeleteLogic(ctx, s.svcCtx)
+	return l.AlarmInfoDelete(in)
 }
 
-func (s *RuleServer) DeviceTimerRead(ctx context.Context, in *ud.WithID) (*ud.DeviceTimerInfo, error) {
-	l := rulelogic.NewDeviceTimerReadLogic(ctx, s.svcCtx)
-	return l.DeviceTimerRead(in)
+func (s *RuleServer) AlarmInfoIndex(ctx context.Context, in *ud.AlarmInfoIndexReq) (*ud.AlarmInfoIndexResp, error) {
+	l := rulelogic.NewAlarmInfoIndexLogic(ctx, s.svcCtx)
+	return l.AlarmInfoIndex(in)
 }
 
-func (s *RuleServer) DeviceTimerIndex(ctx context.Context, in *ud.DeviceTimerIndexReq) (*ud.DeviceTimerIndexResp, error) {
-	l := rulelogic.NewDeviceTimerIndexLogic(ctx, s.svcCtx)
-	return l.DeviceTimerIndex(in)
+func (s *RuleServer) AlarmInfoRead(ctx context.Context, in *ud.WithID) (*ud.AlarmInfo, error) {
+	l := rulelogic.NewAlarmInfoReadLogic(ctx, s.svcCtx)
+	return l.AlarmInfoRead(in)
+}
+
+// 告警关联场景联动
+func (s *RuleServer) AlarmSceneMultiCreate(ctx context.Context, in *ud.AlarmSceneMultiSaveReq) (*ud.Empty, error) {
+	l := rulelogic.NewAlarmSceneMultiCreateLogic(ctx, s.svcCtx)
+	return l.AlarmSceneMultiCreate(in)
+}
+
+func (s *RuleServer) AlarmSceneDelete(ctx context.Context, in *ud.AlarmSceneDeleteReq) (*ud.Empty, error) {
+	l := rulelogic.NewAlarmSceneDeleteLogic(ctx, s.svcCtx)
+	return l.AlarmSceneDelete(in)
+}
+
+func (s *RuleServer) AlarmSceneIndex(ctx context.Context, in *ud.AlarmSceneIndexReq) (*ud.AlarmSceneMultiSaveReq, error) {
+	l := rulelogic.NewAlarmSceneIndexLogic(ctx, s.svcCtx)
+	return l.AlarmSceneIndex(in)
+}
+
+// 告警记录
+func (s *RuleServer) AlarmRecordIndex(ctx context.Context, in *ud.AlarmRecordIndexReq) (*ud.AlarmRecordIndexResp, error) {
+	l := rulelogic.NewAlarmRecordIndexLogic(ctx, s.svcCtx)
+	return l.AlarmRecordIndex(in)
+}
+
+func (s *RuleServer) AlarmRecordDeal(ctx context.Context, in *ud.AlarmRecordDealReq) (*ud.Empty, error) {
+	l := rulelogic.NewAlarmRecordDealLogic(ctx, s.svcCtx)
+	return l.AlarmRecordDeal(in)
 }

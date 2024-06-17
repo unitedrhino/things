@@ -6,4 +6,3 @@ info(
 	version: "v1"
 )
 import "rule/scene.api" //场景联动信息接口
-import "rule/deviceTimer.api"

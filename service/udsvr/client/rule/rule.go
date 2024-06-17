@@ -14,18 +14,26 @@ import (
 )
 
 type (
-	DeviceCore           = ud.DeviceCore
-	DeviceTimerIndexReq  = ud.DeviceTimerIndexReq
-	DeviceTimerIndexResp = ud.DeviceTimerIndexResp
-	DeviceTimerInfo      = ud.DeviceTimerInfo
-	Empty                = ud.Empty
-	PageInfo             = ud.PageInfo
-	SceneFlowInfo        = ud.SceneFlowInfo
-	SceneInfo            = ud.SceneInfo
-	SceneInfoIndexReq    = ud.SceneInfoIndexReq
-	SceneInfoIndexResp   = ud.SceneInfoIndexResp
-	TimeRange            = ud.TimeRange
-	WithID               = ud.WithID
+	AlarmInfo              = ud.AlarmInfo
+	AlarmInfoIndexReq      = ud.AlarmInfoIndexReq
+	AlarmInfoIndexResp     = ud.AlarmInfoIndexResp
+	AlarmNotify            = ud.AlarmNotify
+	AlarmRecord            = ud.AlarmRecord
+	AlarmRecordDealReq     = ud.AlarmRecordDealReq
+	AlarmRecordIndexReq    = ud.AlarmRecordIndexReq
+	AlarmRecordIndexResp   = ud.AlarmRecordIndexResp
+	AlarmSceneDeleteReq    = ud.AlarmSceneDeleteReq
+	AlarmSceneIndexReq     = ud.AlarmSceneIndexReq
+	AlarmSceneMultiSaveReq = ud.AlarmSceneMultiSaveReq
+	DeviceCore             = ud.DeviceCore
+	Empty                  = ud.Empty
+	PageInfo               = ud.PageInfo
+	SceneFlowInfo          = ud.SceneFlowInfo
+	SceneInfo              = ud.SceneInfo
+	SceneInfoIndexReq      = ud.SceneInfoIndexReq
+	SceneInfoIndexResp     = ud.SceneInfoIndexResp
+	TimeRange              = ud.TimeRange
+	WithID                 = ud.WithID
 
 	Rule interface {
 		// 场景
@@ -35,12 +43,18 @@ type (
 		SceneInfoIndex(ctx context.Context, in *SceneInfoIndexReq, opts ...grpc.CallOption) (*SceneInfoIndexResp, error)
 		SceneInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*SceneInfo, error)
 		SceneManuallyTrigger(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
-		// 设备定时
-		DeviceTimerCreate(ctx context.Context, in *DeviceTimerInfo, opts ...grpc.CallOption) (*WithID, error)
-		DeviceTimerUpdate(ctx context.Context, in *DeviceTimerInfo, opts ...grpc.CallOption) (*Empty, error)
-		DeviceTimerDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
-		DeviceTimerRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*DeviceTimerInfo, error)
-		DeviceTimerIndex(ctx context.Context, in *DeviceTimerIndexReq, opts ...grpc.CallOption) (*DeviceTimerIndexResp, error)
+		AlarmInfoCreate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*WithID, error)
+		AlarmInfoUpdate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*Empty, error)
+		AlarmInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
+		AlarmInfoIndex(ctx context.Context, in *AlarmInfoIndexReq, opts ...grpc.CallOption) (*AlarmInfoIndexResp, error)
+		AlarmInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*AlarmInfo, error)
+		// 告警关联场景联动
+		AlarmSceneMultiCreate(ctx context.Context, in *AlarmSceneMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
+		AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteReq, opts ...grpc.CallOption) (*Empty, error)
+		AlarmSceneIndex(ctx context.Context, in *AlarmSceneIndexReq, opts ...grpc.CallOption) (*AlarmSceneMultiSaveReq, error)
+		// 告警记录
+		AlarmRecordIndex(ctx context.Context, in *AlarmRecordIndexReq, opts ...grpc.CallOption) (*AlarmRecordIndexResp, error)
+		AlarmRecordDeal(ctx context.Context, in *AlarmRecordDealReq, opts ...grpc.CallOption) (*Empty, error)
 	}
 
 	defaultRule struct {
@@ -122,49 +136,96 @@ func (d *directRule) SceneManuallyTrigger(ctx context.Context, in *WithID, opts 
 	return d.svr.SceneManuallyTrigger(ctx, in)
 }
 
-// 设备定时
-func (m *defaultRule) DeviceTimerCreate(ctx context.Context, in *DeviceTimerInfo, opts ...grpc.CallOption) (*WithID, error) {
+func (m *defaultRule) AlarmInfoCreate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*WithID, error) {
 	client := ud.NewRuleClient(m.cli.Conn())
-	return client.DeviceTimerCreate(ctx, in, opts...)
+	return client.AlarmInfoCreate(ctx, in, opts...)
 }
 
-// 设备定时
-func (d *directRule) DeviceTimerCreate(ctx context.Context, in *DeviceTimerInfo, opts ...grpc.CallOption) (*WithID, error) {
-	return d.svr.DeviceTimerCreate(ctx, in)
+func (d *directRule) AlarmInfoCreate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*WithID, error) {
+	return d.svr.AlarmInfoCreate(ctx, in)
 }
 
-func (m *defaultRule) DeviceTimerUpdate(ctx context.Context, in *DeviceTimerInfo, opts ...grpc.CallOption) (*Empty, error) {
+func (m *defaultRule) AlarmInfoUpdate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*Empty, error) {
 	client := ud.NewRuleClient(m.cli.Conn())
-	return client.DeviceTimerUpdate(ctx, in, opts...)
+	return client.AlarmInfoUpdate(ctx, in, opts...)
 }
 
-func (d *directRule) DeviceTimerUpdate(ctx context.Context, in *DeviceTimerInfo, opts ...grpc.CallOption) (*Empty, error) {
-	return d.svr.DeviceTimerUpdate(ctx, in)
+func (d *directRule) AlarmInfoUpdate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.AlarmInfoUpdate(ctx, in)
 }
 
-func (m *defaultRule) DeviceTimerDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+func (m *defaultRule) AlarmInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
 	client := ud.NewRuleClient(m.cli.Conn())
-	return client.DeviceTimerDelete(ctx, in, opts...)
+	return client.AlarmInfoDelete(ctx, in, opts...)
 }
 
-func (d *directRule) DeviceTimerDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
-	return d.svr.DeviceTimerDelete(ctx, in)
+func (d *directRule) AlarmInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.AlarmInfoDelete(ctx, in)
 }
 
-func (m *defaultRule) DeviceTimerRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*DeviceTimerInfo, error) {
+func (m *defaultRule) AlarmInfoIndex(ctx context.Context, in *AlarmInfoIndexReq, opts ...grpc.CallOption) (*AlarmInfoIndexResp, error) {
 	client := ud.NewRuleClient(m.cli.Conn())
-	return client.DeviceTimerRead(ctx, in, opts...)
+	return client.AlarmInfoIndex(ctx, in, opts...)
 }
 
-func (d *directRule) DeviceTimerRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*DeviceTimerInfo, error) {
-	return d.svr.DeviceTimerRead(ctx, in)
+func (d *directRule) AlarmInfoIndex(ctx context.Context, in *AlarmInfoIndexReq, opts ...grpc.CallOption) (*AlarmInfoIndexResp, error) {
+	return d.svr.AlarmInfoIndex(ctx, in)
 }
 
-func (m *defaultRule) DeviceTimerIndex(ctx context.Context, in *DeviceTimerIndexReq, opts ...grpc.CallOption) (*DeviceTimerIndexResp, error) {
+func (m *defaultRule) AlarmInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*AlarmInfo, error) {
 	client := ud.NewRuleClient(m.cli.Conn())
-	return client.DeviceTimerIndex(ctx, in, opts...)
+	return client.AlarmInfoRead(ctx, in, opts...)
 }
 
-func (d *directRule) DeviceTimerIndex(ctx context.Context, in *DeviceTimerIndexReq, opts ...grpc.CallOption) (*DeviceTimerIndexResp, error) {
-	return d.svr.DeviceTimerIndex(ctx, in)
+func (d *directRule) AlarmInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*AlarmInfo, error) {
+	return d.svr.AlarmInfoRead(ctx, in)
+}
+
+// 告警关联场景联动
+func (m *defaultRule) AlarmSceneMultiCreate(ctx context.Context, in *AlarmSceneMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
+	client := ud.NewRuleClient(m.cli.Conn())
+	return client.AlarmSceneMultiCreate(ctx, in, opts...)
+}
+
+// 告警关联场景联动
+func (d *directRule) AlarmSceneMultiCreate(ctx context.Context, in *AlarmSceneMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.AlarmSceneMultiCreate(ctx, in)
+}
+
+func (m *defaultRule) AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
+	client := ud.NewRuleClient(m.cli.Conn())
+	return client.AlarmSceneDelete(ctx, in, opts...)
+}
+
+func (d *directRule) AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.AlarmSceneDelete(ctx, in)
+}
+
+func (m *defaultRule) AlarmSceneIndex(ctx context.Context, in *AlarmSceneIndexReq, opts ...grpc.CallOption) (*AlarmSceneMultiSaveReq, error) {
+	client := ud.NewRuleClient(m.cli.Conn())
+	return client.AlarmSceneIndex(ctx, in, opts...)
+}
+
+func (d *directRule) AlarmSceneIndex(ctx context.Context, in *AlarmSceneIndexReq, opts ...grpc.CallOption) (*AlarmSceneMultiSaveReq, error) {
+	return d.svr.AlarmSceneIndex(ctx, in)
+}
+
+// 告警记录
+func (m *defaultRule) AlarmRecordIndex(ctx context.Context, in *AlarmRecordIndexReq, opts ...grpc.CallOption) (*AlarmRecordIndexResp, error) {
+	client := ud.NewRuleClient(m.cli.Conn())
+	return client.AlarmRecordIndex(ctx, in, opts...)
+}
+
+// 告警记录
+func (d *directRule) AlarmRecordIndex(ctx context.Context, in *AlarmRecordIndexReq, opts ...grpc.CallOption) (*AlarmRecordIndexResp, error) {
+	return d.svr.AlarmRecordIndex(ctx, in)
+}
+
+func (m *defaultRule) AlarmRecordDeal(ctx context.Context, in *AlarmRecordDealReq, opts ...grpc.CallOption) (*Empty, error) {
+	client := ud.NewRuleClient(m.cli.Conn())
+	return client.AlarmRecordDeal(ctx, in, opts...)
+}
+
+func (d *directRule) AlarmRecordDeal(ctx context.Context, in *AlarmRecordDealReq, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.AlarmRecordDeal(ctx, in)
 }

@@ -14,3 +14,10 @@ func ToPageInfo(info *ud.PageInfo) *def.PageInfo {
 		Size: info.GetSize(),
 	}
 }
+
+func ToTimeRange(timeRange *ud.TimeRange) def.TimeRange {
+	if timeRange == nil {
+		return def.TimeRange{}
+	}
+	return def.TimeRange{Start: timeRange.Start, End: timeRange.End}
+}

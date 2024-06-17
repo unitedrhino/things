@@ -40,14 +40,13 @@ service rule {
   rpc alarmInfoRead(WithID)returns(AlarmInfo);
 
   //告警关联场景联动
-  rpc alarmSceneMultiUpdate(AlarmSceneMultiUpdateReq)returns(Empty);//绑定场景联动
+  rpc alarmSceneMultiCreate(AlarmSceneMultiSaveReq)returns(Empty);//绑定场景联动
   rpc alarmSceneDelete(AlarmSceneDeleteReq)returns(Empty);//解绑场景联动
-  rpc alarmSceneIndex(WithID)returns(AlarmSceneMultiUpdateReq);//解绑场景联动
+  rpc alarmSceneIndex(AlarmSceneIndexReq)returns(AlarmSceneMultiSaveReq);//解绑场景联动
 
   //告警记录
   rpc alarmRecordIndex(AlarmRecordIndexReq)returns(AlarmRecordIndexResp);
   rpc alarmRecordDeal(AlarmRecordDealReq)returns(Empty);//处理告警
-
 }
 
 
@@ -76,16 +75,21 @@ message AlarmRecord{
 }
 
 message AlarmRecordDealReq{
-  int64 handle = 1; //1 无效(告警无效) 2 派单(走工作流)
+  int64 id =1;
+  int64 handle = 2; //1 无效(告警无效) 2 派单(走工作流)
+}
+
+message AlarmSceneIndexReq{
+  int64 alarmID = 1;//告警配置ID
 }
 
 message  AlarmSceneDeleteReq{
-  int64 id = 1;//告警配置ID
+  int64 alarmID = 1;//告警配置ID
   int64 sceneID = 2;//场景id
 }
 
-message  AlarmSceneMultiUpdateReq{
-  int64 id = 1;//告警配置ID
+message  AlarmSceneMultiSaveReq{
+  int64 alarmID = 1;//告警配置ID
   repeated int64 sceneIDs = 2;//场景id
 }
 
@@ -98,9 +102,15 @@ message AlarmInfo{
   int64 level = 4;//告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
   int64 status = 5;//告警配置状态（1启用 2禁用）
   int64 createdTime = 6;//创建时间
-  repeated string templateCodes = 7;
+  repeated AlarmNotify notifies = 7;
 }
 
+message AlarmNotify {
+  string type        = 1; //通知类型
+  string templateCode = 2; //模版code
+  repeated int64 userIDs = 3; //指定用户ID
+  repeated string accounts = 4;
+}
 
 
 message AlarmInfoIndexReq{
