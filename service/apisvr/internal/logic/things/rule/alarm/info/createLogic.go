@@ -4,7 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/rulesvr/pb/rule"
+	"github.com/i-Things/things/service/udsvr/pb/ud"
 
 	"github.com/i-Things/things/service/apisvr/internal/svc"
 	"github.com/i-Things/things/service/apisvr/internal/types"
@@ -26,13 +26,8 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 	}
 }
 
-func (l *CreateLogic) Create(req *types.AlarmInfoCreateReq) (*types.CommonResp, error) {
-	rst, err := l.svcCtx.Alarm.AlarmInfoCreate(l.ctx, &rule.AlarmInfo{
-		Name:   req.Name,
-		Status: req.Status,
-		Desc:   req.Desc,
-		Level:  req.Level,
-	})
+func (l *CreateLogic) Create(req *types.AlarmInfo) (*types.CommonResp, error) {
+	rst, err := l.svcCtx.Rule.AlarmInfoCreate(l.ctx, utils.Copy[ud.AlarmInfo](req))
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.AlarmInfoCreate req=%v err=%v", utils.FuncName(), req, er)

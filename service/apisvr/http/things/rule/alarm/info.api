@@ -14,45 +14,30 @@ info(
 service api {
     @doc "新增告警"
     @handler create
-    post /create (AlarmInfoCreateReq) returns (CommonResp)
+    post /create (AlarmInfo) returns (WithID)
     @doc "更新告警"
     @handler update
-    post /update (AlarmInfoUpdateReq) returns ()
+    post /update (AlarmInfo) returns ()
     @doc "删除告警"
     @handler delete
-    post /delete (AlarmInfoDeleteReq) returns ()
+    post /delete (WithID) returns ()
     @doc "获取告警信息列表"
     @handler index
     post /index (AlarmInfoIndexReq) returns (AlarmInfoIndexResp)
     @doc "获取告警信息"
     @handler read
-    post /read (AlarmInfoReadReq) returns (AlarmInfo)
+    post /read (WithID) returns (AlarmInfo)
 }
 
 type (
-    AlarmInfoCreateReq  {
-        AlarmInfo
-    }
-    AlarmInfoUpdateReq  {
-        AlarmInfo
-    }
-    AlarmInfoReadReq  {
-        ID          int64     `json:"id"`
-    }
-    AlarmInfoDeleteReq  {
-        ID          int64     `json:"id"`
-    }
 
     AlarmInfoIndexReq  {
         Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
         Name        string    `json:"name,optional"` //告警名模糊查询
-        SceneID        int64    `json:"sceneID,optional"` //状态: 1启用 2禁用
-        AlarmIDs        []int64    `json:"alarmIDs,optional"` //告警id列表
     }
     AlarmInfoIndexResp  {
         List []*AlarmInfo `json:"list"`    //告警信息
         Total int64 `json:"total"`          //总数(只有分页的时候会返回)
-        Num int64 `json:"num"`              //返回的数量
     }
 )
 
@@ -63,4 +48,12 @@ type AlarmInfo  {
     Desc        string    `json:"desc,optional"`
     CreatedTime int64   `json:"createdTime,optional"`
     level       int64 `json:"level,optional"`//告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
+    Notifies []*AlarmNotify `json:"notifies,optional"`//通知
+}
+
+type AlarmNotify {
+    Type string `json:"type,optional"`//通知类型
+    TemplateCode string `json:"templateCode,optional"`//模版code
+    UserIDs string `json:"userIDs,optional"`//指定用户ID
+    Accounts string `json:"accounts,optional"`//账号
 }

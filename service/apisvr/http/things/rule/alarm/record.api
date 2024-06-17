@@ -1,0 +1,51 @@
+info(
+    title: "告警处理记录"
+    desc: "告警处理记录"
+    author: "杨磊"
+    email: "603685348@qq.com"
+    version: "v1"
+)
+
+@server(
+    group: things/rule/alarm/record
+    prefix: /api/v1/things/rule/alarm/record
+    middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
+)
+service api {
+    @doc "获取告警记录列表"
+    @handler index
+    post /index (AlarmRecordIndexReq) returns (AlarmRecordIndexResp)
+    @doc "处理告警"
+    @handler deal
+    post /deal (AlarmRecordDealReq) returns ()
+}
+
+type (
+    AlarmRecordDealReq  {
+        ID int64 `json:"id"`//告警记录ID
+        Handle int64 `json:"handle"`//告警处理结果 1:无效(告警无效) 2:派单(走工作流)
+    }
+    AlarmRecordIndexReq  {
+        AlarmID int64 `json:"alarmID,optional"`//告警记录ID
+        Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
+        TimeRange        *TimeRange    `json:"timeRange,optional"` //时间范围
+    }
+    AlarmRecordIndexResp  {
+        List []*AlarmRecord `json:"list"`    //告警信息
+        Total int64 `json:"total"`          //总数(只有分页的时候会返回)
+    }
+)
+
+type AlarmRecord  {
+    ID          int64     `json:"id,optional"`
+    AlarmID int64 `json:"alarmID"`
+    TriggerType int64 `json:"triggerType"`
+    ProductID   string `json:"productID"`  //触发产品id
+    DeviceName   string `json:"deviceName"`  //触发设备名称
+    SceneName   string `json:"sceneName"`  //场景名称
+    SceneID   int64 `json:"sceneID"`  //场景ID
+    Level   int64 `json:"level"`  //告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
+    LastAlarm   int64 `json:"lastAlarm"`  //最新告警时间
+    CreatedTime   int64 `json:"createdTime"`//创建时间
+    DealState   int64 `json:"dealState"`//告警记录状态（1无告警 2告警中 3已处理 4 无效）
+}

@@ -4,7 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/rulesvr/pb/rule"
+	"github.com/i-Things/things/service/udsvr/pb/ud"
 
 	"github.com/i-Things/things/service/apisvr/internal/svc"
 	"github.com/i-Things/things/service/apisvr/internal/types"
@@ -26,14 +26,8 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 	}
 }
 
-func (l *UpdateLogic) Update(req *types.AlarmInfoUpdateReq) error {
-	_, err := l.svcCtx.Alarm.AlarmInfoUpdate(l.ctx, &rule.AlarmInfo{
-		Id:     req.ID,
-		Name:   req.Name,
-		Status: req.Status,
-		Desc:   req.Desc,
-		Level:  req.Level,
-	})
+func (l *UpdateLogic) Update(req *types.AlarmInfo) error {
+	_, err := l.svcCtx.Rule.AlarmInfoUpdate(l.ctx, utils.Copy[ud.AlarmInfo](req))
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.AlarmInfoUpdate req=%v err=%v", utils.FuncName(), req, er)

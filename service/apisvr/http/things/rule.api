@@ -6,3 +6,6 @@ info(
 	version: "v1"
 )
 import "rule/scene.api" //场景联动信息接口
+import "rule/alarm/info.api"
+import "rule/alarm/record.api"
+import "rule/alarm/scene.api"

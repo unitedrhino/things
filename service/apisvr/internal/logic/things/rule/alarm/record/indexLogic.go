@@ -5,7 +5,7 @@ import (
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/logic"
-	"github.com/i-Things/things/service/rulesvr/pb/rule"
+	"github.com/i-Things/things/service/udsvr/pb/ud"
 
 	"github.com/i-Things/things/service/apisvr/internal/svc"
 	"github.com/i-Things/things/service/apisvr/internal/types"
@@ -28,36 +28,15 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 }
 
 func (l *IndexLogic) Index(req *types.AlarmRecordIndexReq) (resp *types.AlarmRecordIndexResp, err error) {
-	ret, err := l.svcCtx.Alarm.AlarmRecordIndex(l.ctx, &rule.AlarmRecordIndexReq{
+	ret, err := l.svcCtx.Rule.AlarmRecordIndex(l.ctx, &ud.AlarmRecordIndexReq{
 		AlarmID:   req.AlarmID,
-		Page:      logic.ToRulePageRpc(req.Page),
-		TimeRange: logic.ToRuleTimeRangeRpc(req.TimeRange),
+		Page:      logic.ToUdPageRpc(req.Page),
+		TimeRange: logic.ToUdTimeRangeRpc(req.TimeRange),
 	})
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.AlarmRecordIndex req=%v err=%v", utils.FuncName(), req, er)
 		return nil, er
 	}
-	pis := make([]*types.AlarmRecord, 0, len(ret.List))
-	for _, v := range ret.List {
-		pi := &types.AlarmRecord{
-			ID:          v.Id,
-			AlarmID:     v.AlarmID,
-			TriggerType: v.TriggerType,
-			ProductID:   v.ProductID,
-			DeviceName:  v.DeviceName,
-			SceneName:   v.SceneName,
-			SceneID:     v.SceneID,
-			Level:       v.Level,
-			LastAlarm:   v.LastAlarm,
-			DealState:   v.DealState,
-			CreatedTime: v.CreatedTime,
-		}
-		pis = append(pis, pi)
-	}
-	return &types.AlarmRecordIndexResp{
-		Total: ret.Total,
-		List:  pis,
-		Num:   int64(len(pis)),
-	}, nil
+	return utils.Copy[types.AlarmRecordIndexResp](ret), nil
 }

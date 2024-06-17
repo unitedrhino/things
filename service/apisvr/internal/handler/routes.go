@@ -24,6 +24,9 @@ import (
 	thingsproductremoteConfig "github.com/i-Things/things/service/apisvr/internal/handler/things/product/remoteConfig"
 	thingsproductschema "github.com/i-Things/things/service/apisvr/internal/handler/things/product/schema"
 	thingsprotocolinfo "github.com/i-Things/things/service/apisvr/internal/handler/things/protocol/info"
+	thingsrulealarminfo "github.com/i-Things/things/service/apisvr/internal/handler/things/rule/alarm/info"
+	thingsrulealarmrecord "github.com/i-Things/things/service/apisvr/internal/handler/things/rule/alarm/record"
+	thingsrulealarmscene "github.com/i-Things/things/service/apisvr/internal/handler/things/rule/alarm/scene"
 	thingsrulesceneinfo "github.com/i-Things/things/service/apisvr/internal/handler/things/rule/scene/info"
 	thingsschemacommon "github.com/i-Things/things/service/apisvr/internal/handler/things/schema/common"
 	thingsslotarea "github.com/i-Things/things/service/apisvr/internal/handler/things/slot/area"
@@ -759,6 +762,83 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/protocol/info"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckTokenWare, serverCtx.InitCtxsWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsrulealarminfo.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsrulealarminfo.DeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsrulealarminfo.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/read",
+					Handler: thingsrulealarminfo.ReadHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsrulealarminfo.UpdateHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/rule/alarm/info"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckTokenWare, serverCtx.InitCtxsWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/deal",
+					Handler: thingsrulealarmrecord.DealHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsrulealarmrecord.IndexHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/rule/alarm/record"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckTokenWare, serverCtx.InitCtxsWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsrulealarmscene.DeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsrulealarmscene.IndexHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/multi-create",
+					Handler: thingsrulealarmscene.MultiCreateHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/rule/alarm/scene"),
 	)
 
 	server.AddRoutes(

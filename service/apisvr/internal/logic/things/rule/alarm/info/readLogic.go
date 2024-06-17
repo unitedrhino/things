@@ -4,7 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/rulesvr/pb/rule"
+	"github.com/i-Things/things/service/udsvr/pb/ud"
 
 	"github.com/i-Things/things/service/apisvr/internal/svc"
 	"github.com/i-Things/things/service/apisvr/internal/types"
@@ -26,8 +26,8 @@ func NewReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogic {
 	}
 }
 
-func (l *ReadLogic) Read(req *types.AlarmInfoReadReq) (resp *types.AlarmInfo, err error) {
-	rpcResp, err := l.svcCtx.Alarm.AlarmInfoRead(l.ctx, &rule.WithID{Id: req.ID})
+func (l *ReadLogic) Read(req *types.WithID) (resp *types.AlarmInfo, err error) {
+	rpcResp, err := l.svcCtx.Rule.AlarmInfoRead(l.ctx, &ud.WithID{Id: req.ID})
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s rpc.AlarmInfoRead req=%v err=%+v", utils.FuncName(), req, er)

@@ -4,7 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/rulesvr/pb/rule"
+	"github.com/i-Things/things/service/udsvr/pb/ud"
 
 	"github.com/i-Things/things/service/apisvr/internal/svc"
 	"github.com/i-Things/things/service/apisvr/internal/types"
@@ -27,7 +27,7 @@ func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogi
 }
 
 func (l *DeleteLogic) Delete(req *types.AlarmSceneDeleteReq) error {
-	_, err := l.svcCtx.Alarm.AlarmSceneDelete(l.ctx, &rule.AlarmSceneDeleteReq{
+	_, err := l.svcCtx.Rule.AlarmSceneDelete(l.ctx, &ud.AlarmSceneDeleteReq{
 		AlarmID: req.AlarmID,
 		SceneID: req.SceneID,
 	})

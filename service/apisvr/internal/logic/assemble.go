@@ -67,6 +67,16 @@ func ToRuleTimeRangeRpc(in *types.TimeRange) *rule.TimeRange {
 	}
 }
 
+func ToUdTimeRangeRpc(in *types.TimeRange) *ud.TimeRange {
+	if in == nil {
+		return nil
+	}
+	return &ud.TimeRange{
+		Start: in.Start,
+		End:   in.End,
+	}
+}
+
 func ToDiPageRpc(in *types.PageInfo) *dm.PageInfo {
 	if in == nil {
 		return nil

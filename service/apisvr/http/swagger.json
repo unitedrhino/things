@@ -417,6 +417,45 @@
         ]
       }
     },
+    "/api/v1/things/device/info/can-bind": {
+      "post": {
+        "summary": "是否可以绑定设备",
+        "operationId": "postApiV1ThingsDeviceInfoCan-bind",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceInfoCanBindReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/info",
+          "thingsDeviceInfo"
+        ]
+      }
+    },
     "/api/v1/things/device/info/count": {
       "post": {
         "summary": "设备统计详情",
@@ -488,7 +527,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/DeviceInfoSaveReq"
+              "$ref": "#/definitions/DeviceInfo"
             }
           }
         ],
@@ -607,12 +646,10 @@
         },
         "parameters": [
           {
-            "name": "body",
-            "in": "body",
+            "name": "file",
+            "in": "formData",
             "required": true,
-            "schema": {
-              "$ref": "#/definitions/DeviceMultiImportReq"
-            }
+            "type": "file"
           }
         ],
         "tags": [
@@ -809,7 +846,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/DeviceInfoSaveReq"
+              "$ref": "#/definitions/DeviceInfo"
             }
           }
         ],
@@ -894,6 +931,84 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/DeviceInteractSendActionReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/interact",
+          "thingsDeviceInteract"
+        ]
+      }
+    },
+    "/api/v1/things/device/interact/gateway-get-found-send": {
+      "post": {
+        "summary": "请求网关上报拓扑关系",
+        "operationId": "postApiV1ThingsDeviceInteractGateway-get-found-send",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GatewayGetFoundReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/interact",
+          "thingsDeviceInteract"
+        ]
+      }
+    },
+    "/api/v1/things/device/interact/gateway-notify-bind-send": {
+      "post": {
+        "summary": "通知网关绑定子设备",
+        "operationId": "postApiV1ThingsDeviceInteractGateway-notify-bind-send",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GatewayNotifyBindSendReq"
             }
           }
         ],
@@ -1320,6 +1435,48 @@
         ]
       }
     },
+    "/api/v1/things/device/msg/gateway-can-bind-index": {
+      "post": {
+        "summary": "获取网关可以绑定的子设备列表",
+        "operationId": "postApiV1ThingsDeviceMsgGateway-can-bind-index",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/GatewayCanBindIndexResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GatewayCanBindIndexReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/msg",
+          "thingsDeviceMsg"
+        ]
+      }
+    },
     "/api/v1/things/device/msg/hub-log/index": {
       "post": {
         "summary": "获取云端诊断日志",
@@ -1614,6 +1771,45 @@
         ]
       }
     },
+    "/api/v1/things/device/profile/delete": {
+      "post": {
+        "summary": "删除设备配置",
+        "operationId": "postApiV1ThingsDeviceProfileDelete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceProfileReadReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/profile",
+          "thingsDeviceProfile"
+        ]
+      }
+    },
     "/api/v1/things/device/profile/index": {
       "post": {
         "summary": "获取设备配置列表",
@@ -1734,6 +1930,90 @@
         "tags": [
           "things/device/profile",
           "thingsDeviceProfile"
+        ]
+      }
+    },
+    "/api/v1/things/device/version/index": {
+      "post": {
+        "summary": "获取设备模块版本详情",
+        "operationId": "postApiV1ThingsDeviceVersionIndex",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/DeviceModuleVersionIndexResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceModuleVersionIndexReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/module/version",
+          "thingsDeviceModuleVersion"
+        ]
+      }
+    },
+    "/api/v1/things/device/version/read": {
+      "post": {
+        "summary": "获取设备模块版本列表",
+        "operationId": "postApiV1ThingsDeviceVersionRead",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/DeviceModuleVersion"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceModuleVersionReadReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/module/version",
+          "thingsDeviceModuleVersion"
         ]
       }
     },
@@ -1914,6 +2194,9 @@
                 "msg": {
                   "type": "string",
                   "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/WithID"
                 }
               }
             }
@@ -2048,7 +2331,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/WithID"
+              "$ref": "#/definitions/WithIDChildren"
             }
           }
         ],
@@ -2127,6 +2410,45 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/OtaFirmwareDeviceCancelReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/ota/firmware/device",
+          "thingsOtaFirmwareDevice"
+        ]
+      }
+    },
+    "/api/v1/things/ota/firmware/device/confirm": {
+      "post": {
+        "summary": "确认升级设备",
+        "operationId": "postApiV1ThingsOtaFirmwareDeviceConfirm",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/OtaFirmwareDeviceConfirmReq"
             }
           }
         ],
@@ -4119,10 +4441,10 @@
         ]
       }
     },
-    "/api/v1/things/rule/device-timer/info/create": {
+    "/api/v1/things/rule/alarm/info/create": {
       "post": {
-        "summary": "新增设备定时",
-        "operationId": "postApiV1ThingsRuleDevice-timerInfoCreate",
+        "summary": "新增告警",
+        "operationId": "postApiV1ThingsRuleAlarmInfoCreate",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -4151,20 +4473,20 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/DeviceTimerInfo"
+              "$ref": "#/definitions/AlarmInfo"
             }
           }
         ],
         "tags": [
-          "things/rule/deviceTimer/info",
-          "thingsRuleDeviceTimerInfo"
+          "things/rule/alarm/info",
+          "thingsRuleAlarmInfo"
         ]
       }
     },
-    "/api/v1/things/rule/device-timer/info/delete": {
+    "/api/v1/things/rule/alarm/info/delete": {
       "post": {
-        "summary": "删除设备定时",
-        "operationId": "postApiV1ThingsRuleDevice-timerInfoDelete",
+        "summary": "删除告警",
+        "operationId": "postApiV1ThingsRuleAlarmInfoDelete",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -4195,15 +4517,15 @@
           }
         ],
         "tags": [
-          "things/rule/deviceTimer/info",
-          "thingsRuleDeviceTimerInfo"
+          "things/rule/alarm/info",
+          "thingsRuleAlarmInfo"
         ]
       }
     },
-    "/api/v1/things/rule/device-timer/info/index": {
+    "/api/v1/things/rule/alarm/info/index": {
       "post": {
-        "summary": "获取设备定时信息列表",
-        "operationId": "postApiV1ThingsRuleDevice-timerInfoIndex",
+        "summary": "获取告警信息列表",
+        "operationId": "postApiV1ThingsRuleAlarmInfoIndex",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -4220,7 +4542,7 @@
                   "title": "返回的消息"
                 },
                 "data": {
-                  "$ref": "#/definitions/DeviceTimerInfoIndexResp"
+                  "$ref": "#/definitions/AlarmInfoIndexResp"
                 }
               }
             }
@@ -4232,20 +4554,20 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/DeviceTimerInfoIndexReq"
+              "$ref": "#/definitions/AlarmInfoIndexReq"
             }
           }
         ],
         "tags": [
-          "things/rule/deviceTimer/info",
-          "thingsRuleDeviceTimerInfo"
+          "things/rule/alarm/info",
+          "thingsRuleAlarmInfo"
         ]
       }
     },
-    "/api/v1/things/rule/device-timer/info/read": {
+    "/api/v1/things/rule/alarm/info/read": {
       "post": {
-        "summary": "获取设备定时信息详情",
-        "operationId": "postApiV1ThingsRuleDevice-timerInfoRead",
+        "summary": "获取告警信息",
+        "operationId": "postApiV1ThingsRuleAlarmInfoRead",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -4262,7 +4584,7 @@
                   "title": "返回的消息"
                 },
                 "data": {
-                  "$ref": "#/definitions/DeviceTimerInfo"
+                  "$ref": "#/definitions/AlarmInfo"
                 }
               }
             }
@@ -4279,15 +4601,15 @@
           }
         ],
         "tags": [
-          "things/rule/deviceTimer/info",
-          "thingsRuleDeviceTimerInfo"
+          "things/rule/alarm/info",
+          "thingsRuleAlarmInfo"
         ]
       }
     },
-    "/api/v1/things/rule/device-timer/info/update": {
+    "/api/v1/things/rule/alarm/info/update": {
       "post": {
-        "summary": "更新设备定时",
-        "operationId": "postApiV1ThingsRuleDevice-timerInfoUpdate",
+        "summary": "更新告警",
+        "operationId": "postApiV1ThingsRuleAlarmInfoUpdate",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -4313,13 +4635,214 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/DeviceTimerInfo"
+              "$ref": "#/definitions/AlarmInfo"
             }
           }
         ],
         "tags": [
-          "things/rule/deviceTimer/info",
-          "thingsRuleDeviceTimerInfo"
+          "things/rule/alarm/info",
+          "thingsRuleAlarmInfo"
+        ]
+      }
+    },
+    "/api/v1/things/rule/alarm/record/deal": {
+      "post": {
+        "summary": "处理告警",
+        "operationId": "postApiV1ThingsRuleAlarmRecordDeal",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AlarmRecordDealReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/rule/alarm/record",
+          "thingsRuleAlarmRecord"
+        ]
+      }
+    },
+    "/api/v1/things/rule/alarm/record/index": {
+      "post": {
+        "summary": "获取告警记录列表",
+        "operationId": "postApiV1ThingsRuleAlarmRecordIndex",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/AlarmRecordIndexResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AlarmRecordIndexReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/rule/alarm/record",
+          "thingsRuleAlarmRecord"
+        ]
+      }
+    },
+    "/api/v1/things/rule/alarm/scene/delete": {
+      "post": {
+        "summary": "删除告警和场景的关联",
+        "operationId": "postApiV1ThingsRuleAlarmSceneDelete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AlarmSceneDeleteReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/rule/alarm/scene",
+          "thingsRuleAlarmScene"
+        ]
+      }
+    },
+    "/api/v1/things/rule/alarm/scene/index": {
+      "post": {
+        "summary": "获取告警和场景的关联列表",
+        "operationId": "postApiV1ThingsRuleAlarmSceneIndex",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/AlarmSceneMultiSaveReq"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AlarmSceneIndexReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/rule/alarm/scene",
+          "thingsRuleAlarmScene"
+        ]
+      }
+    },
+    "/api/v1/things/rule/alarm/scene/multi-create": {
+      "post": {
+        "summary": "更新告警和场景的关联",
+        "operationId": "postApiV1ThingsRuleAlarmSceneMulti-create",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AlarmSceneMultiSaveReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/rule/alarm/scene",
+          "thingsRuleAlarmScene"
         ]
       }
     },
@@ -4568,7 +5091,7 @@
     },
     "/api/v1/things/schema/common/create": {
       "post": {
-        "summary": "更新产品物模型",
+        "summary": "更新通用物模型",
         "operationId": "postApiV1ThingsSchemaCommonCreate",
         "responses": {
           "200": {
@@ -4607,7 +5130,7 @@
     },
     "/api/v1/things/schema/common/delete": {
       "post": {
-        "summary": "更新产品物模型",
+        "summary": "更新通用物模型",
         "operationId": "postApiV1ThingsSchemaCommonDelete",
         "responses": {
           "200": {
@@ -4646,7 +5169,7 @@
     },
     "/api/v1/things/schema/common/index": {
       "post": {
-        "summary": "获取产品物模型",
+        "summary": "获取通用物模型",
         "operationId": "postApiV1ThingsSchemaCommonIndex",
         "responses": {
           "200": {
@@ -4686,9 +5209,38 @@
         ]
       }
     },
+    "/api/v1/things/schema/common/init": {
+      "post": {
+        "summary": "初始化通用物模型",
+        "operationId": "postApiV1ThingsSchemaCommonInit",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "things/schema/common",
+          "thingsSchemaCommon"
+        ]
+      }
+    },
     "/api/v1/things/schema/common/update": {
       "post": {
-        "summary": "更新产品物模型",
+        "summary": "更新通用物模型",
         "operationId": "postApiV1ThingsSchemaCommonUpdate",
         "responses": {
           "200": {
@@ -5197,6 +5749,286 @@
     }
   },
   "definitions": {
+    "AlarmInfo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "status": {
+          "type": "integer",
+          "format": "int64",
+          "description": "状态: 1启用 2禁用"
+        },
+        "desc": {
+          "type": "string"
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "level": {
+          "type": "integer",
+          "format": "int64",
+          "description": "告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）"
+        },
+        "notifies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AlarmNotify"
+          },
+          "description": "通知"
+        }
+      },
+      "title": "AlarmInfo"
+    },
+    "AlarmInfoIndexReq": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "$ref": "#/definitions/PageInfo",
+          "description": "分页信息 只获取一个则不填"
+        },
+        "name": {
+          "type": "string",
+          "description": "告警名模糊查询"
+        }
+      },
+      "title": "AlarmInfoIndexReq"
+    },
+    "AlarmInfoIndexResp": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AlarmInfo"
+          },
+          "description": "告警信息"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64",
+          "description": "总数(只有分页的时候会返回)"
+        }
+      },
+      "title": "AlarmInfoIndexResp",
+      "required": [
+        "list",
+        "total"
+      ]
+    },
+    "AlarmNotify": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "通知类型"
+        },
+        "templateCode": {
+          "type": "string",
+          "description": "模版code"
+        },
+        "userIDs": {
+          "type": "string",
+          "description": "指定用户ID"
+        },
+        "accounts": {
+          "type": "string",
+          "description": "账号"
+        }
+      },
+      "title": "AlarmNotify"
+    },
+    "AlarmRecord": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "alarmID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "triggerType": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "productID": {
+          "type": "string",
+          "description": "触发产品id"
+        },
+        "deviceName": {
+          "type": "string",
+          "description": "触发设备名称"
+        },
+        "sceneName": {
+          "type": "string",
+          "description": "场景名称"
+        },
+        "sceneID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "场景ID"
+        },
+        "level": {
+          "type": "integer",
+          "format": "int64",
+          "description": "告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）"
+        },
+        "lastAlarm": {
+          "type": "integer",
+          "format": "int64",
+          "description": "最新告警时间"
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64",
+          "description": "创建时间"
+        },
+        "dealState": {
+          "type": "integer",
+          "format": "int64",
+          "description": "告警记录状态（1无告警 2告警中 3已处理 4 无效）"
+        }
+      },
+      "title": "AlarmRecord",
+      "required": [
+        "alarmID",
+        "triggerType",
+        "productID",
+        "deviceName",
+        "sceneName",
+        "sceneID",
+        "level",
+        "lastAlarm",
+        "createdTime",
+        "dealState"
+      ]
+    },
+    "AlarmRecordDealReq": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "description": "告警记录ID"
+        },
+        "handle": {
+          "type": "integer",
+          "format": "int64",
+          "description": "告警处理结果 1:无效(告警无效) 2:派单(走工作流)"
+        }
+      },
+      "title": "AlarmRecordDealReq",
+      "required": [
+        "id",
+        "handle"
+      ]
+    },
+    "AlarmRecordIndexReq": {
+      "type": "object",
+      "properties": {
+        "alarmID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "告警记录ID"
+        },
+        "page": {
+          "$ref": "#/definitions/PageInfo",
+          "description": "分页信息 只获取一个则不填"
+        },
+        "timeRange": {
+          "$ref": "#/definitions/TimeRange",
+          "description": "时间范围"
+        }
+      },
+      "title": "AlarmRecordIndexReq"
+    },
+    "AlarmRecordIndexResp": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AlarmRecord"
+          },
+          "description": "告警信息"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64",
+          "description": "总数(只有分页的时候会返回)"
+        }
+      },
+      "title": "AlarmRecordIndexResp",
+      "required": [
+        "list",
+        "total"
+      ]
+    },
+    "AlarmSceneDeleteReq": {
+      "type": "object",
+      "properties": {
+        "alarmID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "告警配置ID"
+        },
+        "sceneID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "场景id"
+        }
+      },
+      "title": "AlarmSceneDeleteReq",
+      "required": [
+        "alarmID",
+        "sceneID"
+      ]
+    },
+    "AlarmSceneIndexReq": {
+      "type": "object",
+      "properties": {
+        "alarmID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "告警配置ID"
+        }
+      },
+      "title": "AlarmSceneIndexReq",
+      "required": [
+        "alarmID"
+      ]
+    },
+    "AlarmSceneMultiSaveReq": {
+      "type": "object",
+      "properties": {
+        "alarmID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "告警配置ID"
+        },
+        "sceneIDs": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": "场景id"
+        }
+      },
+      "title": "AlarmSceneMultiSaveReq",
+      "required": [
+        "alarmID",
+        "sceneIDs"
+      ]
+    },
     "CodeReq": {
       "type": "object",
       "properties": {
@@ -5255,6 +6087,13 @@
           "format": "int64",
           "description": "物模型类型 1:property属性 2:event事件 3:action行为"
         },
+        "types": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
         "identifiers": {
           "type": "array",
           "items": {
@@ -5294,6 +6133,25 @@
           "type": "integer",
           "format": "int64",
           "description": "用户权限操作: 1:r(只读) 3:rw(可读可写)"
+        },
+        "groupID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "groupIDs": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "areaID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "propertyMode": {
+          "type": "string",
+          "description": "属性类型可用 读写类型: r(只读) rw(可读可写)"
         }
       },
       "title": "CommonSchemaIndexReq"
@@ -5587,6 +6445,9 @@
           "type": "string",
           "description": "产品ID"
         },
+        "productName": {
+          "type": "string"
+        },
         "deviceName": {
           "type": "string",
           "description": "设备名称"
@@ -5758,6 +6619,10 @@
     "DeviceInfo": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
         "tenantCode": {
           "type": "string"
         },
@@ -5769,6 +6634,14 @@
           "type": "integer",
           "format": "int64",
           "description": "项目id 只读"
+        },
+        "productName": {
+          "type": "string"
+        },
+        "deviceType": {
+          "type": "integer",
+          "format": "int64",
+          "description": "设备类型:1:设备,2:网关,3:子设备"
         },
         "areaID": {
           "type": "integer",
@@ -5855,10 +6728,19 @@
           "format": "int64",
           "description": "激活时间 只读"
         },
+        "firstBind": {
+          "type": "integer",
+          "format": "int64"
+        },
         "lastLogin": {
           "type": "integer",
           "format": "int64",
           "description": "最后上线时间 只读"
+        },
+        "expTime": {
+          "type": "integer",
+          "format": "int64",
+          "description": "到期时间"
         },
         "logLevel": {
           "type": "integer",
@@ -5905,6 +6787,20 @@
         },
         "owner": {
           "$ref": "#/definitions/UserCore"
+        },
+        "ratedPower": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "netType": {
+          "type": "integer",
+          "format": "int64",
+          "description": "通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网",
+          "maximum": 8
+        },
+        "needConfirmVersion": {
+          "type": "string",
+          "description": "待确认升级的版本"
         }
       },
       "title": "DeviceInfo",
@@ -5928,6 +6824,18 @@
         }
       },
       "title": "DeviceInfoBindReq",
+      "required": [
+        "device"
+      ]
+    },
+    "DeviceInfoCanBindReq": {
+      "type": "object",
+      "properties": {
+        "device": {
+          "$ref": "#/definitions/DeviceCore"
+        }
+      },
+      "title": "DeviceInfoCanBindReq",
       "required": [
         "device"
       ]
@@ -5964,13 +6872,35 @@
           "type": "string",
           "description": "产品id 为空时获取所有产品"
         },
+        "productIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "产品id 为空时获取所有产品"
+        },
         "deviceName": {
           "type": "string",
           "description": "过滤条件:模糊查询 设备名"
         },
+        "deviceNames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "过滤条件:精准查询 设备名"
+        },
         "deviceAlias": {
           "type": "string",
           "description": "过滤条件:模糊查询 设备别名"
+        },
+        "deviceTypes": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": "设备类型:1:设备,2:网关,3:子设备设备类型:1:设备,2:网关,3:子设备"
         },
         "position": {
           "$ref": "#/definitions/Point",
@@ -6025,11 +6955,45 @@
           "description": " 过滤分享的设备1: 同时获取分享的设备 2:只获取分享的设备",
           "maximum": 2
         },
+        "withCollect": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 过滤收藏的设备(这里只获取收藏的设备) 1: 同时获取收藏的设备 2:只获取收藏的设备",
+          "maximum": 2
+        },
         "versions": {
           "type": "array",
           "items": {
             "type": "string"
           }
+        },
+        "gateway": {
+          "$ref": "#/definitions/DeviceCore",
+          "description": "过滤网关"
+        },
+        "groupID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "notGroupID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "devices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceCore"
+          }
+        },
+        "status": {
+          "type": "integer",
+          "format": "int64",
+          "description": "设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)"
+        },
+        "withOwner": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "同时获取拥有人的信息"
         }
       },
       "title": "DeviceInfoIndexReq"
@@ -6048,18 +7012,12 @@
           "type": "integer",
           "format": "int64",
           "description": "总数(只有分页的时候会返回)"
-        },
-        "num": {
-          "type": "integer",
-          "format": "int64",
-          "description": "返回的数量"
         }
       },
       "title": "DeviceInfoIndexResp",
       "required": [
         "list",
-        "total",
-        "num"
+        "total"
       ]
     },
     "DeviceInfoMultiUpdateReq": {
@@ -6072,6 +7030,10 @@
           }
         },
         "areaID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "ratedPower": {
           "type": "integer",
           "format": "int64"
         }
@@ -6319,6 +7281,11 @@
           },
           "description": "如果是不同的产品,则传这个字段,上面两个参数填了优先使用"
         },
+        "isAsync": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "是否异步操作 异步情况通过获取接口来获取"
+        },
         "shadowControl": {
           "type": "integer",
           "format": "int64",
@@ -6331,7 +7298,6 @@
       },
       "title": "DeviceInteractMultiSendPropertyReq",
       "required": [
-        "devices",
         "data"
       ]
     },
@@ -6575,6 +7541,94 @@
         "msgToken"
       ]
     },
+    "DeviceModuleVersion": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "productID": {
+          "type": "string",
+          "description": "产品id 只读"
+        },
+        "productName": {
+          "type": "string"
+        },
+        "moduleCode": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "title": "DeviceModuleVersion"
+    },
+    "DeviceModuleVersionIndexReq": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "$ref": "#/definitions/PageInfo",
+          "description": "分页信息 只获取一个则不填"
+        },
+        "productID": {
+          "type": "string",
+          "description": "产品id 只读"
+        },
+        "productName": {
+          "type": "string"
+        },
+        "moduleCode": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "DeviceModuleVersionIndexReq"
+    },
+    "DeviceModuleVersionIndexResp": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceModuleVersion"
+          },
+          "description": "设备信息"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64",
+          "description": "总数(只有分页的时候会返回)"
+        }
+      },
+      "title": "DeviceModuleVersionIndexResp",
+      "required": [
+        "list",
+        "total"
+      ]
+    },
+    "DeviceModuleVersionReadReq": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "productID": {
+          "type": "string",
+          "description": "产品id 只读"
+        },
+        "productName": {
+          "type": "string"
+        },
+        "moduleCode": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "DeviceModuleVersionReadReq"
+    },
     "DeviceMsgEventLogIndexReq": {
       "type": "object",
       "properties": {
@@ -6764,6 +7818,9 @@
         "resultCode": {
           "type": "integer",
           "format": "int64"
+        },
+        "respPayload": {
+          "type": "string"
         }
       },
       "title": "DeviceMsgHubLogInfo",
@@ -6774,7 +7831,8 @@
         "traceID",
         "topic",
         "content",
-        "resultCode"
+        "resultCode",
+        "respPayload"
       ]
     },
     "DeviceMsgPropertyIndexResp": {
@@ -7432,106 +8490,6 @@
         "payload"
       ]
     },
-    "DeviceTimerInfo": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "name": {
-          "type": "string"
-        },
-        "triggerType": {
-          "type": "string",
-          "description": "触发类型 timer: 定时触发 delay: 延迟触发(延迟触发同时只能存在一个)"
-        },
-        "status": {
-          "type": "integer",
-          "format": "int64",
-          "description": "状态: 1启用 2禁用"
-        },
-        "createdTime": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "device": {
-          "$ref": "#/definitions/DeviceCore"
-        },
-        "execAt": {
-          "type": "integer",
-          "format": "int64",
-          "description": "执行时间 从0点加起来的秒数 如 1点就是 1*60*60"
-        },
-        "execRepeat": {
-          "type": "integer",
-          "format": "int64",
-          "description": "重复 二进制周一到周日 11111111 这个参数只有定时触发才有"
-        },
-        "actionType": {
-          "type": "string",
-          "description": "云端向设备发起属性控制: propertyControl  应用调用设备行为:action"
-        },
-        "dataID": {
-          "type": "string",
-          "description": "属性的id及行为的id"
-        },
-        "value": {
-          "type": "string",
-          "description": "传的值"
-        },
-        "lastRunTime": {
-          "type": "integer",
-          "format": "int64",
-          "description": "最后一次执行时间 秒级时间戳 只读"
-        }
-      },
-      "title": "DeviceTimerInfo",
-      "required": [
-        "device"
-      ]
-    },
-    "DeviceTimerInfoIndexReq": {
-      "type": "object",
-      "properties": {
-        "page": {
-          "$ref": "#/definitions/PageInfo",
-          "description": "分页信息 只获取一个则不填"
-        },
-        "triggerType": {
-          "type": "string",
-          "description": "触发类型 device: 设备触发 timer: 定时触发 manual:手动触发"
-        },
-        "status": {
-          "type": "integer",
-          "format": "int64",
-          "description": "状态: 1启用 2禁用"
-        }
-      },
-      "title": "DeviceTimerInfoIndexReq"
-    },
-    "DeviceTimerInfoIndexResp": {
-      "type": "object",
-      "properties": {
-        "list": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/DeviceTimerInfo"
-          },
-          "description": "设备定时信息"
-        },
-        "total": {
-          "type": "integer",
-          "format": "int64",
-          "description": "总数(只有分页的时候会返回)"
-        }
-      },
-      "title": "DeviceTimerInfoIndexResp",
-      "required": [
-        "list",
-        "total"
-      ]
-    },
     "FirmwareCreateReq": {
       "type": "object",
       "properties": {
@@ -7580,11 +8538,9 @@
         "name",
         "version",
         "signMethod",
-        "desc",
         "isDiff",
         "srcVersion",
         "isNeedToVerify",
-        "extra",
         "filePaths"
       ]
     },
@@ -7755,6 +8711,79 @@
         "id"
       ]
     },
+    "GatewayCanBindIndexReq": {
+      "type": "object",
+      "properties": {
+        "gateway": {
+          "$ref": "#/definitions/DeviceCore",
+          "description": "如果是不同的产品,则传这个字段,上面两个参数填了优先使用"
+        }
+      },
+      "title": "GatewayCanBindIndexReq",
+      "required": [
+        "gateway"
+      ]
+    },
+    "GatewayCanBindIndexResp": {
+      "type": "object",
+      "properties": {
+        "subDevices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceCore"
+          },
+          "description": "如果是不同的产品,则传这个字段,上面两个参数填了优先使用"
+        },
+        "updatedTime": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "GatewayCanBindIndexResp",
+      "required": [
+        "subDevices",
+        "updatedTime"
+      ]
+    },
+    "GatewayGetFoundReq": {
+      "type": "object",
+      "properties": {
+        "productID": {
+          "type": "string",
+          "description": "产品id (必填)"
+        },
+        "deviceName": {
+          "type": "string",
+          "description": "设备名(必填)"
+        }
+      },
+      "title": "GatewayGetFoundReq",
+      "required": [
+        "productID",
+        "deviceName"
+      ]
+    },
+    "GatewayNotifyBindSendReq": {
+      "type": "object",
+      "properties": {
+        "gateway": {
+          "$ref": "#/definitions/DeviceCore",
+          "description": "如果是不同的产品,则传这个字段,上面两个参数填了优先使用"
+        },
+        "subDevices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceCore"
+          },
+          "description": "如果是不同的产品,则传这个字段,上面两个参数填了优先使用"
+        }
+      },
+      "title": "GatewayNotifyBindSendReq",
+      "required": [
+        "gateway",
+        "subDevices"
+      ]
+    },
     "GroupDeviceIndexReq": {
       "type": "object",
       "properties": {
@@ -7902,12 +8931,33 @@
           "type": "string",
           "description": "分组描述"
         },
+        "deviceCount": {
+          "type": "integer",
+          "format": "int64",
+          "description": "设备数量统计"
+        },
+        "isLeaf": {
+          "type": "integer",
+          "format": "int64"
+        },
         "tags": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/Tag"
           },
           "description": "分组tag"
+        },
+        "devices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceCore"
+          }
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GroupInfo"
+          }
         }
       },
       "title": "GroupInfo"
@@ -8063,6 +9113,22 @@
         "firmwareID",
         "jobID",
         "deviceNames"
+      ]
+    },
+    "OtaFirmwareDeviceConfirmReq": {
+      "type": "object",
+      "properties": {
+        "productID": {
+          "type": "string"
+        },
+        "deviceName": {
+          "type": "string"
+        }
+      },
+      "title": "OtaFirmwareDeviceConfirmReq",
+      "required": [
+        "productID",
+        "deviceName"
       ]
     },
     "OtaFirmwareDeviceIndexReq": {
@@ -8862,6 +9928,10 @@
           "format": "boolean",
           "description": " 用户头像"
         },
+        "isLeaf": {
+          "type": "integer",
+          "format": "int64"
+        },
         "children": {
           "type": "array",
           "items": {
@@ -9065,7 +10135,6 @@
         "deviceType": {
           "type": "integer",
           "format": "int64",
-          "description": "设备类型:1:设备,2:网关,3:子设备",
           "maximum": 3
         },
         "categoryID": {
@@ -9077,7 +10146,7 @@
           "type": "integer",
           "format": "int64",
           "description": "通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网",
-          "maximum": 6
+          "maximum": 8
         },
         "protocolCode": {
           "type": "string",
@@ -9092,6 +10161,11 @@
         "secret": {
           "type": "string",
           "description": "动态注册产品秘钥 只读"
+        },
+        "trialTime": {
+          "type": "integer",
+          "format": "int64",
+          "description": "试用时间(单位为天,为0不限制)"
         },
         "desc": {
           "type": "string",
@@ -9149,6 +10223,14 @@
           "format": "int64",
           "description": "过滤设备类型:0:全部,1:设备,2:网关,3:子设备",
           "maximum": 3
+        },
+        "deviceTypes": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": "设备类型:1:设备,2:网关,3:子设备设备类型:1:设备,2:网关,3:子设备"
         },
         "productIDs": {
           "type": "array",
@@ -9412,6 +10494,13 @@
           "format": "int64",
           "description": "物模型类型 1:property属性 2:event事件 3:action行为"
         },
+        "types": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
         "tag": {
           "type": "integer",
           "format": "int64",
@@ -9441,6 +10530,10 @@
           "type": "integer",
           "format": "int64",
           "description": "用户权限操作: 1:r(只读) 3:rw(可读可写)"
+        },
+        "propertyMode": {
+          "type": "string",
+          "description": "属性类型可用 读写类型: 1:r(只读) 2:rw(可读可写)"
         }
       },
       "title": "ProductSchemaIndexReq",
@@ -9795,6 +10888,11 @@
         "name": {
           "type": "string"
         },
+        "areaID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "项目区域id 只读"
+        },
         "status": {
           "type": "integer",
           "format": "int64",
@@ -9852,6 +10950,10 @@
         "deviceMode": {
           "type": "string",
           "description": "设备模式 single:单设备 multi:多设备"
+        },
+        "body": {
+          "type": "string",
+          "description": "自定义字段"
         }
       },
       "title": "SceneInfo"
@@ -9866,6 +10968,11 @@
         "name": {
           "type": "string"
         },
+        "areaID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "项目区域id 只读"
+        },
         "status": {
           "type": "integer",
           "format": "int64",
@@ -9923,6 +11030,10 @@
         "deviceMode": {
           "type": "string",
           "description": "设备模式 single:单设备 multi:多设备"
+        },
+        "body": {
+          "type": "string",
+          "description": "自定义字段"
         }
       },
       "title": "SceneInfoCreateReq"
@@ -10013,6 +11124,11 @@
         "name": {
           "type": "string"
         },
+        "areaID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "项目区域id 只读"
+        },
         "status": {
           "type": "integer",
           "format": "int64",
@@ -10070,6 +11186,10 @@
         "deviceMode": {
           "type": "string",
           "description": "设备模式 single:单设备 multi:多设备"
+        },
+        "body": {
+          "type": "string",
+          "description": "自定义字段"
         }
       },
       "title": "SceneInfoUpdateReq"
@@ -10453,17 +11573,11 @@
           "type": "string"
         },
         "schemaPerm": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/SharePerm"
-          },
+          "type": "object",
           "description": "普通功能权限 1:r(只读) 3:rw(可读可写)"
         },
         "accessPerm": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/SharePerm"
-          },
+          "type": "object",
           "description": "系统功能权限 1:r(只读) 3:rw(可读可写)"
         },
         "createdTime": {

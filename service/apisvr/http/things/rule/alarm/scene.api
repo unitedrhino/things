@@ -13,23 +13,28 @@ info(
 )
 service api {
     @doc "更新告警和场景的关联"
-    @handler multiUpdate
-    post /multi-update (AlarmSceneMultiUpdateReq) returns ()
+    @handler multiCreate
+    post /multi-create (AlarmSceneMultiSaveReq) returns ()
     @doc "删除告警和场景的关联"
     @handler delete
     post /delete (AlarmSceneDeleteReq) returns ()
-
+    @doc "获取告警和场景的关联列表"
+    @handler index
+    post /index (AlarmSceneIndexReq) returns (AlarmSceneMultiSaveReq)
 }
 
 type (
-    AlarmSceneMultiUpdateReq  {
-        alarmID int64 `json:"alarmID"`//告警配置ID
-        sceneIDs []int64 `json:"sceneIDs"`//场景id
+    AlarmSceneIndexReq{
+        AlarmID int64 `json:"alarmID"`//告警配置ID
+    }
+    AlarmSceneMultiSaveReq  {
+        AlarmID int64 `json:"alarmID"`//告警配置ID
+        SceneIDs []int64 `json:"sceneIDs"`//场景id
     }
 
     AlarmSceneDeleteReq  {
-        alarmID int64 `json:"alarmID"`//告警配置ID
-        sceneID int64 `json:"sceneID"`//场景id
+        AlarmID int64 `json:"alarmID"`//告警配置ID
+        SceneID int64 `json:"sceneID"`//场景id
     }
 
 )

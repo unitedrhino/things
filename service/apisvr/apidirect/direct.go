@@ -42,7 +42,6 @@ func runApi(apiCtx ApiCtx) ApiCtx {
 		apiCtx.Server = server
 	}
 	handler.RegisterHandlers(server, ctx)
-	handler.RegisterWsHandlers(apiCtx.SvcCtx.Ws, ctx)
 	//subAppCli, err := subApp.NewSubApp(ctx.Config.Event)
 	//if err != nil {
 	//	logx.Error("NewSubApp err", err)

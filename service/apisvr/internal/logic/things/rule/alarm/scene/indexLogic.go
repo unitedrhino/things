@@ -1,4 +1,4 @@
-package info
+package scene
 
 import (
 	"context"
@@ -12,28 +12,28 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type DeleteLogic struct {
+type IndexLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogic {
-	return &DeleteLogic{
+func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic {
+	return &IndexLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *DeleteLogic) Delete(req *types.WithID) error {
-	_, err := l.svcCtx.Rule.AlarmInfoDelete(l.ctx, &ud.WithID{
-		Id: req.ID,
+func (l *IndexLogic) Index(req *types.AlarmSceneIndexReq) (resp *types.AlarmSceneMultiSaveReq, err error) {
+	ret, err := l.svcCtx.Rule.AlarmSceneIndex(l.ctx, &ud.AlarmSceneIndexReq{
+		AlarmID: req.AlarmID,
 	})
 	if err != nil {
 		er := errors.Fmt(err)
-		l.Errorf("%s.rpc.AlarmInfoDelete req=%v err=%v", utils.FuncName(), req, er)
-		return er
+		l.Errorf("%s req=%v err=%v", utils.FuncName(), req, er)
+		return nil, er
 	}
-	return nil
+	return utils.Copy[types.AlarmSceneMultiSaveReq](ret), nil
 }

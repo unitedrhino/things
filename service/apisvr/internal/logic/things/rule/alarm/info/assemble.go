@@ -1,18 +1,11 @@
 package info
 
 import (
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/types"
-	"github.com/i-Things/things/service/rulesvr/pb/rule"
+	"github.com/i-Things/things/service/udsvr/pb/ud"
 )
 
-func AlarmInfoToApi(in *rule.AlarmInfo) *types.AlarmInfo {
-	pi := &types.AlarmInfo{
-		ID:          in.Id,
-		Name:        in.Name,
-		Status:      in.Status,
-		Desc:        in.Desc,
-		CreatedTime: in.CreatedTime,
-		Level:       in.Level,
-	}
-	return pi
+func AlarmInfoToApi(in *ud.AlarmInfo) *types.AlarmInfo {
+	return utils.Copy[types.AlarmInfo](in)
 }

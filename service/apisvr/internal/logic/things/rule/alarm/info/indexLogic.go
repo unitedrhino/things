@@ -5,7 +5,7 @@ import (
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/logic"
-	"github.com/i-Things/things/service/rulesvr/pb/rule"
+	"github.com/i-Things/things/service/udsvr/pb/ud"
 
 	"github.com/i-Things/things/service/apisvr/internal/svc"
 	"github.com/i-Things/things/service/apisvr/internal/types"
@@ -28,11 +28,9 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 }
 
 func (l *IndexLogic) Index(req *types.AlarmInfoIndexReq) (resp *types.AlarmInfoIndexResp, err error) {
-	ret, err := l.svcCtx.Alarm.AlarmInfoIndex(l.ctx, &rule.AlarmInfoIndexReq{
-		Page:     logic.ToRulePageRpc(req.Page),
-		Name:     req.Name,
-		SceneID:  req.SceneID,
-		AlarmIDs: req.AlarmIDs,
+	ret, err := l.svcCtx.Rule.AlarmInfoIndex(l.ctx, &ud.AlarmInfoIndexReq{
+		Page: logic.ToUdPageRpc(req.Page),
+		Name: req.Name,
 	})
 	if err != nil {
 		er := errors.Fmt(err)
@@ -46,7 +44,6 @@ func (l *IndexLogic) Index(req *types.AlarmInfoIndexReq) (resp *types.AlarmInfoI
 	return &types.AlarmInfoIndexResp{
 		Total: ret.Total,
 		List:  pis,
-		Num:   int64(len(pis)),
 	}, nil
 
 }
