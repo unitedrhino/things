@@ -22,7 +22,7 @@ func (s *StateKeep) Validate() error {
 	if s == nil {
 		return nil
 	}
-	if !utils.SliceIn(s.Type, StateKeepTypeDuration, StateKeepTypeRepeating) {
+	if !utils.SliceIn(s.Type, "", StateKeepTypeDuration, StateKeepTypeRepeating) {
 		return errors.Parameter.AddMsg("状态保持 类型不支持:" + string(s.Type))
 	}
 	return nil
