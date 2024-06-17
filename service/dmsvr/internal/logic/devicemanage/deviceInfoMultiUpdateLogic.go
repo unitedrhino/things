@@ -9,6 +9,7 @@ import (
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
+	"time"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
@@ -40,17 +41,20 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 	}
 
 	var columns []string
+	var Distributor stores.IDPathWithUpdate
 	if in.AreaID != 0 {
 		columns = append(columns, "area_id")
 	}
 	if in.Distributor != nil {
-		columns = append(columns, "distributor_id", "distributor_id_path")
+		columns = append(columns, "distributor_id", "distributor_id_path", "distributor_updated_time")
+		Distributor = utils.Copy2[stores.IDPathWithUpdate](in.Distributor)
+		Distributor.UpdatedTime = time.Now()
 	}
 	if in.RatedPower != 0 {
 		columns = append(columns, "rated_power")
 	}
 	err := relationDB.NewDeviceInfoRepo(l.ctx).MultiUpdate(l.ctx, logic.ToDeviceCores(in.Devices),
-		&relationDB.DmDeviceInfo{RatedPower: in.RatedPower, AreaID: stores.AreaID(in.AreaID), Distributor: utils.Copy2[stores.IDPath](in.Distributor)}, columns...)
+		&relationDB.DmDeviceInfo{RatedPower: in.RatedPower, AreaID: stores.AreaID(in.AreaID), Distributor: utils.Copy2[stores.IDPathWithUpdate](in.Distributor)}, columns...)
 	if err != nil {
 		return nil, err
 	}

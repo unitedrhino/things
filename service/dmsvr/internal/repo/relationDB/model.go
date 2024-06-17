@@ -58,10 +58,10 @@ type DmDeviceInfo struct {
 	NeedConfirmJobID   int64             `gorm:"column:need_confirm_job_id;type:smallint;default:0;"`                  //需要app确认升级的任务ID,为0是没有
 	NeedConfirmVersion string            `gorm:"column:need_confirm_version;type:varchar(128);default:'';"`            //待确认升级的版本
 	stores.NoDelTime
-	Distributor  stores.IDPath       `gorm:"embedded;embeddedPrefix:distributor_"` //代理的id,如果为空,则未参与分销
-	DeletedTime  stores.DeletedTime  `gorm:"column:deleted_time;default:0;uniqueIndex:product_id_deviceName"`
-	ProductInfo  *DmProductInfo      `gorm:"foreignKey:ProductID;references:ProductID"` // 添加外键
-	Manufacturer *DmManufacturerInfo `gorm:"foreignKey:ID;references:ManufacturerID"`   // 添加外键
+	Distributor  stores.IDPathWithUpdate `gorm:"embedded;embeddedPrefix:distributor_"` //代理的id,如果为空,则未参与分销
+	DeletedTime  stores.DeletedTime      `gorm:"column:deleted_time;default:0;uniqueIndex:product_id_deviceName"`
+	ProductInfo  *DmProductInfo          `gorm:"foreignKey:ProductID;references:ProductID"` // 添加外键
+	Manufacturer *DmManufacturerInfo     `gorm:"foreignKey:ID;references:ManufacturerID"`   // 添加外键
 }
 
 func (m *DmDeviceInfo) TableName() string {
