@@ -27,8 +27,9 @@ func NewMultiUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Multi
 
 func (l *MultiUpdateLogic) MultiUpdate(req *types.DeviceInfoMultiUpdateReq) error {
 	_, err := l.svcCtx.DeviceM.DeviceInfoMultiUpdate(l.ctx, &dm.DeviceInfoMultiUpdateReq{
-		Devices: things.ToDmDeviceCoresPb(req.Devices),
-		AreaID:  req.AreaID,
+		Devices:    things.ToDmDeviceCoresPb(req.Devices),
+		AreaID:     req.AreaID,
+		RatedPower: req.RatedPower,
 	})
 	return err
 }

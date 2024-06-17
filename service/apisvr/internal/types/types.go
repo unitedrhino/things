@@ -251,8 +251,9 @@ type DeviceInfoIndexResp struct {
 }
 
 type DeviceInfoMultiUpdateReq struct {
-	Devices []*DeviceCore `json:"devices"`
-	AreaID  int64         `json:"areaID,string,optional"`
+	Devices    []*DeviceCore `json:"devices"`
+	AreaID     int64         `json:"areaID,string,optional"`
+	RatedPower int64         `json:"ratedPower,optional,omitempty"`
 }
 
 type DeviceInfoReadReq struct {

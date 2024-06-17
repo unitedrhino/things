@@ -1141,6 +1141,7 @@ message DeviceInfoMultiUpdateReq {
   repeated DeviceCore   devices = 1; //产品id
   int64 areaID = 2; //项目区域id
   IDPath distributor =20;//分销商的数据
+  int64  ratedPower =28;// 额定功率:单位w/h
 }
 
 message DeviceInfoIndexReq{

@@ -46,8 +46,11 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 	if in.Distributor != nil {
 		columns = append(columns, "distributor_id", "distributor_id_path")
 	}
+	if in.RatedPower != 0 {
+		columns = append(columns, "rated_power")
+	}
 	err := relationDB.NewDeviceInfoRepo(l.ctx).MultiUpdate(l.ctx, logic.ToDeviceCores(in.Devices),
-		&relationDB.DmDeviceInfo{AreaID: stores.AreaID(in.AreaID), Distributor: utils.Copy2[stores.IDPath](in.Distributor)}, columns...)
+		&relationDB.DmDeviceInfo{RatedPower: in.RatedPower, AreaID: stores.AreaID(in.AreaID), Distributor: utils.Copy2[stores.IDPath](in.Distributor)}, columns...)
 	if err != nil {
 		return nil, err
 	}
