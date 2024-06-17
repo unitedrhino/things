@@ -72,6 +72,7 @@ func ToDeviceInfo(ctx context.Context, in *relationDB.DmDeviceInfo, ProductCache
 		Manufacturer:       utils.Copy[dm.ManufacturerInfo](in.Manufacturer),
 		ProductName:        productName,
 		DeviceType:         deviceType,
+		RatedPower:         in.RatedPower,
 		NetType:            netType,
 		Distributor:        utils.Copy[dm.IDPath](&in.Distributor),
 		NeedConfirmVersion: in.NeedConfirmVersion,
