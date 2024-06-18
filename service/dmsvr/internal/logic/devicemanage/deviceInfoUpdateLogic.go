@@ -39,45 +39,10 @@ func NewDeviceInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, data *dm.DeviceInfo) error {
-	if data.Distributor != nil {
-		old.Distributor = utils.Copy2[stores.IDPath](data.Distributor)
-	}
 	if data.AreaID != 0 && data.AreaID != int64(old.AreaID) {
 		old.AreaID = stores.AreaID(data.AreaID)
-		//err := l.svcCtx.StatusRepo.ModifyDeviceArea(l.ctx, devices.Core{
-		//	ProductID:  data.ProductID,
-		//	DeviceName: data.DeviceName,
-		//}, data.AreaID)
-		//if err != nil {
-		//	l.Error(err)
-		//	return errors.Database.AddDetail(err)
-		//}
-		//err = l.svcCtx.SendRepo.ModifyDeviceArea(l.ctx, devices.Core{
-		//	ProductID:  data.ProductID,
-		//	DeviceName: data.DeviceName,
-		//}, data.AreaID)
-		//if err != nil {
-		//	l.Error(err)
-		//	return errors.Database.AddDetail(err)
-		//}
 	}
 	if data.ProjectID != 0 && data.ProjectID != int64(old.ProjectID) {
-		//err := l.svcCtx.StatusRepo.ModifyDeviceProject(l.ctx, devices.Core{
-		//	ProductID:  data.ProductID,
-		//	DeviceName: data.DeviceName,
-		//}, data.ProjectID)
-		//if err != nil {
-		//	l.Error(err)
-		//	return errors.Database.AddDetail(err)
-		//}
-		//err = l.svcCtx.SendRepo.ModifyDeviceProject(l.ctx, devices.Core{
-		//	ProductID:  data.ProductID,
-		//	DeviceName: data.DeviceName,
-		//}, data.ProjectID)
-		//if err != nil {
-		//	l.Error(err)
-		//	return errors.Database.AddDetail(err)
-		//}
 		old.ProjectID = stores.ProjectID(data.ProjectID)
 	}
 
@@ -171,7 +136,8 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 		old.MobileOperator = data.MobileOperator
 	}
 	if data.Distributor != nil {
-		old.Distributor = utils.Copy2[stores.IDPath](data.Distributor)
+		old.Distributor = utils.Copy2[stores.IDPathWithUpdate](data.Distributor)
+		old.Distributor.UpdatedTime = time.Now()
 	}
 	if data.Iccid != nil {
 		old.Iccid = utils.AnyToNullString(data.Iccid)
