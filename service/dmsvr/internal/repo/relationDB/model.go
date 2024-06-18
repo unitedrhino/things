@@ -141,6 +141,7 @@ type DmProductInfo struct {
 	Desc         string            `gorm:"column:description;type:varchar(200)"`                                 // 描述
 	TrialTime    sql.NullTime      `gorm:"column:trial_time"`                                                    //试用时间(单位为天,为0不限制)
 	DevStatus    string            `gorm:"column:dev_status;type:varchar(20);NOT NULL"`                          // 产品状态
+	SceneMode    string            `gorm:"column:scene_mode;type:varchar(20);default:rw"`                        //场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
 	Tags         map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"`          // 产品标签
 	ProtocolConf map[string]string `gorm:"column:protocol_conf;type:json;serializer:json;NOT NULL;default:'{}'"` //自定义协议配置
 	stores.NoDelTime

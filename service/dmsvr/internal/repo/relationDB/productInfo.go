@@ -25,6 +25,7 @@ type ProductFilter struct {
 	WithCategory bool
 	ProtocolCode string
 	CategoryIDs  []int64
+	SceneMode    string
 }
 
 func NewProductInfoRepo(in any) *ProductInfoRepo {
@@ -44,6 +45,9 @@ func (p ProductInfoRepo) fmtFilter(ctx context.Context, f ProductFilter) *gorm.D
 	}
 	if f.ProtocolCode != "" {
 		db = db.Where("protocol_code=?", f.ProtocolCode)
+	}
+	if f.SceneMode != "" {
+		db = db.Where("scene_mode=?", f.SceneMode)
 	}
 	if f.WithProtocol {
 		db = db.Preload("Protocol")

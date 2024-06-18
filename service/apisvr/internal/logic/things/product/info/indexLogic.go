@@ -38,6 +38,7 @@ func (l *IndexLogic) Index(req *types.ProductInfoIndexReq) (resp *types.ProductI
 		WithProtocol: req.WithProtocol,
 		WithCategory: req.WithCategory,
 		DeviceTypes:  req.DeviceTypes,
+		SceneMode:    req.SceneMode,
 	}
 	dmResp, err := l.svcCtx.ProductM.ProductInfoIndex(l.ctx, dmReq)
 	if err != nil {

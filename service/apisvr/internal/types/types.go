@@ -1103,6 +1103,7 @@ type ProductInfo struct {
 	TrialTime          int64            `json:"trialTime,optional,string"`         //试用时间(单位为天,为0不限制)
 	Desc               *string          `json:"desc,optional"`                     //描述
 	Tags               []*Tag           `json:"tags,optional"`                     // 产品tag
+	SceneMode          string           `json:"sceneMode,optional"`                //场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
 	ProtocolConf       []*Tag           `json:"protocolConf,optional,omitempty"`   //协议配置
 	Protocol           *ProtocolInfo    `json:"protocol,omitempty"`
 	Category           *ProductCategory `json:"category,omitempty"`
@@ -1122,6 +1123,7 @@ type ProductInfoIndexReq struct {
 	ProtocolCode string    `json:"protocolCode,optional"`           //协议code,默认iThings  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
 	WithProtocol bool      `json:"withProtocol,optional"`           //同时返回协议详情
 	WithCategory bool      `json:"withCategory,optional"`           //同时返回品类详情
+	SceneMode    string    `json:"sceneMode,optional"`              //场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
 }
 
 type ProductInfoIndexResp struct {
