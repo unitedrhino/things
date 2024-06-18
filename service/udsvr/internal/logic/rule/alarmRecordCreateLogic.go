@@ -58,6 +58,7 @@ func (l *AlarmRecordCreateLogic) AlarmRecordCreate(in *ud.AlarmRecordCreateReq) 
 				AlarmID:      alarm.AlarmID,
 				DealStatuses: []scene.AlarmDealStatus{scene.AlarmDealStatusWaring}, //还处在报警中,新增次数即可
 			})
+			err = errors.NotFind //先不开重复
 			if err != nil {
 				if errors.Cmp(err, errors.NotFind) { //直接创建并且进行通知
 					po := relationDB.UdAlarmRecord{
