@@ -1104,6 +1104,7 @@ type ProductInfo struct {
 	Desc               *string          `json:"desc,optional"`                     //描述
 	Tags               []*Tag           `json:"tags,optional"`                     // 产品tag
 	SceneMode          string           `json:"sceneMode,optional"`                //场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
+	Status             int64            `json:"status,optional"`                   //产品状态 1:启用 2:禁用 3:开发中
 	ProtocolConf       []*Tag           `json:"protocolConf,optional,omitempty"`   //协议配置
 	Protocol           *ProtocolInfo    `json:"protocol,omitempty"`
 	Category           *ProductCategory `json:"category,omitempty"`
@@ -1124,6 +1125,8 @@ type ProductInfoIndexReq struct {
 	WithProtocol bool      `json:"withProtocol,optional"`           //同时返回协议详情
 	WithCategory bool      `json:"withCategory,optional"`           //同时返回品类详情
 	SceneMode    string    `json:"sceneMode,optional"`              //场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
+	Status       int64     `json:"status,optional"`                 //产品状态 1:启用 2:禁用 3:开发中
+	Statuses     []int64   `json:"statuses,optional"`               //产品状态 1:启用 2:禁用 3:开发中
 }
 
 type ProductInfoIndexResp struct {

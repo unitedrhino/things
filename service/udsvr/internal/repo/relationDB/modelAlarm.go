@@ -11,7 +11,7 @@ type UdAlarmInfo struct {
 	ID         int64             `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
 	TenantCode stores.TenantCode `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`     // 租户编码
 	ProjectID  stores.ProjectID  `gorm:"column:project_id;type:bigint;default:0;NOT NULL"` // 项目ID(雪花ID)
-	Name       string            `gorm:"column:name;uniqueIndex;type:VARCHAR(100);NOT NULL"`
+	Name       string            `gorm:"column:name;type:VARCHAR(100);NOT NULL"`
 	Desc       string            `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`
 	Level      int64             `gorm:"column:level;type:SMALLINT;default:1"`                   // 告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
 	Status     int64             `gorm:"column:status;type:SMALLINT;default:1"`                  // 状态 1:启用,2:禁用

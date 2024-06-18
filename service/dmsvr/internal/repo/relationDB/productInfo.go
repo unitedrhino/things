@@ -3,6 +3,7 @@ package relationDB
 import (
 	"context"
 	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
@@ -26,6 +27,8 @@ type ProductFilter struct {
 	ProtocolCode string
 	CategoryIDs  []int64
 	SceneMode    string
+	Status       devices.ProductStatus
+	Statuses     []devices.ProductStatus
 }
 
 func NewProductInfoRepo(in any) *ProductInfoRepo {
@@ -48,6 +51,12 @@ func (p ProductInfoRepo) fmtFilter(ctx context.Context, f ProductFilter) *gorm.D
 	}
 	if f.SceneMode != "" {
 		db = db.Where("scene_mode=?", f.SceneMode)
+	}
+	if f.Status != 0 {
+		db = db.Where("status=?", f.Status)
+	}
+	if len(f.Statuses) != 0 {
+		db = db.Where("status in ?", f.Statuses)
 	}
 	if f.WithProtocol {
 		db = db.Preload("Protocol")

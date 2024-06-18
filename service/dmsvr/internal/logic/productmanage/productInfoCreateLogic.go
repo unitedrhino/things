@@ -72,7 +72,7 @@ func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relatio
 		ProductID:   in.ProductID,   // 产品id
 		ProductName: in.ProductName, // 产品名称
 		Desc:        in.Desc.GetValue(),
-		DevStatus:   in.DevStatus.GetValue(),
+		Status:      in.Status,
 		Secret:      utils.GetRandomBase64(20),
 		TrialTime:   utils.ToNullTime2(in.TrialTime),
 		SceneMode:   in.SceneMode,

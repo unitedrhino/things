@@ -48,15 +48,15 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 	if data.AuthMode != def.Unknown {
 		old.AuthMode = data.AuthMode
 	}
+	if data.Status != 0 {
+		old.Status = data.Status
+	}
 	if data.Desc != nil {
 		old.Desc = data.Desc.GetValue()
 	}
 
 	if data.AutoRegister != def.Unknown {
 		old.AutoRegister = data.AutoRegister
-	}
-	if data.DevStatus != nil {
-		old.DevStatus = data.DevStatus.GetValue()
 	}
 
 	if data.ProductName != "" {
