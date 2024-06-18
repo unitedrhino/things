@@ -100,6 +100,11 @@ func (s *RuleServer) AlarmRecordIndex(ctx context.Context, in *ud.AlarmRecordInd
 	return l.AlarmRecordIndex(in)
 }
 
+func (s *RuleServer) AlarmRecordCreate(ctx context.Context, in *ud.AlarmRecordCreateReq) (*ud.Empty, error) {
+	l := rulelogic.NewAlarmRecordCreateLogic(ctx, s.svcCtx)
+	return l.AlarmRecordCreate(in)
+}
+
 func (s *RuleServer) AlarmRecordDeal(ctx context.Context, in *ud.AlarmRecordDealReq) (*ud.Empty, error) {
 	l := rulelogic.NewAlarmRecordDealLogic(ctx, s.svcCtx)
 	return l.AlarmRecordDeal(in)

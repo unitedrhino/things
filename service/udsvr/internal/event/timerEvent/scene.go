@@ -54,8 +54,23 @@ func (l *TimerHandle) SceneExec(ctx context.Context, do *scene.Info) error {
 			return err
 		},
 		AlarmExec: func(ctx context.Context, in scene.AlarmSerial) error {
-			l.Error("not support yet")
-			return nil
+			if len(in.Scene.If.Triggers) == 0 {
+				logx.WithContext(ctx).Error("没有触发器")
+				return nil
+			}
+			trigger := in.Scene.If.Triggers[0]
+			req := ud.AlarmRecordCreateReq{
+				TriggerType: trigger.Type,
+				SceneName:   in.Scene.Name,
+				SceneID:     in.Scene.ID,
+				Mode:        scene.ActionAlarmModeTrigger,
+			}
+			if trigger.Type == scene.TriggerTypeDevice && trigger.Device != nil {
+				req.ProductID = trigger.Device.ProductID
+				req.DeviceName = trigger.Device.DeviceName
+			}
+			_, err := rulelogic.NewAlarmRecordCreateLogic(l.ctx, l.svcCtx).AlarmRecordCreate(&req)
+			return err
 		},
 	})
 	return err

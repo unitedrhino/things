@@ -7,11 +7,20 @@ import (
 	"gitee.com/i-Things/share/utils"
 )
 
-type ActionAlarmMode string
+type ActionAlarmMode = string
 
 const (
 	ActionAlarmModeTrigger ActionAlarmMode = "trigger" //触发告警
 	ActionAlarmModeRelieve ActionAlarmMode = "relieve" //接触告警
+)
+
+type AlarmDealStatus = int64
+
+const (
+	AlarmDealStatusWaring    = 1 //告警中
+	AlarmDealStatusIgnore    = 2 //忽略
+	AlarmDealStatusInHand    = 3 //正在处理
+	AlarmDealStatusProcessed = 4 //已处理
 )
 
 type ActionAlarm struct {

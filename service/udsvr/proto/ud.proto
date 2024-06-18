@@ -46,6 +46,7 @@ service rule {
 
   //告警记录
   rpc alarmRecordIndex(AlarmRecordIndexReq)returns(AlarmRecordIndexResp);
+  rpc AlarmRecordCreate(AlarmRecordCreateReq)returns(Empty);
   rpc alarmRecordDeal(AlarmRecordDealReq)returns(Empty);//处理告警
 }
 
@@ -63,7 +64,7 @@ message AlarmRecordIndexResp{
 message AlarmRecord{
   int64 id = 1;//编号
   int64 alarmID = 2;//告警记录ID
-  int64 triggerType = 3;//触发类型(设备触发1,其他2)
+  string triggerType = 3;//触发类型(设备触发1,其他2)
   string productID = 4;//触发产品id
   string deviceName = 5;//触发设备名称
   string sceneName = 6;//场景名称
@@ -71,7 +72,16 @@ message AlarmRecord{
   int64 level = 8;//告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
   int64 lastAlarm = 9;//最新告警时间
   int64 createdTime = 10;//创建时间
-  int64 dealState = 11;//告警记录状态（1无告警 2告警中 3已处理 4 无效）
+  int64 dealStatus = 11;//告警记录状态（1无告警 2告警中 3已处理 4 无效）
+}
+
+message AlarmRecordCreateReq{
+  string triggerType = 3;//触发类型(设备触发1,其他2)
+  string productID = 4;//触发产品id
+  string deviceName = 5;//触发设备名称
+  string sceneName = 6;//场景名称
+  int64 sceneID = 7;//场景ID
+  string mode =8;//告警模式  trigger: 触发告警  relieve: 解除告警
 }
 
 message AlarmRecordDealReq{

@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/stores"
+	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -24,11 +25,13 @@ func NewAlarmRecordRepo(in any) *AlarmRecordRepo {
 }
 
 type AlarmRecordFilter struct {
-	AlarmID     int64 // 告警配置ID
-	TriggerType int64
-	ProductID   string
-	DeviceName  string
-	Time        def.TimeRange
+	AlarmID      int64 // 告警配置ID
+	TriggerType  scene.TriggerType
+	ProductID    string
+	DeviceName   string
+	DealStatus   scene.AlarmDealStatus
+	DealStatuses []scene.AlarmDealStatus
+	Time         def.TimeRange
 }
 
 func (p AlarmRecordRepo) fmtFilter(ctx context.Context, f AlarmRecordFilter) *gorm.DB {
@@ -36,7 +39,13 @@ func (p AlarmRecordRepo) fmtFilter(ctx context.Context, f AlarmRecordFilter) *go
 	if f.AlarmID != 0 {
 		db = db.Where("alarm_id=?", f.AlarmID)
 	}
-	if f.TriggerType != 0 {
+	if f.DealStatus != 0 {
+		db = db.Where("deal_status=?", f.DealStatus)
+	}
+	if len(f.DealStatuses) != 0 {
+		db = db.Where("deal_status in ?", f.DealStatuses)
+	}
+	if f.TriggerType != "" {
 		db = db.Where("trigger_type=?", f.TriggerType)
 	}
 	if f.ProductID != "" {
@@ -106,5 +115,11 @@ func (p AlarmRecordRepo) FindOne(ctx context.Context, id int64) (*UdAlarmRecord,
 // 批量插入 LightStrategyDevice 记录
 func (p AlarmRecordRepo) MultiInsert(ctx context.Context, data []*UdAlarmRecord) error {
 	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&UdAlarmRecord{}).Create(data).Error
+	return stores.ErrFmt(err)
+}
+
+func (d AlarmRecordRepo) UpdateWithField(ctx context.Context, f AlarmRecordFilter, updates map[string]any) error {
+	db := d.fmtFilter(ctx, f)
+	err := db.Model(&UdAlarmRecord{}).Updates(updates).Error
 	return stores.ErrFmt(err)
 }

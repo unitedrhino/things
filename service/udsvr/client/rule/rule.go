@@ -19,6 +19,7 @@ type (
 	AlarmInfoIndexResp     = ud.AlarmInfoIndexResp
 	AlarmNotify            = ud.AlarmNotify
 	AlarmRecord            = ud.AlarmRecord
+	AlarmRecordCreateReq   = ud.AlarmRecordCreateReq
 	AlarmRecordDealReq     = ud.AlarmRecordDealReq
 	AlarmRecordIndexReq    = ud.AlarmRecordIndexReq
 	AlarmRecordIndexResp   = ud.AlarmRecordIndexResp
@@ -54,6 +55,7 @@ type (
 		AlarmSceneIndex(ctx context.Context, in *AlarmSceneIndexReq, opts ...grpc.CallOption) (*AlarmSceneMultiSaveReq, error)
 		// 告警记录
 		AlarmRecordIndex(ctx context.Context, in *AlarmRecordIndexReq, opts ...grpc.CallOption) (*AlarmRecordIndexResp, error)
+		AlarmRecordCreate(ctx context.Context, in *AlarmRecordCreateReq, opts ...grpc.CallOption) (*Empty, error)
 		AlarmRecordDeal(ctx context.Context, in *AlarmRecordDealReq, opts ...grpc.CallOption) (*Empty, error)
 	}
 
@@ -219,6 +221,15 @@ func (m *defaultRule) AlarmRecordIndex(ctx context.Context, in *AlarmRecordIndex
 // 告警记录
 func (d *directRule) AlarmRecordIndex(ctx context.Context, in *AlarmRecordIndexReq, opts ...grpc.CallOption) (*AlarmRecordIndexResp, error) {
 	return d.svr.AlarmRecordIndex(ctx, in)
+}
+
+func (m *defaultRule) AlarmRecordCreate(ctx context.Context, in *AlarmRecordCreateReq, opts ...grpc.CallOption) (*Empty, error) {
+	client := ud.NewRuleClient(m.cli.Conn())
+	return client.AlarmRecordCreate(ctx, in, opts...)
+}
+
+func (d *directRule) AlarmRecordCreate(ctx context.Context, in *AlarmRecordCreateReq, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.AlarmRecordCreate(ctx, in)
 }
 
 func (m *defaultRule) AlarmRecordDeal(ctx context.Context, in *AlarmRecordDealReq, opts ...grpc.CallOption) (*Empty, error) {

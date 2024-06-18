@@ -34,6 +34,7 @@ const (
 	Rule_AlarmSceneDelete_FullMethodName      = "/ud.rule/alarmSceneDelete"
 	Rule_AlarmSceneIndex_FullMethodName       = "/ud.rule/alarmSceneIndex"
 	Rule_AlarmRecordIndex_FullMethodName      = "/ud.rule/alarmRecordIndex"
+	Rule_AlarmRecordCreate_FullMethodName     = "/ud.rule/AlarmRecordCreate"
 	Rule_AlarmRecordDeal_FullMethodName       = "/ud.rule/alarmRecordDeal"
 )
 
@@ -59,6 +60,7 @@ type RuleClient interface {
 	AlarmSceneIndex(ctx context.Context, in *AlarmSceneIndexReq, opts ...grpc.CallOption) (*AlarmSceneMultiSaveReq, error)
 	// 告警记录
 	AlarmRecordIndex(ctx context.Context, in *AlarmRecordIndexReq, opts ...grpc.CallOption) (*AlarmRecordIndexResp, error)
+	AlarmRecordCreate(ctx context.Context, in *AlarmRecordCreateReq, opts ...grpc.CallOption) (*Empty, error)
 	AlarmRecordDeal(ctx context.Context, in *AlarmRecordDealReq, opts ...grpc.CallOption) (*Empty, error)
 }
 
@@ -205,6 +207,15 @@ func (c *ruleClient) AlarmRecordIndex(ctx context.Context, in *AlarmRecordIndexR
 	return out, nil
 }
 
+func (c *ruleClient) AlarmRecordCreate(ctx context.Context, in *AlarmRecordCreateReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, Rule_AlarmRecordCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *ruleClient) AlarmRecordDeal(ctx context.Context, in *AlarmRecordDealReq, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, Rule_AlarmRecordDeal_FullMethodName, in, out, opts...)
@@ -236,6 +247,7 @@ type RuleServer interface {
 	AlarmSceneIndex(context.Context, *AlarmSceneIndexReq) (*AlarmSceneMultiSaveReq, error)
 	// 告警记录
 	AlarmRecordIndex(context.Context, *AlarmRecordIndexReq) (*AlarmRecordIndexResp, error)
+	AlarmRecordCreate(context.Context, *AlarmRecordCreateReq) (*Empty, error)
 	AlarmRecordDeal(context.Context, *AlarmRecordDealReq) (*Empty, error)
 	mustEmbedUnimplementedRuleServer()
 }
@@ -288,6 +300,9 @@ func (UnimplementedRuleServer) AlarmSceneIndex(context.Context, *AlarmSceneIndex
 }
 func (UnimplementedRuleServer) AlarmRecordIndex(context.Context, *AlarmRecordIndexReq) (*AlarmRecordIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AlarmRecordIndex not implemented")
+}
+func (UnimplementedRuleServer) AlarmRecordCreate(context.Context, *AlarmRecordCreateReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlarmRecordCreate not implemented")
 }
 func (UnimplementedRuleServer) AlarmRecordDeal(context.Context, *AlarmRecordDealReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AlarmRecordDeal not implemented")
@@ -575,6 +590,24 @@ func _Rule_AlarmRecordIndex_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Rule_AlarmRecordCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AlarmRecordCreateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RuleServer).AlarmRecordCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Rule_AlarmRecordCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RuleServer).AlarmRecordCreate(ctx, req.(*AlarmRecordCreateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Rule_AlarmRecordDeal_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AlarmRecordDealReq)
 	if err := dec(in); err != nil {
@@ -659,6 +692,10 @@ var Rule_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "alarmRecordIndex",
 			Handler:    _Rule_AlarmRecordIndex_Handler,
+		},
+		{
+			MethodName: "AlarmRecordCreate",
+			Handler:    _Rule_AlarmRecordCreate_Handler,
 		},
 		{
 			MethodName: "alarmRecordDeal",
