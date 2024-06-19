@@ -83,9 +83,10 @@ func (l *AlarmRecordCreateLogic) AlarmRecordCreate(in *ud.AlarmRecordCreateReq) 
 					}
 					for _, notify := range alarm.AlarmInfo.Notifies {
 						_, err := l.svcCtx.NotifyM.NotifyConfigSend(l.ctx, &sys.NotifyConfigSendReq{
-							UserIDs:    notify.UserIDs,
-							Accounts:   notify.Accounts,
+							UserIDs:    alarm.AlarmInfo.UserIDs,
+							Accounts:   alarm.AlarmInfo.Accounts,
 							NotifyCode: def.NotifyCodeDeviceAlarm,
+							TemplateID: notify.TemplateID,
 							Type:       notify.Type,
 							Params: map[string]string{
 								"productID":  in.ProductID,

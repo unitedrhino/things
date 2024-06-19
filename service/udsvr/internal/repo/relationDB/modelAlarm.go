@@ -1,6 +1,7 @@
 package relationDB
 
 import (
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
 	"time"
@@ -16,14 +17,19 @@ type UdAlarmInfo struct {
 	Level      int64             `gorm:"column:level;type:SMALLINT;default:1"`                   // 告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
 	Status     int64             `gorm:"column:status;type:SMALLINT;default:1"`                  // 状态 1:启用,2:禁用
 	Notifies   []*UdAlarmNotify  `gorm:"column:notifies;type:json;serializer:json;default:'[]'"` // 短信通知模版编码
+	UserIDs    []int64           `gorm:"column:user_ids;type:json;serializer:json;default:'[]'"` //指定用户ID
+	Accounts   []string          `gorm:"column:accounts;type:json;serializer:json;default:'[]'"` //账号
 	stores.Time
 }
 
+type NotifyUser struct {
+	TargetType def.TargetType
+	TargetIDs  []int64
+}
+
 type UdAlarmNotify struct {
-	Type         string   `json:"type"`         //通知类型
-	TemplateCode string   `json:"templateCode"` //模版code,不选就是默认的
-	UserIDs      []int64  `json:"userIDs"`      //指定用户ID
-	Accounts     []string `json:"accounts"`     //账号
+	Type       string `json:"type"`       //通知类型
+	TemplateID int64  `json:"templateID"` //模版code,不选就是默认的
 }
 
 func (m *UdAlarmInfo) TableName() string {

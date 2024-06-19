@@ -7,8 +7,10 @@ type AlarmInfo struct {
 	Status      int64          `json:"status,optional"` //状态: 1启用 2禁用
 	Desc        string         `json:"desc,optional"`
 	CreatedTime int64          `json:"createdTime,optional"`
-	Level       int64          `json:"level,optional"`    //告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
-	Notifies    []*AlarmNotify `json:"notifies,optional"` //通知
+	Level       int64          `json:"level,optional"`          //告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
+	UserIDs     []string       `json:"userIDs,string,optional"` //指定用户ID
+	Accounts    []string       `json:"accounts,optional"`       //账号
+	Notifies    []*AlarmNotify `json:"notifies,optional"`       //通知
 }
 
 type AlarmInfoIndexReq struct {
@@ -22,10 +24,8 @@ type AlarmInfoIndexResp struct {
 }
 
 type AlarmNotify struct {
-	Type         string `json:"type,optional"`         //通知类型
-	TemplateCode string `json:"templateCode,optional"` //模版code
-	UserIDs      string `json:"userIDs,optional"`      //指定用户ID
-	Accounts     string `json:"accounts,optional"`     //账号
+	Type       string `json:"type,optional"`       //通知类型
+	TemplateID string `json:"templateID,optional"` //模版code
 }
 
 type AlarmRecord struct {

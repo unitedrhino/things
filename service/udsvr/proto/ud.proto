@@ -113,13 +113,13 @@ message AlarmInfo{
   int64 status = 5;//告警配置状态（1启用 2禁用）
   int64 createdTime = 6;//创建时间
   repeated AlarmNotify notifies = 7;
+  repeated int64 userIDs = 8; //指定用户ID
+  repeated string accounts = 9;
 }
 
 message AlarmNotify {
   string type        = 1; //通知类型
-  string templateCode = 2; //模版code
-  repeated int64 userIDs = 3; //指定用户ID
-  repeated string accounts = 4;
+  int64 templateID = 2; //模版code
 }
 
 

@@ -5776,6 +5776,20 @@
           "format": "int64",
           "description": "告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）"
         },
+        "userIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "指定用户ID"
+        },
+        "accounts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "账号"
+        },
         "notifies": {
           "type": "array",
           "items": {
@@ -5829,17 +5843,9 @@
           "type": "string",
           "description": "通知类型"
         },
-        "templateCode": {
+        "templateID": {
           "type": "string",
           "description": "模版code"
-        },
-        "userIDs": {
-          "type": "string",
-          "description": "指定用户ID"
-        },
-        "accounts": {
-          "type": "string",
-          "description": "账号"
         }
       },
       "title": "AlarmNotify"
