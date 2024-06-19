@@ -62,6 +62,7 @@ func (l *IndexLogic) Index(req *types.DeviceInfoIndexReq) (resp *types.DeviceInf
 		return nil, er
 	}
 	pis := make([]*types.DeviceInfo, 0, len(dmResp.List))
+	var piMap = map[int64]*types.DeviceInfo{}
 	wait := sync.WaitGroup{}
 	mutex := sync.Mutex{}
 	for _, v := range dmResp.List {
@@ -72,10 +73,13 @@ func (l *IndexLogic) Index(req *types.DeviceInfoIndexReq) (resp *types.DeviceInf
 			pi := things.InfoToApi(l.ctx, l.svcCtx, info, req.WithProperties, req.WithProfiles, req.WithOwner)
 			mutex.Lock()
 			defer mutex.Unlock()
-			pis = append(pis, pi)
+			piMap[pi.ID] = pi
 		})
 	}
 	wait.Wait()
+	for _, v := range dmResp.List {
+		pis = append(pis, piMap[v.Id])
+	}
 	return &types.DeviceInfoIndexResp{
 		Total: dmResp.Total,
 		List:  pis,
