@@ -108,6 +108,7 @@ type UdSceneThenAction struct {
 	Delay      int64               `gorm:"column:delay;type:bigint"`
 	Device     UdSceneActionDevice `gorm:"embedded;embeddedPrefix:device_"`
 	Notify     *scene.ActionNotify `gorm:"column:notify;type:json;serializer:json"`
+	Alarm      *scene.ActionAlarm  `gorm:"column:alarm;type:json;serializer:json"`
 	Scene      UdSceneActionScene  `gorm:"embedded;embeddedPrefix:scene_"`
 }
 

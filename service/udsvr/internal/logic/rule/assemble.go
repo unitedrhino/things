@@ -174,6 +174,7 @@ func ToSceneActionPo(s *scene.Info, in *scene.Action) *relationDB.UdSceneThenAct
 		Type:    in.Type,
 		Delay:   in.Delay,
 		Notify:  in.Notify,
+		Alarm:   in.Alarm,
 	}
 	if in.Scene != nil {
 		po.Scene = relationDB.UdSceneActionScene{SceneID: in.Scene.SceneID, AreaID: in.Scene.AreaID}
@@ -218,6 +219,7 @@ func ToSceneActionDo(in *relationDB.UdSceneThenAction) *scene.Action {
 		Type:   in.Type,
 		Delay:  in.Delay,
 		Notify: in.Notify,
+		Alarm:  in.Alarm,
 	}
 	do.Scene = &scene.ActionScene{SceneID: in.Scene.SceneID, AreaID: in.Scene.AreaID}
 	do.Device = &scene.ActionDevice{

@@ -51,6 +51,7 @@ type (
         DeviceMode string `json:"deviceMode,optional"` //设备模式
         ProductID  string `json:"productID,optional"`           //产品id
         DeviceName string `json:"deviceName,optional"`           //设备名
+        HasActionType string `json:"hasActionType,optional"`//过滤有某个执行类型
     }
     SceneInfoIndexResp  {
         List []*SceneInfo `json:"list"`    //场景信息

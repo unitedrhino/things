@@ -26,7 +26,8 @@ func NewSceneInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Sc
 }
 
 func (l *SceneInfoIndexLogic) SceneInfoIndex(in *ud.SceneInfoIndexReq) (*ud.SceneInfoIndexResp, error) {
-	f := relationDB.SceneInfoFilter{AreaID: in.AreaID, Tag: in.Tag, Status: in.Status, Name: in.Name, Type: in.Type}
+	f := relationDB.SceneInfoFilter{AreaID: in.AreaID, Tag: in.Tag, Status: in.Status, Name: in.Name,
+		Type: in.Type, HasActionType: in.HasActionType}
 	list, err := relationDB.NewSceneInfoRepo(l.ctx).FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page))
 	if err != nil {
 		return nil, err

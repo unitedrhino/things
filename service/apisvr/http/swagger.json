@@ -11108,6 +11108,10 @@
         "deviceName": {
           "type": "string",
           "description": "设备名"
+        },
+        "hasActionType": {
+          "type": "string",
+          "description": "过滤有某个执行类型"
         }
       },
       "title": "SceneInfoIndexReq"

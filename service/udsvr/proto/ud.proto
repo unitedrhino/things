@@ -145,6 +145,7 @@ message SceneInfoIndexReq{
   string deviceMode =10;//设备模式 single:单设备 multi:多设备
   string   productID = 8; //产品id
   string  deviceName = 9; //设备名称
+  string hasActionType =11;//过滤有某个执行类型
 }
 
 message SceneInfoIndexResp{
