@@ -119,8 +119,8 @@ func (p ProductSchemaRepo) UpdateWithCommon(ctx context.Context, common *DmCommo
 		},
 	}
 	err := p.db.WithContext(ctx).Select("ExtendConfig", "Required", "IsCanSceneLinkage", "UserPerm", "FuncGroup", "IsHistory", "Affordance").
-		Where("identifier = ? and tag=?",
-			common.Identifier, schema.TagOptional).Updates(&data).Error
+		Where("identifier = ? and (tag = ? or tag=?)",
+			common.Identifier, schema.TagOptional, schema.TagRequired).Updates(&data).Error
 	return stores.ErrFmt(err)
 }
 
