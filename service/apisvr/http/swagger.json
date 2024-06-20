@@ -5861,6 +5861,10 @@
           "type": "integer",
           "format": "int64"
         },
+        "alarmName": {
+          "type": "integer",
+          "format": "int64"
+        },
         "triggerType": {
           "type": "integer",
           "format": "int64"
@@ -5906,6 +5910,7 @@
       "title": "AlarmRecord",
       "required": [
         "alarmID",
+        "alarmName",
         "triggerType",
         "productID",
         "deviceName",

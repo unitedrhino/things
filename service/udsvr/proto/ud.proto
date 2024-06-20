@@ -64,6 +64,7 @@ message AlarmRecordIndexResp{
 message AlarmRecord{
   int64 id = 1;//编号
   int64 alarmID = 2;//告警记录ID
+  string alarmName =12;//告警名称
   string triggerType = 3;//触发类型(设备触发1,其他2)
   string productID = 4;//触发产品id
   string deviceName = 5;//触发设备名称
