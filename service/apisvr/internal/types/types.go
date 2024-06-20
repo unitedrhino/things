@@ -31,7 +31,7 @@ type AlarmNotify struct {
 type AlarmRecord struct {
 	ID          int64  `json:"id,optional"`
 	AlarmID     int64  `json:"alarmID"`
-	AlarmName   int64  `json:"alarmName"`
+	AlarmName   string `json:"alarmName"`
 	TriggerType int64  `json:"triggerType"`
 	ProductID   string `json:"productID"`   //触发产品id
 	DeviceName  string `json:"deviceName"`  //触发设备名称
