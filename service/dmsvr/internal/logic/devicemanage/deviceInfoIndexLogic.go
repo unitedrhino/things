@@ -111,6 +111,9 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		NotGroupID:        in.NotGroupID,
 		Distributor:       utils.Copy[stores.IDPathFilter](in.Distributor),
 	}
+	if in.RatedPower != nil {
+		filter.RatedPower = stores.GetCmp(in.RatedPower.CmpType, in.RatedPower.Value)
+	}
 	if err := ctxs.IsRoot(l.ctx); err == nil { //default租户才可以查看其他租户的设备
 		ctxs.GetUserCtx(l.ctx).AllTenant = true
 		defer func() {

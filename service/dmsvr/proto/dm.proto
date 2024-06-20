@@ -26,8 +26,31 @@ message PageInfo{
     int64 sort = 2;
   }
 }
-message Cmpare{
-  
+message CompareString{
+ /*
+ "="      //相等
+"!="     //不相等
+">"      //大于
+">="     //大于等于
+"<"      //小于
+"<="     //小于等于
+"like"   //模糊查询
+ */
+  string CmpType =1;
+  string value =2;//值
+}
+message CompareInt64{
+  /*
+  "="      //相等
+ "!="     //不相等
+ ">"      //大于
+ ">="     //大于等于
+ "<"      //小于
+ "<="     //小于等于
+ "like"   //模糊查询
+  */
+  string CmpType =1;
+  int64 value =2;//值
 }
 
 message SendOption {
@@ -1182,7 +1205,7 @@ message DeviceInfoIndexReq{
   int64 notGroupID =19;
   IDPath distributor =20;//过滤分销商的数据
   int64 status =22;
-  int64
+  CompareInt64 ratedPower =28;// 额定功率:单位w/h
 }
 
 message DeviceInfoIndexResp{

@@ -22,6 +22,8 @@ type (
 	CommonSchemaIndexResp             = dm.CommonSchemaIndexResp
 	CommonSchemaInfo                  = dm.CommonSchemaInfo
 	CommonSchemaUpdateReq             = dm.CommonSchemaUpdateReq
+	CompareInt64                      = dm.CompareInt64
+	CompareString                     = dm.CompareString
 	CustomTopic                       = dm.CustomTopic
 	DeviceCore                        = dm.DeviceCore
 	DeviceCountInfo                   = dm.DeviceCountInfo

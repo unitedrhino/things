@@ -51,6 +51,7 @@ type (
 		UserIDs           []int64
 		NotGroupID        int64
 		Distributor       *stores.IDPathFilter
+		RatedPower        *stores.Cmp
 	}
 )
 
@@ -61,6 +62,7 @@ func NewDeviceInfoRepo(in any) *DeviceInfoRepo {
 func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB {
 	db := d.db.WithContext(ctx)
 	db = f.Distributor.Filter(db, "distributor")
+	db = f.RatedPower.Where(db, "rated_power")
 	if f.WithProduct {
 		db = db.Preload("ProductInfo")
 	}
