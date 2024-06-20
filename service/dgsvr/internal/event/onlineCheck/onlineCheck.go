@@ -103,6 +103,8 @@ func (o *CheckEvent) Check() error {
 		}
 	}
 	logx.WithContext(o.ctx).Infof("fixOnline %v", utils.Fmt(needOnlineDevices))
-	_, err = o.svcCtx.DeviceM.DeviceOnlineMultiFix(o.ctx, &dm.DeviceOnlineMultiFixReq{Devices: needOnlineDevices})
+	if len(needOnlineDevices) > 0 {
+		_, err = o.svcCtx.DeviceM.DeviceOnlineMultiFix(o.ctx, &dm.DeviceOnlineMultiFixReq{Devices: needOnlineDevices})
+	}
 	return err
 }
