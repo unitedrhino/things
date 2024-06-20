@@ -9,6 +9,7 @@ import (
 	"gitee.com/i-Things/share/stores"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
+	"time"
 )
 
 func (s *StatusLogRepo) fillFilter(sql sq.SelectBuilder, filter deviceLog.StatusFilter) sq.SelectBuilder {
@@ -70,6 +71,9 @@ func (s *StatusLogRepo) GetDeviceLog(ctx context.Context, filter deviceLog.Statu
 }
 
 func (s *StatusLogRepo) Insert(ctx context.Context, data *deviceLog.Status) error {
+	if data.Timestamp.IsZero() {
+		data.Timestamp = time.Now()
+	}
 	sql := fmt.Sprintf("  %s using %s tags('%s','%s') (`ts`, `status`) values (?,?) ",
 		s.GetLogTableName(data.ProductID, data.DeviceName), s.GetLogStableName(), data.ProductID, data.DeviceName)
 	s.t.AsyncInsert(sql, data.Timestamp, data.Status)
