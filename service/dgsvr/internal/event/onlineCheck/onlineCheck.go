@@ -38,6 +38,7 @@ func (o *CheckEvent) Check() error {
 		logx.WithContext(o.ctx).Error(err)
 		devs = map[devices.Core]struct{}{}
 	}
+	var needOnlineDevices []*dm.DeviceOnlineMultiFix
 	for page*limit < total {
 		infos, to, err := o.svcCtx.MqttClient.GetOnlineClients(o.ctx, clients.GetOnlineClientsFilter{}, &def.PageInfo{
 			Page: 1,
@@ -49,7 +50,6 @@ func (o *CheckEvent) Check() error {
 		}
 		total = to
 		page++
-		var needOnlineDevices []*dm.DeviceOnlineMultiFix
 		for _, info := range infos {
 			devStr, err := caches.GetStore().HgetCtx(o.ctx, protocol.DeviceMqttClientID, info.ClientID)
 			if err != nil {
@@ -80,13 +80,29 @@ func (o *CheckEvent) Check() error {
 				})
 			}
 		}
-		logx.WithContext(o.ctx).Infof("fixOnline %v", utils.Fmt(needOnlineDevices))
-		_, err = o.svcCtx.DeviceM.DeviceOnlineMultiFix(o.ctx, &dm.DeviceOnlineMultiFixReq{Devices: needOnlineDevices})
-		return err
+
 	}
 
 	if len(devs) > 0 { //如果全部过滤完了这里还有在线的,同时在emq上是离线的,那么需要下线该设备
-		logx.WithContext(o.ctx).Error(devs)
+		logx.WithContext(o.ctx).Infof("fixOffLine %v", utils.Fmt(devs))
+		for dev := range devs {
+			di, err := o.svcCtx.DeviceCache.GetData(o.ctx, dev)
+			if err != nil {
+				continue
+			}
+			if di.IsOnline == def.True {
+				needOnlineDevices = append(needOnlineDevices, &dm.DeviceOnlineMultiFix{
+					Device: &dm.DeviceCore{
+						ProductID:  di.ProductID,
+						DeviceName: di.DeviceName,
+					},
+					IsOnline:  def.False,
+					ConnectAt: 0,
+				})
+			}
+		}
 	}
-	return nil
+	logx.WithContext(o.ctx).Infof("fixOnline %v", utils.Fmt(needOnlineDevices))
+	_, err = o.svcCtx.DeviceM.DeviceOnlineMultiFix(o.ctx, &dm.DeviceOnlineMultiFixReq{Devices: needOnlineDevices})
+	return err
 }

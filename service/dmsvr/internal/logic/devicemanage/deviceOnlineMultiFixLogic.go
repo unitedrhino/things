@@ -41,11 +41,18 @@ func (l *DeviceOnlineMultiFixLogic) DeviceOnlineMultiFix(in *dm.DeviceOnlineMult
 				log.Error(err)
 				continue
 			}
-			//暂时只做离线修复
-			var updates = map[string]any{"is_online": def.True, "last_login": time.UnixMilli(device.ConnectAt), "status": def.DeviceStatusOnline}
-			if di.FirstLogin == 0 {
-				updates["first_login"] = time.UnixMilli(device.ConnectAt)
+			var updates = map[string]any{}
+			switch device.IsOnline {
+			case def.True:
+				//暂时只做离线修复
+				updates = map[string]any{"is_online": def.True, "last_login": time.UnixMilli(device.ConnectAt), "status": def.DeviceStatusOnline}
+				if di.FirstLogin == 0 {
+					updates["first_login"] = time.UnixMilli(device.ConnectAt)
+				}
+			default:
+				updates = map[string]any{"is_online": def.False, "status": def.DeviceStatusOffline}
 			}
+
 			err = relationDB.NewDeviceInfoRepo(ctx).UpdateWithField(ctx,
 				relationDB.DeviceFilter{Cores: []*devices.Core{{ProductID: ld.ProductID, DeviceName: ld.DeviceName}}}, updates)
 			if err != nil {
