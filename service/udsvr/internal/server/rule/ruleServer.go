@@ -89,7 +89,7 @@ func (s *RuleServer) AlarmSceneDelete(ctx context.Context, in *ud.AlarmSceneDele
 	return l.AlarmSceneDelete(in)
 }
 
-func (s *RuleServer) AlarmSceneIndex(ctx context.Context, in *ud.AlarmSceneIndexReq) (*ud.AlarmSceneMultiSaveReq, error) {
+func (s *RuleServer) AlarmSceneIndex(ctx context.Context, in *ud.AlarmSceneIndexReq) (*ud.AlarmSceneIndexResp, error) {
 	l := rulelogic.NewAlarmSceneIndexLogic(ctx, s.svcCtx)
 	return l.AlarmSceneIndex(in)
 }

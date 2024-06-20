@@ -4785,7 +4785,7 @@
                   "title": "返回的消息"
                 },
                 "data": {
-                  "$ref": "#/definitions/AlarmSceneMultiSaveReq"
+                  "$ref": "#/definitions/AlarmSceneIndexResp"
                 }
               }
             }
@@ -6010,6 +6010,28 @@
       "title": "AlarmSceneIndexReq",
       "required": [
         "alarmID"
+      ]
+    },
+    "AlarmSceneIndexResp": {
+      "type": "object",
+      "properties": {
+        "alarmID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "告警配置ID"
+        },
+        "scenes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SceneInfo"
+          },
+          "description": "场景列表"
+        }
+      },
+      "title": "AlarmSceneIndexResp",
+      "required": [
+        "alarmID",
+        "scenes"
       ]
     },
     "AlarmSceneMultiSaveReq": {

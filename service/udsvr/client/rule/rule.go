@@ -25,6 +25,7 @@ type (
 	AlarmRecordIndexResp   = ud.AlarmRecordIndexResp
 	AlarmSceneDeleteReq    = ud.AlarmSceneDeleteReq
 	AlarmSceneIndexReq     = ud.AlarmSceneIndexReq
+	AlarmSceneIndexResp    = ud.AlarmSceneIndexResp
 	AlarmSceneMultiSaveReq = ud.AlarmSceneMultiSaveReq
 	DeviceCore             = ud.DeviceCore
 	Empty                  = ud.Empty
@@ -52,7 +53,7 @@ type (
 		// 告警关联场景联动
 		AlarmSceneMultiCreate(ctx context.Context, in *AlarmSceneMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
 		AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteReq, opts ...grpc.CallOption) (*Empty, error)
-		AlarmSceneIndex(ctx context.Context, in *AlarmSceneIndexReq, opts ...grpc.CallOption) (*AlarmSceneMultiSaveReq, error)
+		AlarmSceneIndex(ctx context.Context, in *AlarmSceneIndexReq, opts ...grpc.CallOption) (*AlarmSceneIndexResp, error)
 		// 告警记录
 		AlarmRecordIndex(ctx context.Context, in *AlarmRecordIndexReq, opts ...grpc.CallOption) (*AlarmRecordIndexResp, error)
 		AlarmRecordCreate(ctx context.Context, in *AlarmRecordCreateReq, opts ...grpc.CallOption) (*Empty, error)
@@ -203,12 +204,12 @@ func (d *directRule) AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteR
 	return d.svr.AlarmSceneDelete(ctx, in)
 }
 
-func (m *defaultRule) AlarmSceneIndex(ctx context.Context, in *AlarmSceneIndexReq, opts ...grpc.CallOption) (*AlarmSceneMultiSaveReq, error) {
+func (m *defaultRule) AlarmSceneIndex(ctx context.Context, in *AlarmSceneIndexReq, opts ...grpc.CallOption) (*AlarmSceneIndexResp, error) {
 	client := ud.NewRuleClient(m.cli.Conn())
 	return client.AlarmSceneIndex(ctx, in, opts...)
 }
 
-func (d *directRule) AlarmSceneIndex(ctx context.Context, in *AlarmSceneIndexReq, opts ...grpc.CallOption) (*AlarmSceneMultiSaveReq, error) {
+func (d *directRule) AlarmSceneIndex(ctx context.Context, in *AlarmSceneIndexReq, opts ...grpc.CallOption) (*AlarmSceneIndexResp, error) {
 	return d.svr.AlarmSceneIndex(ctx, in)
 }
 

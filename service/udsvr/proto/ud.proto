@@ -42,7 +42,7 @@ service rule {
   //告警关联场景联动
   rpc alarmSceneMultiCreate(AlarmSceneMultiSaveReq)returns(Empty);//绑定场景联动
   rpc alarmSceneDelete(AlarmSceneDeleteReq)returns(Empty);//解绑场景联动
-  rpc alarmSceneIndex(AlarmSceneIndexReq)returns(AlarmSceneMultiSaveReq);//解绑场景联动
+  rpc alarmSceneIndex(AlarmSceneIndexReq)returns(AlarmSceneIndexResp);//解绑场景联动
 
   //告警记录
   rpc alarmRecordIndex(AlarmRecordIndexReq)returns(AlarmRecordIndexResp);
@@ -102,7 +102,10 @@ message  AlarmSceneMultiSaveReq{
   int64 alarmID = 1;//告警配置ID
   repeated int64 sceneIDs = 2;//场景id
 }
-
+message AlarmSceneIndexResp{
+  int64 alarmID = 1;//告警配置ID
+  repeated SceneInfo scenes = 2;//场景列表,只返回基础信息
+}
 
 
 message AlarmInfo{

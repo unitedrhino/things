@@ -57,7 +57,7 @@ type RuleClient interface {
 	// 告警关联场景联动
 	AlarmSceneMultiCreate(ctx context.Context, in *AlarmSceneMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
 	AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteReq, opts ...grpc.CallOption) (*Empty, error)
-	AlarmSceneIndex(ctx context.Context, in *AlarmSceneIndexReq, opts ...grpc.CallOption) (*AlarmSceneMultiSaveReq, error)
+	AlarmSceneIndex(ctx context.Context, in *AlarmSceneIndexReq, opts ...grpc.CallOption) (*AlarmSceneIndexResp, error)
 	// 告警记录
 	AlarmRecordIndex(ctx context.Context, in *AlarmRecordIndexReq, opts ...grpc.CallOption) (*AlarmRecordIndexResp, error)
 	AlarmRecordCreate(ctx context.Context, in *AlarmRecordCreateReq, opts ...grpc.CallOption) (*Empty, error)
@@ -189,8 +189,8 @@ func (c *ruleClient) AlarmSceneDelete(ctx context.Context, in *AlarmSceneDeleteR
 	return out, nil
 }
 
-func (c *ruleClient) AlarmSceneIndex(ctx context.Context, in *AlarmSceneIndexReq, opts ...grpc.CallOption) (*AlarmSceneMultiSaveReq, error) {
-	out := new(AlarmSceneMultiSaveReq)
+func (c *ruleClient) AlarmSceneIndex(ctx context.Context, in *AlarmSceneIndexReq, opts ...grpc.CallOption) (*AlarmSceneIndexResp, error) {
+	out := new(AlarmSceneIndexResp)
 	err := c.cc.Invoke(ctx, Rule_AlarmSceneIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -244,7 +244,7 @@ type RuleServer interface {
 	// 告警关联场景联动
 	AlarmSceneMultiCreate(context.Context, *AlarmSceneMultiSaveReq) (*Empty, error)
 	AlarmSceneDelete(context.Context, *AlarmSceneDeleteReq) (*Empty, error)
-	AlarmSceneIndex(context.Context, *AlarmSceneIndexReq) (*AlarmSceneMultiSaveReq, error)
+	AlarmSceneIndex(context.Context, *AlarmSceneIndexReq) (*AlarmSceneIndexResp, error)
 	// 告警记录
 	AlarmRecordIndex(context.Context, *AlarmRecordIndexReq) (*AlarmRecordIndexResp, error)
 	AlarmRecordCreate(context.Context, *AlarmRecordCreateReq) (*Empty, error)
@@ -295,7 +295,7 @@ func (UnimplementedRuleServer) AlarmSceneMultiCreate(context.Context, *AlarmScen
 func (UnimplementedRuleServer) AlarmSceneDelete(context.Context, *AlarmSceneDeleteReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AlarmSceneDelete not implemented")
 }
-func (UnimplementedRuleServer) AlarmSceneIndex(context.Context, *AlarmSceneIndexReq) (*AlarmSceneMultiSaveReq, error) {
+func (UnimplementedRuleServer) AlarmSceneIndex(context.Context, *AlarmSceneIndexReq) (*AlarmSceneIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AlarmSceneIndex not implemented")
 }
 func (UnimplementedRuleServer) AlarmRecordIndex(context.Context, *AlarmRecordIndexReq) (*AlarmRecordIndexResp, error) {

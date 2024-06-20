@@ -67,6 +67,11 @@ type AlarmSceneIndexReq struct {
 	AlarmID int64 `json:"alarmID"` //告警配置ID
 }
 
+type AlarmSceneIndexResp struct {
+	AlarmID int64        `json:"alarmID"` //告警配置ID
+	Scenes  []*SceneInfo `json:"scenes"`  //场景列表
+}
+
 type AlarmSceneMultiSaveReq struct {
 	AlarmID  int64   `json:"alarmID"`  //告警配置ID
 	SceneIDs []int64 `json:"sceneIDs"` //场景id

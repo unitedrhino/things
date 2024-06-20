@@ -27,6 +27,7 @@ func NewSceneInfoRepo(in any) *SceneInfoRepo {
 
 type SceneInfoFilter struct {
 	Name          string `json:"name"`
+	IDs           []int64
 	Status        int64
 	Type          string
 	Tag           string
@@ -39,6 +40,9 @@ type SceneInfoFilter struct {
 
 func (p SceneInfoRepo) fmtFilter(ctx context.Context, f SceneInfoFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
+	if len(f.IDs) != 0 {
+		db = db.Where("id in ?", f.IDs)
+	}
 	if f.AreaID != 0 {
 		db = db.Where("area_id = ?", f.AreaID)
 	}

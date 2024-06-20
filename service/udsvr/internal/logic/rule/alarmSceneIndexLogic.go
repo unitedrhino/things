@@ -25,7 +25,7 @@ func NewAlarmSceneIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *A
 	}
 }
 
-func (l *AlarmSceneIndexLogic) AlarmSceneIndex(in *ud.AlarmSceneIndexReq) (*ud.AlarmSceneMultiSaveReq, error) {
+func (l *AlarmSceneIndexLogic) AlarmSceneIndex(in *ud.AlarmSceneIndexReq) (*ud.AlarmSceneIndexResp, error) {
 	pos, err := relationDB.NewAlarmSceneRepo(l.ctx).FindByFilter(l.ctx, relationDB.AlarmSceneFilter{AlarmID: in.AlarmID}, nil)
 	if err != nil {
 		return nil, err
@@ -33,5 +33,9 @@ func (l *AlarmSceneIndexLogic) AlarmSceneIndex(in *ud.AlarmSceneIndexReq) (*ud.A
 	sceneIDs := utils.ToSliceWithFunc(pos, func(in *relationDB.UdAlarmScene) int64 {
 		return in.SceneID
 	})
-	return &ud.AlarmSceneMultiSaveReq{SceneIDs: sceneIDs, AlarmID: in.AlarmID}, nil
+	list, err := relationDB.NewSceneInfoRepo(l.ctx).FindByFilter(l.ctx, relationDB.SceneInfoFilter{IDs: sceneIDs}, nil)
+	if err != nil {
+		return nil, err
+	}
+	return &ud.AlarmSceneIndexResp{Scenes: PoToSceneInfoPbs(l.ctx, l.svcCtx, list), AlarmID: in.AlarmID}, nil
 }
