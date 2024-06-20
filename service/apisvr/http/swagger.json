@@ -6152,8 +6152,7 @@
           }
         },
         "areaID": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string"
         },
         "propertyMode": {
           "type": "string",
@@ -6469,8 +6468,7 @@
       "type": "object",
       "properties": {
         "rangeID": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string"
         },
         "count": {
           "type": "object"
@@ -6493,15 +6491,13 @@
           "description": "总数:total,在线设备数:status,设备类型: deviceType"
         },
         "rangeType": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "0:全部 1:area 2:group"
         },
         "rangeIDs": {
           "type": "array",
           "items": {
-            "type": "integer",
-            "format": "int64"
+            "type": "string"
           },
           "description": "统计的id列表, areaID或者groupID"
         }
@@ -6637,8 +6633,7 @@
           "description": "产品id 只读"
         },
         "projectID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "项目id 只读"
         },
         "productName": {
@@ -6650,8 +6645,7 @@
           "description": "设备类型:1:设备,2:网关,3:子设备"
         },
         "areaID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "项目区域id 只读"
         },
         "deviceName": {
@@ -6730,22 +6724,18 @@
           "maximum": 2
         },
         "firstLogin": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "激活时间 只读"
         },
         "firstBind": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string"
         },
         "lastLogin": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "最后上线时间 只读"
         },
         "expTime": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "到期时间"
         },
         "logLevel": {
@@ -6760,8 +6750,7 @@
           "description": "信号强度"
         },
         "createdTime": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "创建时间 只读"
         },
         "status": {
@@ -6822,8 +6811,7 @@
           "$ref": "#/definitions/DeviceCore"
         },
         "areaID": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string"
         },
         "protocolCode": {
           "type": "string"
@@ -6978,12 +6966,10 @@
           "description": "过滤网关"
         },
         "groupID": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string"
         },
         "notGroupID": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string"
         },
         "devices": {
           "type": "array",
@@ -7036,8 +7022,7 @@
           }
         },
         "areaID": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string"
         },
         "ratedPower": {
           "type": "integer",
@@ -7134,8 +7119,7 @@
           "description": "SIM卡卡号"
         },
         "userID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": " 用户id"
         },
         "mobileOperator": {
@@ -7145,8 +7129,7 @@
           "maximum": 4
         },
         "areaID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "项目区域id 只读（1: root节点 2: 未分类节点 其他:子节点）"
         },
         "schemaAlias": {
@@ -7172,12 +7155,10 @@
           "description": "转让给: 1: 某个人 2: 自己的某个项目"
         },
         "userID": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string"
         },
         "projectID": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string"
         },
         "isCleanData": {
           "type": "integer",
@@ -7200,8 +7181,7 @@
           "description": "获取到的值"
         },
         "timestamp": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "发生时间戳"
         }
       },
@@ -7260,13 +7240,11 @@
       "type": "object",
       "properties": {
         "areaID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "项目区域id,传了优先从项目区域中获取设备列表"
         },
         "groupID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "分组ID,传了会从分组下获取设备"
         },
         "productID": {
@@ -7654,13 +7632,11 @@
           "description": "获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值"
         },
         "timeStart": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "获取时间的开始"
         },
         "timeEnd": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "时间的结束"
         },
         "page": {
@@ -7703,8 +7679,7 @@
       "type": "object",
       "properties": {
         "timestamp": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "发生时间戳"
         },
         "type": {
@@ -7738,13 +7713,11 @@
           "description": "产品id 获取产品id下的所有设备信息"
         },
         "timeStart": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "获取时间的开始"
         },
         "timeEnd": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "时间的结束"
         },
         "page": {
@@ -7802,8 +7775,7 @@
       "type": "object",
       "properties": {
         "timestamp": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string"
         },
         "action": {
           "type": "string",
@@ -7822,8 +7794,7 @@
           "type": "string"
         },
         "resultCode": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string"
         },
         "respPayload": {
           "type": "string"
@@ -7882,13 +7853,11 @@
           "description": "获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值"
         },
         "timeStart": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "获取时间的开始"
         },
         "timeEnd": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "时间的结束"
         },
         "page": {
@@ -7920,8 +7889,7 @@
       "type": "object",
       "properties": {
         "timestamp": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "发生时间戳"
         },
         "dataID": {
@@ -7986,8 +7954,7 @@
       "type": "object",
       "properties": {
         "timestamp": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "发生时间戳"
         },
         "loglevel": {
@@ -8019,13 +7986,11 @@
           "description": "产品id 获取产品id下的所有设备信息"
         },
         "timeStart": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "获取时间的开始"
         },
         "timeEnd": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "时间的结束"
         },
         "logLevel": {
@@ -8052,13 +8017,11 @@
           "description": "设备名"
         },
         "timeStart": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "获取时间的开始(毫秒时间戳)"
         },
         "timeEnd": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "时间的结束(毫秒时间戳)"
         },
         "page": {
@@ -8066,8 +8029,7 @@
           "description": "分页信息"
         },
         "userID": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string"
         },
         "actions": {
           "type": "array",
@@ -8109,16 +8071,14 @@
       "type": "object",
       "properties": {
         "timestamp": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "发生时间戳(毫秒时间戳)"
         },
         "account": {
           "type": "string"
         },
         "userID": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string"
         },
         "productID": {
           "type": "string"
@@ -8201,13 +8161,11 @@
           "description": "设备名"
         },
         "timeStart": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "获取时间的开始(毫秒时间戳)"
         },
         "timeEnd": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "时间的结束(毫秒时间戳)"
         },
         "page": {
@@ -8248,8 +8206,7 @@
       "type": "object",
       "properties": {
         "timestamp": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "发生时间戳(毫秒时间戳)"
         },
         "status": {
@@ -8907,13 +8864,11 @@
           "description": "父组ID"
         },
         "projectID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "项目ID"
         },
         "areaID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "区域ID"
         },
         "name": {
@@ -8929,8 +8884,7 @@
           "description": "产品ID"
         },
         "createdTime": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "创建时间"
         },
         "desc": {
@@ -8976,8 +8930,7 @@
           "description": "分页信息 只获取一个则不填"
         },
         "areaID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "区域ID"
         },
         "parentID": {
@@ -9393,13 +9346,11 @@
           "description": "产品id 获取产品id下的所有升级包"
         },
         "timeStart": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "获取时间的开始"
         },
         "timeEnd": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "时间的结束"
         },
         "page": {
@@ -10111,8 +10062,7 @@
       "type": "object",
       "properties": {
         "createdTime": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "创建时间 只读"
         },
         "productID": {
@@ -10169,8 +10119,7 @@
           "description": "动态注册产品秘钥 只读"
         },
         "trialTime": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "试用时间(单位为天,为0不限制)"
         },
         "desc": {
@@ -10921,8 +10870,7 @@
           "type": "string"
         },
         "areaID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "项目区域id 只读"
         },
         "status": {
@@ -11086,8 +11034,7 @@
           "description": "标签 admin: 管理员 normal: 普通"
         },
         "areaID": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string"
         },
         "type": {
           "type": "string",
@@ -11417,18 +11364,15 @@
       "type": "object",
       "properties": {
         "projectID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "项目id（只读）"
         },
         "areaID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "项目区域id（只读）"
         },
         "parentAreaID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "上级项目区域id（只读）"
         }
       },
@@ -11516,8 +11460,7 @@
       "type": "object",
       "properties": {
         "userID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": " 用户id"
         },
         "userName": {
@@ -11549,8 +11492,7 @@
           "description": " 用户头像"
         },
         "createdTime": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": " 创建时间"
         }
       },
@@ -11601,8 +11543,7 @@
           "description": "设备信息"
         },
         "sharedUserID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "分享的对象"
         },
         "sharedUserAccount": {

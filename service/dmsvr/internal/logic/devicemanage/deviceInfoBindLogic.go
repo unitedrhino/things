@@ -81,9 +81,6 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 		in.AreaID = def.NotClassified
 	}
 	di.AreaID = stores.AreaID(in.AreaID)
-	if di.AreaID == 0 {
-		di.AreaID = def.NotClassified
-	}
 	if di.FirstBind.Valid {
 		di.FirstBind = sql.NullTime{Time: time.Now(), Valid: true}
 	}

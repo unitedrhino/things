@@ -26,6 +26,9 @@ message PageInfo{
     int64 sort = 2;
   }
 }
+message Cmpare{
+  
+}
 
 message SendOption {
   int64  timeoutToFail = 1;//超时失败时间
@@ -1179,6 +1182,7 @@ message DeviceInfoIndexReq{
   int64 notGroupID =19;
   IDPath distributor =20;//过滤分销商的数据
   int64 status =22;
+  int64
 }
 
 message DeviceInfoIndexResp{
