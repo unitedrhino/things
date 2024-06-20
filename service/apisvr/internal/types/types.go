@@ -26,7 +26,7 @@ type AlarmInfoIndexResp struct {
 
 type AlarmNotify struct {
 	Type       string `json:"type,optional"`       //通知类型
-	TemplateID string `json:"templateID,optional"` //模版code
+	TemplateID int64  `json:"templateID,optional"` //模版code
 }
 
 type AlarmRecord struct {

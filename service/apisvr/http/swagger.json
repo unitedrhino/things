@@ -5852,7 +5852,8 @@
           "description": "通知类型"
         },
         "templateID": {
-          "type": "string",
+          "type": "integer",
+          "format": "int64",
           "description": "模版code"
         }
       },
