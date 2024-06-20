@@ -185,7 +185,6 @@ func (s *DeviceSubServer) Connected(info *devices.DevConn) error {
 	if err != nil {
 		logx.Error(err)
 	}
-	protocol.UpdateDeviceActivity(dev)
 	return s.svcCtx.PubInner.PubConn(s.ctx, pubInner.Connect, info)
 }
 
@@ -195,5 +194,10 @@ func (s *DeviceSubServer) Disconnected(info *devices.DevConn) error {
 	if err != nil { //只传送设备的消息
 		return nil
 	}
+	dev := devices.Core{
+		ProductID:  info.ProductID,
+		DeviceName: info.DeviceName,
+	}
+	protocol.DeleteDeviceActivity(s.ctx, dev)
 	return s.svcCtx.PubInner.PubConn(s.ctx, pubInner.DisConnect, info)
 }

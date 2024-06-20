@@ -138,7 +138,7 @@ func (p *LightProtocol) RegisterDeviceMsgDownHandler(
 
 func (p *LightProtocol) DevPubMsg(ctx context.Context, publishMsg *devices.DevPublish) error {
 	publishMsg.ProtocolCode = p.Pi.Code
-	UpdateDeviceActivity(devices.Core{
+	UpdateDeviceActivity(ctx, devices.Core{
 		ProductID:  publishMsg.ProductID,
 		DeviceName: publishMsg.DeviceName,
 	})

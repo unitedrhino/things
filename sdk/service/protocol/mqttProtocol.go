@@ -111,10 +111,17 @@ func GenDeviceTopicKey(dev devices.Core) string {
 	return fmt.Sprintf("%v:%v", dev.ProductID, dev.DeviceName)
 }
 
-func UpdateDeviceActivity(dev devices.Core) {
+func UpdateDeviceActivity(ctx context.Context, dev devices.Core) {
 	_, err := caches.GetStore().Zadd(DeviceLastActivity, time.Now().Unix(), GenDeviceTopicKey(dev))
 	if err != nil {
-		logx.Error(err)
+		logx.WithContext(ctx).Info(err)
+	}
+}
+
+func DeleteDeviceActivity(ctx context.Context, dev devices.Core) {
+	_, err := caches.GetStore().Zrem(DeviceLastActivity, GenDeviceTopicKey(dev))
+	if err != nil {
+		logx.WithContext(ctx).Info(err)
 	}
 }
 
@@ -167,12 +174,13 @@ func (m *MqttProtocol) SubscribeDevConn(handle ConnHandle) error {
 		if err != nil {
 			logx.Error(err)
 		}
-		UpdateDeviceActivity(dev)
 		newDo.ClientID = fmt.Sprintf("%s&%s", newDo.ProductID, newDo.DeviceName)
 		switch do.Action {
 		case ActionConnected:
+			UpdateDeviceActivity(ctx, dev)
 			err = m.FastEvent.Publish(ctx, topics.DeviceUpStatusConnected, newDo)
 		case ActionDisconnected:
+			DeleteDeviceActivity(ctx, dev)
 			err = m.FastEvent.Publish(ctx, topics.DeviceUpStatusDisconnected, newDo)
 		default:
 			panic("not support conn type")

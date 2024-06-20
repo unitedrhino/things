@@ -36,7 +36,7 @@ func (n *NatsJsClient) DevPubGateway(ctx context.Context, publishMsg *devices.De
 }
 
 func (n *NatsJsClient) DevPubMsg(ctx context.Context, publishMsg *devices.DevPublish) error {
-	protocol.UpdateDeviceActivity(devices.Core{
+	protocol.UpdateDeviceActivity(ctx, devices.Core{
 		ProductID:  publishMsg.ProductID,
 		DeviceName: publishMsg.DeviceName,
 	})
@@ -116,8 +116,16 @@ func (n *NatsJsClient) PubConn(ctx context.Context, conn ConnType, info *devices
 	var err error
 	switch conn {
 	case Connect:
+		protocol.UpdateDeviceActivity(ctx, devices.Core{
+			ProductID:  info.ProductID,
+			DeviceName: info.DeviceName,
+		})
 		err = n.publish(ctx, topics.DeviceUpStatusConnected, str)
 	case DisConnect:
+		protocol.DeleteDeviceActivity(ctx, devices.Core{
+			ProductID:  info.ProductID,
+			DeviceName: info.DeviceName,
+		})
 		err = n.publish(ctx, topics.DeviceUpStatusDisconnected, str)
 	default:
 		panic("not support conn type")
