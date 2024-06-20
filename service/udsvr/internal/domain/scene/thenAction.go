@@ -89,11 +89,11 @@ func (a *Action) Validate(repo ValidateRepo) error {
 			return errors.Parameter.AddMsg("对应的操作类型下没有进行配置:" + string(a.Type))
 		}
 		return a.Scene.Validate(repo)
-	//case ActionExecutorAlarm:
-	//	if a.Alarm == nil {
-	//		return errors.Parameter.AddMsg("对应的操作类型下没有进行配置:" + string(a.Type))
-	//	}
-	//	return a.Alarm.Validate()
+	case ActionExecutorAlarm:
+		if a.Alarm == nil {
+			return errors.Parameter.AddMsg("对应的操作类型下没有进行配置:" + string(a.Type))
+		}
+		return a.Alarm.Validate()
 	default:
 		return errors.Parameter.AddMsg("操作类型不支持:" + string(a.Type))
 	}
