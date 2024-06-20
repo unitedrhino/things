@@ -16,6 +16,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/timex"
+	"math"
 	"strings"
 	"time"
 )
@@ -116,6 +117,19 @@ func UpdateDeviceActivity(ctx context.Context, dev devices.Core) {
 	if err != nil {
 		logx.WithContext(ctx).Info(err)
 	}
+}
+
+func GetActivityDevices(ctx context.Context) (map[devices.Core]struct{}, error) {
+	devs, err := caches.GetStore().ZrangeCtx(ctx, DeviceLastActivity, math.MinInt64, math.MaxInt64)
+	if err != nil {
+		return nil, err
+	}
+	var ret = make(map[devices.Core]struct{}, len(devs))
+	for _, v := range devs {
+		ps := strings.Split(v, ":")
+		ret[devices.Core{ProductID: ps[0], DeviceName: ps[1]}] = struct{}{}
+	}
+	return ret, nil
 }
 
 func DeleteDeviceActivity(ctx context.Context, dev devices.Core) {

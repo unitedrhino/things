@@ -5796,6 +5796,14 @@
             "$ref": "#/definitions/AlarmNotify"
           },
           "description": "通知"
+        },
+        "sceneIDs": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": "绑定的场景列表"
         }
       },
       "title": "AlarmInfo"
@@ -11061,6 +11069,14 @@
         },
         "areaID": {
           "type": "string"
+        },
+        "sceneIDs": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": "根据场景ID来过滤"
         },
         "type": {
           "type": "string",

@@ -2,8 +2,10 @@ package rulelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
+	"gorm.io/gorm"
 
 	"github.com/i-Things/things/service/udsvr/internal/svc"
 	"github.com/i-Things/things/service/udsvr/pb/ud"
@@ -45,6 +47,29 @@ func (l *AlarmInfoUpdateLogic) AlarmInfoUpdate(in *ud.AlarmInfo) (*ud.Empty, err
 	if len(in.Notifies) != 0 {
 		old.Notifies = utils.CopySlice[relationDB.UdAlarmNotify](in.Notifies)
 	}
-	err = relationDB.NewAlarmInfoRepo(l.ctx).Update(l.ctx, old)
+	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+		err = relationDB.NewAlarmInfoRepo(tx).Update(l.ctx, old)
+		if err != nil {
+			return err
+		}
+		if in.SceneIDs != nil {
+			asDB := relationDB.NewAlarmSceneRepo(tx)
+			err := asDB.DeleteByFilter(l.ctx, relationDB.AlarmSceneFilter{
+				AlarmID: old.ID,
+			})
+			if err != nil {
+				return err
+			}
+			if len(in.SceneIDs) > 0 {
+				var pos []*relationDB.UdAlarmScene
+				for _, v := range in.SceneIDs {
+					pos = append(pos, &relationDB.UdAlarmScene{SceneID: v, AlarmID: old.ID})
+				}
+				err = asDB.MultiInsert(l.ctx, pos)
+			}
+			return err
+		}
+		return nil
+	})
 	return &ud.Empty{}, err
 }

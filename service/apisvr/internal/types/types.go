@@ -11,6 +11,7 @@ type AlarmInfo struct {
 	UserIDs     []int64        `json:"userIDs,string,optional"` //指定用户ID
 	Accounts    []string       `json:"accounts,optional"`       //账号
 	Notifies    []*AlarmNotify `json:"notifies,optional"`       //通知
+	SceneIDs    []int64        `json:"sceneIDs,optional"`       //绑定的场景列表
 }
 
 type AlarmInfoIndexReq struct {
@@ -1327,6 +1328,7 @@ type SceneInfoIndexReq struct {
 	Name          string    `json:"name,optional"` //场景名模糊查询
 	Tag           string    `json:"tag,optional"`  //标签 admin: 管理员 normal: 普通
 	AreaID        int64     `json:"areaID,optional,string"`
+	SceneIDs      []int64   `json:"sceneIDs,optional"`      //根据场景ID来过滤
 	Type          string    `json:"type,optional"`          //触发类型 auto manual:手动触发
 	Status        int64     `json:"status,optional"`        //状态: 1启用 2禁用
 	AlarmID       int64     `json:"alarmID,optional"`       //告警id

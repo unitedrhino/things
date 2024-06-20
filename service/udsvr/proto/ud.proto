@@ -116,6 +116,7 @@ message AlarmInfo{
   int64 level = 4;//告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
   int64 status = 5;//告警配置状态（1启用 2禁用）
   int64 createdTime = 6;//创建时间
+  repeated int64 sceneIDs =10;//绑定的场景
   repeated AlarmNotify notifies = 7;
   repeated int64 userIDs = 8; //指定用户ID
   repeated string accounts = 9;
@@ -150,6 +151,7 @@ message SceneInfoIndexReq{
   string   productID = 8; //产品id
   string  deviceName = 9; //设备名称
   string hasActionType =11;//过滤有某个执行类型
+  repeated int64 sceneIDs =12;
 }
 
 message SceneInfoIndexResp{

@@ -28,7 +28,7 @@ func NewAlarmInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Al
 
 func (l *AlarmInfoIndexLogic) AlarmInfoIndex(in *ud.AlarmInfoIndexReq) (*ud.AlarmInfoIndexResp, error) {
 	f := relationDB.AlarmInfoFilter{Name: in.Name}
-	list, err := relationDB.NewAlarmInfoRepo(l.ctx).FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page))
+	pos, err := relationDB.NewAlarmInfoRepo(l.ctx).FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page))
 	if err != nil {
 		return nil, err
 	}
@@ -36,5 +36,12 @@ func (l *AlarmInfoIndexLogic) AlarmInfoIndex(in *ud.AlarmInfoIndexReq) (*ud.Alar
 	if err != nil {
 		return nil, err
 	}
-	return &ud.AlarmInfoIndexResp{List: utils.CopySlice[ud.AlarmInfo](list), Total: total}, nil
+	var list []*ud.AlarmInfo
+	for _, po := range pos {
+		v := utils.Copy[ud.AlarmInfo](po)
+		for _, s := range po.Scenes {
+			v.SceneIDs = append(v.SceneIDs, s.SceneID)
+		}
+	}
+	return &ud.AlarmInfoIndexResp{List: list, Total: total}, nil
 }

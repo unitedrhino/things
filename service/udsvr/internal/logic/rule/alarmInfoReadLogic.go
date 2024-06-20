@@ -27,5 +27,9 @@ func NewAlarmInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ala
 
 func (l *AlarmInfoReadLogic) AlarmInfoRead(in *ud.WithID) (*ud.AlarmInfo, error) {
 	po, err := relationDB.NewAlarmInfoRepo(l.ctx).FindOne(l.ctx, in.Id)
-	return utils.Copy[ud.AlarmInfo](po), err
+	v := utils.Copy[ud.AlarmInfo](po)
+	for _, s := range po.Scenes {
+		v.SceneIDs = append(v.SceneIDs, s.SceneID)
+	}
+	return v, err
 }

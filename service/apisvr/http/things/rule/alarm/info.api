@@ -51,6 +51,7 @@ type AlarmInfo  {
     UserIDs []int64 `json:"userIDs,string,optional"`//指定用户ID
     Accounts []string `json:"accounts,optional"`//账号
     Notifies []*AlarmNotify `json:"notifies,optional"`//通知
+    SceneIDs []int64 `json:"sceneIDs,optional"`//绑定的场景列表
 }
 
 type AlarmNotify {

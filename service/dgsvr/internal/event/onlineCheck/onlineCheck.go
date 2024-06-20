@@ -33,6 +33,11 @@ func (o *CheckEvent) Check() error {
 	var total int64 = 10000
 	var limit int64 = 1000
 	var page int64 = 1
+	devs, err := protocol.GetActivityDevices(o.ctx)
+	if err != nil {
+		logx.WithContext(o.ctx).Error(err)
+		devs = map[devices.Core]struct{}{}
+	}
 	for page*limit < total {
 		infos, to, err := o.svcCtx.MqttClient.GetOnlineClients(o.ctx, clients.GetOnlineClientsFilter{}, &def.PageInfo{
 			Page: 1,
@@ -55,13 +60,15 @@ func (o *CheckEvent) Check() error {
 			if err != nil {
 				continue
 			}
-			di, err := o.svcCtx.DeviceCache.GetData(o.ctx, devices.Core{
+			c := devices.Core{
 				ProductID:  dev.ProductID,
 				DeviceName: dev.DeviceName,
-			})
+			}
+			di, err := o.svcCtx.DeviceCache.GetData(o.ctx, c)
 			if err != nil {
 				continue
 			}
+			delete(devs, c)
 			if di.IsOnline != def.True {
 				needOnlineDevices = append(needOnlineDevices, &dm.DeviceOnlineMultiFix{
 					Device: &dm.DeviceCore{
@@ -76,6 +83,10 @@ func (o *CheckEvent) Check() error {
 		logx.WithContext(o.ctx).Infof("fixOnline %v", utils.Fmt(needOnlineDevices))
 		_, err = o.svcCtx.DeviceM.DeviceOnlineMultiFix(o.ctx, &dm.DeviceOnlineMultiFixReq{Devices: needOnlineDevices})
 		return err
+	}
+
+	if len(devs) > 0 { //如果全部过滤完了这里还有在线的,同时在emq上是离线的,那么需要下线该设备
+		logx.WithContext(o.ctx).Error(devs)
 	}
 	return nil
 }

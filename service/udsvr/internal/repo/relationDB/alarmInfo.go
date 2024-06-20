@@ -53,7 +53,7 @@ func (p AlarmInfoRepo) FindByFilter(ctx context.Context, f AlarmInfoFilter, page
 	var results []*UdAlarmInfo
 	db := p.fmtFilter(ctx, f).Model(&UdAlarmInfo{})
 	db = page.ToGorm(db)
-	err := db.Find(&results).Error
+	err := db.Preload("Scenes").Find(&results).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}

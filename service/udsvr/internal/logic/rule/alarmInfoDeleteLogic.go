@@ -2,7 +2,9 @@ package rulelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
+	"gorm.io/gorm"
 
 	"github.com/i-Things/things/service/udsvr/internal/svc"
 	"github.com/i-Things/things/service/udsvr/pb/ud"
@@ -25,7 +27,13 @@ func NewAlarmInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *A
 }
 
 func (l *AlarmInfoDeleteLogic) AlarmInfoDelete(in *ud.WithID) (*ud.Empty, error) {
-	err := relationDB.NewAlarmInfoRepo(l.ctx).Delete(l.ctx, in.Id)
+	err := stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+		err := relationDB.NewAlarmInfoRepo(tx).Delete(l.ctx, in.Id)
+		if err != nil {
+			return err
+		}
+		return relationDB.NewAlarmSceneRepo(tx).DeleteByFilter(l.ctx, relationDB.AlarmSceneFilter{AlarmID: in.Id})
+	})
 
 	return &ud.Empty{}, err
 }

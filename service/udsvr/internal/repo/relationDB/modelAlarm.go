@@ -19,6 +19,7 @@ type UdAlarmInfo struct {
 	Notifies   []*UdAlarmNotify  `gorm:"column:notifies;type:json;serializer:json;default:'[]'"` // 短信通知模版编码
 	UserIDs    []int64           `gorm:"column:user_ids;type:json;serializer:json;default:'[]'"` //指定用户ID
 	Accounts   []string          `gorm:"column:accounts;type:json;serializer:json;default:'[]'"` //账号
+	Scenes     []*UdAlarmScene   `gorm:"foreignKey:AlarmID;references:ID"`
 	stores.Time
 }
 
