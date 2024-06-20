@@ -186,5 +186,6 @@ message SceneInfo{
   string deviceAlias =18;//设备别名(只读)
   string deviceMode =19;//设备模式 single:单设备 multi:多设备
   string body =20;//自定义字段
+  int64 updatedTime=22;//更新时间
 }
 

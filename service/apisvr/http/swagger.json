@@ -10968,6 +10968,10 @@
         "body": {
           "type": "string",
           "description": "自定义字段"
+        },
+        "updatedTime": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "SceneInfo"
@@ -11048,6 +11052,10 @@
         "body": {
           "type": "string",
           "description": "自定义字段"
+        },
+        "updatedTime": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "SceneInfoCreateReq"
@@ -11215,6 +11223,10 @@
         "body": {
           "type": "string",
           "description": "自定义字段"
+        },
+        "updatedTime": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "SceneInfoUpdateReq"
