@@ -83,7 +83,7 @@ func (p AlarmInfoRepo) Delete(ctx context.Context, id int64) error {
 }
 func (p AlarmInfoRepo) FindOne(ctx context.Context, id int64) (*UdAlarmInfo, error) {
 	var result UdAlarmInfo
-	err := p.db.WithContext(ctx).Where("id = ?", id).First(&result).Error
+	err := p.db.WithContext(ctx).Preload("Scenes").Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
