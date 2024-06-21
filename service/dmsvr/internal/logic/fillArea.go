@@ -10,6 +10,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 func FillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, areaIDPaths ...string) error {
@@ -28,7 +29,7 @@ func FillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, areaID
 				log.Error(err)
 				continue
 			}
-			_, err = svcCtx.AreaM.AreaInfoUpdate(ctx, &sys.AreaInfo{AreaID: id, DeviceCount: count})
+			_, err = svcCtx.AreaM.AreaInfoUpdate(ctx, &sys.AreaInfo{AreaID: id, DeviceCount: &wrapperspb.Int64Value{Value: count}})
 			if err != nil {
 				log.Error(err)
 				continue
