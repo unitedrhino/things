@@ -81,6 +81,11 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 		in.AreaID = def.NotClassified
 	}
 	di.AreaID = stores.AreaID(in.AreaID)
+	ai, err := l.svcCtx.AreaCache.GetData(l.ctx, in.AreaID)
+	if err != nil {
+		return nil, err
+	}
+	di.AreaIDPath = ai.AreaIDPath
 	if di.FirstBind.Valid {
 		di.FirstBind = sql.NullTime{Time: time.Now(), Valid: true}
 	}

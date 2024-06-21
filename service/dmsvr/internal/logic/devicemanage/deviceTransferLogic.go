@@ -74,9 +74,11 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 		}
 		di.ProjectID = stores.ProjectID(dp.List[0].ProjectID)
 		di.AreaID = def.NotClassified
+		di.AreaIDPath = def.NotClassifiedPath
 	case DeviceTransferToProject:
 		di.ProjectID = stores.ProjectID(pi.ProjectID)
 		di.AreaID = def.NotClassified
+		di.AreaIDPath = def.NotClassifiedPath
 	}
 	if in.IsCleanData == def.True {
 		err = DeleteDeviceTimeData(l.ctx, l.svcCtx, in.Device.ProductID, in.Device.DeviceName)

@@ -42,8 +42,14 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 
 	var columns []string
 	var Distributor stores.IDPathWithUpdate
+	var areaIDPath string
 	if in.AreaID != 0 {
-		columns = append(columns, "area_id")
+		columns = append(columns, "area_id", "area_id_path")
+		ai, err := l.svcCtx.AreaCache.GetData(l.ctx, in.AreaID)
+		if err != nil {
+			return nil, err
+		}
+		areaIDPath = ai.AreaIDPath
 	}
 	if in.Distributor != nil {
 		columns = append(columns, "distributor_id", "distributor_id_path", "distributor_updated_time")
@@ -54,7 +60,7 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 		columns = append(columns, "rated_power")
 	}
 	err := relationDB.NewDeviceInfoRepo(l.ctx).MultiUpdate(l.ctx, logic.ToDeviceCores(in.Devices),
-		&relationDB.DmDeviceInfo{RatedPower: in.RatedPower, AreaID: stores.AreaID(in.AreaID), Distributor: utils.Copy2[stores.IDPathWithUpdate](in.Distributor)}, columns...)
+		&relationDB.DmDeviceInfo{RatedPower: in.RatedPower, AreaID: stores.AreaID(in.AreaID), AreaIDPath: areaIDPath, Distributor: utils.Copy2[stores.IDPathWithUpdate](in.Distributor)}, columns...)
 	if err != nil {
 		return nil, err
 	}

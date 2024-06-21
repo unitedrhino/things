@@ -114,13 +114,18 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 			areaID = stores.AreaID(ti.DefaultAreaID)
 		}
 	}
-
+	ai, err := l.svcCtx.AreaCache.GetData(l.ctx, int64(areaID))
+	if err != nil {
+		return nil, err
+	}
+	areaIDPath := ai.AreaIDPath
 	di := relationDB.DmDeviceInfo{
 		ProjectID:   projectID,
 		ProductID:   in.ProductID,  // 产品id
 		DeviceName:  in.DeviceName, // 设备名称
 		Position:    logic.ToStorePoint(in.Position),
 		AreaID:      areaID, //设备默认都是未分类
+		AreaIDPath:  areaIDPath,
 		Status:      def.DeviceStatusInactive,
 		IsEnable:    def.True,
 		RatedPower:  in.RatedPower,

@@ -60,6 +60,7 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceCore) (*dm.Empty, 
 	}
 	di.UserID = def.RootNode
 	di.AreaID = stores.AreaID(def.NotClassified)
+	di.AreaIDPath = def.NotClassifiedPath
 	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
 
 		err := relationDB.NewDeviceInfoRepo(tx).Update(ctxs.WithRoot(l.ctx), di)

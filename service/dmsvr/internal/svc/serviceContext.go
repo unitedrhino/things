@@ -48,11 +48,6 @@ type ServiceContext struct {
 	PubDev pubDev.PubDev
 	PubApp pubApp.PubApp
 
-	ProjectID      *utils.SnowFlake
-	AreaID         *utils.SnowFlake
-	ProductID      *utils.SnowFlake
-	DeviceID       *utils.SnowFlake
-	GroupID        *utils.SnowFlake
 	OssClient      *oss.Client
 	TimedM         timedmanage.TimedManage
 	SchemaRepo     *caches.Cache[schema.Model, string]
@@ -72,6 +67,7 @@ type ServiceContext struct {
 	DeviceCache    *caches.Cache[dm.DeviceInfo, devices.Core]
 	TenantCache    sysExport.TenantCacheT
 	ProjectCache   sysExport.ProjectCacheT
+	AreaCache      sysExport.AreaCacheT
 	WebHook        *sysExport.Webhook
 	Slot           sysExport.SlotCacheT
 	UserSubscribe  *ws.UserSubscribe
@@ -93,11 +89,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 	caches.InitStore(c.CacheRedis)
 	nodeID := utils.GetNodeID(c.CacheRedis, c.Name)
-	ProjectID := utils.NewSnowFlake(nodeID)
-	AreaID := utils.NewSnowFlake(nodeID)
-	DeviceID := utils.NewSnowFlake(nodeID)
-	ProductID := utils.NewSnowFlake(nodeID)
-	GroupID := utils.NewSnowFlake(nodeID)
 	ca := kv.NewStore(c.CacheRedis)
 
 	hubLogR := hubLogRepo.NewHubLogRepo(c.TSDB)
@@ -161,6 +152,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	logx.Must(err)
 	projectC, err := sysExport.NewProjectInfoCache(projectmanage.NewProjectManage(zrpc.MustNewClient(c.SysRpc.Conf)), serverMsg)
 	logx.Must(err)
+	areaC, err := sysExport.NewAreaInfoCache(areamanage.NewAreaManage(zrpc.MustNewClient(c.SysRpc.Conf)), serverMsg)
+	logx.Must(err)
 	return &ServiceContext{
 		FastEvent:      serverMsg,
 		TenantCache:    tenantCache,
@@ -171,11 +164,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		ProjectM:       projectM,
 		PubApp:         pa,
 		PubDev:         pd,
-		ProjectID:      ProjectID,
-		AreaID:         AreaID,
-		ProductID:      ProductID,
-		DeviceID:       DeviceID,
-		GroupID:        GroupID,
 		Cache:          ca,
 		UserM:          userM,
 		DataM:          dataM,
@@ -192,6 +180,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		NodeID:         nodeID,
 		Slot:           Slot,
 		ProjectCache:   projectC,
+		AreaCache:      areaC,
 	}
 }
 
