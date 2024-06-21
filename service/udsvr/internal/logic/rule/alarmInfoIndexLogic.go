@@ -42,6 +42,7 @@ func (l *AlarmInfoIndexLogic) AlarmInfoIndex(in *ud.AlarmInfoIndexReq) (*ud.Alar
 		for _, s := range po.Scenes {
 			v.SceneIDs = append(v.SceneIDs, s.SceneID)
 		}
+		list = append(list, v)
 	}
 	return &ud.AlarmInfoIndexResp{List: list, Total: total}, nil
 }
