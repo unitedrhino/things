@@ -3,6 +3,7 @@ package devicemanagelogic
 import (
 	"context"
 	"database/sql"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg"
@@ -45,6 +46,10 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 		if err != nil {
 			return err
 		}
+		ctxs.GoNewCtx(l.ctx, func(ctx2 context.Context) {
+			time.Sleep(2 * time.Second)
+			logic.FillAreaDeviceCount(l.ctx, l.svcCtx, ai.AreaIDPath, old.AreaIDPath)
+		})
 		old.AreaIDPath = ai.AreaIDPath
 	}
 	if data.ProjectID != 0 && data.ProjectID != int64(old.ProjectID) {

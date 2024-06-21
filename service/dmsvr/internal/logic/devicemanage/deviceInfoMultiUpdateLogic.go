@@ -73,5 +73,6 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 			l.Error(err)
 		}
 	}
+	logic.FillAreaDeviceCount(l.ctx, l.svcCtx, areaIDPath) //todo 设备原来的计算不正确
 	return &dm.Empty{}, err
 }

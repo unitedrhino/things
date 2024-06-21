@@ -114,11 +114,13 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 			areaID = stores.AreaID(ti.DefaultAreaID)
 		}
 	}
+
 	ai, err := l.svcCtx.AreaCache.GetData(l.ctx, int64(areaID))
 	if err != nil {
 		return nil, err
 	}
 	areaIDPath := ai.AreaIDPath
+
 	di := relationDB.DmDeviceInfo{
 		ProjectID:   projectID,
 		ProductID:   in.ProductID,  // 产品id
@@ -207,6 +209,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 		l.Errorf("AddDevice.DeviceInfo.Insert err=%+v", err)
 		return nil, errors.Database.AddDetail(err)
 	}
+	logic.FillAreaDeviceCount(l.ctx, l.svcCtx, areaIDPath)
 	return &dm.Empty{}, nil
 }
 

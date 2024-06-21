@@ -52,6 +52,7 @@ type (
 		NotGroupID        int64
 		Distributor       *stores.IDPathFilter
 		RatedPower        *stores.Cmp
+		AreaIDPath        string
 	}
 )
 
@@ -65,6 +66,9 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	db = f.RatedPower.Where(db, "rated_power")
 	if f.WithProduct {
 		db = db.Preload("ProductInfo")
+	}
+	if f.AreaIDPath != "" {
+		db = db.Where("area_id_path like ?", f.AreaIDPath+"%")
 	}
 	if f.WithManufacturer {
 		db = db.Preload("Manufacturer")

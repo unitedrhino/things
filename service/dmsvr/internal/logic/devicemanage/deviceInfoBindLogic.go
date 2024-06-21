@@ -8,6 +8,7 @@ import (
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"time"
 
@@ -85,7 +86,9 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 	if err != nil {
 		return nil, err
 	}
+	oldAreaIDPath := di.AreaIDPath
 	di.AreaIDPath = ai.AreaIDPath
+
 	if di.FirstBind.Valid {
 		di.FirstBind = sql.NullTime{Time: time.Now(), Valid: true}
 	}
@@ -113,6 +116,7 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 			l.Error(err)
 		}
 	}
+	logic.FillAreaDeviceCount(l.ctx, l.svcCtx, ai.AreaIDPath, oldAreaIDPath)
 
 	return &dm.Empty{}, err
 }
