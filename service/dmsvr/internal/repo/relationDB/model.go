@@ -112,6 +112,7 @@ func (m *DmDeviceModuleVersion) TableName() string {
 
 // 用户配置表
 type DmDeviceProfile struct {
+	ID         int64             `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	TenantCode stores.TenantCode `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL;uniqueIndex:tc_un;"` // 租户编码
 	ProductID  string            `gorm:"column:product_id;type:varchar(100);uniqueIndex:tc_un;NOT NULL"`  // 产品id
 	DeviceName string            `gorm:"column:device_name;uniqueIndex:tc_un;type:varchar(100);NOT NULL"` // 设备名称
