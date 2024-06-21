@@ -6679,6 +6679,10 @@
           "format": "int64",
           "description": "设备类型:1:设备,2:网关,3:子设备"
         },
+        "productImg": {
+          "type": "string",
+          "description": "产品图片"
+        },
         "areaID": {
           "type": "string",
           "description": "项目区域id 只读"

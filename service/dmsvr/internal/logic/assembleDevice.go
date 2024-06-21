@@ -8,12 +8,13 @@ import (
 	"gitee.com/i-Things/share/events"
 	"gitee.com/i-Things/share/utils"
 	"github.com/golang/protobuf/ptypes/wrappers"
-	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
+	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
-func ToDeviceInfo(ctx context.Context, in *relationDB.DmDeviceInfo, ProductCache dmExport.ProductCacheT) *dm.DeviceInfo {
+func ToDeviceInfo(ctx context.Context, svcCtx *svc.ServiceContext, in *relationDB.DmDeviceInfo) *dm.DeviceInfo {
 	if in == nil {
 		return nil
 	}
@@ -27,12 +28,20 @@ func ToDeviceInfo(ctx context.Context, in *relationDB.DmDeviceInfo, ProductCache
 		productName string
 		deviceType  int64 = def.DeviceTypeDevice
 		netType     int64 = def.Unknown
+		ProductImg  string
 	)
-	pi, err := ProductCache.GetData(ctx, in.ProductID)
+	pi, err := svcCtx.ProductCache.GetData(ctx, in.ProductID)
 	if err == nil {
 		deviceType = pi.DeviceType
 		productName = pi.ProductName
 		netType = pi.NetType
+		if pi.ProductImg != "" {
+			var err error
+			ProductImg, err = svcCtx.OssClient.PublicBucket().GetUrl(pi.ProductImg)
+			if err != nil {
+				logx.WithContext(ctx).Errorf("%s.SignedGetUrl err:%v", utils.FuncName(), err)
+			}
+		}
 	}
 	//return utils.Copy[dm.DeviceInfo](in)
 
@@ -77,6 +86,7 @@ func ToDeviceInfo(ctx context.Context, in *relationDB.DmDeviceInfo, ProductCache
 		Distributor:        utils.Copy[dm.IDPathWithUpdate](&in.Distributor),
 		NeedConfirmVersion: in.NeedConfirmVersion,
 		NeedConfirmJobID:   in.NeedConfirmJobID,
+		ProductImg:         ProductImg,
 	}
 }
 

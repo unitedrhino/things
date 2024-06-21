@@ -99,7 +99,7 @@ func InitCache(svcCtx *svc.ServiceContext) {
 			if err != nil {
 				return nil, err
 			}
-			pb := logic.ToDeviceInfo(ctx, di, svcCtx.ProductCache)
+			pb := logic.ToDeviceInfo(ctx, svcCtx, di)
 			return pb, err
 		},
 		ExpireTime: 3 * time.Minute,

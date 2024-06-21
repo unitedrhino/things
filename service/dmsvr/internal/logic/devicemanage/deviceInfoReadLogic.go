@@ -37,5 +37,5 @@ func (l *DeviceInfoReadLogic) DeviceInfoRead(in *dm.DeviceInfoReadReq) (*dm.Devi
 	if err != nil {
 		return nil, err
 	}
-	return logic.ToDeviceInfo(l.ctx, di, l.svcCtx.ProductCache), nil
+	return logic.ToDeviceInfo(l.ctx, l.svcCtx, di), nil
 }

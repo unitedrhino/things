@@ -17,6 +17,10 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 	var properties map[string]*types.DeviceInfoWithProperty
 	var profiles map[string]string
 	var owner *types.UserCore
+	if err := ctxs.IsAdmin(ctx); err != nil {
+		v.Secret = ""
+		v.Cert = ""
+	}
 	position := &types.Point{
 		Longitude: v.Position.Longitude, //经度
 		Latitude:  v.Position.Latitude,  //维度
@@ -119,6 +123,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		ExpTime:            utils.ToEmptyInt64(v.ExpTime),
 		RatedPower:         v.RatedPower,
 		NeedConfirmVersion: v.NeedConfirmVersion,
+		ProductImg:         v.ProductImg,
 	}
 }
 

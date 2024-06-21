@@ -1091,6 +1091,7 @@ message DeviceInfo {
   int64 NeedConfirmJobID =39;//需要app确认升级的任务ID,为0是没有
   string NeedConfirmVersion =40;//待确认升级的版本
   int64 userID =41;//拥有者的用户ID
+  string productImg = 43; //产品图片
 }
 
 message ProductInfo{
