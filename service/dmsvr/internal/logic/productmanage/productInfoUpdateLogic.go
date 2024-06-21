@@ -64,13 +64,13 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 	}
 	if data.ProductImg != "" && data.IsUpdateProductImg == true { //如果填了参数且不等于原来的,说明修改头像,需要处理
 		if old.ProductImg != "" {
-			err := l.svcCtx.OssClient.PrivateBucket().Delete(l.ctx, old.ProductImg, common.OptionKv{})
+			err := l.svcCtx.OssClient.PublicBucket().Delete(l.ctx, old.ProductImg, common.OptionKv{})
 			if err != nil {
 				l.Errorf("Delete file err path:%v,err:%v", old.ProductImg, err)
 			}
 		}
 		nwePath := oss.GenFilePath(l.ctx, l.svcCtx.Config.Name, oss.BusinessProductManage, oss.SceneProductImg, fmt.Sprintf("%s/%s", data.ProductID, oss.GetFileNameWithPath(data.ProductImg)))
-		path, err := l.svcCtx.OssClient.PrivateBucket().CopyFromTempBucket(data.ProductImg, nwePath)
+		path, err := l.svcCtx.OssClient.PublicBucket().CopyFromTempBucket(data.ProductImg, nwePath)
 		if err != nil {
 			return errors.System.AddDetail(err)
 		}

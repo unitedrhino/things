@@ -121,7 +121,7 @@ func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relatio
 	pi.Tags = in.Tags
 	if in.ProductImg != "" { //如果填了参数且不等于原来的,说明修改头像,需要处理
 		nwePath := oss.GenFilePath(l.ctx, l.svcCtx.Config.Name, oss.BusinessProductManage, oss.SceneProductImg, fmt.Sprintf("%s/%s", in.ProductID, oss.GetFileNameWithPath(in.ProductImg)))
-		path, err := l.svcCtx.OssClient.PrivateBucket().CopyFromTempBucket(in.ProductImg, nwePath)
+		path, err := l.svcCtx.OssClient.PublicBucket().CopyFromTempBucket(in.ProductImg, nwePath)
 		if err != nil {
 			return nil, errors.System.AddDetail(err)
 		}
