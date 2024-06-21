@@ -87,7 +87,7 @@ func (o *CheckEvent) Check() error {
 		logx.WithContext(o.ctx).Infof("fixOffLine %v", utils.Fmt(devs))
 		for dev := range devs {
 			di, err := o.svcCtx.DeviceCache.GetData(o.ctx, dev)
-			if err != nil {
+			if err != nil || di.DeviceType == def.DeviceTypeSubset {
 				continue
 			}
 			if di.IsOnline == def.True {
@@ -99,6 +99,8 @@ func (o *CheckEvent) Check() error {
 					IsOnline:  def.False,
 					ConnectAt: 0,
 				})
+			} else {
+				protocol.DeleteDeviceActivity(o.ctx, dev)
 			}
 		}
 	}

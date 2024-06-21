@@ -191,10 +191,8 @@ func (m *MqttProtocol) SubscribeDevConn(handle ConnHandle) error {
 		newDo.ClientID = fmt.Sprintf("%s&%s", newDo.ProductID, newDo.DeviceName)
 		switch do.Action {
 		case ActionConnected:
-			UpdateDeviceActivity(ctx, dev)
 			err = m.FastEvent.Publish(ctx, topics.DeviceUpStatusConnected, newDo)
 		case ActionDisconnected:
-			DeleteDeviceActivity(ctx, dev)
 			err = m.FastEvent.Publish(ctx, topics.DeviceUpStatusDisconnected, newDo)
 		default:
 			panic("not support conn type")

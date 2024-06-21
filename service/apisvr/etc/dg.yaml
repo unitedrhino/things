@@ -27,8 +27,10 @@ DevLink:
       - tcp://127.0.0.1:1883
     OpenApi:
       Host: http://127.0.0.1:18083
-      ApiKey: a4372308268d07d4
-      SecretKey: cuAVYN5wu4619AcYTbtD9Cv55Vh9CkzXHGlePyIgaKisxO
+      ApiKey: c0d931d242831cde
+      SecretKey: Pbd9A3iMLtE46zAulj2u05aM89CrnUIeWo1BChJrfXl8O
+#      ApiKey: a4372308268d07d4
+#      SecretKey: JRELoqeZVRlTwmXmvYxr2S7g9BkNE9B9BZFoJMXNYIaOrC
 DmRpc:
   Enable: true
   Mode: direct

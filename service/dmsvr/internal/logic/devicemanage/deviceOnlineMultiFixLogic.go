@@ -9,6 +9,7 @@ import (
 	"gitee.com/i-Things/share/domain/application"
 	"gitee.com/i-Things/share/domain/deviceAuth"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/sdk/service/protocol"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
@@ -125,9 +126,12 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 				log.Error(err)
 			}
 		})
-
+		dev := devices.Core{
+			ProductID:  ld.ProductID,
+			DeviceName: ld.DeviceName,
+		}
 		if status == def.ConnectedStatus {
-			di, err := relationDB.NewDeviceInfoRepo(ctx).FindOneByFilter(ctx, relationDB.DeviceFilter{Cores: []*devices.Core{{ProductID: ld.ProductID, DeviceName: ld.DeviceName}}})
+			di, err := relationDB.NewDeviceInfoRepo(ctx).FindOneByFilter(ctx, relationDB.DeviceFilter{Cores: []*devices.Core{&dev}})
 			if err != nil {
 				log.Error(err)
 				return
@@ -141,14 +145,11 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 				updates["first_login"] = msg.Timestamp
 			}
 			err = relationDB.NewDeviceInfoRepo(ctx).UpdateWithField(ctx,
-				relationDB.DeviceFilter{Cores: []*devices.Core{{ProductID: ld.ProductID, DeviceName: ld.DeviceName}}}, updates)
+				relationDB.DeviceFilter{Cores: []*devices.Core{&dev}}, updates)
 			if err != nil {
 				log.Error(err)
 			}
-			err = svcCtx.DeviceCache.SetData(ctx, devices.Core{
-				ProductID:  ld.ProductID,
-				DeviceName: ld.DeviceName,
-			}, nil)
+			err = svcCtx.DeviceCache.SetData(ctx, dev, nil)
 			if err != nil {
 				log.Error(err)
 			}
@@ -158,16 +159,14 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 				log.Errorf("%s.pubApp productID:%v deviceName:%v err:%v",
 					utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 			}
+			protocol.UpdateDeviceActivity(ctx, dev)
 		} else {
-			di, err := svcCtx.DeviceCache.GetData(ctx, devices.Core{
-				ProductID:  ld.ProductID,
-				DeviceName: ld.DeviceName,
-			})
+			di, err := svcCtx.DeviceCache.GetData(ctx, dev)
 			if err != nil {
 				log.Error(err)
 			} else if di.DeviceType == def.DeviceTypeGateway { //如果是网关类型下线,则需要把子设备全部下线
 				subDevs, err := relationDB.NewGatewayDeviceRepo(ctx).FindByFilter(ctx,
-					relationDB.GatewayDeviceFilter{Gateway: &devices.Core{ProductID: ld.ProductID, DeviceName: ld.DeviceName}}, nil)
+					relationDB.GatewayDeviceFilter{Gateway: &dev}, nil)
 				if err != nil {
 					log.Error(err)
 				} else {
@@ -177,15 +176,13 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 					}
 				}
 			}
-			OffLineDevices = append(OffLineDevices, &devices.Core{
-				ProductID:  ld.ProductID,
-				DeviceName: ld.DeviceName,
-			})
+			OffLineDevices = append(OffLineDevices, &dev)
 			err = svcCtx.PubApp.DeviceStatusDisConnected(ctx, appMsg)
 			if err != nil {
 				log.Errorf("%s.pubApp productID:%v deviceName:%v err:%v",
 					utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 			}
+			protocol.DeleteDeviceActivity(ctx, dev)
 		}
 
 	}
