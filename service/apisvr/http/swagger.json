@@ -7052,6 +7052,9 @@
         "notGroupID": {
           "type": "string"
         },
+        "notAreaID": {
+          "type": "string"
+        },
         "devices": {
           "type": "array",
           "items": {

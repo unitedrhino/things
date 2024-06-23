@@ -1205,6 +1205,7 @@ message DeviceInfoIndexReq{
   DeviceCore gateway = 17;//获取网关下子设备列表
   int64 groupID =18;
   int64 notGroupID =19;
+  int64 notAreaID =29;
   IDPath distributor =20;//过滤分销商的数据
   int64 status =22;
   CompareInt64 ratedPower =28;// 额定功率:单位w/h

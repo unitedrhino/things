@@ -50,6 +50,7 @@ type (
 		UserID            int64
 		UserIDs           []int64
 		NotGroupID        int64
+		NotAreaID         int64
 		Distributor       *stores.IDPathFilter
 		RatedPower        *stores.Cmp
 		AreaIDPath        string
@@ -94,6 +95,9 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	}
 	if len(f.AreaIDs) != 0 {
 		db = db.Where("area_id in ?", f.AreaIDs)
+	}
+	if f.NotAreaID != 0 {
+		db = db.Where("area_id != ?", f.NotAreaID)
 	}
 	if len(f.Versions) != 0 {
 		db = db.Where("version in ?", f.Versions)
