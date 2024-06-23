@@ -6,6 +6,7 @@ import (
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/spf13/cast"
 	"strings"
 )
 
@@ -34,6 +35,7 @@ type TriggerDevice struct {
 	TermType         CmpType           `json:"termType"`              //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
 	Values           []string          `json:"values"`                //比较条件列表
 	Body             string            `json:"body,omitempty"`        //自定义字段
+	Param            string            `json:"-"`                     //触发的参数
 }
 
 type TriggerDeviceType = string
@@ -178,5 +180,9 @@ func (t *TriggerDevice) IsHit(model *schema.Model, dataID string, param any) boo
 	if property == nil {
 		return false
 	}
-	return t.TermType.IsHit(property.Define.Type, param, t.Values)
+	hit := t.TermType.IsHit(property.Define.Type, param, t.Values)
+	if hit {
+		t.Param = cast.ToString(param)
+	}
+	return hit
 }

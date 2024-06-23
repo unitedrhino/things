@@ -25,21 +25,13 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		Longitude: v.Position.Longitude, //经度
 		Latitude:  v.Position.Latitude,  //维度
 	}
-	if withOwner && v.ProjectID > 3 {
-		func() {
-			pi, err := svcCtx.ProjectM.ProjectInfoRead(ctxs.WithRoot(ctx), &sys.ProjectWithID{ProjectID: v.ProjectID})
-			if err != nil {
-				logx.WithContext(ctx).Error(err)
-				return
-			}
-			ui, err := svcCtx.UserM.UserInfoRead(ctxs.WithRoot(ctx), &sys.UserInfoReadReq{UserID: pi.AdminUserID})
-			if err != nil {
-				logx.WithContext(ctx).Error(err)
-				return
-			}
+	if withOwner && v.UserID > 0 {
+		ui, err := svcCtx.UserM.UserInfoRead(ctxs.WithRoot(ctx), &sys.UserInfoReadReq{UserID: v.UserID})
+		if err != nil {
+			logx.WithContext(ctx).Error(err)
+		} else {
 			owner = utils.Copy[types.UserCore](ui)
-		}()
-
+		}
 	}
 	if withProperties != nil {
 		func() {

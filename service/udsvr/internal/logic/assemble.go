@@ -15,9 +15,9 @@ func ToPageInfo(info *ud.PageInfo) *def.PageInfo {
 	}
 }
 
-func ToTimeRange(timeRange *ud.TimeRange) def.TimeRange {
+func ToTimeRange(timeRange *ud.TimeRange) *def.TimeRange {
 	if timeRange == nil {
-		return def.TimeRange{}
+		return nil
 	}
-	return def.TimeRange{Start: timeRange.Start, End: timeRange.End}
+	return &def.TimeRange{Start: timeRange.Start, End: timeRange.End}
 }

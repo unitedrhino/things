@@ -3,6 +3,7 @@ package scene
 
 import (
 	"context"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
 )
@@ -44,5 +45,19 @@ func (a *ActionAlarm) Validate() error {
 
 func (a *ActionAlarm) Execute(ctx context.Context, repo ActionRepo) error {
 	err := repo.AlarmExec(ctx, AlarmSerial{Mode: a.Mode, Scene: repo.Info})
+	status := int64(def.True)
+	er := errors.Fmt(err)
+	if er.GetCode() != errors.OK.GetCode() {
+		status = def.False
+	}
+	repo.Info.Log.Actions = append(repo.Info.Log.Actions, &LogAction{
+		Type: ActionExecutorAlarm,
+		Alarm: &LogActionAlarm{
+			Mode: a.Mode,
+		},
+		Status: status,
+		Code:   er.GetCode(),
+		Msg:    er.GetMsg(),
+	})
 	return err
 }

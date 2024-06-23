@@ -28,12 +28,17 @@ func (t *Then) Validate(repo ValidateRepo) error {
 }
 
 func (t *Then) Execute(ctx context.Context, repo ActionRepo) error {
+	repo.Info.Log = NewLog(repo.Info)
 	for _, v := range t.Actions {
 		err := v.Execute(ctx, repo)
 		if err != nil {
 			logx.WithContext(ctx).Error(err)
 			return err
 		}
+	}
+	err := repo.SaveLog(ctx, repo.Info.Log)
+	if err != nil {
+		logx.WithContext(ctx).Error(err)
 	}
 	return nil
 }

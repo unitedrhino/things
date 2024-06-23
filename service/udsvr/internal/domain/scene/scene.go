@@ -46,6 +46,7 @@ type Info struct {
 	Then        Then        `json:"then"`           //触发后执行的动作
 	Status      def.Bool    `json:"status"`         // 状态（1启用 2禁用）
 	Body        string      `json:"body,omitempty"` //自定义字段
+	Log         *Log        `json:"-"`
 }
 
 func (i *Info) Validate(repo ValidateRepo) error {

@@ -32,6 +32,8 @@ service rule {
   rpc sceneInfoIndex(SceneInfoIndexReq) returns(SceneInfoIndexResp);
   rpc sceneInfoRead(WithID) returns(SceneInfo);
   rpc sceneManuallyTrigger(WithID) returns (Empty);//手动触发场景
+  rpc sceneLogIndex(SceneLogIndexReq) returns(SceneLogIndexResp);
+
 
   rpc alarmInfoCreate(AlarmInfo)returns(WithID);
   rpc alarmInfoUpdate(AlarmInfo)returns(Empty);
@@ -189,3 +191,67 @@ message SceneInfo{
   int64 updatedTime=22;//更新时间
 }
 
+
+message SceneLogIndexReq{
+  PageInfo page       = 1;  // 分页信息 只获取一个则不填
+  int64 sceneID = 2;//场景id
+  TimeRange timeRange = 3;       // 时间范围
+}
+
+message SceneLogIndexResp{
+  repeated SceneLog list = 1;//告警信息
+  int64  total = 2;//总数(只有分页的时候会返回)
+}
+
+message SceneLog {
+  int64 sceneID = 1;//场景id
+  int64 areaID =2;//区域id
+  int64 createdTime = 3;//创建时间 秒级时间戳 只读
+  int64 status = 4;// 状态（1成功 2失败）
+  string type =5;//"manual":手动触发场景  "auto":自动化
+  SceneLogTrigger trigger =6;//触发
+  repeated SceneLogAction actions =7;
+}
+
+message SceneLogAction {
+  string type =1;//执行类型(目前只记录设备属性控制)
+  int64 status = 3;// 状态（1成功 2失败）
+  int64 code =4;//错误码
+  string msg =5;//错误信息
+  string msgToken=6;//调用id
+  SceneLogActionDevice device =2;
+  SceneLogActionAlarm alarm =7;
+}
+
+message SceneLogActionAlarm{
+  string mode =1;//告警模式  trigger: 触发告警  relieve: 解除告警
+}
+
+message SceneLogActionDevice{
+  string type =1; //设备执行的类型
+  string productID =2;//产品ID
+  string productName = 3;//产品名称
+  string deviceName =4;//设备id
+  string deviceAlias = 5;//设备昵称
+  repeated SceneLogActionDeviceValue values =8;//执行的值
+}
+
+message SceneLogActionDeviceValue {
+  string dataID =6;//触发的id
+  string dataName = 7 ;//触发id的名字
+  string value =8;//执行的值
+}
+
+message SceneLogTrigger {
+  string type = 1 ;//触发类型
+  SceneLogTriggerDevice device = 3;//设备触发类型:触发设备
+}
+
+message SceneLogTriggerDevice{
+  string type =1; ////触发类型  connected:上线 disConnected:下线 reportProperty:属性上报 reportEvent: 事件上报
+  string productID =2;//设备触发
+  string deviceName =3;//设备触发
+  string dataID =4;//触发的id
+  string dataName = 5 ;//触发id的名字
+  string value =6;//触发的值
+}

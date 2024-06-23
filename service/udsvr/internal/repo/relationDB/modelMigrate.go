@@ -12,6 +12,7 @@ func Migrate(c conf.Database) error {
 	//}
 	db := stores.GetCommonConn(context.TODO())
 	return db.AutoMigrate(
+		&UdSceneLog{},
 		&UdSceneInfo{},
 		&UdSceneThenAction{},
 		&UdDeviceTimerInfo{},

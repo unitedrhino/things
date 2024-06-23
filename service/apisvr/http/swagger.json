@@ -5089,6 +5089,48 @@
         ]
       }
     },
+    "/api/v1/things/rule/scene/log/index": {
+      "post": {
+        "summary": "获取场景日志列表",
+        "operationId": "postApiV1ThingsRuleSceneLogIndex",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/SceneLogIndexResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SceneLogIndexReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/rule/scene/log",
+          "thingsRuleSceneLog"
+        ]
+      }
+    },
     "/api/v1/things/schema/common/create": {
       "post": {
         "summary": "更新通用物模型",
@@ -11235,6 +11277,222 @@
         }
       },
       "title": "SceneInfoUpdateReq"
+    },
+    "SceneLog": {
+      "type": "object",
+      "properties": {
+        "sceneID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "场景id"
+        },
+        "areaID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "区域id"
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64",
+          "description": "创建时间 秒级时间戳 只读"
+        },
+        "status": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 状态（1成功 2失败）"
+        },
+        "type": {
+          "type": "string",
+          "description": "\"manual\":手动触发场景  \"auto\":自动化"
+        },
+        "trigger": {
+          "$ref": "#/definitions/SceneLogTrigger",
+          "description": "触发"
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SceneLogAction"
+          }
+        }
+      },
+      "title": "SceneLog"
+    },
+    "SceneLogAction": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "执行类型(目前只记录设备属性控制)"
+        },
+        "status": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 状态（1成功 2失败）"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int64",
+          "description": "错误码"
+        },
+        "msg": {
+          "type": "string",
+          "description": "错误信息"
+        },
+        "msgToken": {
+          "type": "string",
+          "description": "调用id"
+        },
+        "device": {
+          "$ref": "#/definitions/SceneLogActionDevice"
+        },
+        "alarm": {
+          "$ref": "#/definitions/SceneLogActionAlarm"
+        }
+      },
+      "title": "SceneLogAction"
+    },
+    "SceneLogActionAlarm": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "description": "告警模式  trigger: 触发告警  relieve: 解除告警"
+        }
+      },
+      "title": "SceneLogActionAlarm"
+    },
+    "SceneLogActionDevice": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "设备执行的类型"
+        },
+        "productID": {
+          "type": "string",
+          "description": "产品ID"
+        },
+        "productName": {
+          "type": "string",
+          "description": "产品名称"
+        },
+        "deviceName": {
+          "type": "string",
+          "description": "设备id"
+        },
+        "deviceAlias": {
+          "type": "string",
+          "description": "设备昵称"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SceneLogActionDeviceValue"
+          },
+          "description": "执行的值"
+        }
+      },
+      "title": "SceneLogActionDevice"
+    },
+    "SceneLogActionDeviceValue": {
+      "type": "object",
+      "properties": {
+        "dataID": {
+          "type": "string",
+          "description": "触发的id"
+        },
+        "dataName": {
+          "type": "string",
+          "description": "触发id的名字"
+        },
+        "value": {
+          "type": "string",
+          "description": "执行的值"
+        }
+      },
+      "title": "SceneLogActionDeviceValue"
+    },
+    "SceneLogIndexReq": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "$ref": "#/definitions/PageInfo",
+          "description": " 分页信息 只获取一个则不填"
+        },
+        "sceneID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "场景id"
+        },
+        "timeRange": {
+          "$ref": "#/definitions/TimeRange",
+          "description": " 时间范围"
+        }
+      },
+      "title": "SceneLogIndexReq"
+    },
+    "SceneLogIndexResp": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SceneLog"
+          },
+          "description": "告警信息"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64",
+          "description": "总数(只有分页的时候会返回)"
+        }
+      },
+      "title": "SceneLogIndexResp"
+    },
+    "SceneLogTrigger": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "触发类型"
+        },
+        "device": {
+          "$ref": "#/definitions/SceneLogTriggerDevice",
+          "description": "设备触发类型:触发设备"
+        }
+      },
+      "title": "SceneLogTrigger"
+    },
+    "SceneLogTriggerDevice": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "触发类型  connected:上线 disConnected:下线 reportProperty:属性上报 reportEvent: 事件上报"
+        },
+        "productID": {
+          "type": "string",
+          "description": "设备触发"
+        },
+        "deviceName": {
+          "type": "string",
+          "description": "设备触发"
+        },
+        "dataID": {
+          "type": "string",
+          "description": "触发的id"
+        },
+        "dataName": {
+          "type": "string",
+          "description": "触发id的名字"
+        },
+        "value": {
+          "type": "string",
+          "description": "触发的值"
+        }
+      },
+      "title": "SceneLogTriggerDevice"
     },
     "SchemaAction": {
       "type": "object",

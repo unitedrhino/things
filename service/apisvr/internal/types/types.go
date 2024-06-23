@@ -1350,6 +1350,70 @@ type SceneInfoUpdateReq struct {
 	SceneInfo
 }
 
+type SceneLog struct {
+	SceneID     int64             `json:"sceneID,omitempty"`     //场景id
+	AreaID      int64             `json:"areaID,omitempty"`      //区域id
+	CreatedTime int64             `json:"createdTime,omitempty"` //创建时间 秒级时间戳 只读
+	Status      int64             `json:"status,omitempty"`      // 状态（1成功 2失败）
+	Type        string            `json:"type,omitempty"`        //"manual":手动触发场景  "auto":自动化
+	Trigger     *SceneLogTrigger  `json:"trigger,omitempty"`     //触发
+	Actions     []*SceneLogAction `json:"actions,omitempty"`
+}
+
+type SceneLogAction struct {
+	Type     string                `json:"type,omitempty"`     //执行类型(目前只记录设备属性控制)
+	Status   int64                 `json:"status,omitempty"`   // 状态（1成功 2失败）
+	Code     int64                 `json:"code,omitempty"`     //错误码
+	Msg      string                `json:"msg,omitempty"`      //错误信息
+	MsgToken string                `json:"msgToken,omitempty"` //调用id
+	Device   *SceneLogActionDevice `json:"device,omitempty"`
+	Alarm    *SceneLogActionAlarm  `json:"alarm,omitempty"`
+}
+
+type SceneLogActionAlarm struct {
+	Mode string `json:"mode,omitempty"` //告警模式  trigger: 触发告警  relieve: 解除告警
+}
+
+type SceneLogActionDevice struct {
+	Type        string                       `json:"type,omitempty"`        //设备执行的类型
+	ProductID   string                       `json:"productID,omitempty"`   //产品ID
+	ProductName string                       `json:"productName,omitempty"` //产品名称
+	DeviceName  string                       `json:"deviceName,omitempty"`  //设备id
+	DeviceAlias string                       `json:"deviceAlias,omitempty"` //设备昵称
+	Values      []*SceneLogActionDeviceValue `json:"values,omitempty"`      //执行的值
+}
+
+type SceneLogActionDeviceValue struct {
+	DataID   string `json:"dataID,omitempty"`   //触发的id
+	DataName string `json:"dataName,omitempty"` //触发id的名字
+	Value    string `json:"value,omitempty"`    //执行的值
+}
+
+type SceneLogIndexReq struct {
+	Page      *PageInfo  `json:"page,optional"`      // 分页信息 只获取一个则不填
+	SceneID   int64      `json:"sceneID,omitempty"`  //场景id
+	TimeRange *TimeRange `json:"timeRange,optional"` // 时间范围
+}
+
+type SceneLogIndexResp struct {
+	List  []*SceneLog `json:"list,omitempty"`  //告警信息
+	Total int64       `json:"total,omitempty"` //总数(只有分页的时候会返回)
+}
+
+type SceneLogTrigger struct {
+	Type   string                 `json:"type,omitempty"`   //触发类型
+	Device *SceneLogTriggerDevice `json:"device,omitempty"` //设备触发类型:触发设备
+}
+
+type SceneLogTriggerDevice struct {
+	Type       string `json:"type,omitempty"`       ////触发类型  connected:上线 disConnected:下线 reportProperty:属性上报 reportEvent: 事件上报
+	ProductID  string `json:"productID,omitempty"`  //设备触发
+	DeviceName string `json:"deviceName,omitempty"` //设备触发
+	DataID     string `json:"dataID,omitempty"`     //触发的id
+	DataName   string `json:"dataName,omitempty"`   //触发id的名字
+	Value      string `json:"value,omitempty"`      //触发的值
+}
+
 type SchemaAction struct {
 	Input  []*SchemaParam `json:"input,optional"`  //调用参数
 	Output []*SchemaParam `json:"output,optional"` //返回参数

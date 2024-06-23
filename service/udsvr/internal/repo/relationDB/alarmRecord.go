@@ -31,11 +31,12 @@ type AlarmRecordFilter struct {
 	DeviceName   string
 	DealStatus   scene.AlarmDealStatus
 	DealStatuses []scene.AlarmDealStatus
-	Time         def.TimeRange
+	Time         *def.TimeRange
 }
 
 func (p AlarmRecordRepo) fmtFilter(ctx context.Context, f AlarmRecordFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
+	f.Time.ToGorm(db, "created_time")
 	if f.AlarmID != 0 {
 		db = db.Where("alarm_id=?", f.AlarmID)
 	}

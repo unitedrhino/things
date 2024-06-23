@@ -3,6 +3,8 @@ package rulelogic
 import (
 	"context"
 	"gitee.com/i-Things/share/ctxs"
+	"gitee.com/i-Things/share/stores"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 
@@ -40,6 +42,8 @@ func (l *SceneManuallyTriggerLogic) SceneManuallyTrigger(in *ud.WithID) (*ud.Emp
 			Info:           do,
 			DeviceInteract: l.svcCtx.DeviceInteract,
 			DeviceM:        l.svcCtx.DeviceM,
+			ProductCache:   l.svcCtx.ProductCache,
+			DeviceCache:    l.svcCtx.DeviceCache,
 			DeviceG:        l.svcCtx.DeviceG,
 			SceneExec: func(ctx context.Context, sceneID int64) error {
 				l.Error("not support yet")
@@ -48,6 +52,11 @@ func (l *SceneManuallyTriggerLogic) SceneManuallyTrigger(in *ud.WithID) (*ud.Emp
 			AlarmExec: func(ctx context.Context, in scene.AlarmSerial) error {
 				l.Error("not support yet")
 				return nil
+			},
+			SaveLog: func(ctx context.Context, log *scene.Log) error {
+				po := utils.Copy[relationDB.UdSceneLog](log)
+				err := stores.WithNoDebug(l.ctx, relationDB.NewSceneLogRepo).Insert(ctx, po)
+				return err
 			},
 		})
 		if err != nil {

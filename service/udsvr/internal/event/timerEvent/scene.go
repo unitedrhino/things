@@ -3,8 +3,11 @@ package timerEvent
 import (
 	"context"
 	"fmt"
+	"gitee.com/i-Things/share/stores"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
 	rulelogic "github.com/i-Things/things/service/udsvr/internal/logic/rule"
+	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/udsvr/internal/svc"
 	"github.com/i-Things/things/service/udsvr/pb/ud"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -49,6 +52,8 @@ func (l *TimerHandle) SceneExec(ctx context.Context, do *scene.Info) error {
 		DeviceInteract: l.svcCtx.DeviceInteract,
 		DeviceM:        l.svcCtx.DeviceM,
 		DeviceG:        l.svcCtx.DeviceG,
+		ProductCache:   l.svcCtx.ProductCache,
+		DeviceCache:    l.svcCtx.DeviceCache,
 		SceneExec: func(ctx context.Context, sceneID int64) error {
 			_, err := rulelogic.NewSceneManuallyTriggerLogic(ctx, l.svcCtx).SceneManuallyTrigger(&ud.WithID{Id: sceneID})
 			return err
@@ -69,7 +74,12 @@ func (l *TimerHandle) SceneExec(ctx context.Context, do *scene.Info) error {
 				req.ProductID = trigger.Device.ProductID
 				req.DeviceName = trigger.Device.DeviceName
 			}
-			_, err := rulelogic.NewAlarmRecordCreateLogic(l.ctx, l.svcCtx).AlarmRecordCreate(&req)
+			_, err := rulelogic.NewAlarmRecordCreateLogic(stores.SetIsDebug(l.ctx, false), l.svcCtx).AlarmRecordCreate(&req)
+			return err
+		},
+		SaveLog: func(ctx context.Context, log *scene.Log) error {
+			po := utils.Copy[relationDB.UdSceneLog](log)
+			err := stores.WithNoDebug(l.ctx, relationDB.NewSceneLogRepo).Insert(ctx, po)
 			return err
 		},
 	})

@@ -25,6 +25,7 @@ const (
 	Rule_SceneInfoIndex_FullMethodName        = "/ud.rule/sceneInfoIndex"
 	Rule_SceneInfoRead_FullMethodName         = "/ud.rule/sceneInfoRead"
 	Rule_SceneManuallyTrigger_FullMethodName  = "/ud.rule/sceneManuallyTrigger"
+	Rule_SceneLogIndex_FullMethodName         = "/ud.rule/sceneLogIndex"
 	Rule_AlarmInfoCreate_FullMethodName       = "/ud.rule/alarmInfoCreate"
 	Rule_AlarmInfoUpdate_FullMethodName       = "/ud.rule/alarmInfoUpdate"
 	Rule_AlarmInfoDelete_FullMethodName       = "/ud.rule/alarmInfoDelete"
@@ -49,6 +50,7 @@ type RuleClient interface {
 	SceneInfoIndex(ctx context.Context, in *SceneInfoIndexReq, opts ...grpc.CallOption) (*SceneInfoIndexResp, error)
 	SceneInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*SceneInfo, error)
 	SceneManuallyTrigger(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
+	SceneLogIndex(ctx context.Context, in *SceneLogIndexReq, opts ...grpc.CallOption) (*SceneLogIndexResp, error)
 	AlarmInfoCreate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*WithID, error)
 	AlarmInfoUpdate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*Empty, error)
 	AlarmInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
@@ -120,6 +122,15 @@ func (c *ruleClient) SceneInfoRead(ctx context.Context, in *WithID, opts ...grpc
 func (c *ruleClient) SceneManuallyTrigger(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, Rule_SceneManuallyTrigger_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ruleClient) SceneLogIndex(ctx context.Context, in *SceneLogIndexReq, opts ...grpc.CallOption) (*SceneLogIndexResp, error) {
+	out := new(SceneLogIndexResp)
+	err := c.cc.Invoke(ctx, Rule_SceneLogIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -236,6 +247,7 @@ type RuleServer interface {
 	SceneInfoIndex(context.Context, *SceneInfoIndexReq) (*SceneInfoIndexResp, error)
 	SceneInfoRead(context.Context, *WithID) (*SceneInfo, error)
 	SceneManuallyTrigger(context.Context, *WithID) (*Empty, error)
+	SceneLogIndex(context.Context, *SceneLogIndexReq) (*SceneLogIndexResp, error)
 	AlarmInfoCreate(context.Context, *AlarmInfo) (*WithID, error)
 	AlarmInfoUpdate(context.Context, *AlarmInfo) (*Empty, error)
 	AlarmInfoDelete(context.Context, *WithID) (*Empty, error)
@@ -273,6 +285,9 @@ func (UnimplementedRuleServer) SceneInfoRead(context.Context, *WithID) (*SceneIn
 }
 func (UnimplementedRuleServer) SceneManuallyTrigger(context.Context, *WithID) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SceneManuallyTrigger not implemented")
+}
+func (UnimplementedRuleServer) SceneLogIndex(context.Context, *SceneLogIndexReq) (*SceneLogIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SceneLogIndex not implemented")
 }
 func (UnimplementedRuleServer) AlarmInfoCreate(context.Context, *AlarmInfo) (*WithID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AlarmInfoCreate not implemented")
@@ -424,6 +439,24 @@ func _Rule_SceneManuallyTrigger_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RuleServer).SceneManuallyTrigger(ctx, req.(*WithID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Rule_SceneLogIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SceneLogIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RuleServer).SceneLogIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Rule_SceneLogIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RuleServer).SceneLogIndex(ctx, req.(*SceneLogIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -656,6 +689,10 @@ var Rule_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "sceneManuallyTrigger",
 			Handler:    _Rule_SceneManuallyTrigger_Handler,
+		},
+		{
+			MethodName: "sceneLogIndex",
+			Handler:    _Rule_SceneLogIndex_Handler,
 		},
 		{
 			MethodName: "alarmInfoCreate",

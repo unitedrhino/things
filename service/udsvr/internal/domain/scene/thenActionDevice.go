@@ -3,6 +3,7 @@ package scene
 import (
 	"context"
 	"encoding/json"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
@@ -137,25 +138,89 @@ func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 		ret, _ := json.Marshal(data)
 		return string(ret)
 	}
+	var values []*LogActionDeviceValue
+	if a.DataID != "" {
+		values = append(values, &LogActionDeviceValue{
+			DataID:   a.DataID,
+			DataName: a.DataName,
+			Value:    a.Value,
+		})
+	} else {
+		for _, val := range a.Values {
+			values = append(values, &LogActionDeviceValue{
+				DataID:   val.DataID,
+				DataName: val.DataName,
+				Value:    val.Value,
+			})
+		}
+	}
 	switch a.Type {
 	case ActionDeviceTypePropertyControl:
 		executeFunc = func(device devices.Core) error {
-			_, err := repo.DeviceInteract.PropertyControlSend(ctx, &deviceinteract.PropertyControlSendReq{
-				IsAsync:    true,
+			ret, err := repo.DeviceInteract.PropertyControlSend(ctx, &deviceinteract.PropertyControlSendReq{
+				IsAsync:    false,
 				ProductID:  device.ProductID,
 				DeviceName: device.DeviceName,
 				Data:       toData(),
 			})
 			if err != nil {
 				logx.WithContext(ctx).Errorf("%s.DeviceInfoIndex SendProperty:%#v err:%v", utils.FuncName(), a, err)
-				return err
+				er := errors.Fmt(err)
+				pi, err := repo.ProductCache.GetData(ctx, device.ProductID)
+				if err != nil {
+					logx.WithContext(ctx).Error(err)
+				}
+				di, err := repo.DeviceCache.GetData(ctx, device)
+				if err != nil {
+					logx.WithContext(ctx).Error(err)
+				}
+				repo.Info.Log.Actions = append(repo.Info.Log.Actions, &LogAction{
+					Type: ActionExecutorDevice,
+					Device: &LogActionDevice{
+						ProductID:   device.ProductID,
+						ProductName: pi.GetProductName(),
+						DeviceName:  device.DeviceName,
+						DeviceAlias: di.GetDeviceAlias().GetValue(),
+						Values:      values,
+					},
+					Status: def.False,
+					Code:   er.Code,
+					Msg:    er.GetMsg(),
+				})
+				return er
 			}
+			pi, err := repo.ProductCache.GetData(ctx, device.ProductID)
+			if err != nil {
+				logx.WithContext(ctx).Error(err)
+			}
+			di, err := repo.DeviceCache.GetData(ctx, device)
+			if err != nil {
+				logx.WithContext(ctx).Error(err)
+			}
+			status := int64(def.True)
+			if ret.Code != errors.OK.GetCode() {
+				status = def.False
+			}
+			repo.Info.Log.Actions = append(repo.Info.Log.Actions, &LogAction{
+				Type: ActionExecutorDevice,
+				Device: &LogActionDevice{
+					ProductID:   device.ProductID,
+					ProductName: pi.GetProductName(),
+					DeviceName:  device.DeviceName,
+					DeviceAlias: di.GetDeviceAlias().GetValue(),
+					Values:      values,
+				},
+				Status:   status,
+				Code:     ret.Code,
+				Msg:      ret.Msg,
+				MsgToken: ret.MsgToken,
+			})
 			return nil
 		}
 	case ActionDeviceTypeAction:
 		executeFunc = func(device devices.Core) error {
 			_, err := repo.DeviceInteract.ActionSend(ctx, &deviceinteract.ActionSendReq{
-				IsAsync:     true,
+				IsAsync:     false,
 				ProductID:   device.ProductID,
 				DeviceName:  device.DeviceName,
 				ActionID:    a.DataID,

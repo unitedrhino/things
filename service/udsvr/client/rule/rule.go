@@ -14,28 +14,37 @@ import (
 )
 
 type (
-	AlarmInfo              = ud.AlarmInfo
-	AlarmInfoIndexReq      = ud.AlarmInfoIndexReq
-	AlarmInfoIndexResp     = ud.AlarmInfoIndexResp
-	AlarmNotify            = ud.AlarmNotify
-	AlarmRecord            = ud.AlarmRecord
-	AlarmRecordCreateReq   = ud.AlarmRecordCreateReq
-	AlarmRecordDealReq     = ud.AlarmRecordDealReq
-	AlarmRecordIndexReq    = ud.AlarmRecordIndexReq
-	AlarmRecordIndexResp   = ud.AlarmRecordIndexResp
-	AlarmSceneDeleteReq    = ud.AlarmSceneDeleteReq
-	AlarmSceneIndexReq     = ud.AlarmSceneIndexReq
-	AlarmSceneIndexResp    = ud.AlarmSceneIndexResp
-	AlarmSceneMultiSaveReq = ud.AlarmSceneMultiSaveReq
-	DeviceCore             = ud.DeviceCore
-	Empty                  = ud.Empty
-	PageInfo               = ud.PageInfo
-	SceneFlowInfo          = ud.SceneFlowInfo
-	SceneInfo              = ud.SceneInfo
-	SceneInfoIndexReq      = ud.SceneInfoIndexReq
-	SceneInfoIndexResp     = ud.SceneInfoIndexResp
-	TimeRange              = ud.TimeRange
-	WithID                 = ud.WithID
+	AlarmInfo                 = ud.AlarmInfo
+	AlarmInfoIndexReq         = ud.AlarmInfoIndexReq
+	AlarmInfoIndexResp        = ud.AlarmInfoIndexResp
+	AlarmNotify               = ud.AlarmNotify
+	AlarmRecord               = ud.AlarmRecord
+	AlarmRecordCreateReq      = ud.AlarmRecordCreateReq
+	AlarmRecordDealReq        = ud.AlarmRecordDealReq
+	AlarmRecordIndexReq       = ud.AlarmRecordIndexReq
+	AlarmRecordIndexResp      = ud.AlarmRecordIndexResp
+	AlarmSceneDeleteReq       = ud.AlarmSceneDeleteReq
+	AlarmSceneIndexReq        = ud.AlarmSceneIndexReq
+	AlarmSceneIndexResp       = ud.AlarmSceneIndexResp
+	AlarmSceneMultiSaveReq    = ud.AlarmSceneMultiSaveReq
+	DeviceCore                = ud.DeviceCore
+	Empty                     = ud.Empty
+	PageInfo                  = ud.PageInfo
+	SceneFlowInfo             = ud.SceneFlowInfo
+	SceneInfo                 = ud.SceneInfo
+	SceneInfoIndexReq         = ud.SceneInfoIndexReq
+	SceneInfoIndexResp        = ud.SceneInfoIndexResp
+	SceneLog                  = ud.SceneLog
+	SceneLogAction            = ud.SceneLogAction
+	SceneLogActionAlarm       = ud.SceneLogActionAlarm
+	SceneLogActionDevice      = ud.SceneLogActionDevice
+	SceneLogActionDeviceValue = ud.SceneLogActionDeviceValue
+	SceneLogIndexReq          = ud.SceneLogIndexReq
+	SceneLogIndexResp         = ud.SceneLogIndexResp
+	SceneLogTrigger           = ud.SceneLogTrigger
+	SceneLogTriggerDevice     = ud.SceneLogTriggerDevice
+	TimeRange                 = ud.TimeRange
+	WithID                    = ud.WithID
 
 	Rule interface {
 		// 场景
@@ -45,6 +54,7 @@ type (
 		SceneInfoIndex(ctx context.Context, in *SceneInfoIndexReq, opts ...grpc.CallOption) (*SceneInfoIndexResp, error)
 		SceneInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*SceneInfo, error)
 		SceneManuallyTrigger(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
+		SceneLogIndex(ctx context.Context, in *SceneLogIndexReq, opts ...grpc.CallOption) (*SceneLogIndexResp, error)
 		AlarmInfoCreate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*WithID, error)
 		AlarmInfoUpdate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*Empty, error)
 		AlarmInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
@@ -137,6 +147,15 @@ func (m *defaultRule) SceneManuallyTrigger(ctx context.Context, in *WithID, opts
 
 func (d *directRule) SceneManuallyTrigger(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.SceneManuallyTrigger(ctx, in)
+}
+
+func (m *defaultRule) SceneLogIndex(ctx context.Context, in *SceneLogIndexReq, opts ...grpc.CallOption) (*SceneLogIndexResp, error) {
+	client := ud.NewRuleClient(m.cli.Conn())
+	return client.SceneLogIndex(ctx, in, opts...)
+}
+
+func (d *directRule) SceneLogIndex(ctx context.Context, in *SceneLogIndexReq, opts ...grpc.CallOption) (*SceneLogIndexResp, error) {
+	return d.svr.SceneLogIndex(ctx, in)
 }
 
 func (m *defaultRule) AlarmInfoCreate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*WithID, error) {

@@ -53,6 +53,11 @@ func (s *RuleServer) SceneManuallyTrigger(ctx context.Context, in *ud.WithID) (*
 	return l.SceneManuallyTrigger(in)
 }
 
+func (s *RuleServer) SceneLogIndex(ctx context.Context, in *ud.SceneLogIndexReq) (*ud.SceneLogIndexResp, error) {
+	l := rulelogic.NewSceneLogIndexLogic(ctx, s.svcCtx)
+	return l.SceneLogIndex(in)
+}
+
 func (s *RuleServer) AlarmInfoCreate(ctx context.Context, in *ud.AlarmInfo) (*ud.WithID, error) {
 	l := rulelogic.NewAlarmInfoCreateLogic(ctx, s.svcCtx)
 	return l.AlarmInfoCreate(in)

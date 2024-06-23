@@ -140,3 +140,20 @@ type UdSceneActionScene struct {
 	AreaID  int64 `gorm:"column:area_id;type:bigint;"`       // 项目区域ID(雪花ID)
 
 }
+
+type UdSceneLog struct {
+	ID         int64              `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`    // id编号
+	TenantCode stores.TenantCode  `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`        // 租户编码
+	ProjectID  stores.ProjectID   `gorm:"column:project_id;type:bigint;default:0;NOT NULL"`    // 项目ID(雪花ID)
+	AreaID     stores.AreaID      `gorm:"column:area_id;index;type:bigint;default:0;NOT NULL"` // 项目区域ID(雪花ID)
+	SceneID    int64              `gorm:"column:scene_id;index;type:bigint;NOT NULL"`          // 项目区域ID(雪花ID)
+	Type       scene.SceneType    `gorm:"column:type;type:VARCHAR(25);NOT NULL"`               //auto manual
+	Trigger    *scene.LogTrigger  `gorm:"column:trigger;type:json;serializer:json"`
+	Actions    []*scene.LogAction `gorm:"column:actions;type:json;serializer:json"`
+	Status     def.Bool           `gorm:"column:status;type:BIGINT;default:1"` //状态
+	stores.OnlyTime
+}
+
+func (m *UdSceneLog) TableName() string {
+	return "ud_scene_log"
+}

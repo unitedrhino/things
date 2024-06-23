@@ -28,6 +28,7 @@ import (
 	thingsrulealarmrecord "github.com/i-Things/things/service/apisvr/internal/handler/things/rule/alarm/record"
 	thingsrulealarmscene "github.com/i-Things/things/service/apisvr/internal/handler/things/rule/alarm/scene"
 	thingsrulesceneinfo "github.com/i-Things/things/service/apisvr/internal/handler/things/rule/scene/info"
+	thingsrulescenelog "github.com/i-Things/things/service/apisvr/internal/handler/things/rule/scene/log"
 	thingsschemacommon "github.com/i-Things/things/service/apisvr/internal/handler/things/schema/common"
 	thingsslotarea "github.com/i-Things/things/service/apisvr/internal/handler/things/slot/area"
 	thingsslotuser "github.com/i-Things/things/service/apisvr/internal/handler/things/slot/user"
@@ -878,6 +879,20 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/rule/scene/info"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckTokenWare, serverCtx.InitCtxsWare, serverCtx.CheckApiWare, serverCtx.DataAuthWare, serverCtx.TeardownWare},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsrulescenelog.IndexHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/rule/scene/log"),
 	)
 
 	server.AddRoutes(
