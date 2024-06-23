@@ -187,6 +187,7 @@ func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 					Code:   er.Code,
 					Msg:    er.GetMsg(),
 				})
+				repo.Info.Log.Status = def.False
 				return er
 			}
 			pi, err := repo.ProductCache.GetData(ctx, device.ProductID)
@@ -200,6 +201,7 @@ func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 			status := int64(def.True)
 			if ret.Code != errors.OK.GetCode() {
 				status = def.False
+				repo.Info.Log.Status = def.False
 			}
 			repo.Info.Log.Actions = append(repo.Info.Log.Actions, &LogAction{
 				Type: ActionExecutorDevice,

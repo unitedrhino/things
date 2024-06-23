@@ -49,6 +49,7 @@ func (a *ActionAlarm) Execute(ctx context.Context, repo ActionRepo) error {
 	er := errors.Fmt(err)
 	if er.GetCode() != errors.OK.GetCode() {
 		status = def.False
+		repo.Info.Log.Status = def.False
 	}
 	repo.Info.Log.Actions = append(repo.Info.Log.Actions, &LogAction{
 		Type: ActionExecutorAlarm,

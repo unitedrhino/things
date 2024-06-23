@@ -61,7 +61,7 @@ func NewLog(scene *Info) *Log {
 	if scene == nil {
 		return nil
 	}
-	var log = Log{Type: scene.Type, AreaID: scene.AreaID, SceneID: scene.ID, Status: def.False, CreatedTime: time.Now()}
+	var log = Log{Type: scene.Type, AreaID: scene.AreaID, SceneID: scene.ID, Status: def.True, CreatedTime: time.Now()}
 	if len(scene.If.Triggers) == 0 {
 		return &log
 	}
