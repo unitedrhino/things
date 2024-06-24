@@ -11,7 +11,6 @@ import (
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
-	"github.com/zeromicro/go-zero/core/logx"
 )
 
 func ToDeviceInfo(ctx context.Context, svcCtx *svc.ServiceContext, in *relationDB.DmDeviceInfo) *dm.DeviceInfo {
@@ -35,13 +34,8 @@ func ToDeviceInfo(ctx context.Context, svcCtx *svc.ServiceContext, in *relationD
 		deviceType = pi.DeviceType
 		productName = pi.ProductName
 		netType = pi.NetType
-		if pi.ProductImg != "" {
-			var err error
-			ProductImg, err = svcCtx.OssClient.PublicBucket().GetUrl(pi.ProductImg)
-			if err != nil {
-				logx.WithContext(ctx).Errorf("%s.SignedGetUrl err:%v", utils.FuncName(), err)
-			}
-		}
+		ProductImg = pi.ProductImg
+
 	}
 	//return utils.Copy[dm.DeviceInfo](in)
 
