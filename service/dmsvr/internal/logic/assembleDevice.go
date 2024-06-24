@@ -46,6 +46,7 @@ func ToDeviceInfo(ctx context.Context, svcCtx *svc.ServiceContext, in *relationD
 		DeviceName:         in.DeviceName,
 		ProjectID:          int64(in.ProjectID),
 		AreaID:             int64(in.AreaID),
+		AreaIDPath:         in.AreaIDPath,
 		DeviceAlias:        &wrappers.StringValue{Value: in.DeviceAlias},
 		MobileOperator:     in.MobileOperator,
 		Phone:              utils.ToRpcNullString(in.Phone),
