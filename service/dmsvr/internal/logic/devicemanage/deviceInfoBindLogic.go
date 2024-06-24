@@ -33,16 +33,16 @@ func NewDeviceInfoBindLogic(ctx context.Context, svcCtx *svc.ServiceContext) *De
 }
 
 func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empty, error) {
-	if in.ProtocolCode != "" {
-		pi, err := relationDB.NewProductInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.ProductFilter{
-			ProtocolConf: map[string]string{"productID": in.Device.ProductID},
-			ProtocolCode: in.ProtocolCode,
-		})
-		if err != nil {
-			return nil, err
-		}
-		in.Device.ProductID = pi.ProductID
-	}
+	//if in.ProtocolCode != "" {
+	//	pi, err := relationDB.NewProductInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.ProductFilter{
+	//		ProtocolConf: map[string]string{"productID": in.Device.ProductID},
+	//		ProtocolCode: in.ProtocolCode,
+	//	})
+	//	if err != nil {
+	//		return nil, err
+	//	}
+	//	in.Device.ProductID = pi.ProductID
+	//}
 	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, in.Device.ProductID)
 	if err != nil {
 		return nil, err
