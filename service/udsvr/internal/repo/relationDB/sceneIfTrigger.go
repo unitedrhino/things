@@ -67,7 +67,7 @@ func (p SceneIfTriggerRepo) Insert(ctx context.Context, data *UdSceneIfTrigger) 
 func (p SceneIfTriggerRepo) FindOneByFilter(ctx context.Context, f SceneIfTriggerFilter) (*UdSceneIfTrigger, error) {
 	var result UdSceneIfTrigger
 	db := p.fmtFilter(ctx, f)
-	err := db.Preload("SceneInfo").First(&result).Error
+	err := db.Preload("SceneInfo").Preload("SceneInfo.Actions").First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
@@ -77,7 +77,7 @@ func (p SceneIfTriggerRepo) FindByFilter(ctx context.Context, f SceneIfTriggerFi
 	var results []*UdSceneIfTrigger
 	db := p.fmtFilter(ctx, f).Model(&UdSceneIfTrigger{})
 	db = page.ToGorm(db)
-	err := db.Preload("SceneInfo").Find(&results).Error
+	err := db.Preload("SceneInfo").Preload("SceneInfo.Actions").Find(&results).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
@@ -107,7 +107,7 @@ func (p SceneIfTriggerRepo) Delete(ctx context.Context, id int64) error {
 }
 func (p SceneIfTriggerRepo) FindOne(ctx context.Context, id int64) (*UdSceneIfTrigger, error) {
 	var result UdSceneIfTrigger
-	err := p.db.WithContext(ctx).Preload("SceneInfo").Where("id = ?", id).First(&result).Error
+	err := p.db.WithContext(ctx).Preload("SceneInfo").Preload("SceneInfo.Actions").Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
