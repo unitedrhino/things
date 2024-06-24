@@ -16,8 +16,8 @@ type Log struct {
 }
 type LogAction struct {
 	Type     ActionType       `json:"type"` //执行器类型 notify: 通知 delay:延迟  device:设备输出  alarm: 告警
-	Device   *LogActionDevice `json:"device"`
-	Alarm    *LogActionAlarm  `json:"alarm"`
+	Device   *LogActionDevice `json:"device,omitempty"`
+	Alarm    *LogActionAlarm  `json:"alarm,omitempty"`
 	Status   int64            `json:"status"`
 	Code     int64            `json:"code"`
 	Msg      string           `json:"msg"`
