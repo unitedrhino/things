@@ -30,6 +30,7 @@ func (l *TimerHandle) SceneTiming() error {
 
 	for _, v := range list {
 		var po = v
+		po.SceneInfo.Triggers = append(po.SceneInfo.Triggers, po)
 		do := rulelogic.PoToSceneInfoDo(po.SceneInfo)
 		if po.SceneInfo == nil {
 			logx.WithContext(l.ctx).Errorf("trigger timer not bind scene, trigger:%v", utils.Fmt(po))

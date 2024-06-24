@@ -11,7 +11,7 @@ type Log struct {
 	Type        SceneType    `json:"type"`
 	Status      def.Bool     `json:"status"`
 	CreatedTime time.Time    `json:"createdTime"`
-	Trigger     *LogTrigger  `json:"trigger"`
+	Trigger     *LogTrigger  `json:"trigger,omitempty"`
 	Actions     []*LogAction `json:"actions"`
 }
 type LogAction struct {
@@ -44,7 +44,7 @@ type LogActionDeviceValue struct {
 
 type LogTrigger struct {
 	Type   TriggerType       `json:"type"`
-	Device *LogTriggerDevice `json:"device"`
+	Device *LogTriggerDevice `json:"device,omitempty"`
 }
 
 type LogTriggerDevice struct {
