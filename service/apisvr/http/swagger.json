@@ -10996,6 +10996,10 @@
           "type": "string",
           "description": " 用户头像"
         },
+        "lastRunTime": {
+          "type": "integer",
+          "format": "int64"
+        },
         "isUpdateHeadImg": {
           "type": "boolean",
           "format": "boolean",
@@ -11079,6 +11083,10 @@
         "headImg": {
           "type": "string",
           "description": " 用户头像"
+        },
+        "lastRunTime": {
+          "type": "integer",
+          "format": "int64"
         },
         "isUpdateHeadImg": {
           "type": "boolean",
@@ -11250,6 +11258,10 @@
         "headImg": {
           "type": "string",
           "description": " 用户头像"
+        },
+        "lastRunTime": {
+          "type": "integer",
+          "format": "int64"
         },
         "isUpdateHeadImg": {
           "type": "boolean",

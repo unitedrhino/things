@@ -36,6 +36,7 @@ type Info struct {
 	ProductID   string      `json:"productID,omitempty"`   //产品id
 	DeviceName  string      `json:"deviceName,omitempty"`  //设备名
 	DeviceAlias string      `json:"deviceAlias,omitempty"` //设备别名,只读
+	LastRunTime int64       `json:"lastRunTime"`
 	Tag         string      `json:"tag"`
 	Name        string      `json:"name"`
 	Desc        string      `json:"desc"`

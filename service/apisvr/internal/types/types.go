@@ -1312,7 +1312,8 @@ type SceneInfo struct {
 	If              string           `json:"if,optional"`
 	When            string           `json:"when,optional"`
 	Then            string           `json:"then,optional"`
-	HeadImg         string           `json:"headImg,optional"`                   // 用户头像
+	HeadImg         string           `json:"headImg,optional"` // 用户头像
+	LastRunTime     int64            `json:"lastRunTime,optional"`
 	IsUpdateHeadImg bool             `json:"isUpdateHeadImg,omitempty,optional"` // 用户头像
 	ProductID       string           `json:"productID,omitempty,optional"`
 	DeviceName      string           `json:"deviceName,omitempty,optional"`

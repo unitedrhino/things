@@ -140,6 +140,7 @@ func PoToSceneInfoDo(in *relationDB.UdSceneInfo) *scene.Info {
 		ProductID:   in.ProductID,
 		DeviceName:  in.DeviceName,
 		DeviceAlias: in.DeviceAlias,
+		LastRunTime: utils.GetNullTime(in.LastRunTime),
 		Type:        in.Type,
 		If: scene.If{
 			Triggers: ToSceneTriggersDo(in.Triggers),

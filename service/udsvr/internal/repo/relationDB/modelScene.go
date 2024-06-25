@@ -1,6 +1,7 @@
 package relationDB
 
 import (
+	"database/sql"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
@@ -22,9 +23,9 @@ type UdSceneInfo struct {
 	Name        string            `gorm:"column:name;type:varchar(100);NOT NULL"`                                 // 名称
 	Desc        string            `gorm:"column:desc;type:varchar(200);NOT NULL"`                                 // 描述
 	Type        scene.SceneType   `gorm:"column:type;type:VARCHAR(25);NOT NULL"`                                  //auto manual
-	//LastRunTime    time.Time         `gorm:"column:last_run_time;index;default:CURRENT_TIMESTAMP;NOT NULL"`
-	Status      def.Bool `gorm:"column:status;type:BIGINT;default:1"` //状态
-	Body        string   `gorm:"column:body;type:VARCHAR(1024)"`      // 自定义数据
+	LastRunTime sql.NullTime      `gorm:"column:last_run_time;index;default:null"`
+	Status      def.Bool          `gorm:"column:status;type:BIGINT;default:1"` //状态
+	Body        string            `gorm:"column:body;type:VARCHAR(1024)"`      // 自定义数据
 	UdSceneIf   `gorm:"embedded;embeddedPrefix:if_"`
 	UdSceneWhen `gorm:"embedded;embeddedPrefix:when_"`
 	UdSceneThen `gorm:"embedded;embeddedPrefix:then_"`
