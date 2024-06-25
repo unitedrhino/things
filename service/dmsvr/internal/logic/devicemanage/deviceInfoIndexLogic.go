@@ -127,6 +127,7 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 	}
 	di, err := l.DiDB.FindByFilter(l.ctx, filter,
 		logic.ToPageInfoWithDefault(in.Page, logic.ToPageInfo(in.Page,
+			def.OrderBy{Filed: "is_online", Sort: def.OrderAsc},
 			def.OrderBy{Filed: "created_time", Sort: def.OrderDesc},
 			def.OrderBy{Filed: "product_id", Sort: def.OrderDesc})),
 	)
