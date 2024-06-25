@@ -68,6 +68,7 @@ func (l *DeviceOnlineMultiFixLogic) DeviceOnlineMultiFix(in *dm.DeviceOnlineMult
 }
 
 func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList []*deviceStatus.ConnectMsg) (err error) {
+	ctx = ctxs.WithRoot(ctx)
 	var ( //这里是最后更新数据库状态的设备列表
 		OffLineDevices  []*devices.Core
 		subDeviceInsert []*deviceStatus.ConnectMsg
