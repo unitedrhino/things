@@ -11507,6 +11507,10 @@
           "type": "string",
           "description": "设备触发"
         },
+        "deviceAlias": {
+          "type": "string",
+          "description": "设备昵称"
+        },
         "dataID": {
           "type": "string",
           "description": "触发的id"

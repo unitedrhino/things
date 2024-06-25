@@ -1410,12 +1410,13 @@ type SceneLogTrigger struct {
 }
 
 type SceneLogTriggerDevice struct {
-	Type       string `json:"type,omitempty"`       ////触发类型  connected:上线 disConnected:下线 reportProperty:属性上报 reportEvent: 事件上报
-	ProductID  string `json:"productID,omitempty"`  //设备触发
-	DeviceName string `json:"deviceName,omitempty"` //设备触发
-	DataID     string `json:"dataID,omitempty"`     //触发的id
-	DataName   string `json:"dataName,omitempty"`   //触发id的名字
-	Value      string `json:"value,omitempty"`      //触发的值
+	Type        string `json:"type,omitempty"`        ////触发类型  connected:上线 disConnected:下线 reportProperty:属性上报 reportEvent: 事件上报
+	ProductID   string `json:"productID,omitempty"`   //设备触发
+	DeviceName  string `json:"deviceName,omitempty"`  //设备触发
+	DeviceAlias string `json:"deviceAlias,omitempty"` //设备昵称
+	DataID      string `json:"dataID,omitempty"`      //触发的id
+	DataName    string `json:"dataName,omitempty"`    //触发id的名字
+	Value       string `json:"value,omitempty"`       //触发的值
 }
 
 type SchemaAction struct {
