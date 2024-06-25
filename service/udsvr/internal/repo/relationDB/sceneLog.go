@@ -25,14 +25,18 @@ func NewSceneLogRepo(in any) *SceneLogRepo {
 
 type SceneLogFilter struct {
 	Time    *def.TimeRange
+	Status  int64
 	SceneID int64
 }
 
 func (p SceneLogRepo) fmtFilter(ctx context.Context, f SceneLogFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
-	f.Time.ToGorm(db, "created_time")
+	db = f.Time.ToGorm(db, "created_time")
 	if f.SceneID != 0 {
 		db = db.Where("scene_id=?", f.SceneID)
+	}
+	if f.Status != 0 {
+		db = db.Where("status=?", f.Status)
 	}
 	return db
 }

@@ -11440,6 +11440,11 @@
           "format": "int64",
           "description": "场景id"
         },
+        "status": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 状态（1成功 2失败）"
+        },
         "timeRange": {
           "$ref": "#/definitions/TimeRange",
           "description": " 时间范围"
@@ -11472,12 +11477,20 @@
           "type": "string",
           "description": "触发类型"
         },
+        "time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "触发时间,秒时间戳"
+        },
         "device": {
           "$ref": "#/definitions/SceneLogTriggerDevice",
           "description": "设备触发类型:触发设备"
         }
       },
-      "title": "SceneLogTrigger"
+      "title": "SceneLogTrigger",
+      "required": [
+        "time"
+      ]
     },
     "SceneLogTriggerDevice": {
       "type": "object",

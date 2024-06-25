@@ -196,6 +196,7 @@ message SceneLogIndexReq{
   PageInfo page       = 1;  // 分页信息 只获取一个则不填
   int64 sceneID = 2;//场景id
   TimeRange timeRange = 3;       // 时间范围
+  int64 status = 4;// 状态（1成功 2失败）
 }
 
 message SceneLogIndexResp{
@@ -244,6 +245,7 @@ message SceneLogActionDeviceValue {
 
 message SceneLogTrigger {
   string type = 1 ;//触发类型
+  int64 time =2;//触发时间
   SceneLogTriggerDevice device = 3;//设备触发类型:触发设备
 }
 

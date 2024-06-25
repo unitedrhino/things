@@ -1392,9 +1392,10 @@ type SceneLogActionDeviceValue struct {
 }
 
 type SceneLogIndexReq struct {
-	Page      *PageInfo  `json:"page,optional"`      // 分页信息 只获取一个则不填
-	SceneID   int64      `json:"sceneID,omitempty"`  //场景id
-	TimeRange *TimeRange `json:"timeRange,optional"` // 时间范围
+	Page      *PageInfo  `json:"page,optional"`             // 分页信息 只获取一个则不填
+	SceneID   int64      `json:"sceneID,omitempty"`         //场景id
+	Status    int64      `json:"status,optional,omitempty"` // 状态（1成功 2失败）
+	TimeRange *TimeRange `json:"timeRange,optional"`        // 时间范围
 }
 
 type SceneLogIndexResp struct {
@@ -1404,6 +1405,7 @@ type SceneLogIndexResp struct {
 
 type SceneLogTrigger struct {
 	Type   string                 `json:"type,omitempty"`   //触发类型
+	Time   int64                  `json:"time"`             ////触发时间,秒时间戳
 	Device *SceneLogTriggerDevice `json:"device,omitempty"` //设备触发类型:触发设备
 }
 

@@ -44,6 +44,7 @@ type LogActionDeviceValue struct {
 
 type LogTrigger struct {
 	Type   TriggerType       `json:"type"`
+	Time   time.Time         `json:"time"` //触发时间
 	Device *LogTriggerDevice `json:"device,omitempty"`
 }
 
@@ -68,6 +69,7 @@ func NewLog(scene *Info) *Log {
 	st := scene.If.Triggers[0]
 	log.Trigger = &LogTrigger{
 		Type: st.Type,
+		Time: time.Now(),
 	}
 	if st.Type == TriggerTypeDevice && st.Device != nil {
 		dev := st.Device
