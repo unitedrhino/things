@@ -140,6 +140,12 @@ func (p SceneInfoRepo) UpdateHeadImg(ctx context.Context, data *UdSceneInfo) err
 	return stores.ErrFmt(err)
 }
 
+func (d SceneInfoRepo) UpdateWithField(ctx context.Context, f SceneInfoFilter, updates map[string]any) error {
+	db := d.fmtFilter(ctx, f)
+	err := db.Model(&UdSceneInfo{}).Updates(updates).Error
+	return stores.ErrFmt(err)
+}
+
 func (p SceneInfoRepo) Update(ctx context.Context, data *UdSceneInfo) error {
 	err := p.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		err := NewSceneIfTriggerRepo(tx).DeleteByFilter(ctx, SceneIfTriggerFilter{SceneID: data.ID})

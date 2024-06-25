@@ -7,6 +7,7 @@ import (
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
+	"time"
 
 	"github.com/i-Things/things/service/udsvr/internal/svc"
 	"github.com/i-Things/things/service/udsvr/pb/ud"
@@ -38,6 +39,10 @@ func (l *SceneManuallyTriggerLogic) SceneManuallyTrigger(in *ud.WithID) (*ud.Emp
 	//}
 	do := PoToSceneInfoDo(si)
 	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) { //异步执行
+		err = stores.WithNoDebug(ctx, relationDB.NewSceneInfoRepo).UpdateWithField(ctx, relationDB.SceneInfoFilter{IDs: []int64{si.ID}}, map[string]any{"last_run_time": time.Now()})
+		if err != nil {
+			logx.WithContext(ctx).Error(err)
+		}
 		err = do.Then.Execute(ctx, scene.ActionRepo{
 			Info:           do,
 			DeviceInteract: l.svcCtx.DeviceInteract,

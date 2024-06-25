@@ -27,9 +27,10 @@ func (l *TimerHandle) SceneTiming() error {
 	if err != nil {
 		return err
 	}
-
+	var sceneSet = map[int64]struct{}{}
 	for _, v := range list {
 		var po = v
+
 		po.SceneInfo.Triggers = append(po.SceneInfo.Triggers, po)
 		do := rulelogic.PoToSceneInfoDo(po.SceneInfo)
 		if po.SceneInfo == nil {
@@ -59,11 +60,17 @@ func (l *TimerHandle) SceneTiming() error {
 					l.Error(err)
 					return
 				}
+				stores.WithNoDebug(ctx, relationDB.NewSceneInfoRepo).UpdateWithField(ctx, relationDB.SceneInfoFilter{IDs: []int64{po.SceneID}}, map[string]any{"last_run_time": time.Now()})
 			}()
 			if err != nil { //如果失败了下次还可以执行
 				l.Error(err)
 				return
 			}
+			if _, ok := sceneSet[po.SceneID]; ok { //多个定时触发同时触发只执行一次
+				l.Infof("重复触发同一个场景,跳过,场景id:%v", po.SceneID)
+				return
+			}
+			sceneSet[po.SceneID] = struct{}{}
 			l.SceneExec(ctx, do)
 		})
 	}
