@@ -43,7 +43,7 @@ func (s *natsSubDev) GetMsg(timeout time.Duration) (ele *deviceMsg.PublishMsg, e
 	ctx := emsg.GetCtx()
 	//向jaeger推送当前节点信息，路径名为主题名
 	ctx, span := ctxs.StartSpan(ctx, msg.Subject, "")
-	logx.Infof("%s trace:%s  spanID:%s topic:%s", utils.FuncName(),
+	logx.Debugf("%s trace:%s  spanID:%s topic:%s", utils.FuncName(),
 		span.SpanContext().TraceID(), span.SpanContext().SpanID(), msg.Subject)
 	defer span.End()
 	ele, err = deviceMsg.GetDevPublish(ctx, emsg.GetData())

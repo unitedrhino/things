@@ -25,9 +25,9 @@ func (t CmpType) IsHit(dataType schema.DataType, data any, values []string) bool
 	switch dataType {
 	case schema.DataTypeFloat:
 		return TermCompareAll(t, cast.ToFloat64(data), utils.SliceTo(values, cast.ToFloat64))
-	case schema.DataTypeInt, schema.DataTypeTimestamp:
+	case schema.DataTypeInt, schema.DataTypeTimestamp, schema.DataTypeBool:
 		return TermCompareAll(t, cast.ToInt64(data), utils.SliceTo(values, cast.ToInt64))
-	case schema.DataTypeString, schema.DataTypeBool:
+	case schema.DataTypeString:
 		return TermCompareAll(t, cast.ToString(data), values)
 	default:
 		return TermCompareAll(t, cast.ToString(data), values)
