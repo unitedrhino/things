@@ -194,6 +194,10 @@ func (s *DeviceSubServer) Disconnected(info *devices.DevConn) error {
 	if err != nil { //只传送设备的消息
 		return nil
 	}
+	if info.Reason == "takenover" || info.Reason == "discard" { //连接还在的时候被别人顶了,忽略这种下线
+		logx.Errorf("忽略的下线状态:%v", utils.Fmt(info))
+		return nil
+	}
 	dev := devices.Core{
 		ProductID:  info.ProductID,
 		DeviceName: info.DeviceName,
