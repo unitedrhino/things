@@ -47,6 +47,13 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 	if err != nil {
 		return nil, err
 	}
+	gd, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
+		ProductID:  in.Gateway.ProductID,
+		DeviceName: in.Gateway.DeviceName,
+	})
+	if err != nil {
+		return nil, err
+	}
 	_, err = FilterCanBindSubDevices(l.ctx, l.svcCtx, &devices.Core{
 		ProductID:  in.Gateway.ProductID,
 		DeviceName: in.Gateway.DeviceName,
@@ -86,6 +93,13 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 	}, devicesDos)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
+	}
+	_, err = NewDeviceInfoMultiUpdateLogic(l.ctx, l.svcCtx).DeviceInfoMultiUpdate(&dm.DeviceInfoMultiUpdateReq{
+		Devices: utils.CopySlice[dm.DeviceCore](devicesDos),
+		AreaID:  gd.AreaID,
+	})
+	if err != nil {
+		l.Error(err)
 	}
 	req := &msgGateway.Msg{
 		CommonMsg: *deviceMsg.NewRespCommonMsg(l.ctx, deviceMsg.Change, devices.GenMsgToken(l.ctx, l.svcCtx.NodeID)).AddStatus(errors.OK),
