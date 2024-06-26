@@ -2,6 +2,7 @@ package devicemanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
@@ -83,6 +84,6 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 			l.Error(err)
 		}
 	}
-	go logic.FillAreaDeviceCount(l.ctx, l.svcCtx, utils.SetToSlice(changeAreaIDPaths)...)
+	go logic.FillAreaDeviceCount(ctxs.CopyCtx(l.ctx), l.svcCtx, utils.SetToSlice(changeAreaIDPaths)...)
 	return &dm.Empty{}, err
 }
