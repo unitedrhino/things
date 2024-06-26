@@ -221,6 +221,8 @@ type (
         Devices []*DeviceCore `json:"devices,optional"`
         Status int64 `json:"status,optional"` //设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)
         WithOwner bool  `json:"withOwner,optional"`//同时获取拥有人的信息
+        HasOwner int64 `json:"hasOwner,optional"`//是否被人拥有,1为是 2为否
+        UserID int64  `json:"userID,optional"`//用户id查询
     }
     DeviceInfoIndexResp  {
         List []*DeviceInfo `json:"list"`    //设备信息

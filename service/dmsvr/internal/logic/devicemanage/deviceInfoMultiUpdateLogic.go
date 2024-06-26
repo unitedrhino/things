@@ -43,6 +43,8 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 	var columns []string
 	var Distributor stores.IDPathWithUpdate
 	var areaIDPath string
+	var changeAreaIDPaths = map[string]struct{}{}
+	var devs = logic.ToDeviceCores(in.Devices)
 	if in.AreaID != 0 {
 		columns = append(columns, "area_id", "area_id_path")
 		ai, err := l.svcCtx.AreaCache.GetData(l.ctx, in.AreaID)
@@ -50,6 +52,14 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 			return nil, err
 		}
 		areaIDPath = ai.AreaIDPath
+		changeAreaIDPaths[areaIDPath] = struct{}{}
+		for _, dev := range devs {
+			val, err := l.svcCtx.DeviceCache.GetData(l.ctx, *dev)
+			if err != nil {
+				continue
+			}
+			changeAreaIDPaths[val.AreaIDPath] = struct{}{}
+		}
 	}
 	if in.Distributor != nil {
 		columns = append(columns, "distributor_id", "distributor_id_path", "distributor_updated_time")
@@ -59,7 +69,7 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 	if in.RatedPower != 0 {
 		columns = append(columns, "rated_power")
 	}
-	err := relationDB.NewDeviceInfoRepo(l.ctx).MultiUpdate(l.ctx, logic.ToDeviceCores(in.Devices),
+	err := relationDB.NewDeviceInfoRepo(l.ctx).MultiUpdate(l.ctx, devs,
 		&relationDB.DmDeviceInfo{RatedPower: in.RatedPower, AreaID: stores.AreaID(in.AreaID), AreaIDPath: areaIDPath, Distributor: utils.Copy2[stores.IDPathWithUpdate](in.Distributor)}, columns...)
 	if err != nil {
 		return nil, err
@@ -73,6 +83,6 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 			l.Error(err)
 		}
 	}
-	logic.FillAreaDeviceCount(l.ctx, l.svcCtx, areaIDPath) //todo 设备原来的计算不正确
+	go logic.FillAreaDeviceCount(l.ctx, l.svcCtx, utils.SetToSlice(changeAreaIDPaths)...)
 	return &dm.Empty{}, err
 }

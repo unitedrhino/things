@@ -54,6 +54,7 @@ type (
 		Distributor       *stores.IDPathFilter
 		RatedPower        *stores.Cmp
 		AreaIDPath        string
+		HasOwner          int64 //是否被人拥有
 	}
 )
 
@@ -155,6 +156,14 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 
 	if f.UserID != 0 {
 		db = db.Where("user_id = ?", f.UserID)
+	}
+	if f.HasOwner > 0 {
+		switch f.HasOwner {
+		case def.True:
+			db = db.Where("user_id > 1")
+		case def.False:
+			db = db.Where("user_id <= 1")
+		}
 	}
 
 	if f.Range > 0 {

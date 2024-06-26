@@ -7070,6 +7070,16 @@
           "type": "boolean",
           "format": "boolean",
           "description": "同时获取拥有人的信息"
+        },
+        "hasOwner": {
+          "type": "integer",
+          "format": "int64",
+          "description": "是否被人拥有,1为是 2为否"
+        },
+        "userID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "用户id查询"
         }
       },
       "title": "DeviceInfoIndexReq"

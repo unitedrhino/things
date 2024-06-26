@@ -55,6 +55,8 @@ func (l *IndexLogic) Index(req *types.DeviceInfoIndexReq) (resp *types.DeviceInf
 		Status:            req.Status,
 		DeviceNames:       req.DeviceNames,
 		NotAreaID:         req.NotAreaID,
+		HasOwner:          req.HasOwner,
+		UserID:            req.UserID,
 	}
 	dmResp, err := l.svcCtx.DeviceM.DeviceInfoIndex(l.ctx, dmReq)
 	if err != nil {
