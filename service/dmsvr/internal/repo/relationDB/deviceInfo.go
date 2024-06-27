@@ -17,42 +17,43 @@ type DeviceInfoRepo struct {
 
 type (
 	DeviceFilter struct {
-		TenantCode        string
-		TenantCodes       []string
-		ProjectIDs        []int64
-		ProductID         string
-		ProductIDs        []string
-		AreaIDs           []int64
-		NotAreaIDs        []int64
-		DeviceName        string
-		DeviceNames       []string
-		Tags              map[string]string
-		LastLoginTime     *def.TimeRange
-		IsOnline          int64
-		Status            int64
-		Range             int64
-		Position          stores.Point
-		DeviceAlias       string
-		Versions          []string
-		Cores             []*devices.Core
-		Gateway           *devices.Core
-		WithProduct       bool
-		ProductCategoryID int64
-		SharedType        def.SelectType
-		CollectType       def.SelectType
-		WithManufacturer  bool
-		DeviceType        int64
-		DeviceTypes       []int64
-		GroupID           int64
-		GroupIDs          []int64
-		UserID            int64
-		UserIDs           []int64
-		NotGroupID        int64
-		NotAreaID         int64
-		Distributor       *stores.IDPathFilter
-		RatedPower        *stores.Cmp
-		AreaIDPath        string
-		HasOwner          int64 //是否被人拥有
+		TenantCode         string
+		TenantCodes        []string
+		ProjectIDs         []int64
+		ProductID          string
+		ProductIDs         []string
+		AreaIDs            []int64
+		NotAreaIDs         []int64
+		DeviceName         string
+		DeviceNames        []string
+		Tags               map[string]string
+		LastLoginTime      *def.TimeRange
+		IsOnline           int64
+		Status             int64
+		Range              int64
+		Position           stores.Point
+		DeviceAlias        string
+		Versions           []string
+		Cores              []*devices.Core
+		Gateway            *devices.Core
+		WithProduct        bool
+		ProductCategoryID  int64
+		ProductCategoryIDs []int64
+		SharedType         def.SelectType
+		CollectType        def.SelectType
+		WithManufacturer   bool
+		DeviceType         int64
+		DeviceTypes        []int64
+		GroupID            int64
+		GroupIDs           []int64
+		UserID             int64
+		UserIDs            []int64
+		NotGroupID         int64
+		NotAreaID          int64
+		Distributor        *stores.IDPathFilter
+		RatedPower         *stores.Cmp
+		AreaIDPath         string
+		HasOwner           int64 //是否被人拥有
 	}
 )
 
@@ -82,6 +83,9 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	}
 	if f.ProductCategoryID != 0 {
 		db = db.Where("product_id in (?)", db.Select("product_id").Model(DmProductInfo{}).Where("category_id=?", f.ProductCategoryID))
+	}
+	if len(f.ProductCategoryIDs) != 0 {
+		db = db.Where("product_id in (?)", db.Select("product_id").Model(DmProductInfo{}).Where("category_id in ?", f.ProductCategoryIDs))
 	}
 	//业务过滤条件
 	if f.ProductID != "" {

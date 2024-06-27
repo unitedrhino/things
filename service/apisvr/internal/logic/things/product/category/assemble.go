@@ -19,6 +19,7 @@ func ProductCategoryToApi(v *dm.ProductCategory) *types.ProductCategory {
 		ParentID:        v.ParentID,
 		IsUpdateHeadImg: v.IsUpdateHeadImg,
 		IsLeaf:          v.IsLeaf,
+		DeviceCount:     v.DeviceCount,
 		Children:        productCategoriesToApi(v.Children),
 	}
 }

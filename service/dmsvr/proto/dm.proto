@@ -472,6 +472,7 @@ message ProductCategory{
   google.protobuf.StringValue desc = 6;
   repeated int64 idPath =9;
   int64 isLeaf =10;
+  int64 deviceCount = 11;
   repeated ProductCategory children =7;//子节点
 }
 
@@ -495,6 +496,7 @@ message ProductCategoryIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填
   string  name = 2; //过滤名字
   int64 parentID = 3;
+  repeated int64 ids = 4;
 }
 
 message ProductCategoryIndexResp{

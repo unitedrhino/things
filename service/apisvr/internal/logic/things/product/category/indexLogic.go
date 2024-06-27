@@ -32,6 +32,7 @@ func (l *IndexLogic) Index(req *types.ProductCategoryIndexReq) (resp *types.Prod
 		Name:     req.Name,
 		Page:     logic.ToDmPageRpc(req.Page),
 		ParentID: req.ParentID,
+		Ids:      req.IDs,
 	}
 	dmResp, err := l.svcCtx.ProductM.ProductCategoryIndex(l.ctx, dmReq)
 	if err != nil {

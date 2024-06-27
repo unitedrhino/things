@@ -28,6 +28,7 @@ type ProductCategoryFilter struct {
 	IDPath   string
 	ParentID int64
 	ID       int64
+	IDs      []int64
 }
 
 func (p ProductCategoryRepo) fmtFilter(ctx context.Context, f ProductCategoryFilter) *gorm.DB {
@@ -37,6 +38,9 @@ func (p ProductCategoryRepo) fmtFilter(ctx context.Context, f ProductCategoryFil
 	}
 	if f.ID != 0 {
 		db = db.Where("id = ?", f.ID)
+	}
+	if len(f.IDs) != 0 {
+		db = db.Where("id in ?", f.IDs)
 	}
 	if f.ParentID != 0 {
 		db = db.Where("parent_id = ?", f.ParentID)

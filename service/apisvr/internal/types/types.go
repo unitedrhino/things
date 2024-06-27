@@ -1052,6 +1052,7 @@ type ProductCategory struct {
 	HeadImg         string             `json:"headImg,optional"`                   // 用户头像
 	IsUpdateHeadImg bool               `json:"isUpdateHeadImg,omitempty,optional"` // 用户头像
 	IsLeaf          int64              `json:"isLeaf,optional"`
+	DeviceCount     int64              `json:"deviceCount,optional"` //设备数量
 	Children        []*ProductCategory `json:"children,optional"`
 }
 
@@ -1059,6 +1060,7 @@ type ProductCategoryIndexReq struct {
 	Page     *PageInfo `json:"page,optional"` //分页信息,只获取一个则不填
 	Name     string    `json:"name,optional"` //过滤产品名称
 	ParentID int64     `json:"parentID,optional"`
+	IDs      []int64   `json:"ids,optional"` //id过滤
 }
 
 type ProductCategoryIndexResp struct {

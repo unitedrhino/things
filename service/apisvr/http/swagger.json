@@ -9983,6 +9983,11 @@
           "type": "integer",
           "format": "int64"
         },
+        "deviceCount": {
+          "type": "integer",
+          "format": "int64",
+          "description": "设备数量"
+        },
         "children": {
           "type": "array",
           "items": {
@@ -10006,6 +10011,14 @@
         "parentID": {
           "type": "integer",
           "format": "int64"
+        },
+        "ids": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": "id过滤"
         }
       },
       "title": "ProductCategoryIndexReq"

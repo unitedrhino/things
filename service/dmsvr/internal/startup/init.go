@@ -16,6 +16,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/internal/event/deviceMsgEvent"
 	"github.com/i-Things/things/service/dmsvr/internal/event/otaEvent"
 	"github.com/i-Things/things/service/dmsvr/internal/event/serverEvent"
+	"github.com/i-Things/things/service/dmsvr/internal/event/staticEvent"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	devicemanagelogic "github.com/i-Things/things/service/dmsvr/internal/logic/devicemanage"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/event/subscribe/server"
@@ -188,6 +189,13 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		return serverEvent.NewServerHandle(ctxs.WithRoot(ctx), svcCtx).OnlineStatusHandle()
 	})
 	logx.Must(err)
+	err = svcCtx.FastEvent.QueueSubscribe(eventBus.DmDeviceStaticHalfHour, func(ctx context.Context, t time.Time, body []byte) error {
+		if t.Before(time.Now().Add(-time.Second * 2)) { //2秒之前的跳过
+			return nil
+		}
+		return staticEvent.NewStaticHandle(ctxs.WithRoot(ctx), svcCtx).Handle()
+	})
+	logx.Must(err)
 	err = svcCtx.FastEvent.Start()
 	logx.Must(err)
 }
@@ -216,6 +224,19 @@ func TimerInit(svcCtx *svc.ServiceContext) {
 		CronExpr:  "@every 1s",                                                                     // cron执行表达式
 		Status:    def.StatusWaitRun,                                                               // 状态
 		Priority:  3,                                                                               //优先级: 10:critical 最高优先级  3: default 普通优先级 1:low 低优先级
+	})
+	if err != nil && !errors.Cmp(errors.Fmt(err), errors.Duplicate) {
+		logx.Must(err)
+	}
+	_, err = svcCtx.TimedM.TaskInfoCreate(ctx, &timedmanage.TaskInfo{
+		GroupCode: def.TimedIThingsQueueGroupCode,                                              //组编码
+		Type:      1,                                                                           //任务类型 1 定时任务 2 延时任务
+		Name:      "iThings 设备半小时统计",                                                           // 任务名称
+		Code:      "dmDeviceStaticHalfHour",                                                    //任务编码
+		Params:    fmt.Sprintf(`{"topic":"%s","payload":""}`, eventBus.DmDeviceStaticHalfHour), // 任务参数,延时任务如果没有传任务参数会拿数据库的参数来执行
+		CronExpr:  "@every 30m",                                                                // cron执行表达式
+		Status:    def.StatusWaitRun,                                                           // 状态
+		Priority:  3,                                                                           //优先级: 10:critical 最高优先级  3: default 普通优先级 1:low 低优先级
 	})
 	if err != nil && !errors.Cmp(errors.Fmt(err), errors.Duplicate) {
 		logx.Must(err)
