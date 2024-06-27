@@ -34,13 +34,10 @@ func NewDeviceInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *D
 func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.DeviceInfoIndexResp, error) {
 	l.Infof("%s req=%v", utils.FuncName(), utils.Fmt(in))
 	var (
-		info       []*dm.DeviceInfo
-		size       int64
-		err        error
-		cores      []*devices.Core
-		shared     []*devices.Core
-		collect    []*devices.Core
-		sharedType int64 = in.WithShared
+		info  []*dm.DeviceInfo
+		size  int64
+		err   error
+		cores []*devices.Core
 	)
 	if len(in.Devices) != 0 {
 		for _, v := range in.Devices {
@@ -48,39 +45,6 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 				ProductID:  v.ProductID,
 				DeviceName: v.DeviceName,
 			})
-		}
-	}
-	if in.WithShared != 0 {
-		uc := ctxs.GetUserCtx(l.ctx)
-		udss, err := relationDB.NewUserDeviceShareRepo(l.ctx).FindByFilter(l.ctx, relationDB.UserDeviceShareFilter{SharedUserID: uc.UserID}, nil)
-		if err != nil {
-			return nil, err
-		}
-		for _, v := range udss {
-			shared = append(shared, &devices.Core{
-				ProductID:  v.ProductID,
-				DeviceName: v.DeviceName,
-			})
-		}
-		if len(udss) == 0 && in.WithShared == def.SelectTypeOnly {
-			return &dm.DeviceInfoIndexResp{}, nil
-		}
-	}
-
-	if in.WithCollect != 0 {
-		uc := ctxs.GetUserCtx(l.ctx)
-		udss, err := relationDB.NewUserDeviceCollectRepo(l.ctx).FindByFilter(l.ctx, relationDB.UserDeviceCollectFilter{UserID: uc.UserID}, nil)
-		if err != nil {
-			return nil, err
-		}
-		for _, v := range udss {
-			collect = append(collect, &devices.Core{
-				ProductID:  v.ProductID,
-				DeviceName: v.DeviceName,
-			})
-		}
-		if len(udss) == 0 && in.WithCollect == def.SelectTypeOnly {
-			return &dm.DeviceInfoIndexResp{}, nil
 		}
 	}
 
@@ -100,10 +64,8 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		IsOnline:          in.IsOnline,
 		ProductCategoryID: in.ProductCategoryID,
 		Versions:          in.Versions,
-		SharedDevices:     shared,
-		SharedType:        sharedType,
+		SharedType:        in.WithShared,
 		CollectType:       in.WithCollect,
-		CollectDevices:    collect,
 		DeviceType:        in.DeviceType,
 		DeviceTypes:       in.DeviceTypes,
 		GroupID:           in.GroupID,
