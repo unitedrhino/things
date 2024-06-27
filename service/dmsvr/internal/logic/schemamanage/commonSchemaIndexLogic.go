@@ -95,6 +95,27 @@ func (l *CommonSchemaIndexLogic) CommonSchemaIndex(in *dm.CommonSchemaIndexReq) 
 	}
 
 	if len(in.ProductIDs) != 0 {
+		if len(in.ProductIDs) == 1 { //直接返回该设备的物模型
+			f := relationDB.ProductSchemaFilter{
+				ProductIDs:        in.ProductIDs,
+				Type:              in.Type,
+				Types:             in.Types,
+				Name:              in.Name,
+				Identifiers:       in.Identifiers,
+				IsCanSceneLinkage: in.IsCanSceneLinkage,
+				FuncGroup:         in.FuncGroup,
+				UserPerm:          in.UserPerm,
+				PropertyMode:      in.PropertyMode}
+			schemas, err := relationDB.NewProductSchemaRepo(l.ctx).FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page))
+			if err != nil {
+				return nil, err
+			}
+			total, err := relationDB.NewProductSchemaRepo(l.ctx).CountByFilter(l.ctx, f)
+			if err != nil {
+				return nil, err
+			}
+			return &dm.CommonSchemaIndexResp{List: utils.CopySlice[dm.CommonSchemaInfo](schemas), Total: total}, nil
+		}
 		rst, err := relationDB.NewProductSchemaRepo(l.ctx).FindByFilter(l.ctx, relationDB.ProductSchemaFilter{ProductIDs: in.ProductIDs, Tags: []int64{schema.TagOptional, schema.TagRequired}}, nil)
 		if err != nil {
 			return nil, err

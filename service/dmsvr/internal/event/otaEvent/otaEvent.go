@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgOta"
+	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
 	otamanagelogic "github.com/i-Things/things/service/dmsvr/internal/logic/otamanage"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
@@ -41,7 +42,7 @@ func (o *OtaEvent) DeviceUpgradePush() error {
 		j := job
 		ctxs.GoNewCtx(o.ctx, func(ctx context.Context) {
 			err := otamanagelogic.NewSendMessageToDevicesLogic(ctx, o.svcCtx).PushMessageToDevices(j)
-			if err != nil {
+			if err != nil && !errors.Cmp(err, errors.NotFind) {
 				o.Error(err)
 			}
 		})
