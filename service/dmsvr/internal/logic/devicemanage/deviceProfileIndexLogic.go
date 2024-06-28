@@ -37,5 +37,14 @@ func (l *DeviceProfileIndexLogic) DeviceProfileIndex(in *dm.DeviceProfileIndexRe
 	if err != nil {
 		return nil, err
 	}
-	return &dm.DeviceProfileIndexResp{Profiles: utils.CopySlice[dm.DeviceProfile](pos)}, err
+	var rets []*dm.DeviceProfile
+	for _, po := range pos {
+		ret := utils.Copy[dm.DeviceProfile](po)
+		ret.Device = &dm.DeviceCore{
+			ProductID:  po.ProductID,
+			DeviceName: po.DeviceName,
+		}
+		rets = append(rets, ret)
+	}
+	return &dm.DeviceProfileIndexResp{Profiles: rets}, err
 }

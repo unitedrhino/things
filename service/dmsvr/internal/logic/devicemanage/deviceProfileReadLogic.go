@@ -42,5 +42,13 @@ func (l *DeviceProfileReadLogic) DeviceProfileRead(in *dm.DeviceProfileReadReq) 
 			Params: "",
 		}, nil
 	}
-	return utils.Copy[dm.DeviceProfile](po), err
+	if err != nil {
+		return nil, err
+	}
+	ret := utils.Copy[dm.DeviceProfile](po)
+	ret.Device = &dm.DeviceCore{
+		ProductID:  po.ProductID,
+		DeviceName: po.DeviceName,
+	}
+	return ret, nil
 }
