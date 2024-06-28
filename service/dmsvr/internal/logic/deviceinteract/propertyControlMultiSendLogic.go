@@ -135,11 +135,12 @@ func (l *PropertyControlMultiSendLogic) MultiSendMultiProductProperty(in *dm.Pro
 	var mu sync.Mutex
 	var list = []*dm.PropertyControlSendMsg{}
 	for k, v := range productMap {
-		in := newIn
-		in.ProductID = k
-		in.DeviceNames = utils.SetToSlice(v)
+		in2 := newIn
+		in2.ProductID = k
+		in2.DeviceNames = utils.SetToSlice(v)
+		in2.IsAsync = in.IsAsync
 		group.Go(func() error {
-			li, err := l.MultiSendOneProductProperty(&in)
+			li, err := l.MultiSendOneProductProperty(&in2)
 			if err != nil {
 				return err
 			}
