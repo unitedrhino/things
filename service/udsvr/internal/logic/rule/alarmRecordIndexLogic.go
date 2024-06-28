@@ -2,6 +2,7 @@ package rulelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/udsvr/internal/logic"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
@@ -30,7 +31,11 @@ func NewAlarmRecordIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 func (l *AlarmRecordIndexLogic) AlarmRecordIndex(in *ud.AlarmRecordIndexReq) (*ud.AlarmRecordIndexResp, error) {
 	f := relationDB.AlarmRecordFilter{AlarmID: in.AlarmID,
 		Time: logic.ToTimeRange(in.TimeRange)}
-	list, err := relationDB.NewAlarmRecordRepo(l.ctx).FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page))
+	list, err := relationDB.NewAlarmRecordRepo(l.ctx).FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page).
+		WithDefaultOrder(stores.OrderBy{
+			Filed: "createdTime",
+			Sort:  2,
+		}))
 	if err != nil {
 		return nil, err
 	}
