@@ -2,7 +2,6 @@ package relationDB
 
 import (
 	"context"
-	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/stores"
 	"gorm.io/gorm"
 )
@@ -35,7 +34,7 @@ func (p ProductRemoteConfigRepo) Insert(ctx context.Context, data *DmProductRemo
 	return stores.ErrFmt(result.Error)
 }
 
-func (p ProductRemoteConfigRepo) FindByFilter(ctx context.Context, f RemoteConfigFilter, page *def.PageInfo) ([]*DmProductRemoteConfig, error) {
+func (p ProductRemoteConfigRepo) FindByFilter(ctx context.Context, f RemoteConfigFilter, page *stores.PageInfo) ([]*DmProductRemoteConfig, error) {
 	var results []*DmProductRemoteConfig
 	db := p.fmtFilter(ctx, f).Model(&DmProductRemoteConfig{})
 	db = page.ToGorm(db)

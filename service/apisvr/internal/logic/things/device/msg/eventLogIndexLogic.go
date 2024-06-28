@@ -35,7 +35,7 @@ func (l *EventLogIndexLogic) EventLogIndex(req *types.DeviceMsgEventLogIndexReq)
 		TimeStart:   req.TimeStart,
 		TimeEnd:     req.TimeEnd,
 		Types:       req.Types,
-		Page:        logic.ToDiPageRpc(req.Page),
+		Page:        logic.ToDmPageRpc(req.Page),
 	})
 	if err != nil {
 		er := errors.Fmt(err)

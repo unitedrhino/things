@@ -33,7 +33,7 @@ func (l *HubLogIndexLogic) HubLogIndex(req *types.DeviceMsgHubLogIndexReq) (resp
 		ProductID:  req.ProductID,
 		TimeStart:  req.TimeStart,
 		TimeEnd:    req.TimeEnd,
-		Page:       logic.ToDiPageRpc(req.Page),
+		Page:       logic.ToDmPageRpc(req.Page),
 		Actions:    req.Actions,
 		Topics:     req.Topics,
 		Content:    req.Content,

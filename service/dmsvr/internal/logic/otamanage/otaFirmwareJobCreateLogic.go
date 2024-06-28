@@ -217,14 +217,14 @@ func (l *OtaFirmwareJobCreateLogic) getDevice(in *dm.OtaFirmwareJobInfo, fi *rel
 		}
 	case msgOta.AllUpgrade, msgOta.GrayUpgrade:
 		f := relationDB.DeviceFilter{ProductID: fi.ProductID, Versions: in.SrcVersions, TenantCodes: in.TenantCodes}
-		var page *def.PageInfo
+		var page *stores.PageInfo
 		if selection == msgOta.GrayUpgrade {
 			total, err := l.DiDB.CountByFilter(l.ctx, f)
 			if err != nil {
 				return nil, err
 			}
 			size := int64(float64(total)*(float64(in.Static.GrayPercent)/10000)) + 1
-			page = &def.PageInfo{Size: size}
+			page = &stores.PageInfo{Size: size}
 		}
 		ret, err := l.DiDB.FindByFilter(l.ctx, f, page)
 		if err != nil {

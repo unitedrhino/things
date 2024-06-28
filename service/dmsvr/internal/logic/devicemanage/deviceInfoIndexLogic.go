@@ -3,7 +3,6 @@ package devicemanagelogic
 import (
 	"context"
 	"gitee.com/i-Things/share/ctxs"
-	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
@@ -90,10 +89,9 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		return nil, err
 	}
 	di, err := l.DiDB.FindByFilter(l.ctx, filter,
-		logic.ToPageInfoWithDefault(in.Page, logic.ToPageInfo(in.Page,
-			def.OrderBy{Filed: "is_online", Sort: def.OrderAsc},
-			def.OrderBy{Filed: "created_time", Sort: def.OrderDesc},
-			def.OrderBy{Filed: "product_id", Sort: def.OrderDesc})),
+		logic.ToPageInfo(in.Page).WithDefaultOrder(stores.OrderBy{Filed: "is_online", Sort: stores.OrderAsc},
+			stores.OrderBy{Filed: "created_time", Sort: stores.OrderDesc},
+			stores.OrderBy{Filed: "product_id", Sort: stores.OrderDesc}),
 	)
 	if err != nil {
 		return nil, err

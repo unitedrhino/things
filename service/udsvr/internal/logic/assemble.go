@@ -2,14 +2,15 @@ package logic
 
 import (
 	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/udsvr/pb/ud"
 )
 
-func ToPageInfo(info *ud.PageInfo) *def.PageInfo {
+func ToPageInfo(info *ud.PageInfo) *stores.PageInfo {
 	if info == nil {
 		return nil
 	}
-	return &def.PageInfo{
+	return &stores.PageInfo{
 		Page: info.GetPage(),
 		Size: info.GetSize(),
 	}

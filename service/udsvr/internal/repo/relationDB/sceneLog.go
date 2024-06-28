@@ -55,7 +55,7 @@ func (p SceneLogRepo) FindOneByFilter(ctx context.Context, f SceneLogFilter) (*U
 	}
 	return &result, nil
 }
-func (p SceneLogRepo) FindByFilter(ctx context.Context, f SceneLogFilter, page *def.PageInfo) ([]*UdSceneLog, error) {
+func (p SceneLogRepo) FindByFilter(ctx context.Context, f SceneLogFilter, page *stores.PageInfo) ([]*UdSceneLog, error) {
 	var results []*UdSceneLog
 	db := p.fmtFilter(ctx, f).Model(&UdSceneLog{})
 	db = page.ToGorm(db)

@@ -3,7 +3,6 @@ package relationDB
 import (
 	"context"
 	"fmt"
-	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
@@ -44,7 +43,7 @@ func (p GatewayDeviceRepo) fmtFilter(ctx context.Context, f GatewayDeviceFilter)
 	return db
 }
 
-func (g GatewayDeviceRepo) FindByFilter(ctx context.Context, f GatewayDeviceFilter, page *def.PageInfo) ([]*DmGatewayDevice, error) {
+func (g GatewayDeviceRepo) FindByFilter(ctx context.Context, f GatewayDeviceFilter, page *stores.PageInfo) ([]*DmGatewayDevice, error) {
 	var results []*DmGatewayDevice
 	db := g.fmtFilter(ctx, f)
 	db = page.ToGorm(db)

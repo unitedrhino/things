@@ -72,7 +72,7 @@ func (p AlarmRecordRepo) FindOneByFilter(ctx context.Context, f AlarmRecordFilte
 	}
 	return &result, nil
 }
-func (p AlarmRecordRepo) FindByFilter(ctx context.Context, f AlarmRecordFilter, page *def.PageInfo) ([]*UdAlarmRecord, error) {
+func (p AlarmRecordRepo) FindByFilter(ctx context.Context, f AlarmRecordFilter, page *stores.PageInfo) ([]*UdAlarmRecord, error) {
 	var results []*UdAlarmRecord
 	db := p.fmtFilter(ctx, f).Model(&UdAlarmRecord{})
 	db = page.ToGorm(db)

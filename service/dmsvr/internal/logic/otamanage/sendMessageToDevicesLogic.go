@@ -129,7 +129,7 @@ func (l *SendMessageToDevicesLogic) PushMessageToDevices(jobInfo *relationDB.DmO
 		ProductID:  firmware.ProductID,
 		IsOnline:   def.True,                           //只有在线的设备才推送
 		Statues:    []int64{msgOta.DeviceStatusQueued}, //只处理待推送的设备
-	}, &def.PageInfo{
+	}, &stores.PageInfo{
 		Page: 1,
 		Size: jobInfo.MaximumPerMinute/(60/5) + 1, //任务5秒钟推送一次
 	})

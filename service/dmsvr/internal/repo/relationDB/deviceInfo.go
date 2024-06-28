@@ -270,7 +270,7 @@ func (d DeviceInfoRepo) Insert(ctx context.Context, data *DmDeviceInfo) error {
 	return stores.ErrFmt(result.Error)
 }
 
-func (d DeviceInfoRepo) FindByFilter(ctx context.Context, f DeviceFilter, page *def.PageInfo) ([]*DmDeviceInfo, error) {
+func (d DeviceInfoRepo) FindByFilter(ctx context.Context, f DeviceFilter, page *stores.PageInfo) ([]*DmDeviceInfo, error) {
 	var results []*DmDeviceInfo
 	db := d.fmtFilter(ctx, f).Model(&DmDeviceInfo{})
 	db = page.ToGorm(db)

@@ -60,7 +60,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 				Size: 1,
 				Orders: []*sys.PageInfo_OrderBy{{
 					Filed: "createdTime", //第一个一定是默认的
-					Sort:  def.OrderAsc,
+					Sort:  stores.OrderAsc,
 				}},
 			},
 			TargetID:   in.UserID,

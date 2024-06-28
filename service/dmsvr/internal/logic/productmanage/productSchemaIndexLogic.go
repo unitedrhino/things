@@ -2,6 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
@@ -43,7 +44,10 @@ func (l *ProductSchemaIndexLogic) ProductSchemaIndex(in *dm.ProductSchemaIndexRe
 		UserPerm:          in.UserPerm,
 		PropertyMode:      in.PropertyMode,
 	}
-	schemas, err := l.PsDB.FindByFilter(l.ctx, filter, logic.ToPageInfo(in.Page))
+	schemas, err := l.PsDB.FindByFilter(l.ctx, filter, logic.ToPageInfo(in.Page).WithDefaultOrder(stores.OrderBy{
+		Filed: stores.Col("order"),
+		Sort:  stores.OrderAsc,
+	}))
 	if err != nil {
 		return nil, err
 	}

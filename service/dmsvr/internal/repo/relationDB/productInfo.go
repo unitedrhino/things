@@ -159,7 +159,7 @@ func (p ProductInfoRepo) DeleteByFilter(ctx context.Context, f ProductFilter) er
 	return stores.ErrFmt(err)
 }
 
-func (p ProductInfoRepo) FindByFilter(ctx context.Context, f ProductFilter, page *def.PageInfo) ([]*DmProductInfo, error) {
+func (p ProductInfoRepo) FindByFilter(ctx context.Context, f ProductFilter, page *stores.PageInfo) ([]*DmProductInfo, error) {
 	var results []*DmProductInfo
 	db := p.fmtFilter(ctx, f).Model(&DmProductInfo{})
 	db = page.ToGorm(db)

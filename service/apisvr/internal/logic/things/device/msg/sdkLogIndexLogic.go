@@ -35,7 +35,7 @@ func (l *SdkLogIndexLogic) SdkLogIndex(req *types.DeviceMsgSdkLogIndexReq) (resp
 		LogLevel:   int64(req.LogLevel),
 		TimeStart:  req.TimeStart,
 		TimeEnd:    req.TimeEnd,
-		Page:       logic.ToDiPageRpc(req.Page),
+		Page:       logic.ToDmPageRpc(req.Page),
 	}
 
 	dmResp, err := l.svcCtx.DeviceMsg.SdkLogIndex(l.ctx, dmReq)

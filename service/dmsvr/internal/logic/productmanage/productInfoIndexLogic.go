@@ -2,7 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
-	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
@@ -46,11 +46,8 @@ func (l *ProductInfoIndexLogic) ProductInfoIndex(in *dm.ProductInfoIndexReq) (*d
 	}
 
 	di, err := piDB.FindByFilter(l.ctx, filter,
-		logic.ToPageInfoWithDefault(in.Page, &def.PageInfo{
-			Page: 1, Size: 20,
-			Orders: []def.OrderBy{{"created_time", def.OrderDesc}, {"product_id", def.OrderDesc}},
-		}),
-	)
+		logic.ToPageInfo(in.Page).WithDefaultOrder(stores.OrderBy{Filed: "created_time", Sort: stores.OrderDesc},
+			stores.OrderBy{Filed: "product_id", Sort: stores.OrderDesc}))
 	if err != nil {
 		return nil, err
 	}

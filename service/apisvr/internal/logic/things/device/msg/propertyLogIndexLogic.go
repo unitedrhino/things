@@ -38,7 +38,7 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(req *types.DeviceMsgPropertyLog
 		ArgFunc:     req.ArgFunc,
 		Fill:        req.Fill,
 		Order:       req.Order,
-		Page:        logic.ToDiPageRpc(req.Page),
+		Page:        logic.ToDmPageRpc(req.Page),
 	})
 	if err != nil {
 		er := errors.Fmt(err)

@@ -3,6 +3,7 @@ package schemamanagelogic
 import (
 	"context"
 	"gitee.com/i-Things/share/domain/schema"
+	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
@@ -106,7 +107,10 @@ func (l *CommonSchemaIndexLogic) CommonSchemaIndex(in *dm.CommonSchemaIndexReq) 
 				FuncGroup:         in.FuncGroup,
 				UserPerm:          in.UserPerm,
 				PropertyMode:      in.PropertyMode}
-			schemas, err := relationDB.NewProductSchemaRepo(l.ctx).FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page))
+			schemas, err := relationDB.NewProductSchemaRepo(l.ctx).FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page).WithDefaultOrder(stores.OrderBy{
+				Filed: "order",
+				Sort:  stores.OrderAsc,
+			}))
 			if err != nil {
 				return nil, err
 			}
@@ -134,7 +138,10 @@ func (l *CommonSchemaIndexLogic) CommonSchemaIndex(in *dm.CommonSchemaIndexReq) 
 		}
 	}
 
-	schemas, err := l.PsDB.FindByFilter(l.ctx, filter, logic.ToPageInfo(in.Page))
+	schemas, err := l.PsDB.FindByFilter(l.ctx, filter, logic.ToPageInfo(in.Page).WithDefaultOrder(stores.OrderBy{
+		Filed: "order",
+		Sort:  stores.OrderAsc,
+	}))
 	if err != nil {
 		return nil, err
 	}

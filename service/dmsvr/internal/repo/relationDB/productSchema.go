@@ -2,7 +2,6 @@ package relationDB
 
 import (
 	"context"
-	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
@@ -130,12 +129,8 @@ func (p ProductSchemaRepo) DeleteByFilter(ctx context.Context, f ProductSchemaFi
 	return stores.ErrFmt(err)
 }
 
-func (p ProductSchemaRepo) FindByFilter(ctx context.Context, f ProductSchemaFilter, page *def.PageInfo) ([]*DmProductSchema, error) {
+func (p ProductSchemaRepo) FindByFilter(ctx context.Context, f ProductSchemaFilter, page *stores.PageInfo) ([]*DmProductSchema, error) {
 	var results []*DmProductSchema
-	if page == nil {
-		page = &def.PageInfo{}
-	}
-	page.Orders = []def.OrderBy{{Filed: "identifier", Sort: def.OrderDesc}}
 	db := p.fmtFilter(ctx, f).Model(&DmProductSchema{})
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error

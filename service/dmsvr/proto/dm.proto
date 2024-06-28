@@ -22,7 +22,7 @@ message PageInfo{
   message OrderBy {
     //排序的字段名
     string filed = 1;
-    //排序方式：0 aes, 1 desc
+    //排序方式：0 从小到大, 1 从大到小
     int64 sort = 2;
   }
 }

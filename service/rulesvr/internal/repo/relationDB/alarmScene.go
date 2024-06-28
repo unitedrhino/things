@@ -2,7 +2,6 @@ package relationDB
 
 import (
 	"context"
-	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/stores"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -53,7 +52,7 @@ func (p AlarmSceneRepo) FindOneByFilter(ctx context.Context, f AlarmSceneFilter)
 	}
 	return &result, nil
 }
-func (p AlarmSceneRepo) FindByFilter(ctx context.Context, f AlarmSceneFilter, page *def.PageInfo) ([]*RuleAlarmScene, error) {
+func (p AlarmSceneRepo) FindByFilter(ctx context.Context, f AlarmSceneFilter, page *stores.PageInfo) ([]*RuleAlarmScene, error) {
 	var results []*RuleAlarmScene
 	db := p.fmtFilter(ctx, f).Model(&RuleAlarmScene{})
 	db = page.ToGorm(db)

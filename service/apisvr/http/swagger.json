@@ -9091,6 +9091,21 @@
       },
       "title": "ManufacturerInfo"
     },
+    "OrderBy": {
+      "type": "object",
+      "properties": {
+        "filed": {
+          "type": "string",
+          "description": "排序的字段名"
+        },
+        "sort": {
+          "type": "integer",
+          "format": "int64",
+          "description": "排序方式：0 从小到大, 1 从大到小"
+        }
+      },
+      "title": "OrderBy"
+    },
     "OtaFirmwareCreateReq": {
       "type": "object",
       "properties": {
@@ -9918,6 +9933,13 @@
           "type": "integer",
           "format": "int64",
           "description": " 每页大小"
+        },
+        "orders": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OrderBy"
+          },
+          "description": "排序"
         }
       },
       "title": "PageInfo"

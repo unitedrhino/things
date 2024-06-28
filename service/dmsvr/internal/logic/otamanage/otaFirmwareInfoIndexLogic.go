@@ -2,7 +2,7 @@ package otamanagelogic
 
 import (
 	"context"
-	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
@@ -47,9 +47,8 @@ func (l *OtaFirmwareInfoIndexLogic) OtaFirmwareInfoIndex(in *dm.OtaFirmwareInfoI
 		logx.Error(err)
 		return nil, err
 	}
-	list, err := l.OfDB.FindByFilter(l.ctx, filter, logic.ToPageInfoWithDefault(in.Page, logic.ToPageInfo(in.Page,
-		def.OrderBy{Filed: "created_time", Sort: def.OrderDesc},
-		def.OrderBy{Filed: "product_id", Sort: def.OrderDesc})))
+	list, err := l.OfDB.FindByFilter(l.ctx, filter, logic.ToPageInfo(in.Page).WithDefaultOrder(stores.OrderBy{Filed: "created_time", Sort: stores.OrderDesc},
+		stores.OrderBy{Filed: "product_id", Sort: stores.OrderDesc}))
 	if err != nil {
 		return nil, err
 	}

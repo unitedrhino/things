@@ -50,7 +50,7 @@ func (p AlarmLogRepo) FindOneByFilter(ctx context.Context, f AlarmLogFilter) (*R
 	}
 	return &result, nil
 }
-func (p AlarmLogRepo) FindByFilter(ctx context.Context, f AlarmLogFilter, page *def.PageInfo) ([]*RuleAlarmLog, error) {
+func (p AlarmLogRepo) FindByFilter(ctx context.Context, f AlarmLogFilter, page *stores.PageInfo) ([]*RuleAlarmLog, error) {
 	var results []*RuleAlarmLog
 	db := p.fmtFilter(ctx, f).Model(&RuleAlarmLog{})
 	db = page.ToGorm(db)

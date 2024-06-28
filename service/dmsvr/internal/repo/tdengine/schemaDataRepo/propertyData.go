@@ -74,7 +74,7 @@ func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schem
 				ProductID:   filter.ProductID,
 				DeviceNames: []string{filter.DeviceName},
 				DataID:      filter.DataID,
-				Order:       def.OrderDesc})
+				Order:       stores.OrderDesc})
 		if len(dds) == 0 || err != nil {
 			return nil, err
 		}
@@ -135,7 +135,7 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 
 	if filter.ArgFunc == "" {
 		sql = sq.Select("*")
-		if filter.Order != def.OrderAsc {
+		if filter.Order != stores.OrderAsc {
 			sql = sql.OrderBy("`ts` desc")
 		}
 	} else {

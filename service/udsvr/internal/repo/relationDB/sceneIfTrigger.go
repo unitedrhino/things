@@ -2,7 +2,6 @@ package relationDB
 
 import (
 	"context"
-	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
@@ -73,7 +72,7 @@ func (p SceneIfTriggerRepo) FindOneByFilter(ctx context.Context, f SceneIfTrigge
 	}
 	return &result, nil
 }
-func (p SceneIfTriggerRepo) FindByFilter(ctx context.Context, f SceneIfTriggerFilter, page *def.PageInfo) ([]*UdSceneIfTrigger, error) {
+func (p SceneIfTriggerRepo) FindByFilter(ctx context.Context, f SceneIfTriggerFilter, page *stores.PageInfo) ([]*UdSceneIfTrigger, error) {
 	var results []*UdSceneIfTrigger
 	db := p.fmtFilter(ctx, f).Model(&UdSceneIfTrigger{})
 	db = page.ToGorm(db)

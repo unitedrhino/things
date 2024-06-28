@@ -34,7 +34,7 @@ func (l *SendLogIndexLogic) SendLogIndex(req *types.DeviceMsgSendLogIndexReq) (r
 		ProductID:  req.ProductID,
 		TimeStart:  req.TimeStart,
 		TimeEnd:    req.TimeEnd,
-		Page:       logic.ToDiPageRpc(req.Page),
+		Page:       logic.ToDmPageRpc(req.Page),
 		UserID:     req.UserID,
 		Actions:    req.Actions,
 		ResultCode: req.ResultCode,

@@ -840,6 +840,11 @@ type ManufacturerInfo struct {
 	Phone string `json:"phone,omitempty"`
 }
 
+type OrderBy struct {
+	Filed string `json:"filed,optional"` ////排序的字段名
+	Sort  int64  `json:"sort,optional"`  //排序方式：0 从小到大, 1 从大到小
+}
+
 type OtaFirmwareCreateReq struct {
 	Name       string             `json:"name"`               //升级包名称
 	ProductID  string             `json:"productID"`          //产品id
@@ -1034,8 +1039,9 @@ type OtaModuleInfoIndexResp struct {
 }
 
 type PageInfo struct {
-	Page int64 `json:"page,optional" form:"page,optional"` // 页码
-	Size int64 `json:"size,optional" form:"size,optional"` // 每页大小
+	Page   int64      `json:"page,optional" form:"page,optional"` // 页码
+	Size   int64      `json:"size,optional" form:"size,optional"` // 每页大小
+	Orders []*OrderBy `json:"orders,optional"`                    //排序
 }
 
 type Point struct {

@@ -40,7 +40,7 @@ func (o *CheckEvent) Check() error {
 	}
 	var needOnlineDevices []*dm.DeviceOnlineMultiFix
 	for page*limit < total {
-		infos, to, err := o.svcCtx.MqttClient.GetOnlineClients(o.ctx, clients.GetOnlineClientsFilter{}, &def.PageInfo{
+		infos, to, err := o.svcCtx.MqttClient.GetOnlineClients(o.ctx, clients.GetOnlineClientsFilter{}, &clients.PageInfo{
 			Page: 1,
 			Size: 200,
 		})

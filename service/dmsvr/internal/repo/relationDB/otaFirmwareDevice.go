@@ -2,7 +2,6 @@ package relationDB
 
 import (
 	"context"
-	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgOta"
 	"gitee.com/i-Things/share/stores"
 	"gorm.io/gorm"
@@ -105,7 +104,7 @@ func (p OtaFirmwareDeviceRepo) FindOneByFilter(ctx context.Context, f OtaFirmwar
 	}
 	return &result, nil
 }
-func (p OtaFirmwareDeviceRepo) FindByFilter(ctx context.Context, f OtaFirmwareDeviceFilter, page *def.PageInfo) ([]*DmOtaFirmwareDevice, error) {
+func (p OtaFirmwareDeviceRepo) FindByFilter(ctx context.Context, f OtaFirmwareDeviceFilter, page *stores.PageInfo) ([]*DmOtaFirmwareDevice, error) {
 	var results []*DmOtaFirmwareDevice
 	db := p.fmtFilter(ctx, f).Model(&DmOtaFirmwareDevice{})
 	db = page.ToGorm(db)

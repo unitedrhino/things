@@ -1,6 +1,7 @@
 package logic
 
 import (
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/types"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/i-Things/things/service/rulesvr/pb/rule"
@@ -29,23 +30,11 @@ func ToTagsType(tags map[string]string) (retTag []*types.Tag) {
 }
 
 func ToDmPageRpc(in *types.PageInfo) *dm.PageInfo {
-	if in == nil {
-		return nil
-	}
-	return &dm.PageInfo{
-		Page: in.Page,
-		Size: in.Size,
-	}
+	return utils.Copy[dm.PageInfo](in)
 }
 
 func ToUdPageRpc(in *types.PageInfo) *ud.PageInfo {
-	if in == nil {
-		return nil
-	}
-	return &ud.PageInfo{
-		Page: in.Page,
-		Size: in.Size,
-	}
+	return utils.Copy[ud.PageInfo](in)
 }
 
 func ToRulePageRpc(in *types.PageInfo) *rule.PageInfo {
@@ -77,16 +66,6 @@ func ToUdTimeRangeRpc(in *types.TimeRange) *ud.TimeRange {
 	}
 }
 
-func ToDiPageRpc(in *types.PageInfo) *dm.PageInfo {
-	if in == nil {
-		return nil
-	}
-	return &dm.PageInfo{
-		Page: in.Page,
-		Size: in.Size,
-	}
-}
-
 func ToDmPointRpc(in *types.Point) *dm.Point {
 	if in == nil {
 		return nil
@@ -97,7 +76,7 @@ func ToDmPointRpc(in *types.Point) *dm.Point {
 	}
 }
 
-func ToDiSendOption(in *types.SendOption) *dm.SendOption {
+func ToDmSendOption(in *types.SendOption) *dm.SendOption {
 	if in == nil {
 		return nil
 	}

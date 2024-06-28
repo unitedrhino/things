@@ -2,9 +2,9 @@ package scene
 
 import (
 	"gitee.com/i-Things/core/service/syssvr/client/notifymanage"
-	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/schema"
+	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/client/devicegroup"
 	deviceinteract "github.com/i-Things/things/service/dmsvr/client/deviceinteract"
 	devicemanage "github.com/i-Things/things/service/dmsvr/client/devicemanage"
@@ -26,7 +26,7 @@ type Repo interface {
 	Delete(ctx context.Context, id int64) error
 	FindOne(ctx context.Context, id int64) (*Info, error)
 	FindOneByName(ctx context.Context, name string) (*Info, error)
-	FindByFilter(ctx context.Context, filter InfoFilter, page *def.PageInfo) (Infos, error)
+	FindByFilter(ctx context.Context, filter InfoFilter, page *stores.PageInfo) (Infos, error)
 	CountByFilter(ctx context.Context, filter InfoFilter) (size int64, err error)
 }
 

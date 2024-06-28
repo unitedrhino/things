@@ -35,7 +35,7 @@ func (l *ActionSendLogic) ActionSend(req *types.DeviceInteractSendActionReq) (re
 		ActionID:    req.ActionID,
 		InputParams: req.InputParams,
 		IsAsync:     req.IsAsync,
-		Option:      logic.ToDiSendOption(req.Option),
+		Option:      logic.ToDmSendOption(req.Option),
 	}
 	dmResp, err := l.svcCtx.DeviceInteract.ActionSend(l.ctx, dmReq)
 	if err != nil {

@@ -3,7 +3,6 @@ package relationDB
 import (
 	"context"
 	"fmt"
-	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/rulesvr/internal/domain/scene"
 	"gorm.io/gorm"
@@ -60,7 +59,7 @@ func (p SceneInfoRepo) FindOneByFilter(ctx context.Context, f scene.InfoFilter) 
 	}
 	return SceneInfoPoToDo(&result), nil
 }
-func (p SceneInfoRepo) FindByFilter(ctx context.Context, f scene.InfoFilter, page *def.PageInfo) (scene.Infos, error) {
+func (p SceneInfoRepo) FindByFilter(ctx context.Context, f scene.InfoFilter, page *stores.PageInfo) (scene.Infos, error) {
 	var results []*RuleSceneInfo
 	db := p.fmtFilter(ctx, f).Model(&RuleSceneInfo{})
 	db = page.ToGorm(db)

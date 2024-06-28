@@ -2,7 +2,6 @@ package relationDB
 
 import (
 	"context"
-	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/stores"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -66,7 +65,7 @@ func (g OtaFirmwareInfoRepo) FindOneByFilter(ctx context.Context, f OtaFirmwareI
 	}
 	return &result, nil
 }
-func (p OtaFirmwareInfoRepo) FindByFilter(ctx context.Context, f OtaFirmwareInfoFilter, page *def.PageInfo) ([]*DmOtaFirmwareInfo, error) {
+func (p OtaFirmwareInfoRepo) FindByFilter(ctx context.Context, f OtaFirmwareInfoFilter, page *stores.PageInfo) ([]*DmOtaFirmwareInfo, error) {
 	var results []*DmOtaFirmwareInfo
 	db := p.fmtFilter(ctx, f).Model(&DmOtaFirmwareInfo{})
 	db = page.ToGorm(db)

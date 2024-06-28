@@ -2,7 +2,6 @@ package relationDB
 
 import (
 	"context"
-	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/stores"
 	"gorm.io/gorm"
@@ -74,7 +73,7 @@ func (p DeviceTimingInfoRepo) FindOneByFilter(ctx context.Context, f DeviceTimer
 	}
 	return &result, nil
 }
-func (p DeviceTimingInfoRepo) FindByFilter(ctx context.Context, f DeviceTimerInfoFilter, page *def.PageInfo) ([]*UdDeviceTimerInfo, error) {
+func (p DeviceTimingInfoRepo) FindByFilter(ctx context.Context, f DeviceTimerInfoFilter, page *stores.PageInfo) ([]*UdDeviceTimerInfo, error) {
 	var results []*UdDeviceTimerInfo
 	db := p.fmtFilter(ctx, f).Model(&UdDeviceTimerInfo{})
 	db = page.ToGorm(db)

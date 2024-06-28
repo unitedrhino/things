@@ -2,7 +2,6 @@ package relationDB
 
 import (
 	"context"
-	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/stores"
 	"gorm.io/gorm"
 )
@@ -87,7 +86,7 @@ func (p CommonSchemaRepo) DeleteByFilter(ctx context.Context, f CommonSchemaFilt
 	return stores.ErrFmt(err)
 }
 
-func (p CommonSchemaRepo) FindByFilter(ctx context.Context, f CommonSchemaFilter, page *def.PageInfo) ([]*DmCommonSchema, error) {
+func (p CommonSchemaRepo) FindByFilter(ctx context.Context, f CommonSchemaFilter, page *stores.PageInfo) ([]*DmCommonSchema, error) {
 	var results []*DmCommonSchema
 	db := p.fmtFilter(ctx, f).Model(&DmCommonSchema{})
 	db = page.ToGorm(db)
