@@ -141,10 +141,6 @@ func (l *ThingLogic) HandlePackReport(msg *deviceMsg.PublishMsg, req msgThing.Re
 
 func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model, device devices.Core, properties []*msgThing.TimeParam, events []*msgThing.TimeParam) (err error) {
 	for _, tp := range properties {
-		params, err := msgThing.ToVal(tp.Params)
-		if err != nil {
-			return err
-		}
 		timeStamp := time.UnixMilli(tp.Timestamp)
 		if timeStamp.IsZero() {
 			timeStamp = l.dreq.GetTimeStamp(msg.Timestamp)
@@ -188,7 +184,7 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 		})
 
 		//插入多条设备物模型属性数据
-		err = l.repo.InsertPropertiesData(l.ctx, t, device.ProductID, device.DeviceName, params, timeStamp)
+		err = l.repo.InsertPropertiesData(l.ctx, t, device.ProductID, device.DeviceName, tp.Params, timeStamp)
 		if err != nil {
 			l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
 			return err
@@ -240,10 +236,6 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 		return l.DeviceResp(msg, err, nil), err
 	}
 
-	params, err := msgThing.ToVal(tp)
-	if err != nil {
-		return l.DeviceResp(msg, err, nil), err
-	}
 	timeStamp := req.GetTimeStamp(msg.Timestamp)
 	core := devices.Core{
 		ProductID:  msg.ProductID,
@@ -288,7 +280,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 	})
 
 	//插入多条设备物模型属性数据
-	err = l.repo.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, params, timeStamp)
+	err = l.repo.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, tp, timeStamp)
 	if err != nil {
 		l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
 		return l.DeviceResp(msg, errors.Database.AddDetail(err), nil), err

@@ -25,7 +25,7 @@ func ToEventData(db map[string]any) *msgThing.EventData {
 	return &data
 }
 
-func ToPropertyData(id string, db map[string]any) *msgThing.PropertyData {
+func ToPropertyData(id string, p *schema.Property, db map[string]any) *msgThing.PropertyData {
 	propertyType := db[PropertyType]
 	switch propertyType {
 	case string(schema.DataTypeStruct):
@@ -37,18 +37,30 @@ func ToPropertyData(id string, db map[string]any) *msgThing.PropertyData {
 		delete(db, "ts")
 		delete(db, "device_name")
 		delete(db, PropertyType)
+		delete(db, "_num")
 		data.Param = db
 		return &data
 	case string(schema.DataTypeArray):
-		paramStr := cast.ToString(db["param"])
-		var param []any
-		json.Unmarshal([]byte(paramStr), &param)
-		data := msgThing.PropertyData{
-			Identifier: id,
-			Param:      param,
-			TimeStamp:  cast.ToTime(db["ts"]),
+		switch p.Define.ArrayInfo.Type {
+		case schema.DataTypeStruct:
+			data := msgThing.PropertyData{
+				Identifier: id,
+				TimeStamp:  cast.ToTime(db["ts"]),
+			}
+			delete(db, "ts")
+			delete(db, "device_name")
+			delete(db, PropertyType)
+			delete(db, "_num")
+			data.Param = db
+			return &data
+		default:
+			data := msgThing.PropertyData{
+				Identifier: id,
+				Param:      cast.ToString(db["param"]),
+				TimeStamp:  cast.ToTime(db["ts"]),
+			}
+			return &data
 		}
-		return &data
 	default:
 		data := msgThing.PropertyData{
 			Identifier: id,

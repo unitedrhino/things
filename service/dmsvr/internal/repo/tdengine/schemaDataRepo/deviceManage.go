@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/utils"
+	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -45,16 +46,32 @@ func (d *DeviceDataRepo) DeleteDevice(
 	}
 	return nil
 }
+func GetArrayID(id string, num int) string {
+	return fmt.Sprintf("%s_%d", id, num)
+}
 
 func (d *DeviceDataRepo) createPropertyTable(
 	ctx context.Context, p schema.PropertyMap, productID string, deviceName string) error {
 	for _, v := range p {
-		sql := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s USING %s  TAGS('%s','%s','%s');",
-			d.GetPropertyTableName(productID, deviceName, v.Identifier),
-			d.GetPropertyStableName(v.Tag, productID, v.Identifier), productID, deviceName, v.Define.Type)
-		if _, err := d.t.ExecContext(ctx, sql); err != nil {
-			return err
+		if v.Define.Type == schema.DataTypeArray {
+			for i := 0; i < cast.ToInt(v.Define.Max); i++ {
+				sql := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s USING %s  TAGS('%s','%s',%d,'%s');",
+					d.GetPropertyTableName(productID, deviceName, GetArrayID(v.Identifier, i)),
+					d.GetPropertyStableName(v.Tag, productID, v.Identifier), productID, deviceName, i, v.Define.ArrayInfo.Type)
+				if _, err := d.t.ExecContext(ctx, sql); err != nil {
+					return err
+				}
+			}
+
+		} else {
+			sql := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s USING %s  TAGS('%s','%s','%s');",
+				d.GetPropertyTableName(productID, deviceName, v.Identifier),
+				d.GetPropertyStableName(v.Tag, productID, v.Identifier), productID, deviceName, v.Define.Type)
+			if _, err := d.t.ExecContext(ctx, sql); err != nil {
+				return err
+			}
 		}
+
 	}
 	return nil
 }

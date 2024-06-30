@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
+	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
@@ -41,9 +42,18 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 	if err != nil {
 		return nil, err
 	}
+
 	p, ok := t.Property[in.DataID]
 	if !ok {
-		return nil, errors.Parameter.AddMsg("标识符未找到")
+		id, _, ok := schema.GetArray(in.DataID)
+		if ok {
+			p, ok = t.Property[id]
+			if !ok {
+				return nil, errors.Parameter.AddMsg("标识符未找到")
+			}
+		} else {
+			return nil, errors.Parameter.AddMsg("标识符未找到")
+		}
 	}
 	dds, err := dd.GetPropertyDataByID(l.ctx, p, msgThing.FilterOpt{
 		Page: def.PageInfo2{

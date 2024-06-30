@@ -15,8 +15,8 @@ import (
 	"time"
 )
 
-func (d *DeviceDataRepo) InsertPropertyData(ctx context.Context, t *schema.Property, productID string, deviceName string, property *msgThing.PropertyData) error {
-	sql, args, err := d.GenInsertPropertySql(ctx, t, productID, deviceName, property)
+func (d *DeviceDataRepo) InsertPropertyData(ctx context.Context, t *schema.Property, productID string, deviceName string, property *msgThing.Param, timestamp time.Time) error {
+	sql, args, err := d.GenInsertPropertySql(ctx, t, productID, deviceName, property, timestamp)
 	if err != nil {
 		return err
 	}
@@ -24,36 +24,73 @@ func (d *DeviceDataRepo) InsertPropertyData(ctx context.Context, t *schema.Prope
 	return nil
 }
 
-func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Property, productID string, deviceName string, property *msgThing.PropertyData) (sql string, args []any, err error) {
-
-	switch property.Param.(type) {
-	case map[string]any:
-		paramPlaceholder, paramIds, paramValList, err := stores.GenParams(property.Param.(map[string]any))
-		if err != nil {
-			return "", nil, err
+func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Property, productID string, deviceName string, property *msgThing.Param, timestamp time.Time) (sql string, args []any, err error) {
+	switch property.Define.Type {
+	case schema.DataTypeArray:
+		genArrSql := func(Identifier string, num int, v any) error {
+			switch vv := v.(type) {
+			case map[string]any:
+				paramPlaceholder, paramIds, paramValList, err := stores.GenParams(vv)
+				if err != nil {
+					return err
+				}
+				sql += fmt.Sprintf(" %s using %s tags('%s','%s',%d,'%s') (`ts`, %s) values (?,%s) ",
+					d.GetPropertyTableName(productID, deviceName, Identifier),
+					d.GetPropertyStableName(p.Tag, productID, Identifier), productID, deviceName, num, p.Define.Type,
+					paramIds, paramPlaceholder)
+				args = append([]any{timestamp}, paramValList...)
+			default:
+				sql += fmt.Sprintf(" %s using %s tags('%s','%s',%d,'%s')(`ts`, `param`) values (?,?) ",
+					d.GetPropertyTableName(productID, deviceName, GetArrayID(Identifier, num)),
+					d.GetPropertyStableName(p.Tag, productID, Identifier),
+					productID, deviceName, num, p.Define.Type)
+				args = append(args, timestamp, vv)
+			}
+			return nil
 		}
-		sql = fmt.Sprintf(" %s using %s tags('%s','%s','%s') (`ts`, %s) values (?,%s) ",
-			d.GetPropertyTableName(productID, deviceName, property.Identifier),
-			d.GetPropertyStableName(p.Tag, productID, property.Identifier), productID, deviceName, p.Define.Type,
-			paramIds, paramPlaceholder)
-		args = append([]any{property.TimeStamp}, paramValList...)
-	default:
-		var (
-			param = property.Param
-			err   error
-		)
-		if _, ok := property.Param.([]any); ok { //如果是数组类型,需要先序列化为json
-			param, err = json.Marshal(property.Param)
+
+		switch val := property.Value.(type) {
+		case []any: //这种是数组的所有值一起上传的
+			for i, v := range val {
+				err := genArrSql(property.Identifier, i, v)
+				if err != nil {
+					return "", nil, err
+				}
+			}
+		default:
+			Identifier, num, ok := schema.GetArray(property.Identifier)
+			if !ok {
+				return "", nil, errors.Parameter.AddDetail("不是数组")
+			}
+			err := genArrSql(Identifier, num, val)
 			if err != nil {
-				return "", nil, errors.System.AddDetail("param json parse failure")
+				return "", nil, err
 			}
 		}
-		sql = fmt.Sprintf(" %s using %s tags('%s','%s','%s')(`ts`, `param`) values (?,?) ",
-			d.GetPropertyTableName(productID, deviceName, property.Identifier),
-			d.GetPropertyStableName(p.Tag, productID, property.Identifier),
-			productID, deviceName, p.Define.Type)
-		args = append(args, property.TimeStamp, param)
+	default:
+		switch property.Value.(type) {
+		case map[string]any:
+			paramPlaceholder, paramIds, paramValList, err := stores.GenParams(property.Value.(map[string]any))
+			if err != nil {
+				return "", nil, err
+			}
+			sql = fmt.Sprintf(" %s using %s tags('%s','%s','%s') (`ts`, %s) values (?,%s) ",
+				d.GetPropertyTableName(productID, deviceName, property.Identifier),
+				d.GetPropertyStableName(p.Tag, productID, property.Identifier), productID, deviceName, p.Define.Type,
+				paramIds, paramPlaceholder)
+			args = append([]any{timestamp}, paramValList...)
+		default:
+			var (
+				param = property.Value
+			)
+			sql = fmt.Sprintf(" %s using %s tags('%s','%s','%s')(`ts`, `param`) values (?,?) ",
+				d.GetPropertyTableName(productID, deviceName, property.Identifier),
+				d.GetPropertyStableName(p.Tag, productID, property.Identifier),
+				productID, deviceName, p.Define.Type)
+			args = append(args, timestamp, param)
+		}
 	}
+
 	return
 }
 
@@ -67,7 +104,7 @@ func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schem
 			"DeviceDataRepo.GetLatestPropertyDataByID.GetCtx filter:%v  err:%v",
 			filter, err)
 	}
-	if retStr == "" { //如果缓存里没有查到,需要从db里查
+	if retStr == "" || true { //如果缓存里没有查到,需要从db里查
 		dds, err := d.GetPropertyDataByID(ctx, p,
 			msgThing.FilterOpt{
 				Page:        def.PageInfo2{Size: 1},
@@ -89,7 +126,7 @@ func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schem
 	return &ret, nil
 }
 
-func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Model, productID string, deviceName string, params map[string]any, timestamp time.Time) error {
+func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Model, productID string, deviceName string, params map[string]msgThing.Param, timestamp time.Time) error {
 	var startTime = time.Now()
 	defer func() {
 		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).
@@ -108,9 +145,10 @@ func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Mod
 				"DeviceDataRepo.InsertPropertiesData.SetCtx identifier:%v param:%v err:%v",
 				identifier, param, err)
 		}
-		p := t.Property[identifier]
+		p := t.Property[param.Identifier]
 		//入库
-		sql1, args1, err := d.GenInsertPropertySql(ctx, p, productID, deviceName, &data)
+		param.Identifier = identifier
+		sql1, args1, err := d.GenInsertPropertySql(ctx, p, productID, deviceName, &param, timestamp)
 		if err != nil {
 			return errors.Database.AddDetailf(
 				"DeviceDataRepo.InsertPropertiesData.InsertPropertyData identifier:%v param:%v err:%v",
@@ -145,7 +183,13 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 		}
 		filter.Page.Size = 0
 	}
-	sql = sql.From(d.GetPropertyStableName(p.Tag, filter.ProductID, filter.DataID))
+	dataID := filter.DataID
+	id, num, ok := schema.GetArray(filter.DataID)
+	if ok {
+		dataID = id
+		sql = sql.Where("`_num`=?", num)
+	}
+	sql = sql.From(d.GetPropertyStableName(p.Tag, filter.ProductID, dataID))
 	sql = d.fillFilter(sql, filter)
 	sql = filter.Page.FmtSql(sql)
 
@@ -161,7 +205,7 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 	stores.Scan(rows, &datas)
 	retProperties := make([]*msgThing.PropertyData, 0, len(datas))
 	for _, v := range datas {
-		retProperties = append(retProperties, ToPropertyData(filter.DataID, v))
+		retProperties = append(retProperties, ToPropertyData(filter.DataID, p, v))
 	}
 	return retProperties, err
 }
@@ -206,8 +250,14 @@ func (d *DeviceDataRepo) fillFilter(
 func (d *DeviceDataRepo) GetPropertyCountByID(
 	ctx context.Context, p *schema.Property,
 	filter msgThing.FilterOpt) (int64, error) {
-
-	sqlData := sq.Select("count(1)").From(d.GetPropertyStableName(p.Tag, filter.ProductID, filter.DataID))
+	sqlData := sq.Select("count(1)")
+	dataID := filter.DataID
+	id, num, ok := schema.GetArray(filter.DataID)
+	if ok {
+		dataID = id
+		sqlData = sqlData.Where("`_num`=?", num)
+	}
+	sqlData = sqlData.From(d.GetPropertyStableName(p.Tag, filter.ProductID, dataID))
 	sqlData = d.fillFilter(sqlData, filter)
 	sqlData = filter.Page.FmtWhere(sqlData)
 	sqlStr, value, err := sqlData.ToSql()

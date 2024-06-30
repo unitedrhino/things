@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
+	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
 	"sync"
@@ -33,29 +34,29 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 	var (
 		diDatas []*dm.PropertyLogInfo
 		total   int
+		dataMap map[string]*schema.Property
 	)
 	temp, err := l.svcCtx.SchemaRepo.GetData(l.ctx, in.ProductID)
 	if err != nil {
 		return nil, errors.System.AddDetail(err)
 	}
 	dd := l.svcCtx.SchemaManaRepo
-	dataIDs := in.DataIDs
-	if len(dataIDs) == 0 {
-		dataIDs = temp.Property.GetIDs()
+	if len(in.DataIDs) == 0 {
+		dataMap = temp.Property.GetMap()
+	} else {
+		dataMap = temp.Property.GetMapWithIDs(in.DataIDs...)
 	}
-	total = len(dataIDs)
+	total = len(dataMap)
 	wait := sync.WaitGroup{}
 	mutex := sync.Mutex{}
-	for _, v := range dataIDs {
-		if temp.Property[v] == nil { //如果这个属性不存在则跳过
-			continue
-		}
-		dataID := v
+	for k, v := range dataMap {
+		property := v
+		dataID := k
 		wait.Add(1)
 		utils.Go(l.ctx, func() {
-			func(dataID string) {
+			func() {
 				defer wait.Done()
-				data, err := dd.GetLatestPropertyDataByID(l.ctx, temp.Property[dataID], msgThing.LatestFilter{
+				data, err := dd.GetLatestPropertyDataByID(l.ctx, property, msgThing.LatestFilter{
 					ProductID:  in.ProductID,
 					DeviceName: in.DeviceName,
 					DataID:     dataID,
@@ -88,7 +89,7 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 				defer mutex.Unlock()
 				diDatas = append(diDatas, &diData)
 				l.Debugf("%s.get data=%+v", utils.FuncName(), diData)
-			}(dataID)
+			}()
 		})
 	}
 	wait.Wait()

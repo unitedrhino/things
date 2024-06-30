@@ -142,17 +142,36 @@ func (d *DeviceDataRepo) UpdateProduct(
 func (d *DeviceDataRepo) createPropertyStable(
 	ctx context.Context, p *schema.Property, productID string) error {
 	var sql string
-	if p.Define.Type != schema.DataTypeStruct {
-		sql = fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp,`param` %s)"+
-			" TAGS (`product_id` BINARY(50),`device_name` BINARY(50),`"+PropertyType+"` BINARY(50));",
-			d.GetPropertyStableName(p.Tag, productID, p.Identifier), stores.GetTdType(p.Define))
-		if _, err := d.t.ExecContext(ctx, sql); err != nil {
-			return errors.Database.AddDetail(err)
-		}
-	} else {
+	switch p.Define.Type {
+	case schema.DataTypeStruct:
 		sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp, %s)"+
 			" TAGS (`product_id` BINARY(50),`device_name` BINARY(50),`"+PropertyType+"` BINARY(50));",
 			d.GetPropertyStableName(p.Tag, productID, p.Identifier), d.GetSpecsCreateColumn(p.Define.Specs))
+		if _, err := d.t.ExecContext(ctx, sql); err != nil {
+			return errors.Database.AddDetail(err)
+		}
+	case schema.DataTypeArray: //数组类型要创建对应长度的表
+		arrayInfo := p.Define.ArrayInfo
+		switch arrayInfo.Type {
+		case schema.DataTypeStruct:
+			sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp, %s)"+
+				" TAGS (`product_id` BINARY(50),`device_name` BINARY(50),`_num` BIGINT,`"+PropertyType+"` BINARY(50));",
+				d.GetPropertyStableName(p.Tag, productID, p.Identifier), d.GetSpecsCreateColumn(arrayInfo.Specs))
+			if _, err := d.t.ExecContext(ctx, sql); err != nil {
+				return errors.Database.AddDetail(err)
+			}
+		default:
+			sql = fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp,`param` %s)"+
+				" TAGS (`product_id` BINARY(50),`device_name` BINARY(50),`_num` BIGINT,`"+PropertyType+"` BINARY(50));",
+				d.GetPropertyStableName(p.Tag, productID, p.Identifier), stores.GetTdType(*arrayInfo))
+			if _, err := d.t.ExecContext(ctx, sql); err != nil {
+				return errors.Database.AddDetail(err)
+			}
+		}
+	default:
+		sql = fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp,`param` %s)"+
+			" TAGS (`product_id` BINARY(50),`device_name` BINARY(50),`"+PropertyType+"` BINARY(50));",
+			d.GetPropertyStableName(p.Tag, productID, p.Identifier), stores.GetTdType(p.Define))
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
 			return errors.Database.AddDetail(err)
 		}

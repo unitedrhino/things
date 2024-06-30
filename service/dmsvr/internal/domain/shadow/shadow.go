@@ -2,6 +2,7 @@ package shadow
 
 import (
 	"context"
+	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
@@ -71,8 +72,8 @@ func NewInfo(productID, deviceName string, params map[string]any) []*Info {
 	return ret
 }
 
-func ToValues(in []*Info, property schema.PropertyMap) map[string]any {
-	var ret = map[string]any{}
+func ToValues(in []*Info, property schema.PropertyMap) map[string]msgThing.Param {
+	var ret = map[string]msgThing.Param{}
 	for _, v := range in {
 		p := property[v.DataID]
 		if p == nil {
@@ -82,7 +83,15 @@ func ToValues(in []*Info, property schema.PropertyMap) map[string]any {
 		if err != nil {
 			continue
 		}
-		ret[v.DataID] = val
+		ret[v.DataID] = msgThing.Param{
+			Identifier: p.Identifier,
+			Name:       p.Name,
+			Desc:       p.Desc,
+			Mode:       p.Mode,
+			Required:   p.Required,
+			Define:     &p.Define,
+			Value:      val,
+		}
 	}
 	return ret
 }

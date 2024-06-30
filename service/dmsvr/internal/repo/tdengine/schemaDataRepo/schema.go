@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/stores"
+	"github.com/spf13/cast"
 	"strings"
 )
 
@@ -38,6 +39,18 @@ func (S *SchemaStore) GetEventStableName() string {
 
 func (S *SchemaStore) GetPropertyTableName(productID, deviceName, identifier string) string {
 	return fmt.Sprintf("`device_property_%s_%s_%s`", productID, deviceName, identifier)
+}
+
+func (S *SchemaStore) GetPropertyTableNames(productID, deviceName string, p *schema.Property) (ret []string) {
+	switch p.Define.Type {
+	case schema.DataTypeArray:
+		for i := 0; i < cast.ToInt(p.Define.Max); i++ {
+			ret = append(ret, fmt.Sprintf("`device_property_%s_%s_%s`", productID, deviceName, GetArrayID(p.Identifier, i)))
+		}
+	default:
+		return []string{fmt.Sprintf("`device_property_%s_%s_%s`", productID, deviceName, p.Identifier)}
+	}
+	return []string{}
 }
 func (S *SchemaStore) GetEventTableName(productID, deviceName string) string {
 	return fmt.Sprintf("`device_event_%s_%s`", productID, deviceName)

@@ -218,7 +218,7 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	}
 
 	if f.CollectType != 0 && uc.UserID != 0 && ctxs.GetUserCtx(ctx) != nil { //如果要获取收藏的设备
-		subQuery := d.db.Model(&DmUserDeviceCollect{}).Select("product_id, device_name").Where("user_id = ?", f.UserID)
+		subQuery := d.db.Model(&DmUserDeviceCollect{}).Select("product_id, device_name").Where("user_id = ?", uc.UserID)
 		switch f.CollectType {
 		case def.SelectTypeOnly: //直接过滤这几个设备
 			db = db.WithContext(ctx).Where("(product_id, device_name)  in (?)",
