@@ -225,8 +225,14 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 			db = db.WithContext(ctxs.WithAllProject(ctx)).Where("(product_id, device_name)  in (?)",
 				subQuery)
 		case def.SelectTypeAll: //同时获取普通设备
-			db = db.WithContext(ctxs.WithAllProject(ctx)).Where(stores.GenProjectAuthScope(ctx, d.db)).Or("(product_id, device_name)  in (?)",
-				subQuery)
+			pids, err := stores.GetProjectAuthIDs(ctx)
+			if err != nil {
+				db.AddError(err)
+				return db
+			}
+			if len(pids) != 0 {
+				db = db.WithContext(ctxs.WithAllProject(ctx)).Where("project_id in ? or (product_id, device_name)  in (?)", pids, subQuery)
+			}
 		}
 	}
 
