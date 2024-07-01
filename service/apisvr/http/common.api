@@ -14,7 +14,7 @@ type(
     }
     OrderBy{
         Filed string `json:"filed,optional"`////排序的字段名
-        Sort int64 `json:"sort,optional"`//排序方式：0 从小到大, 1 从大到小
+        Sort int64 `json:"sort,optional"`//排序方式：1 从小到大, 2 从大到小
     }
     CommonResp{
         ID int64 `json:"id,optional"`         // id
@@ -73,5 +73,19 @@ type(
         NickName    string `json:"nickName,optional"`          // 用户的昵称
         HeadImg  string `json:"headImg,optional"`        // 用户头像
         CreatedTime int64  `json:"createdTime,string,optional"`// 创建时间
+    }
+
+    CompareInt64{
+    /*
+  "="      //相等
+ "!="     //不相等
+ ">"      //大于
+ ">="     //大于等于
+ "<"      //小于
+ "<="     //小于等于
+ "like"   //模糊查询
+  */
+        CmpTYpe string `json:"cmpTYpe"`
+        Value int64 `json:"value,string"`
     }
 )

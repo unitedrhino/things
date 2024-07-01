@@ -138,6 +138,11 @@ type CommonSchemaUpdateReq struct {
 	*CommonSchemaInfo
 }
 
+type CompareInt64 struct {
+	CmpTYpe string `json:"cmpTYpe"`
+	Value   int64  `json:"value,string"`
+}
+
 type DateRange struct {
 	Start string `json:"start,optional"` //开始时间 格式：yyyy-mm-dd
 	End   string `json:"end,optional"`   //结束时间 格式：yyyy-mm-dd
@@ -303,6 +308,7 @@ type DeviceInfoIndexReq struct {
 	ProductIDs        []string      `json:"productIDs,optional"`           //产品id 为空时获取所有产品
 	DeviceName        string        `json:"deviceName,optional"`           //过滤条件:模糊查询 设备名
 	DeviceNames       []string      `json:"deviceNames,optional"`          //过滤条件:精准查询 设备名
+	ExpTime           *CompareInt64 `json:"expTime,optional"`              //到期时间
 	DeviceAlias       string        `json:"deviceAlias,optional"`          //过滤条件:模糊查询 设备别名
 	DeviceTypes       []int64       `json:"deviceTypes,optional"`          //设备类型:1:设备,2:网关,3:子设备//设备类型:1:设备,2:网关,3:子设备
 	Position          *Point        `json:"position,optional"`             //设备定位,默认百度坐标系，用于获取以该点为中心，Range范围内的设备列表，与Range连用
@@ -842,7 +848,7 @@ type ManufacturerInfo struct {
 
 type OrderBy struct {
 	Filed string `json:"filed,optional"` ////排序的字段名
-	Sort  int64  `json:"sort,optional"`  //排序方式：0 从小到大, 1 从大到小
+	Sort  int64  `json:"sort,optional"`  //排序方式：1 从小到大, 2 从大到小
 }
 
 type OtaFirmwareCreateReq struct {

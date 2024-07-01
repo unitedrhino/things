@@ -344,7 +344,7 @@ service userDevice{
   //更新权限
   rpc userDeviceShareUpdate(UserDeviceShareInfo)returns(Empty);
   //取消分享设备
-  rpc userDeviceShareDelete(WithID)returns(Empty);
+  rpc userDeviceShareDelete(UserDeviceShareReadReq)returns(Empty);
   //取消分享设备
   rpc userDeviceShareMultiDelete(UserDeviceShareMultiDeleteReq)returns(Empty);
   //获取设备分享列表(只有设备的所有者才能获取)
@@ -1213,6 +1213,7 @@ message DeviceInfoIndexReq{
   CompareInt64 ratedPower =28;// 额定功率:单位w/h
   int64 hasOwner = 30;//是否被人拥有
   int64 userID =31;//用户id查询
+  CompareInt64  expTime =38; //到期时间
 }
 
 message DeviceInfoIndexResp{

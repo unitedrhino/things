@@ -4761,7 +4761,7 @@ type UserDeviceClient interface {
 	// 更新权限
 	UserDeviceShareUpdate(ctx context.Context, in *UserDeviceShareInfo, opts ...grpc.CallOption) (*Empty, error)
 	// 取消分享设备
-	UserDeviceShareDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
+	UserDeviceShareDelete(ctx context.Context, in *UserDeviceShareReadReq, opts ...grpc.CallOption) (*Empty, error)
 	// 取消分享设备
 	UserDeviceShareMultiDelete(ctx context.Context, in *UserDeviceShareMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error)
 	// 获取设备分享列表(只有设备的所有者才能获取)
@@ -4825,7 +4825,7 @@ func (c *userDeviceClient) UserDeviceShareUpdate(ctx context.Context, in *UserDe
 	return out, nil
 }
 
-func (c *userDeviceClient) UserDeviceShareDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+func (c *userDeviceClient) UserDeviceShareDelete(ctx context.Context, in *UserDeviceShareReadReq, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, UserDevice_UserDeviceShareDelete_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -4883,7 +4883,7 @@ type UserDeviceServer interface {
 	// 更新权限
 	UserDeviceShareUpdate(context.Context, *UserDeviceShareInfo) (*Empty, error)
 	// 取消分享设备
-	UserDeviceShareDelete(context.Context, *WithID) (*Empty, error)
+	UserDeviceShareDelete(context.Context, *UserDeviceShareReadReq) (*Empty, error)
 	// 取消分享设备
 	UserDeviceShareMultiDelete(context.Context, *UserDeviceShareMultiDeleteReq) (*Empty, error)
 	// 获取设备分享列表(只有设备的所有者才能获取)
@@ -4914,7 +4914,7 @@ func (UnimplementedUserDeviceServer) UserDeviceShareCreate(context.Context, *Use
 func (UnimplementedUserDeviceServer) UserDeviceShareUpdate(context.Context, *UserDeviceShareInfo) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserDeviceShareUpdate not implemented")
 }
-func (UnimplementedUserDeviceServer) UserDeviceShareDelete(context.Context, *WithID) (*Empty, error) {
+func (UnimplementedUserDeviceServer) UserDeviceShareDelete(context.Context, *UserDeviceShareReadReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserDeviceShareDelete not implemented")
 }
 func (UnimplementedUserDeviceServer) UserDeviceShareMultiDelete(context.Context, *UserDeviceShareMultiDeleteReq) (*Empty, error) {
@@ -5033,7 +5033,7 @@ func _UserDevice_UserDeviceShareUpdate_Handler(srv interface{}, ctx context.Cont
 }
 
 func _UserDevice_UserDeviceShareDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(WithID)
+	in := new(UserDeviceShareReadReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -5045,7 +5045,7 @@ func _UserDevice_UserDeviceShareDelete_Handler(srv interface{}, ctx context.Cont
 		FullMethod: UserDevice_UserDeviceShareDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserDeviceServer).UserDeviceShareDelete(ctx, req.(*WithID))
+		return srv.(UserDeviceServer).UserDeviceShareDelete(ctx, req.(*UserDeviceShareReadReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }

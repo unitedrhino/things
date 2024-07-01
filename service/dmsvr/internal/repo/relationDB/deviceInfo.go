@@ -52,6 +52,7 @@ type (
 		NotAreaID          int64
 		Distributor        *stores.IDPathFilter
 		RatedPower         *stores.Cmp
+		ExpTime            *stores.Cmp
 		AreaIDPath         string
 		HasOwner           int64 //是否被人拥有
 	}
@@ -66,6 +67,7 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	uc := ctxs.GetUserCtxNoNil(ctx)
 	db = f.Distributor.Filter(db, "distributor")
 	db = f.RatedPower.Where(db, "rated_power")
+	db = f.ExpTime.Where(db, "exp_time")
 	if f.WithProduct {
 		db = db.Preload("ProductInfo")
 	}

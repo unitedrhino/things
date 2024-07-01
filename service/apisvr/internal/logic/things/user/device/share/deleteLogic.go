@@ -2,6 +2,7 @@ package share
 
 import (
 	"context"
+	"github.com/i-Things/things/service/apisvr/internal/logic/things"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/service/apisvr/internal/svc"
@@ -24,8 +25,11 @@ func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogi
 	}
 }
 
-func (l *DeleteLogic) Delete(req *types.WithID) error {
-	_, err := l.svcCtx.UserDevice.UserDeviceShareDelete(l.ctx, &dm.WithID{Id: req.ID})
+func (l *DeleteLogic) Delete(req *types.UserDeviceShareReadReq) error {
+	_, err := l.svcCtx.UserDevice.UserDeviceShareDelete(l.ctx, &dm.UserDeviceShareReadReq{
+		Id:     req.ID,
+		Device: things.ToDmDeviceCorePb(req.Device),
+	})
 
 	return err
 }

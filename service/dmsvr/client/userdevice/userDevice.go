@@ -207,7 +207,7 @@ type (
 		// 更新权限
 		UserDeviceShareUpdate(ctx context.Context, in *UserDeviceShareInfo, opts ...grpc.CallOption) (*Empty, error)
 		// 取消分享设备
-		UserDeviceShareDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
+		UserDeviceShareDelete(ctx context.Context, in *UserDeviceShareReadReq, opts ...grpc.CallOption) (*Empty, error)
 		// 取消分享设备
 		UserDeviceShareMultiDelete(ctx context.Context, in *UserDeviceShareMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error)
 		// 获取设备分享列表(只有设备的所有者才能获取)
@@ -293,13 +293,13 @@ func (d *directUserDevice) UserDeviceShareUpdate(ctx context.Context, in *UserDe
 }
 
 // 取消分享设备
-func (m *defaultUserDevice) UserDeviceShareDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+func (m *defaultUserDevice) UserDeviceShareDelete(ctx context.Context, in *UserDeviceShareReadReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewUserDeviceClient(m.cli.Conn())
 	return client.UserDeviceShareDelete(ctx, in, opts...)
 }
 
 // 取消分享设备
-func (d *directUserDevice) UserDeviceShareDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+func (d *directUserDevice) UserDeviceShareDelete(ctx context.Context, in *UserDeviceShareReadReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.UserDeviceShareDelete(ctx, in)
 }
 

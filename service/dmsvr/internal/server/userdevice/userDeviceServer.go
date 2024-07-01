@@ -51,7 +51,7 @@ func (s *UserDeviceServer) UserDeviceShareUpdate(ctx context.Context, in *dm.Use
 }
 
 // 取消分享设备
-func (s *UserDeviceServer) UserDeviceShareDelete(ctx context.Context, in *dm.WithID) (*dm.Empty, error) {
+func (s *UserDeviceServer) UserDeviceShareDelete(ctx context.Context, in *dm.UserDeviceShareReadReq) (*dm.Empty, error) {
 	l := userdevicelogic.NewUserDeviceShareDeleteLogic(ctx, s.svcCtx)
 	return l.UserDeviceShareDelete(in)
 }

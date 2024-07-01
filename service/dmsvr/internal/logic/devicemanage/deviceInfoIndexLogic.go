@@ -10,6 +10,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -77,6 +78,9 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 	}
 	if in.RatedPower != nil {
 		filter.RatedPower = stores.GetCmp(in.RatedPower.CmpType, in.RatedPower.Value)
+	}
+	if in.ExpTime != nil {
+		filter.ExpTime = stores.GetCmp(in.ExpTime.CmpType, cast.ToTime(in.ExpTime.Value))
 	}
 	if err := ctxs.IsRoot(l.ctx); err == nil { //default租户才可以查看其他租户的设备
 		ctxs.GetUserCtx(l.ctx).AllTenant = true

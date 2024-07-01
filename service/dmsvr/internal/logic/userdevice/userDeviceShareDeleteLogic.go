@@ -2,7 +2,6 @@ package userdevicelogic
 
 import (
 	"context"
-	"gitee.com/i-Things/core/service/syssvr/pb/sys"
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/errors"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
@@ -28,21 +27,30 @@ func NewUserDeviceShareDeleteLogic(ctx context.Context, svcCtx *svc.ServiceConte
 }
 
 // 取消分享设备
-func (l *UserDeviceShareDeleteLogic) UserDeviceShareDelete(in *dm.WithID) (*dm.Empty, error) {
-	uds, err := relationDB.NewUserDeviceShareRepo(l.ctx).FindOne(l.ctx, in.Id)
+func (l *UserDeviceShareDeleteLogic) UserDeviceShareDelete(in *dm.UserDeviceShareReadReq) (*dm.Empty, error) {
+	uc := ctxs.GetUserCtx(l.ctx)
+
+	f := relationDB.UserDeviceShareFilter{
+		ID:         in.Id,
+		DeviceName: in.Device.GetDeviceName(),
+		ProductID:  in.Device.GetProductID(),
+	}
+	if in.Id == 0 { //如果是被分享者来获取
+		f.SharedUserID = uc.UserID
+	}
+	uds, err := relationDB.NewUserDeviceShareRepo(l.ctx).FindOneByFilter(l.ctx, f)
 	if err != nil {
 		return nil, err
 	}
-	uc := ctxs.GetUserCtx(l.ctx)
-	if uds.SharedUserID != uc.UserID { //如果不是分享的对象取消分享,需要判断是否是设备的所有者,只有设备的所有者才有权取消分享
-		pi, err := l.svcCtx.ProjectM.ProjectInfoRead(l.ctx, &sys.ProjectWithID{ProjectID: int64(uds.ProjectID)})
+	if uds.SharedUserID != uc.UserID {
+		di, err := relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(ctxs.WithAllProject(l.ctx), relationDB.DeviceFilter{ProductID: uds.ProductID, DeviceNames: []string{uds.DeviceName}})
 		if err != nil {
 			return nil, err
 		}
-		if pi.AdminUserID != uc.UserID { //只有所有者和被分享者才有权限操作
+		if di.UserID != uc.UserID { //只有所有者和被分享者才有权限操作
 			return nil, errors.Permissions
 		}
 	}
-	err = relationDB.NewUserDeviceShareRepo(l.ctx).Delete(l.ctx, in.Id)
+	err = relationDB.NewUserDeviceShareRepo(l.ctx).Delete(l.ctx, uds.ID)
 	return &dm.Empty{}, err
 }

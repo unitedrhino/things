@@ -5,7 +5,6 @@ import (
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/apisvr/internal/logic"
 	"github.com/i-Things/things/service/apisvr/internal/logic/things"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"sync"
@@ -31,34 +30,7 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 }
 
 func (l *IndexLogic) Index(req *types.DeviceInfoIndexReq) (resp *types.DeviceInfoIndexResp, err error) {
-	dmReq := &dm.DeviceInfoIndexReq{
-		TenantCode:        req.TenantCode,
-		ProductID:         req.ProductID, //产品id
-		ProductIDs:        req.ProductIDs,
-		AreaIDs:           req.AreaIDs, //项目区域ids
-		DeviceName:        req.DeviceName,
-		Tags:              logic.ToTagsMap(req.Tags),
-		Page:              logic.ToDmPageRpc(req.Page),
-		Range:             req.Range,
-		Position:          logic.ToDmPointRpc(req.Position),
-		DeviceAlias:       req.DeviceAlias,
-		IsOnline:          req.IsOnline,
-		ProductCategoryID: req.ProductCategoryID,
-		WithShared:        req.WithShared,
-		WithCollect:       req.WithCollect,
-		Versions:          req.Versions,
-		Gateway:           utils.Copy[dm.DeviceCore](req.Gateway),
-		GroupID:           req.GroupID,
-		Devices:           utils.CopySlice[dm.DeviceCore](req.Devices),
-		NotGroupID:        req.NotGroupID,
-		DeviceTypes:       req.DeviceTypes,
-		Status:            req.Status,
-		DeviceNames:       req.DeviceNames,
-		NotAreaID:         req.NotAreaID,
-		HasOwner:          req.HasOwner,
-		UserID:            req.UserID,
-	}
-	dmResp, err := l.svcCtx.DeviceM.DeviceInfoIndex(l.ctx, dmReq)
+	dmResp, err := l.svcCtx.DeviceM.DeviceInfoIndex(l.ctx, utils.Copy[dm.DeviceInfoIndexReq](req))
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.GetDeviceInfo req=%v err=%+v", utils.FuncName(), req, er)

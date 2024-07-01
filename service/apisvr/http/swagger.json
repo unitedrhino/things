@@ -5617,7 +5617,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/WithID"
+              "$ref": "#/definitions/UserDeviceShareReadReq"
             }
           }
         ],
@@ -6335,6 +6335,22 @@
       },
       "title": "CommonSchemaUpdateReq"
     },
+    "CompareInt64": {
+      "type": "object",
+      "properties": {
+        "cmpTYpe": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "title": "CompareInt64",
+      "required": [
+        "cmpTYpe",
+        "value"
+      ]
+    },
     "DateRange": {
       "type": "object",
       "properties": {
@@ -6964,6 +6980,10 @@
             "type": "string"
           },
           "description": "过滤条件:精准查询 设备名"
+        },
+        "expTime": {
+          "$ref": "#/definitions/CompareInt64",
+          "description": "到期时间"
         },
         "deviceAlias": {
           "type": "string",
@@ -9101,7 +9121,7 @@
         "sort": {
           "type": "integer",
           "format": "int64",
-          "description": "排序方式：0 从小到大, 1 从大到小"
+          "description": "排序方式：1 从小到大, 2 从大到小"
         }
       },
       "title": "OrderBy"

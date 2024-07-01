@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgGateway"
@@ -16,6 +17,10 @@ import (
 func ToDeviceInfo(ctx context.Context, svcCtx *svc.ServiceContext, in *relationDB.DmDeviceInfo) *dm.DeviceInfo {
 	if in == nil {
 		return nil
+	}
+	if uc := ctxs.GetUserCtx(ctx); uc != nil && !uc.IsAdmin {
+		in.Secret = "" // 设备秘钥
+		in.Cert = ""   // 设备证书
 	}
 	if in.IsOnline == def.Unknown {
 		in.IsOnline = def.False

@@ -34,7 +34,7 @@ service api {
 	post /create (UserDeviceShareInfo) returns (WithID)
 	@doc "取消分享设备"
 	@handler delete
-	post /delete (WithID) returns ()
+	post /delete (UserDeviceShareReadReq) returns ()
 	@doc "批量取消分享设备"
 	@handler multiDelete
 	post /multi-delete (UserDeviceShareMultiDeleteReq) returns ()
