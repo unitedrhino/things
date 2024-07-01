@@ -22,34 +22,16 @@ message PageInfo{
   message OrderBy {
     //排序的字段名
     string filed = 1;
-    //排序方式：0 从小到大, 1 从大到小
+    //排序方式：1 从小到大, 2 从大到小
     int64 sort = 2;
   }
 }
 message CompareString{
- /*
- "="      //相等
-"!="     //不相等
-">"      //大于
-">="     //大于等于
-"<"      //小于
-"<="     //小于等于
-"like"   //模糊查询
- */
-  string CmpType =1;
+  string CmpType =1;//"=":相等 "!=":不相等 ">":大于">=":大于等于"<":小于"<=":小于等于 "like":模糊查询
   string value =2;//值
 }
 message CompareInt64{
-  /*
-  "="      //相等
- "!="     //不相等
- ">"      //大于
- ">="     //大于等于
- "<"      //小于
- "<="     //小于等于
- "like"   //模糊查询
-  */
-  string CmpType =1;
+  string CmpType =1;//"=":相等 "!=":不相等 ">":大于">=":大于等于"<":小于"<=":小于等于 "like":模糊查询
   int64 value =2;//值
 }
 
@@ -1274,6 +1256,7 @@ message CommonSchemaIndexReq{
   int64 groupID =17;//过滤分组下设备共有的物模型
   repeated int64 groupIDs =18;//过滤分组下设备共有的物模型
   string  propertyMode =19;//属性类型可用 读写类型: 1:r(只读) 2:rw(可读可写)
+  int64 controlMode = 21;  //控制模式: 1: 可以群控,可以单控  2:只能单控
 }
 
 message CommonSchemaIndexResp{
@@ -1296,6 +1279,7 @@ message CommonSchemaInfo{
   google.protobuf.StringValue affordance = 11;//各功能类型的详细参数定义
   string extendConfig = 12; //拓展参数
   int64 order =13;//排序
+  int64 controlMode = 16;  //控制模式: 1: 可以群控,可以单控  2:只能单控
   repeated ProductCategory productCategories =3; //绑定的产品品类(如果绑定了,则该品类下的产品会自动新增并不允许删除)
 }
 
@@ -1334,6 +1318,8 @@ message ProductSchemaIndexReq{
   int64 funcGroup =14; // 功能分类: 1:普通功能 2:系统功能
   int64 userPerm =15;//用户权限操作: 1:r(只读) 3:rw(可读可写)
   string  propertyMode =16;//属性类型可用 读写类型: 1:r(只读) 2:rw(可读可写)
+  int64 controlMode = 18;  //控制模式: 1: 可以群控,可以单控  2:只能单控
+
 }
 
 message ProductSchemaIndexResp{
@@ -1352,6 +1338,7 @@ message ProductSchemaInfo{
   int64 isCanSceneLinkage =8;//是否支持场景联动控制
   int64 funcGroup =14; // 功能分类: 1:普通功能 2:系统功能
   int64 userPerm =15;//用户权限操作: 1:r(只读) 3:rw(可读可写)
+  int64 controlMode = 16;  //控制模式: 1: 可以群控,可以单控  2:只能单控
   int64 isHistory = 10;// 是否存储历史记录
   google.protobuf.StringValue affordance = 11;//各功能类型的详细参数定义
   string extendConfig = 12; //拓展参数

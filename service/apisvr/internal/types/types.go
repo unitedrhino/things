@@ -139,7 +139,7 @@ type CommonSchemaUpdateReq struct {
 }
 
 type CompareInt64 struct {
-	CmpTYpe string `json:"cmpTYpe"`
+	CmpTYpe string `json:"cmpTYpe"` //"=":相等 "!=":不相等 ">":大于">=":大于等于"<":小于"<=":小于等于 "like":模糊查询
 	Value   int64  `json:"value,string"`
 }
 

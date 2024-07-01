@@ -6339,7 +6339,8 @@
       "type": "object",
       "properties": {
         "cmpTYpe": {
-          "type": "string"
+          "type": "string",
+          "description": "\"=\":相等 \"!=\":不相等 \"\u003e\":大于\"\u003e=\":大于等于\"\u003c\":小于\"\u003c=\":小于等于 \"like\":模糊查询"
         },
         "value": {
           "type": "string"

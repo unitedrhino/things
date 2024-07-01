@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/oss/common"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/productCustom"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/protocol"
@@ -33,10 +32,6 @@ func ToProductInfo(ctx context.Context, svcCtx *svc.ServiceContext, pi *relation
 	}
 	if pi.AutoRegister == def.Unknown {
 		pi.AutoRegister = def.AutoRegClose
-	}
-	if uc := ctxs.GetUserCtx(ctx); uc != nil && !uc.IsAdmin {
-		pi.Secret = ""        // 设备秘钥
-		pi.ProtocolConf = nil // 设备证书
 	}
 	dpi := utils.Copy[dm.ProductInfo](pi)
 	dpi.Category = ToProductCategoryPb(ctx, svcCtx, pi.Category, nil)

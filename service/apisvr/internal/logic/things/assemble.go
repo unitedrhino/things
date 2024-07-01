@@ -73,6 +73,10 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 			}
 		}
 	}
+	if uc := ctxs.GetUserCtx(ctx); uc != nil && !uc.IsAdmin {
+		v.Secret = "" // 设备秘钥
+		v.Cert = ""   // 设备证书
+	}
 	return &types.DeviceInfo{
 		ID:                 v.Id,
 		TenantCode:         v.TenantCode,
