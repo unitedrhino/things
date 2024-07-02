@@ -38,6 +38,9 @@ func ToPropertyData(id string, p *schema.Property, db map[string]any) *msgThing.
 		delete(db, "device_name")
 		delete(db, PropertyType)
 		delete(db, "_num")
+		for k, v := range db {
+			db[k] = BoolToInt(v)
+		}
 		data.Param = db
 		return &data
 	case string(schema.DataTypeArray):
@@ -51,12 +54,15 @@ func ToPropertyData(id string, p *schema.Property, db map[string]any) *msgThing.
 			delete(db, "device_name")
 			delete(db, PropertyType)
 			delete(db, "_num")
+			for k, v := range db {
+				db[k] = BoolToInt(v)
+			}
 			data.Param = db
 			return &data
 		default:
 			data := msgThing.PropertyData{
 				Identifier: id,
-				Param:      cast.ToString(db["param"]),
+				Param:      cast.ToString(BoolToInt(db["param"])),
 				TimeStamp:  cast.ToTime(db["ts"]),
 			}
 			return &data
