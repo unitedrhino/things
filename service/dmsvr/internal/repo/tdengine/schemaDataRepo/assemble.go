@@ -64,9 +64,18 @@ func ToPropertyData(id string, p *schema.Property, db map[string]any) *msgThing.
 	default:
 		data := msgThing.PropertyData{
 			Identifier: id,
-			Param:      cast.ToString(db["param"]),
+			Param:      cast.ToString(BoolToInt(db["param"])),
 			TimeStamp:  cast.ToTime(db["ts"]),
 		}
 		return &data
 	}
+}
+func BoolToInt(in any) any {
+	if v, ok := in.(bool); ok {
+		if v {
+			return 1
+		}
+		return 0
+	}
+	return in
 }
