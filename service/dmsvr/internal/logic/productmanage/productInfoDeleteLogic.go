@@ -37,6 +37,11 @@ func (l *ProductInfoDeleteLogic) ProductInfoDelete(in *dm.ProductInfoDeleteReq) 
 	if err != nil {
 		return nil, err
 	}
+	err = relationDB.NewProductSchemaRepo(l.ctx).DeleteByFilter(l.ctx, relationDB.ProductSchemaFilter{ProductID: in.ProductID})
+	if err != nil {
+		l.Errorf("%s.Delete err=%v", utils.FuncName(), utils.Fmt(err))
+		return nil, err
+	}
 	err = l.DropProduct(in)
 	if err != nil {
 		return nil, err

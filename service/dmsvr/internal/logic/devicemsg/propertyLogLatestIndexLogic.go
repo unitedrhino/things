@@ -67,9 +67,16 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 				}
 				var diData dm.PropertyLogInfo
 				if data == nil {
+					v, err := property.Define.GetDefaultValue()
+					if err != nil {
+						l.Errorf("%s.GetDefaultValue err=%v", utils.FuncName(), err)
+						return
+					}
+
 					diData = dm.PropertyLogInfo{
 						Timestamp: 0,
 						DataID:    dataID,
+						Value:     utils.ToString(v),
 					}
 				} else {
 					diData = dm.PropertyLogInfo{
