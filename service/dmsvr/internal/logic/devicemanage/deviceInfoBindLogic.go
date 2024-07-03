@@ -69,11 +69,11 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 	}
 	if !((di.TenantCode == def.TenantCodeDefault && di.ProjectID < 3) || int64(di.ProjectID) == uc.ProjectID || int64(di.ProjectID) == dpi.DefaultProjectID) { //如果在其他租户下 则已经被绑定 或 在本租户下,但是不在一个项目下也不允许绑定
 		//只有归属于default租户和自己租户的才可以
-		return nil, errors.DeviceCantBound
+		return nil, errors.DeviceCantBound.WithMsg("设备已被其他用户绑定。如需解绑，请按照相关流程操作。")
 	}
 	if string(di.TenantCode) == uc.TenantCode &&
 		int64(di.ProjectID) == uc.ProjectID { //如果已经绑定到自己名下则不允许重复绑定
-		return &dm.Empty{}, nil
+		return nil, errors.DeviceBound.WithMsg("设备已存在，请返回设备列表查看该设备")
 	}
 	di.TenantCode = stores.TenantCode(uc.TenantCode)
 	di.ProjectID = stores.ProjectID(uc.ProjectID)
