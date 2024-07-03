@@ -2,6 +2,7 @@ package rulelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/udsvr/internal/logic"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
@@ -28,7 +29,11 @@ func NewAlarmInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Al
 
 func (l *AlarmInfoIndexLogic) AlarmInfoIndex(in *ud.AlarmInfoIndexReq) (*ud.AlarmInfoIndexResp, error) {
 	f := relationDB.AlarmInfoFilter{Name: in.Name}
-	pos, err := relationDB.NewAlarmInfoRepo(l.ctx).FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page))
+	pos, err := relationDB.NewAlarmInfoRepo(l.ctx).FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page).
+		WithDefaultOrder(stores.OrderBy{
+			Filed: "createdTime",
+			Sort:  stores.OrderDesc,
+		}))
 	if err != nil {
 		return nil, err
 	}

@@ -34,7 +34,7 @@ func (l *AlarmRecordIndexLogic) AlarmRecordIndex(in *ud.AlarmRecordIndexReq) (*u
 	list, err := relationDB.NewAlarmRecordRepo(l.ctx).FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page).
 		WithDefaultOrder(stores.OrderBy{
 			Filed: "createdTime",
-			Sort:  2,
+			Sort:  stores.OrderDesc,
 		}))
 	if err != nil {
 		return nil, err
