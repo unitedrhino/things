@@ -9,55 +9,88 @@ info(
 @server(
     group: things/device/interact
     prefix: /api/v1/things/device/interact
+    accessCodePrefix: "thingsInteract"
+    accessNamePrefix: "设备交互"
+    accessGroup: "设备管理"
     middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
-    @doc "调用设备行为"
+    @doc(
+        summary: "调用设备行为"
+        isNeedAuth: "false"
+        authType: "all"
+        businessType: "interact"
+    )
     @handler actionSend
     post /action-send (DeviceInteractSendActionReq) returns (DeviceInteractSendActionResp)
 
-    @doc "调用设备行为--废弃"
-    @handler sendAction
-    post /send-action (DeviceInteractSendActionReq) returns (DeviceInteractSendActionResp)
-
-    @doc "获取调用设备行为的结果"
+    @doc(
+        summary: "获取调用设备行为的结果"
+        isNeedAuth: "false"
+        authType: "all"
+        businessType: "interact"
+    )
     @handler actionRead
     post /action-read (DeviceInteractRespReadReq) returns (DeviceInteractSendActionResp)
 
-    @doc "调用设备属性"
+    @doc(
+        summary: "调用设备属性"
+        isNeedAuth: "false"
+        authType: "all"
+        businessType: "interact"
+    )
     @handler propertyControlSend
     post /property-control-send (DeviceInteractSendPropertyReq) returns (DeviceInteractSendPropertyResp)
-    @doc "批量调用设备属性"
+    @doc(
+        summary: "批量调用设备属性"
+        isNeedAuth: "false"
+        authType: "all"
+        businessType: "interact"
+    )
     @handler propertyControlMultiSend
     post /property-control-multi-send (DeviceInteractMultiSendPropertyReq) returns (DeviceInteractMultiSendPropertyResp)
-    @doc "获取调用设备属性的结果"
+    @doc(
+        summary: "获取调用设备属性的结果"
+        isNeedAuth: "false"
+        authType: "all"
+        businessType: "interact"
+    )
     @handler propertyControlRead
     post /property-control-read (DeviceInteractRespReadReq) returns (DeviceInteractSendPropertyResp)
 
-    @doc "调用设备属性--废弃"
-    @handler sendProperty
-    post /send-property (DeviceInteractSendPropertyReq) returns (DeviceInteractSendPropertyResp)
-    @doc "批量调用设备属性--废弃"
-    @handler multiSendProperty
-    post /multi-send-property (DeviceInteractMultiSendPropertyReq) returns (DeviceInteractMultiSendPropertyResp)
-    @doc "获取调用设备属性的结果--废弃"
-    @handler propertyRead
-    post /property-read (DeviceInteractRespReadReq) returns (DeviceInteractSendPropertyResp)
 
-
-    @doc "发送消息给设备"
+    @doc(
+        summary: "发送消息给设备"
+        isNeedAuth: "true"
+        authType: "admin"
+        businessType: "interact"
+    )
     @handler sendMsg
     post /send-msg (DeviceInteractSendMsgReq) returns ()
-    @doc "请求设备获取设备最新属性"
+    @doc(
+        summary: "请求设备获取设备最新属性"
+        isNeedAuth: "false"
+        authType: "all"
+        businessType: "interact"
+    )
     @handler propertyGetReportSend
     post /property-get-report-send (DeviceInteractPropertyGetReportSendReq) returns (DeviceInteractPropertyGetReportSendResp)
 
-    @doc "通知网关绑定子设备"
+    @doc(
+        summary: "通知网关绑定子设备"
+        isNeedAuth: "false"
+        authType: "all"
+        businessType: "interact"
+    )
     @handler gatewayNotifyBindSend
     post /gateway-notify-bind-send (GatewayNotifyBindSendReq) returns ()
 
-
-    @doc "请求网关上报拓扑关系"
+    @doc(
+        summary: "请求网关上报拓扑关系"
+        isNeedAuth: "false"
+        authType: "all"
+        businessType: "interact"
+    )
     @handler gatewayGetFoundSend
     post /gateway-get-found-send (GatewayGetFoundReq) returns ()
 }

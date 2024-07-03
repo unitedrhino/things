@@ -1018,48 +1018,6 @@
         ]
       }
     },
-    "/api/v1/things/device/interact/multi-send-property": {
-      "post": {
-        "summary": "批量调用设备属性--废弃",
-        "operationId": "postApiV1ThingsDeviceInteractMulti-send-property",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "default": "200",
-                  "title": "返回code"
-                },
-                "msg": {
-                  "type": "string",
-                  "title": "返回的消息"
-                },
-                "data": {
-                  "$ref": "#/definitions/DeviceInteractMultiSendPropertyResp"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/DeviceInteractMultiSendPropertyReq"
-            }
-          }
-        ],
-        "tags": [
-          "things/device/interact",
-          "thingsDeviceInteract"
-        ]
-      }
-    },
     "/api/v1/things/device/interact/property-control-multi-send": {
       "post": {
         "summary": "批量调用设备属性",
@@ -1228,90 +1186,6 @@
         ]
       }
     },
-    "/api/v1/things/device/interact/property-read": {
-      "post": {
-        "summary": "获取调用设备属性的结果--废弃",
-        "operationId": "postApiV1ThingsDeviceInteractProperty-read",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "default": "200",
-                  "title": "返回code"
-                },
-                "msg": {
-                  "type": "string",
-                  "title": "返回的消息"
-                },
-                "data": {
-                  "$ref": "#/definitions/DeviceInteractSendPropertyResp"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/DeviceInteractRespReadReq"
-            }
-          }
-        ],
-        "tags": [
-          "things/device/interact",
-          "thingsDeviceInteract"
-        ]
-      }
-    },
-    "/api/v1/things/device/interact/send-action": {
-      "post": {
-        "summary": "调用设备行为--废弃",
-        "operationId": "postApiV1ThingsDeviceInteractSend-action",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "default": "200",
-                  "title": "返回code"
-                },
-                "msg": {
-                  "type": "string",
-                  "title": "返回的消息"
-                },
-                "data": {
-                  "$ref": "#/definitions/DeviceInteractSendActionResp"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/DeviceInteractSendActionReq"
-            }
-          }
-        ],
-        "tags": [
-          "things/device/interact",
-          "thingsDeviceInteract"
-        ]
-      }
-    },
     "/api/v1/things/device/interact/send-msg": {
       "post": {
         "summary": "发送消息给设备",
@@ -1342,48 +1216,6 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/DeviceInteractSendMsgReq"
-            }
-          }
-        ],
-        "tags": [
-          "things/device/interact",
-          "thingsDeviceInteract"
-        ]
-      }
-    },
-    "/api/v1/things/device/interact/send-property": {
-      "post": {
-        "summary": "调用设备属性--废弃",
-        "operationId": "postApiV1ThingsDeviceInteractSend-property",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "default": "200",
-                  "title": "返回code"
-                },
-                "msg": {
-                  "type": "string",
-                  "title": "返回的消息"
-                },
-                "data": {
-                  "$ref": "#/definitions/DeviceInteractSendPropertyResp"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/DeviceInteractSendPropertyReq"
             }
           }
         ],
@@ -7098,9 +6930,7 @@
           "description": "是否被人拥有,1为是 2为否"
         },
         "userID": {
-          "type": "integer",
-          "format": "int64",
-          "description": "用户id查询"
+          "type": "string"
         }
       },
       "title": "DeviceInfoIndexReq"
@@ -7994,7 +7824,7 @@
         },
         "order": {
           "type": "integer",
-          "format": "int32",
+          "format": "int64",
           "description": "时间排序 0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)"
         }
       },

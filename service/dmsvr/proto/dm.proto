@@ -571,7 +571,7 @@ message PropertyLogIndexReq{
   //    NEXT 填充：使用下一个非 NULL 值填充数据。例如：FILL(NEXT)。
   //  */
   string fill = 10; //填充模式 参考:https://docs.taosdata.com/taos-sql/distinguished/
-  int32 order = 11; //时间排序 0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)
+  int64 order = 11; //时间排序 0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)
 }
 
 /*获取对应日志信息*/

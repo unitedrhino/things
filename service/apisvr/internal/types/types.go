@@ -330,7 +330,7 @@ type DeviceInfoIndexReq struct {
 	Status            int64         `json:"status,optional"`    //设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)
 	WithOwner         bool          `json:"withOwner,optional"` //同时获取拥有人的信息
 	HasOwner          int64         `json:"hasOwner,optional"`  //是否被人拥有,1为是 2为否
-	UserID            int64         `json:"userID,optional"`    //用户id查询
+	UserID            int64         `json:"userID,string,optional"`
 }
 
 type DeviceInfoIndexResp struct {
@@ -554,7 +554,7 @@ type DeviceMsgPropertyLogIndexReq struct {
 	Interval    int64     `json:"interval,optional"`                   //分页信息
 	ArgFunc     string    `json:"argFunc,optional"`                    //分页信息
 	Fill        string    `json:"fill,optional"`                       //填充模式 参考:https://docs.taosdata.com/taos-sql/distinguished/
-	Order       int32     `json:"order,optional"`                      //时间排序 0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)
+	Order       int64     `json:"order,optional"`                      //时间排序 0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)
 }
 
 type DeviceMsgPropertyLogInfo struct {

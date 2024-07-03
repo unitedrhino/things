@@ -10,48 +10,61 @@ info(
 @server(
     group: things/device/info
     prefix: /api/v1/things/device/info
-//    accessCode: "thingsDevice"
-//    accessName: "设备信息"
-//    accessGroup: "设备管理"
-//    accessDesc: "管理设备"
+    accessCodePrefix: "thingsDevice"
+    accessNamePrefix: "设备信息"
+    accessGroup: "设备管理"
     middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 
 service api {
-    @doc "新增设备"
+    @doc(
+        summary: "新增设备"
+        isNeedAuth: "true"
+        authType: "admin"
+        businessType: "manage"
+    )
     @handler create
     post /create (DeviceInfo) returns ()
-    @doc "更新设备"
+    @doc(
+        summary: "更新设备"
+        isNeedAuth: "false"
+        authType: "all"
+    )
     @handler update
     post /update (DeviceInfo) returns ()
-    @doc "批量更新设备"
+    @doc(
+        summary: "批量更新设备"
+        isNeedAuth: "false"
+        authType: "all"
+    )
     @handler multiUpdate
     post /multi-update (DeviceInfoMultiUpdateReq) returns ()
     @doc(
         summary: "删除设备"
         isNeedAuth: "true"
-        isAuthTenant: "false"
+        authType: "admin"
+        businessType: "manage"
     )
     @handler delete
     post /delete (DeviceInfoDeleteReq) returns ()
     @doc(
         summary: "获取设备列表"
         isNeedAuth: "false"
-        isAuthTenant: "true"
+        authType: "all"
     )
     @handler index
     post /index (DeviceInfoIndexReq) returns (DeviceInfoIndexResp)
     @doc(
         summary: "获取设备详情"
         isNeedAuth: "false"
-        isAuthTenant: "true"
+        authType: "all"
     )
     @handler read
     post /read (DeviceInfoReadReq) returns (DeviceInfo)
     @doc(
         summary: "设备统计详情"
         isNeedAuth: "false"
-        isAuthTenant: "true"
+        authType: "all"
     )
     @handler count
     post /count (DeviceCountReq) returns (DeviceCountResp)
@@ -59,35 +72,36 @@ service api {
         summary: "批量导入设备"
         injectFormdataParam: "file"
         isNeedAuth: "true"
-        isAuthTenant: "false"
+        authType: "admin"
+        businessType: "manage"
     )
     @handler multiImport
     post /multi-import (DeviceMultiImportReq) returns (DeviceMultiImportResp)
     @doc(
         summary: "绑定"
-        isNeedAuth: "true"
-        isAuthTenant: "true"
+        isNeedAuth: "false"
+        authType: "all"
     )
     @handler bind
     post /bind (DeviceInfoBindReq) returns ()
     @doc(
         summary: "是否可以绑定设备"
         isNeedAuth: "false"
-        isAuthTenant: "true"
+        authType: "all"
     )
     @handler canBind
     post /can-bind (DeviceInfoCanBindReq) returns ()
     @doc(
         summary: "解绑设备"
-        isNeedAuth: "true"
-        isAuthTenant: "true"
+        isNeedAuth: "false"
+        authType: "all"
     )
     @handler unbind
     post /unbind (DeviceCore) returns ()
     @doc(
         summary: "转让设备"
-        isNeedAuth: "true"
-        isAuthTenant: "true"
+        isNeedAuth: "false"
+        authType: "all"
     )
     @handler transfer
     post /transfer (DeviceInfoTransferReq) returns ()
@@ -222,7 +236,7 @@ type (
         Status int64 `json:"status,optional"` //设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)
         WithOwner bool  `json:"withOwner,optional"`//同时获取拥有人的信息
         HasOwner int64 `json:"hasOwner,optional"`//是否被人拥有,1为是 2为否
-        UserID int64  `json:"userID,optional"`//用户id查询
+        UserID int64  `json:"userID,string,optional"`
     }
     DeviceInfoIndexResp  {
         List []*DeviceInfo `json:"list"`    //设备信息

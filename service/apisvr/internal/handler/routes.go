@@ -207,11 +207,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/multi-send-property",
-					Handler: thingsdeviceinteract.MultiSendPropertyHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
 					Path:    "/property-control-multi-send",
 					Handler: thingsdeviceinteract.PropertyControlMultiSendHandler(serverCtx),
 				},
@@ -232,23 +227,8 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/property-read",
-					Handler: thingsdeviceinteract.PropertyReadHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/send-action",
-					Handler: thingsdeviceinteract.SendActionHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
 					Path:    "/send-msg",
 					Handler: thingsdeviceinteract.SendMsgHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/send-property",
-					Handler: thingsdeviceinteract.SendPropertyHandler(serverCtx),
 				},
 			}...,
 		),

@@ -169,7 +169,7 @@ type (
         Interval int64 `json:"interval,optional"`           //分页信息
         ArgFunc string `json:"argFunc,optional"`           //分页信息
         Fill string `json:"fill,optional"`          //填充模式 参考:https://docs.taosdata.com/taos-sql/distinguished/
-        Order int32 `json:"order,optional"`    //时间排序 0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)
+        Order int64 `json:"order,optional"`    //时间排序 0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)
     }
 
     DeviceMsgPropertyLogLatestIndexReq  {
