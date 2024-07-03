@@ -101,7 +101,7 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 		}
 		var otaDevices []*relationDB.DmOtaFirmwareDevice
 		for _, device := range devicePos {
-			status := msgOta.UpgradeStatusQueued
+			status := msgOta.DeviceStatusQueued
 			detail := "待推送"
 			if in.IsNeedConfirm == def.True {
 				status = msgOta.DeviceStatusConfirm
