@@ -44,7 +44,8 @@ func (l *OtaFirmwareInfoCreateLogic) CheckOtaFirmwareInfo(in *dm.OtaFirmwareInfo
 		return false, nil
 	}
 	fsize, err := l.OfDB.CountByFilter(l.ctx, relationDB.OtaFirmwareInfoFilter{
-		Version: in.Version,
+		Version:   in.Version,
+		ProductID: in.ProductID,
 	})
 	if fsize == 0 {
 		return true, nil
