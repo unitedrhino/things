@@ -7437,6 +7437,10 @@
           "type": "integer",
           "format": "int64",
           "description": "设备影子控制 0:自动,当设备不在线的时候设置设备影子,设备在线时直接下发给设备 1:只实时下发,不在线报错 2:如果有设备影子只修改影子,没有的也不下发"
+        },
+        "withProfile": {
+          "$ref": "#/definitions/WithProfile",
+          "description": "同时修改该设备的配置信息"
         }
       },
       "title": "DeviceInteractSendPropertyReq",
@@ -11879,6 +11883,22 @@
         }
       },
       "title": "WithIDOrCode"
+    },
+    "WithProfile": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "params": {
+          "type": "string"
+        }
+      },
+      "title": "WithProfile",
+      "required": [
+        "code",
+        "params"
+      ]
     }
   },
   "securityDefinitions": {

@@ -12,6 +12,7 @@ import (
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/shadow"
+	devicemanagelogic "github.com/i-Things/things/service/dmsvr/internal/logic/devicemanage"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"time"
@@ -92,6 +93,18 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 		l.Infof("控制的属性在设备中都不存在,req:%v", utils.Fmt(in))
 		return &dm.PropertyControlSendResp{Code: errors.OK.Code, Msg: errors.OK.AddMsg("该设备无控制的属性,忽略").GetMsg()}, nil
 	}
+	defer func() {
+		if err == nil && ret.Code == errors.OK.GetCode() && in.WithProfile != nil && in.WithProfile.Code != "" {
+			_, err = devicemanagelogic.NewDeviceProfileUpdateLogic(l.ctx, l.svcCtx).DeviceProfileUpdate(&dm.DeviceProfile{
+				Device: &dm.DeviceCore{
+					ProductID:  in.ProductID,
+					DeviceName: in.DeviceName,
+				},
+				Code:   in.WithProfile.Code,
+				Params: in.WithProfile.Params,
+			})
+		}
+	}()
 	err = req.FmtReqParam(l.model, schema.ParamProperty)
 	if err != nil {
 		return nil, err

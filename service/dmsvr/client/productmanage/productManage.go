@@ -196,6 +196,7 @@ type (
 	WithID                            = dm.WithID
 	WithIDChildren                    = dm.WithIDChildren
 	WithIDCode                        = dm.WithIDCode
+	WithProfile                       = dm.WithProfile
 
 	ProductManage interface {
 		ProductInit(ctx context.Context, in *ProductInitReq, opts ...grpc.CallOption) (*Empty, error)

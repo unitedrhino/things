@@ -28,14 +28,7 @@ func NewPropertyControlSendLogic(ctx context.Context, svcCtx *svc.ServiceContext
 }
 
 func (l *PropertyControlSendLogic) PropertyControlSend(req *types.DeviceInteractSendPropertyReq) (resp *types.DeviceInteractSendPropertyResp, err error) {
-	dmReq := &dm.PropertyControlSendReq{
-		ProductID:     req.ProductID,
-		DeviceName:    req.DeviceName,
-		Data:          req.Data,
-		IsAsync:       req.IsAsync,
-		ShadowControl: req.ShadowControl,
-	}
-	dmResp, err := l.svcCtx.DeviceInteract.PropertyControlSend(l.ctx, dmReq)
+	dmResp, err := l.svcCtx.DeviceInteract.PropertyControlSend(l.ctx, utils.Copy[dm.PropertyControlSendReq](req))
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.SendProperty req=%v err=%+v", utils.FuncName(), req, er)

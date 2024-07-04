@@ -449,11 +449,12 @@ type DeviceInteractSendMsgReq struct {
 }
 
 type DeviceInteractSendPropertyReq struct {
-	ProductID     string `json:"productID"`              //产品id
-	DeviceName    string `json:"deviceName"`             //设备名
-	Data          string `json:"data"`                   //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
-	IsAsync       bool   `json:"isAsync,optional"`       //是否异步操作 异步情况通过获取接口来获取
-	ShadowControl int64  `json:"shadowControl,optional"` //设备影子控制 0:自动,当设备不在线的时候设置设备影子,设备在线时直接下发给设备 1:只实时下发,不在线报错 2:如果有设备影子只修改影子,没有的也不下发
+	ProductID     string       `json:"productID"`              //产品id
+	DeviceName    string       `json:"deviceName"`             //设备名
+	Data          string       `json:"data"`                   //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
+	IsAsync       bool         `json:"isAsync,optional"`       //是否异步操作 异步情况通过获取接口来获取
+	ShadowControl int64        `json:"shadowControl,optional"` //设备影子控制 0:自动,当设备不在线的时候设置设备影子,设备在线时直接下发给设备 1:只实时下发,不在线报错 2:如果有设备影子只修改影子,没有的也不下发
+	WithProfile   *WithProfile `json:"withProfile,optional"`   //同时修改该设备的配置信息
 }
 
 type DeviceInteractSendPropertyResp struct {
@@ -1568,4 +1569,9 @@ type WithIDChildren struct {
 type WithIDOrCode struct {
 	ID   int64  `json:"id,optional"` // id
 	Code string `json:"code,optional"`
+}
+
+type WithProfile struct {
+	Code   string `json:"code"`
+	Params string `json:"params"`
 }

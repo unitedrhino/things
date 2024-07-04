@@ -196,6 +196,7 @@ type (
 	WithID                            = dm.WithID
 	WithIDChildren                    = dm.WithIDChildren
 	WithIDCode                        = dm.WithIDCode
+	WithProfile                       = dm.WithProfile
 
 	OtaManage interface {
 		// 添加升级包

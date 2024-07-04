@@ -196,6 +196,7 @@ type (
 	WithID                            = dm.WithID
 	WithIDChildren                    = dm.WithIDChildren
 	WithIDCode                        = dm.WithIDCode
+	WithProfile                       = dm.WithProfile
 
 	UserDevice interface {
 		// 用户收藏的设备

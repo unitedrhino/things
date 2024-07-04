@@ -196,6 +196,7 @@ type (
 	WithID                            = dm.WithID
 	WithIDChildren                    = dm.WithIDChildren
 	WithIDCode                        = dm.WithIDCode
+	WithProfile                       = dm.WithProfile
 
 	SchemaManage interface {
 		CommonSchemaInit(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)

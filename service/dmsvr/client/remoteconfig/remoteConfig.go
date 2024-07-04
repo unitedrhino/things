@@ -196,6 +196,7 @@ type (
 	WithID                            = dm.WithID
 	WithIDChildren                    = dm.WithIDChildren
 	WithIDCode                        = dm.WithIDCode
+	WithProfile                       = dm.WithProfile
 
 	RemoteConfig interface {
 		RemoteConfigCreate(ctx context.Context, in *RemoteConfigCreateReq, opts ...grpc.CallOption) (*Empty, error)
