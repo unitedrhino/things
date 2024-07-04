@@ -131,7 +131,7 @@ func (l *ServerHandle) OnlineStatusHandle() error {
 	l.Infof("insertList:%v removeList:%v", utils.Fmt(insertList), utils.Fmt(removeList))
 	//入库异步处理
 	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
-		err := devicemanagelogic.HandleOnlineFix(ctx, l.svcCtx, insertList)
+		err := devicemanagelogic.HandleOnlineFix(ctx, l.svcCtx, insertList...)
 		if err != nil {
 			logx.WithContext(ctx).Error(err)
 		}

@@ -4,11 +4,13 @@ import (
 	"context"
 	"database/sql"
 	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceAuth"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
+	devicemanagelogic "github.com/i-Things/things/service/dmsvr/internal/logic/devicemanage"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -57,6 +59,27 @@ func (l *ConnectedLogic) Handle(msg *deviceStatus.ConnectMsg) error {
 	if ld.IsNeedRegister {
 		return nil
 	}
+	if msg.Device != nil {
+		ld = &deviceAuth.LoginDevice{
+			ProductID:  msg.Device.ProductID,
+			DeviceName: msg.Device.DeviceName,
+		}
+	}
+	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
+		ProductID:  ld.ProductID,
+		DeviceName: ld.DeviceName,
+	})
+	if err != nil {
+		return err
+	}
+	if di.FirstLogin == 0 {
+		err := devicemanagelogic.HandleOnlineFix(l.ctx, l.svcCtx, msg)
+		if err != nil {
+			l.Error(err)
+		}
+		return err
+	}
+
 	err = l.svcCtx.DeviceStatus.AddDevice(l.ctx, msg)
 	return err
 	//l.di, err = l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: ld.ProductID, DeviceNames: []string{ld.DeviceName}})

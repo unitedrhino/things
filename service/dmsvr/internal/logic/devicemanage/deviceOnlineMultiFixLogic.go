@@ -58,7 +58,7 @@ func (l *DeviceOnlineMultiFixLogic) DeviceOnlineMultiFix(in *dm.DeviceOnlineMult
 				Reason:    "在线状态修复",
 			})
 		}
-		err := HandleOnlineFix(ctx, l.svcCtx, insertList)
+		err := HandleOnlineFix(ctx, l.svcCtx, insertList...)
 		if err != nil {
 			logx.WithContext(ctx).Error(err)
 		}
@@ -67,7 +67,7 @@ func (l *DeviceOnlineMultiFixLogic) DeviceOnlineMultiFix(in *dm.DeviceOnlineMult
 	return &dm.Empty{}, nil
 }
 
-func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList []*deviceStatus.ConnectMsg) (err error) {
+func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList ...*deviceStatus.ConnectMsg) (err error) {
 	ctx = ctxs.WithRoot(ctx)
 	var ( //这里是最后更新数据库状态的设备列表
 		OffLineDevices  []*devices.Core
