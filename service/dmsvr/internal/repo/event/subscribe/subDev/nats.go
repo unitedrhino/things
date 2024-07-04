@@ -33,6 +33,7 @@ func newNatsClient(conf conf.EventConf, nodeID int64) (*NatsClient, error) {
 }
 
 func (n *NatsClient) Subscribe(handle Handle) error {
+	return nil
 	err := n.queueSubscribeDevPublish(topics.DeviceUpThingAll,
 		func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
 			ctx = ctxs.WithRoot(ctx)

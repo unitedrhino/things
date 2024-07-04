@@ -60,6 +60,7 @@ func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*re
 		}
 		po.IsCanSceneLinkage = cs.IsCanSceneLinkage
 		po.FuncGroup = cs.FuncGroup
+		po.ControlMode = cs.ControlMode
 		po.UserPerm = cs.UserPerm
 		po.IsHistory = cs.IsHistory
 	}
@@ -78,6 +79,9 @@ func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*re
 	}
 	if po.FuncGroup == 0 && cs != nil {
 		po.FuncGroup = cs.FuncGroup
+	}
+	if po.ControlMode == 0 && cs != nil {
+		po.ControlMode = cs.ControlMode
 	}
 	if po.UserPerm != 0 && cs != nil {
 		po.UserPerm = cs.UserPerm

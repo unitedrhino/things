@@ -39,6 +39,7 @@ func ToCommonParam(in *DmSchemaCore) schema.CommonParam {
 		Required:          def.ToBool(in.Required),
 		IsCanSceneLinkage: in.IsCanSceneLinkage,
 		FuncGroup:         in.FuncGroup, // 功能分类: 1:普通功能 2:系统功能
+		ControlMode:       in.ControlMode,
 		UserPerm:          in.UserPerm,  //用户权限操作: r(只读) rw(可读可写)
 		IsHistory:         in.IsHistory, // 是否存储历史记录
 		Tag:               in.Tag,
@@ -79,6 +80,7 @@ func ToEventPo(productID string, in *schema.Event) *DmProductSchema {
 			Affordance:        string(defineStr),
 			IsHistory:         in.IsHistory,
 			FuncGroup:         in.FuncGroup,
+			ControlMode:       in.ControlMode,
 			UserPerm:          in.UserPerm,
 			IsCanSceneLinkage: in.IsCanSceneLinkage,
 			//IsShareAuthPerm:   in.IsShareAuthPerm,
@@ -120,6 +122,7 @@ func ToActionPo(productID string, in *schema.Action) *DmProductSchema {
 			IsHistory:         in.IsHistory,
 			IsCanSceneLinkage: in.IsCanSceneLinkage,
 			FuncGroup:         in.FuncGroup,
+			ControlMode:       in.ControlMode,
 			UserPerm:          in.UserPerm,
 			Tag:               in.Tag,
 		},

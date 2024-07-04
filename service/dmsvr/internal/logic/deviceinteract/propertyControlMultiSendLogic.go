@@ -56,6 +56,8 @@ func (l *PropertyControlMultiSendLogic) MultiSendOneProductProperty(in *dm.Prope
 		wg.Add(1)
 		utils.Go(l.ctx, func() {
 			defer wg.Done()
+			logx.Error("开始1")
+			defer logx.Error("结束1")
 			ret, err := sigSend.PropertyControlSend(&dm.PropertyControlSendReq{
 				ProductID:  in.ProductID,
 				DeviceName: v,
@@ -65,6 +67,7 @@ func (l *PropertyControlMultiSendLogic) MultiSendOneProductProperty(in *dm.Prope
 			if err != nil {
 				myErr, _ := err.(*errors.CodeError)
 				msg := &dm.PropertyControlSendMsg{
+					ProductID:  in.ProductID,
 					DeviceName: v,
 					SysMsg:     myErr.GetMsg(),
 					SysCode:    myErr.Code,
@@ -140,6 +143,7 @@ func (l *PropertyControlMultiSendLogic) MultiSendMultiProductProperty(in *dm.Pro
 		in2.DeviceNames = utils.SetToSlice(v)
 		in2.IsAsync = in.IsAsync
 		group.Go(func() error {
+			logx.Errorf("开始")
 			li, err := l.MultiSendOneProductProperty(&in2)
 			if err != nil {
 				return err
@@ -147,6 +151,7 @@ func (l *PropertyControlMultiSendLogic) MultiSendMultiProductProperty(in *dm.Pro
 			mu.Lock()
 			defer mu.Unlock()
 			list = append(list, li...)
+			logx.Errorf("完成")
 			return nil
 		})
 	}

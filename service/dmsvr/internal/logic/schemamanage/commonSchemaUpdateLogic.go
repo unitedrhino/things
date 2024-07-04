@@ -64,6 +64,9 @@ func (l *CommonSchemaUpdateLogic) ruleCheck(in *dm.CommonSchemaUpdateReq) (*rela
 	if in.Info.FuncGroup == 0 {
 		newPo.FuncGroup = po.FuncGroup
 	}
+	if in.Info.ControlMode == 0 {
+		newPo.ControlMode = po.ControlMode
+	}
 	if in.Info.UserPerm == 0 {
 		newPo.UserPerm = po.UserPerm
 	}

@@ -113,12 +113,13 @@ func (p ProductSchemaRepo) UpdateWithCommon(ctx context.Context, common *DmCommo
 			Required:          common.Required,
 			IsCanSceneLinkage: common.IsCanSceneLinkage,
 			FuncGroup:         common.FuncGroup,
+			ControlMode:       common.ControlMode,
 			UserPerm:          common.UserPerm,
 			IsHistory:         common.IsHistory,
 			Affordance:        common.Affordance,
 		},
 	}
-	err := p.db.WithContext(ctx).Select("Name", "ExtendConfig", "Required", "IsCanSceneLinkage", "UserPerm", "FuncGroup", "IsHistory", "Affordance").
+	err := p.db.WithContext(ctx).Select("Name", "ControlMode", "ExtendConfig", "Required", "IsCanSceneLinkage", "UserPerm", "FuncGroup", "IsHistory", "Affordance").
 		Where("identifier = ? and (tag = ? or tag=?)",
 			common.Identifier, schema.TagOptional, schema.TagRequired).Updates(&data).Error
 	return stores.ErrFmt(err)

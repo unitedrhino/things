@@ -10,9 +10,12 @@ import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/application"
+	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/eventBus"
+	"gitee.com/i-Things/share/events/topics"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
 	"github.com/i-Things/things/service/dmsvr/internal/event/deviceMsgEvent"
 	"github.com/i-Things/things/service/dmsvr/internal/event/otaEvent"
 	"github.com/i-Things/things/service/dmsvr/internal/event/serverEvent"
@@ -20,7 +23,6 @@ import (
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	devicemanagelogic "github.com/i-Things/things/service/dmsvr/internal/logic/devicemanage"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/event/subscribe/server"
-	"github.com/i-Things/things/service/dmsvr/internal/repo/event/subscribe/subDev"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
@@ -53,14 +55,14 @@ func init() {
 }
 
 func InitSubscribe(svcCtx *svc.ServiceContext) {
-	{
-		cli, err := subDev.NewSubDev(svcCtx.Config.Event, svcCtx.NodeID)
-		logx.Must(err)
-		err = cli.Subscribe(func(ctx context.Context) subDev.InnerSubEvent {
-			return deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx)
-		})
-		logx.Must(err)
-	}
+	//{
+	//	cli, err := subDev.NewSubDev(svcCtx.Config.Event, svcCtx.NodeID)
+	//	logx.Must(err)
+	//	err = cli.Subscribe(func(ctx context.Context) subDev.InnerSubEvent {
+	//		return deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx)
+	//	})
+	//	logx.Must(err)
+	//}
 	{
 		cli, err := server.NewServer(svcCtx.Config.Event, svcCtx.NodeID)
 		logx.Must(err)
@@ -114,6 +116,135 @@ func InitCache(svcCtx *svc.ServiceContext) {
 }
 
 func InitEventBus(svcCtx *svc.ServiceContext) {
+	if false { //设备数据订阅
+		f := func(ctx context.Context, msg []byte, ff func(msg *deviceMsg.PublishMsg) error) error {
+			ctx = ctxs.WithRoot(ctx)
+			defer utils.Recover(ctx)
+			ele, err := deviceMsg.GetDevPublish(ctx, msg)
+			if err != nil {
+				logx.WithContext(ctx).Errorf("%s.GetDevPublish failure err:%v", utils.FuncName(), err)
+				return err
+			}
+			return ff(ele)
+		}
+		err := svcCtx.FastEvent.Subscribe(topics.DeviceUpThingAll,
+			func(ctx context.Context, t time.Time, body []byte) error {
+				return f(ctx, body, func(msg *deviceMsg.PublishMsg) error {
+					err := deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx).Thing(msg)
+					if err != nil {
+						logx.WithContext(ctx).Errorf("%s.Thing failure err:%v", utils.FuncName(), err)
+						return err
+					}
+					return nil
+				})
+			})
+		logx.Must(err)
+		err = svcCtx.FastEvent.Subscribe(topics.DeviceUpOtaAll,
+			func(ctx context.Context, t time.Time, body []byte) error {
+				return f(ctx, body, func(msg *deviceMsg.PublishMsg) error {
+					err := deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx).Ota(msg)
+					if err != nil {
+						logx.WithContext(ctx).Errorf("%s.Thing failure err:%v", utils.FuncName(), err)
+						return err
+					}
+					return nil
+				})
+			})
+		logx.Must(err)
+		err = svcCtx.FastEvent.Subscribe(topics.DeviceUpExtAll,
+			func(ctx context.Context, t time.Time, body []byte) error {
+				return f(ctx, body, func(msg *deviceMsg.PublishMsg) error {
+					err := deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx).Ext(msg)
+					if err != nil {
+						logx.WithContext(ctx).Errorf("%s.Thing failure err:%v", utils.FuncName(), err)
+						return err
+					}
+					return nil
+				})
+			})
+		logx.Must(err)
+		err = svcCtx.FastEvent.Subscribe(topics.DeviceUpConfigAll,
+			func(ctx context.Context, t time.Time, body []byte) error {
+				return f(ctx, body, func(msg *deviceMsg.PublishMsg) error {
+					err := deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx).Config(msg)
+					if err != nil {
+						logx.WithContext(ctx).Errorf("%s.Thing failure err:%v", utils.FuncName(), err)
+						return err
+					}
+					return nil
+				})
+			})
+		logx.Must(err)
+		err = svcCtx.FastEvent.Subscribe(topics.DeviceUpSDKLogAll,
+			func(ctx context.Context, t time.Time, body []byte) error {
+				return f(ctx, body, func(msg *deviceMsg.PublishMsg) error {
+					err := deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx).SDKLog(msg)
+					if err != nil {
+						logx.WithContext(ctx).Errorf("%s.Thing failure err:%v", utils.FuncName(), err)
+						return err
+					}
+					return nil
+				})
+			})
+		logx.Must(err)
+		err = svcCtx.FastEvent.Subscribe(topics.DeviceUpShadowAll,
+			func(ctx context.Context, t time.Time, body []byte) error {
+				return f(ctx, body, func(msg *deviceMsg.PublishMsg) error {
+					err := deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx).Shadow(msg)
+					if err != nil {
+						logx.WithContext(ctx).Errorf("%s.Thing failure err:%v", utils.FuncName(), err)
+						return err
+					}
+					return nil
+				})
+			})
+		logx.Must(err)
+		err = svcCtx.FastEvent.Subscribe(topics.DeviceUpGatewayAll,
+			func(ctx context.Context, t time.Time, body []byte) error {
+				return f(ctx, body, func(msg *deviceMsg.PublishMsg) error {
+					err := deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx).Gateway(msg)
+					if err != nil {
+						logx.WithContext(ctx).Errorf("%s.Thing failure err:%v", utils.FuncName(), err)
+						return err
+					}
+					return nil
+				})
+			})
+		logx.Must(err)
+		err = svcCtx.FastEvent.Subscribe(topics.DeviceUpStatusConnected,
+			func(ctx context.Context, t time.Time, body []byte) error {
+				ctx = ctxs.WithRoot(ctx)
+				ele, err := deviceStatus.GetDevConnMsg(ctx, body)
+				if err != nil {
+					logx.WithContext(ctx).Errorf("%s.GetDevConnMsg failure err:%v", utils.FuncName(), err)
+					return err
+				}
+				err = deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx).Connected(ele)
+				if err != nil {
+					logx.WithContext(ctx).Errorf("%s.Thing failure err:%v", utils.FuncName(), err)
+					return err
+				}
+				return nil
+			})
+		logx.Must(err)
+		err = svcCtx.FastEvent.Subscribe(topics.DeviceUpStatusDisconnected,
+			func(ctx context.Context, t time.Time, body []byte) error {
+				ctx = ctxs.WithRoot(ctx)
+				ele, err := deviceStatus.GetDevConnMsg(ctx, body)
+				if err != nil {
+					logx.WithContext(ctx).Errorf("%s.GetDevConnMsg failure err:%v", utils.FuncName(), err)
+					return err
+				}
+				err = deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx).Disconnected(ele)
+				if err != nil {
+					logx.WithContext(ctx).Errorf("%s.Thing failure err:%v", utils.FuncName(), err)
+					return err
+				}
+				return nil
+			})
+		logx.Must(err)
+	}
+
 	err := svcCtx.FastEvent.Subscribe(eventBus.DmDeviceInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
 		var value devices.Core
 		err := json.Unmarshal(body, &value)
