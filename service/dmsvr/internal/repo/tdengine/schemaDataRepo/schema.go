@@ -61,6 +61,12 @@ func (S *SchemaStore) GetTableNameList(
 	productID string,
 	deviceName string) (tables []string) {
 	for _, v := range t.Property {
+		if v.Define.Type == schema.DataTypeArray {
+			for i := 0; i < cast.ToInt(v.Define.Max); i++ {
+				tables = append(tables, S.GetPropertyTableName(productID, deviceName, GetArrayID(v.Identifier, i)))
+			}
+			continue
+		}
 		tables = append(tables, S.GetPropertyTableName(productID, deviceName, v.Identifier))
 	}
 	tables = append(tables, S.GetEventTableName(productID, deviceName))

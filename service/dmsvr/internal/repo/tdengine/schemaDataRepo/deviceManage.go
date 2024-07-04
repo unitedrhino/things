@@ -37,11 +37,10 @@ func (d *DeviceDataRepo) DeleteDevice(
 	t *schema.Model,
 	productID string,
 	deviceName string) error {
-	tableList := d.GetStableNameList(t, productID)
-	tableList = append(tableList, d.GetEventStableName())
+	tableList := d.GetTableNameList(t, productID, deviceName)
 	for _, v := range tableList {
-		sql := fmt.Sprintf("delete from  %s where `product_id` =? and `device_name` =?;", v)
-		if _, err := d.t.ExecContext(ctx, sql, productID, deviceName); err != nil {
+		sql := fmt.Sprintf("drop table if exists %s;", v)
+		if _, err := d.t.ExecContext(ctx, sql); err != nil {
 			return err
 		}
 	}
