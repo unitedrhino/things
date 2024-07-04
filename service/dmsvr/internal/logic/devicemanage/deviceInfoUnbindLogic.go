@@ -46,7 +46,7 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceCore) (*dm.Empty, 
 		return nil, err
 	}
 	//如果是超管有全部权限
-	if !uc.AllTenant && (di.TenantCode != di.TenantCode || pi.AdminUserID != uc.UserID || int64(di.ProjectID) != uc.ProjectID) {
+	if !uc.IsAdmin && (di.TenantCode != di.TenantCode || pi.AdminUserID != uc.UserID || int64(di.ProjectID) != uc.ProjectID) {
 		return nil, errors.Permissions
 	}
 	dpi, err := l.svcCtx.TenantCache.GetData(l.ctx, def.TenantCodeDefault)
@@ -88,6 +88,7 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceCore) (*dm.Empty, 
 		ProductID:  di.ProductID,
 		DeviceName: di.DeviceName,
 	}, nil)
+	err = DeleteDeviceTimeData(l.ctx, l.svcCtx, in.ProductID, in.DeviceName)
 
 	return &dm.Empty{}, err
 }
