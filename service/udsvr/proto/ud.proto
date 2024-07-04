@@ -12,6 +12,13 @@ message Empty{
 message PageInfo{
   int64 page = 1;
   int64 size = 2;
+  repeated OrderBy orders = 3;
+  message OrderBy {
+    //排序的字段名
+    string field = 1;
+    //排序方式：1 从小到大, 2 从大到小
+    int64 sort = 2;
+  }
 }
 message TimeRange{
   int64 start = 1;

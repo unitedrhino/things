@@ -32,7 +32,7 @@ func (l *SceneLogIndexLogic) SceneLogIndex(in *ud.SceneLogIndexReq) (*ud.SceneLo
 		Time: logic.ToTimeRange(in.TimeRange)}
 	list, err := relationDB.NewSceneLogRepo(l.ctx).FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page).
 		WithDefaultOrder(stores.OrderBy{
-			Filed: "createdTime",
+			Field: "createdTime",
 			Sort:  2,
 		}))
 	if err != nil {

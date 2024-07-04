@@ -45,7 +45,7 @@ func (l *ProductSchemaIndexLogic) ProductSchemaIndex(in *dm.ProductSchemaIndexRe
 		PropertyMode:      in.PropertyMode,
 	}
 	schemas, err := l.PsDB.FindByFilter(l.ctx, filter, logic.ToPageInfo(in.Page).WithDefaultOrder(stores.OrderBy{
-		Filed: "order",
+		Field: "order",
 		Sort:  stores.OrderAsc,
 	}))
 	if err != nil {

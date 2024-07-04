@@ -59,7 +59,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 				Page: 1,
 				Size: 1,
 				Orders: []*sys.PageInfo_OrderBy{{
-					Filed: "createdTime", //第一个一定是默认的
+					Field: "createdTime", //第一个一定是默认的
 					Sort:  stores.OrderAsc,
 				}},
 			},

@@ -46,8 +46,8 @@ func (l *ProductInfoIndexLogic) ProductInfoIndex(in *dm.ProductInfoIndexReq) (*d
 	}
 
 	di, err := piDB.FindByFilter(l.ctx, filter,
-		logic.ToPageInfo(in.Page).WithDefaultOrder(stores.OrderBy{Filed: "created_time", Sort: stores.OrderDesc},
-			stores.OrderBy{Filed: "product_id", Sort: stores.OrderDesc}))
+		logic.ToPageInfo(in.Page).WithDefaultOrder(stores.OrderBy{Field: "created_time", Sort: stores.OrderDesc},
+			stores.OrderBy{Field: "product_id", Sort: stores.OrderDesc}))
 	if err != nil {
 		return nil, err
 	}

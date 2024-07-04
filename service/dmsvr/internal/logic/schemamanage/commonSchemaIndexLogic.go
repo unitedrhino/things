@@ -108,7 +108,7 @@ func (l *CommonSchemaIndexLogic) CommonSchemaIndex(in *dm.CommonSchemaIndexReq) 
 				UserPerm:          in.UserPerm,
 				PropertyMode:      in.PropertyMode}
 			schemas, err := relationDB.NewProductSchemaRepo(l.ctx).FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page).WithDefaultOrder(stores.OrderBy{
-				Filed: "order",
+				Field: "order",
 				Sort:  stores.OrderAsc,
 			}))
 			if err != nil {
@@ -139,7 +139,7 @@ func (l *CommonSchemaIndexLogic) CommonSchemaIndex(in *dm.CommonSchemaIndexReq) 
 	}
 
 	schemas, err := l.PsDB.FindByFilter(l.ctx, filter, logic.ToPageInfo(in.Page).WithDefaultOrder(stores.OrderBy{
-		Filed: "order",
+		Field: "order",
 		Sort:  stores.OrderAsc,
 	}))
 	if err != nil {

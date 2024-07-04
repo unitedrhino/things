@@ -30,6 +30,7 @@ type (
 	DeviceCore                = ud.DeviceCore
 	Empty                     = ud.Empty
 	PageInfo                  = ud.PageInfo
+	PageInfo_OrderBy          = ud.PageInfo_OrderBy
 	SceneFlowInfo             = ud.SceneFlowInfo
 	SceneInfo                 = ud.SceneInfo
 	SceneInfoIndexReq         = ud.SceneInfoIndexReq

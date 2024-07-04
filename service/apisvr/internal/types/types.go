@@ -847,7 +847,7 @@ type ManufacturerInfo struct {
 }
 
 type OrderBy struct {
-	Filed string `json:"filed,optional"` ////排序的字段名
+	Field string `json:"field,optional"` ////排序的字段名
 	Sort  int64  `json:"sort,optional"`  //排序方式：1 从小到大, 2 从大到小
 }
 

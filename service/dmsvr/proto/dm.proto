@@ -21,7 +21,7 @@ message PageInfo{
   repeated OrderBy orders = 3;
   message OrderBy {
     //排序的字段名
-    string filed = 1;
+    string field = 1;
     //排序方式：1 从小到大, 2 从大到小
     int64 sort = 2;
   }
