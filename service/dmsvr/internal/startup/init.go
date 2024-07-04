@@ -116,7 +116,7 @@ func InitCache(svcCtx *svc.ServiceContext) {
 }
 
 func InitEventBus(svcCtx *svc.ServiceContext) {
-	if false { //设备数据订阅
+	{ //设备数据订阅
 		f := func(ctx context.Context, msg []byte, ff func(msg *deviceMsg.PublishMsg) error) error {
 			ctx = ctxs.WithRoot(ctx)
 			defer utils.Recover(ctx)
