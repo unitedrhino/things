@@ -69,6 +69,13 @@ func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*d
 			l.Errorf("%s.NewDeviceProfileRepo.Delete err=%+v", utils.FuncName(), err)
 			return err
 		}
+		err = relationDB.NewUserDeviceShareRepo(tx).DeleteByFilter(l.ctx, relationDB.UserDeviceShareFilter{
+			ProductID:  di.ProductID,
+			DeviceName: di.DeviceName,
+		})
+		if err != nil {
+			return err
+		}
 		err = relationDB.NewGatewayDeviceRepo(tx).DeleteDevAll(l.ctx, dev)
 		return err
 	})
