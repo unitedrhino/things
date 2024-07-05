@@ -11604,7 +11604,7 @@
           "type": "integer",
           "format": "int64",
           "default": "3",
-          "description": "1:r(只读) 3(默认):rw(可读可写)"
+          "description": "2:读写权限 3读权限"
         }
       },
       "title": "SharePerm"
@@ -11798,13 +11798,18 @@
         "sharedUserAccount": {
           "type": "string"
         },
+        "authType": {
+          "type": "integer",
+          "format": "int64",
+          "description": "授权类型:1:全部授权 2:部分授权"
+        },
         "schemaPerm": {
           "type": "object",
-          "description": "普通功能权限 1:r(只读) 3:rw(可读可写)"
+          "description": "普通功能权限 2:读写权限 3读权限"
         },
         "accessPerm": {
           "type": "object",
-          "description": "系统功能权限 1:r(只读) 3:rw(可读可写)"
+          "description": "系统功能权限 2:读写权限 3读权限"
         },
         "createdTime": {
           "type": "integer",

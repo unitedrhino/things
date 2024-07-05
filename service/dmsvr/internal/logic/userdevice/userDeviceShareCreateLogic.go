@@ -65,6 +65,7 @@ func (l *UserDeviceShareCreateLogic) UserDeviceShareCreate(in *dm.UserDeviceShar
 		SharedUserID:      in.SharedUserID,
 		SharedUserAccount: account,
 		ProductID:         in.Device.ProductID,
+		AuthType:          in.AuthType,
 		DeviceName:        in.Device.DeviceName,
 		AccessPerm:        utils.CopyMap[relationDB.SharePerm](in.AccessPerm),
 		SchemaPerm:        utils.CopyMap[relationDB.SharePerm](in.SchemaPerm),

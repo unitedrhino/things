@@ -1572,7 +1572,7 @@ type SharePerm struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Perm int64 `protobuf:"varint,1,opt,name=perm,proto3" json:"perm,omitempty"` //1:r(只读) 3(默认):rw(可读可写)
+	Perm int64 `protobuf:"varint,1,opt,name=perm,proto3" json:"perm,omitempty"` //2:读写 3:读
 }
 
 func (x *SharePerm) Reset() {

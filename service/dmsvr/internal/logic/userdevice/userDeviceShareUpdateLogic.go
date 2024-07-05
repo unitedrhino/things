@@ -47,6 +47,7 @@ func (l *UserDeviceShareUpdateLogic) UserDeviceShareUpdate(in *dm.UserDeviceShar
 	if pi.AdminUserID != uc.UserID { //只有所有者和被分享者才有权限操作
 		return nil, errors.Permissions
 	}
+	uds.AuthType = in.AuthType
 	uds.AccessPerm = utils.CopyMap[relationDB.SharePerm](in.AccessPerm)
 	uds.SchemaPerm = utils.CopyMap[relationDB.SharePerm](in.SchemaPerm)
 	if uds.AccessPerm == nil {

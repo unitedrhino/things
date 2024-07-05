@@ -1482,7 +1482,7 @@ type SendOption struct {
 }
 
 type SharePerm struct {
-	Perm int64 `json:"perm,optional,default=3"` //1:r(只读) 3(默认):rw(可读可写)
+	Perm int64 `json:"perm,optional,default=3"` //2:读写权限 3读权限
 }
 
 type SlotAreaSaveReq struct {
@@ -1542,8 +1542,9 @@ type UserDeviceShareInfo struct {
 	Device            DeviceCore            `json:"device,optional"`              //设备信息
 	SharedUserID      int64                 `json:"sharedUserID,string,optional"` //分享的对象
 	SharedUserAccount string                `json:"sharedUserAccount,optional"`
-	SchemaPerm        map[string]*SharePerm `json:"schemaPerm,optional"` //普通功能权限 1:r(只读) 3:rw(可读可写)
-	AccessPerm        map[string]*SharePerm `json:"accessPerm,optional"` //系统功能权限 1:r(只读) 3:rw(可读可写)
+	AuthType          int64                 `json:"authType,optional"`   //授权类型:1:全部授权 2:部分授权
+	SchemaPerm        map[string]*SharePerm `json:"schemaPerm,optional"` //普通功能权限 2:读写权限 3读权限
+	AccessPerm        map[string]*SharePerm `json:"accessPerm,optional"` //系统功能权限 2:读写权限 3读权限
 	CreatedTime       int64                 `json:"createdTime,optional"`
 }
 

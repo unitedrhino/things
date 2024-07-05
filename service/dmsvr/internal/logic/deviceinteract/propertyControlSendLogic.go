@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"gitee.com/i-Things/share/ctxs"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
@@ -12,6 +13,7 @@ import (
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/shadow"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/userShared"
 	devicemanagelogic "github.com/i-Things/things/service/dmsvr/internal/logic/devicemanage"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
@@ -46,15 +48,50 @@ func (l *PropertyControlSendLogic) initMsg(productID string) error {
 	return nil
 }
 
+func (l *PropertyControlSendLogic) Auth(dev devices.Core, param map[string]any) (outParam map[string]any, err error) {
+	uc := ctxs.GetUserCtx(l.ctx)
+
+	if uc != nil && !uc.IsAdmin {
+		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, dev)
+		if err != nil {
+			return nil, err
+		}
+		_, ok := uc.ProjectAuth[di.ProjectID]
+		if !ok {
+			uds, err := l.svcCtx.UserDeviceShare.GetData(l.ctx, userShared.UserShareKey{
+				ProductID:    dev.ProductID,
+				DeviceName:   dev.DeviceName,
+				SharedUserID: uc.UserID,
+			})
+			if err != nil {
+				return nil, err
+			}
+			if uds.AuthType == def.AuthAdmin {
+				return param, nil
+			}
+			for k := range param {
+				sp := uds.SchemaPerm[k]
+				if sp != nil && sp.Perm != def.AuthReadWrite {
+					return nil, errors.Parameter.AddMsgf("属性:%v 没有控制权限", k)
+				}
+			}
+			return param, nil
+		}
+		return param, nil
+	}
+	return param, nil
+}
+
 // 调用设备属性
 func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSendReq) (ret *dm.PropertyControlSendResp, err error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
 	var isOnline = true
 	var protocolCode string
-	if protocolCode, err = CheckIsOnline(l.ctx, l.svcCtx, devices.Core{
+	var dev = devices.Core{
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
-	}); err != nil { //如果是不启用设备影子的模式则直接返回
+	}
+	if protocolCode, err = CheckIsOnline(l.ctx, l.svcCtx, dev); err != nil { //如果是不启用设备影子的模式则直接返回
 		if errors.Is(err, errors.NotOnline) {
 			isOnline = false
 			if in.ShadowControl == shadow.ControlNo {
@@ -74,6 +111,10 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 	if err != nil {
 		return nil, errors.Parameter.AddDetail(
 			"SendProperty data not right:", in.Data)
+	}
+	param, err = l.Auth(dev, param)
+	if err != nil {
+		return nil, err
 	}
 	MsgToken := devices.GenMsgToken(l.ctx, l.svcCtx.NodeID)
 
