@@ -5786,7 +5786,7 @@
         "dealStatus": {
           "type": "integer",
           "format": "int64",
-          "description": "告警记录状态（1无告警 2告警中 3已处理 4 无效）"
+          "description": "告警记录状态（1告警中 2忽略 3正在处理 4已处理）"
         }
       },
       "title": "AlarmRecord",
@@ -5846,7 +5846,7 @@
             "type": "integer",
             "format": "int64"
           },
-          "description": "告警记录状态（1无告警 2告警中 3已处理 4 无效）"
+          "description": "告警记录状态（1告警中 2忽略 3正在处理 4已处理）"
         }
       },
       "title": "AlarmRecordIndexReq",
