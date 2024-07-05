@@ -41,7 +41,7 @@ type AlarmRecord struct {
 	Level       int64  `json:"level"`       //告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
 	LastAlarm   int64  `json:"lastAlarm"`   //最新告警时间
 	CreatedTime int64  `json:"createdTime"` //创建时间
-	DealState   int64  `json:"dealState"`   //告警记录状态（1无告警 2告警中 3已处理 4 无效）
+	DealStatus  int64  `json:"dealStatus"`  //告警记录状态（1无告警 2告警中 3已处理 4 无效）
 }
 
 type AlarmRecordDealReq struct {
@@ -50,9 +50,10 @@ type AlarmRecordDealReq struct {
 }
 
 type AlarmRecordIndexReq struct {
-	AlarmID   int64      `json:"alarmID,optional"`   //告警记录ID
-	Page      *PageInfo  `json:"page,optional"`      //分页信息 只获取一个则不填
-	TimeRange *TimeRange `json:"timeRange,optional"` //时间范围
+	AlarmID    int64      `json:"alarmID,optional"`   //告警记录ID
+	Page       *PageInfo  `json:"page,optional"`      //分页信息 只获取一个则不填
+	TimeRange  *TimeRange `json:"timeRange,optional"` //时间范围
+	DealStatus []int64    `json:"dealStatus"`         //告警记录状态（1无告警 2告警中 3已处理 4 无效）
 }
 
 type AlarmRecordIndexResp struct {

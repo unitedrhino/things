@@ -5783,7 +5783,7 @@
           "format": "int64",
           "description": "创建时间"
         },
-        "dealState": {
+        "dealStatus": {
           "type": "integer",
           "format": "int64",
           "description": "告警记录状态（1无告警 2告警中 3已处理 4 无效）"
@@ -5801,7 +5801,7 @@
         "level",
         "lastAlarm",
         "createdTime",
-        "dealState"
+        "dealStatus"
       ]
     },
     "AlarmRecordDealReq": {
@@ -5839,9 +5839,20 @@
         "timeRange": {
           "$ref": "#/definitions/TimeRange",
           "description": "时间范围"
+        },
+        "dealStatus": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": "告警记录状态（1无告警 2告警中 3已处理 4 无效）"
         }
       },
-      "title": "AlarmRecordIndexReq"
+      "title": "AlarmRecordIndexReq",
+      "required": [
+        "dealStatus"
+      ]
     },
     "AlarmRecordIndexResp": {
       "type": "object",

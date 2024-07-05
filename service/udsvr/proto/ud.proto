@@ -64,6 +64,8 @@ message AlarmRecordIndexReq{
   int64 alarmID = 1;//告警配置ID
   PageInfo page       = 2;  // 分页信息 获取全部不填
   TimeRange timeRange = 3;       // 时间范围
+  repeated int64 dealStatus = 4;//告警记录状态（1无告警 2告警中 3已处理 4 无效）
+
 }
 message AlarmRecordIndexResp{
   repeated AlarmRecord list =1;

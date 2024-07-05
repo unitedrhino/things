@@ -29,7 +29,7 @@ func NewAlarmRecordIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 
 // 告警记录
 func (l *AlarmRecordIndexLogic) AlarmRecordIndex(in *ud.AlarmRecordIndexReq) (*ud.AlarmRecordIndexResp, error) {
-	f := relationDB.AlarmRecordFilter{AlarmID: in.AlarmID,
+	f := relationDB.AlarmRecordFilter{AlarmID: in.AlarmID, DealStatuses: in.DealStatus,
 		Time: logic.ToTimeRange(in.TimeRange)}
 	list, err := relationDB.NewAlarmRecordRepo(l.ctx).FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page).
 		WithDefaultOrder(stores.OrderBy{
