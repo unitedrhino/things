@@ -26,6 +26,7 @@ message PageInfo{
     int64 sort = 2;
   }
 }
+
 message CompareString{
   string CmpType =1;//"=":相等 "!=":不相等 ">":大于">=":大于等于"<":小于"<=":小于等于 "like":模糊查询
   string value =2;//值
@@ -431,6 +432,7 @@ message UserDeviceShareInfo{
   string sharedUserAccount =7;//分享的账号(只读)
   map<string,SharePerm>  schemaPerm = 4;//物模型权限,只需要填写需要授权并授权的物模型id
   map<string,SharePerm> accessPerm = 5;//操作权限 hubLog:设备消息记录,ota:ota升级权限,deviceTiming:设备定时
+  int64 authType =9;//授权类型:1:全部授权 2:部分授权
   int64 projectID =6;//设备归属的项目
   int64 createdTime =8;
 }

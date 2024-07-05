@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/errors"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/userShared"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -52,5 +53,13 @@ func (l *UserDeviceShareDeleteLogic) UserDeviceShareDelete(in *dm.UserDeviceShar
 		}
 	}
 	err = relationDB.NewUserDeviceShareRepo(l.ctx).Delete(l.ctx, uds.ID)
+	if err != nil {
+		return nil, err
+	}
+	l.svcCtx.UserDeviceShare.SetData(l.ctx, userShared.UserShareKey{
+		ProductID:    uds.ProductID,
+		DeviceName:   uds.DeviceName,
+		SharedUserID: uds.SharedUserID,
+	}, nil)
 	return &dm.Empty{}, err
 }

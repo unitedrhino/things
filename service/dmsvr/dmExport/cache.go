@@ -8,6 +8,8 @@ import (
 	"gitee.com/i-Things/share/eventBus"
 	"github.com/i-Things/things/service/dmsvr/client/devicemanage"
 	"github.com/i-Things/things/service/dmsvr/client/productmanage"
+	"github.com/i-Things/things/service/dmsvr/client/userdevice"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/userShared"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 )
 
@@ -32,6 +34,29 @@ func NewDeviceInfoCache(devM devicemanage.DeviceManage, fastEvent *eventBus.Fast
 		FastEvent: fastEvent,
 		GetData: func(ctx context.Context, key devices.Core) (*dm.DeviceInfo, error) {
 			ret, err := devM.DeviceInfoRead(ctx, &dm.DeviceInfoReadReq{ProductID: key.ProductID, DeviceName: key.DeviceName})
+			return ret, err
+		},
+	})
+}
+
+//	type UserShareKey struct {
+//		ProductID  string `json:"productID"`  //产品id
+//		DeviceName string `json:"deviceName"` //设备名称
+//		SharedUserID int64 `json:"sharedUserID"`
+//	}
+type UserShareCacheT = *caches.Cache[dm.UserDeviceShareInfo, userShared.UserShareKey]
+
+func NewUserShareCache(devM userdevice.UserDevice, fastEvent *eventBus.FastEvent) (UserShareCacheT, error) {
+	return caches.NewCache(caches.CacheConfig[dm.UserDeviceShareInfo, userShared.UserShareKey]{
+		KeyType:   eventBus.ServerCacheKeyDmUserShareDevice,
+		FastEvent: fastEvent,
+		GetData: func(ctx context.Context, key userShared.UserShareKey) (*dm.UserDeviceShareInfo, error) {
+			ret, err := devM.UserDeviceShareRead(ctx, &dm.UserDeviceShareReadReq{
+				Device: &dm.DeviceCore{
+					ProductID:  key.ProductID,
+					DeviceName: key.DeviceName,
+				},
+			})
 			return ret, err
 		},
 	})

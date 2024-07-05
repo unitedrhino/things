@@ -16,12 +16,14 @@ import (
 	"gitee.com/i-Things/share/events/topics"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/userShared"
 	"github.com/i-Things/things/service/dmsvr/internal/event/deviceMsgEvent"
 	"github.com/i-Things/things/service/dmsvr/internal/event/otaEvent"
 	"github.com/i-Things/things/service/dmsvr/internal/event/serverEvent"
 	"github.com/i-Things/things/service/dmsvr/internal/event/staticEvent"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	devicemanagelogic "github.com/i-Things/things/service/dmsvr/internal/logic/devicemanage"
+	userdevicelogic "github.com/i-Things/things/service/dmsvr/internal/logic/userdevice"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/event/subscribe/server"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -74,6 +76,30 @@ func InitSubscribe(svcCtx *svc.ServiceContext) {
 }
 
 func InitCache(svcCtx *svc.ServiceContext) {
+	{
+		userDeviceShare, err := caches.NewCache(caches.CacheConfig[dm.UserDeviceShareInfo, userShared.UserShareKey]{
+			KeyType:   eventBus.ServerCacheKeyDmUserShareDevice,
+			FastEvent: svcCtx.FastEvent,
+			GetData: func(ctx context.Context, key userShared.UserShareKey) (*dm.UserDeviceShareInfo, error) {
+				db := relationDB.NewUserDeviceShareRepo(ctx)
+				f := relationDB.UserDeviceShareFilter{
+					DeviceName:   key.DeviceName,
+					ProductID:    key.ProductID,
+					SharedUserID: key.SharedUserID,
+				}
+				uds, err := db.FindOneByFilter(ctx, f)
+				if err != nil {
+					return nil, err
+				}
+				pb := userdevicelogic.ToUserDeviceSharePb(uds)
+				return pb, err
+			},
+			ExpireTime: 3 * time.Minute,
+		})
+		logx.Must(err)
+		svcCtx.UserDeviceShare = userDeviceShare
+	}
+
 	productCache, err := caches.NewCache(caches.CacheConfig[dm.ProductInfo, string]{
 		KeyType:   eventBus.ServerCacheKeyDmProduct,
 		FastEvent: svcCtx.FastEvent,
@@ -117,7 +143,7 @@ func InitCache(svcCtx *svc.ServiceContext) {
 
 func InitEventBus(svcCtx *svc.ServiceContext) {
 	{ //设备数据订阅
-		f := func(ctx context.Context, msg []byte, ff func(msg *deviceMsg.PublishMsg) error) error {
+		f := func(ctx context.Context, msg []byte, ff func(ctx context.Context, msg *deviceMsg.PublishMsg) error) error {
 			ctx = ctxs.WithRoot(ctx)
 			defer utils.Recover(ctx)
 			ele, err := deviceMsg.GetDevPublish(ctx, msg)
@@ -125,11 +151,11 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 				logx.WithContext(ctx).Errorf("%s.GetDevPublish failure err:%v", utils.FuncName(), err)
 				return err
 			}
-			return ff(ele)
+			return ff(ctx, ele)
 		}
 		err := svcCtx.FastEvent.Subscribe(topics.DeviceUpThingAll,
 			func(ctx context.Context, t time.Time, body []byte) error {
-				return f(ctx, body, func(msg *deviceMsg.PublishMsg) error {
+				return f(ctx, body, func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
 					err := deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx).Thing(msg)
 					if err != nil {
 						logx.WithContext(ctx).Errorf("%s.Thing failure err:%v", utils.FuncName(), err)
@@ -141,7 +167,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		logx.Must(err)
 		err = svcCtx.FastEvent.Subscribe(topics.DeviceUpOtaAll,
 			func(ctx context.Context, t time.Time, body []byte) error {
-				return f(ctx, body, func(msg *deviceMsg.PublishMsg) error {
+				return f(ctx, body, func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
 					err := deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx).Ota(msg)
 					if err != nil {
 						logx.WithContext(ctx).Errorf("%s.Thing failure err:%v", utils.FuncName(), err)
@@ -153,7 +179,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		logx.Must(err)
 		err = svcCtx.FastEvent.Subscribe(topics.DeviceUpExtAll,
 			func(ctx context.Context, t time.Time, body []byte) error {
-				return f(ctx, body, func(msg *deviceMsg.PublishMsg) error {
+				return f(ctx, body, func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
 					err := deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx).Ext(msg)
 					if err != nil {
 						logx.WithContext(ctx).Errorf("%s.Thing failure err:%v", utils.FuncName(), err)
@@ -165,7 +191,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		logx.Must(err)
 		err = svcCtx.FastEvent.Subscribe(topics.DeviceUpConfigAll,
 			func(ctx context.Context, t time.Time, body []byte) error {
-				return f(ctx, body, func(msg *deviceMsg.PublishMsg) error {
+				return f(ctx, body, func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
 					err := deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx).Config(msg)
 					if err != nil {
 						logx.WithContext(ctx).Errorf("%s.Thing failure err:%v", utils.FuncName(), err)
@@ -177,7 +203,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		logx.Must(err)
 		err = svcCtx.FastEvent.Subscribe(topics.DeviceUpSDKLogAll,
 			func(ctx context.Context, t time.Time, body []byte) error {
-				return f(ctx, body, func(msg *deviceMsg.PublishMsg) error {
+				return f(ctx, body, func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
 					err := deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx).SDKLog(msg)
 					if err != nil {
 						logx.WithContext(ctx).Errorf("%s.Thing failure err:%v", utils.FuncName(), err)
@@ -189,7 +215,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		logx.Must(err)
 		err = svcCtx.FastEvent.Subscribe(topics.DeviceUpShadowAll,
 			func(ctx context.Context, t time.Time, body []byte) error {
-				return f(ctx, body, func(msg *deviceMsg.PublishMsg) error {
+				return f(ctx, body, func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
 					err := deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx).Shadow(msg)
 					if err != nil {
 						logx.WithContext(ctx).Errorf("%s.Thing failure err:%v", utils.FuncName(), err)
@@ -201,7 +227,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		logx.Must(err)
 		err = svcCtx.FastEvent.Subscribe(topics.DeviceUpGatewayAll,
 			func(ctx context.Context, t time.Time, body []byte) error {
-				return f(ctx, body, func(msg *deviceMsg.PublishMsg) error {
+				return f(ctx, body, func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
 					err := deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx).Gateway(msg)
 					if err != nil {
 						logx.WithContext(ctx).Errorf("%s.Thing failure err:%v", utils.FuncName(), err)

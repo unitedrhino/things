@@ -6,6 +6,7 @@ import (
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/userShared"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -57,5 +58,10 @@ func (l *UserDeviceShareUpdateLogic) UserDeviceShareUpdate(in *dm.UserDeviceShar
 	if err := relationDB.NewUserDeviceShareRepo(l.ctx).Update(l.ctx, uds); err != nil {
 		return nil, err
 	}
+	l.svcCtx.UserDeviceShare.SetData(l.ctx, userShared.UserShareKey{
+		ProductID:    uds.ProductID,
+		DeviceName:   uds.DeviceName,
+		SharedUserID: uds.SharedUserID,
+	}, nil)
 	return &dm.Empty{}, nil
 }

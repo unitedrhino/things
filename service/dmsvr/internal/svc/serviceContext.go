@@ -15,6 +15,7 @@ import (
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	ws "gitee.com/i-Things/share/websocket"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/userShared"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/event/publish/pubApp"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/event/publish/pubDev"
@@ -48,31 +49,32 @@ type ServiceContext struct {
 	PubDev pubDev.PubDev
 	PubApp pubApp.PubApp
 
-	OssClient      *oss.Client
-	TimedM         timedmanage.TimedManage
-	SchemaRepo     *caches.Cache[schema.Model, string]
-	SchemaManaRepo msgThing.SchemaDataRepo
-	HubLogRepo     deviceLog.HubRepo
-	StatusRepo     deviceLog.StatusRepo
-	SendRepo       deviceLog.SendRepo
-	SDKLogRepo     deviceLog.SDKRepo
-	Cache          kv.Store
-	DeviceStatus   *cache.DeviceStatus
-	FastEvent      *eventBus.FastEvent
-	AreaM          areamanage.AreaManage
-	UserM          usermanage.UserManage
-	DataM          datamanage.DataManage
-	ProjectM       projectmanage.ProjectManage
-	ProductCache   *caches.Cache[dm.ProductInfo, string]
-	DeviceCache    *caches.Cache[dm.DeviceInfo, devices.Core]
-	TenantCache    sysExport.TenantCacheT
-	ProjectCache   sysExport.ProjectCacheT
-	AreaCache      sysExport.AreaCacheT
-	WebHook        *sysExport.Webhook
-	Slot           sysExport.SlotCacheT
-	UserSubscribe  *ws.UserSubscribe
-	GatewayCanBind *cache.GatewayCanBind
-	NodeID         int64
+	OssClient       *oss.Client
+	TimedM          timedmanage.TimedManage
+	SchemaRepo      *caches.Cache[schema.Model, string]
+	SchemaManaRepo  msgThing.SchemaDataRepo
+	HubLogRepo      deviceLog.HubRepo
+	StatusRepo      deviceLog.StatusRepo
+	SendRepo        deviceLog.SendRepo
+	SDKLogRepo      deviceLog.SDKRepo
+	Cache           kv.Store
+	DeviceStatus    *cache.DeviceStatus
+	FastEvent       *eventBus.FastEvent
+	AreaM           areamanage.AreaManage
+	UserM           usermanage.UserManage
+	DataM           datamanage.DataManage
+	ProjectM        projectmanage.ProjectManage
+	ProductCache    *caches.Cache[dm.ProductInfo, string]
+	DeviceCache     *caches.Cache[dm.DeviceInfo, devices.Core]
+	UserDeviceShare *caches.Cache[dm.UserDeviceShareInfo, userShared.UserShareKey]
+	TenantCache     sysExport.TenantCacheT
+	ProjectCache    sysExport.ProjectCacheT
+	AreaCache       sysExport.AreaCacheT
+	WebHook         *sysExport.Webhook
+	Slot            sysExport.SlotCacheT
+	UserSubscribe   *ws.UserSubscribe
+	GatewayCanBind  *cache.GatewayCanBind
+	NodeID          int64
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {

@@ -1,6 +1,7 @@
 package relationDB
 
 import (
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/stores"
 )
 
@@ -19,6 +20,11 @@ func (m *DmUserDeviceCollect) TableName() string {
 	return "dm_user_device_collect"
 }
 
+const (
+	ShareAuthTypeAll = 1 //授予全部权限
+	ShareAuthType    = 1 //授予全部权限
+)
+
 type DmUserDeviceShare struct {
 	ID                int64             `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	TenantCode        stores.TenantCode `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"`                           // 租户编码
@@ -28,6 +34,7 @@ type DmUserDeviceShare struct {
 	ProjectID  int64                 `gorm:"column:project_id;type:bigint;default:0;NOT NULL"`                                // 分享的设备所属的项目
 	ProductID  string                `gorm:"column:product_id;type:varchar(100);uniqueIndex:product_id_deviceName;NOT NULL"`  // 产品id
 	DeviceName string                `gorm:"column:device_name;uniqueIndex:product_id_deviceName;type:varchar(100);NOT NULL"` // 设备名称
+	AuthType   def.AuthType          `gorm:"column:auth_type;type:varchar(100);default:1"`                                    // 权限类型
 	AccessPerm map[string]*SharePerm `gorm:"column:access_prem;type:json;serializer:json;NOT NULL;default:'{}'"`              //操作权限 hubLog:设备消息记录,ota:ota升级权限,deviceTiming:设备定时
 	SchemaPerm map[string]*SharePerm `gorm:"column:schema_prem;type:json;serializer:json;NOT NULL;default:'{}'"`              //物模型权限,只需要填写需要授权并授权的物模型id
 	stores.NoDelTime
