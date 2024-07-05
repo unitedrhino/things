@@ -25,13 +25,14 @@ func NewAlarmRecordRepo(in any) *AlarmRecordRepo {
 }
 
 type AlarmRecordFilter struct {
-	AlarmID      int64 // 告警配置ID
-	TriggerType  scene.TriggerType
-	ProductID    string
-	DeviceName   string
-	DealStatus   scene.AlarmDealStatus
-	DealStatuses []scene.AlarmDealStatus
-	Time         *def.TimeRange
+	AlarmID       int64 // 告警配置ID
+	TriggerType   scene.TriggerType
+	ProductID     string
+	DeviceName    string
+	DealStatus    scene.AlarmDealStatus
+	DealStatuses  []scene.AlarmDealStatus
+	Time          *def.TimeRange
+	WithSceneInfo bool
 }
 
 func (p AlarmRecordRepo) fmtFilter(ctx context.Context, f AlarmRecordFilter) *gorm.DB {
@@ -54,6 +55,9 @@ func (p AlarmRecordRepo) fmtFilter(ctx context.Context, f AlarmRecordFilter) *go
 	}
 	if f.DeviceName != "" {
 		db = db.Where("device_name=?", f.DeviceName)
+	}
+	if f.WithSceneInfo {
+		db = db.Preload("SceneInfo")
 	}
 	return db
 }

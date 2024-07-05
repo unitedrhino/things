@@ -205,47 +205,10 @@ func ToSchemaInfosRpc(in []*types.ProductSchemaInfo) (ret []*dm.ProductSchemaInf
 }
 
 func ToSchemaInfoRpc(in *types.ProductSchemaInfo) *dm.ProductSchemaInfo {
-	if in == nil {
-		return nil
-	}
-	rpc := &dm.ProductSchemaInfo{
-		ProductID:         in.ProductID,
-		Type:              in.Type,
-		Tag:               in.Tag,
-		Identifier:        in.Identifier,
-		ExtendConfig:      in.ExtendConfig,
-		IsCanSceneLinkage: in.IsCanSceneLinkage,
-		IsHistory:         in.IsHistory,
-		FuncGroup:         in.FuncGroup,
-		UserPerm:          in.UserPerm,
-		Name:              utils.ToRpcNullString(in.Name),
-		Desc:              utils.ToRpcNullString(in.Desc),
-		Required:          in.Required,
-		Order:             in.Order,
-		Affordance:        utils.ToRpcNullString(in.Affordance),
-	}
-	return rpc
+	return utils.Copy[dm.ProductSchemaInfo](in)
 }
 
 func ToSchemaInfoTypes(in *dm.ProductSchemaInfo) *types.ProductSchemaInfo {
-	if in == nil {
-		return nil
-	}
-	rpc := types.ProductSchemaInfo{
-		ProductID:         in.ProductID,
-		Type:              in.Type,
-		Tag:               in.Tag,
-		Identifier:        in.Identifier,
-		ExtendConfig:      in.ExtendConfig,
-		IsCanSceneLinkage: in.IsCanSceneLinkage,
-		IsHistory:         in.IsHistory,
-		FuncGroup:         in.FuncGroup,
-		UserPerm:          in.UserPerm,
-		Name:              utils.ToNullString(in.Name),
-		Desc:              utils.ToNullString(in.Desc),
-		Required:          in.Required,
-		Order:             in.Order,
-		Affordance:        utils.ToNullString(in.Affordance),
-	}
-	return &rpc
+	return utils.Copy[types.ProductSchemaInfo](in)
+
 }

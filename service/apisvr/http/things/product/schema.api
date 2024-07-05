@@ -77,6 +77,7 @@ type (
         FuncGroup int64 `json:"funcGroup,optional"`// 功能分类: 1:普通功能 2:系统功能
         UserPerm int64 `json:"userPerm,optional"`//用户权限操作: 1:r(只读) 3:rw(可读可写)
         PropertyMode string  `json:"propertyMode,optional"`//属性类型可用 读写类型: 1:r(只读) 2:rw(可读可写)
+        ControlMode int64 `json:"controlMode,optional"`//控制模式: 1: 可以群控,可以单控  2:只能单控
     }
     ProductSchemaIndexResp {
         List []*ProductSchemaInfo `json:"list"`           //分页信息,只获取一个则不填
@@ -102,7 +103,9 @@ type (
         UserPerm int64 `json:"userPerm,optional"`//用户权限操作: 1:r(只读) 3:rw(可读可写)
         IsHistory int64 `json:"isHistory,optional"`// 是否存储历史记录
         Order int64 `json:"order,optional"`// 排序
-//        Event *SchemaEvent `json:"event,optional"`           //事件参数定义
+        ControlMode int64 `json:"controlMode,optional"`//控制模式: 1: 可以群控,可以单控  2:只能单控
+
+        //        Event *SchemaEvent `json:"event,optional"`           //事件参数定义
 //        Property *SchemaProperty `json:"property,optional"`  //属性参数定义
 //        Action *SchemaAction `json:"action,optional"`        //行为参数定义
     }

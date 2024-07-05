@@ -64,7 +64,7 @@ func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqMsg *deviceMsg.Publ
 			logx.WithContext(ctx).Errorf("ReqToDeviceSync.UnSubscribe failure err:%v", err)
 		}
 	}()
-	dead := time.Now().Add(10 * time.Second)
+	dead := time.Now().Add(3 * time.Second)
 	for dead.After(time.Now()) {
 		msg, err := handle.GetMsg(dead.Sub(time.Now()))
 		if err != nil {

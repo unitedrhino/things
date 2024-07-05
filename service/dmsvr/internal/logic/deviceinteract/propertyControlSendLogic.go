@@ -64,7 +64,7 @@ func (l *PropertyControlSendLogic) Auth(dev devices.Core, param map[string]any) 
 				SharedUserID: uc.UserID,
 			})
 			if err != nil {
-				return nil, err
+				return nil, errors.Parameter
 			}
 			if uds.AuthType == def.AuthAdmin {
 				return param, nil

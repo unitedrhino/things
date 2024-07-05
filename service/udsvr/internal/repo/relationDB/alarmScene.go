@@ -26,6 +26,7 @@ type AlarmSceneFilter struct {
 	AlarmID       int64 // 告警配置ID
 	SceneID       int64 // 场景ID
 	WithAlarmInfo bool
+	WithSceneInfo bool
 }
 
 func (p AlarmSceneRepo) fmtFilter(ctx context.Context, f AlarmSceneFilter) *gorm.DB {
@@ -38,6 +39,9 @@ func (p AlarmSceneRepo) fmtFilter(ctx context.Context, f AlarmSceneFilter) *gorm
 	}
 	if f.WithAlarmInfo {
 		db = db.Preload("AlarmInfo")
+	}
+	if f.WithSceneInfo {
+		db = db.Preload("SceneInfo")
 	}
 	return db
 }

@@ -41,6 +41,8 @@ func (l *CommonSchemaIndexLogic) CommonSchemaIndex(in *dm.CommonSchemaIndexReq) 
 		FuncGroup:         in.FuncGroup,
 		UserPerm:          in.UserPerm,
 		PropertyMode:      in.PropertyMode,
+		ControlMode:       in.ControlMode,
+		ProductSceneMode:  in.ProductSceneMode,
 	}
 	if in.ProductCategoryID != 0 {
 		var ProductCategoryIDs = []int64{in.ProductCategoryID}
@@ -106,6 +108,8 @@ func (l *CommonSchemaIndexLogic) CommonSchemaIndex(in *dm.CommonSchemaIndexReq) 
 				IsCanSceneLinkage: in.IsCanSceneLinkage,
 				FuncGroup:         in.FuncGroup,
 				UserPerm:          in.UserPerm,
+				ControlMode:       in.ControlMode,
+				ProductSceneMode:  in.ProductSceneMode,
 				PropertyMode:      in.PropertyMode}
 			schemas, err := relationDB.NewProductSchemaRepo(l.ctx).FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page).WithDefaultOrder(stores.OrderBy{
 				Field: "order",
@@ -120,16 +124,19 @@ func (l *CommonSchemaIndexLogic) CommonSchemaIndex(in *dm.CommonSchemaIndexReq) 
 			}
 			return &dm.CommonSchemaIndexResp{List: utils.CopySlice[dm.CommonSchemaInfo](schemas), Total: total}, nil
 		}
-		rst, err := relationDB.NewProductSchemaRepo(l.ctx).FindByFilter(l.ctx, relationDB.ProductSchemaFilter{ProductIDs: in.ProductIDs, Tags: []int64{schema.TagOptional, schema.TagRequired}}, nil)
+		var productIDs = map[string]struct{}{}
+		rst, err := relationDB.NewProductSchemaRepo(l.ctx).FindByFilter(l.ctx, relationDB.ProductSchemaFilter{
+			ProductIDs: in.ProductIDs, Tags: []int64{schema.TagOptional, schema.TagRequired}, ProductSceneMode: in.ProductSceneMode, ControlMode: in.ControlMode}, nil)
 		if err != nil {
 			return nil, err
 		}
 		var identifyMap = map[string]int{}
 		for _, v := range rst {
 			identifyMap[v.Identifier]++
+			productIDs[v.ProductID] = struct{}{}
 		}
 		for k, v := range identifyMap {
-			if v == len(in.ProductIDs) { //每个产品都有的物模型
+			if v == len(productIDs) { //每个产品都有的物模型
 				filter.Identifiers = append(filter.Identifiers, k)
 			}
 		}

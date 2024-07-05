@@ -4,7 +4,6 @@ import (
 	"context"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/apisvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/service/apisvr/internal/svc"
@@ -28,20 +27,7 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 }
 
 func (l *IndexLogic) Index(req *types.ProductSchemaIndexReq) (resp *types.ProductSchemaIndexResp, err error) {
-	dmReq := &dm.ProductSchemaIndexReq{
-		Page:              logic.ToDmPageRpc(req.Page),
-		ProductID:         req.ProductID,
-		Type:              req.Type,
-		Tag:               req.Tag,
-		Identifiers:       req.Identifiers,
-		Name:              req.Name,
-		IsCanSceneLinkage: req.IsCanSceneLinkage,
-		FuncGroup:         req.FuncGroup,
-		UserPerm:          req.UserPerm,
-		PropertyMode:      req.PropertyMode,
-		Types:             req.Types,
-	}
-	dmResp, err := l.svcCtx.ProductM.ProductSchemaIndex(l.ctx, dmReq)
+	dmResp, err := l.svcCtx.ProductM.ProductSchemaIndex(l.ctx, utils.Copy[dm.ProductSchemaIndexReq](req))
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.ProductSchemaIndex req=%v err=%+v", utils.FuncName(), req, er)

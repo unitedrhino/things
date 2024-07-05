@@ -31,7 +31,8 @@ func NewAlarmRecordCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 }
 
 func (l *AlarmRecordCreateLogic) AlarmRecordCreate(in *ud.AlarmRecordCreateReq) (*ud.Empty, error) {
-	pos, err := relationDB.NewAlarmSceneRepo(l.ctx).FindByFilter(l.ctx, relationDB.AlarmSceneFilter{SceneID: in.SceneID, WithAlarmInfo: true}, nil)
+	pos, err := relationDB.NewAlarmSceneRepo(l.ctx).FindByFilter(l.ctx, relationDB.AlarmSceneFilter{
+		SceneID: in.SceneID, WithAlarmInfo: true, WithSceneInfo: true}, nil)
 	if err != nil {
 		return nil, err
 	}

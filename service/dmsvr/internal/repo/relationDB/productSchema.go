@@ -28,6 +28,8 @@ type (
 		FuncGroup         int64
 		UserPerm          int64
 		PropertyMode      string
+		ControlMode       int64
+		ProductSceneMode  string
 	}
 )
 
@@ -52,6 +54,9 @@ func (p ProductSchemaRepo) fmtFilter(ctx context.Context, f ProductSchemaFilter)
 	if f.ID != 0 {
 		db = db.Where("id=?", f.ID)
 	}
+	if f.ControlMode != 0 {
+		db = db.Where("control_mode=?", f.ControlMode)
+	}
 	if f.PropertyMode != "" {
 		db = db.Where("JSON_CONTAINS(affordance, JSON_OBJECT('mode',?))",
 			f.PropertyMode)
@@ -61,6 +66,9 @@ func (p ProductSchemaRepo) fmtFilter(ctx context.Context, f ProductSchemaFilter)
 	}
 	if f.ProductID != "" {
 		db = db.Where("product_id=?", f.ProductID)
+	}
+	if f.ProductSceneMode != "" {
+		db = db.Where("product_id in (?)", p.db.Select("product_id").Model(DmProductInfo{}).Where("scene_mode = ?", f.ProductSceneMode))
 	}
 	if f.Type != 0 {
 		db = db.Where("type=?", f.Type)

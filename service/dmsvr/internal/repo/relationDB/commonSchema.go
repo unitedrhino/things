@@ -21,6 +21,8 @@ type (
 		FuncGroup         int64
 		UserPerm          int64
 		PropertyMode      string
+		ControlMode       int64
+		ProductSceneMode  string
 	}
 )
 
@@ -35,6 +37,9 @@ func (p CommonSchemaRepo) fmtFilter(ctx context.Context, f CommonSchemaFilter) *
 	}
 	if f.FuncGroup != 0 {
 		db = db.Where("func_group = ?", f.FuncGroup)
+	}
+	if f.ControlMode != 0 {
+		db = db.Where("control_mode=?", f.ControlMode)
 	}
 	if f.UserPerm != 0 {
 		db = db.Where("user_auth = ?", f.UserPerm)

@@ -84,10 +84,10 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 		db = db.Where("tenant_code = ?", f.TenantCode)
 	}
 	if f.ProductCategoryID != 0 {
-		db = db.Where("product_id in (?)", db.Select("product_id").Model(DmProductInfo{}).Where("category_id=?", f.ProductCategoryID))
+		db = db.Where("product_id in (?)", d.db.WithContext(ctx).Select("product_id").Model(DmProductInfo{}).Where("category_id=?", f.ProductCategoryID))
 	}
 	if len(f.ProductCategoryIDs) != 0 {
-		db = db.Where("product_id in (?)", db.Select("product_id").Model(DmProductInfo{}).Where("category_id in ?", f.ProductCategoryIDs))
+		db = db.Where("product_id in (?)", d.db.WithContext(ctx).Select("product_id").Model(DmProductInfo{}).Where("category_id in ?", f.ProductCategoryIDs))
 	}
 	//业务过滤条件
 	if f.ProductID != "" {
