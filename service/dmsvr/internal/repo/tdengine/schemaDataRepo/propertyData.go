@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/domain/schema"
@@ -25,9 +26,12 @@ func (d *DeviceDataRepo) InsertPropertyData(ctx context.Context, t *schema.Prope
 }
 
 func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Property, productID string, deviceName string, property *msgThing.Param, timestamp time.Time) (sql string, args []any, err error) {
+	var ars = map[string]any{}
 	switch property.Define.Type {
 	case schema.DataTypeArray:
 		genArrSql := func(Identifier string, num int, v any) error {
+			id := GetArrayID(Identifier, num)
+			ars[id] = v
 			switch vv := v.(type) {
 			case map[string]any:
 				paramPlaceholder, paramIds, paramValList, err := stores.GenParams(vv)
@@ -35,13 +39,13 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 					return err
 				}
 				sql += fmt.Sprintf(" %s using %s tags('%s','%s',%d,'%s') (`ts`, %s) values (?,%s) ",
-					d.GetPropertyTableName(productID, deviceName, Identifier),
+					d.GetPropertyTableName(productID, deviceName, id),
 					d.GetPropertyStableName(p.Tag, productID, Identifier), productID, deviceName, num, p.Define.Type,
 					paramIds, paramPlaceholder)
 				args = append([]any{timestamp}, paramValList...)
 			default:
 				sql += fmt.Sprintf(" %s using %s tags('%s','%s',%d,'%s')(`ts`, `param`) values (?,?) ",
-					d.GetPropertyTableName(productID, deviceName, GetArrayID(Identifier, num)),
+					d.GetPropertyTableName(productID, deviceName, id),
 					d.GetPropertyStableName(p.Tag, productID, Identifier),
 					productID, deviceName, num, p.Define.Type)
 				args = append(args, timestamp, vv)
@@ -68,6 +72,7 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 			}
 		}
 	default:
+		ars[property.Identifier] = property.Value
 		switch property.Value.(type) {
 		case map[string]any:
 			paramPlaceholder, paramIds, paramValList, err := stores.GenParams(property.Value.(map[string]any))
@@ -90,40 +95,74 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 			args = append(args, timestamp, param)
 		}
 	}
+	ctxs.GoNewCtx(ctx, func(ctx context.Context) {
+		log := logx.WithContext(ctx)
+		for k, v := range ars {
+			retStr, err := d.kv.HgetCtx(ctx, d.genRedisPropertyFirstKey(productID, deviceName), k)
+			if err != nil && !errors.Cmp(stores.ErrFmt(err), errors.NotFind) {
+				log.Error(err)
+				continue
+			}
+			if retStr != "" {
+				var ret msgThing.PropertyData
+				err = json.Unmarshal([]byte(retStr), &ret)
+				if err != nil {
+					log.Error(err)
+				} else if msgThing.IsParamValEq(&p.Define, v, ret.Param) { //相等不记录
+					continue
+				}
+			}
+			var data = msgThing.PropertyData{
+				Identifier: k,
+				Param:      v,
+				TimeStamp:  timestamp,
+			}
 
+			//到这里都是不相等或者之前没有记录的
+			err = d.kv.HsetCtx(ctx, d.genRedisPropertyFirstKey(productID, deviceName), k, data.String())
+			if err != nil {
+				log.Error(err)
+			}
+		}
+	})
 	return
 }
 
-func (d *DeviceDataRepo) genRedisPropertyKey(productID string, deviceName, identifier string) string {
-	return fmt.Sprintf("device:thing:property:%s:%s:%s", productID, deviceName, identifier)
+func (d *DeviceDataRepo) genRedisPropertyFirstKey(productID string, deviceName string) string {
+	return fmt.Sprintf("device:thing:property:first:%s:%s", productID, deviceName)
+}
+
+func (d *DeviceDataRepo) genRedisPropertyKey(productID string, deviceName string) string {
+	return fmt.Sprintf("device:thing:property:last:%s:%s", productID, deviceName)
 }
 func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schema.Property, filter msgThing.LatestFilter) (*msgThing.PropertyData, error) {
-	retStr, err := d.kv.GetCtx(ctx, d.genRedisPropertyKey(filter.ProductID, filter.DeviceName, filter.DataID))
+	retStr, err := d.kv.HgetCtx(ctx, d.genRedisPropertyKey(filter.ProductID, filter.DeviceName), filter.DataID)
 	if err != nil {
 		return nil, errors.Database.AddDetailf(
 			"DeviceDataRepo.GetLatestPropertyDataByID.GetCtx filter:%v  err:%v",
 			filter, err)
 	}
-	if retStr == "" || true { //如果缓存里没有查到,需要从db里查
-		dds, err := d.GetPropertyDataByID(ctx, p,
-			msgThing.FilterOpt{
-				Page:        def.PageInfo2{Size: 1},
-				ProductID:   filter.ProductID,
-				DeviceNames: []string{filter.DeviceName},
-				DataID:      filter.DataID,
-				Order:       stores.OrderDesc})
-		if len(dds) == 0 || err != nil {
-			return nil, err
+	if retStr != "" {
+		var ret msgThing.PropertyData
+		err = json.Unmarshal([]byte(retStr), &ret)
+		if err == nil {
+			return &ret, nil
 		}
-		d.kv.SetCtx(ctx, d.genRedisPropertyKey(filter.ProductID, filter.DeviceName, filter.DataID), dds[0].String())
-		return dds[0], nil
 	}
-	var ret msgThing.PropertyData
-	err = json.Unmarshal([]byte(retStr), &ret)
-	if err != nil {
+	//如果缓存里没有查到,需要从db里查
+	dds, err := d.GetPropertyDataByID(ctx, p,
+		msgThing.FilterOpt{
+			Page:        def.PageInfo2{Size: 1},
+			ProductID:   filter.ProductID,
+			DeviceNames: []string{filter.DeviceName},
+			DataID:      filter.DataID,
+			Order:       stores.OrderDesc})
+	if len(dds) == 0 || err != nil {
 		return nil, err
 	}
-	return &ret, nil
+	d.kv.HsetCtx(ctx, d.genRedisPropertyKey(filter.ProductID, filter.DeviceName), filter.DataID, dds[0].String())
+	return dds[0], nil
+
 }
 
 func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Model, productID string, deviceName string, params map[string]msgThing.Param, timestamp time.Time) error {
@@ -133,18 +172,6 @@ func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Mod
 			Infof("DeviceDataRepo.InsertPropertiesData")
 	}()
 	for identifier, param := range params {
-		data := msgThing.PropertyData{
-			Identifier: identifier,
-			Param:      param,
-			TimeStamp:  timestamp,
-		}
-		//缓存
-		err := d.kv.SetCtx(ctx, d.genRedisPropertyKey(productID, deviceName, identifier), data.String())
-		if err != nil {
-			return errors.Database.AddDetailf(
-				"DeviceDataRepo.InsertPropertiesData.SetCtx identifier:%v param:%v err:%v",
-				identifier, param, err)
-		}
 		p := t.Property[param.Identifier]
 		//入库
 		param.Identifier = identifier
