@@ -31,7 +31,7 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 	case schema.DataTypeArray:
 		genArrSql := func(Identifier string, num int, v any) error {
 			id := GetArrayID(Identifier, num)
-			ars[id] = v
+			ars[schema.GenArray(Identifier, num)] = v
 			switch vv := v.(type) {
 			case map[string]any:
 				paramPlaceholder, paramIds, paramValList, err := stores.GenParams(vv)
