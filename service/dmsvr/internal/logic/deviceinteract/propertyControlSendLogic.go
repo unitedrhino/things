@@ -134,6 +134,10 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 		l.Infof("控制的属性在设备中都不存在,req:%v", utils.Fmt(in))
 		return &dm.PropertyControlSendResp{Code: errors.OK.Code, Msg: errors.OK.AddMsg("该设备无控制的属性,忽略").GetMsg()}, nil
 	}
+	req.Params, err = msgThing.ToVal(params)
+	if err != nil {
+		return nil, err
+	}
 	defer func() {
 		if err == nil && ret.Code == errors.OK.GetCode() && in.WithProfile != nil && in.WithProfile.Code != "" {
 			_, err = devicemanagelogic.NewDeviceProfileUpdateLogic(l.ctx, l.svcCtx).DeviceProfileUpdate(&dm.DeviceProfile{
@@ -146,14 +150,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 			})
 		}
 	}()
-	err = req.FmtReqParam(l.model, schema.ParamProperty)
-	if err != nil {
-		return nil, err
-	}
-	req.Params, err = msgThing.ToVal(params)
-	if err != nil {
-		return nil, err
-	}
+
 	if in.ShadowControl == shadow.ControlOnlyCloud {
 		//插入多条设备物模型属性数据
 		err = l.svcCtx.SchemaManaRepo.InsertPropertiesData(l.ctx, l.model, in.ProductID, in.DeviceName, params, time.Now())
