@@ -4965,7 +4965,7 @@
     },
     "/api/v1/things/schema/common/create": {
       "post": {
-        "summary": "更新通用物模型",
+        "summary": "新增通用物模型",
         "operationId": "postApiV1ThingsSchemaCommonCreate",
         "responses": {
           "200": {
@@ -5004,7 +5004,7 @@
     },
     "/api/v1/things/schema/common/delete": {
       "post": {
-        "summary": "更新通用物模型",
+        "summary": "删除通用物模型",
         "operationId": "postApiV1ThingsSchemaCommonDelete",
         "responses": {
           "200": {
@@ -5043,7 +5043,7 @@
     },
     "/api/v1/things/schema/common/index": {
       "post": {
-        "summary": "获取通用物模型",
+        "summary": "获取通用物模型列表",
         "operationId": "postApiV1ThingsSchemaCommonIndex",
         "responses": {
           "200": {

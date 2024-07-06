@@ -20,13 +20,13 @@ service api {
     @doc "更新通用物模型"
     @handler update
     post /update (CommonSchemaUpdateReq) returns ()
-    @doc "更新通用物模型"
+    @doc "新增通用物模型"
     @handler create
     post /create (CommonSchemaCreateReq) returns ()
-    @doc "更新通用物模型"
+    @doc "删除通用物模型"
     @handler delete
     post /delete (CommonSchemaDeleteReq) returns ()
-    @doc "获取通用物模型"
+    @doc "获取通用物模型列表"
     @handler index
     post /index (CommonSchemaIndexReq) returns (CommonSchemaIndexResp)
 }
