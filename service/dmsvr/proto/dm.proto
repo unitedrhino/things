@@ -1084,6 +1084,8 @@ message DeviceInfo {
   string NeedConfirmVersion =40;//待确认升级的版本
   int64 userID =41;//拥有者的用户ID
   string productImg = 43; //产品图片
+  int64   categoryID = 44;//产品品类
+
 }
 
 message ProductInfo{

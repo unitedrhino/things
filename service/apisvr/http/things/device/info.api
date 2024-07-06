@@ -123,6 +123,7 @@ type (
         Cert string `json:"cert,optional,omitempty"`                                                // 设备证书  只读
         Imei string `json:"imei,optional,omitempty"`                                                // IMEI号信息 只读
         Mac string `json:"mac,optional,omitempty"`                                                  // MAC号信息 只读
+        CategoryID int64 `json:"categoryID,optional"`                                     //产品品类
         Version *string `json:"version,optional,omitempty"`                                         // 固件版本  读写
         HardInfo string `json:"hardInfo,optional,omitempty"`                                        // 模组硬件型号 只读
         SoftInfo string `json:"softInfo,optional,omitempty"`                                        // 模组软件版本 只读

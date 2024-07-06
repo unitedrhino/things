@@ -120,6 +120,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		RatedPower:         v.RatedPower,
 		NeedConfirmVersion: v.NeedConfirmVersion,
 		ProductImg:         v.ProductImg,
+		CategoryID:         v.CategoryID,
 	}
 }
 

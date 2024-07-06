@@ -6630,6 +6630,11 @@
           "type": "string",
           "description": " MAC号信息 只读"
         },
+        "categoryID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "产品品类"
+        },
         "version": {
           "type": "string",
           "description": " 固件版本  读写"

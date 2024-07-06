@@ -132,6 +132,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 		IsEnable:    def.True,
 		RatedPower:  in.RatedPower,
 		Distributor: utils.Copy2[stores.IDPathWithUpdate](in.Distributor),
+		UserID:      def.RootNode,
 	}
 	if in.IsEnable != 0 {
 		di.IsEnable = in.IsEnable

@@ -28,6 +28,7 @@ func ToDeviceInfo(ctx context.Context, svcCtx *svc.ServiceContext, in *relationD
 		deviceType  int64 = def.DeviceTypeDevice
 		netType     int64 = def.Unknown
 		ProductImg  string
+		CategoryID  int64
 	)
 	pi, err := svcCtx.ProductCache.GetData(ctx, in.ProductID)
 	if err == nil {
@@ -35,7 +36,7 @@ func ToDeviceInfo(ctx context.Context, svcCtx *svc.ServiceContext, in *relationD
 		productName = pi.ProductName
 		netType = pi.NetType
 		ProductImg = pi.ProductImg
-
+		CategoryID = pi.CategoryID
 	}
 	//return utils.Copy[dm.DeviceInfo](in)
 
@@ -83,6 +84,7 @@ func ToDeviceInfo(ctx context.Context, svcCtx *svc.ServiceContext, in *relationD
 		NeedConfirmJobID:   in.NeedConfirmJobID,
 		ProductImg:         ProductImg,
 		UserID:             in.UserID,
+		CategoryID:         CategoryID,
 	}
 }
 
