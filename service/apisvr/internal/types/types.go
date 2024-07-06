@@ -53,7 +53,8 @@ type AlarmRecordIndexReq struct {
 	AlarmID    int64      `json:"alarmID,optional"`   //告警记录ID
 	Page       *PageInfo  `json:"page,optional"`      //分页信息 只获取一个则不填
 	TimeRange  *TimeRange `json:"timeRange,optional"` //时间范围
-	DealStatus []int64    `json:"dealStatus"`         //告警记录状态（1告警中 2忽略 3正在处理 4已处理）
+	AlarmName  string     `json:"alarmName,optional"`
+	DealStatus []int64    `json:"dealStatus"` //告警记录状态（1告警中 2忽略 3正在处理 4已处理）
 }
 
 type AlarmRecordIndexResp struct {

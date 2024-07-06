@@ -26,6 +26,7 @@ func NewAlarmRecordRepo(in any) *AlarmRecordRepo {
 
 type AlarmRecordFilter struct {
 	AlarmID       int64 // 告警配置ID
+	AlarmName     string
 	TriggerType   scene.TriggerType
 	ProductID     string
 	DeviceName    string
@@ -40,6 +41,9 @@ func (p AlarmRecordRepo) fmtFilter(ctx context.Context, f AlarmRecordFilter) *go
 	f.Time.ToGorm(db, "created_time")
 	if f.AlarmID != 0 {
 		db = db.Where("alarm_id=?", f.AlarmID)
+	}
+	if f.AlarmName != "" {
+		db = db.Where("alarm_name like ?", "%"+f.AlarmName+"%")
 	}
 	if f.DealStatus != 0 {
 		db = db.Where("deal_status=?", f.DealStatus)

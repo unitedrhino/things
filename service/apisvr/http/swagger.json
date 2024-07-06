@@ -5840,6 +5840,9 @@
           "$ref": "#/definitions/TimeRange",
           "description": "时间范围"
         },
+        "alarmName": {
+          "type": "string"
+        },
         "dealStatus": {
           "type": "array",
           "items": {

@@ -33,6 +33,7 @@ func (l *IndexLogic) Index(req *types.AlarmRecordIndexReq) (resp *types.AlarmRec
 		Page:       logic.ToUdPageRpc(req.Page),
 		TimeRange:  logic.ToUdTimeRangeRpc(req.TimeRange),
 		DealStatus: req.DealStatus,
+		AlarmName:  req.AlarmName,
 	})
 	if err != nil {
 		er := errors.Fmt(err)
