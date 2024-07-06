@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/domain/schema"
+	"gitee.com/i-Things/share/utils"
 	"github.com/spf13/cast"
 )
 
@@ -39,7 +40,7 @@ func ToPropertyData(id string, p *schema.Property, db map[string]any) *msgThing.
 		delete(db, PropertyType)
 		delete(db, "_num")
 		for k, v := range db {
-			db[k] = BoolToInt(v)
+			db[k] = utils.BoolToInt(v)
 		}
 		data.Param = db
 		return &data
@@ -55,14 +56,14 @@ func ToPropertyData(id string, p *schema.Property, db map[string]any) *msgThing.
 			delete(db, PropertyType)
 			delete(db, "_num")
 			for k, v := range db {
-				db[k] = BoolToInt(v)
+				db[k] = utils.BoolToInt(v)
 			}
 			data.Param = db
 			return &data
 		default:
 			data := msgThing.PropertyData{
 				Identifier: id,
-				Param:      cast.ToString(BoolToInt(db["param"])),
+				Param:      cast.ToString(utils.BoolToInt(db["param"])),
 				TimeStamp:  cast.ToTime(db["ts"]),
 			}
 			return &data
@@ -70,18 +71,9 @@ func ToPropertyData(id string, p *schema.Property, db map[string]any) *msgThing.
 	default:
 		data := msgThing.PropertyData{
 			Identifier: id,
-			Param:      cast.ToString(BoolToInt(db["param"])),
+			Param:      cast.ToString(utils.BoolToInt(db["param"])),
 			TimeStamp:  cast.ToTime(db["ts"]),
 		}
 		return &data
 	}
-}
-func BoolToInt(in any) any {
-	if v, ok := in.(bool); ok {
-		if v {
-			return 1
-		}
-		return 0
-	}
-	return in
 }

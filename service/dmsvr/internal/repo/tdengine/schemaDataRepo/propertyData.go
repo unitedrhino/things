@@ -119,7 +119,7 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 			}
 
 			//到这里都是不相等或者之前没有记录的
-			err = d.kv.HsetCtx(ctx, d.genRedisPropertyFirstKey(productID, deviceName), k, data.String())
+			err = d.kv.HsetCtx(ctx, d.genRedisPropertyFirstKey(productID, deviceName), k, data.Fmt().String())
 			if err != nil {
 				log.Error(err)
 			}
@@ -137,10 +137,8 @@ func (d *DeviceDataRepo) genRedisPropertyKey(productID string, deviceName string
 }
 func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schema.Property, filter msgThing.LatestFilter) (*msgThing.PropertyData, error) {
 	retStr, err := d.kv.HgetCtx(ctx, d.genRedisPropertyKey(filter.ProductID, filter.DeviceName), filter.DataID)
-	if err != nil {
-		return nil, errors.Database.AddDetailf(
-			"DeviceDataRepo.GetLatestPropertyDataByID.GetCtx filter:%v  err:%v",
-			filter, err)
+	if err != nil && !errors.Cmp(stores.ErrFmt(err), errors.NotFind) {
+		logx.WithContext(ctx).Error(err)
 	}
 	if retStr != "" {
 		var ret msgThing.PropertyData
