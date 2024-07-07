@@ -332,14 +332,19 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 			logx.WithContext(ctx).Error(err)
 			return err
 		}
+		var devs []*dm.DeviceCore
 		for _, v := range dis {
-			_, err := devicemanagelogic.NewDeviceInfoUnbindLogic(ctx, svcCtx).DeviceInfoUnbind(&dm.DeviceCore{
+			devs = append(devs, &dm.DeviceCore{
 				ProductID:  v.ProductID,
 				DeviceName: v.DeviceName,
 			})
-			if err != nil {
-				logx.WithContext(ctx).Errorf("DeviceInfoUnbind dev:%v err:%v", utils.Fmt(v), err)
-			}
+		}
+		_, err = devicemanagelogic.NewDeviceInfoMultiUpdateLogic(ctx, svcCtx).DeviceInfoMultiUpdate(&dm.DeviceInfoMultiUpdateReq{
+			Devices: devs,
+			AreaID:  def.NotClassified,
+		})
+		if err != nil {
+			logx.WithContext(ctx).Errorf("DeviceInfoMultiUpdate dev:%v err:%v", utils.Fmt(devs), err)
 		}
 		return nil
 	})
