@@ -73,7 +73,6 @@ func (l *ProductInfoDeleteLogic) DropProduct(in *dm.ProductInfoDeleteReq) error 
 		l.Errorf("%s.SchemaManaRepo.DeleteProduct err=%v", utils.FuncName(), utils.Fmt(err))
 		return err
 	}
-	//todo 需要删除物模型的数据
 	err = l.svcCtx.SchemaRepo.SetData(l.ctx, in.ProductID, nil)
 	if err != nil {
 		l.Errorf("%s.SchemaRepo.ClearCache err=%v", utils.FuncName(), utils.Fmt(err))

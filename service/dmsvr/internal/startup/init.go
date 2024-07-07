@@ -271,22 +271,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		logx.Must(err)
 	}
 
-	err := svcCtx.FastEvent.Subscribe(eventBus.DmDeviceInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
-		var value devices.Core
-		err := json.Unmarshal(body, &value)
-		if err != nil {
-			return err
-		}
-		ctx = ctxs.WithRoot(ctx)
-		err = relationDB.NewGroupDeviceRepo(ctx).DeleteByFilter(ctx, relationDB.GroupDeviceFilter{
-			ProductID:  value.ProductID,
-			DeviceName: value.DeviceName,
-		})
-		logx.WithContext(ctx).Infof("DeviceGroupHandle value:%v err:%v", utils.Fmt(value), err)
-		return err
-	})
-	logx.Must(err)
-	err = svcCtx.FastEvent.Subscribe(eventBus.CoreUserDelete, func(ctx context.Context, t time.Time, body []byte) error {
+	err := svcCtx.FastEvent.Subscribe(eventBus.CoreUserDelete, func(ctx context.Context, t time.Time, body []byte) error {
 		var value application.IDs
 		err := json.Unmarshal(body, &value)
 		if err != nil {
@@ -307,15 +292,46 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		return nil
 	})
 	logx.Must(err)
-	err = svcCtx.FastEvent.Subscribe(eventBus.CoreProjectDelete, func(ctx context.Context, t time.Time, body []byte) error {
+	err = svcCtx.FastEvent.Subscribe(eventBus.SysProjectInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
+		pi := cast.ToInt64(string(body))
+		logx.WithContext(ctx).Infof("SysProjectInfoDelete value:%v err:%v", string(body), err)
+		if pi == 0 {
+			return nil
+		}
+		ctx = ctxs.WithRoot(ctx)
+		dis, err := relationDB.NewDeviceInfoRepo(ctx).FindByFilter(ctx, relationDB.DeviceFilter{ProjectIDs: []int64{pi}}, nil)
+		if err != nil {
+			logx.WithContext(ctx).Error(err)
+			return err
+		}
+		for _, v := range dis {
+			_, err := devicemanagelogic.NewDeviceInfoUnbindLogic(ctx, svcCtx).DeviceInfoUnbind(&dm.DeviceCore{
+				ProductID:  v.ProductID,
+				DeviceName: v.DeviceName,
+			})
+			if err != nil {
+				logx.WithContext(ctx).Errorf("DeviceInfoUnbind dev:%v err:%v", utils.Fmt(v), err)
+			}
+		}
+		return nil
+	})
+	logx.Must(err)
+	err = svcCtx.FastEvent.Subscribe(eventBus.SysAreaInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
 		var value application.IDs
 		err := json.Unmarshal(body, &value)
 		if err != nil {
 			return err
 		}
-		logx.WithContext(ctx).Infof("CoreProjectDelete value:%v err:%v", utils.Fmt(value), err)
+		logx.WithContext(ctx).Infof("SysAreaInfoDelete value:%v err:%v", utils.Fmt(value), err)
+		if len(value.IDs) == 0 {
+			return nil
+		}
 		ctx = ctxs.WithRoot(ctx)
-		dis, err := relationDB.NewDeviceInfoRepo(ctx).FindByFilter(ctx, relationDB.DeviceFilter{ProjectIDs: value.IDs}, nil)
+		dis, err := relationDB.NewDeviceInfoRepo(ctx).FindByFilter(ctx, relationDB.DeviceFilter{AreaIDs: value.IDs}, nil)
+		if err != nil {
+			logx.WithContext(ctx).Error(err)
+			return err
+		}
 		for _, v := range dis {
 			_, err := devicemanagelogic.NewDeviceInfoUnbindLogic(ctx, svcCtx).DeviceInfoUnbind(&dm.DeviceCore{
 				ProductID:  v.ProductID,
