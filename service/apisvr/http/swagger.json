@@ -11854,6 +11854,10 @@
           "type": "object",
           "description": "系统功能权限 2:读写权限 3读权限"
         },
+        "expTime": {
+          "type": "string",
+          "description": "到期时间"
+        },
         "createdTime": {
           "type": "integer",
           "format": "int64"

@@ -23,6 +23,7 @@ func ToUserDeviceSharePb(in *relationDB.DmUserDeviceShare) *dm.UserDeviceShareIn
 		SharedUserID:      in.SharedUserID,
 		AccessPerm:        utils.CopyMap[dm.SharePerm](in.AccessPerm),
 		SchemaPerm:        utils.CopyMap[dm.SharePerm](in.SchemaPerm),
+		ExpTime:           utils.TimeToNullInt(in.ExpTime),
 	}
 }
 func ToUserDeviceSharePbs(in []*relationDB.DmUserDeviceShare) (ret []*dm.UserDeviceShareInfo) {

@@ -69,6 +69,7 @@ func (l *UserDeviceShareCreateLogic) UserDeviceShareCreate(in *dm.UserDeviceShar
 		DeviceName:        in.Device.DeviceName,
 		AccessPerm:        utils.CopyMap[relationDB.SharePerm](in.AccessPerm),
 		SchemaPerm:        utils.CopyMap[relationDB.SharePerm](in.SchemaPerm),
+		ExpTime:           utils.ToNullTime2(in.ExpTime),
 	}
 	if po.AccessPerm == nil {
 		po.AccessPerm = map[string]*relationDB.SharePerm{}

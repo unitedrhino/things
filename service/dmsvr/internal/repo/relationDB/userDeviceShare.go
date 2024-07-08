@@ -30,10 +30,12 @@ type UserDeviceShareFilter struct {
 	SharedUserID  int64
 	ID            int64
 	IDs           []int64
+	ExpTime       *stores.Cmp
 }
 
 func (p UserDeviceShareRepo) fmtFilter(ctx context.Context, f UserDeviceShareFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
+	db = f.ExpTime.Where(db, "exp_time")
 	if f.SharedUserID != 0 {
 		db = db.Where("shared_user_id = ?", f.SharedUserID)
 	}

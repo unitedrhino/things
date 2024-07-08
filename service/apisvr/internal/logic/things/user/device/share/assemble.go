@@ -19,6 +19,7 @@ func ToSharePb(in *types.UserDeviceShareInfo) *dm.UserDeviceShareInfo {
 		SharedUserID: in.SharedUserID,
 		AuthType:     in.AuthType,
 		ProjectID:    in.ProjectID,
+		ExpTime:      utils.ToRpcNullInt64(in.ExpTime),
 		AccessPerm:   utils.CopyMap[dm.SharePerm](in.AccessPerm),
 		SchemaPerm:   utils.CopyMap[dm.SharePerm](in.SchemaPerm),
 	}
@@ -36,6 +37,7 @@ func ToShareTypes(in *dm.UserDeviceShareInfo) *types.UserDeviceShareInfo {
 		},
 		AuthType:          in.AuthType,
 		CreatedTime:       in.CreatedTime,
+		ExpTime:           utils.ToNullInt64(in.ExpTime),
 		SharedUserAccount: in.SharedUserAccount,
 		SharedUserID:      in.SharedUserID,
 		ProjectID:         in.ProjectID,

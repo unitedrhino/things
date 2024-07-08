@@ -56,6 +56,7 @@ func (l *UserDeviceShareUpdateLogic) UserDeviceShareUpdate(in *dm.UserDeviceShar
 	if uds.SchemaPerm == nil {
 		uds.SchemaPerm = map[string]*relationDB.SharePerm{}
 	}
+	uds.ExpTime = utils.ToNullTime2(in.ExpTime)
 	if err := relationDB.NewUserDeviceShareRepo(l.ctx).Update(l.ctx, uds); err != nil {
 		return nil, err
 	}

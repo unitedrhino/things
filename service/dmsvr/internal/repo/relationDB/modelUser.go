@@ -1,6 +1,7 @@
 package relationDB
 
 import (
+	"database/sql"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/stores"
 )
@@ -37,6 +38,8 @@ type DmUserDeviceShare struct {
 	AuthType   def.AuthType          `gorm:"column:auth_type;type:varchar(100);default:1"`                                    // 权限类型
 	AccessPerm map[string]*SharePerm `gorm:"column:access_prem;type:json;serializer:json;NOT NULL;default:'{}'"`              //操作权限 hubLog:设备消息记录,ota:ota升级权限,deviceTiming:设备定时
 	SchemaPerm map[string]*SharePerm `gorm:"column:schema_prem;type:json;serializer:json;NOT NULL;default:'{}'"`              //物模型权限,只需要填写需要授权并授权的物模型id
+	ExpTime    sql.NullTime          `gorm:"column:exp_time"`                                                                 //过期时间,为0不限制
+
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:product_id_deviceName"`
 }
