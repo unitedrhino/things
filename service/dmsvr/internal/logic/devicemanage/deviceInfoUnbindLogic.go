@@ -49,15 +49,12 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceCore) (*dm.Empty, 
 	if !uc.IsAdmin && (di.TenantCode != di.TenantCode || pi.AdminUserID != uc.UserID || int64(di.ProjectID) != uc.ProjectID) {
 		return nil, errors.Permissions
 	}
-	dpi, err := l.svcCtx.TenantCache.GetData(l.ctx, def.TenantCodeDefault)
-	if err != nil {
-		return nil, err
-	}
+	//dpi, err := l.svcCtx.TenantCache.GetData(l.ctx, def.TenantCodeDefault)
+	//if err != nil {
+	//	return nil, err
+	//}
 	di.TenantCode = def.TenantCodeDefault
-	di.ProjectID = stores.ProjectID(dpi.DefaultProjectID)
-	if di.ProjectID == 0 {
-		di.ProjectID = def.NotClassified
-	}
+	di.ProjectID = def.NotClassified
 	di.UserID = def.RootNode
 	di.AreaID = stores.AreaID(def.NotClassified)
 	di.AreaIDPath = def.NotClassifiedPath

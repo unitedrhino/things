@@ -13,24 +13,80 @@ import (
 	"time"
 )
 
-func (l *TimerHandle) SceneTiming() error {
+func (l *TimerHandle) DeviceTriggerCheck() error {
 	now := time.Now()
-
 	db := stores.WithNoDebug(l.ctx, relationDB.NewSceneIfTriggerRepo)
-	//db := relationDB.NewSceneIfTriggerRepo(ctx)
-	list, err := db.FindByFilter(l.ctx, relationDB.SceneIfTriggerFilter{Status: def.True,
-		Type:        scene.TriggerTypeTimer,
-		ExecAt:      stores.CmpLte(utils.TimeToDaySec(now)),                                  //小于等于当前时间点(需要执行的)
-		LastRunTime: stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)),                 //当天未执行的
-		ExecRepeat:  stores.CmpOr(stores.CmpBinEq(int64(now.Weekday()), 1), stores.CmpEq(0)), //当天需要执行或只需要执行一次的
+
+	list, err := db.FindByFilter(l.ctx, relationDB.SceneIfTriggerFilter{
+		Status:           def.True,
+		Type:             scene.TriggerTypeDevice,
+		FirstTriggerTime: stores.CmpIsNull(false),
+		StateKeepType:    scene.StateKeepTypeDuration,
 	}, nil)
 	if err != nil {
 		return err
 	}
+	for _, v := range list {
+		if v.Device.FirstTriggerTime.Time.Add(time.Duration(v.Device.StateKeep.Value) * time.Second).Before(now) {
+			//没有到保持时间,忽略
+			continue
+		}
+
+	}
+	return nil
+}
+
+func (l *TimerHandle) SceneTiming() error {
+	now := time.Now()
+
+	db := stores.WithNoDebug(l.ctx, relationDB.NewSceneIfTriggerRepo)
+	var triggerF = []relationDB.SceneIfTriggerFilter{
+		{Status: def.True,
+			Type:        scene.TriggerTypeTimer,
+			ExecType:    scene.ExecTypeAt,
+			ExecAt:      stores.CmpLte(utils.TimeToDaySec(now)),                  //小于等于当前时间点(需要执行的)
+			LastRunTime: stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)), //当天未执行的
+			RepeatType:  scene.RepeatTypeWeek,
+			ExecRepeat:  stores.CmpOr(stores.CmpBinEq(int64(now.Weekday()), 1), stores.CmpEq(0)), //当天需要执行或只需要执行一次的
+		},
+		{Status: def.True,
+			Type:        scene.TriggerTypeTimer,
+			ExecType:    scene.ExecTypeAt,
+			ExecAt:      stores.CmpLte(utils.TimeToDaySec(now)),                  //小于等于当前时间点(需要执行的)
+			LastRunTime: stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)), //当天未执行的
+			RepeatType:  scene.RepeatTypeMount,
+			ExecRepeat:  stores.CmpOr(stores.CmpBinEq(int64(now.Day()), 1), stores.CmpEq(0)), //当天需要执行或只需要执行一次的
+		},
+		{Status: def.True,
+			ExecType:      scene.ExecTypeLoop,
+			Type:          scene.TriggerTypeTimer,
+			ExecLoopStart: stores.CmpLte(utils.TimeToDaySec(now)), //
+			ExecLoopEnd:   stores.CmpGte(utils.TimeToDaySec(now)),
+			LastRunTime:   stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)),
+			RepeatType:    scene.RepeatTypeMount,
+			ExecRepeat:    stores.CmpOr(stores.CmpBinEq(int64(now.Day()), 1), stores.CmpEq(0)), //当天需要执行或只需要执行一次的
+		},
+		{Status: def.True,
+			ExecType:      scene.ExecTypeLoop,
+			Type:          scene.TriggerTypeTimer,
+			ExecLoopStart: stores.CmpLte(utils.TimeToDaySec(now)), //
+			ExecLoopEnd:   stores.CmpGte(utils.TimeToDaySec(now)),
+			LastRunTime:   stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)),
+			RepeatType:    scene.RepeatTypeWeek,
+			ExecRepeat:    stores.CmpOr(stores.CmpBinEq(int64(now.Weekday()), 1), stores.CmpEq(0)), //当天需要执行或只需要执行一次的
+		},
+	}
+	var list []*relationDB.UdSceneIfTrigger
+	for _, v := range triggerF {
+		pos, err := db.FindByFilter(l.ctx, v, nil)
+		if err != nil {
+			return err
+		}
+		list = append(list, pos...)
+	}
 	var sceneSet = map[int64]struct{}{}
 	for _, v := range list {
 		var po = v
-
 		po.SceneInfo.Triggers = append(po.SceneInfo.Triggers, po)
 		do := rulelogic.PoToSceneInfoDo(po.SceneInfo)
 		if po.SceneInfo == nil {
@@ -51,7 +107,16 @@ func (l *TimerHandle) SceneTiming() error {
 			var err error
 			func() {
 				defer f() //数据库执行完成后就可以释放锁了
-				po.LastRunTime = utils.GetEndTime(now)
+				if po.Timer.ExecType == scene.ExecTypeAt {
+					po.LastRunTime = utils.GetEndTime(now)
+				} else { //间隔时间执行
+					lastRun := now.Add(time.Duration(po.Timer.ExecLoop) * time.Second)
+					if utils.TimeToDaySec(lastRun) > po.Timer.ExecLoopEnd { //如果下次执行时间已经超过了结束时间,那么就到下一天开始执行
+						po.LastRunTime = utils.GetEndTime(now)
+					} else { //如果当天还需要执行,则更新为下次执行时间点
+						po.LastRunTime = lastRun
+					}
+				}
 				if po.Timer.ExecRepeat == 0 { //不重复执行的只执行一次
 					po.Status = def.False
 				}

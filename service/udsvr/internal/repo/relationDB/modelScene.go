@@ -41,16 +41,18 @@ type UdSceneIf struct {
 }
 
 type UdSceneIfTrigger struct {
-	ID          int64                `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"` // id编号
-	Type        scene.TriggerType    `gorm:"column:type;type:VARCHAR(25);NOT NULL"`            //触发类型 device: 设备触发 timer: 定时触发
-	SceneID     int64                `gorm:"column:scene_id;index;type:bigint"`                // 场景id编号
-	AreaID      int64                `gorm:"column:area_id;type:bigint;default:0;"`            // 项目区域ID(雪花ID)
-	Order       int64                `gorm:"column:order;type:BIGINT;default:1;NOT NULL"`      // 排序序号
-	Status      int64                `gorm:"column:status;type:BIGINT;default:1"`              //状态 同步场景联动的status
-	LastRunTime time.Time            `gorm:"column:last_run_time;index;default:CURRENT_TIMESTAMP;NOT NULL"`
-	Device      UdSceneTriggerDevice `gorm:"embedded;embeddedPrefix:device_"`
-	Timer       UdSceneTriggerTimer  `gorm:"embedded;embeddedPrefix:timer_"`
-	SceneInfo   *UdSceneInfo         `gorm:"foreignKey:ID;references:SceneID"`
+	ID              int64             `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`              // id编号
+	Type            scene.TriggerType `gorm:"column:type;type:VARCHAR(25);NOT NULL"`                         //触发类型 device: 设备触发 timer: 定时触发
+	SceneID         int64             `gorm:"column:scene_id;index;type:bigint"`                             // 场景id编号
+	AreaID          int64             `gorm:"column:area_id;type:bigint;default:0;"`                         // 项目区域ID(雪花ID)
+	Order           int64             `gorm:"column:order;type:BIGINT;default:1;NOT NULL"`                   // 排序序号
+	Status          int64             `gorm:"column:status;type:BIGINT;default:1"`                           //状态 同步场景联动的status
+	LastRunTime     time.Time         `gorm:"column:last_run_time;index;default:CURRENT_TIMESTAMP;NOT NULL"` //最后执行时间
+	LastTriggerTime sql.NullTime      `gorm:"column:last_trigger_time;index;default: NULL"`                  //最后触发时间
+
+	Device    UdSceneTriggerDevice `gorm:"embedded;embeddedPrefix:device_"`
+	Timer     UdSceneTriggerTimer  `gorm:"embedded;embeddedPrefix:timer_"`
+	SceneInfo *UdSceneInfo         `gorm:"foreignKey:ID;references:SceneID"`
 	stores.SoftTime
 }
 
@@ -81,7 +83,8 @@ type UdSceneTriggerDevice struct {
 	Values           []string                `gorm:"column:values;type:json;serializer:json;default:'[]'"` //比较条件列表
 	SchemaAffordance string                  `gorm:"column:schema_affordance;type:VARCHAR(500);default:''"`
 	Body             string                  `gorm:"column:body;type:VARCHAR(1024)"` // 自定义数据
-	StateKeep        *UdStateKeep            `gorm:"embedded;embeddedPrefix:state_keep_"`
+	StateKeep        UdStateKeep             `gorm:"embedded;embeddedPrefix:state_keep_"`
+	FirstTriggerTime sql.NullTime            `gorm:"column:first_trigger_time;index;default: NULL"` //最后触发时间
 }
 
 // StateKeep 状态保持

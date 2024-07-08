@@ -118,7 +118,7 @@ func ToSceneTriggerDevicePo(in *scene.TriggerDevice) (ret relationDB.UdSceneTrig
 		Values:           in.Values,
 		SchemaAffordance: in.SchemaAffordance,
 		Body:             in.Body,
-		StateKeep:        utils.Copy[relationDB.UdStateKeep](in.StateKeep),
+		StateKeep:        utils.Copy2[relationDB.UdStateKeep](in.StateKeep),
 	}
 }
 

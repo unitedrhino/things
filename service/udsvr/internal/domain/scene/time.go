@@ -71,7 +71,7 @@ type Timer struct {
 	ExecLoopEnd   int64      `json:"execLoopEnd"`
 	ExecLoop      int64      `json:"execLoop"` //循环时间间隔
 	RepeatType    RepeatType `json:"repeatType"`
-	ExecRepeat    string     `json:"execRepeat"` //二进制周一到周日 11111111
+	ExecRepeat    string     `json:"execRepeat"` //二进制周一到周日 11111111 或二进制月一到月末
 }
 
 //type TimeUnit string

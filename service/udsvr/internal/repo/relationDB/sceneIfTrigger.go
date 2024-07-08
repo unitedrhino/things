@@ -25,14 +25,22 @@ func NewSceneIfTriggerRepo(in any) *SceneIfTriggerRepo {
 }
 
 type SceneIfTriggerFilter struct {
-	SceneID     int64
-	Status      int64
-	ExecAt      *stores.Cmp
-	LastRunTime *stores.Cmp
-	ExecRepeat  *stores.Cmp
-	Type        string
-	Device      *devices.Core
-	DataID      string
+	ID               int64
+	SceneID          int64
+	Status           int64
+	ExecAt           *stores.Cmp
+	LastRunTime      *stores.Cmp
+	ExecRepeat       *stores.Cmp
+	RepeatType       scene.RepeatType
+	ExecLoopStart    *stores.Cmp
+	ExecLoopEnd      *stores.Cmp
+	ExecType         scene.ExecType
+	Type             string
+	Device           *devices.Core
+	DataID           string
+	FirstTriggerTime *stores.Cmp
+	StateKeepType    scene.StateKeepType
+	StateKeepValue   *stores.Cmp
 }
 
 func (p SceneIfTriggerRepo) fmtFilter(ctx context.Context, f SceneIfTriggerFilter) *gorm.DB {
@@ -40,11 +48,27 @@ func (p SceneIfTriggerRepo) fmtFilter(ctx context.Context, f SceneIfTriggerFilte
 	db = f.ExecAt.Where(db, "timer_exec_at")
 	db = f.LastRunTime.Where(db, "last_run_time")
 	db = f.ExecRepeat.Where(db, "timer_exec_repeat")
+	db = f.ExecLoopStart.Where(db, "timer_exec_loop_start")
+	db = f.ExecLoopEnd.Where(db, "timer_exec_loop_end")
+	db = f.FirstTriggerTime.Where(db, "device_first_trigger_time")
+	db = f.StateKeepValue.Where(db, "device_state_keep_value")
 	if f.Status != 0 {
 		db = db.Where("status = ?", f.Status)
 	}
+	if f.ID != 0 {
+		db = db.Where("id = ?", f.ID)
+	}
+	if f.ExecType != "" {
+		db = db.Where("timer_exec_type = ?", f.ExecType)
+	}
+	if f.RepeatType != "" {
+		db = db.Where("timer_repeat_type = ?", f.RepeatType)
+	}
 	if f.Type != "" {
 		db = db.Where("type = ?", f.Type)
+	}
+	if f.StateKeepType != "" {
+		db = db.Where("device_state_keep_type = ?", f.StateKeepType)
 	}
 	if f.SceneID != 0 {
 		db = db.Where("scene_id = ?", f.SceneID)
@@ -91,6 +115,12 @@ func (p SceneIfTriggerRepo) CountByFilter(ctx context.Context, f SceneIfTriggerF
 
 func (p SceneIfTriggerRepo) Update(ctx context.Context, data *UdSceneIfTrigger) error {
 	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
+	return stores.ErrFmt(err)
+}
+
+func (d SceneIfTriggerRepo) UpdateWithField(ctx context.Context, f SceneIfTriggerFilter, updates map[string]any) error {
+	db := d.fmtFilter(ctx, f)
+	err := db.Model(&UdSceneIfTrigger{}).Updates(updates).Error
 	return stores.ErrFmt(err)
 }
 

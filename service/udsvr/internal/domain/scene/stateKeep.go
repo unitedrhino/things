@@ -8,9 +8,8 @@ import (
 type StateKeepType = string
 
 const (
-	StateKeepTypeDuration     = "duration"
-	StateKeepTypeRepeating    = "repeat"
-	StateKeepTypeLevelTrigger = "repeat"
+	StateKeepTypeDuration  = "duration"
+	StateKeepTypeRepeating = "repeat" //todo
 )
 
 // StateKeep 状态保持
