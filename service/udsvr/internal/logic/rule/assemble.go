@@ -2,6 +2,7 @@ package rulelogic
 
 import (
 	"context"
+	"database/sql"
 	"gitee.com/i-Things/share/oss/common"
 	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
@@ -76,14 +77,17 @@ func ToSceneTriggerPo(si *scene.Info, in *scene.Trigger) *relationDB.UdSceneIfTr
 		execAt = in.Timer.ExecAt
 	}
 	return &relationDB.UdSceneIfTrigger{
-		SceneID:     si.ID,
-		Type:        in.Type,
-		Status:      si.Status,
-		LastRunTime: domain.GenLastRunTime(now, execAt),
-		Order:       in.Order,
-		AreaID:      in.AreaID,
-		Device:      ToSceneTriggerDevicePo(in.Device),
-		Timer:       ToSceneTriggerTimerPo(si, in.Timer),
+		SceneID: si.ID,
+		Type:    in.Type,
+		Status:  si.Status,
+		LastRunTime: sql.NullTime{
+			Time:  domain.GenLastRunTime(now, execAt),
+			Valid: true,
+		},
+		Order:  in.Order,
+		AreaID: in.AreaID,
+		Device: ToSceneTriggerDevicePo(in.Device),
+		Timer:  ToSceneTriggerTimerPo(si, in.Timer),
 	}
 }
 

@@ -46,6 +46,7 @@ func (l *TimerHandle) SceneThingPropertyReport(in application.PropertyReport) er
 			if po.Device.FirstTriggerTime.Valid { //如果处于触发状态,但是现在不触发了,则需要解除触发
 				err := db.UpdateWithField(l.ctx, relationDB.SceneIfTriggerFilter{ID: v.ID}, map[string]any{
 					"device_first_trigger_time": nil,
+					"last_run_time":             nil,
 				})
 				if err != nil {
 					l.Error(err)
@@ -59,26 +60,29 @@ func (l *TimerHandle) SceneThingPropertyReport(in application.PropertyReport) er
 		if v.Device.StateKeep.Type == scene.StateKeepTypeDuration {
 			err := db.UpdateWithField(l.ctx, relationDB.SceneIfTriggerFilter{ID: v.ID}, map[string]any{
 				"device_first_trigger_time": now,
+				"last_run_time":             nil,
 			})
 			if err != nil {
 				l.Error(err)
-				continue
 			}
+			continue
 		}
+		func() {
+			err := db.UpdateWithField(l.ctx, relationDB.SceneIfTriggerFilter{ID: v.ID}, map[string]any{
+				"device_first_trigger_time": now,
+				"last_run_time":             now,
+			})
+			if err != nil {
+				l.Error(err)
+			}
+		}()
 		ctx := ctxs.BindTenantCode(l.ctx, string(v.SceneInfo.TenantCode), int64(v.SceneInfo.ProjectID))
+
 		if !do.When.IsHit(ctx, now, nil) {
 			continue
 		}
 		ctxs.GoNewCtx(ctx, func(ctx context.Context) { //执行任务
 			var err error
-			func() {
-				po.LastRunTime = utils.GetEndTime(now)
-				err = db.Update(ctx, po)
-				if err != nil { //如果失败了下次还可以执行
-					l.Error(err)
-					return
-				}
-			}()
 			if err != nil { //如果失败了下次还可以执行
 				l.Error(err)
 				return

@@ -15,6 +15,7 @@ import (
 	"github.com/i-Things/things/service/udsvr/internal/event/timerEvent"
 	"github.com/i-Things/things/service/udsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
+	"sync"
 	"time"
 )
 
@@ -38,7 +39,21 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 			return nil
 		}
 		th := timerEvent.NewSceneHandle(ctxs.WithRoot(ctx), svcCtx)
-		return th.SceneTiming()
+		var wait sync.WaitGroup
+		wait.Add(2)
+		utils.Go(ctx, func() {
+			err := th.SceneTiming()
+			if err != nil {
+				logx.WithContext(ctx).Error(err)
+			}
+		})
+		utils.Go(ctx, func() {
+			err := th.DeviceTriggerCheck()
+			if err != nil {
+				logx.WithContext(ctx).Error(err)
+			}
+		})
+		return nil
 	})
 	logx.Must(err)
 	err = svcCtx.FastEvent.QueueSubscribe(topics.ApplicationDeviceReportThingPropertyAllDevice, func(ctx context.Context, t time.Time, body []byte) error {
