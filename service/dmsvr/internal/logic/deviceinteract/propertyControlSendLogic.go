@@ -246,9 +246,16 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 	if err != nil {
 		return nil, err
 	}
+	if dresp.Code != errors.OK.GetCode() {
+		if dresp.Msg != "" {
+			err = errors.DeviceResp.AddMsg(dresp.Msg)
+		} else {
+			err = errors.DeviceResp
+		}
+	}
 	return &dm.PropertyControlSendResp{
 		MsgToken: dresp.MsgToken,
 		Msg:      dresp.Msg,
 		Code:     dresp.Code,
-	}, nil
+	}, err
 }

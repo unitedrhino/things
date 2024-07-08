@@ -72,6 +72,11 @@ func (l *PropertyControlMultiSendLogic) MultiSendOneProductProperty(in *dm.Prope
 					SysMsg:     myErr.GetMsg(),
 					SysCode:    myErr.Code,
 				}
+				if ret != nil {
+					msg.Code = ret.Code
+					msg.Msg = ret.Msg
+					msg.MsgToken = ret.MsgToken
+				}
 				mu.Lock()
 				defer mu.Unlock()
 				list = append(list, msg)
