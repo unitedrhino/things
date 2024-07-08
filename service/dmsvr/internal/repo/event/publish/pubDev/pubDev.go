@@ -2,9 +2,8 @@ package pubDev
 
 import (
 	"context"
-	"gitee.com/i-Things/share/conf"
 	"gitee.com/i-Things/share/domain/deviceMsg"
-	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/eventBus"
 )
 
 type (
@@ -16,10 +15,6 @@ type (
 	}
 )
 
-func NewPubDev(c conf.EventConf, nodeID int64) (PubDev, error) {
-	switch c.Mode {
-	case conf.EventModeNats, conf.EventModeNatsJs:
-		return newNatsClient(c, nodeID)
-	}
-	return nil, errors.Parameter.AddMsgf("mode:%v not support", c.Mode)
+func NewPubDev(fast *eventBus.FastEvent) (PubDev, error) {
+	return newNatsClient(fast)
 }

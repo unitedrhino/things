@@ -125,7 +125,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	})
 	logx.Must(err)
 	deviceDataR := schemaDataRepo.NewDeviceDataRepo(c.TSDB, ccSchemaR.GetData, ca)
-	pd, err := pubDev.NewPubDev(c.Event, nodeID)
+	pd, err := pubDev.NewPubDev(serverMsg)
 	if err != nil {
 		logx.Error("NewPubDev err", err)
 		os.Exit(-1)
