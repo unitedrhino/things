@@ -94,8 +94,7 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 	}
 	di, err := l.DiDB.FindByFilter(l.ctx, filter,
 		logic.ToPageInfo(in.Page).WithDefaultOrder(stores.OrderBy{Field: "is_online", Sort: stores.OrderAsc},
-			stores.OrderBy{Field: "created_time", Sort: stores.OrderDesc},
-			stores.OrderBy{Field: "product_id", Sort: stores.OrderDesc}),
+			stores.OrderBy{Field: "created_time", Sort: stores.OrderDesc}),
 	)
 	if err != nil {
 		return nil, err
