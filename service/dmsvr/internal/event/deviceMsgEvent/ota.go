@@ -6,7 +6,6 @@ import (
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	otamanagelogic "github.com/i-Things/things/service/dmsvr/internal/logic/otamanage"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
-	"strings"
 	"time"
 
 	"gitee.com/i-Things/share/domain/deviceMsg"
@@ -21,9 +20,9 @@ type OtaLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	topics []string
-	dreq   msgOta.Req
-	preq   msgOta.Process
+	//topics []string
+	dreq msgOta.Req
+	preq msgOta.Process
 }
 
 func NewOtaLogic(ctx context.Context, svcCtx *svc.ServiceContext) *OtaLogic {
@@ -34,10 +33,7 @@ func NewOtaLogic(ctx context.Context, svcCtx *svc.ServiceContext) *OtaLogic {
 	}
 }
 func (l *OtaLogic) initMsg(msg *deviceMsg.PublishMsg) error {
-	l.topics = strings.Split(msg.Topic, "/")
-	if len(l.topics) < 5 || l.topics[1] != "up" {
-		return errors.Parameter.AddDetail("initMsg topic is err:" + msg.Topic)
-	}
+
 	return nil
 }
 func (l *OtaLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
@@ -47,7 +43,7 @@ func (l *OtaLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publish
 		return nil, err
 	}
 	data, err := func() (data any, err error) {
-		switch l.topics[2] {
+		switch msg.Type {
 		case msgOta.TypeUpgrade: //固件升级消息上行 上报版本、拉取升级包
 			return l.HandleUpgrade(msg)
 		case msgOta.TypeProgress: //设备端上报升级进度
@@ -176,7 +172,7 @@ func (l *OtaLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) *d
 
 	return &deviceMsg.PublishMsg{
 		Handle:       msg.Handle,
-		Type:         l.topics[2],
+		Type:         msg.Type,
 		Payload:      resp.AddStatus(err).Bytes(),
 		ProductID:    msg.ProductID,
 		DeviceName:   msg.DeviceName,
