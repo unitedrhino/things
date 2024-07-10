@@ -2,6 +2,7 @@ package otamanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
@@ -33,6 +34,10 @@ func NewOtaFirmwareInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext
 
 // 查询升级包
 func (l *OtaFirmwareInfoReadLogic) OtaFirmwareInfoRead(in *dm.WithID) (*dm.OtaFirmwareInfo, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
+	l.ctx = ctxs.WithRoot(l.ctx)
 	otaFirmware, err := l.OfDB.FindOneByFilter(l.ctx, relationDB.OtaFirmwareInfoFilter{ID: in.Id, WithFiles: true})
 	if err != nil {
 		l.Errorf("%s.Query OTAFirmware err=%v", utils.FuncName(), err)

@@ -2,6 +2,7 @@ package otamanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/oss/common"
 	"gitee.com/i-Things/share/stores"
@@ -38,6 +39,10 @@ func NewOtaFirmwareInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceConte
 
 // 删除升级包
 func (l *OtaFirmwareInfoDeleteLogic) OtaFirmwareInfoDelete(in *dm.WithID) (*dm.Empty, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
+	l.ctx = ctxs.WithRoot(l.ctx)
 	_, err := l.OfDB.FindOneByFilter(l.ctx, relationDB.OtaFirmwareInfoFilter{ID: in.Id})
 	if errors.Cmp(err, errors.NotFind) {
 		l.Errorf("not find firmware id:" + cast.ToString(in.Id))

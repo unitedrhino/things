@@ -3,6 +3,7 @@ package otamanagelogic
 import (
 	"context"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/pb/timedjob"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgOta"
@@ -46,6 +47,10 @@ func NewOtaFirmwareJobCreateLogic(ctx context.Context, svcCtx *svc.ServiceContex
 
 // 创建静态升级批次
 func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobInfo) (*dm.WithID, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
+	l.ctx = ctxs.WithRoot(l.ctx)
 	if in.UpgradeType == msgOta.DynamicUpgrade && len(in.SrcVersions) == 0 {
 		return nil, errors.Parameter.AddMsg("动态升级需要填写待升级的版本")
 	}

@@ -2,6 +2,7 @@ package otamanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
@@ -27,6 +28,10 @@ func NewOtaFirmwareJobIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext
 }
 
 func (l *OtaFirmwareJobIndexLogic) OtaFirmwareJobIndex(in *dm.OtaFirmwareJobIndexReq) (*dm.OtaFirmwareJobIndexResp, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
+	l.ctx = ctxs.WithRoot(l.ctx)
 	jobFilter := relationDB.OtaJobFilter{
 		FirmwareID: in.FirmwareID,
 		ProductID:  in.ProductID,

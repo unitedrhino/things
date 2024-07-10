@@ -2,6 +2,7 @@ package otamanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
@@ -27,6 +28,10 @@ func NewOtaModuleInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 }
 
 func (l *OtaModuleInfoIndexLogic) OtaModuleInfoIndex(in *dm.OtaModuleInfoIndexReq) (*dm.OtaModuleInfoIndexResp, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
+	l.ctx = ctxs.WithRoot(l.ctx)
 	f := relationDB.OtaModuleInfoFilter{ProductID: in.ProductID, Name: in.Name}
 	total, err := relationDB.NewOtaModuleInfoRepo(l.ctx).CountByFilter(l.ctx, f)
 	if err != nil {

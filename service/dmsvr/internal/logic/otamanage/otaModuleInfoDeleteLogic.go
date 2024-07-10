@@ -2,6 +2,7 @@ package otamanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -25,6 +26,10 @@ func NewOtaModuleInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext
 }
 
 func (l *OtaModuleInfoDeleteLogic) OtaModuleInfoDelete(in *dm.WithID) (*dm.Empty, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
+	l.ctx = ctxs.WithRoot(l.ctx)
 	err := relationDB.NewOtaModuleInfoRepo(l.ctx).Delete(l.ctx, in.Id)
 	return &dm.Empty{}, err
 }

@@ -2,6 +2,7 @@ package otamanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgOta"
 	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
@@ -31,6 +32,10 @@ func NewOtaFirmwareJobUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContex
 
 // 取消动态升级策略
 func (l *OtaFirmwareJobUpdateLogic) OtaFirmwareJobUpdate(in *dm.OtaFirmwareJobInfo) (*dm.Empty, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
+	l.ctx = ctxs.WithRoot(l.ctx)
 	otaJob, err := l.OjDB.FindOne(l.ctx, in.Id)
 	if err != nil {
 		l.Errorf("%s.JobInfo.JobInfoRead failure err=%+v", utils.FuncName(), err)

@@ -2,6 +2,7 @@ package otamanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgOta"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
@@ -28,6 +29,10 @@ func NewOtaModuleInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext
 }
 
 func (l *OtaModuleInfoCreateLogic) OtaModuleInfoCreate(in *dm.OtaModuleInfo) (*dm.WithID, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
+	l.ctx = ctxs.WithRoot(l.ctx)
 	if in.Code == msgOta.ModuleCodeDefault || in.Code == "" {
 		return nil, errors.Parameter.AddMsg("编码不能为空及不能为default")
 	}

@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
-	otamanagelogic "github.com/i-Things/things/service/dmsvr/internal/logic/otamanage"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"time"
 
@@ -71,60 +70,61 @@ func (l *OtaLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publish
 	return
 }
 
-// 固件升级消息上行 上报版本、模块信息
-func (l *OtaLogic) HandleUpgrade(msg *deviceMsg.PublishMsg) (respData *msgOta.UpgradeData, err error) {
-	err = utils.Unmarshal([]byte(msg.Payload), &l.dreq)
-	if err != nil {
-		return nil, errors.Parameter.AddDetail("ota topic is err:" + msg.Topic)
-	}
-	err = l.dreq.VerifyReqParam()
-	if err != nil {
-		return nil, err
-	}
-	df, err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
-		ProductID:    msg.ProductID,
-		DeviceNames:  []string{msg.DeviceName},
-		WithFirmware: true,
-		Statues:      []int64{msgOta.DeviceStatusInProgress, msgOta.DeviceStatusNotified, msgOta.DeviceStatusQueued},
-	})
-	if err != nil && !errors.Cmp(err, errors.NotFind) {
-		return nil, err
-	}
-	if df == nil {
-		jobs, err := relationDB.NewOtaJobRepo(l.ctx).FindByFilter(l.ctx, relationDB.OtaJobFilter{
-			ProductID:    msg.ProductID,
-			Statues:      []int64{msgOta.JobStatusInProgress},
-			UpgradeType:  msgOta.DynamicUpgrade, //静态升级需要先创建好设备,动态升级可以设备自己去获取
-			WithFirmware: true,
-			WithFiles:    true,
-		}, nil)
-		if err != nil {
-			return nil, err
-		}
-		for _, job := range jobs {
-			if utils.SliceIn(l.dreq.Params.Version, job.SrcVersions...) {
-				//如果在动态升级的版本内,则返回该升级包
-				df = &relationDB.DmOtaFirmwareDevice{
-					FirmwareID:  job.FirmwareID,
-					ProductID:   msg.ProductID,
-					DeviceName:  msg.DeviceName,
-					JobID:       job.ID,
-					SrcVersion:  l.dreq.Params.Version,
-					DestVersion: job.Firmware.Version,
-					Status:      msgOta.DeviceStatusNotified,
-					Detail:      "设备主动拉取升级包",
-				}
-				err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).Insert(l.ctx, df)
-				if err != nil {
-					return nil, err
-				}
-				df.Firmware = job.Firmware
-				df.Files = job.Files
-			}
-		}
-	}
-	return otamanagelogic.GenUpgradeParams(l.ctx, l.svcCtx, df.Firmware, df.Files)
-}
+//
+//// 固件升级消息上行 上报版本、模块信息
+//func (l *OtaLogic) HandleUpgrade(msg *deviceMsg.PublishMsg) (respData *msgOta.UpgradeData, err error) {
+//	err = utils.Unmarshal([]byte(msg.Payload), &l.dreq)
+//	if err != nil {
+//		return nil, errors.Parameter.AddDetail("ota topic is err:" + msg.Topic)
+//	}
+//	err = l.dreq.VerifyReqParam()
+//	if err != nil {
+//		return nil, err
+//	}
+//	df, err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
+//		ProductID:    msg.ProductID,
+//		DeviceNames:  []string{msg.DeviceName},
+//		WithFirmware: true,
+//		Statues:      []int64{msgOta.DeviceStatusInProgress, msgOta.DeviceStatusNotified, msgOta.DeviceStatusQueued},
+//	})
+//	if err != nil && !errors.Cmp(err, errors.NotFind) {
+//		return nil, err
+//	}
+//	if df == nil {
+//		jobs, err := relationDB.NewOtaJobRepo(l.ctx).FindByFilter(l.ctx, relationDB.OtaJobFilter{
+//			ProductID:    msg.ProductID,
+//			Statues:      []int64{msgOta.JobStatusInProgress},
+//			UpgradeType:  msgOta.DynamicUpgrade, //静态升级需要先创建好设备,动态升级可以设备自己去获取
+//			WithFirmware: true,
+//			WithFiles:    true,
+//		}, nil)
+//		if err != nil {
+//			return nil, err
+//		}
+//		for _, job := range jobs {
+//			if utils.SliceIn(l.dreq.Params.Version, job.SrcVersions...) {
+//				//如果在动态升级的版本内,则返回该升级包
+//				df = &relationDB.DmOtaFirmwareDevice{
+//					FirmwareID:  job.FirmwareID,
+//					ProductID:   msg.ProductID,
+//					DeviceName:  msg.DeviceName,
+//					JobID:       job.ID,
+//					SrcVersion:  l.dreq.Params.Version,
+//					DestVersion: job.Firmware.Version,
+//					Status:      msgOta.DeviceStatusNotified,
+//					Detail:      "设备主动拉取升级包",
+//				}
+//				err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).Insert(l.ctx, df)
+//				if err != nil {
+//					return nil, err
+//				}
+//				df.Firmware = job.Firmware
+//				df.Files = job.Files
+//			}
+//		}
+//	}
+//	return otamanagelogic.GenUpgradeParams(l.ctx, l.svcCtx, df.Firmware, df.Files)
+//}
 
 func (l *OtaLogic) HandleProgress(msg *deviceMsg.PublishMsg) (err error) {
 	//设备端上报升级进度

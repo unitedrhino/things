@@ -136,6 +136,10 @@ func (l *SendMessageToDevicesLogic) PushMessageToDevices(jobInfo *relationDB.DmO
 	if err != nil {
 		return err
 	}
+	if len(deviceList) == 0 {
+		//todo 这里需要结束任务,没有需要执行的了
+		return nil
+	}
 	firmwareFiles, err := l.OffDB.FindByFilter(l.ctx, relationDB.OtaFirmwareFileFilter{FirmwareID: jobInfo.FirmwareID}, nil)
 	if err != nil {
 		return err
