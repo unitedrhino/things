@@ -2,6 +2,8 @@ package deviceMsgEvent
 
 import (
 	"context"
+	"database/sql"
+	"encoding/json"
 	"gitee.com/i-Things/core/service/syssvr/sysExport"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
 	"gitee.com/i-Things/share/ctxs"
@@ -9,6 +11,7 @@ import (
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/application"
 	"gitee.com/i-Things/share/domain/deviceMsg"
+	"gitee.com/i-Things/share/domain/deviceMsg/msgOta"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
@@ -17,6 +20,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/shadow"
 	devicemanagelogic "github.com/i-Things/things/service/dmsvr/internal/logic/devicemanage"
+	otamanagelogic "github.com/i-Things/things/service/dmsvr/internal/logic/otamanage"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -297,6 +301,11 @@ func (l *ThingLogic) HandlePropertyReportInfo(msg *deviceMsg.PublishMsg, req msg
 	}
 
 	dmDeviceInfoReq := ToDmDevicesInfoReq(diDeviceBasicInfoDo)
+	if dmDeviceInfoReq.Version != nil {
+		ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
+			OtaVersionCheck(l.ctx, l.svcCtx, diDeviceBasicInfoDo.Core, dmDeviceInfoReq.Version.GetValue(), "default")
+		})
+	}
 	_, err = devicemanagelogic.NewDeviceInfoUpdateLogic(l.ctx, l.svcCtx).DeviceInfoUpdate(dmDeviceInfoReq)
 	if err != nil {
 		l.Errorf("%s.DeviceInfoUpdate productID:%v deviceName:%v err:%v",
@@ -305,6 +314,101 @@ func (l *ThingLogic) HandlePropertyReportInfo(msg *deviceMsg.PublishMsg, req msg
 	}
 
 	return l.DeviceResp(msg, errors.OK, nil), nil
+}
+
+func OtaVersionCheck(ctx context.Context, svcCtx *svc.ServiceContext, msg devices.Core, version string, module string) {
+	log := logx.WithContext(ctx)
+	df, err := relationDB.NewOtaFirmwareDeviceRepo(ctx).FindOneByFilter(ctx, relationDB.OtaFirmwareDeviceFilter{
+		ProductID:    msg.ProductID,
+		DeviceNames:  []string{msg.DeviceName},
+		WithFirmware: true,
+		Statues:      []int64{msgOta.DeviceStatusInProgress, msgOta.DeviceStatusNotified, msgOta.DeviceStatusQueued},
+	})
+	if err != nil && !errors.Cmp(err, errors.NotFind) {
+		log.Error(err)
+		return
+	}
+	if df == nil {
+		jobs, err := relationDB.NewOtaJobRepo(ctx).FindByFilter(ctx, relationDB.OtaJobFilter{
+			ProductID:    msg.ProductID,
+			Statues:      []int64{msgOta.JobStatusInProgress},
+			UpgradeType:  msgOta.DynamicUpgrade, //静态升级需要先创建好设备,动态升级可以设备自己去获取
+			WithFirmware: true,
+			WithFiles:    true,
+		}, nil)
+		if err != nil {
+			log.Error(err)
+			return
+		}
+		for _, job := range jobs {
+			if utils.SliceIn(version, job.SrcVersions...) {
+				//如果在动态升级的版本内,则返回该升级包
+				df = &relationDB.DmOtaFirmwareDevice{
+					FirmwareID:  job.FirmwareID,
+					ProductID:   msg.ProductID,
+					DeviceName:  msg.DeviceName,
+					JobID:       job.ID,
+					SrcVersion:  version,
+					DestVersion: job.Firmware.Version,
+					Status:      msgOta.DeviceStatusNotified,
+					Detail:      "设备上报推送升级包",
+				}
+				err := relationDB.NewOtaFirmwareDeviceRepo(ctx).Insert(ctx, df)
+				if err != nil {
+					log.Error(err)
+					return
+				}
+				df.Firmware = job.Firmware
+				df.Files = job.Files
+			} else { //没有合适的升级包
+				return
+			}
+		}
+		data, err := otamanagelogic.GenUpgradeParams(ctx, svcCtx, df.Firmware, df.Files)
+		if err != nil {
+			log.Error(err)
+			return
+		}
+		MsgToken := devices.GenMsgToken(ctx, svcCtx.NodeID)
+		upgradeMsg := deviceMsg.CommonMsg{
+			MsgToken:  MsgToken,
+			Method:    msgOta.TypeUpgrade,
+			Timestamp: time.Now().UnixMilli(),
+			Data:      data,
+		}
+		payload, _ := json.Marshal(upgradeMsg)
+		pi, err := svcCtx.ProductCache.GetData(ctx, df.Firmware.ProductID)
+		if err != nil {
+			log.Error(err)
+			return
+		}
+		reqMsg := deviceMsg.PublishMsg{
+			Handle:       devices.Ota,
+			Type:         msgOta.TypeUpgrade,
+			Payload:      payload,
+			Timestamp:    time.Now().UnixMilli(),
+			ProductID:    msg.ProductID,
+			DeviceName:   msg.DeviceName,
+			ProtocolCode: pi.ProtocolCode,
+		}
+		err = svcCtx.PubDev.PublishToDev(ctx, &reqMsg)
+		if err != nil {
+			log.Error(err)
+			return
+		}
+		df.Status = msgOta.DeviceStatusNotified
+		df.Detail = "设备上报推送升级包"
+		df.PushTime = sql.NullTime{
+			Time:  time.Now(),
+			Valid: true,
+		}
+		err = relationDB.NewOtaFirmwareDeviceRepo(ctx).Update(ctx, df)
+		if err != nil {
+			log.Error(err)
+			return
+		}
+	}
+	return
 }
 
 // 设备请求获取 云端记录的最新设备信息

@@ -44,8 +44,8 @@ func (l *OtaLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publish
 	}
 	data, err := func() (data any, err error) {
 		switch msg.Type {
-		case msgOta.TypeUpgrade: //固件升级消息上行 上报版本、拉取升级包
-			return l.HandleUpgrade(msg)
+		//case msgOta.TypeUpgrade: //固件升级消息上行 上报版本、拉取升级包
+		//	return l.HandleUpgrade(msg)
 		case msgOta.TypeProgress: //设备端上报升级进度
 			return nil, l.HandleProgress(msg)
 		default:
