@@ -11,6 +11,7 @@ import (
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/eventBus"
 	"gitee.com/i-Things/share/events/topics"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/client/deviceinteract"
 	"github.com/i-Things/things/service/dmsvr/client/devicemanage"
 	"github.com/i-Things/things/service/dmsvr/client/productmanage"
@@ -142,7 +143,7 @@ func (p *LightProtocol) DevPubMsg(ctx context.Context, publishMsg *devices.DevPu
 		ProductID:  publishMsg.ProductID,
 		DeviceName: publishMsg.DeviceName,
 	})
-	err := p.FastEvent.Publish(ctx, fmt.Sprintf(topics.DeviceUpMsg, publishMsg.Handle, publishMsg.ProductID, publishMsg.DeviceName), publishMsg)
+	err := p.FastEvent.Publish(ctx, fmt.Sprintf(topics.DeviceUpMsg, publishMsg.Handle, publishMsg.ProductID, publishMsg.DeviceName), utils.MarshalNoErr(publishMsg))
 	if err != nil {
 		logx.WithContext(ctx).Errorf("devPublishToCloud  err:%v", err)
 		return err
