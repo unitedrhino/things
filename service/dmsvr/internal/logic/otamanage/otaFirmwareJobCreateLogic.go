@@ -161,10 +161,12 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 		if err != nil {
 			return err
 		}
-		err = relationDB.NewDeviceInfoRepo(tx).UpdateWithField(l.ctx, relationDB.DeviceFilter{Cores: confirmDevices},
-			map[string]any{"need_confirm_job_id": dmOtaJob.ID, "need_confirm_version": fi.Version})
-		if err != nil {
-			return err
+		if len(confirmDevices) > 0 {
+			err = relationDB.NewDeviceInfoRepo(tx).UpdateWithField(l.ctx, relationDB.DeviceFilter{Cores: confirmDevices},
+				map[string]any{"need_confirm_job_id": dmOtaJob.ID, "need_confirm_version": fi.Version})
+			if err != nil {
+				return err
+			}
 		}
 		return nil
 	})
