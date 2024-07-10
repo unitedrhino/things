@@ -36,10 +36,9 @@ func NewDeviceInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 
 // 删除设备
 func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*dm.Empty, error) {
-	//if err := ctxs.IsAdmin(l.ctx); err != nil {
-	//	return nil, err
-	//}
-	//todo debug
+	if err := ctxs.IsAdmin(l.ctx); err != nil {
+		return nil, err
+	}
 	di, err := l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductID, DeviceNames: []string{in.DeviceName}})
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {
@@ -73,6 +72,12 @@ func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*d
 			ProductID:  di.ProductID,
 			DeviceName: di.DeviceName,
 		})
+		if err != nil {
+			return err
+		}
+		err = relationDB.NewUserDeviceCollectRepo(tx).DeleteByFilter(l.ctx, relationDB.UserDeviceCollectFilter{Cores: []*devices.Core{
+			{ProductID: di.ProductID, DeviceName: di.DeviceName},
+		}})
 		if err != nil {
 			return err
 		}

@@ -76,6 +76,15 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceCore) (*dm.Empty, 
 				ProductID:  di.ProductID,
 				DeviceName: di.DeviceName,
 			}})
+		if err != nil {
+			return err
+		}
+		err = relationDB.NewUserDeviceCollectRepo(tx).DeleteByFilter(l.ctx, relationDB.UserDeviceCollectFilter{Cores: []*devices.Core{
+			{
+				ProductID:  di.ProductID,
+				DeviceName: di.DeviceName,
+			},
+		}})
 		return err
 	})
 	if err != nil {
