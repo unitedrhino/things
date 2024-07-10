@@ -189,7 +189,7 @@ func GenUpgradeParams(ctx context.Context, svcCtx *svc.ServiceContext, firmware 
 		return nil, errors.System.AddDetail("升级包下没有文件")
 	}
 	if len(files) == 1 { //单文件模式
-		url, err := svcCtx.OssClient.PublicBucket().GetUrl(files[0].FilePath)
+		url, err := svcCtx.OssClient.PublicBucket().GetUrl(files[0].FilePath, false)
 		if err != nil {
 			return nil, err
 		}
@@ -215,7 +215,7 @@ func GenUpgradeParams(ctx context.Context, svcCtx *svc.ServiceContext, firmware 
 		Extra:      firmware.Extra,
 	}
 	for _, f := range files {
-		url, err := svcCtx.OssClient.PublicBucket().GetUrl(f.FilePath)
+		url, err := svcCtx.OssClient.PublicBucket().GetUrl(f.FilePath, false)
 		if err != nil {
 			return nil, err
 		}

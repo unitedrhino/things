@@ -38,7 +38,7 @@ func ToProductInfo(ctx context.Context, svcCtx *svc.ServiceContext, pi *relation
 	dpi.Protocol = ToProtocolInfoPb(pi.Protocol)
 	if pi.ProductImg != "" {
 		var err error
-		dpi.ProductImg, err = svcCtx.OssClient.PublicBucket().GetUrl(pi.ProductImg)
+		dpi.ProductImg, err = svcCtx.OssClient.PublicBucket().GetUrl(pi.ProductImg, false)
 		if err != nil {
 			logx.WithContext(ctx).Errorf("%s.SignedGetUrl err:%v", utils.FuncName(), err)
 		}
