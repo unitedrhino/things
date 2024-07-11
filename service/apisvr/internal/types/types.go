@@ -382,8 +382,8 @@ type DeviceInfoTransferReq struct {
 	TransferTo  int64         `json:"transferTo"`          //转让给: 1: 某个人 2: 自己的某个项目
 	UserID      int64         `json:"userID,string,optional"`
 	ProjectID   int64         `json:"projectID,string,optional"`
-	AreaID      int64         `json:"areaID,optional"` //转移到项目时指定区域ID
-	IsCleanData int64         `json:"isCleanData"`     //是否清除数据:1是 2否
+	AreaID      int64         `json:"areaID,string,optional"` //转移到项目时指定区域ID
+	IsCleanData int64         `json:"isCleanData"`            //是否清除数据:1是 2否
 }
 
 type DeviceInfoWithProperty struct {

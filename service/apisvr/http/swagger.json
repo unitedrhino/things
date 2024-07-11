@@ -7151,8 +7151,7 @@
           "type": "string"
         },
         "areaID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "转移到项目时指定区域ID"
         },
         "isCleanData": {
