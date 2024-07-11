@@ -2,6 +2,7 @@ package relationDB
 
 import (
 	"context"
+	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/stores"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -25,6 +26,7 @@ func NewUserDeviceShareRepo(in any) *UserDeviceShareRepo {
 type UserDeviceShareFilter struct {
 	ProjectID     int64
 	SharedUserIDs []int64
+	Devices       []*devices.Core
 	ProductID     string
 	DeviceName    string
 	SharedUserID  int64
@@ -53,6 +55,19 @@ func (p UserDeviceShareRepo) fmtFilter(ctx context.Context, f UserDeviceShareFil
 	}
 	if f.DeviceName != "" {
 		db = db.Where("device_name = ?", f.DeviceName)
+	}
+	if len(f.Devices) != 0 {
+		scope := func(db *gorm.DB) *gorm.DB {
+			for i, d := range f.Devices {
+				if i == 0 {
+					db = db.Where("product_id = ? and device_name = ?", d.ProductID, d.DeviceName)
+					continue
+				}
+				db = db.Or("product_id = ? and device_name = ?", d.ProductID, d.DeviceName)
+			}
+			return db
+		}
+		db = db.Where(scope(db))
 	}
 	return db
 }

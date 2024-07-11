@@ -6723,7 +6723,8 @@
         },
         "isEnable": {
           "type": "integer",
-          "format": "int64"
+          "format": "int64",
+          "description": "是否启用"
         },
         "withProperties": {
           "type": "object",
@@ -7127,6 +7128,12 @@
         "device": {
           "$ref": "#/definitions/DeviceCore"
         },
+        "devices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceCore"
+          }
+        },
         "transferTo": {
           "type": "integer",
           "format": "int64",
@@ -7147,6 +7154,7 @@
       "title": "DeviceInfoTransferReq",
       "required": [
         "device",
+        "devices",
         "transferTo",
         "isCleanData"
       ]

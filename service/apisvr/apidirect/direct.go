@@ -2,11 +2,11 @@ package apidirect
 
 import (
 	"gitee.com/i-Things/share/ctxs"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/config"
 	"github.com/i-Things/things/service/apisvr/internal/handler"
 	"github.com/i-Things/things/service/apisvr/internal/startup"
 	"github.com/i-Things/things/service/apisvr/internal/svc"
-	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"
 	"net/http"
 )
@@ -25,7 +25,7 @@ var (
 )
 
 func NewApi(apiCtx ApiCtx) ApiCtx {
-	conf.MustLoad("etc/api.yaml", &c)
+	utils.ConfMustLoad("etc/api.yaml", &c)
 	apiCtx = runApi(apiCtx)
 	return apiCtx
 }

@@ -3,12 +3,12 @@ package uddirect
 import (
 	"fmt"
 	"gitee.com/i-Things/share/interceptors"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/udsvr/internal/config"
 	ruleServer "github.com/i-Things/things/service/udsvr/internal/server/rule"
 	"github.com/i-Things/things/service/udsvr/internal/startup"
 	"github.com/i-Things/things/service/udsvr/internal/svc"
 	"github.com/i-Things/things/service/udsvr/pb/ud"
-	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -28,7 +28,7 @@ var (
 
 func GetSvcCtx() *svc.ServiceContext {
 	svcOnce.Do(func() {
-		conf.MustLoad("etc/ud.yaml", &c)
+		utils.ConfMustLoad("etc/ud.yaml", &c)
 		ctxSvc = svc.NewServiceContext(c)
 		startup.Init(ctxSvc)
 		logx.Infof("enabled udsvr")

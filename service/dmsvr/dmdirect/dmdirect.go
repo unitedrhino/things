@@ -3,6 +3,7 @@ package dmdirect
 import (
 	"fmt"
 	"gitee.com/i-Things/share/interceptors"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/config"
 	devicegroup "github.com/i-Things/things/service/dmsvr/internal/server/devicegroup"
 	deviceinteract "github.com/i-Things/things/service/dmsvr/internal/server/deviceinteract"
@@ -14,7 +15,6 @@ import (
 	"github.com/i-Things/things/service/dmsvr/internal/startup"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
-	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -34,7 +34,7 @@ var (
 
 func GetSvcCtx() *svc.ServiceContext {
 	svcOnce.Do(func() {
-		conf.MustLoad("etc/dm.yaml", &c)
+		utils.ConfMustLoad("etc/dm.yaml", &c)
 		svcCtx = svc.NewServiceContext(c)
 		startup.Init(svcCtx)
 		logx.Infof("enabled dmsvr")

@@ -364,6 +364,9 @@ func OtaVersionCheck(ctx context.Context, svcCtx *svc.ServiceContext, msg device
 				return
 			}
 		}
+		if df == nil {
+			return
+		}
 		data, err := otamanagelogic.GenUpgradeParams(ctx, svcCtx, df.Firmware, df.Files)
 		if err != nil {
 			log.Error(err)

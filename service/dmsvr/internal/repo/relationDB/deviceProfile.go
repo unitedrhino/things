@@ -24,9 +24,10 @@ func NewDeviceProfileRepo(in any) *DeviceProfileRepo {
 }
 
 type DeviceProfileFilter struct {
-	Codes  []string
-	Code   string
-	Device devices.Core
+	Codes   []string
+	Code    string
+	Device  devices.Core
+	Devices []*devices.Core
 }
 
 func (p DeviceProfileRepo) fmtFilter(ctx context.Context, f DeviceProfileFilter) *gorm.DB {
@@ -37,8 +38,23 @@ func (p DeviceProfileRepo) fmtFilter(ctx context.Context, f DeviceProfileFilter)
 	if f.Code != "" {
 		db = db.Where("code = ?", f.Code)
 	}
-	db = db.Where("product_id =? and device_name=?",
-		f.Device.ProductID, f.Device.DeviceName)
+	if len(f.Devices) != 0 {
+		scope := func(db *gorm.DB) *gorm.DB {
+			for i, d := range f.Devices {
+				if i == 0 {
+					db = db.Where("product_id = ? and device_name = ?", d.ProductID, d.DeviceName)
+					continue
+				}
+				db = db.Or("product_id = ? and device_name = ?", d.ProductID, d.DeviceName)
+			}
+			return db
+		}
+		db = db.Where(scope(db))
+	} else {
+		db = db.Where("product_id =? and device_name=?",
+			f.Device.ProductID, f.Device.DeviceName)
+	}
+
 	return db
 }
 

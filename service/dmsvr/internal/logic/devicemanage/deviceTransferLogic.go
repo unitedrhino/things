@@ -8,6 +8,7 @@ import (
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"gorm.io/gorm"
 
@@ -36,22 +37,50 @@ const (
 	DeviceTransferToProject = 2
 )
 
+func Transfer() {
+
+}
+
 func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empty, error) {
 	diDB := relationDB.NewDeviceInfoRepo(l.ctx)
-	di, err := diDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{
-		ProductID:   in.Device.ProductID,
-		DeviceNames: []string{in.Device.DeviceName},
-	})
-	if err != nil {
-		return nil, err
+	var dis []*relationDB.DmDeviceInfo
+	if in.Device != nil {
+		di, err := diDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{
+			ProductID:   in.Device.ProductID,
+			DeviceNames: []string{in.Device.DeviceName},
+		})
+		if err != nil {
+			return nil, err
+		}
+		dis = append(dis, di)
 	}
-	pi, err := l.svcCtx.ProjectM.ProjectInfoRead(l.ctx, &sys.ProjectWithID{ProjectID: int64(di.ProjectID)})
-	if err != nil {
-		return nil, err
+	if len(in.Devices) != 0 {
+		di, err := diDB.FindByFilter(l.ctx, relationDB.DeviceFilter{
+			Cores: utils.CopySlice[devices.Core](in.Devices),
+		}, nil)
+		if err != nil {
+			return nil, err
+		}
+		dis = append(dis, di...)
 	}
-	if pi.AdminUserID != pi.AdminUserID {
-		return nil, errors.Permissions
+	if len(dis) == 0 {
+		return &dm.Empty{}, nil
 	}
+	for _, di := range dis {
+		pi, err := l.svcCtx.ProjectCache.GetData(l.ctx, int64(di.ProjectID))
+		if err != nil {
+			return nil, err
+		}
+		if pi.AdminUserID != pi.AdminUserID {
+			return nil, errors.Permissions
+		}
+	}
+	var (
+		ProjectID  stores.ProjectID
+		AreaID     stores.AreaID = def.NotClassified
+		AreaIDPath string        = def.NotClassifiedPath
+	)
+
 	switch in.TransferTo {
 	case DeviceTransferToUser:
 		dp, err := l.svcCtx.DataM.DataProjectIndex(l.ctx, &sys.DataProjectIndexReq{
@@ -72,40 +101,53 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 		if len(dp.List) == 0 {
 			return nil, errors.NotFind.AddMsg("用户未找到")
 		}
-		di.ProjectID = stores.ProjectID(dp.List[0].ProjectID)
-		di.AreaID = def.NotClassified
-		di.AreaIDPath = def.NotClassifiedPath
+		ProjectID = stores.ProjectID(dp.List[0].ProjectID)
 	case DeviceTransferToProject:
-		di.ProjectID = stores.ProjectID(pi.ProjectID)
-		di.AreaID = def.NotClassified
-		di.AreaIDPath = def.NotClassifiedPath
+		ProjectID = stores.ProjectID(in.ProjectID)
 	}
 	if in.IsCleanData == def.True {
-		err = DeleteDeviceTimeData(l.ctx, l.svcCtx, in.Device.ProductID, in.Device.DeviceName)
-		if err != nil {
-			return nil, err
+		for _, di := range dis {
+			err := DeleteDeviceTimeData(l.ctx, l.svcCtx, di.ProductID, di.DeviceName)
+			if err != nil {
+				return nil, err
+			}
 		}
+
 	}
-	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+	var devs = utils.CopySlice[devices.Core](dis)
+	err := stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
 		err := relationDB.NewUserDeviceShareRepo(tx).DeleteByFilter(l.ctx, relationDB.UserDeviceShareFilter{
-			ProductID:  in.Device.ProductID,
-			DeviceName: in.Device.DeviceName,
+			Devices: devs,
 		})
 		if err != nil {
 			return err
 		}
-		err = relationDB.NewDeviceInfoRepo(tx).Update(ctxs.WithAllProject(l.ctx), di)
+		if in.IsCleanData == def.True {
+			err = relationDB.NewDeviceProfileRepo(tx).DeleteByFilter(ctxs.WithRoot(l.ctx),
+				relationDB.DeviceProfileFilter{Devices: devs})
+			if err != nil {
+				return err
+			}
+		}
+		err = relationDB.NewDeviceInfoRepo(tx).UpdateWithField(ctxs.WithAllProject(l.ctx), relationDB.DeviceFilter{Cores: devs}, map[string]any{
+			"project_id":   ProjectID,
+			"area_id":      AreaID,
+			"area_id_path": AreaIDPath,
+		})
 		if err != nil {
 			return err
 		}
 		return nil
 	})
-	err = l.svcCtx.DeviceCache.SetData(l.ctx, devices.Core{
-		ProductID:  in.Device.ProductID,
-		DeviceName: in.Device.DeviceName,
-	}, nil)
 	if err != nil {
-		l.Error(err)
+		return nil, err
 	}
-	return &dm.Empty{}, err
+	for _, di := range devs {
+		err = l.svcCtx.DeviceCache.SetData(l.ctx, *di, nil)
+		if err != nil {
+			l.Error(err)
+		}
+	}
+
+	return &dm.Empty{}, nil
 }

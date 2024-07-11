@@ -34,7 +34,7 @@ var (
 
 func GetSvcCtx() *svc.ServiceContext {
 	svcOnce.Do(func() {
-		conf.MustLoad(ConfigFile, &c)
+		utils.ConfMustLoad(ConfigFile, &c)
 		svcCtx = svc.NewServiceContext(c)
 		startup.Init(svcCtx)
 		sceneTimer.NewSceneTimer(context.TODO(), svcCtx).Start()

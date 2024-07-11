@@ -275,13 +275,13 @@ type DeviceInfo struct {
 	IsOnline           int64                              `json:"isOnline,optional,range=[0:2]"`                 // 在线状态  1离线 2在线 只读
 	FirstLogin         int64                              `json:"firstLogin,optional,string"`                    //激活时间 只读
 	FirstBind          int64                              `json:"firstBind,optional,string"`
-	LastLogin          int64                              `json:"lastLogin,optional,string"`     //最后上线时间 只读
-	ExpTime            int64                              `json:"expTime,optional,string"`       //到期时间
-	LogLevel           int64                              `json:"logLevel,optional,range=[0:5]"` // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
-	Rssi               int64                              `json:"rssi,optional,omitempty"`       //信号强度
-	CreatedTime        int64                              `json:"createdTime,optional,string"`   //创建时间 只读
-	Status             int64                              `json:"status,optional"`               //设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)
-	IsEnable           int64                              `json:"isEnable,optional"`
+	LastLogin          int64                              `json:"lastLogin,optional,string"`         //最后上线时间 只读
+	ExpTime            int64                              `json:"expTime,optional,string"`           //到期时间
+	LogLevel           int64                              `json:"logLevel,optional,range=[0:5]"`     // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+	Rssi               int64                              `json:"rssi,optional,omitempty"`           //信号强度
+	CreatedTime        int64                              `json:"createdTime,optional,string"`       //创建时间 只读
+	Status             int64                              `json:"status,optional"`                   //设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)
+	IsEnable           int64                              `json:"isEnable,optional"`                 //是否启用
 	WithProperties     map[string]*DeviceInfoWithProperty `json:"withProperties,optional,omitempty"` //获取的属性列表,如果不传withProperty,则不会返回
 	ProtocolConf       []*Tag                             `json:"protocolConf,optional,omitempty"`   //协议配置
 	Profiles           map[string]string                  `json:"profiles,optional,omitempty"`
@@ -376,11 +376,12 @@ type DeviceInfoSaveReq struct {
 }
 
 type DeviceInfoTransferReq struct {
-	Device      DeviceCore `json:"device"`
-	TransferTo  int64      `json:"transferTo"` //转让给: 1: 某个人 2: 自己的某个项目
-	UserID      int64      `json:"userID,string,optional"`
-	ProjectID   int64      `json:"projectID,string,optional"`
-	IsCleanData int64      `json:"isCleanData"` //是否清除数据:1是 2否
+	Device      DeviceCore    `json:"device"`
+	Devices     []*DeviceCore `json:"devices"`
+	TransferTo  int64         `json:"transferTo"` //转让给: 1: 某个人 2: 自己的某个项目
+	UserID      int64         `json:"userID,string,optional"`
+	ProjectID   int64         `json:"projectID,string,optional"`
+	IsCleanData int64         `json:"isCleanData"` //是否清除数据:1是 2否
 }
 
 type DeviceInfoWithProperty struct {
