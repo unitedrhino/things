@@ -7134,6 +7134,11 @@
             "$ref": "#/definitions/DeviceCore"
           }
         },
+        "srcProject": {
+          "type": "integer",
+          "format": "int64",
+          "description": "指定原来的项目ID,不写使用头"
+        },
         "transferTo": {
           "type": "integer",
           "format": "int64",
@@ -7145,6 +7150,11 @@
         "projectID": {
           "type": "string"
         },
+        "areaID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "转移到项目时指定区域ID"
+        },
         "isCleanData": {
           "type": "integer",
           "format": "int64",
@@ -7153,8 +7163,6 @@
       },
       "title": "DeviceInfoTransferReq",
       "required": [
-        "device",
-        "devices",
         "transferTo",
         "isCleanData"
       ]

@@ -399,10 +399,12 @@ message DeviceModuleVersionIndexResp{
 message DeviceTransferReq{
   DeviceCore device = 1;//设备信息
   repeated DeviceCore devices = 2;//设备信息
-  int64  transferTo = 3;//转让给: 1: 某个人 2: 自己的某个项目
-  int64 userID =4;//用户id
-  int64 projectID =5;//项目id
-  int64 isCleanData =6;//是否清除数据:1是 2否
+  int64 srcProjectID =3;//指定原来的项目ID,不写使用头
+  int64  transferTo = 4;//转让给: 1: 某个人 2: 自己的某个项目
+  int64 userID =5;//用户id
+  int64 projectID =6;//项目id
+  int64 areaID = 7;//转移到项目时指定区域ID
+  int64 isCleanData =8;//是否清除数据:1是 2否
 }
 
 message UserDeviceShareReadReq{

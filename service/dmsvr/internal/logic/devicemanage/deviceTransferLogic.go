@@ -42,6 +42,15 @@ func Transfer() {
 }
 
 func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empty, error) {
+	uc := ctxs.GetUserCtx(l.ctx)
+	if in.SrcProjectID != 0 {
+		uc.ProjectID = in.SrcProjectID
+		if !uc.IsAdmin {
+			if uc.ProjectAuth == nil || uc.ProjectAuth[in.ProjectID] == nil || uc.ProjectAuth[in.ProjectID].AuthType != def.AuthAdmin {
+				return nil, errors.Permissions.AddMsg("只有项目管理员才能创建区域")
+			}
+		}
+	}
 	diDB := relationDB.NewDeviceInfoRepo(l.ctx)
 	var dis []*relationDB.DmDeviceInfo
 	if in.Device != nil {
@@ -104,6 +113,17 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 		ProjectID = stores.ProjectID(dp.List[0].ProjectID)
 	case DeviceTransferToProject:
 		ProjectID = stores.ProjectID(in.ProjectID)
+		if in.AreaID != 0 {
+			ai, err := l.svcCtx.AreaCache.GetData(l.ctx, in.AreaID)
+			if err != nil {
+				return nil, err
+			}
+			if ai.ProjectID != in.ProjectID {
+				return nil, errors.Parameter.AddMsg("项目不对")
+			}
+			AreaID = stores.AreaID(ai.AreaID)
+			AreaIDPath = ai.AreaIDPath
+		}
 	}
 	if in.IsCleanData == def.True {
 		for _, di := range dis {

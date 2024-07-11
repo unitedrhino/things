@@ -74,7 +74,7 @@ cp.etc:
 
 build.api:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@go build -o ./cmd/things/apisvr ./service/apisvr
+	@go build -o ./cmd/things/thingsvr ./service/apisvr
 
 
 build.dg:
