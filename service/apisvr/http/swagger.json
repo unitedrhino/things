@@ -7134,7 +7134,7 @@
             "$ref": "#/definitions/DeviceCore"
           }
         },
-        "srcProject": {
+        "srcProjectID": {
           "type": "string",
           "description": "指定原来的项目ID,不写使用头"
         },
