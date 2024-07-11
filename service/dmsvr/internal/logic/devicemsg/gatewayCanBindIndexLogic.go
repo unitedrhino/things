@@ -2,8 +2,10 @@ package devicemsglogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -28,6 +30,14 @@ func NewGatewayCanBindIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext
 
 // 获取网关可以绑定的子设备列表
 func (l *GatewayCanBindIndexLogic) GatewayCanBindIndex(in *dm.GatewayCanBindIndexReq) (*dm.GatewayCanBindIndexResp, error) {
+	_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{
+		ProductID:  in.Gateway.ProductID,
+		DeviceName: in.Gateway.DeviceName,
+	}, nil)
+	if err != nil {
+		return nil, err
+	}
+
 	gateway := devices.Core{
 		ProductID:  in.Gateway.ProductID,
 		DeviceName: in.Gateway.DeviceName,

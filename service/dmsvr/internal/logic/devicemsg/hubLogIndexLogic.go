@@ -3,8 +3,10 @@ package devicemsglogic
 import (
 	"context"
 	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -27,6 +29,13 @@ func NewHubLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *HubLo
 
 // 获取设备调试信息记录登入登出,操作
 func (l *HubLogIndexLogic) HubLogIndex(in *dm.HubLogIndexReq) (*dm.HubLogIndexResp, error) {
+	_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{
+		ProductID:  in.ProductID,
+		DeviceName: in.DeviceName,
+	}, nil)
+	if err != nil {
+		return nil, err
+	}
 	filter := deviceLog.HubFilter{
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,

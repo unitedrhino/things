@@ -2,7 +2,9 @@ package devicemsglogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/devices"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 
 	"gitee.com/i-Things/share/def"
@@ -28,6 +30,13 @@ func NewSdkLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SdkLo
 
 // 获取设备sdk调试日志
 func (l *SdkLogIndexLogic) SdkLogIndex(in *dm.SdkLogIndexReq) (*dm.SdkLogIndexResp, error) {
+	_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{
+		ProductID:  in.ProductID,
+		DeviceName: in.DeviceName,
+	}, nil)
+	if err != nil {
+		return nil, err
+	}
 	filter := deviceLog.SDKFilter{
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,

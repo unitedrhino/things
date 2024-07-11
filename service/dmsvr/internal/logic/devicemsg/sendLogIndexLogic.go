@@ -3,8 +3,10 @@ package devicemsglogic
 import (
 	"context"
 	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
@@ -27,6 +29,13 @@ func NewSendLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Send
 }
 
 func (l *SendLogIndexLogic) SendLogIndex(in *dm.SendLogIndexReq) (*dm.SendLogIndexResp, error) {
+	_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{
+		ProductID:  in.ProductID,
+		DeviceName: in.DeviceName,
+	}, nil)
+	if err != nil {
+		return nil, err
+	}
 	filter := deviceLog.SendFilter{
 		UserID:     in.UserID,
 		ProductID:  in.ProductID,

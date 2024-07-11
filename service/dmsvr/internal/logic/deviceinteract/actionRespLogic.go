@@ -3,6 +3,7 @@ package deviceinteractlogic
 import (
 	"context"
 	"encoding/json"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
@@ -43,14 +44,7 @@ func (l *ActionRespLogic) initMsg(productID string) error {
 
 // 回复调用设备行为
 func (l *ActionRespLogic) ActionResp(in *dm.ActionRespReq) (*dm.Empty, error) {
-	_, err := logic.Auth(l.ctx, l.svcCtx, devices.Core{
-		ProductID:  in.ProductID,
-		DeviceName: in.DeviceName,
-	})
-	if err != nil { //有权限就行
-		return nil, err
-	}
-	err = l.initMsg(in.ProductID)
+	err := l.initMsg(in.ProductID)
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +54,13 @@ func (l *ActionRespLogic) ActionResp(in *dm.ActionRespReq) (*dm.Empty, error) {
 	if req == nil || err != nil {
 		return nil, err
 	}
-
+	_, err = logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthReadWrite, devices.Core{
+		ProductID:  in.ProductID,
+		DeviceName: in.DeviceName,
+	}, map[string]any{req.ActionID: struct{}{}})
+	if err != nil {
+		return nil, err
+	}
 	resp := msgThing.Resp{
 		CommonMsg: deviceMsg.CommonMsg{
 			Method:    deviceMsg.ActionReply,

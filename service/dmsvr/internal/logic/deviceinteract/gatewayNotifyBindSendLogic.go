@@ -3,12 +3,14 @@ package deviceinteractlogic
 import (
 	"context"
 	"encoding/json"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgGateway"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"time"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -33,8 +35,14 @@ func NewGatewayNotifyBindSendLogic(ctx context.Context, svcCtx *svc.ServiceConte
 
 // 通知网关绑定子设备
 func (l *GatewayNotifyBindSendLogic) GatewayNotifyBindSend(in *dm.GatewayNotifyBindSendReq) (*dm.Empty, error) {
+	_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{
+		ProductID:  in.Gateway.ProductID,
+		DeviceName: in.Gateway.DeviceName,
+	}, nil)
+	if err != nil {
+		return nil, err
+	}
 	var protocolCode string
-	var err error
 	if protocolCode, err = CheckIsOnline(l.ctx, l.svcCtx, devices.Core{
 		ProductID:  in.Gateway.ProductID,
 		DeviceName: in.Gateway.DeviceName,

@@ -4,10 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -30,6 +32,15 @@ func NewPropertyLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 
 // 获取设备数据信息
 func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*dm.PropertyLogIndexResp, error) {
+	for _, device := range in.DeviceNames {
+		_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{
+			ProductID:  in.ProductID,
+			DeviceName: device,
+		}, nil)
+		if err != nil {
+			return nil, err
+		}
+	}
 	var (
 		diDatas []*dm.PropertyLogInfo
 		dd      = l.svcCtx.SchemaManaRepo

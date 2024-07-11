@@ -3,10 +3,12 @@ package deviceinteractlogic
 import (
 	"context"
 	"encoding/json"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/errors"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 
@@ -30,6 +32,13 @@ func NewActionReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Action
 
 // 获取异步调用设备行为的结果
 func (l *ActionReadLogic) ActionRead(in *dm.RespReadReq) (*dm.ActionSendResp, error) {
+	_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{
+		ProductID:  in.ProductID,
+		DeviceName: in.DeviceName,
+	}, nil)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := cache.GetDeviceMsg[msgThing.Resp](l.ctx, l.svcCtx.Cache, deviceMsg.RespMsg, devices.Thing, msgThing.TypeAction,
 		devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName}, in.MsgToken)
 	if err != nil {

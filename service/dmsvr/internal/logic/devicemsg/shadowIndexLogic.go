@@ -2,8 +2,11 @@ package devicemsglogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/shadow"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 
@@ -27,6 +30,13 @@ func NewShadowIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Shado
 
 // 获取设备影子列表
 func (l *ShadowIndexLogic) ShadowIndex(in *dm.PropertyLogLatestIndexReq) (*dm.ShadowIndexResp, error) {
+	_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{
+		ProductID:  in.ProductID,
+		DeviceName: in.DeviceName,
+	}, nil)
+	if err != nil {
+		return nil, err
+	}
 	sr := relationDB.NewShadowRepo(l.ctx)
 	srs, err := sr.FindByFilter(l.ctx, shadow.Filter{
 		ProductID:  in.ProductID,

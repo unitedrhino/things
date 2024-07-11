@@ -3,10 +3,13 @@ package devicemsglogic
 import (
 	"context"
 	"encoding/json"
+	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"sync"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -36,6 +39,13 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 		total   int
 		dataMap map[string]*schema.Property
 	)
+	_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{
+		ProductID:  in.ProductID,
+		DeviceName: in.DeviceName,
+	}, nil)
+	if err != nil {
+		return nil, err
+	}
 	temp, err := l.svcCtx.SchemaRepo.GetData(l.ctx, in.ProductID)
 	if err != nil {
 		return nil, errors.System.AddDetail(err)

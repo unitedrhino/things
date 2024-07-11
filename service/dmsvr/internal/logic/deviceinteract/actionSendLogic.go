@@ -14,6 +14,7 @@ import (
 	"gitee.com/i-Things/share/events/topics"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"time"
@@ -48,6 +49,13 @@ func (l *ActionSendLogic) initMsg(productID string) error {
 // 调用设备行为
 func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (ret *dm.ActionSendResp, err error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
+	_, err = logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthReadWrite, devices.Core{
+		ProductID:  in.ProductID,
+		DeviceName: in.DeviceName,
+	}, map[string]any{in.ActionID: struct{}{}})
+	if err != nil {
+		return nil, err
+	}
 	var protocolCode string
 	if protocolCode, err = CheckIsOnline(l.ctx, l.svcCtx, devices.Core{
 		ProductID:  in.ProductID,

@@ -2,10 +2,12 @@ package deviceinteractlogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/errors"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/cache"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -30,6 +32,13 @@ func NewPropertyControlReadLogic(ctx context.Context, svcCtx *svc.ServiceContext
 
 // 获取异步调用设备属性的结果
 func (l *PropertyControlReadLogic) PropertyControlRead(in *dm.RespReadReq) (*dm.PropertyControlSendResp, error) {
+	_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{
+		ProductID:  in.ProductID,
+		DeviceName: in.DeviceName,
+	}, nil)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := cache.GetDeviceMsg[msgThing.Resp](l.ctx, l.svcCtx.Cache, deviceMsg.RespMsg, devices.Thing, msgThing.TypeProperty,
 		devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName}, in.MsgToken)
 	if err != nil {

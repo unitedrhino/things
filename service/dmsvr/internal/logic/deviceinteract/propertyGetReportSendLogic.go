@@ -3,12 +3,14 @@ package deviceinteractlogic
 import (
 	"context"
 	"encoding/json"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/cache"
 	"time"
 
@@ -44,6 +46,13 @@ func (l *PropertyGetReportSendLogic) initMsg(productID string) error {
 // 请求设备获取设备最新属性
 func (l *PropertyGetReportSendLogic) PropertyGetReportSend(in *dm.PropertyGetReportSendReq) (ret *dm.PropertyGetReportSendResp, err error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
+	_, err = logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{
+		ProductID:  in.ProductID,
+		DeviceName: in.DeviceName,
+	}, nil)
+	if err != nil {
+		return nil, err
+	}
 	var protocolCode string
 	if protocolCode, err = CheckIsOnline(l.ctx, l.svcCtx, devices.Core{
 		ProductID:  in.ProductID,

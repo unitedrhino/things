@@ -2,6 +2,7 @@ package deviceinteractlogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/errors"
@@ -31,6 +32,9 @@ func NewSendMsgLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendMsgLo
 // 发送消息给设备
 func (l *SendMsgLogic) SendMsg(in *dm.SendMsgReq) (ret *dm.SendMsgResp, err error) {
 	l.Infof("%s topic:%v payload:%v", utils.FuncName(), in.GetTopic(), string(in.GetPayload()))
+	if err := ctxs.IsAdmin(l.ctx); err != nil {
+		return nil, err
+	}
 	topicInfo, err := devices.GetTopicInfo(in.Topic)
 	if err != nil {
 		return nil, errors.Parameter.AddMsg("topic 不正确").AddDetail(err)

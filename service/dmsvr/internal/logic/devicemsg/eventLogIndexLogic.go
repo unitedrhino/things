@@ -4,9 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -34,6 +36,19 @@ func (l *EventLogIndexLogic) EventLogIndex(in *dm.EventLogIndexReq) (*dm.EventLo
 		dd      = l.svcCtx.SchemaManaRepo
 		total   int64
 	)
+	if len(in.DeviceNames) == 0 {
+		return &dm.EventLogIndexResp{}, nil
+	}
+	for _, device := range in.DeviceNames {
+		_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{
+			ProductID:  in.ProductID,
+			DeviceName: device,
+		}, nil)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	dds, err := dd.GetEventDataByFilter(l.ctx, msgThing.FilterOpt{
 		Page: def.PageInfo2{
 			TimeStart: in.TimeStart,
