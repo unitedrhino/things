@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/eventBus"
+	"time"
 )
 
 type (
@@ -11,7 +12,7 @@ type (
 
 	PubDev interface {
 		PublishToDev(ctx context.Context, msg *deviceMsg.PublishMsg) error
-		ReqToDeviceSync(ctx context.Context, reqMsg *deviceMsg.PublishMsg, compareMsg CompareMsg) ([]byte, error)
+		ReqToDeviceSync(ctx context.Context, reqMsg *deviceMsg.PublishMsg, timeout time.Duration, compareMsg CompareMsg) ([]byte, error)
 	}
 )
 

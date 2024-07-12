@@ -775,6 +775,7 @@ message PropertyControlSendReq{
   int64 shadowControl = 4;
   bool isAsync = 6;//是否异步操作 异步情况通过获取接口来获取
   WithProfile withProfile =7;
+  int64 syncTimeout =8;//同步超时时间(单位:秒)
 }
 
 message WithProfile{
@@ -830,6 +831,7 @@ message PropertyControlMultiSendReq{
   bool isAsync = 6;//是否异步操作 异步情况通过获取接口来获取
   int64 areaID =7;//控制一个区域的设备
   int64 groupID =8;//控制一个组的设备
+  int64 syncTimeout =9;//同步超时时间(单位:秒,不填默认3秒)
 }
 
 message PropertyControlSendMsg{

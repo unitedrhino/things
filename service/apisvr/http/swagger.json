@@ -7266,6 +7266,11 @@
           "format": "boolean",
           "description": "是否异步操作 异步情况通过获取接口来获取"
         },
+        "syncTimeout": {
+          "type": "integer",
+          "format": "int64",
+          "description": "同步超时时间(单位:秒,不填默认3秒)"
+        },
         "shadowControl": {
           "type": "integer",
           "format": "int64",
@@ -7483,6 +7488,11 @@
           "type": "boolean",
           "format": "boolean",
           "description": "是否异步操作 异步情况通过获取接口来获取"
+        },
+        "syncTimeout": {
+          "type": "integer",
+          "format": "int64",
+          "description": "同步超时时间(单位:秒,不填默认3秒)"
         },
         "shadowControl": {
           "type": "integer",

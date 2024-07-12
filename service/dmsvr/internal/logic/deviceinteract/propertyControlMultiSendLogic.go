@@ -59,10 +59,11 @@ func (l *PropertyControlMultiSendLogic) MultiSendOneProductProperty(in *dm.Prope
 			logx.Error("开始1")
 			defer logx.Error("结束1")
 			ret, err := sigSend.PropertyControlSend(&dm.PropertyControlSendReq{
-				ProductID:  in.ProductID,
-				DeviceName: v,
-				Data:       in.Data,
-				IsAsync:    in.IsAsync,
+				ProductID:   in.ProductID,
+				DeviceName:  v,
+				Data:        in.Data,
+				SyncTimeout: in.SyncTimeout,
+				IsAsync:     in.IsAsync,
 			})
 			if err != nil {
 				myErr, _ := err.(*errors.CodeError)

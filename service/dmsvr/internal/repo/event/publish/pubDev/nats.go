@@ -43,7 +43,7 @@ func (n *NatsClient) PublishToDev(ctx context.Context, respMsg *deviceMsg.Publis
 	return err
 }
 
-func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqMsg *deviceMsg.PublishMsg, compareMsg CompareMsg) (
+func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqMsg *deviceMsg.PublishMsg, timeout time.Duration, compareMsg CompareMsg) (
 	payload []byte, err error) {
 	err = n.PublishToDev(ctx, reqMsg)
 	if err != nil {
@@ -72,6 +72,9 @@ func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqMsg *deviceMsg.Publ
 		return nil, err
 	}
 	defer n.client.UnSubscribeWithID(topic, sub)
+	if timeout == 0 {
+		timeout = time.Second * 3
+	}
 	select {
 	case <-done:
 		return
