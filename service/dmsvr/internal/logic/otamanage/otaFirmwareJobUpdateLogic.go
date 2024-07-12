@@ -32,9 +32,10 @@ func NewOtaFirmwareJobUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContex
 
 // 取消动态升级策略
 func (l *OtaFirmwareJobUpdateLogic) OtaFirmwareJobUpdate(in *dm.OtaFirmwareJobInfo) (*dm.Empty, error) {
-	if err := ctxs.IsRoot(l.ctx); err != nil {
-		return nil, err
-	}
+	//todo debug
+	//if err := ctxs.IsRoot(l.ctx); err != nil {
+	//	return nil, err
+	//}
 	l.ctx = ctxs.WithRoot(l.ctx)
 	otaJob, err := l.OjDB.FindOne(l.ctx, in.Id)
 	if err != nil {

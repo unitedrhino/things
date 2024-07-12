@@ -28,9 +28,10 @@ func NewOtaFirmwareJobIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext
 }
 
 func (l *OtaFirmwareJobIndexLogic) OtaFirmwareJobIndex(in *dm.OtaFirmwareJobIndexReq) (*dm.OtaFirmwareJobIndexResp, error) {
-	if err := ctxs.IsRoot(l.ctx); err != nil {
-		return nil, err
-	}
+	//todo debug
+	//if err := ctxs.IsRoot(l.ctx); err != nil {
+	//	return nil, err
+	//}
 	l.ctx = ctxs.WithRoot(l.ctx)
 	jobFilter := relationDB.OtaJobFilter{
 		FirmwareID: in.FirmwareID,

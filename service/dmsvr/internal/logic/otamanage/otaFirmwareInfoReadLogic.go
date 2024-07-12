@@ -34,9 +34,10 @@ func NewOtaFirmwareInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext
 
 // 查询升级包
 func (l *OtaFirmwareInfoReadLogic) OtaFirmwareInfoRead(in *dm.WithID) (*dm.OtaFirmwareInfo, error) {
-	if err := ctxs.IsRoot(l.ctx); err != nil {
-		return nil, err
-	}
+	//todo debug
+	//if err := ctxs.IsRoot(l.ctx); err != nil {
+	//	return nil, err
+	//}
 	l.ctx = ctxs.WithRoot(l.ctx)
 	otaFirmware, err := l.OfDB.FindOneByFilter(l.ctx, relationDB.OtaFirmwareInfoFilter{ID: in.Id, WithFiles: true})
 	if err != nil {

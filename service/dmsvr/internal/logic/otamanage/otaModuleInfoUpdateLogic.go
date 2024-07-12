@@ -26,9 +26,10 @@ func NewOtaModuleInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext
 }
 
 func (l *OtaModuleInfoUpdateLogic) OtaModuleInfoUpdate(in *dm.OtaModuleInfo) (*dm.Empty, error) {
-	if err := ctxs.IsRoot(l.ctx); err != nil {
-		return nil, err
-	}
+	//todo debug
+	//if err := ctxs.IsRoot(l.ctx); err != nil {
+	//	return nil, err
+	//}
 	l.ctx = ctxs.WithRoot(l.ctx)
 	old, err := relationDB.NewOtaModuleInfoRepo(l.ctx).FindOne(l.ctx, in.Id)
 	if err != nil {
