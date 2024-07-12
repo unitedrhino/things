@@ -6852,6 +6852,10 @@
           "$ref": "#/definitions/CompareInt64",
           "description": "到期时间"
         },
+        "ratedPower": {
+          "$ref": "#/definitions/CompareInt64",
+          "description": "额定功率:单位w/h"
+        },
         "deviceAlias": {
           "type": "string",
           "description": "过滤条件:模糊查询 设备别名"

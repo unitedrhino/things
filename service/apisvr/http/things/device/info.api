@@ -219,6 +219,7 @@ type (
         DeviceName string `json:"deviceName,optional"`    //过滤条件:模糊查询 设备名
         DeviceNames []string `json:"deviceNames,optional"`    //过滤条件:精准查询 设备名
         ExpTime *CompareInt64 `json:"expTime,optional"` //到期时间
+        RatedPower *CompareInt64 `json:"ratedPower,optional"` //额定功率:单位w/h
         DeviceAlias string `json:"deviceAlias,optional"`  //过滤条件:模糊查询 设备别名
         DeviceTypes []int64 `json:"deviceTypes,optional"`                                     //设备类型:1:设备,2:网关,3:子设备//设备类型:1:设备,2:网关,3:子设备
         Position *Point `json:"position,optional"`        //设备定位,默认百度坐标系，用于获取以该点为中心，Range范围内的设备列表，与Range连用
