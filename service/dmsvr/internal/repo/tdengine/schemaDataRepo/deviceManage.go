@@ -44,7 +44,8 @@ func (d *DeviceDataRepo) DeleteDevice(
 			return err
 		}
 	}
-	return nil
+	_, err := d.kv.DelCtx(ctx, d.genRedisPropertyKey(productID, deviceName), d.genRedisPropertyFirstKey(productID, deviceName))
+	return err
 }
 func GetArrayID(id string, num int) string {
 	return fmt.Sprintf("%s_%d", id, num)

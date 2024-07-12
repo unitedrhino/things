@@ -44,7 +44,7 @@ toremote:
 
 toremotezhou:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>tormote cmd<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@rsync -r -v ./cmd/* root@139.159.188.223:/root/ithings/
+	@rsync -r -v ./cmd/* root@139.159.188.223:/root/git/iThings
 
 
 killall:
