@@ -45,7 +45,6 @@ OssConf:
   AccessKeyID: root
   AccessKeySecret: password
   Location: 127.0.0.1:9000
-  CustomHost: /api/v1/oss
   ConnectTimeout: 6000
   ReadWriteTimeout: 60000
   UseSSL: false
