@@ -321,7 +321,7 @@ func (l *GatewayLogic) HandleStatus(msg *deviceMsg.PublishMsg) (respMsg *msgGate
 			DeviceName: v.DeviceName,
 		})
 		//更新在线状态
-		err := l.svcCtx.DeviceStatus.AddDevice(l.ctx, &deviceStatus.ConnectMsg{
+		err := devicemanagelogic.HandleOnlineFix(l.ctx, l.svcCtx, &deviceStatus.ConnectMsg{
 			ClientID:  deviceAuth.GenClientID(v.ProductID, v.DeviceName),
 			Timestamp: l.dreq.GetTimeStamp(),
 			Action:    ActionMap[l.dreq.Method],
