@@ -92,7 +92,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 
 	switch in.TransferTo {
 	case DeviceTransferToUser:
-		dp, err := l.svcCtx.DataM.DataProjectIndex(l.ctx, &sys.DataProjectIndexReq{
+		dp, err := l.svcCtx.DataM.DataProjectIndex(ctxs.WithAllProject(l.ctx), &sys.DataProjectIndexReq{
 			Page: &sys.PageInfo{
 				Page: 1,
 				Size: 1,
