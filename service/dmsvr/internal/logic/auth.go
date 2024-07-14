@@ -5,9 +5,11 @@ import (
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
+	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/userShared"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
+	"strings"
 )
 
 func Auth(ctx context.Context, svcCtx *svc.ServiceContext, in devices.Core) (devices.Auth, error) { //鉴权
@@ -60,6 +62,10 @@ func SchemaAccess(ctx context.Context, svcCtx *svc.ServiceContext, authType def.
 			}
 			for k := range param {
 				sp := uds.SchemaPerm[k]
+				if sp == nil && strings.Contains(k, ".") { //数组类型
+					k, _, _ := schema.GetArray(k)
+					sp = uds.SchemaPerm[k]
+				}
 				if sp != nil && sp.Perm > authType {
 					return nil, errors.Parameter.AddMsgf("属性:%v 没有控制权限", k)
 				}
