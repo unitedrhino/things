@@ -44,6 +44,9 @@ func (l *AlarmInfoUpdateLogic) AlarmInfoUpdate(in *ud.AlarmInfo) (*ud.Empty, err
 	if in.Status != 0 {
 		old.Status = in.Status
 	}
+	if in.UserIDs != nil {
+		old.UserIDs = in.UserIDs
+	}
 	if len(in.Notifies) != 0 {
 		old.Notifies = utils.CopySlice[relationDB.UdAlarmNotify](in.Notifies)
 	}
