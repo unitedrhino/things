@@ -43,7 +43,6 @@ func (l *TimerHandle) LockRunning(ctx context.Context, Type string /*scene devic
 			logx.WithContext(ctx).Error(err)
 		}
 	}
-
 }
 
 func (l *TimerHandle) SceneExec(ctx context.Context, do *scene.Info) error {
@@ -73,8 +72,10 @@ func (l *TimerHandle) SceneExec(ctx context.Context, do *scene.Info) error {
 			if trigger.Type == scene.TriggerTypeDevice && trigger.Device != nil {
 				req.ProductID = trigger.Device.ProductID
 				req.DeviceName = trigger.Device.DeviceName
+				req.DeviceAlias = trigger.Device.DeviceAlias
 			}
-			_, err := rulelogic.NewAlarmRecordCreateLogic(stores.SetIsDebug(l.ctx, false), l.svcCtx).AlarmRecordCreate(&req)
+			_, err := rulelogic.NewAlarmRecordCreateLogic(stores.SetIsDebug(l.ctx, false), l.svcCtx).
+				AlarmRecordCreate(&req)
 			return err
 		},
 		SaveLog: func(ctx context.Context, log *scene.Log) error {

@@ -92,9 +92,10 @@ message AlarmRecordCreateReq{
   string triggerType = 3;//触发类型(设备触发1,其他2)
   string productID = 4;//触发产品id
   string deviceName = 5;//触发设备名称
-  string sceneName = 6;//场景名称
-  int64 sceneID = 7;//场景ID
-  string mode =8;//告警模式  trigger: 触发告警  relieve: 解除告警
+  string deviceAlias = 6;//触发设备昵称
+  string sceneName = 7;//场景名称
+  int64 sceneID = 8;//场景ID
+  string mode =9;//告警模式  trigger: 触发告警  relieve: 解除告警
 }
 
 message AlarmRecordDealReq{

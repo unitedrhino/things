@@ -12,6 +12,7 @@ import (
 	devicemanage "github.com/i-Things/things/service/dmsvr/client/devicemanage"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
+	"strings"
 	"sync"
 )
 
@@ -82,7 +83,8 @@ func (a *ActionDevice) Validate(repo ValidateRepo) error {
 		return err
 	}
 	if a.DataID != "" {
-		p := v.Property[a.DataID]
+		dataIDs := strings.Split(a.DataID, ".")
+		p := v.Property[dataIDs[0]]
 		if p == nil {
 			return errors.Parameter.AddMsg("dataID不存在")
 		}
@@ -95,7 +97,8 @@ func (a *ActionDevice) Validate(repo ValidateRepo) error {
 		}
 	} else if len(a.Values) != 0 {
 		for _, val := range a.Values {
-			p := v.Property[val.DataID]
+			dataIDs := strings.Split(val.DataID, ".")
+			p := v.Property[dataIDs[0]]
 			if p == nil {
 				return errors.Parameter.AddMsg("dataID不存在")
 			}

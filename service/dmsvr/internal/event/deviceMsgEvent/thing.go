@@ -10,6 +10,7 @@ import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/application"
+	"gitee.com/i-Things/share/domain/deviceAuth"
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgOta"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
@@ -18,6 +19,7 @@ import (
 	"gitee.com/i-Things/share/utils"
 	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/shadow"
 	devicemanagelogic "github.com/i-Things/things/service/dmsvr/internal/logic/devicemanage"
 	otamanagelogic "github.com/i-Things/things/service/dmsvr/internal/logic/otamanage"
@@ -102,11 +104,12 @@ func (l *ThingLogic) HandlePackReport(msg *deviceMsg.PublishMsg, req msgThing.Re
 	}
 	if len(req.SubDevices) != 0 {
 		for _, dev := range req.SubDevices {
+			d := devices.Core{
+				ProductID:  dev.ProductID,
+				DeviceName: dev.DeviceName,
+			}
 			c, err := relationDB.NewGatewayDeviceRepo(l.ctx).CountByFilter(l.ctx, relationDB.GatewayDeviceFilter{
-				SubDevice: &devices.Core{
-					ProductID:  dev.ProductID,
-					DeviceName: dev.DeviceName,
-				},
+				SubDevice: &d,
 				Gateway: &devices.Core{
 					ProductID:  msg.ProductID,
 					DeviceName: msg.DeviceName,
@@ -118,6 +121,21 @@ func (l *ThingLogic) HandlePackReport(msg *deviceMsg.PublishMsg, req msgThing.Re
 			if c == 0 {
 				err = errors.DeviceNotBound
 				return l.DeviceResp(msg, err, nil), err
+			}
+			di, err := l.svcCtx.DeviceCache.GetData(l.ctx, d)
+			if err != nil {
+				return l.DeviceResp(msg, err, nil), err
+			}
+			if di.IsOnline == def.False {
+				err := devicemanagelogic.HandleOnlineFix(l.ctx, l.svcCtx, &deviceStatus.ConnectMsg{
+					ClientID:  deviceAuth.GenClientID(di.ProductID, di.DeviceName),
+					Timestamp: l.dreq.GetTimeStamp(msg.Timestamp),
+					Action:    devices.ActionConnected,
+					Reason:    "gateway_report_fix",
+				})
+				if err != nil {
+					l.Error(err)
+				}
 			}
 			schema, err := l.svcCtx.SchemaRepo.GetData(l.ctx, dev.ProductID)
 			if err != nil {

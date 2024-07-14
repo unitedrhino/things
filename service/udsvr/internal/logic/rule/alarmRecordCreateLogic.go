@@ -90,9 +90,10 @@ func (l *AlarmRecordCreateLogic) AlarmRecordCreate(in *ud.AlarmRecordCreateReq) 
 							TemplateID: notify.TemplateID,
 							Type:       notify.Type,
 							Params: map[string]string{
-								"productID":  in.ProductID,
-								"deviceName": in.DeviceName,
-								"sceneName":  in.SceneName,
+								"productID":   in.ProductID,
+								"deviceName":  in.DeviceName,
+								"sceneName":   in.SceneName,
+								"deviceAlias": in.DeviceAlias,
 							},
 						})
 						if err != nil {
