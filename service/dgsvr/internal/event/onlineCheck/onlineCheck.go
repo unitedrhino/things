@@ -99,9 +99,8 @@ func (o *CheckEvent) Check() error {
 					IsOnline:  def.False,
 					ConnectAt: 0,
 				})
-			} else {
-				protocol.DeleteDeviceActivity(o.ctx, dev)
 			}
+			protocol.DeleteDeviceActivity(o.ctx, dev)
 		}
 	}
 	logx.WithContext(o.ctx).Infof("fixOnline %v", utils.Fmt(needOnlineDevices))
