@@ -63,7 +63,6 @@ func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqMsg *deviceMsg.Publ
 		if !compareMsg(msg.Payload) {
 			return nil
 		}
-		logx.WithContext(ctx).Error(msg)
 		payload = msg.Payload
 		close(done)
 		return nil
