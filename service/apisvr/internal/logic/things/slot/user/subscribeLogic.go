@@ -25,6 +25,6 @@ func NewSubscribeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Subscri
 
 func (l *SubscribeLogic) Subscribe(req *types.SlotUserSubscribeReq) error {
 	l.Info(req)
-
+	//todo 需要鉴权
 	return nil
 }

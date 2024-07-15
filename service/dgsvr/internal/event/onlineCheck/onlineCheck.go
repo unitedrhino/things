@@ -48,6 +48,7 @@ func (o *CheckEvent) Check() error {
 			logx.WithContext(o.ctx).Error(err)
 			return err
 		}
+		o.Infof("GetOnlineClients total:%v infos: %v ", total, utils.Fmt(infos))
 		total = to
 		page++
 		for _, info := range infos {

@@ -117,15 +117,16 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 			if err != nil {
 				log.Error(err)
 			}
-			err = svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDeviceConn, appMsg, map[string]any{
-				"productID":  ld.ProductID,
-				"deviceName": ld.DeviceName,
-			}, map[string]any{
-				"productID": ld.ProductID,
-			}, map[string]any{})
-			if err != nil {
-				log.Error(err)
-			}
+			//todo: 这里有鉴权问题,先注释
+			//err = svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDeviceConn, appMsg, map[string]any{
+			//	"productID":  ld.ProductID,
+			//	"deviceName": ld.DeviceName,
+			//}, map[string]any{
+			//	"productID": ld.ProductID,
+			//}, map[string]any{})
+			//if err != nil {
+			//	log.Error(err)
+			//}
 		})
 		dev := devices.Core{
 			ProductID:  ld.ProductID,
