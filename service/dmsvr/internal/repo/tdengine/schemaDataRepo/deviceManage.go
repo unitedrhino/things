@@ -17,7 +17,7 @@ func (d *DeviceDataRepo) InitDevice(ctx context.Context,
 	if err != nil {
 		logx.WithContext(ctx).Errorf(
 			"%s.createPropertyTable productID:%v,deviceName:%v,err:%v,properties:%v",
-			utils.FuncName(), productID, deviceName, t.Property, err)
+			utils.FuncName(), productID, deviceName, utils.Fmt(t.Property), err)
 		return err
 	}
 
