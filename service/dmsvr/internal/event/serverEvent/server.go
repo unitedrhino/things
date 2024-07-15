@@ -41,6 +41,7 @@ func NewServerHandle(ctx context.Context, svcCtx *svc.ServiceContext) *ServerHan
 
 // 定时处理设备在线状态改变,需要过滤设备在线抖动的问题
 func (l *ServerHandle) OnlineStatusHandle() error {
+	l.Infof("OnlineStatusHandle")
 	ok, err := l.svcCtx.DeviceStatus.Lock(l.ctx)
 	if err != nil {
 		return err

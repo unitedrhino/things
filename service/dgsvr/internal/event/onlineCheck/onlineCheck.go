@@ -29,7 +29,7 @@ func NewOnlineCheckEvent(svcCtx *svc.ServiceContext, ctx context.Context) *Check
 }
 
 func (o *CheckEvent) Check() error {
-	logx.WithContext(o.ctx).Infof("online sync")
+	logx.WithContext(o.ctx).Infof("online_sync")
 	var total int64 = 10000
 	var limit int64 = 1000
 	var page int64 = 1
@@ -41,8 +41,8 @@ func (o *CheckEvent) Check() error {
 	var needOnlineDevices []*dm.DeviceOnlineMultiFix
 	for page*limit < total {
 		infos, to, err := o.svcCtx.MqttClient.GetOnlineClients(o.ctx, clients.GetOnlineClientsFilter{}, &clients.PageInfo{
-			Page: 1,
-			Size: 200,
+			Page: page,
+			Size: limit,
 		})
 		if err != nil {
 			logx.WithContext(o.ctx).Error(err)
