@@ -82,6 +82,7 @@ func (s *DeviceSubServer) ExtMsg(topic string, payload []byte) error {
 		Signature:  req.Payload.Signature,
 	})
 	if err != nil {
+		s.Error(err)
 		e := errors.Fmt(err)
 		respPayload.Code = e.Code
 		respPayload.Msg = e.GetMsg()
