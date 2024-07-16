@@ -6,6 +6,7 @@ import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
+	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 
@@ -31,8 +32,23 @@ func (l *DeviceInfoCanBindLogic) DeviceInfoCanBind(in *dm.DeviceInfoCanBindReq) 
 		ProductID:  in.Device.ProductID,
 		DeviceName: in.Device.DeviceName,
 	})
-	if err != nil {
+	if err != nil && !errors.Cmp(err, errors.NotFind) {
 		return nil, err
+	}
+	if di == nil {
+		dii, err := relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(ctxs.WithRoot(l.ctx), relationDB.DeviceFilter{
+			DeviceNames: []string{in.Device.DeviceName},
+		})
+		if err != nil {
+			return nil, err
+		}
+		di, err = l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
+			ProductID:  dii.ProductID,
+			DeviceName: in.Device.DeviceName,
+		})
+		if err != nil {
+			return nil, err
+		}
 	}
 	uc := ctxs.GetUserCtxNoNil(l.ctx)
 	dpi, err := l.svcCtx.TenantCache.GetData(l.ctx, def.TenantCodeDefault)

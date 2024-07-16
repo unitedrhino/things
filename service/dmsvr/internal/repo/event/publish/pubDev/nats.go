@@ -72,12 +72,12 @@ func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqMsg *deviceMsg.Publ
 	}
 	defer n.client.UnSubscribeWithID(topic, sub)
 	if timeout == 0 {
-		timeout = time.Second * 5
+		timeout = time.Second * 10
 	}
 	select {
 	case <-done:
 		return
-	case <-time.After(3 * time.Second):
+	case <-time.After(timeout):
 		return nil, errors.DeviceTimeOut
 	}
 }

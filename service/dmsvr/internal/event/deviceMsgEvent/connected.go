@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"gitee.com/i-Things/share/def"
-	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceAuth"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/domain/schema"
@@ -65,22 +64,26 @@ func (l *ConnectedLogic) Handle(msg *deviceStatus.ConnectMsg) error {
 			DeviceName: msg.Device.DeviceName,
 		}
 	}
-	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
-		ProductID:  ld.ProductID,
-		DeviceName: ld.DeviceName,
-	})
+	//di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
+	//	ProductID:  ld.ProductID,
+	//	DeviceName: ld.DeviceName,
+	//})
+	//if err != nil {
+	//	return err
+	//}
+	//if di.FirstLogin == 0 {
+	//	err := devicemanagelogic.HandleOnlineFix(l.ctx, l.svcCtx, msg)
+	//	if err != nil {
+	//		l.Error(err)
+	//	}
+	//	return err
+	//}
+	err = devicemanagelogic.HandleOnlineFix(l.ctx, l.svcCtx, msg)
 	if err != nil {
-		return err
-	}
-	if di.FirstLogin == 0 {
-		err := devicemanagelogic.HandleOnlineFix(l.ctx, l.svcCtx, msg)
-		if err != nil {
-			l.Error(err)
-		}
-		return err
+		l.Error(err)
 	}
 
-	err = l.svcCtx.DeviceStatus.AddDevice(l.ctx, msg)
+	//err = l.svcCtx.DeviceStatus.AddDevice(l.ctx, msg)
 	return err
 	//l.di, err = l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: ld.ProductID, DeviceNames: []string{ld.DeviceName}})
 	//if err != nil {
