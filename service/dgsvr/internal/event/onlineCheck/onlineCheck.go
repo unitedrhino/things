@@ -12,6 +12,7 @@ import (
 	"github.com/i-Things/things/service/dgsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
+	"go.uber.org/atomic"
 )
 
 type CheckEvent struct {
@@ -28,11 +29,18 @@ func NewOnlineCheckEvent(svcCtx *svc.ServiceContext, ctx context.Context) *Check
 	}
 }
 
+var isRun atomic.Bool
+
 func (o *CheckEvent) Check() error {
 	logx.WithContext(o.ctx).Infof("online_sync")
+	if !isRun.CompareAndSwap(false, true) {
+		logx.WithContext(o.ctx).Infof("online_sync other run")
+		return nil
+	}
+	defer isRun.Store(false)
 	var total int64 = 10000
-	var limit int64 = 1000
-	var page int64 = 1
+	var limit int64 = 500
+	var page int64 = 0
 	devs, err := protocol.GetActivityDevices(o.ctx)
 	if err != nil {
 		logx.WithContext(o.ctx).Error(err)
@@ -40,6 +48,7 @@ func (o *CheckEvent) Check() error {
 	}
 	var needOnlineDevices []*dm.DeviceOnlineMultiFix
 	for page*limit < total {
+		page++
 		infos, to, err := o.svcCtx.MqttClient.GetOnlineClients(o.ctx, clients.GetOnlineClientsFilter{}, &clients.PageInfo{
 			Page: page,
 			Size: limit,
@@ -48,9 +57,8 @@ func (o *CheckEvent) Check() error {
 			logx.WithContext(o.ctx).Error(err)
 			return err
 		}
-		o.Infof("GetOnlineClients total:%v", total)
+		o.Infof("GetOnlineClients page:%v total:%v", page, total)
 		total = to
-		page++
 		for _, info := range infos {
 			devStr, err := caches.GetStore().HgetCtx(o.ctx, protocol.DeviceMqttClientID, info.ClientID)
 			if err != nil {
