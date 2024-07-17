@@ -8,7 +8,7 @@ networks:
 
 services:
   nats-server:
-    image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:nats-2.8-alpine
+    image: nats/nats:latest
     container_name: ienv-nats
     hostname: nats
     restart: always

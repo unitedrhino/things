@@ -39,6 +39,7 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		err   error
 		cores []*devices.Core
 	)
+	l.ctx = ctxs.WithDefaultAllProject(l.ctx)
 	if len(in.Devices) != 0 {
 		for _, v := range in.Devices {
 			cores = append(cores, &devices.Core{

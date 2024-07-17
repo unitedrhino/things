@@ -8,6 +8,7 @@ import (
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
+	devicemanagelogic "github.com/i-Things/things/service/dmsvr/internal/logic/devicemanage"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -47,7 +48,11 @@ func (l *DisconnectedLogic) Handle(msg *deviceStatus.ConnectMsg) error {
 	if di.FirstLogin == 0 {
 		return nil
 	}
-	err = l.svcCtx.DeviceStatus.AddDevice(l.ctx, msg)
+	err = devicemanagelogic.HandleOnlineFix(l.ctx, l.svcCtx, msg)
+	if err != nil {
+		l.Error(err)
+	}
+	//err = l.svcCtx.DeviceStatus.AddDevice(l.ctx, msg)
 	return err
 	////更新对应设备的online状态
 	//di, err := relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.DeviceFilter{

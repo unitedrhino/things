@@ -33,10 +33,10 @@ func (d *DeviceStatus) UnLock(ctx context.Context) error {
 	return err
 }
 
-func (d *DeviceStatus) AddDevice(ctx context.Context, in *deviceStatus.ConnectMsg) error {
-	_, err := d.cache.ZaddCtx(ctx, genOnlineCacheKey(), in.Timestamp.UnixMilli(), utils.MarshalNoErr(in))
-	return err
-}
+//func (d *DeviceStatus) AddDevice(ctx context.Context, in *deviceStatus.ConnectMsg) error {
+//	_, err := d.cache.ZaddCtx(ctx, genOnlineCacheKey(), in.Timestamp.UnixMilli(), utils.MarshalNoErr(in))
+//	return err
+//}
 
 func (d *DeviceStatus) DelDevices(ctx context.Context, devs ...*deviceStatus.ConnectMsg) error {
 	vals, err := utils.MarshalSlices(devs)

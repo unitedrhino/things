@@ -2,6 +2,7 @@ package rulelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/udsvr/internal/logic"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 
@@ -27,8 +28,11 @@ func NewSceneInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Sc
 
 func (l *SceneInfoIndexLogic) SceneInfoIndex(in *ud.SceneInfoIndexReq) (*ud.SceneInfoIndexResp, error) {
 	f := relationDB.SceneInfoFilter{AreaID: in.AreaID, Tag: in.Tag, Status: in.Status, Name: in.Name,
-		Type: in.Type, HasActionType: in.HasActionType, IDs: in.SceneIDs}
-	list, err := relationDB.NewSceneInfoRepo(l.ctx).FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page))
+		Type: in.Type, HasActionType: in.HasActionType, IDs: in.SceneIDs, ProductID: in.ProductID, DeviceName: in.DeviceName}
+	list, err := relationDB.NewSceneInfoRepo(l.ctx).FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page).WithDefaultOrder(stores.OrderBy{
+		Field: "createdTime",
+		Sort:  stores.OrderDesc,
+	}))
 	if err != nil {
 		return nil, err
 	}

@@ -313,7 +313,8 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 
 // 设备基础信息上报
 func (l *ThingLogic) HandlePropertyReportInfo(msg *deviceMsg.PublishMsg, req msgThing.Req) (respMsg *deviceMsg.PublishMsg, err error) {
-	diDeviceBasicInfoDo := &msgThing.DeviceBasicInfo{Core: devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName}}
+	dev := devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName}
+	diDeviceBasicInfoDo := &msgThing.DeviceBasicInfo{Core: dev}
 	if err = gconv.Struct(req.Params, diDeviceBasicInfoDo); err != nil {
 		return nil, err
 	}
@@ -330,7 +331,18 @@ func (l *ThingLogic) HandlePropertyReportInfo(msg *deviceMsg.PublishMsg, req msg
 			utils.FuncName(), dmDeviceInfoReq.ProductID, dmDeviceInfoReq.DeviceName, err)
 		return l.DeviceResp(msg, errors.Database.AddDetail(err), nil), err
 	}
-
+	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, dev)
+	if err == nil && di.IsOnline == def.False {
+		err := devicemanagelogic.HandleOnlineFix(l.ctx, l.svcCtx, &deviceStatus.ConnectMsg{
+			ClientID:  deviceAuth.GenClientID(di.ProductID, di.DeviceName),
+			Timestamp: l.dreq.GetTimeStamp(msg.Timestamp),
+			Action:    devices.ActionConnected,
+			Reason:    "baseReportFix",
+		})
+		if err != nil {
+			l.Error(err)
+		}
+	}
 	return l.DeviceResp(msg, errors.OK, nil), nil
 }
 

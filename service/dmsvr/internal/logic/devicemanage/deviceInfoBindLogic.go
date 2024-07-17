@@ -43,13 +43,11 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 	//	}
 	//	in.Device.ProductID = pi.ProductID
 	//}
-	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, in.Device.ProductID)
-	if err != nil {
-		return nil, err
-	}
+
 	uc := ctxs.GetUserCtxNoNil(l.ctx)
 	projectI, err := l.svcCtx.ProjectCache.GetData(l.ctx, uc.ProjectID)
 	if err != nil {
+		l.Error(err)
 		return nil, err
 	}
 	if uc.ProjectAuth == nil || uc.ProjectAuth[uc.ProjectID] == nil {
@@ -60,11 +58,26 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 		ProductID:   in.Device.ProductID,
 		DeviceNames: []string{in.Device.DeviceName},
 	})
-	if err != nil {
+	if err != nil && !errors.Cmp(err, errors.NotFind) {
+		l.Error(err)
+		return nil, err
+	}
+	if di == nil {
+		di, err = relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(ctxs.WithRoot(l.ctx), relationDB.DeviceFilter{
+			DeviceNames: []string{in.Device.DeviceName},
+		})
+		if err != nil {
+			return nil, err
+		}
+	}
+	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, di.ProductID)
+	if err != nil && !errors.Cmp(err, errors.NotFind) {
+		l.Error(err)
 		return nil, err
 	}
 	dpi, err := l.svcCtx.TenantCache.GetData(l.ctx, def.TenantCodeDefault)
 	if err != nil {
+		l.Error(err)
 		return nil, err
 	}
 	if !((di.TenantCode == def.TenantCodeDefault && di.ProjectID < 3) || int64(di.ProjectID) == uc.ProjectID || int64(di.ProjectID) == dpi.DefaultProjectID) { //如果在其他租户下 则已经被绑定 或 在本租户下,但是不在一个项目下也不允许绑定
@@ -100,6 +113,7 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 	}
 	err = diDB.Update(ctxs.WithRoot(l.ctx), di)
 	if err != nil {
+		l.Error(err)
 		return nil, err
 	}
 	l.svcCtx.DeviceCache.SetData(l.ctx, devices.Core{
