@@ -81,7 +81,6 @@ func (o *CheckEvent) Check() error {
 				})
 			}
 		}
-
 	}
 
 	if len(devs) > 0 { //如果全部过滤完了这里还有在线的,同时在emq上是离线的,那么需要下线该设备

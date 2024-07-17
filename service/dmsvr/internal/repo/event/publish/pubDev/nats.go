@@ -45,10 +45,7 @@ func (n *NatsClient) PublishToDev(ctx context.Context, respMsg *deviceMsg.Publis
 
 func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqMsg *deviceMsg.PublishMsg, timeout time.Duration, compareMsg CompareMsg) (
 	payload []byte, err error) {
-	err = n.PublishToDev(ctx, reqMsg)
-	if err != nil {
-		return nil, err
-	}
+	start := time.Now()
 	topic := fmt.Sprintf(topics.DeviceUpMsg, reqMsg.Handle, reqMsg.ProductID, reqMsg.DeviceName)
 	done := make(chan struct{})
 	sub, err := n.client.SubscribeWithID(topic, func(ctx context.Context, t time.Time, body []byte) error {
@@ -63,6 +60,8 @@ func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqMsg *deviceMsg.Publ
 		if !compareMsg(msg.Payload) {
 			return nil
 		}
+		now := time.Now().Sub(start)
+		logx.WithContext(ctx).Infof("SubscribeWithID find use:%vms topic:%v msg:%v", now/time.Millisecond, topic, msg.String())
 		payload = msg.Payload
 		close(done)
 		return nil
@@ -71,6 +70,10 @@ func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqMsg *deviceMsg.Publ
 		return nil, err
 	}
 	defer n.client.UnSubscribeWithID(topic, sub)
+	err = n.PublishToDev(ctx, reqMsg)
+	if err != nil {
+		return nil, err
+	}
 	if timeout == 0 {
 		timeout = time.Second * 10
 	}

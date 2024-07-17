@@ -2,7 +2,6 @@ package devicemanagelogic
 
 import (
 	"context"
-	"gitee.com/i-Things/core/service/syssvr/sysExport"
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
@@ -113,10 +112,10 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 			Timestamp: msg.Timestamp.UnixMilli(),
 		}
 		utils.Go(ctx, func() {
-			err = svcCtx.WebHook.Publish(svcCtx.WithDeviceTenant(ctx, appMsg.Device), sysExport.CodeDmDeviceConn, appMsg)
-			if err != nil {
-				log.Error(err)
-			}
+			//err = svcCtx.WebHook.Publish(svcCtx.WithDeviceTenant(ctx, appMsg.Device), sysExport.CodeDmDeviceConn, appMsg)
+			//if err != nil {
+			//	log.Error(err)
+			//}
 			//todo: 这里有鉴权问题,先注释
 			//err = svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDeviceConn, appMsg, map[string]any{
 			//	"productID":  ld.ProductID,
