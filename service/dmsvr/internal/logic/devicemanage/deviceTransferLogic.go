@@ -53,7 +53,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 	}
 	diDB := relationDB.NewDeviceInfoRepo(l.ctx)
 	var dis []*relationDB.DmDeviceInfo
-	if in.Device != nil {
+	if in.Device != nil && in.Device.ProductID != "" {
 		di, err := diDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{
 			ProductID:   in.Device.ProductID,
 			DeviceNames: []string{in.Device.DeviceName},

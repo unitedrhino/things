@@ -377,7 +377,7 @@ type DeviceInfoSaveReq struct {
 }
 
 type DeviceInfoTransferReq struct {
-	Device       DeviceCore    `json:"device,optional"`
+	Device       *DeviceCore   `json:"device,optional"`
 	Devices      []*DeviceCore `json:"devices,optional"`
 	SrcProjectID int64         `json:"srcProjectID,string,optional"` //指定原来的项目ID,不写使用头
 	TransferTo   int64         `json:"transferTo"`                   //转让给: 1: 某个人 2: 自己的某个项目
