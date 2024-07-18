@@ -8,7 +8,7 @@ networks:
 
 services:
   nats-server:
-    image: nats/nats:latest
+    image: nats:latest
     container_name: ienv-nats
     hostname: nats
     restart: always

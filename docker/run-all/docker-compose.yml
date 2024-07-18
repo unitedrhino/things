@@ -33,7 +33,7 @@ services:
         ipv4_address: 172.19.0.8
 
   nats-server:
-    image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:nats-2.8-alpine
+    image: nats:latest
     container_name: nats
     hostname: nats
     restart: always
