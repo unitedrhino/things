@@ -10,6 +10,7 @@ import (
 	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"gorm.io/gorm"
+	"time"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
@@ -58,8 +59,11 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceCore) (*dm.Empty, 
 	di.UserID = def.RootNode
 	di.AreaID = stores.AreaID(def.NotClassified)
 	di.AreaIDPath = def.NotClassifiedPath
+	if di.FirstBind.Valid && di.FirstBind.Time.After(time.Now().AddDate(0, 0, -1)) { //绑定一天内的不算绑定时间
+		di.FirstBind.Valid = false
+		di.ExpTime.Valid = false
+	}
 	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
-
 		err := relationDB.NewDeviceInfoRepo(tx).Update(ctxs.WithRoot(l.ctx), di)
 		if err != nil {
 			return err
