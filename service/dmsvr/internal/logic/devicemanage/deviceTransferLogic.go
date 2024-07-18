@@ -9,6 +9,7 @@ import (
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"gorm.io/gorm"
 
@@ -53,6 +54,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 	}
 	diDB := relationDB.NewDeviceInfoRepo(l.ctx)
 	var dis []*relationDB.DmDeviceInfo
+	var changeAreaIDPaths = map[string]struct{}{}
 	if in.Device != nil && in.Device.ProductID != "" {
 		di, err := diDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{
 			ProductID:   in.Device.ProductID,
@@ -83,6 +85,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 		if pi.AdminUserID != pi.AdminUserID {
 			return nil, errors.Permissions
 		}
+		changeAreaIDPaths[di.AreaIDPath] = struct{}{}
 	}
 	var (
 		ProjectID  stores.ProjectID
@@ -125,6 +128,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 			}
 			AreaID = stores.AreaID(ai.AreaID)
 			AreaIDPath = ai.AreaIDPath
+			changeAreaIDPaths[AreaIDPath] = struct{}{}
 		}
 		pi, err := l.svcCtx.ProjectCache.GetData(l.ctx, in.ProjectID)
 		if err != nil {
@@ -139,7 +143,6 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 				return nil, err
 			}
 		}
-
 	}
 	var devs = utils.CopySlice[devices.Core](dis)
 	err := stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
@@ -176,6 +179,10 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 			l.Error(err)
 		}
 	}
-
+	if len(changeAreaIDPaths) > 0 {
+		ctxs.GoNewCtx(l.ctx, func(ctx2 context.Context) {
+			logic.FillAreaDeviceCount(ctx2, l.svcCtx, utils.SetToSlice(changeAreaIDPaths)...)
+		})
+	}
 	return &dm.Empty{}, nil
 }
