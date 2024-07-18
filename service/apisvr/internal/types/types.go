@@ -290,6 +290,7 @@ type DeviceInfo struct {
 	RatedPower         int64                              `json:"ratedPower,optional,omitempty"`
 	NetType            int64                              `json:"netType,optional,range=[0:8]"`          //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
 	NeedConfirmVersion string                             `json:"needConfirmVersion,optional,omitempty"` //待确认升级的版本
+	UserID             int64                              `json:"userID,string,optional"`
 }
 
 type DeviceInfoBindReq struct {

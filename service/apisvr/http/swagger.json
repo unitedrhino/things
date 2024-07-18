@@ -6760,6 +6760,9 @@
         "needConfirmVersion": {
           "type": "string",
           "description": "待确认升级的版本"
+        },
+        "userID": {
+          "type": "string"
         }
       },
       "title": "DeviceInfo",

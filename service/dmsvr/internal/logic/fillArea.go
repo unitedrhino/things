@@ -14,6 +14,7 @@ import (
 )
 
 func FillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, areaIDPaths ...string) error {
+	logx.WithContext(ctx).Infof("FillAreaDeviceCount areaIDPaths:%v", areaIDPaths)
 	defer utils.Recover(ctx)
 	ctx = ctxs.WithRoot(ctx)
 	log := logx.WithContext(ctx)
