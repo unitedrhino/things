@@ -5,6 +5,7 @@ import (
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/spf13/cast"
 
@@ -29,7 +30,7 @@ func NewSubscribeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Subscri
 }
 
 func (l *SubscribeLogic) Subscribe(req *types.SlotUserSubscribeReq) error {
-	l.Info(req)
+	l.Infof("userSubscribeSlot:%v", utils.Fmt(req))
 	switch req.Code {
 	case def.UserSubscribeDeviceConn:
 	case def.UserSubscribeDevicePropertyReport:
