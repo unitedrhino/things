@@ -17,6 +17,7 @@ func FillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, areaID
 	defer utils.Recover(ctx)
 	ctx = ctxs.WithRoot(ctx)
 	log := logx.WithContext(ctx)
+	var idMap = map[int64]struct{}{}
 	for _, areaIDPath := range areaIDPaths {
 		if areaIDPath == "" || areaIDPath == def.NotClassifiedPath {
 			continue
@@ -25,6 +26,10 @@ func FillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, areaID
 		var idPath string
 		for _, id := range ids {
 			idPath += cast.ToString(id) + "-"
+			if _, ok := idMap[id]; ok {
+				continue
+			}
+			idMap[id] = struct{}{}
 			count, err := relationDB.NewDeviceInfoRepo(ctx).CountByFilter(ctx, relationDB.DeviceFilter{AreaIDPath: idPath})
 			if err != nil {
 				log.Error(err)

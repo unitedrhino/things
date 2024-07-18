@@ -84,6 +84,10 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 			l.Error(err)
 		}
 	}
-	go logic.FillAreaDeviceCount(ctxs.CopyCtx(l.ctx), l.svcCtx, utils.SetToSlice(changeAreaIDPaths)...)
+	if len(changeAreaIDPaths) > 0 {
+		ctxs.GoNewCtx(l.ctx, func(ctx2 context.Context) {
+			logic.FillAreaDeviceCount(ctx2, l.svcCtx, utils.SetToSlice(changeAreaIDPaths)...)
+		})
+	}
 	return &dm.Empty{}, err
 }
