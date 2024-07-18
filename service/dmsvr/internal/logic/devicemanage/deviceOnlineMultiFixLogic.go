@@ -12,6 +12,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
+	"github.com/spf13/cast"
 	"time"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -93,16 +94,6 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 				return
 			}
 		}
-		err = svcCtx.StatusRepo.Insert(ctx, &deviceLog.Status{
-			ProductID:  ld.ProductID,
-			Status:     status,
-			Timestamp:  msg.Timestamp, // 操作时间
-			DeviceName: ld.DeviceName,
-		})
-		if err != nil {
-			log.Errorf("%s.HubLogRepo.insert productID:%v deviceName:%v err:%v",
-				utils.FuncName(), ld.ProductID, ld.DeviceName, err)
-		}
 		appMsg := application.ConnectMsg{
 			Device: devices.Core{
 				ProductID:  ld.ProductID,
@@ -111,38 +102,23 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 			Status:    status,
 			Timestamp: msg.Timestamp.UnixMilli(),
 		}
-		utils.Go(ctx, func() {
-			//err = svcCtx.WebHook.Publish(svcCtx.WithDeviceTenant(ctx, appMsg.Device), sysExport.CodeDmDeviceConn, appMsg)
-			//if err != nil {
-			//	log.Error(err)
-			//}
-			//todo: 这里有鉴权问题,先注释
-			//err = svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDeviceConn, appMsg, map[string]any{
-			//	"productID":  ld.ProductID,
-			//	"deviceName": ld.DeviceName,
-			//}, map[string]any{
-			//	"productID": ld.ProductID,
-			//}, map[string]any{})
-			//if err != nil {
-			//	log.Error(err)
-			//}
-		})
+
 		dev := devices.Core{
 			ProductID:  ld.ProductID,
 			DeviceName: ld.DeviceName,
 		}
+		di, err := svcCtx.DeviceCache.GetData(ctx, dev)
+		if err != nil {
+			log.Error(err)
+			return
+		}
 		if status == def.ConnectedStatus {
-			di, err := relationDB.NewDeviceInfoRepo(ctx).FindOneByFilter(ctx, relationDB.DeviceFilter{Cores: []*devices.Core{&dev}})
-			if err != nil {
-				log.Error(err)
-				return
-			}
 			if di.IsOnline == def.True {
 				log.Infof("already online:%#v", msg)
 				return
 			}
 			var updates = map[string]any{"is_online": def.True, "last_login": msg.Timestamp, "status": def.DeviceStatusOnline}
-			if di.FirstLogin.Valid == false {
+			if di.FirstLogin == 0 {
 				updates["first_login"] = msg.Timestamp
 			}
 			err = relationDB.NewDeviceInfoRepo(ctx).UpdateWithField(ctx,
@@ -162,10 +138,7 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 			}
 			protocol.UpdateDeviceActivity(ctx, dev)
 		} else {
-			di, err := svcCtx.DeviceCache.GetData(ctx, dev)
-			if err != nil {
-				log.Error(err)
-			} else if di.DeviceType == def.DeviceTypeGateway { //如果是网关类型下线,则需要把子设备全部下线
+			if di.DeviceType == def.DeviceTypeGateway { //如果是网关类型下线,则需要把子设备全部下线
 				subDevs, err := relationDB.NewGatewayDeviceRepo(ctx).FindByFilter(ctx,
 					relationDB.GatewayDeviceFilter{Gateway: &dev}, nil)
 				if err != nil {
@@ -185,7 +158,28 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 			}
 			protocol.DeleteDeviceActivity(ctx, dev)
 		}
-
+		err = svcCtx.StatusRepo.Insert(ctx, &deviceLog.Status{
+			ProductID:  ld.ProductID,
+			Status:     status,
+			Timestamp:  msg.Timestamp, // 操作时间
+			DeviceName: ld.DeviceName,
+		})
+		if err != nil {
+			log.Errorf("%s.HubLogRepo.insert productID:%v deviceName:%v err:%v",
+				utils.FuncName(), ld.ProductID, ld.DeviceName, err)
+		}
+		err = svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDeviceConn, appMsg, map[string]any{
+			"productID":  ld.ProductID,
+			"deviceName": ld.DeviceName,
+		}, map[string]any{
+			"projectID": di.ProjectID,
+		}, map[string]any{
+			"projectID": cast.ToString(di.ProjectID),
+			"areaID":    cast.ToString(di.AreaID),
+		})
+		if err != nil {
+			log.Error(err)
+		}
 	}
 	for _, msg := range insertList {
 		handleMsg(msg)

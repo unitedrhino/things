@@ -26,6 +26,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
+	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
@@ -189,14 +190,25 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 				if err != nil {
 					l.Error(err)
 				}
-				err = l.svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDevicePropertyReport, appMsg, map[string]any{
-					"productID":  device.ProductID,
-					"deviceName": device.DeviceName,
-					"identifier": identifier,
-				}, map[string]any{
-					"productID":  device.ProductID,
-					"deviceName": device.DeviceName,
-				})
+				di, err := l.svcCtx.DeviceCache.GetData(l.ctx, device)
+				if err != nil {
+					l.Error(err)
+				}
+				if di != nil {
+					err = l.svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDevicePropertyReport, appMsg, map[string]any{
+						"productID":  device.ProductID,
+						"deviceName": device.DeviceName,
+						"identifier": identifier,
+					}, map[string]any{
+						"productID":  device.ProductID,
+						"deviceName": device.DeviceName,
+					}, map[string]any{
+						"projectID": di.ProjectID,
+					}, map[string]any{
+						"projectID": cast.ToString(di.ProjectID),
+						"areaID":    cast.ToString(di.AreaID),
+					})
+				}
 				if err != nil {
 					logx.WithContext(ctx).Error(err)
 				}
@@ -259,7 +271,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 	}
 
 	timeStamp := req.GetTimeStamp(msg.Timestamp)
-	core := devices.Core{
+	device := devices.Core{
 		ProductID:  msg.ProductID,
 		DeviceName: msg.DeviceName,
 	}
@@ -273,7 +285,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 		startTime := time.Now()
 		for identifier, param := range paramValues {
 			appMsg := application.PropertyReport{
-				Device: core, Timestamp: timeStamp.UnixMilli(),
+				Device: device, Timestamp: timeStamp.UnixMilli(),
 				Identifier: identifier, Param: param,
 			}
 			//应用事件通知-设备物模型属性上报通知 ↓↓↓
@@ -281,20 +293,28 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 			if err != nil {
 				logx.WithContext(ctx).Errorf("%s.DeviceThingPropertyReport  identifier:%v, param:%v,err:%v", utils.FuncName(), identifier, param, err)
 			}
-			err = l.svcCtx.WebHook.Publish(l.svcCtx.WithDeviceTenant(l.ctx, core), sysExport.CodeDmDevicePropertyReport, appMsg)
+			err = l.svcCtx.WebHook.Publish(l.svcCtx.WithDeviceTenant(l.ctx, device), sysExport.CodeDmDevicePropertyReport, appMsg)
 			if err != nil {
 				l.Error(err)
 			}
-			err = l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDevicePropertyReport, appMsg, map[string]any{
-				"productID":  core.ProductID,
-				"deviceName": core.DeviceName,
-				"identifier": identifier,
-			}, map[string]any{
-				"productID":  core.ProductID,
-				"deviceName": core.DeviceName,
-			})
+			di, err := l.svcCtx.DeviceCache.GetData(l.ctx, device)
 			if err != nil {
 				l.Error(err)
+			}
+			if di != nil {
+				err = l.svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDevicePropertyReport, appMsg, map[string]any{
+					"productID":  device.ProductID,
+					"deviceName": device.DeviceName,
+					"identifier": identifier,
+				}, map[string]any{
+					"productID":  device.ProductID,
+					"deviceName": device.DeviceName,
+				}, map[string]any{
+					"projectID": di.ProjectID,
+				}, map[string]any{
+					"projectID": cast.ToString(di.ProjectID),
+					"areaID":    cast.ToString(di.AreaID),
+				})
 			}
 		}
 		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).Infof("%s.DeviceThingPropertyReport startTime:%v",

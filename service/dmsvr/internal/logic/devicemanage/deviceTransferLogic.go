@@ -88,6 +88,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 		ProjectID  stores.ProjectID
 		AreaID     stores.AreaID = def.NotClassified
 		AreaIDPath string        = def.NotClassifiedPath
+		UserID     int64
 	)
 
 	switch in.TransferTo {
@@ -111,6 +112,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 			return nil, errors.NotFind.AddMsg("用户未找到")
 		}
 		ProjectID = stores.ProjectID(dp.List[0].ProjectID)
+		UserID = in.UserID
 	case DeviceTransferToProject:
 		ProjectID = stores.ProjectID(in.ProjectID)
 		if in.AreaID != 0 {
@@ -124,6 +126,11 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 			AreaID = stores.AreaID(ai.AreaID)
 			AreaIDPath = ai.AreaIDPath
 		}
+		pi, err := l.svcCtx.ProjectCache.GetData(l.ctx, in.ProjectID)
+		if err != nil {
+			return nil, err
+		}
+		UserID = pi.AdminUserID
 	}
 	if in.IsCleanData == def.True {
 		for _, di := range dis {
@@ -151,6 +158,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 		}
 		err = relationDB.NewDeviceInfoRepo(tx).UpdateWithField(ctxs.WithAllProject(l.ctx), relationDB.DeviceFilter{Cores: devs}, map[string]any{
 			"project_id":   ProjectID,
+			"user_id":      UserID,
 			"area_id":      AreaID,
 			"area_id_path": AreaIDPath,
 		})

@@ -1,6 +1,8 @@
 package scene
 
 import (
+	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
@@ -48,6 +50,27 @@ type Info struct {
 	Status      def.Bool    `json:"status"`         // 状态（1启用 2禁用）
 	Body        string      `json:"body,omitempty"` //自定义字段
 	Log         *Log        `json:"-"`
+}
+
+func (i *Info) SetAccount(ctx context.Context) context.Context {
+	uc := ctxs.GetUserCtx(ctx)
+	if uc == nil {
+		return ctx
+	}
+	if uc.UserID > def.RootNode {
+		return ctx
+	}
+	if len(i.If.Triggers) == 0 {
+		uc.Account = "系统控制"
+	}
+	trigger := i.If.Triggers[0]
+	switch trigger.Type {
+	case TriggerTypeDevice:
+		uc.Account = "设备触发控制"
+	case TriggerTypeTimer:
+		uc.Account = "定时控制"
+	}
+	return ctxs.SetUserCtx(ctx, uc)
 }
 
 func (i *Info) Validate(repo ValidateRepo) error {

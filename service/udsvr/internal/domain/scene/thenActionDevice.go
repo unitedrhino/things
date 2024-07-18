@@ -120,12 +120,13 @@ var limitChan chan struct{}
 func init() {
 	limitChan = make(chan struct{}, 500) //设备执行限制并发数为500
 }
+
 func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 	var (
 		executeFunc func(device devices.Core) error
 		deviceList  []devices.Core
 	)
-
+	ctx = repo.Info.SetAccount(ctx)
 	toData := func() string {
 		if a.DataID != "" {
 			var data = map[string]any{

@@ -129,6 +129,10 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 	defer func() {
 		ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
 			uc := ctxs.GetUserCtx(l.ctx)
+			account := uc.Account
+			if account == "" && uc.UserID <= def.RootNode {
+				account = "系统控制"
+			}
 			for dataID, content := range param {
 				_ = l.svcCtx.SendRepo.Insert(ctx, &deviceLog.Send{
 					ProductID:  in.ProductID,
@@ -138,7 +142,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 					TraceID:    utils.TraceIdFromContext(ctx),
 					UserID:     uc.UserID,
 					DataID:     dataID,
-					Account:    uc.Account,
+					Account:    account,
 					Content:    utils.Fmt(content),
 					ResultCode: errors.Fmt(err).GetCode(),
 				})
