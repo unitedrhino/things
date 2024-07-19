@@ -11,12 +11,13 @@ import (
 	rulelogic "github.com/i-Things/things/service/udsvr/internal/logic/rule"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 	"github.com/zeromicro/go-zero/core/logx"
+	"sync"
 	"time"
 )
 
 func (l *TimerHandle) DeviceTriggerCheck() error {
 	now := time.Now()
-	db := relationDB.NewSceneIfTriggerRepo(l.ctx) //stores.WithNoDebug(l.ctx, )
+	db := stores.WithNoDebug(l.ctx, relationDB.NewSceneIfTriggerRepo)
 
 	list, err := db.FindByFilter(l.ctx, relationDB.SceneIfTriggerFilter{
 		Status:           def.True,
@@ -56,9 +57,8 @@ func (l *TimerHandle) DeviceTriggerCheck() error {
 		}
 		ctxs.GoNewCtx(ctx, func(ctx context.Context) { //执行任务
 			var err error
-
 			if err != nil { //如果失败了下次还可以执行
-				l.Error(err)
+				logx.WithContext(ctx).Error(err)
 				return
 			}
 			l.SceneExec(ctx, do)
@@ -115,23 +115,31 @@ func (l *TimerHandle) SceneTiming() error {
 		}
 		list = append(list, pos...)
 	}
-	var sceneSet = map[int64]struct{}{}
+	l.Infof("sceneTrigger:%v", utils.Fmt(list))
+	var sceneSet sync.Map
 	for _, v := range list {
 		var po = v
-		po.SceneInfo.Triggers = append(po.SceneInfo.Triggers, po)
-		do := rulelogic.PoToSceneInfoDo(po.SceneInfo)
-		if po.SceneInfo == nil {
-			logx.WithContext(l.ctx).Errorf("trigger timer not bind scene, trigger:%v", utils.Fmt(po))
-			relationDB.NewSceneIfTriggerRepo(l.ctx).Delete(l.ctx, po.ID)
-			continue
-		}
-		ctx := ctxs.BindTenantCode(l.ctx, string(v.SceneInfo.TenantCode), 0)
-		if !do.When.IsHit(ctx, now, nil) {
-			continue
-		}
-
-		ctxs.GoNewCtx(ctx, func(ctx context.Context) { //执行任务
+		ctxs.GoNewCtx(l.ctx, func(ctx context.Context) { //执行任务
+			startTime := time.Now()
+			log := logx.WithContext(ctx)
+			defer func() {
+				endTime := time.Now()
+				if startTime.Add(2 * time.Second).Before(endTime) { //如果超过了2秒钟,需要记录日志
+					log.Slowf("sceneTrigger use:%v ms po:%v", endTime.Sub(startTime)/time.Millisecond, utils.Fmt(po))
+				}
+			}()
 			f := l.LockRunning(ctx, "scene", po.ID)
+			po.SceneInfo.Triggers = append(po.SceneInfo.Triggers, po)
+			do := rulelogic.PoToSceneInfoDo(po.SceneInfo)
+			if po.SceneInfo == nil {
+				log.Errorf("trigger timer not bind scene, trigger:%v", utils.Fmt(po))
+				relationDB.NewSceneIfTriggerRepo(ctx).Delete(ctx, po.ID)
+				return
+			}
+			ctx = ctxs.BindTenantCode(ctx, string(v.SceneInfo.TenantCode), 0)
+			if !do.When.IsHit(ctx, now, nil) {
+				return
+			}
 			if f == nil { //有正在执行的或redis报错,直接返回,下次重试
 				return
 			}
@@ -162,20 +170,19 @@ func (l *TimerHandle) SceneTiming() error {
 				}
 				err = db.Update(ctx, po)
 				if err != nil { //如果失败了下次还可以执行
-					l.Error(err)
+					log.Error(err)
 					return
 				}
 				stores.WithNoDebug(ctx, relationDB.NewSceneInfoRepo).UpdateWithField(ctx, relationDB.SceneInfoFilter{IDs: []int64{po.SceneID}}, map[string]any{"last_run_time": time.Now()})
 			}()
 			if err != nil { //如果失败了下次还可以执行
-				l.Error(err)
+				log.Error(err)
 				return
 			}
-			if _, ok := sceneSet[po.SceneID]; ok { //多个定时触发同时触发只执行一次
-				l.Infof("重复触发同一个场景,跳过,场景id:%v", po.SceneID)
+			if _, ok := sceneSet.LoadOrStore(po.SceneID, struct{}{}); ok { //多个定时触发同时触发只执行一次
+				log.Infof("重复触发同一个场景,跳过,场景id:%v", po.SceneID)
 				return
 			}
-			sceneSet[po.SceneID] = struct{}{}
 			l.SceneExec(ctx, do)
 		})
 	}

@@ -84,7 +84,7 @@ func (l *TimerHandle) SceneThingPropertyReport(in application.PropertyReport) er
 		ctxs.GoNewCtx(ctx, func(ctx context.Context) { //执行任务
 			var err error
 			if err != nil { //如果失败了下次还可以执行
-				l.Error(err)
+				logx.WithContext(ctx).Error(err)
 				return
 			}
 			l.SceneExec(ctx, do)

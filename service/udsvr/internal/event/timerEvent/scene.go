@@ -45,8 +45,8 @@ func (l *TimerHandle) LockRunning(ctx context.Context, Type string /*scene devic
 	}
 }
 
-func (l *TimerHandle) SceneExec(ctx context.Context, do *scene.Info) error {
-	l.Infof("SceneExec do:%v", utils.Fmt(do))
+func (l *TimerHandle) SceneExec(ctx context.Context, do *scene.Info) {
+	logx.WithContext(ctx).Infof("SceneExec do:%v", utils.Fmt(do))
 	err := do.Then.Execute(ctx, scene.ActionRepo{
 		Info:           do,
 		DeviceInteract: l.svcCtx.DeviceInteract,
@@ -75,15 +75,18 @@ func (l *TimerHandle) SceneExec(ctx context.Context, do *scene.Info) error {
 				req.DeviceName = trigger.Device.DeviceName
 				req.DeviceAlias = trigger.Device.DeviceAlias
 			}
-			_, err := rulelogic.NewAlarmRecordCreateLogic(stores.SetIsDebug(l.ctx, false), l.svcCtx).
+			_, err := rulelogic.NewAlarmRecordCreateLogic(stores.SetIsDebug(ctx, false), l.svcCtx).
 				AlarmRecordCreate(&req)
 			return err
 		},
 		SaveLog: func(ctx context.Context, log *scene.Log) error {
 			po := utils.Copy[relationDB.UdSceneLog](log)
-			err := stores.WithNoDebug(l.ctx, relationDB.NewSceneLogRepo).Insert(ctx, po)
+			err := stores.WithNoDebug(ctx, relationDB.NewSceneLogRepo).Insert(ctx, po)
 			return err
 		},
 	})
-	return err
+	if err != nil {
+		logx.WithContext(ctx).Errorf("SceneExec exec err:%v", err)
+	}
+	return
 }
