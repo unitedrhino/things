@@ -115,7 +115,7 @@ func (l *TimerHandle) SceneTiming() error {
 		}
 		list = append(list, pos...)
 	}
-	l.Infof("sceneTrigger:%v", utils.Fmt(list))
+	l.Infof("sceneTrigger now:%v list:%v", now, utils.Fmt(list))
 	var sceneSet sync.Map
 	for _, v := range list {
 		var po = v
@@ -125,10 +125,20 @@ func (l *TimerHandle) SceneTiming() error {
 			defer func() {
 				endTime := time.Now()
 				if startTime.Add(2 * time.Second).Before(endTime) { //如果超过了2秒钟,需要记录日志
-					log.Slowf("sceneTrigger use:%v ms po:%v", endTime.Sub(startTime)/time.Millisecond, utils.Fmt(po))
+					log.Slowf("sceneTrigger use:%v  po:%v", endTime.Sub(startTime), utils.Fmt(po))
 				}
 			}()
 			f := l.LockRunning(ctx, "scene", po.ID)
+			if f == nil { //有正在执行的或redis报错,直接返回,下次重试
+				log.Infof("sceneTrigger other is running:%v", utils.Fmt(po))
+				return
+			}
+			defer func() { //避免二次释放,数据库执行完之后也可以释放,无需等执行完
+				if f != nil {
+					f()
+					f = nil
+				}
+			}()
 			po.SceneInfo.Triggers = append(po.SceneInfo.Triggers, po)
 			do := rulelogic.PoToSceneInfoDo(po.SceneInfo)
 			if po.SceneInfo == nil {
@@ -140,12 +150,15 @@ func (l *TimerHandle) SceneTiming() error {
 			if !do.When.IsHit(ctx, now, nil) {
 				return
 			}
-			if f == nil { //有正在执行的或redis报错,直接返回,下次重试
-				return
-			}
+
 			var err error
 			func() {
-				defer f() //数据库执行完成后就可以释放锁了
+				defer func() { //避免二次释放,数据库执行完之后也可以释放,无需等执行完
+					if f != nil {
+						f()
+						f = nil
+					}
+				}()
 				if po.Timer.ExecType == scene.ExecTypeAt {
 					po.LastRunTime = sql.NullTime{
 						Time:  utils.GetEndTime(now),
