@@ -128,7 +128,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 	}
 	defer func() {
 		ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
-			uc := ctxs.GetUserCtx(l.ctx)
+			uc := ctxs.GetUserCtxNoNil(l.ctx)
 			account := uc.Account
 			if account == "" && uc.UserID <= def.RootNode {
 				account = "系统控制"
