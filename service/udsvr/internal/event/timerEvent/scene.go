@@ -46,6 +46,7 @@ func (l *TimerHandle) LockRunning(ctx context.Context, Type string /*scene devic
 }
 
 func (l *TimerHandle) SceneExec(ctx context.Context, do *scene.Info) error {
+	l.Infof("SceneExec do:%v", utils.Fmt(do))
 	err := do.Then.Execute(ctx, scene.ActionRepo{
 		Info:           do,
 		DeviceInteract: l.svcCtx.DeviceInteract,

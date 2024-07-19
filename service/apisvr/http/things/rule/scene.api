@@ -27,7 +27,7 @@ service api {
     @doc "获取场景信息详情"
     @handler read
     post /read (WithID) returns (SceneInfo)
-    @doc "获取场景信息详情"
+    @doc "手动触发场景"
     @handler ManuallyTrigger
     post /manually-trigger (WithID) returns ()
 }

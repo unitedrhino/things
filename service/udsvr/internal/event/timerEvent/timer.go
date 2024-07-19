@@ -16,7 +16,7 @@ import (
 
 func (l *TimerHandle) DeviceTriggerCheck() error {
 	now := time.Now()
-	db := stores.WithNoDebug(l.ctx, relationDB.NewSceneIfTriggerRepo)
+	db := relationDB.NewSceneIfTriggerRepo(l.ctx) //stores.WithNoDebug(l.ctx, )
 
 	list, err := db.FindByFilter(l.ctx, relationDB.SceneIfTriggerFilter{
 		Status:           def.True,
