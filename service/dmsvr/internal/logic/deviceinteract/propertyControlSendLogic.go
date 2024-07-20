@@ -208,7 +208,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 		return true
 	})
 	if err != nil {
-		return nil, err
+		return nil, errors.Fmt(err).WithMsg("指令发送失败")
 	}
 
 	var dresp msgThing.Resp
@@ -227,5 +227,5 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 		MsgToken: dresp.MsgToken,
 		Msg:      dresp.Msg,
 		Code:     dresp.Code,
-	}, err
+	}, errors.Fmt(err).WithMsg("指令发送失败")
 }

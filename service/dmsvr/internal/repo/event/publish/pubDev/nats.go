@@ -75,11 +75,13 @@ func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqMsg *deviceMsg.Publ
 		return nil, err
 	}
 	if timeout == 0 {
-		timeout = time.Second * 10
+		timeout = time.Second * 3
 	}
 	select {
 	case <-done:
 		return
+	case <-ctx.Done():
+		return nil, errors.DeviceTimeOut
 	case <-time.After(timeout):
 		return nil, errors.DeviceTimeOut
 	}

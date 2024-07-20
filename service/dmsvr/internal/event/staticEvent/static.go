@@ -37,12 +37,12 @@ func (l *StaticHandle) Handle() error { //产品品类设备数量统计
 			l.Error(err)
 		}
 	})
-	utils.Go(l.ctx, func() {
-		err := l.AreaDeviceStatic()
-		if err != nil {
-			l.Error(err)
-		}
-	})
+	//utils.Go(l.ctx, func() {
+	//	err := l.AreaDeviceStatic()
+	//	if err != nil {
+	//		l.Error(err)
+	//	}
+	//})
 	utils.Go(l.ctx, func() {
 		err := l.DeviceExp()
 		if err != nil {
