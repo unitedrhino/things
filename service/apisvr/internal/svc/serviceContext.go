@@ -33,8 +33,6 @@ import (
 	"github.com/i-Things/things/service/dmsvr/client/userdevice"
 	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/dmdirect"
-	"github.com/i-Things/things/service/rulesvr/client/alarmcenter"
-	"github.com/i-Things/things/service/rulesvr/client/scenelinkage"
 	"github.com/i-Things/things/service/udsvr/client/rule"
 	"github.com/i-Things/things/service/udsvr/uddirect"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -59,8 +57,6 @@ type SvrClient struct {
 
 	Rule       rule.Rule
 	UserDevice userdevice.UserDevice
-	Scene      scenelinkage.SceneLinkage
-	Alarm      alarmcenter.AlarmCenter
 	UserM      user.UserManage
 	ProjectM   projectmanage.ProjectManage
 	AreaM      areamanage.AreaManage

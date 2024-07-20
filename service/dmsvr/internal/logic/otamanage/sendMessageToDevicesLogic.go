@@ -72,6 +72,7 @@ func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirm
 			l.Error(err)
 		}
 	}
+
 	err := stores.WithNoDebug(l.ctx, relationDB.NewOtaFirmwareDeviceRepo).UpdateStatusByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
 		FirmwareID: jobInfo.FirmwareID,
 		JobID:      jobInfo.ID,

@@ -4,7 +4,6 @@ import (
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/types"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
-	"github.com/i-Things/things/service/rulesvr/pb/rule"
 	"github.com/i-Things/things/service/udsvr/pb/ud"
 )
 
@@ -35,25 +34,6 @@ func ToDmPageRpc(in *types.PageInfo) *dm.PageInfo {
 
 func ToUdPageRpc(in *types.PageInfo) *ud.PageInfo {
 	return utils.Copy[ud.PageInfo](in)
-}
-
-func ToRulePageRpc(in *types.PageInfo) *rule.PageInfo {
-	if in == nil {
-		return nil
-	}
-	return &rule.PageInfo{
-		Page: in.Page,
-		Size: in.Size,
-	}
-}
-func ToRuleTimeRangeRpc(in *types.TimeRange) *rule.TimeRange {
-	if in == nil {
-		return nil
-	}
-	return &rule.TimeRange{
-		Start: in.Start,
-		End:   in.End,
-	}
 }
 
 func ToUdTimeRangeRpc(in *types.TimeRange) *ud.TimeRange {

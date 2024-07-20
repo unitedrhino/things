@@ -275,7 +275,7 @@ func ToSceneTriggerDo(in *relationDB.UdSceneIfTrigger) *scene.Trigger {
 func ToSceneTriggerTimerDo(in relationDB.UdSceneTriggerTimer) (ret *scene.Timer) {
 	return &scene.Timer{
 		ExecAt:        in.ExecAt,
-		ExecRepeat:    utils.Int64ToBStr(in.ExecRepeat),
+		ExecRepeat:    utils.Int64ToBStr(in.ExecRepeat, scene.RepeatTypeLen[in.RepeatType]),
 		ExecType:      in.ExecType,
 		ExecLoopStart: in.ExecLoopStart,
 		ExecLoopEnd:   in.ExecLoopEnd,
@@ -329,32 +329,3 @@ func PoToSceneInfoPbs(ctx context.Context, svcCtx *svc.ServiceContext, in []*rel
 	}
 	return ret
 }
-
-//func ToDeviceTimerPb(in *relationDB.UdDeviceTimerInfo) *ud.DeviceTimerInfo {
-//	if in == nil {
-//		return nil
-//	}
-//	return &ud.DeviceTimerInfo{
-//		Id:   in.ID,
-//		Name: in.Name,
-//		Device: &ud.DeviceCore{
-//			ProductID:  in.ProductID,
-//			DeviceName: in.DeviceName,
-//		},
-//		CreatedTime: in.CreatedTime.Unix(),
-//		TriggerType: in.TriggerType,
-//		ExecAt:      in.ExecAt,
-//		ExecRepeat:  in.ExecRepeat,
-//		ActionType:  in.ActionType,
-//		DataID:      in.DataID,
-//		Value:       in.Value,
-//		Status:      in.Status,
-//	}
-//}
-//
-//func ToDeviceTimersPb(in []*relationDB.UdDeviceTimerInfo) (ret []*ud.DeviceTimerInfo) {
-//	for _, v := range in {
-//		ret = append(ret, ToDeviceTimerPb(v))
-//	}
-//	return
-//}

@@ -56,6 +56,11 @@ const (
 	RepeatTypeMount RepeatType = "mount" //按月重复
 )
 
+var RepeatTypeLen = map[string]int{
+	RepeatTypeWeek:  7,
+	RepeatTypeMount: 31,
+}
+
 type ExecType = string
 
 const (
