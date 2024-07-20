@@ -2,6 +2,7 @@ package devicemanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
@@ -29,6 +30,10 @@ func NewDeviceInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *De
 
 // 获取设备信息详情
 func (l *DeviceInfoReadLogic) DeviceInfoRead(in *dm.DeviceInfoReadReq) (*dm.DeviceInfo, error) {
+
+	if ctxs.GetUserCtx(l.ctx).IsAdmin {
+		l.ctx = ctxs.WithAllProject(l.ctx)
+	}
 	di, err := l.DiDB.FindOneByFilter(l.ctx,
 		relationDB.DeviceFilter{ProductID: in.ProductID, DeviceNames: []string{in.DeviceName},
 			SharedType:  def.SelectTypeAll,
