@@ -222,10 +222,12 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 		} else {
 			err = errors.DeviceResp
 		}
+		err = errors.Fmt(err).WithMsg("指令发送失败")
 	}
-	return &dm.PropertyControlSendResp{
+	ret = &dm.PropertyControlSendResp{
 		MsgToken: dresp.MsgToken,
 		Msg:      dresp.Msg,
 		Code:     dresp.Code,
-	}, errors.Fmt(err).WithMsg("指令发送失败")
+	}
+	return ret, err
 }
