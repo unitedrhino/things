@@ -82,6 +82,7 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 		deviceNames = append(deviceNames, v.DeviceName)
 	}
 	var confirmDevices []*devices.Core
+	var clearConfirmDevices []*devices.Core
 
 	err = stores.GetCommonConn(l.ctx).Transaction(func(tx *gorm.DB) error {
 		err = relationDB.NewOtaJobRepo(tx).Insert(l.ctx, &dmOtaJob)
@@ -126,6 +127,12 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 					if err != nil {
 						return err
 					}
+					if status == msgOta.DeviceStatusConfirm {
+						confirmDevices = append(confirmDevices, &devices.Core{
+							ProductID:  device.ProductID,
+							DeviceName: device.DeviceName,
+						})
+					}
 				case msgOta.DeviceStatusConfirm, msgOta.DeviceStatusQueued:
 					if in.IsOverwriteMode != def.True { //如果是不覆盖则直接失败
 						status = msgOta.DeviceStatusFailure
@@ -137,14 +144,26 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 						if err != nil {
 							return err
 						}
-					}
-					if od.Status == msgOta.DeviceStatusConfirm {
-						confirmDevices = append(confirmDevices, &devices.Core{
-							ProductID:  od.ProductID,
-							DeviceName: od.DeviceName,
-						})
+						if status == msgOta.DeviceStatusConfirm {
+							confirmDevices = append(confirmDevices, &devices.Core{
+								ProductID:  device.ProductID,
+								DeviceName: device.DeviceName,
+							})
+						}
 					}
 				}
+			} else if status == msgOta.DeviceStatusConfirm {
+				confirmDevices = append(confirmDevices, &devices.Core{
+					ProductID:  device.ProductID,
+					DeviceName: device.DeviceName,
+				})
+			}
+
+			if status == msgOta.DeviceStatusQueued { //如果需要执行且不需要确认,则需要将该设备的确认状态清除
+				clearConfirmDevices = append(clearConfirmDevices, &devices.Core{
+					ProductID:  device.ProductID,
+					DeviceName: device.DeviceName,
+				})
 			}
 
 			otaDevices = append(otaDevices, &relationDB.DmOtaFirmwareDevice{
@@ -161,6 +180,13 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 		err = otDB.MultiInsert(l.ctx, otaDevices)
 		if err != nil {
 			return err
+		}
+		if len(clearConfirmDevices) > 0 {
+			err = relationDB.NewDeviceInfoRepo(tx).UpdateWithField(l.ctx, relationDB.DeviceFilter{Cores: confirmDevices},
+				map[string]any{"need_confirm_job_id": 0, "need_confirm_version": ""})
+			if err != nil {
+				return err
+			}
 		}
 		if len(confirmDevices) > 0 {
 			err = relationDB.NewDeviceInfoRepo(tx).UpdateWithField(l.ctx, relationDB.DeviceFilter{Cores: confirmDevices},

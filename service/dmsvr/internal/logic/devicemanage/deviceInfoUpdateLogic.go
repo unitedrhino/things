@@ -100,6 +100,8 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 				if err != nil {
 					return err
 				}
+				old.NeedConfirmVersion = ""
+				old.NeedConfirmJobID = 0
 			}
 		}
 	}

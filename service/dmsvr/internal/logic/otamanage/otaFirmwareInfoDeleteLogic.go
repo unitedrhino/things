@@ -76,8 +76,14 @@ func (l *OtaFirmwareInfoDeleteLogic) OtaFirmwareInfoDelete(in *dm.WithID) (*dm.E
 			l.Errorf("%s.DeleteOTAFirmware err=%v", utils.FuncName(), err)
 			return err
 		}
+		err = relationDB.NewOtaJobRepo(tx).DeleteByFilter(l.ctx, relationDB.OtaJobFilter{FirmwareID: in.Id})
+		if err != nil {
+			l.Errorf("%s.DeleteOTAFirmware err=%v", utils.FuncName(), err)
+			return err
+		}
+		err = relationDB.NewOtaFirmwareDeviceRepo(tx).DeleteByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{FirmwareID: in.Id})
 		// 如果所有操作成功，提交事务
-		return nil
+		return err
 	})
 	if err != nil {
 		l.Errorf("failed to commit transaction: %v", err)

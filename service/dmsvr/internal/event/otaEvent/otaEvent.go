@@ -10,6 +10,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
+	"gorm.io/gorm"
 )
 
 type OtaEvent struct {
@@ -36,12 +37,27 @@ func (o *OtaEvent) DeviceUpgradePush() error {
 		return err
 	}
 	for _, job := range jobs {
-		if job.Firmware == nil {
+		jj := job
+		if job.Firmware == nil { //任务的固件已经被删除了,需要删除该任务及对应的设备
+			ctxs.GoNewCtx(o.ctx, func(ctx context.Context) {
+				err := stores.GetTenantConn(ctx).Transaction(func(tx *gorm.DB) error {
+					err := relationDB.NewOtaFirmwareDeviceRepo(tx).DeleteByFilter(ctx, relationDB.OtaFirmwareDeviceFilter{
+						JobID: jj.ID,
+					})
+					if err != nil {
+						return err
+					}
+					err = relationDB.NewOtaJobRepo(tx).Delete(ctx, jj.ID)
+					return err
+				})
+				if err != nil {
+					logx.WithContext(ctx).Errorf("Device upgrade push err:%+v", err)
+				}
+			})
 			continue
 		}
-		j := job
 		ctxs.GoNewCtx(o.ctx, func(ctx context.Context) {
-			err := otamanagelogic.NewSendMessageToDevicesLogic(ctx, o.svcCtx).PushMessageToDevices(j)
+			err := otamanagelogic.NewSendMessageToDevicesLogic(ctx, o.svcCtx).PushMessageToDevices(jj)
 			if err != nil && !errors.Cmp(err, errors.NotFind) {
 				o.Error(err)
 			}
