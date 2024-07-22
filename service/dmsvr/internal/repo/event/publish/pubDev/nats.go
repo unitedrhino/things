@@ -67,6 +67,7 @@ func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqMsg *deviceMsg.Publ
 		return nil
 	})
 	if err != nil {
+		logx.WithContext(ctx).Error(err)
 		return nil, err
 	}
 	defer n.client.UnSubscribeWithID(topic, sub)
