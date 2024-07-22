@@ -46,7 +46,7 @@ func (l *TimerHandle) LockRunning(ctx context.Context, Type string /*scene devic
 }
 
 func (l *TimerHandle) SceneExec(ctx context.Context, do *scene.Info) {
-	logx.WithContext(ctx).Infof("SceneExec do:%v", utils.Fmt(do))
+	logx.WithContext(ctx).Infof("scene SceneExec do:%v", utils.Fmt(do))
 	err := do.Then.Execute(ctx, scene.ActionRepo{
 		Info:           do,
 		DeviceInteract: l.svcCtx.DeviceInteract,
@@ -60,7 +60,7 @@ func (l *TimerHandle) SceneExec(ctx context.Context, do *scene.Info) {
 		},
 		AlarmExec: func(ctx context.Context, in scene.AlarmSerial) error {
 			if len(in.Scene.If.Triggers) == 0 {
-				logx.WithContext(ctx).Error("没有触发器")
+				logx.WithContext(ctx).Errorf("scene err:%v", "没有触发器")
 				return nil
 			}
 			trigger := in.Scene.If.Triggers[0]
@@ -77,6 +77,9 @@ func (l *TimerHandle) SceneExec(ctx context.Context, do *scene.Info) {
 			}
 			_, err := rulelogic.NewAlarmRecordCreateLogic(stores.SetIsDebug(ctx, false), l.svcCtx).
 				AlarmRecordCreate(&req)
+			if err != nil {
+				logx.WithContext(ctx).Errorf("scene err:%v", err)
+			}
 			return err
 		},
 		SaveLog: func(ctx context.Context, log *scene.Log) error {
@@ -86,7 +89,7 @@ func (l *TimerHandle) SceneExec(ctx context.Context, do *scene.Info) {
 		},
 	})
 	if err != nil {
-		logx.WithContext(ctx).Errorf("SceneExec exec err:%v", err)
+		logx.WithContext(ctx).Errorf("scene SceneExec exec err:%v", err)
 	}
 	return
 }

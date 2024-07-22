@@ -27,13 +27,17 @@ func (l *TimerHandle) DeviceTriggerCheck() error {
 		LastRunTime:      stores.CmpIsNull(true),
 	}, nil)
 	if err != nil {
+		l.Errorf("scene err:%v", err)
 		return err
 	}
 	for _, v := range list {
 		var po = v
 		if po.SceneInfo == nil {
-			logx.WithContext(l.ctx).Errorf("trigger device not bind scene, trigger:%v", utils.Fmt(po))
-			relationDB.NewSceneIfTriggerRepo(l.ctx).Delete(l.ctx, po.ID)
+			logx.WithContext(l.ctx).Errorf("scene trigger device not bind scene, trigger:%v", utils.Fmt(po))
+			err = relationDB.NewSceneIfTriggerRepo(l.ctx).Delete(l.ctx, po.ID)
+			if err != nil {
+				l.Errorf("scene err:%v", err)
+			}
 			continue
 		}
 		if v.Device.FirstTriggerTime.Time.Add(time.Duration(v.Device.StateKeep.Value) * time.Second).After(now) {
@@ -45,7 +49,7 @@ func (l *TimerHandle) DeviceTriggerCheck() error {
 				"last_run_time": now,
 			})
 			if err != nil {
-				l.Error(err)
+				l.Errorf("scene err:%v", err)
 			}
 		}()
 		po.SceneInfo.Triggers = append(po.SceneInfo.Triggers, po)
@@ -58,7 +62,7 @@ func (l *TimerHandle) DeviceTriggerCheck() error {
 		ctxs.GoNewCtx(ctx, func(ctx context.Context) { //执行任务
 			var err error
 			if err != nil { //如果失败了下次还可以执行
-				logx.WithContext(ctx).Error(err)
+				logx.WithContext(ctx).Errorf("scene err:%v", err)
 				return
 			}
 			l.SceneExec(ctx, do)
@@ -111,11 +115,12 @@ func (l *TimerHandle) SceneTiming() error {
 	for _, v := range triggerF {
 		pos, err := db.FindByFilter(l.ctx, v, nil)
 		if err != nil {
+			l.Error(err)
 			return err
 		}
 		list = append(list, pos...)
 	}
-	l.Infof("sceneTrigger now:%v list:%v", now, utils.Fmt(list))
+	l.Infof("scene sceneTrigger now:%v list:%v", now, utils.Fmt(list))
 	var sceneSet sync.Map
 	for _, v := range list {
 		var po = v
@@ -142,7 +147,7 @@ func (l *TimerHandle) SceneTiming() error {
 			po.SceneInfo.Triggers = append(po.SceneInfo.Triggers, po)
 			do := rulelogic.PoToSceneInfoDo(po.SceneInfo)
 			if po.SceneInfo == nil {
-				log.Errorf("trigger timer not bind scene, trigger:%v", utils.Fmt(po))
+				log.Errorf("scene trigger timer not bind scene, trigger:%v", utils.Fmt(po))
 				relationDB.NewSceneIfTriggerRepo(ctx).Delete(ctx, po.ID)
 				return
 			}
@@ -181,19 +186,23 @@ func (l *TimerHandle) SceneTiming() error {
 				if po.Timer.ExecRepeat == 0 { //不重复执行的只执行一次
 					po.Status = def.False
 				}
-				err = db.Update(ctx, po)
+				err = relationDB.NewSceneIfTriggerRepo(ctx).Update(ctx, po)
 				if err != nil { //如果失败了下次还可以执行
-					log.Error(err)
+					log.Errorf("scene err:%v", err)
 					return
 				}
-				stores.WithNoDebug(ctx, relationDB.NewSceneInfoRepo).UpdateWithField(ctx, relationDB.SceneInfoFilter{IDs: []int64{po.SceneID}}, map[string]any{"last_run_time": time.Now()})
+				err = relationDB.NewSceneInfoRepo(ctx).UpdateWithField(ctx, relationDB.SceneInfoFilter{IDs: []int64{po.SceneID}}, map[string]any{"last_run_time": time.Now()})
+				if err != nil {
+					log.Errorf("scene err:%v", err)
+					return
+				}
 			}()
 			if err != nil { //如果失败了下次还可以执行
-				log.Error(err)
+				log.Errorf("scene err:%v", err)
 				return
 			}
 			if _, ok := sceneSet.LoadOrStore(po.SceneID, struct{}{}); ok { //多个定时触发同时触发只执行一次
-				log.Infof("重复触发同一个场景,跳过,场景id:%v", po.SceneID)
+				log.Infof("scene 重复触发同一个场景,跳过,场景id:%v", po.SceneID)
 				return
 			}
 			l.SceneExec(ctx, do)

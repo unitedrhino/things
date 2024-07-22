@@ -27,7 +27,6 @@ func NewOtaEvent(svcCtx *svc.ServiceContext, ctx context.Context) *OtaEvent {
 }
 
 func (o *OtaEvent) DeviceUpgradePush() error {
-	return nil
 	jobs, err := stores.WithNoDebug(o.ctx, relationDB.NewOtaJobRepo).FindByFilter(o.ctx, relationDB.OtaJobFilter{
 		WithFirmware: true,
 		Statues:      []int64{msgOta.JobStatusInProgress},
