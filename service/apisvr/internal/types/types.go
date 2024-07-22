@@ -888,7 +888,7 @@ type OtaFirmwareDeviceConfirmReq struct {
 }
 
 type OtaFirmwareDeviceIndexReq struct {
-	PageInfo   *PageInfo `json:"pageInfo,optional"`   // 分页信息
+	Page       *PageInfo `json:"page,optional"`       // 分页信息
 	JobID      int64     `json:"jobID,optional"`      // 作业ID
 	FirmwareID int64     `json:"firmwareID,optional"` // 任务状态
 	DeviceName string    `json:"deviceName,optional"` // 设备名称

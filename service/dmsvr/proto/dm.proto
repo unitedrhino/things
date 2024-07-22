@@ -1734,7 +1734,7 @@ message OtaJobStaticInfo{
 }
 
 message OtaFirmwareJobIndexReq{
-  PageInfo pageInfo = 1;
+  PageInfo page = 1;
   int64 firmwareID = 2;
   string productID = 3;
   string deviceName = 4;
@@ -1754,7 +1754,7 @@ message OtaJobByDeviceIndexReq{
 
 
 message OtaFirmwareDeviceIndexReq{
-  PageInfo pageInfo = 1;
+  PageInfo page = 1;
   int64 firmwareID =2;
   int64 jobID = 3;
   string deviceName = 4;

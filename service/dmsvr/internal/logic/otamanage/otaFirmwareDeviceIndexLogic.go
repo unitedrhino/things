@@ -40,7 +40,7 @@ func (l *OtaFirmwareDeviceIndexLogic) OtaFirmwareDeviceIndex(in *dm.OtaFirmwareD
 	pos, err := repo.FindByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
 		FirmwareID: in.FirmwareID,
 		JobID:      in.JobID,
-		DeviceName: in.DeviceName}, logic.ToPageInfo(in.PageInfo))
+		DeviceName: in.DeviceName}, logic.ToPageInfo(in.Page))
 	if err != nil {
 		return nil, err
 	}

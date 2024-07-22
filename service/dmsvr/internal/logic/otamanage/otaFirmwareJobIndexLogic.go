@@ -42,7 +42,7 @@ func (l *OtaFirmwareJobIndexLogic) OtaFirmwareJobIndex(in *dm.OtaFirmwareJobInde
 	if err != nil {
 		return nil, err
 	}
-	otaJobList, err := l.OjDB.FindByFilter(l.ctx, jobFilter, logic.ToPageInfo(in.PageInfo))
+	otaJobList, err := l.OjDB.FindByFilter(l.ctx, jobFilter, logic.ToPageInfo(in.Page))
 	if err != nil {
 		l.Errorf("%s.JobInfo.JobInfoRead failure err=%+v", utils.FuncName(), err)
 		return nil, err

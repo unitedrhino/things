@@ -4803,7 +4803,7 @@
     },
     "/api/v1/things/rule/scene/info/manually-trigger": {
       "post": {
-        "summary": "获取场景信息详情",
+        "summary": "手动触发场景",
         "operationId": "postApiV1ThingsRuleSceneInfoManually-trigger",
         "responses": {
           "200": {
@@ -9121,7 +9121,7 @@
     "OtaFirmwareDeviceIndexReq": {
       "type": "object",
       "properties": {
-        "pageInfo": {
+        "page": {
           "$ref": "#/definitions/PageInfo",
           "description": " 分页信息"
         },
