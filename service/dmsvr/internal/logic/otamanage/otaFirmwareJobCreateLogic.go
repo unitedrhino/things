@@ -70,6 +70,10 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 	if err != nil {
 		return nil, err
 	}
+	if utils.SliceIn(fi.Version, in.SrcVersions...) {
+		return nil, errors.Parameter.AddMsg("待升级版本号不能和需要升级的版本号相同")
+	}
+
 	dmOtaJob.ProductID = fi.ProductID
 	//var  []*dm.StaticUpgradeDeviceInfo
 	devicePos, err := l.getDevice(in, fi)
@@ -247,7 +251,7 @@ func (l *OtaFirmwareJobCreateLogic) getDevice(in *dm.OtaFirmwareJobInfo, fi *rel
 			if v.Version == fi.Version {
 				continue
 			}
-			devices = append(devices, ret...)
+			devices = append(devices, v)
 		}
 	case msgOta.AllUpgrade, msgOta.GrayUpgrade:
 		f := relationDB.DeviceFilter{ProductID: fi.ProductID, Versions: in.SrcVersions, TenantCodes: in.TenantCodes}
@@ -264,13 +268,23 @@ func (l *OtaFirmwareJobCreateLogic) getDevice(in *dm.OtaFirmwareJobInfo, fi *rel
 		if err != nil {
 			return nil, err
 		}
-		devices = append(devices, ret...)
+		for _, v := range ret {
+			if v.Version == fi.Version {
+				continue
+			}
+			devices = append(devices, v)
+		}
 	case msgOta.SpecificUpgrade:
 		ret, err := l.DiDB.FindByFilter(l.ctx, relationDB.DeviceFilter{ProductID: fi.ProductID, Versions: in.SrcVersions, DeviceNames: in.Static.TargetDeviceNames, TenantCodes: in.TenantCodes}, nil)
 		if err != nil {
 			return nil, err
 		}
-		devices = append(devices, ret...)
+		for _, v := range ret {
+			if v.Version == fi.Version {
+				continue
+			}
+			devices = append(devices, v)
+		}
 	default:
 		return nil, errors.Parameter.AddMsgf("不支持的升级方式:%v", selection)
 	}
