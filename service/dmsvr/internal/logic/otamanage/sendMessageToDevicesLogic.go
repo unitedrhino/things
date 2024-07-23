@@ -49,6 +49,31 @@ func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirm
 	if jobInfo.IsNeedPush != def.True { //只有需要推送的才推送
 		return nil
 	}
+	pushDevice := func(devs []devices.Core, status int64, detail string) {
+		for _, df := range devs {
+			appMsg := application.OtaReport{
+				Device:    df,
+				Timestamp: time.Now().UnixMilli(), Status: status, Detail: detail,
+			}
+			di, err := l.svcCtx.DeviceCache.GetData(l.ctx, df)
+			if err != nil {
+				l.Error(err)
+				continue
+			}
+			err = l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDeviceOtaReport, appMsg, map[string]any{
+				"productID":  di.ProductID,
+				"deviceName": di.DeviceName,
+			}, map[string]any{
+				"projectID": di.ProjectID,
+			}, map[string]any{
+				"projectID": cast.ToString(di.ProjectID),
+				"areaID":    cast.ToString(di.AreaID),
+			})
+			if err != nil {
+				l.Error(err)
+			}
+		}
+	}
 	{ //处理超时设备,置为失败
 		f := relationDB.OtaFirmwareDeviceFilter{
 			FirmwareID: jobInfo.FirmwareID,
@@ -57,46 +82,85 @@ func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirm
 			PushTime:   stores.CmpLte(time.Now().Add(-time.Duration(jobInfo.TimeoutInMinutes) * time.Minute)),
 			Statues:    []int64{msgOta.DeviceStatusNotified, msgOta.DeviceStatusInProgress}, //只处理待推送的设备
 		}
-		stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+		var devs []devices.Core
+		err := stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
 			ofdr := relationDB.NewOtaFirmwareDeviceRepo(tx)
 			pos, err := ofdr.FindByFilter(l.ctx, f, nil)
 			if err != nil {
 				l.Error(err)
 				return err
 			}
-
+			for _, po := range pos {
+				devs = append(devs, devices.Core{ProductID: po.ProductID, DeviceName: po.DeviceName})
+			}
 			err = ofdr.UpdateStatusByFilter(l.ctx, f, msgOta.DeviceStatusFailure, "设备超时") //如果超过了超时时间,则修改为失败
 			if err != nil {
 				l.Error(err)
 			}
 			return err
 		})
+		if err != nil {
+			l.Error(err)
+		} else {
+			pushDevice(devs, msgOta.DeviceStatusFailure, "设备超时")
+		}
 
 	}
 
 	if jobInfo.RetryCount > 0 { //处理重试设备
-		err := stores.WithNoDebug(l.ctx, relationDB.NewOtaFirmwareDeviceRepo).UpdateStatusByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
+		var devs []devices.Core
+		f := relationDB.OtaFirmwareDeviceFilter{
 			FirmwareID:      jobInfo.FirmwareID,
 			JobID:           jobInfo.ID,
 			ProductID:       firmware.ProductID,
 			LastFailureTime: stores.CmpLte(time.Now().Add(-time.Minute * time.Duration(jobInfo.RetryInterval))), //失败间隔
 			RetryCount:      stores.CmpLt(jobInfo.RetryCount),                                                   //重试次数
 			Statues:         []int64{msgOta.DeviceStatusFailure},                                                //需要重试的设备更换为待推送
-		}, msgOta.DeviceStatusQueued, "重试推送") //如果超过了超时时间,则修改为失败
+		}
+		err := stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+			ofdr := relationDB.NewOtaFirmwareDeviceRepo(tx)
+			pos, err := ofdr.FindByFilter(l.ctx, f, nil)
+			if err != nil {
+				return err
+			}
+			for _, po := range pos {
+				devs = append(devs, devices.Core{ProductID: po.ProductID, DeviceName: po.DeviceName})
+			}
+			err = ofdr.UpdateStatusByFilter(l.ctx, f, msgOta.DeviceStatusQueued, "重试推送") //如果超过了超时时间,则修改为失败
+			return err
+		})
 		if err != nil {
 			l.Error(err)
+		} else {
+			pushDevice(devs, msgOta.DeviceStatusQueued, "重试推送")
 		}
 	}
-
-	err := stores.WithNoDebug(l.ctx, relationDB.NewOtaFirmwareDeviceRepo).UpdateStatusByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
-		FirmwareID: jobInfo.FirmwareID,
-		JobID:      jobInfo.ID,
-		ProductID:  firmware.ProductID,
-		RetryCount: stores.CmpGte(jobInfo.RetryCount),   //重试次数
-		Statues:    []int64{msgOta.DeviceStatusFailure}, //需要重试的设备更换为待推送
-	}, msgOta.DeviceStatusCanceled, "超过重试次数,取消升级") //如果超过了超时时间,则修改为失败
-	if err != nil {
-		l.Error(err)
+	{
+		var devs []devices.Core
+		f := relationDB.OtaFirmwareDeviceFilter{
+			FirmwareID: jobInfo.FirmwareID,
+			JobID:      jobInfo.ID,
+			ProductID:  firmware.ProductID,
+			RetryCount: stores.CmpGte(jobInfo.RetryCount),   //重试次数
+			Statues:    []int64{msgOta.DeviceStatusFailure}, //需要重试的设备更换为待推送
+		}
+		err := stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+			ofdr := relationDB.NewOtaFirmwareDeviceRepo(tx)
+			pos, err := ofdr.FindByFilter(l.ctx, f, nil)
+			if err != nil {
+				return err
+			}
+			for _, po := range pos {
+				devs = append(devs, devices.Core{ProductID: po.ProductID, DeviceName: po.DeviceName})
+			}
+			err = ofdr.UpdateStatusByFilter(l.ctx, f, msgOta.DeviceStatusCanceled, "超过重试次数,取消升级") //如果超过了超时时间,则修改为失败
+			return err
+		})
+		if err != nil {
+			l.Error(err)
+		} else {
+			pushDevice(devs, msgOta.DeviceStatusCanceled, "超过重试次数,取消升级")
+		}
 	}
 	func() {
 		total, err := stores.WithNoDebug(l.ctx, relationDB.NewOtaFirmwareDeviceRepo).CountByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
