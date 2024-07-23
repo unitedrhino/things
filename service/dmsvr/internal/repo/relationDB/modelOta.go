@@ -41,26 +41,6 @@ func (m *DmOtaFirmwareFile) TableName() string {
 	return "dm_ota_firmware_file"
 }
 
-// ota升级记录
-type DmOtaTaskDevice struct {
-	ID            int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	FirmwareID    int64  `gorm:"column:firmware_id;type:bigint;NOT NULL"`             // 固件id
-	TaskUid       string `gorm:"column:task_uid;type:varchar(64);NOT NULL"`           // 任务批次
-	ProductID     string `gorm:"column:product_id;type:varchar(100);NOT NULL"`        // 产品id
-	DeviceName    string `gorm:"column:device_name;type:varchar(100);NOT NULL"`       // 设备编号
-	Version       string `gorm:"column:version;type:varchar(64)"`                     // 当前版本
-	TargetVersion string `gorm:"column:target_version;type:varchar(64);NOT NULL"`     // 升级包的版本
-	Status        int64  `gorm:"column:status;type:integer;default:101"`              // 升级状态:101待确认 201/202/203待推送 301已推送 401升级中 501升级成功 601升级失败 701已取消
-	RetryCount    int64  `gorm:"column:retry_count;type:smallint;default:0;NOT NULL"` // 重试次数,计划最多20次
-	Step          int64  `gorm:"column:step;type:integer;default:0;NOT NULL"`         // OTA升级进度。1~100的整数升级进度百分比,-1升级失败,-2下载失败,-3校验失败,-4烧写失败
-	Desc          string `gorm:"column:desc;type:varchar(200)"`                       // 状态详情
-	stores.Time
-}
-
-func (m *DmOtaTaskDevice) TableName() string {
-	return "dm_ota_task_device"
-}
-
 // 产品固件升级包信息表
 type DmOtaFirmwareInfo struct {
 	ID             int64                `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
@@ -184,17 +164,17 @@ type DmOtaFirmwareJobStatic struct {
 
 type DmOtaFirmwareDevice struct {
 	ID              int64               `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
-	FirmwareID      int64               `gorm:"column:firmware_id;uniqueIndex:tc_un"`                                // 升级包ID
-	SrcVersion      string              `gorm:"column:src_version;type:varchar(125)"`                                // 设备的原固件版本
-	DestVersion     string              `gorm:"column:dest_version;type:varchar(125)"`                               // 设备的目标固件版本
-	JobID           int64               `gorm:"column:job_id;index:tc_un;type:BIGINT" `                              // 升级批次ID
-	ProductID       string              `gorm:"column:product_id;index:tc_un;type:varchar(20);uniqueIndex:tc_un"`    // 设备所属产品的productID
-	DeviceName      string              `gorm:"column:device_name;index:tc_un;type:varchar(100);uniqueIndex:tc_un" ` // 设备名称
-	Step            int64               `gorm:"column:step;type:BIGINT"`                                             // 当前的升级进度  0-100%    -1：升级失败。-2：下载失败。-3：校验失败。-4：烧写失败。
-	Detail          string              `gorm:"column:detail;type:varchar(256)"`                                     //详情
-	Status          msgOta.DeviceStatus `gorm:"column:status;index;type:BIGINT"`                                     // 设备升级作业状态。1：待确认。 2：待推送。 3：已推送。  4：升级中。 5:升级成功 6: 升级失败. 7:已取消
-	PushTime        sql.NullTime        `gorm:"column:push_time"`                                                    //推送时间
-	LastFailureTime sql.NullTime        `gorm:"column:last_failure_time"`                                            //最后失败时间
+	FirmwareID      int64               `gorm:"column:firmware_id;uniqueIndex:tc_un"`                    // 升级包ID
+	SrcVersion      string              `gorm:"column:src_version;type:varchar(125)"`                    // 设备的原固件版本
+	DestVersion     string              `gorm:"column:dest_version;type:varchar(125)"`                   // 设备的目标固件版本
+	JobID           int64               `gorm:"column:job_id;uniqueIndex:tc_un;type:BIGINT" `            // 升级批次ID
+	ProductID       string              `gorm:"column:product_id;type:varchar(20);uniqueIndex:tc_un"`    // 设备所属产品的productID
+	DeviceName      string              `gorm:"column:device_name;type:varchar(100);uniqueIndex:tc_un" ` // 设备名称
+	Step            int64               `gorm:"column:step;type:BIGINT"`                                 // 当前的升级进度  0-100%    -1：升级失败。-2：下载失败。-3：校验失败。-4：烧写失败。
+	Detail          string              `gorm:"column:detail;type:varchar(256)"`                         //详情
+	Status          msgOta.DeviceStatus `gorm:"column:status;index;type:BIGINT"`                         // 设备升级作业状态。1：待确认。 2：待推送。 3：已推送。  4：升级中。 5:升级成功 6: 升级失败. 7:已取消
+	PushTime        sql.NullTime        `gorm:"column:push_time"`                                        //推送时间
+	LastFailureTime sql.NullTime        `gorm:"column:last_failure_time"`                                //最后失败时间
 	stores.NoDelTime
 	RetryCount  int64                `gorm:"column:retry_count;default:0"` // 自动重试次数
 	DeletedTime stores.DeletedTime   `gorm:"column:deleted_time;default:0;uniqueIndex:tc_un;"`

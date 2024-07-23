@@ -13,6 +13,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -47,16 +48,28 @@ func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirm
 		return nil
 	}
 	{ //处理超时设备,置为失败
-		err := stores.WithNoDebug(l.ctx, relationDB.NewOtaFirmwareDeviceRepo).UpdateStatusByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
+		f := relationDB.OtaFirmwareDeviceFilter{
 			FirmwareID: jobInfo.FirmwareID,
 			JobID:      jobInfo.ID,
 			ProductID:  firmware.ProductID,
 			PushTime:   stores.CmpLte(time.Now().Add(-time.Duration(jobInfo.TimeoutInMinutes) * time.Minute)),
 			Statues:    []int64{msgOta.DeviceStatusNotified, msgOta.DeviceStatusInProgress}, //只处理待推送的设备
-		}, msgOta.DeviceStatusFailure, "设备超时") //如果超过了超时时间,则修改为失败
-		if err != nil {
-			l.Error(err)
 		}
+		stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+			ofdr := relationDB.NewOtaFirmwareDeviceRepo(tx)
+			pos, err := ofdr.FindByFilter(l.ctx, f, nil)
+			if err != nil {
+				l.Error(err)
+				return err
+			}
+
+			err = ofdr.UpdateStatusByFilter(l.ctx, f, msgOta.DeviceStatusFailure, "设备超时") //如果超过了超时时间,则修改为失败
+			if err != nil {
+				l.Error(err)
+			}
+			return err
+		})
+
 	}
 
 	if jobInfo.RetryCount > 0 { //处理重试设备

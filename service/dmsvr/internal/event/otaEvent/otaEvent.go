@@ -6,11 +6,13 @@ import (
 	"gitee.com/i-Things/share/domain/deviceMsg/msgOta"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
+	"gitee.com/i-Things/share/utils"
 	otamanagelogic "github.com/i-Things/things/service/dmsvr/internal/logic/otamanage"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"
+	"time"
 )
 
 type OtaEvent struct {
@@ -57,9 +59,16 @@ func (o *OtaEvent) DeviceUpgradePush() error {
 			continue
 		}
 		ctxs.GoNewCtx(o.ctx, func(ctx context.Context) {
+			start := time.Now()
+			defer func() {
+				end := time.Now()
+				if end.Sub(start).Seconds() > 2 {
+					logx.WithContext(ctx).Slowf("PushMessageToDevices use:%v  job:%v", end.Sub(start), utils.Fmt(jj))
+				}
+			}()
 			err := otamanagelogic.NewSendMessageToDevicesLogic(ctx, o.svcCtx).PushMessageToDevices(jj)
 			if err != nil && !errors.Cmp(err, errors.NotFind) {
-				o.Error(err)
+				logx.WithContext(ctx).Error(err)
 			}
 		})
 	}
