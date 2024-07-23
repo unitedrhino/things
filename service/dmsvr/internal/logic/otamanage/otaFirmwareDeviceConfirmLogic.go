@@ -58,9 +58,9 @@ func (l *OtaFirmwareDeviceConfirmLogic) OtaFirmwareDeviceConfirm(in *dm.OtaFirmw
 	if err != nil {
 		return nil, err
 	}
-	err = relationDB.NewDeviceInfoRepo(l.ctx).UpdateWithField(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductID, DeviceNames: []string{in.DeviceName}}, map[string]any{
-		"need_confirm_job_id":  0,
-		"need_confirm_version": "",
-	})
+	//err = relationDB.NewDeviceInfoRepo(l.ctx).UpdateWithField(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductID, DeviceNames: []string{in.DeviceName}}, map[string]any{
+	//	"need_confirm_job_id":  0,
+	//	"need_confirm_version": "",
+	//})
 	return &dm.Empty{}, err
 }
