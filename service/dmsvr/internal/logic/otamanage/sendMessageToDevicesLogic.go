@@ -6,12 +6,14 @@ import (
 	"encoding/json"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
+	"gitee.com/i-Things/share/domain/application"
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgOta"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
+	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
@@ -185,6 +187,31 @@ func (l *SendMessageToDevicesLogic) PushMessageToDevices(jobInfo *relationDB.DmO
 		if err != nil {
 			return err
 		}
+		core := devices.Core{
+			ProductID:  device.ProductID,
+			DeviceName: device.DeviceName,
+		}
+		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, core)
+		if err != nil {
+			l.Error(err)
+			return nil
+		}
+		appMsg := application.OtaReport{
+			Device:    core,
+			Timestamp: time.Now().UnixMilli(),
+			Status:    device.Status,
+			Detail:    device.Detail,
+			Step:      device.Step,
+		}
+		err = l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDeviceOtaReport, appMsg, map[string]any{
+			"productID":  di.ProductID,
+			"deviceName": di.DeviceName,
+		}, map[string]any{
+			"projectID": di.ProjectID,
+		}, map[string]any{
+			"projectID": cast.ToString(di.ProjectID),
+			"areaID":    cast.ToString(di.AreaID),
+		})
 	}
 	return nil
 }

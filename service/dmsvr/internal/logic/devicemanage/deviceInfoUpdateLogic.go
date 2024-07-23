@@ -6,6 +6,7 @@ import (
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
+	"gitee.com/i-Things/share/domain/application"
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgOta"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgSdkLog"
@@ -16,6 +17,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"github.com/spf13/cast"
 	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -102,6 +104,19 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 				}
 				old.NeedConfirmVersion = ""
 				old.NeedConfirmJobID = 0
+				appMsg := application.OtaReport{
+					Device:    devices.Core{ProductID: old.ProductID, DeviceName: old.DeviceName},
+					Timestamp: time.Now().UnixMilli(), Status: df.Status, Detail: df.Detail, Step: df.Step,
+				}
+				err = l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDeviceOtaReport, appMsg, map[string]any{
+					"productID":  old.ProductID,
+					"deviceName": old.DeviceName,
+				}, map[string]any{
+					"projectID": old.ProjectID,
+				}, map[string]any{
+					"projectID": cast.ToString(old.ProjectID),
+					"areaID":    cast.ToString(old.AreaID),
+				})
 			}
 		}
 	}
