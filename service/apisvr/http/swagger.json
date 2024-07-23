@@ -6763,6 +6763,9 @@
         },
         "userID": {
           "type": "string"
+        },
+        "distributor": {
+          "$ref": "#/definitions/IDPath"
         }
       },
       "title": "DeviceInfo",
@@ -8990,6 +8993,19 @@
         "list",
         "total"
       ]
+    },
+    "IDPath": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "idPath": {
+          "type": "string"
+        }
+      },
+      "title": "IDPath"
     },
     "ManufacturerInfo": {
       "type": "object",

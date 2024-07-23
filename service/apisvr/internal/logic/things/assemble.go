@@ -122,6 +122,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		ProductImg:         v.ProductImg,
 		CategoryID:         v.CategoryID,
 		UserID:             v.UserID,
+		Distributor:        utils.Copy[types.IDPath](v.Distributor),
 	}
 }
 

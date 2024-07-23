@@ -291,6 +291,7 @@ type DeviceInfo struct {
 	NetType            int64                              `json:"netType,optional,range=[0:8]"`          //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
 	NeedConfirmVersion string                             `json:"needConfirmVersion,optional,omitempty"` //待确认升级的版本
 	UserID             int64                              `json:"userID,string,optional"`
+	Distributor        *IDPath                            `json:"distributor,optional,omitempty"`
 }
 
 type DeviceInfoBindReq struct {
@@ -851,6 +852,11 @@ type GroupInfoIndexReq struct {
 type GroupInfoIndexResp struct {
 	List  []*GroupInfo `json:"list"`  //分组信息
 	Total int64        `json:"total"` //总数(只有分页的时候会返回)
+}
+
+type IDPath struct {
+	ID     int64  `json:"id,optional"`
+	IDPath string `json:"idPath,optional"`
 }
 
 type ManufacturerInfo struct {

@@ -2,6 +2,7 @@ package otamanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgOta"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
@@ -27,8 +28,15 @@ func NewOtaFirmwareDeviceConfirmLogic(ctx context.Context, svcCtx *svc.ServiceCo
 
 // app确认设备升级
 func (l *OtaFirmwareDeviceConfirmLogic) OtaFirmwareDeviceConfirm(in *dm.OtaFirmwareDeviceConfirmReq) (*dm.Empty, error) {
+	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
+		ProductID:  in.ProductID,
+		DeviceName: in.DeviceName,
+	})
+	if err != nil {
+		return nil, err
+	}
 	f := relationDB.OtaFirmwareDeviceFilter{
-		ProductID: in.ProductID, DeviceNames: []string{in.DeviceName}, Statues: []int64{msgOta.DeviceStatusConfirm}}
+		ProductID: in.ProductID, DeviceNames: []string{in.DeviceName}, DestVersion: di.NeedConfirmVersion, JobID: di.NeedConfirmJobID}
 	dev, err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).FindOneByFilter(l.ctx, f)
 	if err != nil {
 		return nil, err

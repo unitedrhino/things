@@ -74,6 +74,10 @@ type(
         HeadImg  string `json:"headImg,optional"`        // 用户头像
         CreatedTime int64  `json:"createdTime,string,optional"`// 创建时间
     }
+    IDPath{
+        ID int64 `json:"id,optional"`
+        IDPath string  `json:"idPath,optional"`
+    }
 
     CompareInt64{
         CmpTYpe string `json:"cmpTYpe"`//"=":相等 "!=":不相等 ">":大于">=":大于等于"<":小于"<=":小于等于 "like":模糊查询
