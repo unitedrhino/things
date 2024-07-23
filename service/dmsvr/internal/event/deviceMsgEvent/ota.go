@@ -3,8 +3,13 @@ package deviceMsgEvent
 import (
 	"context"
 	"database/sql"
+	"fmt"
+	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/devices"
+	"gitee.com/i-Things/share/domain/application"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
+	"github.com/spf13/cast"
 	"time"
 
 	"gitee.com/i-Things/share/domain/deviceMsg"
@@ -136,6 +141,14 @@ func (l *OtaLogic) HandleProgress(msg *deviceMsg.PublishMsg) (err error) {
 	if err != nil {
 		return err
 	}
+	core := devices.Core{
+		ProductID:  msg.ProductID,
+		DeviceName: msg.DeviceName,
+	}
+	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, core)
+	if err != nil {
+		return err
+	}
 	df, err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
 		ProductID:   msg.ProductID,
 		DeviceNames: []string{msg.DeviceName},
@@ -152,11 +165,29 @@ func (l *OtaLogic) HandleProgress(msg *deviceMsg.PublishMsg) (err error) {
 			Time:  time.Now(),
 			Valid: true,
 		}
+		df.Detail = fmt.Sprintf("设备升级失败 上报错误:%d", l.preq.Params.Step)
 	}
+
 	err = relationDB.NewOtaFirmwareDeviceRepo(l.ctx).Update(l.ctx, df)
 	if err != nil {
 		return err
 	}
+	appMsg := application.OtaReport{
+		Device:    core,
+		Timestamp: time.Now().UnixMilli(),
+		Status:    df.Status,
+		Detail:    df.Detail,
+		Step:      df.Step,
+	}
+	err = l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDeviceOtaReport, appMsg, map[string]any{
+		"productID":  di.ProductID,
+		"deviceName": di.DeviceName,
+	}, map[string]any{
+		"projectID": di.ProjectID,
+	}, map[string]any{
+		"projectID": cast.ToString(di.ProjectID),
+		"areaID":    cast.ToString(di.AreaID),
+	})
 	return
 }
 func (l *OtaLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) *deviceMsg.PublishMsg {
