@@ -181,7 +181,7 @@ func (d *MqttClient) subscribeWithFunc(cli mqtt.Client, topic string, handle fun
 					logx.WithContext(ctx).Errorf("%s.handle failure err:%v topic:%v", utils.FuncName(), err, topic)
 				}
 				logx.WithContext(ctx).WithDuration(duration).Infof(
-					"subscribeWithFunc.Subscribe.publish topic:%v message:%v err:%v",
+					"subscribeWithFuncIThingsDevicePublish topic:%v message:%v err:%v",
 					message.Topic(), string(message.Payload()), err)
 			}()
 

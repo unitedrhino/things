@@ -98,6 +98,7 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 			if df.DestVersion == data.Version.GetValue() { //版本号一致才是升级成功
 				df.Step = 100
 				df.Status = msgOta.DeviceStatusSuccess
+				df.Detail = "升级成功"
 				err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).Update(l.ctx, df)
 				if err != nil {
 					return err

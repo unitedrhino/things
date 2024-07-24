@@ -16,6 +16,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/client/devicemanage"
 	"github.com/i-Things/things/service/dmsvr/client/devicemsg"
 	"github.com/i-Things/things/service/dmsvr/client/productmanage"
+	"github.com/i-Things/things/service/dmsvr/client/userdevice"
 	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/dmdirect"
 	"github.com/i-Things/things/service/udsvr/internal/config"
@@ -37,6 +38,7 @@ type SvrClient struct {
 	AreaM              areamanage.AreaManage
 	ProjectM           projectmanage.ProjectManage
 	DeviceCache        dmExport.DeviceCacheT
+	UserShareCache     dmExport.UserShareCacheT
 	ProductCache       dmExport.ProductCacheT
 	ProductSchemaCache dmExport.SchemaCacheT
 	Ops                ops.Ops
@@ -60,6 +62,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceM        devicemanage.DeviceManage
 		deviceG        devicegroup.DeviceGroup
 		productM       productmanage.ProductManage
+		userDevice     userdevice.UserDevice
 		deviceInteract deviceinteract.DeviceInteract
 		deviceMsg      devicemsg.DeviceMsg
 		Ops            ops.Ops
@@ -78,30 +81,33 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		deviceMsg = devicemsg.NewDeviceMsg(zrpc.MustNewClient(c.DmRpc.Conf))
 		deviceInteract = deviceinteract.NewDeviceInteract(zrpc.MustNewClient(c.DmRpc.Conf))
 		deviceG = devicegroup.NewDeviceGroup(zrpc.MustNewClient(c.DmRpc.Conf))
-
+		userDevice = userdevice.NewUserDevice(zrpc.MustNewClient(c.DmRpc.Conf))
 	} else {
 		productM = dmdirect.NewProductManage(c.DmRpc.RunProxy)
 		deviceM = dmdirect.NewDeviceManage(c.DmRpc.RunProxy)
 		deviceMsg = dmdirect.NewDeviceMsg(c.DmRpc.RunProxy)
 		deviceInteract = dmdirect.NewDeviceInteract(c.DmRpc.RunProxy)
 		deviceG = dmdirect.NewDeviceGroup(c.DmRpc.RunProxy)
+		userDevice = dmdirect.NewUserDevice(c.DmRpc.RunProxy)
 	}
-	serverMsg, err := eventBus.NewFastEvent(c.Event, c.Name, nodeID)
+	fastEvent, err := eventBus.NewFastEvent(c.Event, c.Name, nodeID)
 	logx.Must(err)
-	dic, err := dmExport.NewDeviceInfoCache(deviceM, serverMsg)
+	dic, err := dmExport.NewDeviceInfoCache(deviceM, fastEvent)
 	logx.Must(err)
-	pic, err := dmExport.NewProductInfoCache(productM, serverMsg)
+	pic, err := dmExport.NewProductInfoCache(productM, fastEvent)
 	logx.Must(err)
-	psc, err := dmExport.NewSchemaInfoCache(productM, serverMsg)
+	psc, err := dmExport.NewSchemaInfoCache(productM, fastEvent)
 	logx.Must(err)
 	ossClient, err := oss.NewOssClient(c.OssConf)
 	if err != nil {
 		logx.Errorf("NewOss err err:%v", err)
 		os.Exit(-1)
 	}
+	udc, err := dmExport.NewUserShareCache(userDevice, fastEvent)
+	logx.Must(err)
 	return &ServiceContext{
 		Config:    c,
-		FastEvent: serverMsg,
+		FastEvent: fastEvent,
 		Store:     kv.NewStore(c.CacheRedis),
 		OssClient: ossClient,
 		NodeID:    nodeID,
@@ -118,6 +124,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			DeviceG:            deviceG,
 			DeviceCache:        dic,
 			ProductCache:       pic,
+			UserShareCache:     udc,
 			ProductSchemaCache: psc,
 		},
 	}
