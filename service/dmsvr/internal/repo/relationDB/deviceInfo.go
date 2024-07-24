@@ -55,6 +55,7 @@ type (
 		ExpTime            *stores.Cmp
 		AreaIDPath         string
 		HasOwner           int64 //是否被人拥有
+		NotOtaJobID        int64
 	}
 )
 
@@ -183,6 +184,10 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	if len(f.DeviceTypes) != 0 {
 		subQuery := d.db.Model(&DmProductInfo{}).Select("product_id").Where("device_type in ?", f.DeviceTypes)
 		db = db.Where("product_id in (?)", subQuery)
+	}
+	if f.NotOtaJobID != 0 {
+		subQuery := d.db.Model(&DmOtaFirmwareDevice{}).Select("device_name").Where("job_id = ?", f.NotOtaJobID)
+		db = db.Where("device_name not in (?)", subQuery)
 	}
 	if f.Gateway != nil {
 		subQuery := d.db.Model(&DmGatewayDevice{}).Select("product_id, device_name").

@@ -225,6 +225,14 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 			}
 		}
 	}
+	if len(clearConfirmDevices) > 0 {
+		for _, v := range clearConfirmDevices {
+			err := l.svcCtx.DeviceCache.SetData(l.ctx, *v, nil)
+			if err != nil {
+				l.Error(err)
+			}
+		}
+	}
 	return &dm.WithID{Id: dmOtaJob.ID}, err
 }
 

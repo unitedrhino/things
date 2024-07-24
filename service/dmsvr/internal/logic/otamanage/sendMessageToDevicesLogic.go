@@ -43,7 +43,147 @@ func NewSendMessageToDevicesLogic(ctx context.Context, svcCtx *svc.ServiceContex
 		OffDB:  stores.WithNoDebug(ctx, relationDB.NewOtaFirmwareFileRepo),
 	}
 }
+func (l *SendMessageToDevicesLogic) AddDevice(dmOtaJob *relationDB.DmOtaFirmwareJob) error {
+	devicePos, err := stores.WithNoDebug(l.ctx, relationDB.NewDeviceInfoRepo).FindByFilter(l.ctx,
+		relationDB.DeviceFilter{NotOtaJobID: dmOtaJob.ID, ProductID: dmOtaJob.ProductID, Versions: dmOtaJob.SrcVersions}, nil)
+	if err != nil {
+		l.Error(err)
+	}
+	if len(devicePos) == 0 {
+		return nil
+	}
 
+	var deviceNames []string
+	for _, v := range devicePos {
+		deviceNames = append(deviceNames, v.DeviceName)
+	}
+	var confirmDevices []*devices.Core
+	var clearConfirmDevices []*devices.Core
+
+	err = stores.GetCommonConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+		otDB := relationDB.NewOtaFirmwareDeviceRepo(tx)
+		oldDevices, err := otDB.FindByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
+			ProductID:   dmOtaJob.ProductID,
+			DeviceNames: deviceNames,
+			Statues: []int64{
+				msgOta.DeviceStatusConfirm, msgOta.DeviceStatusInProgress, msgOta.DeviceStatusQueued, msgOta.DeviceStatusNotified, msgOta.DeviceStatusFailure},
+		}, nil)
+		if err != nil {
+			return err
+		}
+		var oldDevicesMap = map[string]*relationDB.DmOtaFirmwareDevice{}
+		for _, v := range oldDevices {
+			oldDevicesMap[v.DeviceName] = v
+		}
+		var otaDevices []*relationDB.DmOtaFirmwareDevice
+		for _, device := range devicePos {
+			status := msgOta.DeviceStatusQueued
+			detail := "待推送"
+			if dmOtaJob.IsNeedConfirm == def.True {
+				status = msgOta.DeviceStatusConfirm
+				detail = "待确认"
+			}
+			od := oldDevicesMap[device.DeviceName]
+			if od != nil {
+				switch od.Status {
+				case msgOta.DeviceStatusInProgress, msgOta.DeviceStatusNotified:
+					status = msgOta.DeviceStatusFailure
+					detail = "其他任务正在升级中"
+				case msgOta.DeviceStatusFailure:
+					od.Detail = od.Detail + "-其他任务启动"
+					od.Status = msgOta.DeviceStatusCanceled
+					err := otDB.Update(l.ctx, od)
+					if err != nil {
+						return err
+					}
+					if status == msgOta.DeviceStatusConfirm {
+						confirmDevices = append(confirmDevices, &devices.Core{
+							ProductID:  device.ProductID,
+							DeviceName: device.DeviceName,
+						})
+					}
+				case msgOta.DeviceStatusConfirm, msgOta.DeviceStatusQueued:
+					if dmOtaJob.IsOverwriteMode != def.True { //如果是不覆盖则直接失败
+						status = msgOta.DeviceStatusFailure
+						detail = "其他任务正在等待升级中"
+					} else {
+						od.Status = msgOta.DeviceStatusCanceled
+						od.Detail = "其他任务启动取消该任务"
+						err := otDB.Update(l.ctx, od)
+						if err != nil {
+							return err
+						}
+						if status == msgOta.DeviceStatusConfirm {
+							confirmDevices = append(confirmDevices, &devices.Core{
+								ProductID:  device.ProductID,
+								DeviceName: device.DeviceName,
+							})
+						}
+					}
+				}
+			} else if status == msgOta.DeviceStatusConfirm {
+				confirmDevices = append(confirmDevices, &devices.Core{
+					ProductID:  device.ProductID,
+					DeviceName: device.DeviceName,
+				})
+			}
+
+			if status == msgOta.DeviceStatusQueued { //如果需要执行且不需要确认,则需要将该设备的确认状态清除
+				clearConfirmDevices = append(clearConfirmDevices, &devices.Core{
+					ProductID:  device.ProductID,
+					DeviceName: device.DeviceName,
+				})
+			}
+
+			otaDevices = append(otaDevices, &relationDB.DmOtaFirmwareDevice{
+				FirmwareID:  dmOtaJob.FirmwareID,
+				ProductID:   device.ProductID,
+				DeviceName:  device.DeviceName,
+				JobID:       dmOtaJob.ID,
+				SrcVersion:  device.Version,
+				DestVersion: dmOtaJob.Firmware.Version,
+				Status:      status,
+				Detail:      detail,
+			})
+		}
+		err = otDB.MultiInsert(l.ctx, otaDevices)
+		if err != nil {
+			return err
+		}
+		if len(clearConfirmDevices) > 0 {
+			err = relationDB.NewDeviceInfoRepo(tx).UpdateWithField(l.ctx, relationDB.DeviceFilter{Cores: confirmDevices},
+				map[string]any{"need_confirm_job_id": 0, "need_confirm_version": ""})
+			if err != nil {
+				return err
+			}
+		}
+		if len(confirmDevices) > 0 {
+			err = relationDB.NewDeviceInfoRepo(tx).UpdateWithField(l.ctx, relationDB.DeviceFilter{Cores: confirmDevices},
+				map[string]any{"need_confirm_job_id": dmOtaJob.ID, "need_confirm_version": dmOtaJob.Firmware.Version})
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+	if len(confirmDevices) > 0 {
+		for _, v := range confirmDevices {
+			err := l.svcCtx.DeviceCache.SetData(l.ctx, *v, nil)
+			if err != nil {
+				l.Error(err)
+			}
+		}
+	}
+	if len(clearConfirmDevices) > 0 {
+		for _, v := range clearConfirmDevices {
+			err := l.svcCtx.DeviceCache.SetData(l.ctx, *v, nil)
+			if err != nil {
+				l.Error(err)
+			}
+		}
+	}
+	return nil
+}
 func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirmwareJob) error {
 	firmware := jobInfo.Firmware
 	if jobInfo.IsNeedPush != def.True { //只有需要推送的才推送
@@ -117,6 +257,12 @@ func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirm
 			RetryCount:      stores.CmpLt(jobInfo.RetryCount),                                                   //重试次数
 			Statues:         []int64{msgOta.DeviceStatusFailure},                                                //需要重试的设备更换为待推送
 		}
+		status := msgOta.DeviceStatusQueued
+		detail := "重试推送"
+		if jobInfo.IsNeedConfirm == def.True {
+			status = msgOta.DeviceStatusConfirm
+			detail = "升级失败,再次升级等待确认"
+		}
 		err := stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
 			ofdr := relationDB.NewOtaFirmwareDeviceRepo(tx)
 			pos, err := ofdr.FindByFilter(l.ctx, f, nil)
@@ -126,13 +272,13 @@ func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirm
 			for _, po := range pos {
 				devs = append(devs, devices.Core{ProductID: po.ProductID, DeviceName: po.DeviceName})
 			}
-			err = ofdr.UpdateStatusByFilter(l.ctx, f, msgOta.DeviceStatusQueued, "重试推送") //如果超过了超时时间,则修改为失败
+			err = ofdr.UpdateStatusByFilter(l.ctx, f, status, detail) //如果超过了超时时间,则修改为失败
 			return err
 		})
 		if err != nil {
 			l.Error(err)
-		} else {
-			pushDevice(devs, msgOta.DeviceStatusQueued, "重试推送")
+		} else if status == msgOta.DeviceStatusQueued {
+			pushDevice(devs, status, detail)
 		}
 	}
 	{
@@ -160,6 +306,12 @@ func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirm
 			l.Error(err)
 		} else {
 			pushDevice(devs, msgOta.DeviceStatusCanceled, "超过重试次数,取消升级")
+		}
+	}
+	if jobInfo.UpgradeType == msgOta.DynamicUpgrade { //动态的需要将后面符合升级标准的加进去
+		err := l.AddDevice(jobInfo)
+		if err != nil {
+			l.Error(err)
 		}
 	}
 	func() {

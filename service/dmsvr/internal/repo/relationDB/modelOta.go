@@ -67,12 +67,12 @@ func (m *DmOtaFirmwareInfo) TableName() string {
 
 // DMOTAjob 表示OTA升级任务的信息
 type DmOtaFirmwareJob struct {
-	ID          int64  `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
-	FirmwareID  int64  `gorm:"column:firmware_id"`                           // 升级包ID，升级包的唯一标识符。
-	ProductID   string `gorm:"column:product_id;type:varchar(100);NOT NULL"` // 产品id
-	Type        int64  `gorm:"column:type"`                                  // 升级包所属产品的JobType。 验证升级包:1  批量升级:2
-	Status      int64  `gorm:"column:status"`                                // 批次状态,计划中:1  执行中:2  已完成:3  已取消:4
-	UpgradeType int64  `gorm:"column:upgrade_type"`                          // 升级策略，1-静态，2-动态
+	ID          int64              `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
+	FirmwareID  int64              `gorm:"column:firmware_id"`                           // 升级包ID，升级包的唯一标识符。
+	ProductID   string             `gorm:"column:product_id;type:varchar(100);NOT NULL"` // 产品id
+	Type        int64              `gorm:"column:type"`                                  // 升级包所属产品的JobType。 验证升级包:1  批量升级:2
+	Status      int64              `gorm:"column:status"`                                // 批次状态,计划中:1  执行中:2  已完成:3  已取消:4
+	UpgradeType msgOta.UpgradeType `gorm:"column:upgrade_type"`                          // 升级策略，1-静态，2-动态
 
 	/*
 		待升级版本号列表。
