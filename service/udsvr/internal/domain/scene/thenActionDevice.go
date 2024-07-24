@@ -246,8 +246,11 @@ func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 		})
 	case SelectorDeviceAll:
 		var areaIDs []int64
-		if repo.Info.AreaID != 0 {
+		if repo.Info.AreaID > def.RootNode {
 			areaIDs = []int64{repo.Info.AreaID}
+		}
+		if a.AreaID > def.RootNode {
+			areaIDs = []int64{a.AreaID}
 		}
 		ret, err := repo.DeviceM.DeviceInfoIndex(ctx, &devicemanage.DeviceInfoIndexReq{
 			AreaIDs:   areaIDs,

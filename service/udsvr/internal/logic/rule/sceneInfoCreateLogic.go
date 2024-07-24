@@ -38,7 +38,7 @@ func (l *SceneInfoCreateLogic) SceneInfoCreate(in *ud.SceneInfo) (*ud.WithID, er
 	if do.AreaID == 0 {
 		return nil, errors.Parameter.AddMsg("areaID必填")
 	}
-	err := do.Validate(scene.ValidateRepo{Ctx: l.ctx, DeviceCache: l.svcCtx.DeviceCache, ProductCache: l.svcCtx.ProductCache, ProductSchemaCache: l.svcCtx.ProductSchemaCache, GetSceneInfo: GetSceneInfo})
+	err := do.Validate(NewSceneValidateRepo(l.ctx, l.svcCtx))
 	if err != nil {
 		return nil, err
 	}
@@ -66,11 +66,4 @@ func (l *SceneInfoCreateLogic) SceneInfoCreate(in *ud.SceneInfo) (*ud.WithID, er
 		}
 	}
 	return &ud.WithID{Id: po.ID}, nil
-}
-func GetSceneInfo(ctx context.Context, sceneID int64) (info *scene.Info, err error) {
-	po, err := relationDB.NewSceneInfoRepo(ctx).FindOne(ctx, sceneID)
-	if err != nil {
-		return nil, err
-	}
-	return PoToSceneInfoDo(po), nil
 }
