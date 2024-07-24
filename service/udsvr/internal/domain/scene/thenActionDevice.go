@@ -3,6 +3,7 @@ package scene
 import (
 	"context"
 	"encoding/json"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/schema"
@@ -10,6 +11,7 @@ import (
 	"gitee.com/i-Things/share/utils"
 	deviceinteract "github.com/i-Things/things/service/dmsvr/client/deviceinteract"
 	devicemanage "github.com/i-Things/things/service/dmsvr/client/devicemanage"
+	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
@@ -70,6 +72,40 @@ func (a *ActionDevice) Validate(repo ValidateRepo) error {
 	}
 	if !utils.SliceIn(a.Type, ActionDeviceTypePropertyControl, ActionDeviceTypeAction) {
 		return errors.Parameter.AddMsg("云端向设备发起属性控制的方式不支持:" + string(a.Type))
+	}
+	if utils.SliceIn(a.SelectType, SelectorDeviceAll, SelectGroup, SelectArea) { //只有管理员或项目负责人有权限全局控制
+		err := func() error {
+			uc := ctxs.GetUserCtx(repo.Ctx)
+			if uc == nil {
+				return nil
+			}
+			if uc.IsAdmin {
+				return nil
+			}
+			pa := uc.ProjectAuth[uc.ProjectID]
+			if pa == nil {
+				return errors.Permissions.AddMsg("项目没有权限")
+			}
+			if pa.AuthType == def.AuthAdmin || pa.AuthType == def.AuthReadWrite {
+				return nil
+			}
+			a := pa.Area[a.AreaID]
+			if a == 0 {
+				return errors.Permissions.AddMsg("没有对应区域的权限")
+			}
+			return nil
+		}()
+		if err != nil {
+			return err
+		}
+	} else if a.SelectType == SelectDeviceFixed {
+		_, err = dmExport.SchemaAccess(repo.Ctx, repo.DeviceCache, repo.UserShareCache, def.AuthReadWrite, devices.Core{
+			ProductID:  a.ProductID,
+			DeviceName: a.DeviceName,
+		}, nil)
+		if err != nil {
+			return err
+		}
 	}
 
 	if a.DataID == "" && len(a.Values) == 0 { //todo 这里需要添加校验,是否存在

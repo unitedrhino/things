@@ -153,7 +153,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 			}
 			return ff(ctx, ele)
 		}
-		err := svcCtx.FastEvent.Subscribe(topics.DeviceUpThingAll,
+		err := svcCtx.FastEvent.QueueSubscribe(topics.DeviceUpThingAll,
 			func(ctx context.Context, t time.Time, body []byte) error {
 				return f(ctx, body, func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
 					err := deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx).Thing(msg)
@@ -165,7 +165,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 				})
 			})
 		logx.Must(err)
-		err = svcCtx.FastEvent.Subscribe(topics.DeviceUpOtaAll,
+		err = svcCtx.FastEvent.QueueSubscribe(topics.DeviceUpOtaAll,
 			func(ctx context.Context, t time.Time, body []byte) error {
 				return f(ctx, body, func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
 					err := deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx).Ota(msg)
@@ -177,7 +177,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 				})
 			})
 		logx.Must(err)
-		err = svcCtx.FastEvent.Subscribe(topics.DeviceUpExtAll,
+		err = svcCtx.FastEvent.QueueSubscribe(topics.DeviceUpExtAll,
 			func(ctx context.Context, t time.Time, body []byte) error {
 				return f(ctx, body, func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
 					err := deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx).Ext(msg)
@@ -189,7 +189,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 				})
 			})
 		logx.Must(err)
-		err = svcCtx.FastEvent.Subscribe(topics.DeviceUpConfigAll,
+		err = svcCtx.FastEvent.QueueSubscribe(topics.DeviceUpConfigAll,
 			func(ctx context.Context, t time.Time, body []byte) error {
 				return f(ctx, body, func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
 					err := deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx).Config(msg)
@@ -201,7 +201,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 				})
 			})
 		logx.Must(err)
-		err = svcCtx.FastEvent.Subscribe(topics.DeviceUpSDKLogAll,
+		err = svcCtx.FastEvent.QueueSubscribe(topics.DeviceUpSDKLogAll,
 			func(ctx context.Context, t time.Time, body []byte) error {
 				return f(ctx, body, func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
 					err := deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx).SDKLog(msg)
@@ -213,7 +213,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 				})
 			})
 		logx.Must(err)
-		err = svcCtx.FastEvent.Subscribe(topics.DeviceUpShadowAll,
+		err = svcCtx.FastEvent.QueueSubscribe(topics.DeviceUpShadowAll,
 			func(ctx context.Context, t time.Time, body []byte) error {
 				return f(ctx, body, func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
 					err := deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx).Shadow(msg)
@@ -225,7 +225,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 				})
 			})
 		logx.Must(err)
-		err = svcCtx.FastEvent.Subscribe(topics.DeviceUpGatewayAll,
+		err = svcCtx.FastEvent.QueueSubscribe(topics.DeviceUpGatewayAll,
 			func(ctx context.Context, t time.Time, body []byte) error {
 				return f(ctx, body, func(ctx context.Context, msg *deviceMsg.PublishMsg) error {
 					err := deviceMsgEvent.NewDeviceMsgHandle(ctx, svcCtx).Gateway(msg)
@@ -237,7 +237,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 				})
 			})
 		logx.Must(err)
-		err = svcCtx.FastEvent.Subscribe(topics.DeviceUpStatusConnected,
+		err = svcCtx.FastEvent.QueueSubscribe(topics.DeviceUpStatusConnected,
 			func(ctx context.Context, t time.Time, body []byte) error {
 				ctx = ctxs.WithRoot(ctx)
 				ele, err := deviceStatus.GetDevConnMsg(ctx, body)
@@ -253,7 +253,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 				return nil
 			})
 		logx.Must(err)
-		err = svcCtx.FastEvent.Subscribe(topics.DeviceUpStatusDisconnected,
+		err = svcCtx.FastEvent.QueueSubscribe(topics.DeviceUpStatusDisconnected,
 			func(ctx context.Context, t time.Time, body []byte) error {
 				ctx = ctxs.WithRoot(ctx)
 				ele, err := deviceStatus.GetDevConnMsg(ctx, body)
@@ -271,7 +271,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		logx.Must(err)
 	}
 
-	err := svcCtx.FastEvent.Subscribe(eventBus.CoreUserDelete, func(ctx context.Context, t time.Time, body []byte) error {
+	err := svcCtx.FastEvent.QueueSubscribe(eventBus.CoreUserDelete, func(ctx context.Context, t time.Time, body []byte) error {
 		var value application.IDs
 		err := json.Unmarshal(body, &value)
 		if err != nil {
@@ -292,7 +292,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		return nil
 	})
 	logx.Must(err)
-	err = svcCtx.FastEvent.Subscribe(eventBus.SysProjectInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
+	err = svcCtx.FastEvent.QueueSubscribe(eventBus.SysProjectInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
 		pi := cast.ToInt64(string(body))
 		logx.WithContext(ctx).Infof("SysProjectInfoDelete value:%v err:%v", string(body), err)
 		if pi == 0 {
@@ -316,7 +316,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		return nil
 	})
 	logx.Must(err)
-	err = svcCtx.FastEvent.Subscribe(eventBus.SysAreaInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
+	err = svcCtx.FastEvent.QueueSubscribe(eventBus.SysAreaInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
 		var value application.IDs
 		err := json.Unmarshal(body, &value)
 		if err != nil {
@@ -349,11 +349,11 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		return nil
 	})
 	logx.Must(err)
-	err = svcCtx.FastEvent.Subscribe(eventBus.DmOtaJobDelayRun, func(ctx context.Context, t time.Time, body []byte) error {
+	err = svcCtx.FastEvent.QueueSubscribe(eventBus.DmOtaJobDelayRun, func(ctx context.Context, t time.Time, body []byte) error {
 		return otaEvent.NewOtaEvent(svcCtx, ctxs.WithRoot(ctx)).JobDelayRun(cast.ToInt64(string(body)))
 	})
 	logx.Must(err)
-	err = svcCtx.FastEvent.Subscribe(eventBus.DmOtaDeviceUpgradePush, func(ctx context.Context, t time.Time, body []byte) error {
+	err = svcCtx.FastEvent.QueueSubscribe(eventBus.DmOtaDeviceUpgradePush, func(ctx context.Context, t time.Time, body []byte) error {
 		if t.Before(time.Now().Add(-time.Second * 2)) { //2秒之前的跳过
 			return nil
 		}

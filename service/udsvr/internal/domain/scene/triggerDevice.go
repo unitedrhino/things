@@ -1,11 +1,13 @@
 package scene
 
 import (
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/application"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/spf13/cast"
 	"strings"
 )
@@ -68,6 +70,13 @@ func (t *TriggerDevice) Validate(repo ValidateRepo) error {
 	}
 	if !utils.SliceIn(t.Type, TriggerDeviceTypeConnected, TriggerDeviceTypeDisConnected, TriggerDeviceTypePropertyReport, TriggerDeviceTypeEventReport) {
 		return errors.Parameter.AddMsgf("设备触发的触发类型不支持:%s", string(t.Type))
+	}
+	_, err = dmExport.SchemaAccess(repo.Ctx, repo.DeviceCache, repo.UserShareCache, def.AuthRead, devices.Core{
+		ProductID:  t.ProductID,
+		DeviceName: t.DeviceName,
+	}, nil)
+	if err != nil {
+		return err
 	}
 	switch t.Type {
 	case TriggerDeviceTypeEventReport:

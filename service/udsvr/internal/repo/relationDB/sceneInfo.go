@@ -35,12 +35,16 @@ type SceneInfoFilter struct {
 	ProductID     string           //产品id
 	DeviceName    string           //设备名
 	HasActionType string           //过滤有某个执行类型
+	ProjectID     int64
 }
 
 func (p SceneInfoRepo) fmtFilter(ctx context.Context, f SceneInfoFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if len(f.IDs) != 0 {
 		db = db.Where("id in ?", f.IDs)
+	}
+	if f.ProjectID != 0 {
+		db = db.Where("project_id = ?", f.ProjectID)
 	}
 	if f.AreaID != 0 {
 		db = db.Where("area_id = ?", f.AreaID)
@@ -200,7 +204,8 @@ func (p SceneInfoRepo) Delete(ctx context.Context, id int64) error {
 		if err != nil {
 			return err
 		}
-		return nil
+		err = NewSceneLogRepo(tx).DeleteByFilter(ctx, SceneLogFilter{SceneID: id})
+		return err
 	})
 	return stores.ErrFmt(err)
 }

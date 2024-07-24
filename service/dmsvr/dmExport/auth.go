@@ -26,7 +26,7 @@ func SchemaAccess(ctx context.Context, dc DeviceCacheT, usc UserShareCacheT, aut
 				SharedUserID: uc.UserID,
 			})
 			if err != nil {
-				return nil, errors.Parameter
+				return nil, errors.Permissions
 			}
 			if uds.AuthType == def.AuthAdmin {
 				return param, nil
@@ -38,7 +38,7 @@ func SchemaAccess(ctx context.Context, dc DeviceCacheT, usc UserShareCacheT, aut
 					sp = uds.SchemaPerm[k]
 				}
 				if sp != nil && sp.Perm > authType {
-					return nil, errors.Parameter.AddMsgf("属性:%v 没有控制权限", k)
+					return nil, errors.Permissions.AddMsgf("属性:%v 没有控制权限", k)
 				}
 			}
 			return param, nil

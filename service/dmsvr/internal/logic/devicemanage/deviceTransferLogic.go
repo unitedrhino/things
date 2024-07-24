@@ -7,6 +7,7 @@ import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/eventBus"
 	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
@@ -175,6 +176,10 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 	}
 	for _, di := range devs {
 		err = l.svcCtx.DeviceCache.SetData(l.ctx, *di, nil)
+		if err != nil {
+			l.Error(err)
+		}
+		err = l.svcCtx.FastEvent.Publish(l.ctx, eventBus.DmDeviceInfoUnbind, &di)
 		if err != nil {
 			l.Error(err)
 		}

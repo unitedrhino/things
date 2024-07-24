@@ -3,6 +3,7 @@ package relationDB
 import (
 	"context"
 	"gitee.com/i-Things/share/stores"
+	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -23,13 +24,29 @@ func NewSceneActionRepo(in any) *SceneActionRepo {
 }
 
 type SceneActionFilter struct {
-	SceneID int64
+	SceneID          int64
+	ProductID        string
+	DeviceName       string
+	ActionDeviceType scene.ActionDeviceType
+	DeviceSelectType scene.SelectType
 }
 
 func (p SceneActionRepo) fmtFilter(ctx context.Context, f SceneActionFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if f.SceneID != 0 {
 		db = db.Where("scene_id = ?", f.SceneID)
+	}
+	if f.ProductID != "" {
+		db = db.Where("device_product_id = ?", f.ProductID)
+	}
+	if f.DeviceName != "" {
+		db = db.Where("device_device_name = ?", f.DeviceName)
+	}
+	if f.ActionDeviceType != "" {
+		db = db.Where("device_action_device_type = ?", f.ActionDeviceType)
+	}
+	if f.DeviceSelectType != "" {
+		db = db.Where("device_select_type = ?", f.DeviceSelectType)
 	}
 	return db
 }

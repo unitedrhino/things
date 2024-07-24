@@ -7,6 +7,7 @@ import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/eventBus"
 	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"gorm.io/gorm"
@@ -99,6 +100,9 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceCore) (*dm.Empty, 
 		DeviceName: di.DeviceName,
 	}, nil)
 	err = DeleteDeviceTimeData(l.ctx, l.svcCtx, in.ProductID, in.DeviceName)
-
+	err = l.svcCtx.FastEvent.Publish(l.ctx, eventBus.DmDeviceInfoUnbind, &devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
+	if err != nil {
+		l.Error(err)
+	}
 	return &dm.Empty{}, err
 }
