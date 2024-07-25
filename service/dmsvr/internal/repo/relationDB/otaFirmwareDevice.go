@@ -37,6 +37,7 @@ type OtaFirmwareDeviceFilter struct {
 	SrcVersion      string
 	DestVersion     string
 	WithFirmware    bool
+	WithJob         bool
 	WithFiles       bool
 	IsOnline        int64
 	RetryCount      *stores.Cmp
@@ -82,6 +83,9 @@ func (p OtaFirmwareDeviceRepo) fmtFilter(ctx context.Context, f OtaFirmwareDevic
 	}
 	if f.WithFirmware {
 		db = db.Preload("Firmware")
+	}
+	if f.WithJob {
+		db = db.Preload("Job")
 	}
 	if f.WithFiles {
 		db = db.Preload("Files")

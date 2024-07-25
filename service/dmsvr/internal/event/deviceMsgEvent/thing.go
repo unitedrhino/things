@@ -372,95 +372,62 @@ func OtaVersionCheck(ctx context.Context, svcCtx *svc.ServiceContext, msg device
 		ProductID:    msg.ProductID,
 		DeviceNames:  []string{msg.DeviceName},
 		WithFirmware: true,
-		Statues:      []int64{msgOta.DeviceStatusInProgress, msgOta.DeviceStatusNotified, msgOta.DeviceStatusQueued},
+		WithJob:      true,
+		DestVersion:  version,
+		Statues:      []int64{msgOta.DeviceStatusQueued},
 	})
 	if err != nil && !errors.Cmp(err, errors.NotFind) {
 		log.Error(err)
 		return
 	}
-	if df == nil {
-		jobs, err := relationDB.NewOtaJobRepo(ctx).FindByFilter(ctx, relationDB.OtaJobFilter{
-			ProductID:    msg.ProductID,
-			Statues:      []int64{msgOta.JobStatusInProgress},
-			UpgradeType:  msgOta.DynamicUpgrade, //静态升级需要先创建好设备,动态升级可以设备自己去获取
-			WithFirmware: true,
-			WithFiles:    true,
-		}, nil)
-		if err != nil {
-			log.Error(err)
-			return
-		}
-		for _, job := range jobs {
-			if utils.SliceIn(version, job.SrcVersions...) {
-				//如果在动态升级的版本内,则返回该升级包
-				df = &relationDB.DmOtaFirmwareDevice{
-					FirmwareID:  job.FirmwareID,
-					ProductID:   msg.ProductID,
-					DeviceName:  msg.DeviceName,
-					JobID:       job.ID,
-					SrcVersion:  version,
-					DestVersion: job.Firmware.Version,
-					Status:      msgOta.DeviceStatusNotified,
-					Detail:      "设备上报推送升级包",
-				}
-				err := relationDB.NewOtaFirmwareDeviceRepo(ctx).Insert(ctx, df)
-				if err != nil {
-					log.Error(err)
-					return
-				}
-				df.Firmware = job.Firmware
-				df.Files = job.Files
-			} else { //没有合适的升级包
-				return
-			}
-		}
-		if df == nil {
-			return
-		}
-		data, err := otamanagelogic.GenUpgradeParams(ctx, svcCtx, df.Firmware, df.Files)
-		if err != nil {
-			log.Error(err)
-			return
-		}
-		MsgToken := devices.GenMsgToken(ctx, svcCtx.NodeID)
-		upgradeMsg := deviceMsg.CommonMsg{
-			MsgToken:  MsgToken,
-			Method:    msgOta.TypeUpgrade,
-			Timestamp: time.Now().UnixMilli(),
-			Data:      data,
-		}
-		payload, _ := json.Marshal(upgradeMsg)
-		pi, err := svcCtx.ProductCache.GetData(ctx, df.Firmware.ProductID)
-		if err != nil {
-			log.Error(err)
-			return
-		}
-		reqMsg := deviceMsg.PublishMsg{
-			Handle:       devices.Ota,
-			Type:         msgOta.TypeUpgrade,
-			Payload:      payload,
-			Timestamp:    time.Now().UnixMilli(),
-			ProductID:    msg.ProductID,
-			DeviceName:   msg.DeviceName,
-			ProtocolCode: pi.ProtocolCode,
-		}
-		err = svcCtx.PubDev.PublishToDev(ctx, &reqMsg)
-		if err != nil {
-			log.Error(err)
-			return
-		}
-		df.Status = msgOta.DeviceStatusNotified
-		df.Detail = "设备上报推送升级包"
-		df.PushTime = sql.NullTime{
-			Time:  time.Now(),
-			Valid: true,
-		}
-		err = relationDB.NewOtaFirmwareDeviceRepo(ctx).Update(ctx, df)
-		if err != nil {
-			log.Error(err)
-			return
-		}
+
+	if df == nil || df.Job.IsNeedPush == def.False {
+		return
 	}
+	data, err := otamanagelogic.GenUpgradeParams(ctx, svcCtx, df.Firmware, df.Files)
+	if err != nil {
+		log.Error(err)
+		return
+	}
+	MsgToken := devices.GenMsgToken(ctx, svcCtx.NodeID)
+	upgradeMsg := deviceMsg.CommonMsg{
+		MsgToken:  MsgToken,
+		Method:    msgOta.TypeUpgrade,
+		Timestamp: time.Now().UnixMilli(),
+		Data:      data,
+	}
+	payload, _ := json.Marshal(upgradeMsg)
+	pi, err := svcCtx.ProductCache.GetData(ctx, df.Firmware.ProductID)
+	if err != nil {
+		log.Error(err)
+		return
+	}
+	reqMsg := deviceMsg.PublishMsg{
+		Handle:       devices.Ota,
+		Type:         msgOta.TypeUpgrade,
+		Payload:      payload,
+		Timestamp:    time.Now().UnixMilli(),
+		ProductID:    msg.ProductID,
+		DeviceName:   msg.DeviceName,
+		ProtocolCode: pi.ProtocolCode,
+	}
+	err = svcCtx.PubDev.PublishToDev(ctx, &reqMsg)
+	if err != nil {
+		log.Error(err)
+		return
+	}
+	df.Status = msgOta.DeviceStatusNotified
+	df.Detail = "设备上报推送升级包"
+	df.PushTime = sql.NullTime{
+		Time:  time.Now(),
+		Valid: true,
+	}
+	err = relationDB.NewOtaFirmwareDeviceRepo(ctx).Update(ctx, df)
+	if err != nil {
+		log.Error(err)
+		return
+	}
+
 	return
 }
 
