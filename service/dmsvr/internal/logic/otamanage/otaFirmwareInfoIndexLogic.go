@@ -33,10 +33,9 @@ func NewOtaFirmwareInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContex
 
 // 升级包列表
 func (l *OtaFirmwareInfoIndexLogic) OtaFirmwareInfoIndex(in *dm.OtaFirmwareInfoIndexReq) (*dm.OtaFirmwareInfoIndexResp, error) {
-	//todo debug
-	//if err := ctxs.IsRoot(l.ctx); err != nil {
-	//	return nil, err
-	//}
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
 	l.ctx = ctxs.WithRoot(l.ctx)
 	var (
 		info []*dm.OtaFirmwareInfo

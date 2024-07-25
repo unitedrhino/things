@@ -2,6 +2,7 @@ package scene
 
 import (
 	"gitee.com/i-Things/share/def"
+	"sync"
 	"time"
 )
 
@@ -13,6 +14,7 @@ type Log struct {
 	CreatedTime time.Time    `json:"createdTime"`
 	Trigger     *LogTrigger  `json:"trigger,omitempty"`
 	Actions     []*LogAction `json:"actions"`
+	ActionMutex sync.RWMutex `json:"-"`
 }
 type LogAction struct {
 	Type     ActionType       `json:"type"` //执行器类型 notify: 通知 delay:延迟  device:设备输出  alarm: 告警

@@ -47,13 +47,25 @@ func NewOtaFirmwareJobCreateLogic(ctx context.Context, svcCtx *svc.ServiceContex
 
 // 创建静态升级批次
 func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobInfo) (*dm.WithID, error) {
-	//todo debug
-	//if err := ctxs.IsRoot(l.ctx); err != nil {
-	//	return nil, err
-	//}
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
 	l.ctx = ctxs.WithRoot(l.ctx)
 	if in.UpgradeType == msgOta.DynamicUpgrade && len(in.SrcVersions) == 0 {
 		return nil, errors.Parameter.AddMsg("动态升级需要填写待升级的版本")
+	}
+	if in.UpgradeType == msgOta.DynamicUpgrade { //同一个固件下只能有一个动态升级包
+		total, err := relationDB.NewOtaJobRepo(l.ctx).CountByFilter(l.ctx, relationDB.OtaJobFilter{
+			FirmwareID:  in.FirmwareID,
+			UpgradeType: msgOta.DynamicUpgrade,
+			Statues:     []int64{msgOta.JobStatusPlanned, msgOta.JobStatusInProgress},
+		})
+		if err != nil {
+			return nil, err
+		}
+		if total > 0 {
+			return nil, errors.Parameter.AddMsg("一个固件下只能有一个动态升级包")
+		}
 	}
 	var dmOtaJob relationDB.DmOtaFirmwareJob
 	err := utils.CopyE(&dmOtaJob, &in)

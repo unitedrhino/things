@@ -291,8 +291,8 @@ service OtaManage{
   rpc otaFirmwareJobCreate(OtaFirmwareJobInfo) returns(WithID);
   //获取升级包下的升级任务批次列表
   rpc otaFirmwareJobIndex(OtaFirmwareJobIndexReq) returns(OtaFirmwareJobIndexResp);
-//  //获取设备所在的升级包升级批次列表
-//  rpc otaJobByDeviceIndex(OtaJobByDeviceIndexReq) returns(OtaJobInfoIndexResp);
+  //取消指定批次下的任务
+  rpc otaFirmwareJobCancel(WithID) returns(Empty);
   //查询指定升级批次的详情
   rpc otaFirmwareJobRead(WithID) returns(OtaFirmwareJobInfo);
   //取消动态升级策略

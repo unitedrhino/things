@@ -204,7 +204,7 @@ func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 				Data:       toData(),
 			})
 			if err != nil {
-				logx.WithContext(ctx).Errorf("%s.DeviceInfoIndex SendProperty:%#v err:%v", utils.FuncName(), a, err)
+				logx.WithContext(ctx).Errorf("scene DeviceInfoIndex SendProperty:%#v err:%v", a, err)
 				er := errors.Fmt(err)
 				pi, err := repo.ProductCache.GetData(ctx, device.ProductID)
 				if err != nil {
@@ -214,20 +214,24 @@ func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 				if err != nil {
 					logx.WithContext(ctx).Error(err)
 				}
-				repo.Info.Log.Actions = append(repo.Info.Log.Actions, &LogAction{
-					Type: ActionExecutorDevice,
-					Device: &LogActionDevice{
-						ProductID:   device.ProductID,
-						ProductName: pi.GetProductName(),
-						DeviceName:  device.DeviceName,
-						DeviceAlias: di.GetDeviceAlias().GetValue(),
-						Values:      values,
-					},
-					Status: def.False,
-					Code:   er.Code,
-					Msg:    er.GetMsg(),
-				})
-				repo.Info.Log.Status = def.False
+				func() {
+					repo.Info.Log.ActionMutex.Lock()
+					defer repo.Info.Log.ActionMutex.Unlock()
+					repo.Info.Log.Actions = append(repo.Info.Log.Actions, &LogAction{
+						Type: ActionExecutorDevice,
+						Device: &LogActionDevice{
+							ProductID:   device.ProductID,
+							ProductName: pi.GetProductName(),
+							DeviceName:  device.DeviceName,
+							DeviceAlias: di.GetDeviceAlias().GetValue(),
+							Values:      values,
+						},
+						Status: def.False,
+						Code:   er.Code,
+						Msg:    er.GetMsg(),
+					})
+					repo.Info.Log.Status = def.False
+				}()
 				return er
 			}
 			pi, err := repo.ProductCache.GetData(ctx, device.ProductID)
@@ -243,20 +247,25 @@ func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 				status = def.False
 				repo.Info.Log.Status = def.False
 			}
-			repo.Info.Log.Actions = append(repo.Info.Log.Actions, &LogAction{
-				Type: ActionExecutorDevice,
-				Device: &LogActionDevice{
-					ProductID:   device.ProductID,
-					ProductName: pi.GetProductName(),
-					DeviceName:  device.DeviceName,
-					DeviceAlias: di.GetDeviceAlias().GetValue(),
-					Values:      values,
-				},
-				Status:   status,
-				Code:     ret.Code,
-				Msg:      ret.Msg,
-				MsgToken: ret.MsgToken,
-			})
+			func() {
+				repo.Info.Log.ActionMutex.Lock()
+				defer repo.Info.Log.ActionMutex.Unlock()
+				repo.Info.Log.Actions = append(repo.Info.Log.Actions, &LogAction{
+					Type: ActionExecutorDevice,
+					Device: &LogActionDevice{
+						ProductID:   device.ProductID,
+						ProductName: pi.GetProductName(),
+						DeviceName:  device.DeviceName,
+						DeviceAlias: di.GetDeviceAlias().GetValue(),
+						Values:      values,
+					},
+					Status:   status,
+					Code:     ret.Code,
+					Msg:      ret.Msg,
+					MsgToken: ret.MsgToken,
+				})
+			}()
+
 			return nil
 		}
 	case ActionDeviceTypeAction:
@@ -318,7 +327,8 @@ func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 	wait := sync.WaitGroup{}
 	for _, device := range deviceList {
 		wait.Add(1)
-		go func(device devices.Core) {
+		d := device
+		utils.Go(ctx, func() {
 			defer wait.Done()
 			{ //限制并发数,避免打崩
 				limitChan <- struct{}{}
@@ -326,12 +336,12 @@ func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 					<-limitChan
 				}()
 			}
-			err := executeFunc(device)
+			err := executeFunc(d)
 			if err != nil {
 				logx.WithContext(ctx).Errorf("%s.DeviceInfoIndex device:%v execute:%#v err:%v", utils.FuncName(), device, a, err)
 				//return err
 			}
-		}(device)
+		})
 	}
 	wait.Wait()
 	return nil

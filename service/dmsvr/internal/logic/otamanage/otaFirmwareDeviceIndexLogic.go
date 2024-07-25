@@ -26,10 +26,9 @@ func NewOtaFirmwareDeviceIndexLogic(ctx context.Context, svcCtx *svc.ServiceCont
 
 // 查询指定升级批次下的设备升级作业列表
 func (l *OtaFirmwareDeviceIndexLogic) OtaFirmwareDeviceIndex(in *dm.OtaFirmwareDeviceIndexReq) (*dm.OtaFirmwareDeviceIndexResp, error) {
-	//todo debug
-	//if err := ctxs.IsRoot(l.ctx); err != nil {
-	//	return nil, err
-	//}
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
 	l.ctx = ctxs.WithRoot(l.ctx)
 	f := relationDB.OtaFirmwareDeviceFilter{FirmwareID: in.FirmwareID, JobID: in.JobID, DeviceName: in.DeviceName}
 	repo := relationDB.NewOtaFirmwareDeviceRepo(l.ctx)

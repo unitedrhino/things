@@ -28,10 +28,9 @@ func NewOtaModuleInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 }
 
 func (l *OtaModuleInfoIndexLogic) OtaModuleInfoIndex(in *dm.OtaModuleInfoIndexReq) (*dm.OtaModuleInfoIndexResp, error) {
-	//todo debug
-	//if err := ctxs.IsRoot(l.ctx); err != nil {
-	//	return nil, err
-	//}
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
 	l.ctx = ctxs.WithRoot(l.ctx)
 	f := relationDB.OtaModuleInfoFilter{ProductID: in.ProductID, Name: in.Name}
 	total, err := relationDB.NewOtaModuleInfoRepo(l.ctx).CountByFilter(l.ctx, f)

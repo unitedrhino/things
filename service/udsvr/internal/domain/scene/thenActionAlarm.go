@@ -51,6 +51,8 @@ func (a *ActionAlarm) Execute(ctx context.Context, repo ActionRepo) error {
 		status = def.False
 		repo.Info.Log.Status = def.False
 	}
+	repo.Info.Log.ActionMutex.Lock()
+	defer repo.Info.Log.ActionMutex.Unlock()
 	repo.Info.Log.Actions = append(repo.Info.Log.Actions, &LogAction{
 		Type: ActionExecutorAlarm,
 		Alarm: &LogActionAlarm{
