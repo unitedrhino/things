@@ -56,6 +56,7 @@ type (
 		AreaIDPath         string
 		HasOwner           int64 //是否被人拥有
 		NotOtaJobID        int64
+		NeedConfirmJobID   int64
 		NeedConfirmVersion string
 	}
 )
@@ -174,6 +175,9 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	}
 	if len(f.NeedConfirmVersion) > 0 {
 		db = db.Where("need_confirm_version in ?", f.NeedConfirmVersion)
+	}
+	if f.NeedConfirmJobID != 0 {
+		db = db.Where("need_confirm_job_id = ?", f.NeedConfirmJobID)
 	}
 
 	if f.Range > 0 {

@@ -212,7 +212,9 @@ type (
 		OtaFirmwareJobCreate(ctx context.Context, in *OtaFirmwareJobInfo, opts ...grpc.CallOption) (*WithID, error)
 		// 获取升级包下的升级任务批次列表
 		OtaFirmwareJobIndex(ctx context.Context, in *OtaFirmwareJobIndexReq, opts ...grpc.CallOption) (*OtaFirmwareJobIndexResp, error)
-		// //获取设备所在的升级包升级批次列表
+		// 取消指定批次下的任务
+		OtaFirmwareJobCancel(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
+		// 查询指定升级批次的详情
 		OtaFirmwareJobRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*OtaFirmwareJobInfo, error)
 		// 取消动态升级策略
 		OtaFirmwareJobUpdate(ctx context.Context, in *OtaFirmwareJobInfo, opts ...grpc.CallOption) (*Empty, error)
@@ -331,13 +333,24 @@ func (d *directOtaManage) OtaFirmwareJobIndex(ctx context.Context, in *OtaFirmwa
 	return d.svr.OtaFirmwareJobIndex(ctx, in)
 }
 
-// //获取设备所在的升级包升级批次列表
+// 取消指定批次下的任务
+func (m *defaultOtaManage) OtaFirmwareJobCancel(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewOtaManageClient(m.cli.Conn())
+	return client.OtaFirmwareJobCancel(ctx, in, opts...)
+}
+
+// 取消指定批次下的任务
+func (d *directOtaManage) OtaFirmwareJobCancel(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.OtaFirmwareJobCancel(ctx, in)
+}
+
+// 查询指定升级批次的详情
 func (m *defaultOtaManage) OtaFirmwareJobRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*OtaFirmwareJobInfo, error) {
 	client := dm.NewOtaManageClient(m.cli.Conn())
 	return client.OtaFirmwareJobRead(ctx, in, opts...)
 }
 
-// //获取设备所在的升级包升级批次列表
+// 查询指定升级批次的详情
 func (d *directOtaManage) OtaFirmwareJobRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*OtaFirmwareJobInfo, error) {
 	return d.svr.OtaFirmwareJobRead(ctx, in)
 }

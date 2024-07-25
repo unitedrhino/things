@@ -3992,6 +3992,7 @@ const (
 	OtaManage_OtaFirmwareInfoRead_FullMethodName      = "/dm.OtaManage/otaFirmwareInfoRead"
 	OtaManage_OtaFirmwareJobCreate_FullMethodName     = "/dm.OtaManage/otaFirmwareJobCreate"
 	OtaManage_OtaFirmwareJobIndex_FullMethodName      = "/dm.OtaManage/otaFirmwareJobIndex"
+	OtaManage_OtaFirmwareJobCancel_FullMethodName     = "/dm.OtaManage/otaFirmwareJobCancel"
 	OtaManage_OtaFirmwareJobRead_FullMethodName       = "/dm.OtaManage/otaFirmwareJobRead"
 	OtaManage_OtaFirmwareJobUpdate_FullMethodName     = "/dm.OtaManage/otaFirmwareJobUpdate"
 	OtaManage_OtaFirmwareDeviceIndex_FullMethodName   = "/dm.OtaManage/otaFirmwareDeviceIndex"
@@ -4023,9 +4024,8 @@ type OtaManageClient interface {
 	OtaFirmwareJobCreate(ctx context.Context, in *OtaFirmwareJobInfo, opts ...grpc.CallOption) (*WithID, error)
 	// 获取升级包下的升级任务批次列表
 	OtaFirmwareJobIndex(ctx context.Context, in *OtaFirmwareJobIndexReq, opts ...grpc.CallOption) (*OtaFirmwareJobIndexResp, error)
-	//	//获取设备所在的升级包升级批次列表
-	//	rpc otaJobByDeviceIndex(OtaJobByDeviceIndexReq) returns(OtaJobInfoIndexResp);
-	//
+	// 取消指定批次下的任务
+	OtaFirmwareJobCancel(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
 	// 查询指定升级批次的详情
 	OtaFirmwareJobRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*OtaFirmwareJobInfo, error)
 	// 取消动态升级策略
@@ -4110,6 +4110,15 @@ func (c *otaManageClient) OtaFirmwareJobCreate(ctx context.Context, in *OtaFirmw
 func (c *otaManageClient) OtaFirmwareJobIndex(ctx context.Context, in *OtaFirmwareJobIndexReq, opts ...grpc.CallOption) (*OtaFirmwareJobIndexResp, error) {
 	out := new(OtaFirmwareJobIndexResp)
 	err := c.cc.Invoke(ctx, OtaManage_OtaFirmwareJobIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *otaManageClient) OtaFirmwareJobCancel(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, OtaManage_OtaFirmwareJobCancel_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -4233,9 +4242,8 @@ type OtaManageServer interface {
 	OtaFirmwareJobCreate(context.Context, *OtaFirmwareJobInfo) (*WithID, error)
 	// 获取升级包下的升级任务批次列表
 	OtaFirmwareJobIndex(context.Context, *OtaFirmwareJobIndexReq) (*OtaFirmwareJobIndexResp, error)
-	//	//获取设备所在的升级包升级批次列表
-	//	rpc otaJobByDeviceIndex(OtaJobByDeviceIndexReq) returns(OtaJobInfoIndexResp);
-	//
+	// 取消指定批次下的任务
+	OtaFirmwareJobCancel(context.Context, *WithID) (*Empty, error)
 	// 查询指定升级批次的详情
 	OtaFirmwareJobRead(context.Context, *WithID) (*OtaFirmwareJobInfo, error)
 	// 取消动态升级策略
@@ -4280,6 +4288,9 @@ func (UnimplementedOtaManageServer) OtaFirmwareJobCreate(context.Context, *OtaFi
 }
 func (UnimplementedOtaManageServer) OtaFirmwareJobIndex(context.Context, *OtaFirmwareJobIndexReq) (*OtaFirmwareJobIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OtaFirmwareJobIndex not implemented")
+}
+func (UnimplementedOtaManageServer) OtaFirmwareJobCancel(context.Context, *WithID) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OtaFirmwareJobCancel not implemented")
 }
 func (UnimplementedOtaManageServer) OtaFirmwareJobRead(context.Context, *WithID) (*OtaFirmwareJobInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OtaFirmwareJobRead not implemented")
@@ -4449,6 +4460,24 @@ func _OtaManage_OtaFirmwareJobIndex_Handler(srv interface{}, ctx context.Context
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(OtaManageServer).OtaFirmwareJobIndex(ctx, req.(*OtaFirmwareJobIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OtaManage_OtaFirmwareJobCancel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WithID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OtaManageServer).OtaFirmwareJobCancel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OtaManage_OtaFirmwareJobCancel_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OtaManageServer).OtaFirmwareJobCancel(ctx, req.(*WithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -4685,6 +4714,10 @@ var OtaManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "otaFirmwareJobIndex",
 			Handler:    _OtaManage_OtaFirmwareJobIndex_Handler,
+		},
+		{
+			MethodName: "otaFirmwareJobCancel",
+			Handler:    _OtaManage_OtaFirmwareJobCancel_Handler,
 		},
 		{
 			MethodName: "otaFirmwareJobRead",
