@@ -54,15 +54,14 @@ type DmDeviceInfo struct {
 	UserID             int64             `gorm:"column:user_id;type:BIGINT;default:0"`                                 // 用户id
 	Status             int64             `gorm:"column:status;type:smallint;default:1;NOT NULL"`                       // 设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中) 5-禁用
 	IsEnable           int64             `gorm:"column:is_enable;type:smallint;default:1;"`                            //是否启用: 1:是 2:否
-	ManufacturerID     int64             `gorm:"column:manufacturer_id;type:bigint;default:1;NOT NULL"`                //制造商信息
 	ExpTime            sql.NullTime      `gorm:"column:exp_time"`                                                      //过期时间,为0不限制
 	NeedConfirmJobID   int64             `gorm:"column:need_confirm_job_id;type:smallint;default:0;"`                  //需要app确认升级的任务ID,为0是没有
 	NeedConfirmVersion string            `gorm:"column:need_confirm_version;type:varchar(128);default:'';"`            //待确认升级的版本
 	stores.NoDelTime
-	Distributor  stores.IDPathWithUpdate `gorm:"embedded;embeddedPrefix:distributor_"` //代理的id,如果为空,则未参与分销
-	DeletedTime  stores.DeletedTime      `gorm:"column:deleted_time;default:0;uniqueIndex:product_id_deviceName"`
-	ProductInfo  *DmProductInfo          `gorm:"foreignKey:ProductID;references:ProductID"` // 添加外键
-	Manufacturer *DmManufacturerInfo     `gorm:"foreignKey:ID;references:ManufacturerID"`   // 添加外键
+
+	Distributor stores.IDPathWithUpdate `gorm:"embedded;embeddedPrefix:distributor_"` //代理的id,如果为空,则未参与分销
+	DeletedTime stores.DeletedTime      `gorm:"column:deleted_time;default:0;uniqueIndex:product_id_deviceName"`
+	ProductInfo *DmProductInfo          `gorm:"foreignKey:ProductID;references:ProductID"` // 添加外键
 }
 
 func (m *DmDeviceInfo) TableName() string {

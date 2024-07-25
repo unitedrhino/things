@@ -285,7 +285,6 @@ type DeviceInfo struct {
 	WithProperties     map[string]*DeviceInfoWithProperty `json:"withProperties,optional,omitempty"` //获取的属性列表,如果不传withProperty,则不会返回
 	ProtocolConf       []*Tag                             `json:"protocolConf,optional,omitempty"`   //协议配置
 	Profiles           map[string]string                  `json:"profiles,optional,omitempty"`
-	Manufacturer       *ManufacturerInfo                  `json:"manufacturer,optional,omitempty"` //制造商信息
 	Owner              *UserCore                          `json:"owner,optional,omitempty"`
 	RatedPower         int64                              `json:"ratedPower,optional,omitempty"`
 	NetType            int64                              `json:"netType,optional,range=[0:8]"`          //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
@@ -354,12 +353,11 @@ type DeviceInfoMultiUpdateReq struct {
 }
 
 type DeviceInfoReadReq struct {
-	ProductID        string   `json:"productID,optional"`        //产品id 为空时获取所有产品
-	DeviceName       string   `json:"deviceName"`                //设备名称 读写
-	WithProperties   []string `json:"withProperties,optional"`   //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表
-	WithProfiles     []string `json:"withProfiles,optional"`     //
-	WithManufacturer bool     `json:"withManufacturer,optional"` //同时获取制造商信息
-	WithOwner        bool     `json:"withOwner,optional"`        //同时获取拥有人的信息
+	ProductID      string   `json:"productID,optional"`      //产品id 为空时获取所有产品
+	DeviceName     string   `json:"deviceName"`              //设备名称 读写
+	WithProperties []string `json:"withProperties,optional"` //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表
+	WithProfiles   []string `json:"withProfiles,optional"`   //
+	WithOwner      bool     `json:"withOwner,optional"`      //同时获取拥有人的信息
 }
 
 type DeviceInfoSaveReq struct {
@@ -857,13 +855,6 @@ type GroupInfoIndexResp struct {
 type IDPath struct {
 	ID     int64  `json:"id,optional"`
 	IDPath string `json:"idPath,optional"`
-}
-
-type ManufacturerInfo struct {
-	ID    int64  `json:"id,omitempty"`
-	Name  string `json:"name,omitempty"`
-	Desc  string `json:"desc,omitempty"`
-	Phone string `json:"phone,omitempty"`
 }
 
 type OrderBy struct {

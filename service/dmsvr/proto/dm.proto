@@ -1039,12 +1039,6 @@ message Point{
   double  latitude = 2;//纬度
 }
 
-message ManufacturerInfo {
-  int64 id =1;
-  string name =2;
-  string desc=3;
-  string phone =4;
-}
 
 message DeviceInfo {
   int64 id =34;
@@ -1081,7 +1075,6 @@ message DeviceInfo {
   map<string,string>protocolConf =29;
   int64 status =30 ;//设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)
   int64 isEnable =31;//是否启用
-  ManufacturerInfo manufacturer =32; //制造商信息
   int64  deviceType = 33; //设备类型:1:设备,2:网关,3:子设备
   int64 netType =35;//网络类型
   IDPathWithUpdate distributor =36;//过滤分销商的数据
@@ -1171,13 +1164,11 @@ message DeviceCore{
 message DeviceInfoReadReq{
   string   productID = 1; //产品id
   string  deviceName = 2; //设备名称
-  bool withManufacturer =3;//同时获取制造商信息
 }
 
 message DeviceInfoMultiUpdateReq {
   repeated DeviceCore   devices = 1; //产品id
   CompareInt64 FilterDistributorID=2;
-
 
   int64 areaID = 4; //项目区域id
   IDPath distributor =20;//分销商的数据

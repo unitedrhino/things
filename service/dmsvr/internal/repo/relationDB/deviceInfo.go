@@ -41,7 +41,6 @@ type (
 		ProductCategoryIDs []int64
 		SharedType         def.SelectType
 		CollectType        def.SelectType
-		WithManufacturer   bool
 		DeviceType         int64
 		DeviceTypes        []int64
 		GroupID            int64
@@ -74,9 +73,6 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	}
 	if f.AreaIDPath != "" {
 		db = db.Where("area_id_path like ?", f.AreaIDPath+"%")
-	}
-	if f.WithManufacturer {
-		db = db.Preload("Manufacturer")
 	}
 	if len(f.TenantCodes) != 0 {
 		db = db.Where("tenant_code in ?", f.TenantCodes)

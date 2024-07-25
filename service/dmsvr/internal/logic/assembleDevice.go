@@ -74,7 +74,6 @@ func ToDeviceInfo(ctx context.Context, svcCtx *svc.ServiceContext, in *relationD
 		CreatedTime:        in.CreatedTime.Unix(),
 		ProtocolConf:       in.ProtocolConf,
 		Status:             in.Status,
-		Manufacturer:       utils.Copy[dm.ManufacturerInfo](in.Manufacturer),
 		ProductName:        productName,
 		DeviceType:         deviceType,
 		RatedPower:         in.RatedPower,
