@@ -64,12 +64,6 @@ func (s *OtaManageServer) OtaFirmwareJobIndex(ctx context.Context, in *dm.OtaFir
 	return l.OtaFirmwareJobIndex(in)
 }
 
-// 取消指定批次下的任务
-func (s *OtaManageServer) OtaFirmwareJobCancel(ctx context.Context, in *dm.WithID) (*dm.Empty, error) {
-	l := otamanagelogic.NewOtaFirmwareJobCancelLogic(ctx, s.svcCtx)
-	return l.OtaFirmwareJobCancel(in)
-}
-
 // 查询指定升级批次的详情
 func (s *OtaManageServer) OtaFirmwareJobRead(ctx context.Context, in *dm.WithID) (*dm.OtaFirmwareJobInfo, error) {
 	l := otamanagelogic.NewOtaFirmwareJobReadLogic(ctx, s.svcCtx)
