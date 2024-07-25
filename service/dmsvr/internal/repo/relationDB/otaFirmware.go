@@ -29,6 +29,7 @@ type OtaFirmwareInfoFilter struct {
 	Version     string
 	WithProduct bool
 	WithFiles   bool
+	WithJobs    bool
 }
 
 func (p OtaFirmwareInfoRepo) fmtFilter(ctx context.Context, f OtaFirmwareInfoFilter) *gorm.DB {
@@ -47,6 +48,9 @@ func (p OtaFirmwareInfoRepo) fmtFilter(ctx context.Context, f OtaFirmwareInfoFil
 	}
 	if f.WithFiles {
 		db = db.Preload("Files")
+	}
+	if f.WithJobs {
+		db = db.Preload("Jobs")
 	}
 	return db
 }

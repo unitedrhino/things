@@ -71,9 +71,9 @@ func (l *OtaFirmwareInfoCreateLogic) CheckOtaFirmwareInfo(in *dm.OtaFirmwareInfo
 // 添加升级包
 func (l *OtaFirmwareInfoCreateLogic) OtaFirmwareInfoCreate(in *dm.OtaFirmwareInfoCreateReq) (*dm.WithID, error) {
 	//todo debug
-	//if err := ctxs.IsRoot(l.ctx); err != nil {
-	//	return nil, err
-	//}
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
 	l.ctx = ctxs.WithRoot(l.ctx)
 	//校验版本号是否重复
 	logx.Infof("ctx:%+v", l.ctx)

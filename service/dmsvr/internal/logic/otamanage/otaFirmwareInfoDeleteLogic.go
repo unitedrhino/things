@@ -44,26 +44,19 @@ func (l *OtaFirmwareInfoDeleteLogic) OtaFirmwareInfoDelete(in *dm.WithID) (*dm.E
 	//	return nil, err
 	//}
 	l.ctx = ctxs.WithRoot(l.ctx)
-	_, err := l.OfDB.FindOneByFilter(l.ctx, relationDB.OtaFirmwareInfoFilter{ID: in.Id})
+	fi, err := l.OfDB.FindOneByFilter(l.ctx, relationDB.OtaFirmwareInfoFilter{ID: in.Id, WithFiles: true})
 	if errors.Cmp(err, errors.NotFind) {
 		l.Errorf("not find firmware id:" + cast.ToString(in.Id))
 		return nil, err
 	} else if err != nil {
 		return nil, err
 	}
-	var (
-		fs []*relationDB.DmOtaFirmwareFile
-	)
 
 	//开启事务
 	db := stores.GetCommonConn(l.ctx)
 	err = db.Transaction(func(tx *gorm.DB) error {
 		//删除升级包文件
 		offDb := relationDB.NewOtaFirmwareFileRepo(tx)
-		fs, err = offDb.FindByFilter(l.ctx, relationDB.OtaFirmwareFileFilter{FirmwareID: in.Id}, nil)
-		if err != nil {
-			return err
-		}
 		err = offDb.Delete(l.ctx, in.Id)
 		if err != nil {
 			l.Errorf("%s.DeleteOTAFirmwareFile err=%v", utils.FuncName(), err)
@@ -76,11 +69,21 @@ func (l *OtaFirmwareInfoDeleteLogic) OtaFirmwareInfoDelete(in *dm.WithID) (*dm.E
 			l.Errorf("%s.DeleteOTAFirmware err=%v", utils.FuncName(), err)
 			return err
 		}
-		err = relationDB.NewOtaJobRepo(tx).DeleteByFilter(l.ctx, relationDB.OtaJobFilter{FirmwareID: in.Id})
+		err = relationDB.NewDeviceInfoRepo(tx).UpdateWithField(l.ctx, relationDB.DeviceFilter{ProductID: fi.ProductID, NeedConfirmVersion: fi.Version}, map[string]any{
+			"need_confirm_job_id":  0,
+			"need_confirm_version": "",
+		})
 		if err != nil {
-			l.Errorf("%s.DeleteOTAFirmware err=%v", utils.FuncName(), err)
 			return err
 		}
+		if len(fi.Jobs) > 0 {
+			err = relationDB.NewOtaJobRepo(tx).DeleteByFilter(l.ctx, relationDB.OtaJobFilter{FirmwareID: in.Id})
+			if err != nil {
+				l.Errorf("%s.DeleteOTAFirmware err=%v", utils.FuncName(), err)
+				return err
+			}
+		}
+
 		err = relationDB.NewOtaFirmwareDeviceRepo(tx).DeleteByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{FirmwareID: in.Id})
 		// 如果所有操作成功，提交事务
 		return err
@@ -89,7 +92,7 @@ func (l *OtaFirmwareInfoDeleteLogic) OtaFirmwareInfoDelete(in *dm.WithID) (*dm.E
 		l.Errorf("failed to commit transaction: %v", err)
 		return nil, err
 	}
-	for _, v := range fs {
+	for _, v := range fi.Files {
 		err := l.svcCtx.OssClient.PrivateBucket().Delete(l.ctx, v.FilePath, common.OptionKv{})
 		if err != nil {
 			l.Error(err)

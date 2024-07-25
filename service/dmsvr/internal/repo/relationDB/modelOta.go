@@ -57,6 +57,7 @@ type DmOtaFirmwareInfo struct {
 	Extra          string               `gorm:"column:extra;type:varchar(256)"`                                 // 自定义推送参数
 	IsNeedToVerify int64                `gorm:"column:is_need_to_verify;type:smallint;default:2;NOT NULL"`      // 是否需要验证
 	Files          []*DmOtaFirmwareFile `gorm:"foreignKey:FirmwareID;references:ID"`
+	Jobs           []*DmOtaFirmwareJob  `gorm:"foreignKey:FirmwareID;references:ID"`
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:tc_un;"`
 }

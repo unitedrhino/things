@@ -29,10 +29,9 @@ func NewOtaFirmwareDeviceRetryLogic(ctx context.Context, svcCtx *svc.ServiceCont
 
 // 重新升级指定批次下升级失败或升级取消的设备升级作业
 func (l *OtaFirmwareDeviceRetryLogic) OtaFirmwareDeviceRetry(in *dm.OtaFirmwareDeviceRetryReq) (*dm.Empty, error) {
-	//todo debug
-	//if err := ctxs.IsRoot(l.ctx); err != nil {
-	//	return nil, err
-	//}
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
 	l.ctx = ctxs.WithRoot(l.ctx)
 	if len(in.DeviceNames) == 0 {
 		return nil, errors.Parameter.AddMsg("设备名列表必填")

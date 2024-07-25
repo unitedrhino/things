@@ -47,10 +47,9 @@ func NewOtaFirmwareJobCreateLogic(ctx context.Context, svcCtx *svc.ServiceContex
 
 // 创建静态升级批次
 func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobInfo) (*dm.WithID, error) {
-	//todo debug
-	//if err := ctxs.IsRoot(l.ctx); err != nil {
-	//	return nil, err
-	//}
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
 	l.ctx = ctxs.WithRoot(l.ctx)
 	if in.UpgradeType == msgOta.DynamicUpgrade && len(in.SrcVersions) == 0 {
 		return nil, errors.Parameter.AddMsg("动态升级需要填写待升级的版本")
