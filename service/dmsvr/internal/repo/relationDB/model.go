@@ -140,7 +140,7 @@ type DmProductInfo struct {
 	AutoRegister int64                 `gorm:"column:auto_register;type:smallint;default:1"`                // 动态注册:1:关闭,2:打开,3:打开并自动创建设备
 	Secret       string                `gorm:"column:secret;type:varchar(50)"`                              // 动态注册产品秘钥
 	Desc         string                `gorm:"column:description;type:varchar(200)"`                        // 描述
-	TrialTime    sql.NullTime          `gorm:"column:trial_time"`                                           //试用时间(单位为天,为0不限制)
+	TrialTime    int64                 `gorm:"column:trial_time"`                                           //试用时间(单位为天,为0不限制)
 	Status       devices.ProductStatus `gorm:"column:status;type:smallint;default:1"`
 	SceneMode    string                `gorm:"column:scene_mode;type:varchar(20);default:rw"`                        //场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
 	Tags         map[string]string     `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"`          // 产品标签

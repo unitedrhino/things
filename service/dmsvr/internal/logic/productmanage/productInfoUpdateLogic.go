@@ -40,7 +40,7 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 		old.ProductName = data.ProductName
 	}
 	if data.TrialTime != nil {
-		old.TrialTime = utils.ToNullTime2(data.TrialTime)
+		old.TrialTime = data.TrialTime.GetValue()
 	}
 	if data.SceneMode != "" {
 		old.SceneMode = data.SceneMode
