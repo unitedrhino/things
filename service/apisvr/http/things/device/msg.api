@@ -1,6 +1,6 @@
 info(
-    title: "数据交互(待定)"
-    desc: "数据交互(待定)"
+    title: "数据交互"
+    desc: "数据交互"
     author: "杨磊"
     email: "603685348@qq.com"
     version: "v1"
@@ -9,6 +9,9 @@ info(
     group: things/device/msg
     prefix: /api/v1/things/device/msg
     middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
+    accessCodePrefix: "thingsDeviceMsg"
+    accessNamePrefix: "设备消息"
+    accessGroup: "设备消息"
 )
 service api {
     @doc "获取云端诊断日志"

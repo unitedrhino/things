@@ -9,7 +9,7 @@ info(
 @server(
     group: things/device/interact
     prefix: /api/v1/things/device/interact
-    accessCodePrefix: "thingsInteract"
+    accessCodePrefix: "thingsDeviceInteract"
     accessNamePrefix: "设备交互"
     accessGroup: "设备管理"
     middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
@@ -17,43 +17,28 @@ info(
 service api {
     @doc(
         summary: "调用设备行为"
-        isNeedAuth: "false"
-        authType: "all"
-        businessType: "interact"
     )
     @handler actionSend
     post /action-send (DeviceInteractSendActionReq) returns (DeviceInteractSendActionResp)
 
     @doc(
         summary: "获取调用设备行为的结果"
-        isNeedAuth: "false"
-        authType: "all"
-        businessType: "interact"
     )
     @handler actionRead
     post /action-read (DeviceInteractRespReadReq) returns (DeviceInteractSendActionResp)
 
     @doc(
         summary: "调用设备属性"
-        isNeedAuth: "false"
-        authType: "all"
-        businessType: "interact"
     )
     @handler propertyControlSend
     post /property-control-send (DeviceInteractSendPropertyReq) returns (DeviceInteractSendPropertyResp)
     @doc(
         summary: "批量调用设备属性"
-        isNeedAuth: "false"
-        authType: "all"
-        businessType: "interact"
     )
     @handler propertyControlMultiSend
     post /property-control-multi-send (DeviceInteractMultiSendPropertyReq) returns (DeviceInteractMultiSendPropertyResp)
     @doc(
         summary: "获取调用设备属性的结果"
-        isNeedAuth: "false"
-        authType: "all"
-        businessType: "interact"
     )
     @handler propertyControlRead
     post /property-control-read (DeviceInteractRespReadReq) returns (DeviceInteractSendPropertyResp)
@@ -63,33 +48,24 @@ service api {
         summary: "发送消息给设备"
         isNeedAuth: "true"
         authType: "admin"
-        businessType: "interact"
+        businessType: "modify"
     )
     @handler sendMsg
     post /send-msg (DeviceInteractSendMsgReq) returns ()
     @doc(
         summary: "请求设备获取设备最新属性"
-        isNeedAuth: "false"
-        authType: "all"
-        businessType: "interact"
     )
     @handler propertyGetReportSend
     post /property-get-report-send (DeviceInteractPropertyGetReportSendReq) returns (DeviceInteractPropertyGetReportSendResp)
 
     @doc(
         summary: "通知网关绑定子设备"
-        isNeedAuth: "false"
-        authType: "all"
-        businessType: "interact"
     )
     @handler gatewayNotifyBindSend
     post /gateway-notify-bind-send (GatewayNotifyBindSendReq) returns ()
 
     @doc(
         summary: "请求网关上报拓扑关系"
-        isNeedAuth: "false"
-        authType: "all"
-        businessType: "interact"
     )
     @handler gatewayGetFoundSend
     post /gateway-get-found-send (GatewayGetFoundReq) returns ()
@@ -132,7 +108,7 @@ type DeviceInteractSendPropertyReq  {
     Data          string `json:"data"`          //属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
     IsAsync       bool `json:"isAsync,optional"` //是否异步操作 异步情况通过获取接口来获取
     SyncTimeout int64 `json:"syncTimeout,optional"` //同步超时时间(单位:秒,不填默认3秒)
-    ShadowControl  int64 `json:"shadowControl,optional"` //设备影子控制 0:自动,当设备不在线的时候设置设备影子,设备在线时直接下发给设备 1:只实时下发,不在线报错 2:如果有设备影子只修改影子,没有的也不下发
+    ShadowControl  int64 `json:"shadowControl,optional"` //设备影子控制 0:自动,当设备不在线的时候设置设备影子,设备在线时直接下发给设备 1:只实时下发,不在线报错 2:如果有设备影子只修改影子,没有的也不下发 3:只修改云端的值 4:只修改云端的值并记录操作日志
     WithProfile *WithProfile `json:"withProfile,optional"` //同时修改该设备的配置信息
 }
 

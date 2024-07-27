@@ -9,18 +9,27 @@ info(
     group: things/device/profile
     prefix: /api/v1/things/device/profile
     middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
+    accessCodePrefix: "thingsDeviceInfo"
+    accessNamePrefix: "设备信息"
+    accessGroup: "设备管理"
 )
 service api {
     @doc "获取设备配置详情"
     @handler read
     post /read (DeviceProfileReadReq) returns (DeviceProfile)
-    @doc "删除设备配置"
+    @doc(
+        summary: "删除设备配置"
+        businessType: "modify"
+    )
     @handler delete
     post /delete (DeviceProfileReadReq) returns ()
     @doc "获取设备配置列表"
     @handler index
     post /index (DeviceProfileIndexReq) returns (DeviceProfileIndexResp)
-    @doc "更新设备配置"
+    @doc(
+        summary: "更新设备配置"
+        businessType: "modify"
+    )
     @handler update
     post /update (DeviceProfile) returns ()
 
