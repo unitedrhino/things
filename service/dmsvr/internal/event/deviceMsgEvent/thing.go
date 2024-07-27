@@ -592,14 +592,37 @@ func (l *ThingLogic) HandleAction(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg
 		}
 		ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
 			l.Infof("DeviceThingActionReport.Action device:%v,reqType:%v,req:%v", core, reqType, l.dreq)
-			//应用事件通知-设备物模型事件上报通知 ↓↓↓
-			err := l.svcCtx.PubApp.DeviceThingActionReport(ctx, application.ActionReport{
+			appMsg := application.ActionReport{
 				Device: core, Timestamp: timeStamp.UnixMilli(), ReqType: reqType, MsgToken: l.dreq.MsgToken,
 				ActionID: l.dreq.ActionID, Params: l.dreq.Params, Dir: schema.ActionDirUp,
 				Code: l.dreq.Code, Status: l.dreq.Msg,
-			})
+			}
+			//应用事件通知-设备物模型事件上报通知 ↓↓↓
+			err := l.svcCtx.PubApp.DeviceThingActionReport(ctx, appMsg)
 			if err != nil {
 				logx.WithContext(ctx).Errorf("%s.DeviceThingActionReport.Action  req:%v,err:%v", utils.FuncName(), utils.Fmt(l.dreq), err)
+			}
+			di, err := l.svcCtx.DeviceCache.GetData(l.ctx, core)
+			if err != nil {
+				l.Error(err)
+			}
+			if di != nil {
+				err = l.svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDeviceActionReport, appMsg, map[string]any{
+					"productID":  core.ProductID,
+					"deviceName": core.DeviceName,
+					"identifier": l.dreq.ActionID,
+				}, map[string]any{
+					"productID":  core.ProductID,
+					"deviceName": core.DeviceName,
+				}, map[string]any{
+					"projectID": di.ProjectID,
+				}, map[string]any{
+					"projectID": cast.ToString(di.ProjectID),
+					"areaID":    cast.ToString(di.AreaID),
+				})
+			}
+			if err != nil {
+				logx.WithContext(ctx).Error(err)
 			}
 		})
 	case deviceMsg.ActionReply: //云端请求设备的回复
@@ -629,12 +652,35 @@ func (l *ThingLogic) HandleAction(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg
 			}
 			param, _ := resp.Data.(map[string]any)
 			//应用事件通知-设备物模型事件上报通知 ↓↓↓
-			err = l.svcCtx.PubApp.DeviceThingActionReport(ctx, application.ActionReport{
+			appMsg := application.ActionReport{
 				Device: core, Timestamp: timeStamp.UnixMilli(), ReqType: reqType, MsgToken: resp.MsgToken,
 				ActionID: resp.ActionID, Params: param, Dir: schema.ActionDirUp, Code: resp.Code, Status: resp.Msg,
-			})
+			}
+			err = l.svcCtx.PubApp.DeviceThingActionReport(ctx, appMsg)
 			if err != nil {
 				logx.WithContext(ctx).Errorf("%s.DeviceThingActionReport  req:%v,err:%v", utils.FuncName(), utils.Fmt(l.dreq), err)
+			}
+			di, err := l.svcCtx.DeviceCache.GetData(l.ctx, core)
+			if err != nil {
+				l.Error(err)
+			}
+			if di != nil {
+				err = l.svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDeviceActionReport, appMsg, map[string]any{
+					"productID":  core.ProductID,
+					"deviceName": core.DeviceName,
+					"identifier": resp.ActionID,
+				}, map[string]any{
+					"productID":  core.ProductID,
+					"deviceName": core.DeviceName,
+				}, map[string]any{
+					"projectID": di.ProjectID,
+				}, map[string]any{
+					"projectID": cast.ToString(di.ProjectID),
+					"areaID":    cast.ToString(di.AreaID),
+				})
+			}
+			if err != nil {
+				logx.WithContext(ctx).Error(err)
 			}
 		})
 	}
