@@ -70,11 +70,12 @@ func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (ret *dm.ActionSendRe
 	}
 
 	param := map[string]any{}
-	err = utils.Unmarshal([]byte(in.InputParams), &param)
-	if err != nil {
-		return nil, errors.Parameter.AddDetail("ActionSend InputParams not right:", in.InputParams)
+	if len(in.InputParams) > 0 {
+		err = utils.Unmarshal([]byte(in.InputParams), &param)
+		if err != nil {
+			return nil, errors.Parameter.AddDetail("ActionSend InputParams not right:", in.InputParams)
+		}
 	}
-
 	req := msgThing.Req{
 		CommonMsg: deviceMsg.CommonMsg{
 			Method:    deviceMsg.Action,
