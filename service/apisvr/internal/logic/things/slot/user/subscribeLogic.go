@@ -34,6 +34,7 @@ func (l *SubscribeLogic) Subscribe(req *types.SlotUserSubscribeReq) error {
 	switch req.Code {
 	case def.UserSubscribeDeviceConn:
 	case def.UserSubscribeDevicePropertyReport:
+	case def.UserSubscribeDeviceActionReport:
 	case def.UserSubscribeDeviceOtaReport:
 	default:
 		return errors.NotRealize
