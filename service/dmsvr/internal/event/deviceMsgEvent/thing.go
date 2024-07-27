@@ -637,11 +637,13 @@ func (l *ThingLogic) HandleAction(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg
 			devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName},
 			resp.MsgToken)
 		if req == nil || err != nil {
+			l.Error(req, err)
 			return nil, err
 		}
 
 		err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.RespMsg, msg, resp.MsgToken)
 		if err != nil {
+			l.Error(err)
 			return nil, err
 		}
 		ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
