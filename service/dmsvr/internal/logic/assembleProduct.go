@@ -33,11 +33,20 @@ func ToProductInfo(ctx context.Context, svcCtx *svc.ServiceContext, pi *relation
 	if pi.AutoRegister == def.Unknown {
 		pi.AutoRegister = def.AutoRegClose
 	}
+	var err error
+	if len(pi.CustomUi) != 0 {
+		for _, v := range pi.CustomUi {
+			v.Path, err = svcCtx.OssClient.PublicBucket().GetUrl(v.Path, false)
+			if err != nil {
+				logx.WithContext(ctx).Errorf("%s.CustomUiGetUrl err:%v", utils.FuncName(), err)
+			}
+		}
+	}
+
 	dpi := utils.Copy[dm.ProductInfo](pi)
 	dpi.Category = ToProductCategoryPb(ctx, svcCtx, pi.Category, nil)
 	dpi.Protocol = ToProtocolInfoPb(pi.Protocol)
 	if pi.ProductImg != "" {
-		var err error
 		dpi.ProductImg, err = svcCtx.OssClient.PublicBucket().GetUrl(pi.ProductImg, false)
 		if err != nil {
 			logx.WithContext(ctx).Errorf("%s.SignedGetUrl err:%v", utils.FuncName(), err)
