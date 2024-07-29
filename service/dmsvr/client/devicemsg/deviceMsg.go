@@ -129,6 +129,7 @@ type (
 	ProductCategorySchemaMultiSaveReq = dm.ProductCategorySchemaMultiSaveReq
 	ProductCustom                     = dm.ProductCustom
 	ProductCustomReadReq              = dm.ProductCustomReadReq
+	ProductCustomUi                   = dm.ProductCustomUi
 	ProductInfo                       = dm.ProductInfo
 	ProductInfoDeleteReq              = dm.ProductInfoDeleteReq
 	ProductInfoIndexReq               = dm.ProductInfoIndexReq

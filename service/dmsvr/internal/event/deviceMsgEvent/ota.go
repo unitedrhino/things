@@ -195,10 +195,10 @@ func (l *OtaLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) *d
 		return nil
 	}
 	resp := &deviceMsg.CommonMsg{
-		Method:    deviceMsg.GetRespMethod(l.dreq.Method),
-		MsgToken:  l.dreq.MsgToken,
-		Timestamp: time.Now().UnixMilli(),
-		Data:      data,
+		Method:   deviceMsg.GetRespMethod(l.dreq.Method),
+		MsgToken: l.dreq.MsgToken,
+		//Timestamp: time.Now().UnixMilli(),
+		Data: data,
 	}
 
 	return &deviceMsg.PublishMsg{

@@ -41,10 +41,10 @@ func (l *ExtLogic) initMsg(msg *deviceMsg.PublishMsg) error {
 
 func (l *ExtLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) *deviceMsg.PublishMsg {
 	resp := &deviceMsg.CommonMsg{
-		Method:    deviceMsg.GetRespMethod(l.dreq.Method),
-		MsgToken:  l.dreq.MsgToken,
-		Timestamp: time.Now().UnixMilli(),
-		Data:      data,
+		Method:   deviceMsg.GetRespMethod(l.dreq.Method),
+		MsgToken: l.dreq.MsgToken,
+		//Timestamp: time.Now().UnixMilli(),
+		Data: data,
 	}
 	return &deviceMsg.PublishMsg{
 		Handle:       msg.Handle,

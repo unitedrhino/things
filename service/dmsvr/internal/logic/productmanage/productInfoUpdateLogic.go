@@ -1,17 +1,23 @@
 package productmanagelogic
 
 import (
+	"archive/zip"
 	"context"
 	"fmt"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/oss"
 	"gitee.com/i-Things/share/oss/common"
+	"gitee.com/i-Things/share/systems"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"github.com/mholt/archiver/v4"
 	"github.com/spf13/cast"
+	"io"
+	"os"
+	"strings"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -30,6 +36,62 @@ func NewProductInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 		Logger: logx.WithContext(ctx),
 		PiDB:   relationDB.NewProductInfoRepo(ctx),
 	}
+}
+
+// archiver解压压缩包
+func ArchiverTest(path string) {
+	f, _ := os.Open(path)
+	format, readStream, err := archiver.Identify(path, f)
+	if err != nil {
+		return
+	}
+	extractor, ok := format.(archiver.Extractor)
+	if !ok {
+		return
+	}
+	switch extractor.(type) {
+	case archiver.Zip:
+		extractor = archiver.Zip{TextEncoding: "gbk"}
+		fmt.Println("archiver.Zip")
+	case archiver.SevenZip:
+		extractor = archiver.SevenZip{}
+		fmt.Println("archiver.SevenZip")
+	case archiver.Rar:
+		extractor = archiver.Rar{}
+		fmt.Println("archiver.Rar")
+	default:
+		fmt.Println("unsupported compression algorithm")
+		return
+	}
+
+	//fileList := []string{"file1.txt", "subfolder"}
+	ctx := context.Background()
+	handler := func(ctx context.Context, f archiver.File) error {
+		filename := f.Name()
+		newfile, err := os.Create(filename)
+		if err != nil {
+			panic(err)
+		}
+		defer newfile.Close()
+		old, err := f.Open()
+		if err != nil {
+			panic(err)
+		}
+		defer old.Close()
+		_, err = io.Copy(newfile, old)
+
+		if err != nil {
+			panic(err)
+		}
+		fmt.Printf("extracted %s \n", f.Name())
+		return nil
+	}
+
+	err = extractor.Extract(ctx, readStream, nil, handler)
+	if err != nil {
+		return
+	}
+
 }
 
 func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *dm.ProductInfo) error {
@@ -76,6 +138,56 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 		}
 
 		old.ProductImg = path
+	}
+	if data.CustomUi != nil {
+		for k, v := range data.CustomUi {
+			if v.IsUpdateUi == false || v.Path == "" {
+				if old.CustomUi != nil && old.CustomUi[k] != nil {
+					v.Version = old.CustomUi[k].Version
+				}
+				continue
+			}
+			fileName := oss.GetFileNameWithPath(v.Path)
+			localFilePath := fmt.Sprintf("%s/things/product/customUi/%s", systems.TmpDir, fileName)
+			defer os.RemoveAll(fileName)
+			err := l.svcCtx.OssClient.TemporaryBucket().GetObjectLocal(l.ctx, v.Path, localFilePath)
+			if err != nil {
+				return errors.System.AddMsg("拉取文件出错").AddDetail(err)
+			}
+			archive, err := zip.OpenReader(localFilePath)
+			if err != nil {
+				return errors.System.AddDetail(err)
+			}
+			defer archive.Close()
+			var version int64 = 1
+			if old.CustomUi != nil && old.CustomUi[k] != nil {
+				version += old.CustomUi[k].Version
+			}
+			v.Version = version
+			uploadPath := oss.GenFilePath(l.ctx, l.svcCtx.Config.Name, oss.BusinessProductManage, oss.SceneProductCustomUi, fmt.Sprintf("%s/%d", data.ProductID, version))
+			for _, f := range archive.File {
+				if f.FileInfo().IsDir() {
+					continue
+				}
+				path := f.Name
+				if strings.HasPrefix(path, "dist/") {
+					path = strings.TrimPrefix(path, "dist/")
+				}
+				uPath := fmt.Sprintf("%s/%s", uploadPath, path)
+				r, err := f.Open()
+				if err != nil {
+					l.Error(err)
+					return errors.System.AddDetail(err)
+				}
+				_, err = l.svcCtx.OssClient.PublicBucket().Upload(l.ctx, uPath, r, common.OptionKv{})
+				if err != nil {
+					l.Error(err)
+					return errors.System.AddDetail(err)
+				}
+			}
+			v.Path = fmt.Sprintf("%s/index.html", uploadPath)
+		}
+		old.CustomUi = utils.CopyMap[relationDB.ProductCustomUi](data.CustomUi)
 	}
 	if data.AuthMode != 0 {
 		old.AuthMode = data.AuthMode

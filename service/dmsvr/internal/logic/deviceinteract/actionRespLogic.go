@@ -63,11 +63,11 @@ func (l *ActionRespLogic) ActionResp(in *dm.ActionRespReq) (*dm.Empty, error) {
 	}
 	resp := msgThing.Resp{
 		CommonMsg: deviceMsg.CommonMsg{
-			Method:    deviceMsg.ActionReply,
-			MsgToken:  in.MsgToken,
-			Timestamp: time.Now().UnixMilli(),
-			Msg:       in.Msg,
-			Code:      in.Code,
+			Method:   deviceMsg.ActionReply,
+			MsgToken: in.MsgToken,
+			//Timestamp: time.Now().UnixMilli(),
+			Msg:  in.Msg,
+			Code: in.Code,
 		},
 		ActionID: req.ActionID,
 	}

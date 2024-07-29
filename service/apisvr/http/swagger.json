@@ -10093,6 +10093,28 @@
         "direction"
       ]
     },
+    "ProductCustomUi": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "前端路径"
+        },
+        "version": {
+          "type": "integer",
+          "format": "int64",
+          "description": "版本号"
+        },
+        "isUpdateUi": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      },
+      "title": "ProductCustomUi",
+      "required": [
+        "path"
+      ]
+    },
     "ProductInfo": {
       "type": "object",
       "properties": {
@@ -10189,6 +10211,10 @@
         },
         "category": {
           "$ref": "#/definitions/ProductCategory"
+        },
+        "customUi": {
+          "type": "object",
+          "description": "自定义ui,key是端的类型(web-client  mini-client) value是以下类型的对象{version:123(版本号,只读),isUpdateUi:bool(是否更新ui),path:string(前端路径,如果需要修改,需要将isUpdateUi置为true并在这个参数中传入压缩包的filePath)}"
         }
       },
       "title": "ProductInfo"

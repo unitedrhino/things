@@ -67,10 +67,10 @@ func (l *ThingLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) 
 		l.Errorf("%s.DeviceResp err:%v, msg:%v", utils.FuncName(), err, msg)
 	}
 	resp := &deviceMsg.CommonMsg{
-		Method:    deviceMsg.GetRespMethod(l.dreq.Method),
-		MsgToken:  l.dreq.MsgToken,
-		Timestamp: time.Now().UnixMilli(),
-		Data:      data,
+		Method:   deviceMsg.GetRespMethod(l.dreq.Method),
+		MsgToken: l.dreq.MsgToken,
+		//Timestamp: time.Now().UnixMilli(),
+		Data: data,
 	}
 	if msg.ProtocolCode == "" {
 		msg.ProtocolCode = def.ProtocolCodeIThings

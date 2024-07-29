@@ -382,10 +382,10 @@ func (l *SendMessageToDevicesLogic) PushMessageToDevices(jobInfo *relationDB.DmO
 	}
 	MsgToken := devices.GenMsgToken(l.ctx, l.svcCtx.NodeID)
 	upgradeMsg := deviceMsg.CommonMsg{
-		MsgToken:  MsgToken,
-		Method:    msgOta.TypeUpgrade,
-		Timestamp: time.Now().UnixMilli(),
-		Data:      data,
+		MsgToken: MsgToken,
+		Method:   msgOta.TypeUpgrade,
+		//Timestamp: time.Now().UnixMilli(),
+		Data: data,
 	}
 	payload, _ := json.Marshal(upgradeMsg)
 	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, firmware.ProductID)

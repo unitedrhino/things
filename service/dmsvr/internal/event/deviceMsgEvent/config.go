@@ -8,7 +8,6 @@ import (
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
-	"time"
 )
 
 type ConfigLogic struct {
@@ -34,9 +33,9 @@ func (l *ConfigLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publ
 	})
 
 	resp := &deviceMsg.CommonMsg{
-		Method:    deviceMsg.RemoteConfigReply,
-		Timestamp: time.Now().UnixMilli(),
-		Data:      resp1.Info.Content,
+		Method: deviceMsg.RemoteConfigReply,
+		//Timestamp: time.Now().UnixMilli(),
+		Data: resp1.Info.Content,
 	}
 
 	return &deviceMsg.PublishMsg{

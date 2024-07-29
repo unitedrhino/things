@@ -70,9 +70,9 @@ func (l *PropertyGetReportSendLogic) PropertyGetReportSend(in *dm.PropertyGetRep
 
 	req := msgThing.Req{
 		CommonMsg: deviceMsg.CommonMsg{
-			Method:    deviceMsg.GetReport,
-			MsgToken:  MsgToken,
-			Timestamp: time.Now().UnixMilli(),
+			Method:   deviceMsg.GetReport,
+			MsgToken: MsgToken,
+			//Timestamp: time.Now().UnixMilli(),
 		},
 		Identifiers: in.DataIDs,
 	}

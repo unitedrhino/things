@@ -86,9 +86,9 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 
 	req := msgThing.Req{
 		CommonMsg: deviceMsg.CommonMsg{
-			Method:    deviceMsg.Control,
-			MsgToken:  MsgToken,
-			Timestamp: time.Now().UnixMilli(),
+			Method:   deviceMsg.Control,
+			MsgToken: MsgToken,
+			//Timestamp: time.Now().UnixMilli(),
 		},
 		Params: param,
 	}

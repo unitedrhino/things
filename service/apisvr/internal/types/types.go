@@ -1123,27 +1123,34 @@ type ProductCustomTopic struct {
 	Direction int64  `json:"direction"` //1:上行 2:下行 3:双向
 }
 
+type ProductCustomUi struct {
+	Path       string `json:"path"`             //前端路径
+	Version    int64  `json:"version,optional"` //版本号
+	IsUpdateUi bool   `json:"isUpdateUi,optional,omitempty"`
+}
+
 type ProductInfo struct {
-	CreatedTime        int64            `json:"createdTime,optional,string"`           //创建时间 只读
-	ProductID          string           `json:"productID,optional"`                    //产品id 只读
-	ProductName        string           `json:"productName,optional"`                  //产品名称
-	ProductImg         string           `json:"productImg,optional"`                   //产品图片
-	IsUpdateProductImg bool             `json:"isUpdateProductImg,omitempty,optional"` //只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
-	AuthMode           int64            `json:"authMode,optional,range=[0:2]"`         //认证方式:1:账密认证,2:秘钥认证
-	DeviceType         int64            `json:"deviceType,optional,range=[0:3]"`
-	CategoryID         int64            `json:"categoryID,optional"`               //产品品类
-	NetType            int64            `json:"netType,optional,range=[0:8]"`      //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
-	ProtocolCode       string           `json:"protocolCode,optional"`             //协议code,默认iThings  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
-	AutoRegister       int64            `json:"autoRegister,optional,range=[0:3]"` //动态注册:1:关闭,2:打开,3:打开并自动创建设备
-	Secret             string           `json:"secret,optional"`                   //动态注册产品秘钥 只读
-	TrialTime          int64            `json:"trialTime,optional,string"`         //试用时间(单位为天,为0不限制)
-	Desc               *string          `json:"desc,optional"`                     //描述
-	Tags               []*Tag           `json:"tags,optional"`                     // 产品tag
-	SceneMode          string           `json:"sceneMode,optional"`                //场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
-	Status             int64            `json:"status,optional"`                   //产品状态 1:启用 2:禁用 3:开发中
-	ProtocolConf       []*Tag           `json:"protocolConf,optional,omitempty"`   //协议配置
-	Protocol           *ProtocolInfo    `json:"protocol,omitempty"`
-	Category           *ProductCategory `json:"category,omitempty"`
+	CreatedTime        int64                       `json:"createdTime,optional,string"`           //创建时间 只读
+	ProductID          string                      `json:"productID,optional"`                    //产品id 只读
+	ProductName        string                      `json:"productName,optional"`                  //产品名称
+	ProductImg         string                      `json:"productImg,optional"`                   //产品图片
+	IsUpdateProductImg bool                        `json:"isUpdateProductImg,omitempty,optional"` //只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
+	AuthMode           int64                       `json:"authMode,optional,range=[0:2]"`         //认证方式:1:账密认证,2:秘钥认证
+	DeviceType         int64                       `json:"deviceType,optional,range=[0:3]"`
+	CategoryID         int64                       `json:"categoryID,optional"`               //产品品类
+	NetType            int64                       `json:"netType,optional,range=[0:8]"`      //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
+	ProtocolCode       string                      `json:"protocolCode,optional"`             //协议code,默认iThings  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
+	AutoRegister       int64                       `json:"autoRegister,optional,range=[0:3]"` //动态注册:1:关闭,2:打开,3:打开并自动创建设备
+	Secret             string                      `json:"secret,optional"`                   //动态注册产品秘钥 只读
+	TrialTime          int64                       `json:"trialTime,optional,string"`         //试用时间(单位为天,为0不限制)
+	Desc               *string                     `json:"desc,optional"`                     //描述
+	Tags               []*Tag                      `json:"tags,optional"`                     // 产品tag
+	SceneMode          string                      `json:"sceneMode,optional"`                //场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
+	Status             int64                       `json:"status,optional"`                   //产品状态 1:启用 2:禁用 3:开发中
+	ProtocolConf       []*Tag                      `json:"protocolConf,optional,omitempty"`   //协议配置
+	Protocol           *ProtocolInfo               `json:"protocol,omitempty"`
+	Category           *ProductCategory            `json:"category,omitempty"`
+	CustomUi           map[string]*ProductCustomUi `json:"customUi,optional,omitempty"` //自定义ui,key是端的类型(web-client  mini-client) value是以下类型的对象{version:123(版本号,只读),isUpdateUi:bool(是否更新ui),path:string(前端路径,如果需要修改,需要将isUpdateUi置为true并在这个参数中传入压缩包的filePath)}
 }
 
 type ProductInfoDeleteReq struct {

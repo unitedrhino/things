@@ -150,7 +150,13 @@ type DmProductInfo struct {
 	Category    *DmProductCategory `gorm:"foreignKey:ID;references:CategoryID"` // 添加外键
 	Protocol    *DmProtocolInfo    `gorm:"foreignKey:Code;references:ProtocolCode"`
 	//Devices []*DmDeviceInfo    `gorm:"foreignKey:ProductID;references:ProductID"` // 添加外键
+	CustomUi map[string]*ProductCustomUi `gorm:"column:customUi;type:json;serializer:json;NOT NULL;default:'{}'"`
+}
 
+type ProductCustomUi struct {
+	Type    string `json:"type"` //detail(设备详情) ,setNet(配置网络)
+	Path    string `json:"path"`
+	Version int64  `json:"version"`
 }
 
 func (m *DmProductInfo) TableName() string {

@@ -52,9 +52,9 @@ func (l *GatewayNotifyBindSendLogic) GatewayNotifyBindSend(in *dm.GatewayNotifyB
 	MsgToken := devices.GenMsgToken(l.ctx, l.svcCtx.NodeID)
 	req := msgGateway.Msg{
 		CommonMsg: deviceMsg.CommonMsg{
-			Method:    deviceMsg.NotifyBind,
-			MsgToken:  MsgToken,
-			Timestamp: time.Now().UnixMilli(),
+			Method:   deviceMsg.NotifyBind,
+			MsgToken: MsgToken,
+			//Timestamp: time.Now().UnixMilli(),
 		},
 		Payload: &msgGateway.GatewayPayload{
 			Devices: nil,

@@ -53,9 +53,9 @@ func (l *GatewayGetFoundSendLogic) GatewayGetFoundSend(in *dm.GatewayGetFoundReq
 	MsgToken := devices.GenMsgToken(l.ctx, l.svcCtx.NodeID)
 	req := msgGateway.Msg{
 		CommonMsg: deviceMsg.CommonMsg{
-			Method:    deviceMsg.GetFound,
-			MsgToken:  MsgToken,
-			Timestamp: time.Now().UnixMilli(),
+			Method:   deviceMsg.GetFound,
+			MsgToken: MsgToken,
+			//Timestamp: time.Now().UnixMilli(),
 		},
 	}
 	payload, _ := json.Marshal(req)
