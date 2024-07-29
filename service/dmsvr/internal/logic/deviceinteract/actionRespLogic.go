@@ -66,14 +66,14 @@ func (l *ActionRespLogic) ActionResp(in *dm.ActionRespReq) (*dm.Empty, error) {
 			Method:   deviceMsg.ActionReply,
 			MsgToken: in.MsgToken,
 			//Timestamp: time.Now().UnixMilli(),
-			Msg:  in.Msg,
+			//Msg:  in.Msg,
 			Code: in.Code,
 		},
 		ActionID: req.ActionID,
 	}
 	if resp.Code == 0 {
 		resp.Code = errors.OK.Code
-		resp.Msg = errors.OK.GetMsg()
+		//resp.Msg = errors.OK.GetMsg()
 	}
 	if resp.Code == errors.OK.GetCode() {
 		param := map[string]any{}

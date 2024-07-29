@@ -69,10 +69,10 @@ func (s *DeviceSubServer) ExtMsg(topic string, payload []byte) error {
 		return err
 	}
 	respPayload.CommonMsg = &deviceMsg.CommonMsg{
-		MsgToken:  req.MsgToken,
-		Timestamp: time.Now().UnixMilli(),
-		Code:      errors.OK.GetCode(),
-		Msg:       errors.OK.GetMsg(),
+		MsgToken: req.MsgToken,
+		//Timestamp: time.Now().UnixMilli(),
+		Code: errors.OK.GetCode(),
+		//Msg:       errors.OK.GetMsg(),
 	}
 	ret, err := deviceauthlogic.NewDeviceRegisterLogic(s.ctx, s.svcCtx).DeviceRegister(&dg.DeviceRegisterReq{
 		ProductID:  pub.ProductID,
@@ -85,7 +85,7 @@ func (s *DeviceSubServer) ExtMsg(topic string, payload []byte) error {
 		s.Error(err)
 		e := errors.Fmt(err)
 		respPayload.Code = e.Code
-		respPayload.Msg = e.GetMsg()
+		//respPayload.Msg = e.GetMsg()
 	} else {
 		respPayload.Data = msgExt.RespData{
 			Len:     ret.Len,
