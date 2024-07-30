@@ -55,7 +55,7 @@ func SchemaAccess(ctx context.Context, svcCtx *svc.ServiceContext, authType def.
 				SharedUserID: uc.UserID,
 			})
 			if err != nil {
-				return nil, errors.Parameter
+				return nil, errors.Permissions.AddDetail(err)
 			}
 			if uds.AuthType == def.AuthAdmin {
 				return param, nil
