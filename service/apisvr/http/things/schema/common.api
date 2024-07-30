@@ -10,20 +10,39 @@ import "info.api"
 @server(
     group: things/schema/common
     prefix: /api/v1/things/schema/common
+    accessCodePrefix: "thingsSchemaCommon"
+    accessNamePrefix: "通用物模型"
+    accessGroup: "通用物模型"
     middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
 )
     //物联网平台通过定义一种物的描述语言来描述物模型模块和功能，称为TSL（Thing Specification Language）
 service api {
-    @doc "初始化通用物模型"
+    @doc(
+        summary: "初始化通用物模型"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
     @handler init
     post /init () returns ()
-    @doc "更新通用物模型"
+    @doc(
+        summary: "更新通用物模型"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
     @handler update
     post /update (CommonSchemaUpdateReq) returns ()
-    @doc "新增通用物模型"
+    @doc(
+        summary: "新增通用物模型"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
     @handler create
     post /create (CommonSchemaCreateReq) returns ()
-    @doc "删除通用物模型"
+    @doc(
+        summary: "删除通用物模型"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
     @handler delete
     post /delete (CommonSchemaDeleteReq) returns ()
     @doc "获取通用物模型列表"

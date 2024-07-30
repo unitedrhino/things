@@ -10,22 +10,45 @@ info(
 @server(
     group: things/protocol/info
     prefix: /api/v1/things/protocol/info
+    accessCodePrefix: "thingsProtocolInfo"
+    accessNamePrefix: "协议管理"
+    accessGroup: "设备自定义"
     middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
-    @doc "新增自定义协议"
+    @doc(
+        summary: "新增自定义协议"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
     @handler create
     post /create (ProtocolInfo) returns (WithID)
-    @doc "更新自定义协议"
+    @doc(
+        summary: "更新自定义协议"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
     @handler update
     post /update (ProtocolInfo) returns ()
-    @doc "删除自定义协议"
+    @doc(
+        summary: "删除自定义协议"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
     @handler delete
     post /delete (WithID) returns ()
-    @doc "获取自定义协议信息列表"
+    @doc(
+        summary: "获取自定义协议信息列表"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
     @handler index
     post /index (ProtocolInfoIndexReq) returns (ProtocolInfoIndexResp)
-    @doc "获取自定义协议详情"
+    @doc(
+        summary: "获取自定义协议详情"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
     @handler read
     post /read (WithIDOrCode) returns (ProtocolInfo)
 }

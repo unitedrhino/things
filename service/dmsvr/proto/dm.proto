@@ -58,7 +58,9 @@ message  WithIDChildren{
 message IDPath{
   int64 id =1;
   string idPath=2;
+  int64 noParentID =3;
 }
+
 message IDPathWithUpdate{
   int64 id =1;
   string idPath=2;

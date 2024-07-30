@@ -2214,7 +2214,7 @@
     },
     "/api/v1/things/ota/firmware/device/cancel": {
       "post": {
-        "summary": "取消指定批次下的设备升级作业",
+        "summary": "取消指定任务下的升级",
         "operationId": "postApiV1ThingsOtaFirmwareDeviceCancel",
         "responses": {
           "200": {
@@ -2292,7 +2292,7 @@
     },
     "/api/v1/things/ota/firmware/device/index": {
       "post": {
-        "summary": "查询指定升级批次下的设备升级作业列表",
+        "summary": "查询升级设备列表",
         "operationId": "postApiV1ThingsOtaFirmwareDeviceIndex",
         "responses": {
           "200": {
@@ -2334,7 +2334,7 @@
     },
     "/api/v1/things/ota/firmware/device/retry": {
       "post": {
-        "summary": "重新升级指定批次下升级失败或升级取消的设备升级作业",
+        "summary": "重试设备升级",
         "operationId": "postApiV1ThingsOtaFirmwareDeviceRetry",
         "responses": {
           "200": {

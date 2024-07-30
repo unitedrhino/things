@@ -9,6 +9,9 @@ info(
 @server (
 	group: things/user/device/collect
 	prefix: /api/v1/things/user/device/collect
+	accessCodePrefix: "thingsUserDevice"
+	accessNamePrefix: "设备收藏"
+	accessGroup: "用户设备"
 	middleware:  CheckTokenWare,InitCtxsWare, DataAuthWare, TeardownWare
 )
 service api {
@@ -26,6 +29,9 @@ service api {
 @server (
 	group: things/user/device/share
 	prefix: /api/v1/things/user/device/share
+	accessCodePrefix: "thingsUserDevice"
+	accessNamePrefix: "设备分享"
+	accessGroup: "用户设备"
 	middleware:  CheckTokenWare,InitCtxsWare, DataAuthWare, TeardownWare
 )
 service api {

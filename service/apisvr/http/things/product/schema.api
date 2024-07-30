@@ -16,9 +16,8 @@ info(
 )
     //物联网平台通过定义一种物的描述语言来描述物模型模块和功能，称为TSL（Thing Specification Language）
 service api {
-    @doc "导入产品物模型tsl"
     @doc(
-        summary: "新增产品品类"
+        summary: "导入产品物模型tsl"
         authType: "admin"
         isNeedAuth: "true"
     )
@@ -28,31 +27,27 @@ service api {
     @handler tslRead
     post /tsl-read (ProductSchemaTslReadReq) returns (ProductSchemaTslReadResp)
 
-    @doc "更新产品物模型"
     @doc(
-        summary: "新增产品品类"
+        summary: "更新产品物模型"
         authType: "admin"
         isNeedAuth: "true"
     )
     @handler update
     post /update (ProductSchemaUpdateReq) returns ()
-    @doc "创建产品物模型"
     @doc(
-        summary: "新增产品品类"
+        summary: "创建产品物模型"
         authType: "admin"
         isNeedAuth: "true"
     )
     @handler create
     post /create (ProductSchemaCreateReq) returns ()
-    @doc "批量创建产品物模型"
     @doc(
-        summary: "新增产品品类"
+        summary: "批量创建产品物模型"
         authType: "admin"
         isNeedAuth: "true"
     )
     @handler multiCreate
     post /multi-create (ProductSchemaMultiCreateReq) returns ()
-    @doc "删除产品物模型"
     @doc(
         summary: "删除产品物模型"
         authType: "admin"

@@ -9,6 +9,9 @@ info(
 @server(
     group: things/rule/alarm/info
     prefix: /api/v1/things/rule/alarm/info
+    accessCodePrefix: "thingsRuleAlarm"
+    accessNamePrefix: "告警管理"
+    accessGroup: "规则引擎"
     middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
