@@ -13,11 +13,25 @@ import (
 		你好,{{.deviceAlias}}设备告警:{{.body}}
 */
 
+type NotifyUserType = string
+
+const (
+	NotifyUserAccount        NotifyUserType = "account"
+	NotifyUserID                            = "userID"
+	NotifyDeviceOwner                       = "deviceOwner"        //设备拥有人
+	NotifyDeviceProjectAdmin                = "deviceProjectAdmin" //拥有设备项目权限的管理员
+	NotifyDeviceAreaAdmin                   = "deviceAreaAdmin"    //拥有设备区域权限的管理员
+	NotifyDeviceProjectAll                  = "deviceProjectAll"   //拥有设备项目权限的管理员
+	NotifyDeviceAreaAll                     = "deviceAreaAll"      //拥有设备区域权限的管理员
+)
+
 type ActionNotify struct {
 	Type       def.NotifyType    `json:"type"`
 	NotifyCode def.NotifyCode    `json:"notifyCode"` //支持: ruleScene: 场景联动通知(多设备模式使用)   ruleDeviceAlarm: 设备告警通知(单设备模式使用)
-	Accounts   []string          `json:"accounts"`   //通知的账号列表
-	Params     map[string]string `json:"params"`     //需要填写告警的
+	UserType   NotifyUserType    `json:"userType"`
+	Accounts   []string          `json:"accounts"` //通知的账号列表
+	UserIDs    []string          `json:"userIDs"`
+	Params     map[string]string `json:"params"` //需要填写告警的
 	Str1       string            `json:"str1"`
 	Str2       string            `json:"str2"`
 	Str3       string            `json:"str3"`

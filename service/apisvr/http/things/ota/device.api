@@ -9,21 +9,28 @@ info(
     group: things/ota/firmware/device
     prefix: /api/v1/things/ota/firmware/device
     middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
+    accessCodePrefix: "thingsOtaDevice"
+    accessNamePrefix: "设备"
+    accessGroup: "ota远程升级"
+    defaultIsNeedAuth: "true"
+    defaultAuthType: "admin"
 )
 service api{
     //查询指定升级批次下的设备升级作业列表
-    @doc "查询指定升级批次下的设备升级作业列表"
+    @doc "查询升级设备列表"
     @handler index
     post /index(OtaFirmwareDeviceIndexReq) returns(OtaFirmwareDeviceIndexResp)
     //取消指定批次下的设备升级作业
-    @doc "取消指定批次下的设备升级作业"
+    @doc "取消指定任务下的升级"
     @handler cancel
     post /cancel(OtaFirmwareDeviceCancelReq)
-    @doc "重新升级指定批次下升级失败或升级取消的设备升级作业"
+    @doc "重试设备升级"
     @handler retry
     post /retry(OtaFirmwareDeviceRetryReq)
-
-    @doc "确认升级设备"
+    @doc(
+        summary: "确认升级设备"
+        authType: "all"
+    )
     @handler confirm
     post /confirm(OtaFirmwareDeviceConfirmReq)
 }

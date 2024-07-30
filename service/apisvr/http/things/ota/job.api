@@ -12,6 +12,11 @@ info(
 //asdfawefa
     group: things/ota/firmware/job
     prefix: /api/v1/things/ota/firmware/job
+    accessCodePrefix: "thingsOtaJob"
+    accessNamePrefix: "任务"
+    accessGroup: "ota远程升级"
+    defaultIsNeedAuth: "true"
+    defaultAuthType: "admin"
     middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api{

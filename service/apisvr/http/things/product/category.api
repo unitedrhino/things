@@ -9,16 +9,31 @@ info(
 @server(
     group: things/product/category
     prefix: /api/v1/things/product/category
+    accessCodePrefix: "thingsProductCategory"
+    accessNamePrefix: "产品品类"
+    accessGroup: "产品管理"
     middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
-    @doc "新增产品品类"
+    @doc(
+        summary: "新增产品品类"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
     @handler create
     post /create (ProductCategory) returns ()
-    @doc "更新产品品类"
+    @doc(
+        summary: "更新产品品类"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
     @handler update
     post /update (ProductCategory) returns ()
-    @doc "删除产品品类"
+    @doc(
+        summary: "删除产品品类"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
     @handler delete
     post /delete (WithID) returns ()
     @doc "获取产品品类列表"
@@ -27,13 +42,25 @@ service api {
     @doc "获取产品品类详情"
     @handler read
     post /read (WithIDChildren) returns (ProductCategory)
-    @doc "批量更新产品品类物模型"
+    @doc(
+        summary: "批量更新产品品类物模型"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
     @handler schemaMultiUpdate
     post /schema/multi-update (ProductCategorySchemaMultiSaveReq) returns ()
-    @doc "批量新增产品品类物模型"
+    @doc(
+        summary: "批量新增产品品类物模型"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
     @handler schemaMultiCreate
     post /schema/multi-create (ProductCategorySchemaMultiSaveReq) returns ()
-    @doc "批量删除产品品类物模型"
+    @doc(
+        summary: "批量删除产品品类物模型"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
     @handler schemaMultiDelete
     post /schema/multi-delete (ProductCategorySchemaMultiSaveReq) returns ()
     @doc "获取产品品类列表"

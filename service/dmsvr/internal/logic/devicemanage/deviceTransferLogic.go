@@ -106,6 +106,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 					Sort:  stores.OrderAsc,
 				}},
 			},
+			AuthType:   def.AuthAdmin,
 			TargetID:   in.UserID,
 			TargetType: "user",
 		})
@@ -136,6 +137,8 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 			return nil, err
 		}
 		UserID = pi.AdminUserID
+	default:
+		return nil, errors.Parameter.AddMsgf("transferTo not supprt:%v", in.TransferTo)
 	}
 	if in.IsCleanData == def.True {
 		for _, di := range dis {

@@ -11,6 +11,9 @@ info(
      group: things/group/info
      prefix: /api/v1/things/group/info
      middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
+    accessCodePrefix: "thingsDeviceGroup"
+    accessNamePrefix: "设备分组"
+    accessGroup: "设备管理"
 )
 
 service api {

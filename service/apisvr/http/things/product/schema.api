@@ -9,11 +9,19 @@ info(
 @server(
     group: things/product/schema
     prefix: /api/v1/things/product/schema
+    accessCodePrefix: "thingsProductSchema"
+    accessNamePrefix: "产品物模型"
+    accessGroup: "产品管理"
     middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
 )
     //物联网平台通过定义一种物的描述语言来描述物模型模块和功能，称为TSL（Thing Specification Language）
 service api {
     @doc "导入产品物模型tsl"
+    @doc(
+        summary: "新增产品品类"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
     @handler tslImport
     post /tsl-import (ProductSchemaTslImportReq) returns ()
     @doc "获取产品物模型tsl"
@@ -21,15 +29,35 @@ service api {
     post /tsl-read (ProductSchemaTslReadReq) returns (ProductSchemaTslReadResp)
 
     @doc "更新产品物模型"
+    @doc(
+        summary: "新增产品品类"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
     @handler update
     post /update (ProductSchemaUpdateReq) returns ()
     @doc "创建产品物模型"
+    @doc(
+        summary: "新增产品品类"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
     @handler create
     post /create (ProductSchemaCreateReq) returns ()
     @doc "批量创建产品物模型"
+    @doc(
+        summary: "新增产品品类"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
     @handler multiCreate
     post /multi-create (ProductSchemaMultiCreateReq) returns ()
     @doc "删除产品物模型"
+    @doc(
+        summary: "删除产品物模型"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
     @handler delete
     post /delete (ProductSchemaDeleteReq) returns ()
     @doc "获取产品物模型"

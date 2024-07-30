@@ -10,19 +10,38 @@ info(
 @server(
     group: things/product/info
     prefix: /api/v1/things/product/info
+    accessCodePrefix: "thingsProductInfo"
+    accessNamePrefix: "产品"
+    accessGroup: "产品管理"
     middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api {
-    @doc "初始化产品"
+    @doc(
+        summary: "初始化产品"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
     @handler init
     post /init (ProductInitReq) returns ()
-    @doc "新增产品"
+    @doc(
+        summary: "新增产品"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
     @handler create
     post /create (ProductInfo) returns ()
-    @doc "更新产品"
+    @doc(
+        summary: "更新产品"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
     @handler update
     post /update (ProductInfo) returns ()
-    @doc "删除产品"
+    @doc(
+        summary: "删除产品"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
     @handler delete
     post /delete (ProductInfoDeleteReq) returns ()
     @doc "获取产品信息列表"

@@ -11,6 +11,11 @@ info(
 @server(
     group: things/ota/module/info
     prefix: /api/v1/things/ota/module/info
+    accessCodePrefix: "thingsOtaModule"
+    accessNamePrefix: "模块"
+    accessGroup: "ota远程升级"
+    defaultIsNeedAuth: "true"
+    defaultAuthType: "admin"
     middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
 )
 service api{
