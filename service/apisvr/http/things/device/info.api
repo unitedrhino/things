@@ -133,6 +133,9 @@ type (
         UserID int64  `json:"userID,string,optional"`
         Distributor *IDPath `json:"distributor,optional,omitempty"`
     }
+
+
+
     DeviceInfoWithProperty {
         Value string `json:"value"`                  //获取到的值
         Timestamp int64 `json:"timestamp,string"`    //发生时间戳

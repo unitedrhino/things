@@ -8,6 +8,7 @@ import (
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"time"
@@ -33,17 +34,6 @@ func NewDeviceInfoBindLogic(ctx context.Context, svcCtx *svc.ServiceContext) *De
 }
 
 func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empty, error) {
-	//if in.ProtocolCode != "" {
-	//	pi, err := relationDB.NewProductInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.ProductFilter{
-	//		ProtocolConf: map[string]string{"productID": in.Device.ProductID},
-	//		ProtocolCode: in.ProtocolCode,
-	//	})
-	//	if err != nil {
-	//		return nil, err
-	//	}
-	//	in.Device.ProductID = pi.ProductID
-	//}
-
 	uc := ctxs.GetUserCtxNoNil(l.ctx)
 	projectI, err := l.svcCtx.ProjectCache.GetData(l.ctx, uc.ProjectID)
 	if err != nil {
@@ -70,18 +60,17 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 			return nil, err
 		}
 	}
-	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, di.ProductID)
-	if err != nil && !errors.Cmp(err, errors.NotFind) {
-		l.Error(err)
-		return nil, err
-	}
+
 	dpi, err := l.svcCtx.TenantCache.GetData(l.ctx, def.TenantCodeDefault)
 	if err != nil {
 		l.Error(err)
 		return nil, err
 	}
-	if !((di.TenantCode == def.TenantCodeDefault && di.ProjectID < 3) || int64(di.ProjectID) == uc.ProjectID || int64(di.ProjectID) == dpi.DefaultProjectID) { //如果在其他租户下 则已经被绑定 或 在本租户下,但是不在一个项目下也不允许绑定
+	//di.ProjectID=1  di.AreaID=2   dpi.ProjectID=0
+	if !((di.TenantCode == def.TenantCodeDefault && di.ProjectID < 3) || int64(di.ProjectID) == uc.ProjectID ||
+		int64(di.ProjectID) == dpi.DefaultProjectID) { //如果在其他租户下 则已经被绑定 或 在本租户下,但是不在一个项目下也不允许绑定
 		//只有归属于default租户和自己租户的才可以
+		l.Infof("DeviceCantBound di:%v uc:%v", utils.Fmt(di), utils.Fmt(uc))
 		return nil, errors.DeviceCantBound.WithMsg("设备已被其他用户绑定。如需解绑，请按照相关流程操作。")
 	}
 	if string(di.TenantCode) == uc.TenantCode &&
@@ -104,6 +93,11 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 
 	if di.FirstBind.Valid {
 		di.FirstBind = sql.NullTime{Time: time.Now(), Valid: true}
+	}
+	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, di.ProductID)
+	if err != nil && !errors.Cmp(err, errors.NotFind) {
+		l.Error(err)
+		return nil, err
 	}
 	if pi.TrialTime.GetValue() != 0 && !di.ExpTime.Valid {
 		di.ExpTime = sql.NullTime{

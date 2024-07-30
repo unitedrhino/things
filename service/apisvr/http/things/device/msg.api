@@ -32,7 +32,7 @@ service api {
     @doc "获取最新属性记录"
     @handler propertyLatestIndex
     post /property-log-latest/index (DeviceMsgPropertyLogLatestIndexReq) returns (DeviceMsgPropertyIndexResp)
-    @doc "获取单个id事件历史记录"
+    @doc "获取事件历史记录"
     @handler eventLogIndex
     post /event-log/index (DeviceMsgEventLogIndexReq) returns (DeviceMsgEventLogIndexResp)
     @doc "获取设备影子列表"
