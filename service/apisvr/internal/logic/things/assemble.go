@@ -2,7 +2,6 @@ package things
 
 import (
 	"context"
-	"gitee.com/i-Things/core/service/syssvr/pb/sys"
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/logic"
@@ -26,7 +25,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		Latitude:  v.Position.Latitude,  //维度
 	}
 	if withOwner && v.UserID > 0 {
-		ui, err := svcCtx.UserM.UserInfoRead(ctxs.WithRoot(ctx), &sys.UserInfoReadReq{UserID: v.UserID})
+		ui, err := svcCtx.UserC.GetData(ctx, v.UserID)
 		if err != nil {
 			logx.WithContext(ctx).Error(err)
 		} else {

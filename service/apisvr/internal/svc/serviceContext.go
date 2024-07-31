@@ -8,6 +8,7 @@ import (
 	role "gitee.com/i-Things/core/service/syssvr/client/rolemanage"
 	tenant "gitee.com/i-Things/core/service/syssvr/client/tenantmanage"
 	user "gitee.com/i-Things/core/service/syssvr/client/usermanage"
+	"gitee.com/i-Things/core/service/syssvr/sysExport"
 	"gitee.com/i-Things/core/service/syssvr/sysdirect"
 	"gitee.com/i-Things/share/caches"
 	"gitee.com/i-Things/share/conf"
@@ -58,6 +59,7 @@ type SvrClient struct {
 	Rule       rule.Rule
 	UserDevice userdevice.UserDevice
 	UserM      user.UserManage
+	UserC      sysExport.UserCacheT
 	ProjectM   projectmanage.ProjectManage
 	AreaM      areamanage.AreaManage
 }
@@ -180,6 +182,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	logx.Must(err)
 	captcha := verify.NewCaptcha(c.Captcha.ImgHeight, c.Captcha.ImgWidth,
 		c.Captcha.KeyLong, c.CacheRedis, time.Duration(c.Captcha.KeepTime)*time.Second)
+	uc, err := sysExport.NewUserInfoCache(ur, serverMsg)
+	logx.Must(err)
 	return &ServiceContext{
 		Config:         c,
 		SetupWare:      middleware.NewSetupWareMiddleware(c, lo).Handle,
@@ -202,6 +206,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			ProductM:  productM,
 			DeviceM:   deviceM,
 			DeviceA:   deviceA,
+			UserC:     uc,
 			DeviceG:   deviceG,
 			AreaM:     areaM,
 
