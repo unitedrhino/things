@@ -154,6 +154,7 @@ type UdSceneLog struct {
 	Trigger    *scene.LogTrigger  `gorm:"column:trigger;type:json;serializer:json"`
 	Actions    []*scene.LogAction `gorm:"column:actions;type:json;serializer:json"`
 	Status     def.Bool           `gorm:"column:status;type:BIGINT;default:1"` //状态
+	SceneInfo  *UdSceneInfo       `gorm:"foreignKey:ID;references:SceneID"`
 	stores.OnlyTime
 }
 

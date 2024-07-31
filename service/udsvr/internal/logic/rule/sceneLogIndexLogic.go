@@ -28,9 +28,9 @@ func NewSceneLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Sce
 }
 
 func (l *SceneLogIndexLogic) SceneLogIndex(in *ud.SceneLogIndexReq) (*ud.SceneLogIndexResp, error) {
-	f := relationDB.SceneLogFilter{SceneID: in.SceneID, Status: in.Status,
+	f := relationDB.SceneLogFilter{SceneID: in.SceneID, Status: in.Status, WithSceneInfo: true,
 		Time: logic.ToTimeRange(in.TimeRange)}
-	list, err := relationDB.NewSceneLogRepo(l.ctx).FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page).
+	pos, err := relationDB.NewSceneLogRepo(l.ctx).FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page).
 		WithDefaultOrder(stores.OrderBy{
 			Field: "createdTime",
 			Sort:  2,
@@ -42,5 +42,13 @@ func (l *SceneLogIndexLogic) SceneLogIndex(in *ud.SceneLogIndexReq) (*ud.SceneLo
 	if err != nil {
 		return nil, err
 	}
-	return &ud.SceneLogIndexResp{List: utils.CopySlice[ud.SceneLog](list), Total: total}, nil
+	var list []*ud.SceneLog
+	for _, v := range pos {
+		one := utils.Copy[ud.SceneLog](v)
+		if v.SceneInfo != nil {
+			one.SceneName = v.SceneInfo.Name
+		}
+		list = append(list, one)
+	}
+	return &ud.SceneLogIndexResp{List: list, Total: total}, nil
 }

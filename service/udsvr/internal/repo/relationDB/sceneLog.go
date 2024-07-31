@@ -24,9 +24,10 @@ func NewSceneLogRepo(in any) *SceneLogRepo {
 }
 
 type SceneLogFilter struct {
-	Time    *def.TimeRange
-	Status  int64
-	SceneID int64
+	Time          *def.TimeRange
+	Status        int64
+	SceneID       int64
+	WithSceneInfo bool
 }
 
 func (p SceneLogRepo) fmtFilter(ctx context.Context, f SceneLogFilter) *gorm.DB {
@@ -37,6 +38,9 @@ func (p SceneLogRepo) fmtFilter(ctx context.Context, f SceneLogFilter) *gorm.DB 
 	}
 	if f.Status != 0 {
 		db = db.Where("status=?", f.Status)
+	}
+	if f.WithSceneInfo {
+		db = db.Preload("SceneInfo")
 	}
 	return db
 }

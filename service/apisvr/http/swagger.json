@@ -1227,7 +1227,7 @@
     },
     "/api/v1/things/device/msg/event-log/index": {
       "post": {
-        "summary": "获取单个id事件历史记录",
+        "summary": "获取事件历史记录",
         "operationId": "postApiV1ThingsDeviceMsgEvent-logIndex",
         "responses": {
           "200": {
@@ -11287,6 +11287,10 @@
           "type": "integer",
           "format": "int64",
           "description": "场景id"
+        },
+        "sceneName": {
+          "type": "string",
+          "description": "场景名称"
         },
         "areaID": {
           "type": "integer",
