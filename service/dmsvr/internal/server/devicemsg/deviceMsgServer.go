@@ -68,12 +68,6 @@ func (s *DeviceMsgServer) ShadowIndex(ctx context.Context, in *dm.PropertyLogLat
 	return l.ShadowIndex(in)
 }
 
-// 主动触发单个设备ota升级推送
-func (s *DeviceMsgServer) OtaPromptIndex(ctx context.Context, in *dm.OtaPromptIndexReq) (*dm.OtaPromptIndexResp, error) {
-	l := devicemsglogic.NewOtaPromptIndexLogic(ctx, s.svcCtx)
-	return l.OtaPromptIndex(in)
-}
-
 // 获取网关可以绑定的子设备列表
 func (s *DeviceMsgServer) GatewayCanBindIndex(ctx context.Context, in *dm.GatewayCanBindIndexReq) (*dm.GatewayCanBindIndexResp, error) {
 	l := devicemsglogic.NewGatewayCanBindIndexLogic(ctx, s.svcCtx)

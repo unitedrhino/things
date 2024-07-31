@@ -15,6 +15,7 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/core/timex"
 	"math"
 	"strings"
@@ -114,6 +115,24 @@ func GenDeviceTopicKey(dev devices.Core) string {
 
 func UpdateDeviceActivity(ctx context.Context, dev devices.Core) {
 	_, err := caches.GetStore().Zadd(DeviceLastActivity, time.Now().Unix(), GenDeviceTopicKey(dev))
+	if err != nil {
+		logx.WithContext(ctx).Info(err)
+	}
+}
+
+func UpdatesDeviceActivity(ctx context.Context, devs []devices.Core) {
+	if len(devs) == 0 {
+		return
+	}
+	var ps []redis.Pair
+	now := time.Now().Unix()
+	for _, v := range devs {
+		ps = append(ps, redis.Pair{
+			Key:   GenDeviceTopicKey(v),
+			Score: now,
+		})
+	}
+	_, err := caches.GetStore().Zadds(DeviceLastActivity, ps...)
 	if err != nil {
 		logx.WithContext(ctx).Info(err)
 	}

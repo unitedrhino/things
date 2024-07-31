@@ -116,8 +116,6 @@ type (
 	OtaModuleInfo                     = dm.OtaModuleInfo
 	OtaModuleInfoIndexReq             = dm.OtaModuleInfoIndexReq
 	OtaModuleInfoIndexResp            = dm.OtaModuleInfoIndexResp
-	OtaPromptIndexReq                 = dm.OtaPromptIndexReq
-	OtaPromptIndexResp                = dm.OtaPromptIndexResp
 	PageInfo                          = dm.PageInfo
 	PageInfo_OrderBy                  = dm.PageInfo_OrderBy
 	Point                             = dm.Point
@@ -213,8 +211,6 @@ type (
 		EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventLogIndexResp, error)
 		// 获取设备影子列表
 		ShadowIndex(ctx context.Context, in *PropertyLogLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error)
-		// 主动触发单个设备ota升级推送
-		OtaPromptIndex(ctx context.Context, in *OtaPromptIndexReq, opts ...grpc.CallOption) (*OtaPromptIndexResp, error)
 		// 获取网关可以绑定的子设备列表
 		GatewayCanBindIndex(ctx context.Context, in *GatewayCanBindIndexReq, opts ...grpc.CallOption) (*GatewayCanBindIndexResp, error)
 	}
@@ -324,17 +320,6 @@ func (m *defaultDeviceMsg) ShadowIndex(ctx context.Context, in *PropertyLogLates
 // 获取设备影子列表
 func (d *directDeviceMsg) ShadowIndex(ctx context.Context, in *PropertyLogLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error) {
 	return d.svr.ShadowIndex(ctx, in)
-}
-
-// 主动触发单个设备ota升级推送
-func (m *defaultDeviceMsg) OtaPromptIndex(ctx context.Context, in *OtaPromptIndexReq, opts ...grpc.CallOption) (*OtaPromptIndexResp, error) {
-	client := dm.NewDeviceMsgClient(m.cli.Conn())
-	return client.OtaPromptIndex(ctx, in, opts...)
-}
-
-// 主动触发单个设备ota升级推送
-func (d *directDeviceMsg) OtaPromptIndex(ctx context.Context, in *OtaPromptIndexReq, opts ...grpc.CallOption) (*OtaPromptIndexResp, error) {
-	return d.svr.OtaPromptIndex(ctx, in)
 }
 
 // 获取网关可以绑定的子设备列表

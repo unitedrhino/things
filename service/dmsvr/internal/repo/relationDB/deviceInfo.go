@@ -302,6 +302,19 @@ func (d DeviceInfoRepo) FindByFilter(ctx context.Context, f DeviceFilter, page *
 	return results, nil
 }
 
+func (d DeviceInfoRepo) FindCoreByFilter(ctx context.Context, f DeviceFilter, page *stores.PageInfo) ([]devices.Core, error) {
+	var results []*DmDeviceInfo
+	db := d.fmtFilter(ctx, f).Model(&DmDeviceInfo{})
+	db = page.ToGorm(db)
+	err := db.Select("product_id", "device_name").Find(&results).Error
+	if err != nil {
+		return nil, stores.ErrFmt(err)
+	}
+	return utils.ToSliceWithFunc(results, func(in *DmDeviceInfo) devices.Core {
+		return devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName}
+	}), nil
+}
+
 func (d DeviceInfoRepo) FindProductIDsByFilter(ctx context.Context, f DeviceFilter) ([]string, error) {
 	var results []*DmDeviceInfo
 	db := d.fmtFilter(ctx, f).Model(&DmDeviceInfo{})

@@ -116,8 +116,6 @@ type (
 	OtaModuleInfo                     = dm.OtaModuleInfo
 	OtaModuleInfoIndexReq             = dm.OtaModuleInfoIndexReq
 	OtaModuleInfoIndexResp            = dm.OtaModuleInfoIndexResp
-	OtaPromptIndexReq                 = dm.OtaPromptIndexReq
-	OtaPromptIndexResp                = dm.OtaPromptIndexResp
 	PageInfo                          = dm.PageInfo
 	PageInfo_OrderBy                  = dm.PageInfo_OrderBy
 	Point                             = dm.Point

@@ -3111,7 +3111,6 @@ const (
 	DeviceMsg_PropertyLogIndex_FullMethodName       = "/dm.DeviceMsg/propertyLogIndex"
 	DeviceMsg_EventLogIndex_FullMethodName          = "/dm.DeviceMsg/eventLogIndex"
 	DeviceMsg_ShadowIndex_FullMethodName            = "/dm.DeviceMsg/shadowIndex"
-	DeviceMsg_OtaPromptIndex_FullMethodName         = "/dm.DeviceMsg/otaPromptIndex"
 	DeviceMsg_GatewayCanBindIndex_FullMethodName    = "/dm.DeviceMsg/gatewayCanBindIndex"
 )
 
@@ -3133,8 +3132,6 @@ type DeviceMsgClient interface {
 	EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventLogIndexResp, error)
 	// 获取设备影子列表
 	ShadowIndex(ctx context.Context, in *PropertyLogLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error)
-	// 主动触发单个设备ota升级推送
-	OtaPromptIndex(ctx context.Context, in *OtaPromptIndexReq, opts ...grpc.CallOption) (*OtaPromptIndexResp, error)
 	// 获取网关可以绑定的子设备列表
 	GatewayCanBindIndex(ctx context.Context, in *GatewayCanBindIndexReq, opts ...grpc.CallOption) (*GatewayCanBindIndexResp, error)
 }
@@ -3219,15 +3216,6 @@ func (c *deviceMsgClient) ShadowIndex(ctx context.Context, in *PropertyLogLatest
 	return out, nil
 }
 
-func (c *deviceMsgClient) OtaPromptIndex(ctx context.Context, in *OtaPromptIndexReq, opts ...grpc.CallOption) (*OtaPromptIndexResp, error) {
-	out := new(OtaPromptIndexResp)
-	err := c.cc.Invoke(ctx, DeviceMsg_OtaPromptIndex_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *deviceMsgClient) GatewayCanBindIndex(ctx context.Context, in *GatewayCanBindIndexReq, opts ...grpc.CallOption) (*GatewayCanBindIndexResp, error) {
 	out := new(GatewayCanBindIndexResp)
 	err := c.cc.Invoke(ctx, DeviceMsg_GatewayCanBindIndex_FullMethodName, in, out, opts...)
@@ -3255,8 +3243,6 @@ type DeviceMsgServer interface {
 	EventLogIndex(context.Context, *EventLogIndexReq) (*EventLogIndexResp, error)
 	// 获取设备影子列表
 	ShadowIndex(context.Context, *PropertyLogLatestIndexReq) (*ShadowIndexResp, error)
-	// 主动触发单个设备ota升级推送
-	OtaPromptIndex(context.Context, *OtaPromptIndexReq) (*OtaPromptIndexResp, error)
 	// 获取网关可以绑定的子设备列表
 	GatewayCanBindIndex(context.Context, *GatewayCanBindIndexReq) (*GatewayCanBindIndexResp, error)
 	mustEmbedUnimplementedDeviceMsgServer()
@@ -3289,9 +3275,6 @@ func (UnimplementedDeviceMsgServer) EventLogIndex(context.Context, *EventLogInde
 }
 func (UnimplementedDeviceMsgServer) ShadowIndex(context.Context, *PropertyLogLatestIndexReq) (*ShadowIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ShadowIndex not implemented")
-}
-func (UnimplementedDeviceMsgServer) OtaPromptIndex(context.Context, *OtaPromptIndexReq) (*OtaPromptIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method OtaPromptIndex not implemented")
 }
 func (UnimplementedDeviceMsgServer) GatewayCanBindIndex(context.Context, *GatewayCanBindIndexReq) (*GatewayCanBindIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GatewayCanBindIndex not implemented")
@@ -3453,24 +3436,6 @@ func _DeviceMsg_ShadowIndex_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DeviceMsg_OtaPromptIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(OtaPromptIndexReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DeviceMsgServer).OtaPromptIndex(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DeviceMsg_OtaPromptIndex_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceMsgServer).OtaPromptIndex(ctx, req.(*OtaPromptIndexReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _DeviceMsg_GatewayCanBindIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GatewayCanBindIndexReq)
 	if err := dec(in); err != nil {
@@ -3527,10 +3492,6 @@ var DeviceMsg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "shadowIndex",
 			Handler:    _DeviceMsg_ShadowIndex_Handler,
-		},
-		{
-			MethodName: "otaPromptIndex",
-			Handler:    _DeviceMsg_OtaPromptIndex_Handler,
 		},
 		{
 			MethodName: "gatewayCanBindIndex",

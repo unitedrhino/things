@@ -241,8 +241,6 @@ service DeviceMsg {
   //获取设备影子列表
   rpc shadowIndex(PropertyLogLatestIndexReq)     returns (ShadowIndexResp);
 
-  //主动触发单个设备ota升级推送
-  rpc otaPromptIndex(OtaPromptIndexReq) returns (OtaPromptIndexResp);
   //获取网关可以绑定的子设备列表
   rpc gatewayCanBindIndex(GatewayCanBindIndexReq)returns(GatewayCanBindIndexResp);
 }
@@ -848,17 +846,6 @@ message PropertyControlMultiSendResp{
   repeated PropertyControlSendMsg list = 1; //批量设备返回结果列表
 }
 
-message OtaPromptIndexReq {
-  int64 id = 1;
-  string version = 2;
-  string productID = 4;
-  string deviceName = 5;
-}
-message OtaPromptIndexResp {
-  int64 id = 1;
-  string taskUid = 2;
-  int64 firmwareID = 3;
-}
 
 
 message ProductRemoteConfig{
