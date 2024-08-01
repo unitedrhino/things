@@ -55,7 +55,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 	funcDeleteDevice := func(ctx context.Context, body []byte) error {
 		var di devices.Core
 		err := json.Unmarshal(body, &di)
-		logx.WithContext(ctx).Infof("DmDeviceInfoDelete value:%v err:%v", string(body))
+		logx.WithContext(ctx).Infof("DmDeviceInfoDelete value:%v err:%v", string(body), err)
 		ctx = ctxs.WithRoot(ctx)
 		if di.ProductID == "" || di.DeviceName == "" {
 			return nil

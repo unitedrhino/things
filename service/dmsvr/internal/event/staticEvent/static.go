@@ -79,7 +79,7 @@ func (l *StaticHandle) AreaDeviceStatic() error { //区域下的设备数量统�
 
 var count atomic.Int64
 
-func (l *StaticHandle) DeviceOnlineFix() error { //设备过期处理
+func (l *StaticHandle) DeviceOnlineFix() error { //设备在线修复
 	nc := count.Add(1)
 	if nc/2 == 1 { //1小时处理一次
 		return nil

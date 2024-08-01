@@ -44,11 +44,15 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceCore) (*dm.Empty, 
 	}
 	uc := ctxs.GetUserCtxNoNil(l.ctx)
 	pi, err := l.svcCtx.ProjectM.ProjectInfoRead(l.ctx, &sys.ProjectWithID{ProjectID: int64(di.ProjectID)})
-	if err != nil {
+	if err != nil && !errors.Cmp(err, errors.NotFind) { //解绑的时候家庭已经不存在了也需要能正确解绑
 		return nil, err
 	}
+	adminUserID := di.UserID
+	if pi != nil {
+		adminUserID = pi.AdminUserID
+	}
 	//如果是超管有全部权限
-	if !uc.IsAdmin && (di.TenantCode != di.TenantCode || pi.AdminUserID != uc.UserID || int64(di.ProjectID) != uc.ProjectID) {
+	if !uc.IsAdmin && (di.TenantCode != di.TenantCode || adminUserID != uc.UserID || int64(di.ProjectID) != uc.ProjectID) {
 		return nil, errors.Permissions
 	}
 	//dpi, err := l.svcCtx.TenantCache.GetData(l.ctx, def.TenantCodeDefault)
