@@ -28,14 +28,14 @@ type DmDeviceInfo struct {
 	DeviceName  string            `gorm:"column:device_name;uniqueIndex:product_id_deviceName;type:varchar(100);NOT NULL"` // 设备名称
 	DeviceAlias string            `gorm:"column:device_alias;type:varchar(100);NOT NULL"`                                  // 设备别名
 	Position    stores.Point      `gorm:"column:position;NOT NULL"`                                                        // 设备的位置(默认百度坐标系BD09)
-	RatedPower  int64             `gorm:"column:rated_power;type:bigint;NOT NULL;default:0"`                               //额定功率:单位w/h
+	RatedPower  int64             `gorm:"column:rated_power;type:bigint;NOT NULL;default:0"`                               // 额定功率:单位w/h
 	Secret      string            `gorm:"column:secret;type:varchar(50);NOT NULL"`                                         // 设备秘钥
 	Cert        string            `gorm:"column:cert;type:varchar(512);NOT NULL"`                                          // 设备证书
 	Imei        string            `gorm:"column:imei;type:varchar(15);NOT NULL"`                                           // IMEI号信息
 	Mac         string            `gorm:"column:mac;type:varchar(17);NOT NULL"`                                            // MAC号信息
 	DeviceType  int64             `gorm:"column:device_type;index;type:smallint;default:1"`                                // 设备类型:1:设备,2:网关,3:子设备
 	Version     string            `gorm:"column:version;type:varchar(64);NOT NULL"`                                        // 固件版本
-	//ModuleVersion  map[string]string `gorm:"column:module_version;type:json;serializer:json;NOT NULL;default:'{}'"`           //所有模块的版本
+	//ModuleVersion  map[string]string `gorm:"column:module_version;type:json;serializer:json;NOT NULL;default:'{}'"`      // 所有模块的版本
 	HardInfo           string            `gorm:"column:hard_info;type:varchar(64);NOT NULL"`                           // 模组硬件型号
 	SoftInfo           string            `gorm:"column:soft_info;type:varchar(64);NOT NULL"`                           // 模组软件版本
 	MobileOperator     int64             `gorm:"column:mobile_operator;type:smallint;default:1;NOT NULL"`              // 移动运营商:1)移动 2)联通 3)电信 4)广电
@@ -43,9 +43,9 @@ type DmDeviceInfo struct {
 	Iccid              sql.NullString    `gorm:"column:iccid;type:varchar(20)"`                                        // SIM卡卡号
 	Address            string            `gorm:"column:address;type:varchar(512);NOT NULL"`                            // 所在地址
 	Tags               map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"`          // 设备标签
-	SchemaAlias        map[string]string `gorm:"column:schema_alias;type:json;serializer:json;NOT NULL;default:'{}'"`  //设备物模型别名,如果是结构体类型则key为xxx.xxx
+	SchemaAlias        map[string]string `gorm:"column:schema_alias;type:json;serializer:json;NOT NULL;default:'{}'"`  // 设备物模型别名,如果是结构体类型则key为xxx.xxx
 	Rssi               int64             `gorm:"column:rssi;type:bigint;default:0;NOT NULL"`                           // 设备信号（信号极好[-55— 0]，信号好[-70— -55]，信号一般[-85— -70]，信号差[-100— -85]）
-	ProtocolConf       map[string]string `gorm:"column:protocol_conf;type:json;serializer:json;NOT NULL;default:'{}'"` //自定义协议配置
+	ProtocolConf       map[string]string `gorm:"column:protocol_conf;type:json;serializer:json;NOT NULL;default:'{}'"` // 自定义协议配置
 	IsOnline           int64             `gorm:"column:is_online;type:smallint;default:2;NOT NULL"`                    // 是否在线,1是2否
 	FirstLogin         sql.NullTime      `gorm:"column:first_login"`                                                   // 激活时间
 	FirstBind          sql.NullTime      `gorm:"column:first_bind"`                                                    // 首次绑定事件
@@ -53,13 +53,13 @@ type DmDeviceInfo struct {
 	LogLevel           int64             `gorm:"column:log_level;type:smallint;default:1;NOT NULL"`                    // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
 	UserID             int64             `gorm:"column:user_id;type:BIGINT;default:0"`                                 // 用户id
 	Status             int64             `gorm:"column:status;type:smallint;default:1;NOT NULL"`                       // 设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中) 5-禁用
-	IsEnable           int64             `gorm:"column:is_enable;type:smallint;default:1;"`                            //是否启用: 1:是 2:否
-	ExpTime            sql.NullTime      `gorm:"column:exp_time"`                                                      //过期时间,为0不限制
-	NeedConfirmJobID   int64             `gorm:"column:need_confirm_job_id;type:smallint;default:0;"`                  //需要app确认升级的任务ID,为0是没有
-	NeedConfirmVersion string            `gorm:"column:need_confirm_version;type:varchar(128);default:'';"`            //待确认升级的版本
+	IsEnable           int64             `gorm:"column:is_enable;type:smallint;default:1;"`                            // 是否启用: 1:是 2:否
+	ExpTime            sql.NullTime      `gorm:"column:exp_time"`                                                      // 过期时间,为0不限制
+	NeedConfirmJobID   int64             `gorm:"column:need_confirm_job_id;type:smallint;default:0;"`                  // 需要app确认升级的任务ID,为0是没有
+	NeedConfirmVersion string            `gorm:"column:need_confirm_version;type:varchar(128);default:'';"`            // 待确认升级的版本
 	stores.NoDelTime
 
-	Distributor stores.IDPathWithUpdate `gorm:"embedded;embeddedPrefix:distributor_"` //代理的id,如果为空,则未参与分销
+	Distributor stores.IDPathWithUpdate `gorm:"embedded;embeddedPrefix:distributor_"` // 代理的id,如果为空,则未参与分销
 	DeletedTime stores.DeletedTime      `gorm:"column:deleted_time;default:0;uniqueIndex:product_id_deviceName"`
 	ProductInfo *DmProductInfo          `gorm:"foreignKey:ProductID;references:ProductID"` // 添加外键
 }
@@ -136,15 +136,15 @@ type DmProductInfo struct {
 	DeviceType   int64                 `gorm:"column:device_type;index;type:smallint;default:1"`            // 设备类型:1:设备,2:网关,3:子设备
 	CategoryID   int64                 `gorm:"column:category_id;type:integer;default:2"`                   // 产品品类 2:未分类
 	NetType      int64                 `gorm:"column:net_type;type:smallint;default:1"`                     // 通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
-	ProtocolCode string                `gorm:"column:protocol_code;type:varchar(100);default:iThings"`      //协议code,默认iThings  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
+	ProtocolCode string                `gorm:"column:protocol_code;type:varchar(100);default:iThings"`      // 协议code,默认iThings  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
 	AutoRegister int64                 `gorm:"column:auto_register;type:smallint;default:1"`                // 动态注册:1:关闭,2:打开,3:打开并自动创建设备
 	Secret       string                `gorm:"column:secret;type:varchar(50)"`                              // 动态注册产品秘钥
 	Desc         string                `gorm:"column:description;type:varchar(200)"`                        // 描述
 	TrialTime    int64                 `gorm:"column:trial_time"`                                           //试用时间(单位为天,为0不限制)
 	Status       devices.ProductStatus `gorm:"column:status;type:smallint;default:1"`
-	SceneMode    string                `gorm:"column:scene_mode;type:varchar(20);default:rw"`                        //场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
+	SceneMode    string                `gorm:"column:scene_mode;type:varchar(20);default:rw"`                        // 场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
 	Tags         map[string]string     `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"`          // 产品标签
-	ProtocolConf map[string]string     `gorm:"column:protocol_conf;type:json;serializer:json;NOT NULL;default:'{}'"` //自定义协议配置
+	ProtocolConf map[string]string     `gorm:"column:protocol_conf;type:json;serializer:json;NOT NULL;default:'{}'"` // 自定义协议配置
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:pd"`
 	Category    *DmProductCategory `gorm:"foreignKey:ID;references:CategoryID"` // 添加外键
@@ -207,10 +207,10 @@ type DmProtocolInfo struct {
 	Code          string                `gorm:"column:code;uniqueIndex:pc;type:varchar(100);default:iThings"`         // iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
 	TransProtocol string                `gorm:"column:trans_protocol;type:varchar(100);default:mqtt"`                 // 传输协议: mqtt,tcp,udp
 	Desc          string                `gorm:"column:desc;type:varchar(200)"`                                        // 描述
-	ConfigFields  protocol.ConfigFields `gorm:"column:config_fields;type:json;serializer:json;NOT NULL;default:'[]'"` //需要配置的字段列表,没有可以不传
-	ConfigInfos   protocol.ConfigInfos  `gorm:"column:config_infos;type:json;serializer:json;NOT NULL;default:'[]'"`  //配置列表
+	ConfigFields  protocol.ConfigFields `gorm:"column:config_fields;type:json;serializer:json;NOT NULL;default:'[]'"` // 需要配置的字段列表,没有可以不传
+	ConfigInfos   protocol.ConfigInfos  `gorm:"column:config_infos;type:json;serializer:json;NOT NULL;default:'[]'"`  // 配置列表
 	Endpoints     []string              `gorm:"column:endpoints;type:json;serializer:json;NOT NULL;default:'[]'"`     // 协议端点,如果填写了优先使用该字段
-	EtcdKey       string                `gorm:"column:etcd_key;type:varchar(200);default:null"`                       //服务etcd发现的key etcd key
+	EtcdKey       string                `gorm:"column:etcd_key;type:varchar(200);default:null"`                       // 服务etcd发现的key etcd key
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:pc;uniqueIndex:pn"`
 }
