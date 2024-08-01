@@ -188,6 +188,9 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 			v.Path = fmt.Sprintf("%s/index.html", uploadPath)
 		}
 		old.CustomUi = utils.CopyMap[relationDB.ProductCustomUi](data.CustomUi)
+		if old.CustomUi == nil {
+			old.CustomUi = map[string]*relationDB.ProductCustomUi{}
+		}
 	}
 	if data.AuthMode != 0 {
 		old.AuthMode = data.AuthMode
