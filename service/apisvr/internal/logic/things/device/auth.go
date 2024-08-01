@@ -33,19 +33,22 @@ func Init(svcCtx *svc.ServiceContext) {
 				return
 			}
 			for _, p := range pi.List {
-				var conf = svcCtx.Config.DgRpc.Conf
-				if p.EtcdKey != "" {
-					conf.Etcd = svcCtx.Config.Etcd
-					conf.Etcd.Key = p.EtcdKey
-				} else if p.Endpoints != nil {
-					conf.Endpoints = p.Endpoints
-				} else { //如果都没有配置,那么就不走这个服务校验
-					return
-				}
-				cli, err := zrpc.NewClient(conf)
 				func() {
 					protocolLinkMutex.Lock()
 					defer protocolLinkMutex.Unlock()
+					if _, ok := protocolLink[p.Code]; ok {
+						return //已经连接上就不管了
+					}
+					var conf = svcCtx.Config.DgRpc.Conf
+					if p.EtcdKey != "" {
+						conf.Etcd = svcCtx.Config.Etcd
+						conf.Etcd.Key = p.EtcdKey
+					} else if p.Endpoints != nil {
+						conf.Endpoints = p.Endpoints
+					} else { //如果都没有配置,那么就不走这个服务校验
+						return
+					}
+					cli, err := zrpc.NewClient(conf)
 					if err == nil {
 						val, ok := protocolLink[p.Code]
 						protocolLink[p.Code] = cli
