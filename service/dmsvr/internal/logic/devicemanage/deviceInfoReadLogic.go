@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/errors"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -38,8 +39,17 @@ func (l *DeviceInfoReadLogic) DeviceInfoRead(in *dm.DeviceInfoReadReq) (*dm.Devi
 		relationDB.DeviceFilter{ProductID: in.ProductID, DeviceNames: []string{in.DeviceName},
 			SharedType:  def.SelectTypeAll,
 			WithProduct: true})
-	if err != nil {
+	if err != nil && !errors.Cmp(err, errors.NotFind) {
+		l.Error(err)
 		return nil, err
+	}
+	if di == nil {
+		di, err = relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(ctxs.WithRoot(l.ctx), relationDB.DeviceFilter{
+			DeviceNames: []string{in.DeviceName},
+		})
+		if err != nil {
+			return nil, err
+		}
 	}
 	return logic.ToDeviceInfo(l.ctx, l.svcCtx, di), nil
 }

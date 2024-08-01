@@ -28,13 +28,13 @@ type DmDeviceInfo struct {
 	DeviceName  string            `gorm:"column:device_name;uniqueIndex:product_id_deviceName;type:varchar(100);NOT NULL"` // 设备名称
 	DeviceAlias string            `gorm:"column:device_alias;type:varchar(100);NOT NULL"`                                  // 设备别名
 	Position    stores.Point      `gorm:"column:position;NOT NULL"`                                                        // 设备的位置(默认百度坐标系BD09)
-	RatedPower  int64             `gorm:"column:rated_power;type:bigint;NOT NULL;default:0"`                               // 额定功率:单位w/h
+	RatedPower  int64             `gorm:"column:rated_power;index;type:bigint;NOT NULL;default:0"`                         // 额定功率:单位w/h
 	Secret      string            `gorm:"column:secret;type:varchar(50);NOT NULL"`                                         // 设备秘钥
 	Cert        string            `gorm:"column:cert;type:varchar(512);NOT NULL"`                                          // 设备证书
 	Imei        string            `gorm:"column:imei;type:varchar(15);NOT NULL"`                                           // IMEI号信息
 	Mac         string            `gorm:"column:mac;type:varchar(17);NOT NULL"`                                            // MAC号信息
 	DeviceType  int64             `gorm:"column:device_type;index;type:smallint;default:1"`                                // 设备类型:1:设备,2:网关,3:子设备
-	Version     string            `gorm:"column:version;type:varchar(64);NOT NULL"`                                        // 固件版本
+	Version     string            `gorm:"column:version;index;type:varchar(64);NOT NULL"`                                  // 固件版本
 	//ModuleVersion  map[string]string `gorm:"column:module_version;type:json;serializer:json;NOT NULL;default:'{}'"`      // 所有模块的版本
 	HardInfo           string            `gorm:"column:hard_info;type:varchar(64);NOT NULL"`                           // 模组硬件型号
 	SoftInfo           string            `gorm:"column:soft_info;type:varchar(64);NOT NULL"`                           // 模组软件版本
@@ -52,8 +52,8 @@ type DmDeviceInfo struct {
 	LastLogin          sql.NullTime      `gorm:"column:last_login"`                                                    // 最后上线时间
 	LogLevel           int64             `gorm:"column:log_level;type:smallint;default:1;NOT NULL"`                    // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
 	UserID             int64             `gorm:"column:user_id;type:BIGINT;default:0"`                                 // 用户id
-	Status             int64             `gorm:"column:status;type:smallint;default:1;NOT NULL"`                       // 设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中) 5-禁用
-	IsEnable           int64             `gorm:"column:is_enable;type:smallint;default:1;"`                            // 是否启用: 1:是 2:否
+	Status             int64             `gorm:"column:status;index;type:smallint;default:1;NOT NULL"`                 // 设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中) 5-禁用
+	IsEnable           int64             `gorm:"column:is_enable;index;type:smallint;default:1;"`                      // 是否启用: 1:是 2:否
 	ExpTime            sql.NullTime      `gorm:"column:exp_time"`                                                      // 过期时间,为0不限制
 	NeedConfirmJobID   int64             `gorm:"column:need_confirm_job_id;type:smallint;default:0;"`                  // 需要app确认升级的任务ID,为0是没有
 	NeedConfirmVersion string            `gorm:"column:need_confirm_version;type:varchar(128);default:'';"`            // 待确认升级的版本
