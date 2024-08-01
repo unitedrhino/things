@@ -195,7 +195,7 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	}
 	if f.NotOtaJobID != 0 {
 		subQuery := d.db.Model(&DmOtaFirmwareDevice{}).Select("device_name").Where("job_id = ?", f.NotOtaJobID)
-		db = db.Where("device_name not in (?)", subQuery)
+		db = db.Where("need_confirm_job_id =0 and device_name not in (?)", subQuery)
 	}
 	if f.Gateway != nil {
 		subQuery := d.db.Model(&DmGatewayDevice{}).Select("product_id, device_name").
