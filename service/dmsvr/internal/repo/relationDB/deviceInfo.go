@@ -58,6 +58,7 @@ type (
 		NotOtaJobID        int64
 		NeedConfirmJobID   int64
 		NeedConfirmVersion string
+		NetType            int64
 	}
 )
 
@@ -86,11 +87,21 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	if f.TenantCode != "" {
 		db = db.Where("tenant_code = ?", f.TenantCode)
 	}
+	var productSelect = d.db.WithContext(ctx).Select("product_id").Model(DmProductInfo{})
+	var hasProductFilter bool
 	if f.ProductCategoryID != 0 {
-		db = db.Where("product_id in (?)", d.db.WithContext(ctx).Select("product_id").Model(DmProductInfo{}).Where("category_id=?", f.ProductCategoryID))
+		hasProductFilter = true
+		productSelect = productSelect.Where("category_id=?", f.ProductCategoryID)
 	}
 	if len(f.ProductCategoryIDs) != 0 {
-		db = db.Where("product_id in (?)", d.db.WithContext(ctx).Select("product_id").Model(DmProductInfo{}).Where("category_id in ?", f.ProductCategoryIDs))
+		hasProductFilter = true
+		productSelect = productSelect.Where("category_id in ?", f.ProductCategoryIDs)
+	}
+	if f.NetType != 0 {
+		productSelect = productSelect.Where("net_type = ?", f.NetType)
+	}
+	if hasProductFilter {
+		db = db.Where("product_id in (?)", productSelect)
 	}
 	//业务过滤条件
 	if f.ProductID != "" {

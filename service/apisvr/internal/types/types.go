@@ -339,6 +339,7 @@ type DeviceInfoIndexReq struct {
 	WithOwner         bool          `json:"withOwner,optional"` //同时获取拥有人的信息
 	HasOwner          int64         `json:"hasOwner,optional"`  //是否被人拥有,1为是 2为否
 	UserID            int64         `json:"userID,string,optional"`
+	NetType           int64         `json:"netType,optional,range=[0:8]"` //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
 }
 
 type DeviceInfoIndexResp struct {
@@ -1170,6 +1171,7 @@ type ProductInfoIndexReq struct {
 	SceneMode    string    `json:"sceneMode,optional"`              //场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
 	Status       int64     `json:"status,optional"`                 //产品状态 1:启用 2:禁用 3:开发中
 	Statuses     []int64   `json:"statuses,optional"`               //产品状态 1:启用 2:禁用 3:开发中
+	NetType      int64     `json:"netType,optional,range=[0:8]"`    //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
 }
 
 type ProductInfoIndexResp struct {

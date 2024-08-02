@@ -1128,6 +1128,7 @@ message ProductInfoIndexReq{
   string  sceneMode =16;//场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
   int64 status =20; //产品状态 1:启用 2:禁用 3:开发中
   repeated int64 statuses =21; //产品状态 1:启用 2:禁用 3:开发中
+  int64   netType = 11;//通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
 }
 
 message ProductInfoIndexResp{
@@ -1185,6 +1186,7 @@ message DeviceInfoIndexReq{
   repeated DeviceCore devices =12;
   int64 withShared = 13;//过滤分享的设备(这里只获取分享的设备) 1: 同时获取分享的设备 2:只获取分享的设备
   int64 withCollect = 24;//过滤收藏的设备(这里只获取收藏的设备) 1: 同时获取收藏的设备 2:只获取收藏的设备
+  int64   netType = 25;//通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
 
   string tenantCode = 14;//租户过滤
   repeated string versions =15;//版本列表

@@ -29,6 +29,7 @@ type ProductFilter struct {
 	SceneMode    string
 	Status       devices.ProductStatus
 	Statuses     []devices.ProductStatus
+	NetType      int64
 }
 
 func NewProductInfoRepo(in any) *ProductInfoRepo {
@@ -84,6 +85,9 @@ func (p ProductInfoRepo) fmtFilter(ctx context.Context, f ProductFilter) *gorm.D
 			db = db.Where("JSON_CONTAINS(tags, JSON_OBJECT(?,?))",
 				k, v)
 		}
+	}
+	if f.NetType != 0 {
+		db = db.Where("net_type = ?", f.NetType)
 	}
 	return db
 }

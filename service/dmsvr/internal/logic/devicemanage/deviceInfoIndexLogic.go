@@ -74,6 +74,7 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		NotGroupID:        in.NotGroupID,
 		NotAreaID:         in.NotAreaID,
 		UserID:            in.UserID,
+		NetType:           in.NetType,
 		HasOwner:          in.HasOwner,
 		Distributor:       utils.Copy[stores.IDPathFilter](in.Distributor),
 	}

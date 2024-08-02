@@ -224,6 +224,7 @@ type (
         WithOwner bool  `json:"withOwner,optional"`//同时获取拥有人的信息
         HasOwner int64 `json:"hasOwner,optional"`//是否被人拥有,1为是 2为否
         UserID int64  `json:"userID,string,optional"`
+        NetType int64 `json:"netType,optional,range=[0:8]"`                                           //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
     }
     DeviceInfoIndexResp  {
         List []*DeviceInfo `json:"list"`    //设备信息
