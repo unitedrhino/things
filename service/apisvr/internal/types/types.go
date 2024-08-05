@@ -858,6 +858,11 @@ type IDPath struct {
 	IDPath string `json:"idPath,optional"`
 }
 
+type LogActionScene struct {
+	SceneID   int64  `json:"sceneID"`
+	SceneName string `json:"sceneName"`
+}
+
 type OrderBy struct {
 	Field string `json:"field,optional"` ////排序的字段名
 	Sort  int64  `json:"sort,optional"`  //排序方式：1 从小到大, 2 从大到小
@@ -1350,9 +1355,10 @@ type SceneInfo struct {
 	If              string           `json:"if,optional"`
 	When            string           `json:"when,optional"`
 	Then            string           `json:"then,optional"`
-	HeadImg         string           `json:"headImg,optional"` // 用户头像
+	HeadImg         string           `json:"headImg,optional"`                   // 头像
+	IsUpdateHeadImg bool             `json:"isUpdateHeadImg,omitempty,optional"` // 是否更新头像
+	Logo            string           `json:"logo,optional"`
 	LastRunTime     int64            `json:"lastRunTime,optional"`
-	IsUpdateHeadImg bool             `json:"isUpdateHeadImg,omitempty,optional"` // 用户头像
 	ProductID       string           `json:"productID,omitempty,optional"`
 	DeviceName      string           `json:"deviceName,omitempty,optional"`
 	DeviceAlias     string           `json:"deviceAlias,omitempty,optional"` //只读
@@ -1407,8 +1413,10 @@ type SceneLogAction struct {
 	Code     int64                 `json:"code,omitempty"`     //错误码
 	Msg      string                `json:"msg,omitempty"`      //错误信息
 	MsgToken string                `json:"msgToken,omitempty"` //调用id
+	Delay    int64                 `json:"delay,omitempty"`    //延时秒数
 	Device   *SceneLogActionDevice `json:"device,omitempty"`
 	Alarm    *SceneLogActionAlarm  `json:"alarm,omitempty"`
+	Scene    *LogActionScene       `json:"scene,omitempty"`
 }
 
 type SceneLogActionAlarm struct {

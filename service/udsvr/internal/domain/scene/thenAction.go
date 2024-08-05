@@ -3,6 +3,7 @@ package scene
 
 import (
 	"context"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -105,6 +106,17 @@ func (a *Action) Execute(ctx context.Context, repo ActionRepo) error {
 	switch a.Type {
 	case ActionExecutorDelay:
 		time.Sleep(time.Second * time.Duration(a.Delay))
+		func() {
+			repo.Info.Log.ActionMutex.Lock()
+			defer repo.Info.Log.ActionMutex.Unlock()
+			repo.Info.Log.Actions = append(repo.Info.Log.Actions, &LogAction{
+				Type:   ActionExecutorDelay,
+				Delay:  a.Delay,
+				Status: def.True,
+				Code:   errors.OK.GetCode(),
+				Msg:    errors.OK.GetMsg(),
+			})
+		}()
 	case ActionExecutorDevice:
 		err := a.Device.Execute(ctx, repo)
 		if err != nil {

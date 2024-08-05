@@ -20,6 +20,8 @@ type LogAction struct {
 	Type     ActionType       `json:"type"` //执行器类型 notify: 通知 delay:延迟  device:设备输出  alarm: 告警
 	Device   *LogActionDevice `json:"device,omitempty"`
 	Alarm    *LogActionAlarm  `json:"alarm,omitempty"`
+	Delay    int64            `json:"delay,omitempty"` //秒数
+	Scene    *LogActionScene  `json:"scene,omitempty"`
 	Status   int64            `json:"status"`
 	Code     int64            `json:"code"`
 	Msg      string           `json:"msg"`
@@ -28,6 +30,11 @@ type LogAction struct {
 
 type LogActionAlarm struct {
 	Mode ActionAlarmMode `json:"mode"` //告警模式  trigger: 触发告警  relieve: 解除告警
+}
+
+type LogActionScene struct {
+	SceneID   int64  `json:"sceneID"`
+	SceneName string `json:"sceneName"`
 }
 
 type LogActionDevice struct {

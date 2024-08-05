@@ -29,6 +29,7 @@ type (
 	AlarmSceneMultiSaveReq    = ud.AlarmSceneMultiSaveReq
 	DeviceCore                = ud.DeviceCore
 	Empty                     = ud.Empty
+	LogActionScene            = ud.LogActionScene
 	PageInfo                  = ud.PageInfo
 	PageInfo_OrderBy          = ud.PageInfo_OrderBy
 	SceneFlowInfo             = ud.SceneFlowInfo

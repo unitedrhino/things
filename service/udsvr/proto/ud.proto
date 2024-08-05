@@ -193,6 +193,7 @@ message SceneInfo{
   int64 status = 9;// 状态（1启用 2禁用）
   string headImg = 10;
   bool isUpdateHeadImg = 11;//只有这个参数为true的时候才会更新图片,传参为图片的file path
+  string logo =23;//logoid
   int64 lastRunTime = 13;//最后一次执行时间 秒级时间戳 只读
   string   productID = 16; //产品id
   string  deviceName = 17; //设备名称
@@ -234,6 +235,13 @@ message SceneLogAction {
   string msgToken=6;//调用id
   SceneLogActionDevice device =2;
   SceneLogActionAlarm alarm =7;
+  int64 delay =8;//延时的秒数
+  LogActionScene scene =9;//执行场景
+}
+
+message LogActionScene{
+ int64 sceneID =1;
+ string sceneName =2;
 }
 
 message SceneLogActionAlarm{

@@ -9003,6 +9003,23 @@
       },
       "title": "IDPath"
     },
+    "LogActionScene": {
+      "type": "object",
+      "properties": {
+        "sceneID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "sceneName": {
+          "type": "string"
+        }
+      },
+      "title": "LogActionScene",
+      "required": [
+        "sceneID",
+        "sceneName"
+      ]
+    },
     "OrderBy": {
       "type": "object",
       "properties": {
@@ -10993,16 +11010,19 @@
         },
         "headImg": {
           "type": "string",
-          "description": " 用户头像"
-        },
-        "lastRunTime": {
-          "type": "integer",
-          "format": "int64"
+          "description": " 头像"
         },
         "isUpdateHeadImg": {
           "type": "boolean",
           "format": "boolean",
-          "description": " 用户头像"
+          "description": " 是否更新头像"
+        },
+        "logo": {
+          "type": "string"
+        },
+        "lastRunTime": {
+          "type": "integer",
+          "format": "int64"
         },
         "productID": {
           "type": "string"
@@ -11081,16 +11101,19 @@
         },
         "headImg": {
           "type": "string",
-          "description": " 用户头像"
-        },
-        "lastRunTime": {
-          "type": "integer",
-          "format": "int64"
+          "description": " 头像"
         },
         "isUpdateHeadImg": {
           "type": "boolean",
           "format": "boolean",
-          "description": " 用户头像"
+          "description": " 是否更新头像"
+        },
+        "logo": {
+          "type": "string"
+        },
+        "lastRunTime": {
+          "type": "integer",
+          "format": "int64"
         },
         "productID": {
           "type": "string"
@@ -11256,16 +11279,19 @@
         },
         "headImg": {
           "type": "string",
-          "description": " 用户头像"
-        },
-        "lastRunTime": {
-          "type": "integer",
-          "format": "int64"
+          "description": " 头像"
         },
         "isUpdateHeadImg": {
           "type": "boolean",
           "format": "boolean",
-          "description": " 用户头像"
+          "description": " 是否更新头像"
+        },
+        "logo": {
+          "type": "string"
+        },
+        "lastRunTime": {
+          "type": "integer",
+          "format": "int64"
         },
         "productID": {
           "type": "string"
@@ -11361,11 +11387,19 @@
           "type": "string",
           "description": "调用id"
         },
+        "delay": {
+          "type": "integer",
+          "format": "int64",
+          "description": "延时秒数"
+        },
         "device": {
           "$ref": "#/definitions/SceneLogActionDevice"
         },
         "alarm": {
           "$ref": "#/definitions/SceneLogActionAlarm"
+        },
+        "scene": {
+          "$ref": "#/definitions/LogActionScene"
         }
       },
       "title": "SceneLogAction"
