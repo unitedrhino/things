@@ -2,8 +2,8 @@ package userdevicelogic
 
 import (
 	"context"
-	"gitee.com/i-Things/core/service/syssvr/pb/sys"
 	"gitee.com/i-Things/share/ctxs"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
@@ -31,11 +31,14 @@ func NewUserDeviceShareIndexLogic(ctx context.Context, svcCtx *svc.ServiceContex
 // 获取设备分享列表(只有)
 func (l *UserDeviceShareIndexLogic) UserDeviceShareIndex(in *dm.UserDeviceShareIndexReq) (*dm.UserDeviceShareIndexResp, error) {
 	uc := ctxs.GetUserCtx(l.ctx)
-	di, err := relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.Device.ProductID, DeviceName: in.Device.DeviceName})
+	di, err := relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(ctxs.WithAllProject(l.ctx), relationDB.DeviceFilter{ProductID: in.Device.ProductID, DeviceNames: []string{in.Device.DeviceName}})
 	if err != nil {
 		return nil, err
 	}
-	pi, err := l.svcCtx.ProjectM.ProjectInfoRead(l.ctx, &sys.ProjectWithID{ProjectID: int64(di.ProjectID)})
+	if di.UserID <= def.RootNode || di.ProjectID <= def.NotClassified {
+		return &dm.UserDeviceShareIndexResp{}, nil
+	}
+	pi, err := l.svcCtx.ProjectCache.GetData(l.ctx, int64(di.ProjectID))
 	if err != nil {
 		return nil, err
 	}
