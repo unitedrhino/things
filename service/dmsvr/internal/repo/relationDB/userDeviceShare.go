@@ -108,6 +108,12 @@ func (p UserDeviceShareRepo) Update(ctx context.Context, data *DmUserDeviceShare
 	return stores.ErrFmt(err)
 }
 
+func (d UserDeviceShareRepo) UpdateWithField(ctx context.Context, f UserDeviceShareFilter, updates map[string]any) error {
+	db := d.fmtFilter(ctx, f)
+	err := db.Model(&DmUserDeviceShare{}).Updates(updates).Error
+	return stores.ErrFmt(err)
+}
+
 func (p UserDeviceShareRepo) DeleteByFilter(ctx context.Context, f UserDeviceShareFilter) error {
 	db := p.fmtFilter(ctx, f)
 	err := db.Delete(&DmUserDeviceShare{}).Error

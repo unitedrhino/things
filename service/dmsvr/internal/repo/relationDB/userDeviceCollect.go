@@ -85,6 +85,12 @@ func (p UserDeviceCollectRepo) Update(ctx context.Context, data *DmUserDeviceCol
 	return stores.ErrFmt(err)
 }
 
+func (d UserDeviceCollectRepo) UpdateWithField(ctx context.Context, f UserDeviceCollectFilter, updates map[string]any) error {
+	db := d.fmtFilter(ctx, f)
+	err := db.Model(&DmUserDeviceCollect{}).Updates(updates).Error
+	return stores.ErrFmt(err)
+}
+
 func (p UserDeviceCollectRepo) DeleteByFilter(ctx context.Context, f UserDeviceCollectFilter) error {
 	db := p.fmtFilter(ctx, f)
 	err := db.Delete(&DmUserDeviceCollect{}).Error

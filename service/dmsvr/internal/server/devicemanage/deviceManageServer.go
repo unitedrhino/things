@@ -89,6 +89,11 @@ func (s *DeviceManageServer) DeviceTransfer(ctx context.Context, in *dm.DeviceTr
 	return l.DeviceTransfer(in)
 }
 
+func (s *DeviceManageServer) DeviceMove(ctx context.Context, in *dm.DeviceMoveReq) (*dm.Empty, error) {
+	l := devicemanagelogic.NewDeviceMoveLogic(ctx, s.svcCtx)
+	return l.DeviceMove(in)
+}
+
 func (s *DeviceManageServer) DeviceModuleVersionRead(ctx context.Context, in *dm.DeviceModuleVersionReadReq) (*dm.DeviceModuleVersion, error) {
 	l := devicemanagelogic.NewDeviceModuleVersionReadLogic(ctx, s.svcCtx)
 	return l.DeviceModuleVersionRead(in)

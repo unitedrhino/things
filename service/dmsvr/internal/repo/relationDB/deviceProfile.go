@@ -95,6 +95,12 @@ func (p DeviceProfileRepo) Update(ctx context.Context, data *DmDeviceProfile) er
 	return stores.ErrFmt(err)
 }
 
+func (d DeviceProfileRepo) UpdateWithField(ctx context.Context, f DeviceProfileFilter, updates map[string]any) error {
+	db := d.fmtFilter(ctx, f)
+	err := db.Model(&DmDeviceProfile{}).Updates(updates).Error
+	return stores.ErrFmt(err)
+}
+
 func (p DeviceProfileRepo) DeleteByFilter(ctx context.Context, f DeviceProfileFilter) error {
 	db := p.fmtFilter(ctx, f)
 	err := db.Delete(&DmDeviceProfile{}).Error

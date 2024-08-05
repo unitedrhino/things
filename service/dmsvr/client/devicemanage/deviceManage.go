@@ -49,6 +49,7 @@ type (
 	DeviceModuleVersionIndexReq       = dm.DeviceModuleVersionIndexReq
 	DeviceModuleVersionIndexResp      = dm.DeviceModuleVersionIndexResp
 	DeviceModuleVersionReadReq        = dm.DeviceModuleVersionReadReq
+	DeviceMoveReq                     = dm.DeviceMoveReq
 	DeviceOnlineMultiFix              = dm.DeviceOnlineMultiFix
 	DeviceOnlineMultiFixReq           = dm.DeviceOnlineMultiFixReq
 	DeviceProfile                     = dm.DeviceProfile
@@ -216,6 +217,7 @@ type (
 		DeviceInfoCanBind(ctx context.Context, in *DeviceInfoCanBindReq, opts ...grpc.CallOption) (*Empty, error)
 		DeviceInfoUnbind(ctx context.Context, in *DeviceCore, opts ...grpc.CallOption) (*Empty, error)
 		DeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error)
+		DeviceMove(ctx context.Context, in *DeviceMoveReq, opts ...grpc.CallOption) (*Empty, error)
 		DeviceModuleVersionRead(ctx context.Context, in *DeviceModuleVersionReadReq, opts ...grpc.CallOption) (*DeviceModuleVersion, error)
 		DeviceModuleVersionIndex(ctx context.Context, in *DeviceModuleVersionIndexReq, opts ...grpc.CallOption) (*DeviceModuleVersionIndexResp, error)
 		// 绑定网关下子设备设备
@@ -380,6 +382,15 @@ func (m *defaultDeviceManage) DeviceTransfer(ctx context.Context, in *DeviceTran
 
 func (d *directDeviceManage) DeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.DeviceTransfer(ctx, in)
+}
+
+func (m *defaultDeviceManage) DeviceMove(ctx context.Context, in *DeviceMoveReq, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceMove(ctx, in, opts...)
+}
+
+func (d *directDeviceManage) DeviceMove(ctx context.Context, in *DeviceMoveReq, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.DeviceMove(ctx, in)
 }
 
 func (m *defaultDeviceManage) DeviceModuleVersionRead(ctx context.Context, in *DeviceModuleVersionReadReq, opts ...grpc.CallOption) (*DeviceModuleVersion, error) {

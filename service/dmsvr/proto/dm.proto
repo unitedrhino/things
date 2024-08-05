@@ -88,6 +88,7 @@ service DeviceManage {
   rpc deviceInfoCanBind(DeviceInfoCanBindReq)returns(Empty);
   rpc deviceInfoUnbind(DeviceCore)returns(Empty);
   rpc deviceTransfer(DeviceTransferReq)returns(Empty);
+  rpc deviceMove(DeviceMoveReq)returns(Empty);//将设备信息迁移到新的设备中
 
   rpc deviceModuleVersionRead(DeviceModuleVersionReadReq)returns (DeviceModuleVersion);
   rpc deviceModuleVersionIndex(DeviceModuleVersionIndexReq)returns (DeviceModuleVersionIndexResp);
@@ -392,7 +393,11 @@ message DeviceModuleVersionIndexResp{
   repeated DeviceModuleVersion list = 2;
 }
 
-
+message DeviceMoveReq{
+  DeviceCore old = 1;//需要转移的设备
+  DeviceCore new = 2;//转移的对象
+  repeated string withTarget=3;//设备配置-profile,schemaAlias:profile
+}
 
 message DeviceTransferReq{
   DeviceCore device = 1;//设备信息
