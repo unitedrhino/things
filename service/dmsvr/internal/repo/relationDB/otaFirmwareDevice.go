@@ -139,7 +139,7 @@ func (p OtaFirmwareDeviceRepo) UpdateStatusByFilter(ctx context.Context, f OtaFi
 		update["last_failure_time"] = time.Now()
 	}
 	if status == msgOta.DeviceStatusQueued {
-		update["retry_count"] = gorm.Expr("retry_count+1")
+		update["retry_count"] = stores.Expr("retry_count+1")
 	}
 	if detail != "" {
 		update["detail"] = detail
