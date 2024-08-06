@@ -3,6 +3,7 @@ package devicemanagelogic
 import (
 	"context"
 	"gitee.com/i-Things/share/ctxs"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/eventBus"
@@ -41,7 +42,7 @@ func (l *DeviceMoveLogic) DeviceMove(in *dm.DeviceMoveReq) (*dm.Empty, error) {
 	if err != nil {
 		return nil, err
 	}
-	newDev, err := diDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.Old.ProductID, DeviceNames: []string{in.Old.DeviceName}})
+	newDev, err := diDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.New.ProductID, DeviceNames: []string{in.New.DeviceName}})
 	if err != nil {
 		return nil, err
 	}
@@ -63,6 +64,13 @@ func (l *DeviceMoveLogic) DeviceMove(in *dm.DeviceMoveReq) (*dm.Empty, error) {
 	if oldDev.FirstBind.Valid && oldDev.FirstBind.Time.After(time.Now().AddDate(0, 0, -1)) { //绑定一天内的不算绑定时间
 		oldDev.FirstBind.Valid = false
 		oldDev.ExpTime.Valid = false
+	} else {
+		oldDev.ExpTime.Time = time.Now()
+	}
+	if newDev.ExpTime.Valid && newDev.ExpTime.Time.Before(time.Now()) { //如果过期了
+		newDev.Status = def.DeviceStatusArrearage
+	} else {
+		newDev.Status = newDev.IsOnline + 1
 	}
 
 	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
