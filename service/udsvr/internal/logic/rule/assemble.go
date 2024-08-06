@@ -91,7 +91,7 @@ func ToSceneTriggerPo(si *scene.Info, in *scene.Trigger) *relationDB.UdSceneIfTr
 	}
 }
 
-func ToSceneTriggerTimerPo(si *scene.Info, in *scene.Timer) (ret relationDB.UdSceneTriggerTimer) {
+func ToSceneTriggerTimerPo(si *scene.Info, in *scene.TriggerTimer) (ret relationDB.UdSceneTriggerTimer) {
 	if in == nil {
 		return relationDB.UdSceneTriggerTimer{}
 	}
@@ -272,8 +272,8 @@ func ToSceneTriggerDo(in *relationDB.UdSceneIfTrigger) *scene.Trigger {
 	}
 }
 
-func ToSceneTriggerTimerDo(in relationDB.UdSceneTriggerTimer) (ret *scene.Timer) {
-	return &scene.Timer{
+func ToSceneTriggerTimerDo(in relationDB.UdSceneTriggerTimer) (ret *scene.TriggerTimer) {
+	return &scene.TriggerTimer{
 		ExecAt:        in.ExecAt,
 		ExecRepeat:    utils.Int64ToBStr(in.ExecRepeat, scene.RepeatTypeLen[in.RepeatType]),
 		ExecType:      in.ExecType,

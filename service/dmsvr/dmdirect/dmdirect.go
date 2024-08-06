@@ -9,6 +9,7 @@ import (
 	deviceinteract "github.com/i-Things/things/service/dmsvr/internal/server/deviceinteract"
 	devicemanage "github.com/i-Things/things/service/dmsvr/internal/server/devicemanage"
 	devicemsg "github.com/i-Things/things/service/dmsvr/internal/server/devicemsg"
+	otamanage "github.com/i-Things/things/service/dmsvr/internal/server/otamanage"
 	productmanage "github.com/i-Things/things/service/dmsvr/internal/server/productmanage"
 	protocolmanage "github.com/i-Things/things/service/dmsvr/internal/server/protocolmanage"
 	remoteconfig "github.com/i-Things/things/service/dmsvr/internal/server/remoteconfig"
@@ -59,6 +60,7 @@ func Run(svcCtx *svc.ServiceContext) {
 		dm.RegisterDeviceGroupServer(grpcServer, devicegroup.NewDeviceGroupServer(svcCtx))
 		dm.RegisterDeviceInteractServer(grpcServer, deviceinteract.NewDeviceInteractServer(svcCtx))
 		dm.RegisterDeviceMsgServer(grpcServer, devicemsg.NewDeviceMsgServer(svcCtx))
+		dm.RegisterOtaManageServer(grpcServer, otamanage.NewOtaManageServer(svcCtx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
