@@ -7,13 +7,14 @@ import (
 
 // TriggerTimer 定时器类型
 type TriggerTimer struct {
-	ExecType      ExecType   `json:"execType"`      //执行方式
-	ExecAt        int64      `json:"execAt"`        //执行的时间点 从0点加起来的秒数 如 1点就是 1*60*60
-	ExecLoopStart int64      `json:"execLoopStart"` //循环执行起始时间配置
-	ExecLoopEnd   int64      `json:"execLoopEnd"`
-	ExecLoop      int64      `json:"execLoop"` //循环时间间隔
-	RepeatType    RepeatType `json:"repeatType"`
-	ExecRepeat    string     `json:"execRepeat"` //二进制周一到周日 11111111 或二进制月一到月末
+	ExecType      ExecType   `json:"execType"`                //执行方式
+	ExecAdd       int64      `json:"execAdd,omitempty"`       //如果是日出日落模式,则为日出日落前后的秒数
+	ExecAt        int64      `json:"execAt,omitempty"`        //执行的时间点 从0点加起来的秒数 如 1点就是 1*60*60
+	ExecLoopStart int64      `json:"execLoopStart,omitempty"` //循环执行起始时间配置
+	ExecLoopEnd   int64      `json:"execLoopEnd,omitempty"`
+	ExecLoop      int64      `json:"execLoop,omitempty"` //循环时间间隔
+	RepeatType    RepeatType `json:"repeatType,omitempty"`
+	ExecRepeat    string     `json:"execRepeat,omitempty"` //二进制周一到周日 11111111 或二进制月一到月末
 }
 
 type TriggerTimers []*TriggerTimer
@@ -38,6 +39,13 @@ func (t *TriggerTimer) Validate() error {
 		}
 		if t.ExecLoopEnd < t.ExecLoopStart {
 			return errors.Parameter.AddMsg("时间执行时间范围只能在0到24小时之间")
+		}
+	case ExecTypeSunDown, ExecTypeSunRises:
+		if t.ExecAt > 3*60*60 {
+			return errors.Parameter.AddMsg("最晚只能三个小时后")
+		}
+		if t.ExecAt < (-3 * 60 * 60) {
+			return errors.Parameter.AddMsg("最早只能提前三个小时")
 		}
 	default:
 		if t.ExecAt < 0 || t.ExecAt > 24*60*60 {

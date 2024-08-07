@@ -61,9 +61,10 @@ func (m *UdSceneIfTrigger) TableName() string {
 }
 
 type UdSceneTriggerTimer struct {
+	ExecType      scene.ExecType   `gorm:"column:exec_type;type:VARCHAR(25);"`  //执行方式
+	ExecAdd       int64            `gorm:"column:exec_add;type:bigint;"`        //如果是日出日落模式,则为日出日落前后的秒数
 	ExecAt        int64            `gorm:"column:exec_at;type:bigint;"`         //执行时间 从0点加起来的秒数 如 1点就是 1*60*60
 	ExecRepeat    int64            `gorm:"column:exec_repeat;type:bigint;"`     //重复 二进制周日到周六 11111111 这个参数只有定时触发才有
-	ExecType      scene.ExecType   `gorm:"column:exec_type;type:VARCHAR(25);"`  //执行方式
 	ExecLoopStart int64            `gorm:"column:exec_loop_start;type:bigint;"` //循环执行起始时间配置
 	ExecLoopEnd   int64            `gorm:"column:exec_loop_end;type:bigint;"`
 	ExecLoop      int64            `gorm:"column:exec_loop;type:bigint;"`

@@ -2,6 +2,7 @@ package scene
 
 import (
 	"gitee.com/i-Things/share/domain/schema"
+	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
 	"github.com/spf13/cast"
 	"golang.org/x/exp/constraints"
@@ -32,6 +33,19 @@ func (t CmpType) IsHit(dataType schema.DataType, data any, values []string) bool
 	default:
 		return TermCompareAll(t, cast.ToString(data), values)
 	}
+}
+
+func (t CmpType) Validate(values []string) error {
+	if !utils.SliceIn(t, CmpTypeEq, CmpTypeNot, CmpTypeBtw, CmpTypeGt, CmpTypeGte, CmpTypeLt, CmpTypeLte, CmpTypeIn, CmpTypeAll) {
+		return errors.Parameter.AddMsg("动态条件类型 类型不支持:" + string(t))
+	}
+	if len(values) == 0 && t != CmpTypeAll {
+		return errors.Parameter.AddMsg("动态条件类型 需要填写参数")
+	}
+	if utils.SliceIn(t, CmpTypeIn, CmpTypeBtw) && len(values) != 2 {
+		return errors.Parameter.AddMsgf("动态条件类型:%v 需要填写2个参数:%v", string(t), values)
+	}
+	return nil
 }
 
 func TermCompareAll[dt constraints.Ordered](t CmpType, data dt, values []dt) bool {

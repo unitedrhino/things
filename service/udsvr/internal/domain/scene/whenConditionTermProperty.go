@@ -11,15 +11,6 @@ import (
 	"strings"
 )
 
-type TermColumnType string
-
-const (
-	TermColumnTypeProperty TermColumnType = "property"
-	TermColumnTypeEvent    TermColumnType = "event"
-	//TermColumnTypeReportTime TermColumnType = "reportTime"
-	TermColumnTypeSysTime TermColumnType = "sysTime"
-)
-
 // TermProperty 物模型类型 属性
 type TermProperty struct {
 	AreaID           int64    `json:"areaID,string"` //仅做记录
@@ -31,13 +22,6 @@ type TermProperty struct {
 	SchemaAffordance string   `json:"schemaAffordance"` //只读,返回物模型定义
 	TermType         CmpType  `json:"termType"`         //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
 	Values           []string `json:"values"`           //条件值 参数根据动态条件类型会有多个参数
-}
-
-func (t TermColumnType) Validate() error {
-	if !utils.SliceIn(t, TermColumnTypeProperty, TermColumnTypeEvent, TermColumnTypeSysTime) {
-		return errors.Parameter.AddMsg("条件类型不支持:" + string(t))
-	}
-	return nil
 }
 
 func (c *TermProperty) Validate(repo ValidateRepo) error {

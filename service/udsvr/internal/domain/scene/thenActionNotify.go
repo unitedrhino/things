@@ -42,7 +42,7 @@ func (a *ActionNotify) Validate(repo ValidateRepo) error {
 		return nil
 	}
 	if !utils.SliceIn(a.Type, def.NotifyTypeSms, def.NotifyTypeEmail,
-		def.NotifyTypeDingTalk, def.NotifyTypeWx, def.NotifyTypeMessage, def.NotifyTypePhoneCall, def.NotifyTypeWxEWebhook) {
+		def.NotifyTypeDingTalk, def.NotifyTypeWxMini, def.NotifyTypeMessage, def.NotifyTypePhoneCall, def.NotifyTypeWxEWebhook) {
 		return errors.Parameter.AddMsg("消息通知不支持的类型:" + string(a.Type))
 	}
 	if repo.Info.DeviceMode == DeviceModeSingle {

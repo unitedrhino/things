@@ -19,12 +19,21 @@ const (
 	TermConditionTypeAnd TermCondType = "and"
 )
 
+type TermColumnType = string
+
+const (
+	TermColumnTypeProperty TermColumnType = "property"
+	TermColumnTypeEvent    TermColumnType = "event"
+	//TermColumnTypeReportTime TermColumnType = "reportTime"
+	TermColumnTypeSysTime TermColumnType = "sysTime"
+	TermColumnTypeWeather TermColumnType = "weather"
+)
+
 type Term struct {
 	Order      int64          `json:"order"`
 	ColumnType TermColumnType `json:"columnType"` //字段类型 property:属性 weather:天气
 	Property   *TermProperty  `json:"property"`   //属性类型
-	//todo 天气状态处于xxx
-	Weather any `json:"weather"`
+	Weather    *TermWeather   `json:"weather"`
 }
 
 func (t *Conditions) Validate(repo ValidateRepo) error {
@@ -47,33 +56,24 @@ func (t *Term) Validate(repo ValidateRepo) error {
 	if t == nil {
 		return nil
 	}
-	err := t.ColumnType.Validate()
-	if err != nil {
-		return err
+	if !utils.SliceIn(t.ColumnType, TermColumnTypeProperty, TermColumnTypeEvent, TermColumnTypeSysTime, TermColumnTypeWeather) {
+		return errors.Parameter.AddMsg("条件类型不支持:" + string(t.ColumnType))
 	}
 	switch t.ColumnType {
 	case TermColumnTypeProperty:
 		if err := t.Property.Validate(repo); err != nil {
 			return err
 		}
-	}
-	return nil
-}
-func (t CmpType) Validate(values []string) error {
-	if !utils.SliceIn(t, CmpTypeEq, CmpTypeNot, CmpTypeBtw, CmpTypeGt, CmpTypeGte, CmpTypeLt, CmpTypeLte, CmpTypeIn, CmpTypeAll) {
-		return errors.Parameter.AddMsg("动态条件类型 类型不支持:" + string(t))
-	}
-	if len(values) == 0 && t != CmpTypeAll {
-		return errors.Parameter.AddMsg("动态条件类型 需要填写参数")
-	}
-	if utils.SliceIn(t, CmpTypeIn, CmpTypeBtw) && len(values) != 2 {
-		return errors.Parameter.AddMsgf("动态条件类型:%v 需要填写2个参数:%v", string(t), values)
+	case TermColumnTypeWeather:
+		if err := t.Weather.Validate(repo); err != nil {
+			return err
+		}
 	}
 	return nil
 }
 
 // 判断条件是否成立
-func (t Conditions) IsHit(ctx context.Context, repo TermRepo) bool {
+func (t *Conditions) IsHit(ctx context.Context, repo TermRepo) bool {
 	if len(t.Terms) == 0 {
 		return true
 	}
@@ -94,6 +94,8 @@ func (t *Term) IsHit(ctx context.Context, repo TermRepo) bool {
 	switch t.ColumnType {
 	case TermColumnTypeProperty:
 		isHit = t.Property.IsHit(ctx, t.ColumnType, repo)
+	case TermColumnTypeWeather:
+		isHit = t.Weather.IsHit(ctx, t.ColumnType, repo)
 	}
 
 	return isHit
