@@ -13,8 +13,9 @@ type If struct {
 type TriggerType = string
 
 const (
-	TriggerTypeDevice TriggerType = "device"
-	TriggerTypeTimer  TriggerType = "timer"
+	TriggerTypeDevice  TriggerType = "device"
+	TriggerTypeTimer   TriggerType = "timer"
+	TriggerTypeWeather TriggerType = "weather"
 )
 
 type Triggers []*Trigger
@@ -43,14 +44,14 @@ func (t *Trigger) Validate(repo ValidateRepo) error {
 	if t == nil {
 		return errors.Parameter.AddMsg("需要填写触发内容")
 	}
-	if !utils.SliceIn(t.Type, TriggerTypeTimer, TriggerTypeDevice) {
+	if !utils.SliceIn(t.Type, TriggerTypeTimer, TriggerTypeDevice, TriggerTypeWeather) {
 		return errors.Parameter.AddMsg("触发器不支持的类型:" + string(t.Type))
 	}
 	switch t.Type {
 	case TriggerTypeDevice:
 		return t.Device.Validate(repo)
 	case TriggerTypeTimer:
-		return t.Timer.Validate()
+		return t.Timer.Validate(repo)
 	}
 	return nil
 }

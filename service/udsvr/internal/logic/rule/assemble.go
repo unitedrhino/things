@@ -30,9 +30,10 @@ func ToSceneInfoDo(in *ud.SceneInfo) *scene.Info {
 
 func ToSceneInfoPo(in *scene.Info) *relationDB.UdSceneInfo {
 	return &relationDB.UdSceneInfo{
-		ID:     in.ID,
-		Type:   in.Type,
-		AreaID: stores.AreaID(in.AreaID),
+		ID:        in.ID,
+		Type:      in.Type,
+		ProjectID: stores.ProjectID(in.ProjectID),
+		AreaID:    stores.AreaID(in.AreaID),
 		//AreaIDs: in.AreaIDs,
 		FlowPath:    in.FlowPath,
 		Name:        in.Name,
@@ -133,6 +134,7 @@ func PoToSceneInfoDo(in *relationDB.UdSceneInfo) *scene.Info {
 	}
 	return &scene.Info{
 		ID:          in.ID,
+		ProjectID:   int64(in.ProjectID),
 		AreaID:      int64(in.AreaID),
 		Name:        in.Name,
 		Tag:         in.Tag,

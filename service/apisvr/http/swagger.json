@@ -10308,6 +10308,13 @@
           "format": "boolean",
           "description": "同时返回品类详情"
         },
+        "sceneModes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)"
+        },
         "sceneMode": {
           "type": "string",
           "description": "场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)"

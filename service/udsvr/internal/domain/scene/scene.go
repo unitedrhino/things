@@ -31,6 +31,7 @@ const (
 // 多设备的场景联动
 type Info struct {
 	ID          int64       `json:"id"`
+	ProjectID   int64       `json:"projectID,string"`
 	AreaID      int64       `json:"areaID,string"`
 	HeadImg     string      `json:"headImg"`               // 头像
 	FlowPath    []*FlowInfo `json:"flowPath"`              //执行路径

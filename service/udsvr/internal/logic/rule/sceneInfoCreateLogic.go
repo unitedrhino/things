@@ -3,6 +3,7 @@ package rulelogic
 import (
 	"context"
 	"fmt"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/oss"
@@ -37,6 +38,9 @@ func (l *SceneInfoCreateLogic) SceneInfoCreate(in *ud.SceneInfo) (*ud.WithID, er
 	}
 	if do.AreaID == 0 {
 		return nil, errors.Parameter.AddMsg("areaID必填")
+	}
+	if do.ProjectID == 0 {
+		do.ProjectID = ctxs.GetUserCtxNoNil(l.ctx).ProjectID
 	}
 	err := do.Validate(NewSceneValidateRepo(l.ctx, l.svcCtx))
 	if err != nil {

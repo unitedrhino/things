@@ -10,6 +10,7 @@ import (
 	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
 	rulelogic "github.com/i-Things/things/service/udsvr/internal/logic/rule"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
+	"github.com/observerly/dusk/pkg/dusk"
 	"github.com/zeromicro/go-zero/core/logx"
 	"sync"
 	"time"
@@ -78,7 +79,7 @@ func (l *TimerHandle) SceneTiming() error {
 	var triggerF = []relationDB.SceneIfTriggerFilter{
 		{Status: def.True,
 			Type:        scene.TriggerTypeTimer,
-			ExecType:    scene.ExecTypeAt,
+			ExecType:    stores.CmpIn(scene.ExecTypeAt, scene.ExecTypeSunSet, scene.ExecTypeSunSet),
 			ExecAt:      stores.CmpLte(utils.TimeToDaySec(now)),                  //小于等于当前时间点(需要执行的)
 			LastRunTime: stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)), //当天未执行的
 			RepeatType:  scene.RepeatTypeWeek,
@@ -86,14 +87,14 @@ func (l *TimerHandle) SceneTiming() error {
 		},
 		{Status: def.True,
 			Type:        scene.TriggerTypeTimer,
-			ExecType:    scene.ExecTypeAt,
+			ExecType:    stores.CmpIn(scene.ExecTypeAt, scene.ExecTypeSunSet, scene.ExecTypeSunSet),
 			ExecAt:      stores.CmpLte(utils.TimeToDaySec(now)),                  //小于等于当前时间点(需要执行的)
 			LastRunTime: stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)), //当天未执行的
 			RepeatType:  scene.RepeatTypeMount,
 			ExecRepeat:  stores.CmpOr(stores.CmpBinEq(int64(now.Day()), 1), stores.CmpEq(0)), //当天需要执行或只需要执行一次的
 		},
 		{Status: def.True,
-			ExecType:      scene.ExecTypeLoop,
+			ExecType:      stores.CmpEq(scene.ExecTypeLoop),
 			Type:          scene.TriggerTypeTimer,
 			ExecLoopStart: stores.CmpLte(utils.TimeToDaySec(now)), //
 			ExecLoopEnd:   stores.CmpGte(utils.TimeToDaySec(now)),
@@ -102,7 +103,7 @@ func (l *TimerHandle) SceneTiming() error {
 			ExecRepeat:    stores.CmpOr(stores.CmpBinEq(int64(now.Day()), 1), stores.CmpEq(0)), //当天需要执行或只需要执行一次的
 		},
 		{Status: def.True,
-			ExecType:      scene.ExecTypeLoop,
+			ExecType:      stores.CmpEq(scene.ExecTypeLoop),
 			Type:          scene.TriggerTypeTimer,
 			ExecLoopStart: stores.CmpLte(utils.TimeToDaySec(now)), //
 			ExecLoopEnd:   stores.CmpGte(utils.TimeToDaySec(now)),
@@ -164,12 +165,13 @@ func (l *TimerHandle) SceneTiming() error {
 						f = nil
 					}
 				}()
-				if po.Timer.ExecType == scene.ExecTypeAt {
+				switch po.Timer.ExecType {
+				case scene.ExecTypeAt:
 					po.LastRunTime = sql.NullTime{
 						Time:  utils.GetEndTime(now),
 						Valid: true,
 					}
-				} else { //间隔时间执行
+				case scene.ExecTypeLoop:
 					lastRun := now.Add(time.Duration(po.Timer.ExecLoop) * time.Second)
 					if utils.TimeToDaySec(lastRun) > po.Timer.ExecLoopEnd { //如果下次执行时间已经超过了结束时间,那么就到下一天开始执行
 						po.LastRunTime = sql.NullTime{
@@ -182,6 +184,30 @@ func (l *TimerHandle) SceneTiming() error {
 							Valid: true,
 						}
 					}
+				case scene.ExecTypeSunSet, scene.ExecTypeSunRises:
+					po.LastRunTime = sql.NullTime{
+						Time:  utils.GetEndTime(now),
+						Valid: true,
+					}
+					func() { //更新太阳升起落下触发时间
+						pi, err := l.svcCtx.ProjectCache.GetData(ctx, int64(po.SceneInfo.ProjectID))
+						if err != nil {
+							log.Error(err)
+							return
+						}
+						twilight, _, err := dusk.GetLocalCivilTwilight(time.Now(), pi.Position.Longitude, pi.Position.Latitude, 0)
+						if err != nil {
+							log.Error(err)
+							return
+						}
+						switch po.Timer.ExecType {
+						case scene.ExecTypeSunRises:
+							po.Timer.ExecAt = utils.TimeToDaySec(twilight.Until)
+						case scene.ExecTypeSunSet:
+							po.Timer.ExecAt = utils.TimeToDaySec(twilight.From)
+						}
+						po.Timer.ExecAt += po.Timer.ExecAdd
+					}()
 				}
 				if po.Timer.ExecRepeat == 0 { //不重复执行的只执行一次
 					po.Status = def.False

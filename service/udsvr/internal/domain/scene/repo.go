@@ -2,6 +2,7 @@ package scene
 
 import (
 	"gitee.com/i-Things/core/service/syssvr/client/notifymanage"
+	"gitee.com/i-Things/core/service/syssvr/sysExport"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/stores"
@@ -43,6 +44,7 @@ type ValidateRepo struct {
 	UserShareCache     dmExport.UserShareCacheT
 	ProductCache       dmExport.ProductCacheT
 	ProductSchemaCache dmExport.SchemaCacheT
+	ProjectCache       sysExport.ProjectCacheT
 	GetSceneInfo       func(ctx context.Context, sceneID int64) (*Info, error)
 	Info               *Info
 }

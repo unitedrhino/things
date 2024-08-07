@@ -5,6 +5,7 @@ import (
 	"gitee.com/i-Things/core/service/syssvr/client/notifymanage"
 	"gitee.com/i-Things/core/service/syssvr/client/ops"
 	"gitee.com/i-Things/core/service/syssvr/client/projectmanage"
+	"gitee.com/i-Things/core/service/syssvr/sysExport"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
 	"gitee.com/i-Things/share/conf"
 	"gitee.com/i-Things/share/eventBus"
@@ -41,6 +42,7 @@ type SvrClient struct {
 	UserShareCache     dmExport.UserShareCacheT
 	ProductCache       dmExport.ProductCacheT
 	ProductSchemaCache dmExport.SchemaCacheT
+	ProjectCache       sysExport.ProjectCacheT
 	Ops                ops.Ops
 }
 
@@ -105,6 +107,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 	udc, err := dmExport.NewUserShareCache(userDevice, fastEvent)
 	logx.Must(err)
+	projectC, err := sysExport.NewProjectInfoCache(projectmanage.NewProjectManage(zrpc.MustNewClient(c.SysRpc.Conf)), fastEvent)
+	logx.Must(err)
 	return &ServiceContext{
 		Config:    c,
 		FastEvent: fastEvent,
@@ -116,6 +120,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			AreaM:              areaM,
 			NotifyM:            notifyM,
 			ProjectM:           projectM,
+			ProjectCache:       projectC,
 			ProductM:           productM,
 			Ops:                Ops,
 			DeviceInteract:     deviceInteract,

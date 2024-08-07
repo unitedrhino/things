@@ -64,7 +64,7 @@ type ExecType = string
 const (
 	ExecTypeAt       ExecType = "at"       //在时间点执行(默认)
 	ExecTypeSunRises ExecType = "sunRises" //太阳升起
-	ExecTypeSunDown  ExecType = "sunDown"  //太阳落下
+	ExecTypeSunSet   ExecType = "sunSet"   //太阳落下
 	ExecTypeLoop     ExecType = "loop"     //间隔时间执行
 )
 

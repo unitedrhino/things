@@ -12,6 +12,7 @@ func NewSceneValidateRepo(ctx context.Context, svcCtx *svc.ServiceContext) scene
 		Ctx: ctx, DeviceCache: svcCtx.DeviceCache,
 		ProductCache:       svcCtx.ProductCache,
 		ProductSchemaCache: svcCtx.ProductSchemaCache,
+		ProjectCache:       svcCtx.ProjectCache,
 		UserShareCache:     svcCtx.UserShareCache,
 		GetSceneInfo:       GetSceneInfo,
 	}
