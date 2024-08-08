@@ -27,6 +27,7 @@ require (
 	github.com/mholt/archiver/v4 v4.0.0-alpha.8
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/nats-io/nats.go v1.33.1
+	github.com/observerly/dusk v1.16.0
 	github.com/spf13/cast v1.5.0
 	github.com/zeromicro/go-zero v1.6.3
 	go.uber.org/atomic v1.10.0
@@ -151,7 +152,6 @@ require (
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/nicksnyder/go-i18n/v2 v2.4.0 // indirect
 	github.com/nwaples/rardecode/v2 v2.0.0-beta.2 // indirect
-	github.com/observerly/dusk v1.16.0 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
 	github.com/openzipkin/zipkin-go v0.4.2 // indirect
 	github.com/parnurzeal/gorequest v0.3.0 // indirect
@@ -193,6 +193,7 @@ require (
 	github.com/xuri/nfp v0.0.0-20230919160717-d98342af3f05 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20201027041543-1326539a0a0a // indirect
 	github.com/zhaoyunxing92/dingtalk/v2 v2.1.0 // indirect
+	github.com/zsefvlol/timezonemapper v1.0.0 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.12 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.12 // indirect
 	go.etcd.io/etcd/client/v3 v3.5.12 // indirect
