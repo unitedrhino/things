@@ -26,7 +26,7 @@ type WhenRange struct {
 	TimeRange TimeRange `json:"timeRange"`
 }
 
-func (w *When) Validate(repo ValidateRepo) error {
+func (w *When) Validate(repo CheckRepo) error {
 	if w == nil {
 		return nil
 	}
@@ -69,7 +69,7 @@ func (w WhenRanges) Validate() error {
 	return nil
 }
 
-func (w *When) IsHit(ctx context.Context, t time.Time, repo WhenRepo) bool {
+func (w *When) IsHit(ctx context.Context, t time.Time, repo CheckRepo) bool {
 	if len(w.InvalidRanges) != 0 {
 		if w.InvalidRanges.IsHit(ctx, t, repo) { //禁止的优先级最高
 			return false
@@ -80,11 +80,14 @@ func (w *When) IsHit(ctx context.Context, t time.Time, repo WhenRepo) bool {
 			return false
 		}
 	}
+	if !w.Conditions.IsHit(ctx, repo) {
+		return false
+	}
 	return true
 
 }
 
-func (w WhenRanges) IsHit(ctx context.Context, t time.Time, repo WhenRepo) bool {
+func (w WhenRanges) IsHit(ctx context.Context, t time.Time, repo CheckRepo) bool {
 	if len(w) == 0 {
 		return true
 	}
@@ -95,7 +98,7 @@ func (w WhenRanges) IsHit(ctx context.Context, t time.Time, repo WhenRepo) bool 
 	}
 	return false
 }
-func (w *WhenRange) IsHit(ctx context.Context, t time.Time, repo WhenRepo) bool {
+func (w *WhenRange) IsHit(ctx context.Context, t time.Time, repo CheckRepo) bool {
 	if w.Type == WhenRangeTypeDate {
 		return w.DateRange.IsHit(ctx, t, repo)
 	}

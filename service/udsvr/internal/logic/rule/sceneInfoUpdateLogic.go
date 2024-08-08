@@ -71,7 +71,7 @@ func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *ud.SceneInfo) (*ud.Empty, err
 	}
 	do := PoToSceneInfoDo(old)
 	if doUpdate {
-		err = do.Validate(NewSceneValidateRepo(l.ctx, l.svcCtx))
+		err = do.Validate(NewSceneCheckRepo(l.ctx, l.svcCtx, do))
 		if err != nil {
 			return nil, err
 		}

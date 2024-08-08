@@ -1,11 +1,9 @@
 package scene
 
 import (
+	"gitee.com/i-Things/core/service/syssvr/client/common"
 	"gitee.com/i-Things/core/service/syssvr/client/notifymanage"
 	"gitee.com/i-Things/core/service/syssvr/sysExport"
-	"gitee.com/i-Things/share/devices"
-	"gitee.com/i-Things/share/domain/schema"
-	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/client/devicegroup"
 	deviceinteract "github.com/i-Things/things/service/dmsvr/client/deviceinteract"
 	devicemanage "github.com/i-Things/things/service/dmsvr/client/devicemanage"
@@ -14,48 +12,17 @@ import (
 )
 import "context"
 
-type InfoFilter struct {
-	Name        string `json:"name"`
-	Status      int64
-	TriggerType SceneType
-	AlarmID     int64 //绑定的告警id
-}
-
-type Repo interface {
-	Insert(ctx context.Context, info *Info) (id int64, err error)
-	Update(ctx context.Context, info *Info) error
-	Delete(ctx context.Context, id int64) error
-	FindOne(ctx context.Context, id int64) (*Info, error)
-	FindOneByName(ctx context.Context, name string) (*Info, error)
-	FindByFilter(ctx context.Context, filter InfoFilter, page *stores.PageInfo) (Infos, error)
-	CountByFilter(ctx context.Context, filter InfoFilter) (size int64, err error)
-}
-
-type DeviceRepo interface {
-	Insert(ctx context.Context, info *Info) error
-	Update(ctx context.Context, info *Info) error
-	Delete(ctx context.Context, id int64) error
-	GetInfos(ctx context.Context, device devices.Core, operator TriggerDeviceType, dataID string) (Infos, error)
-}
-
-type ValidateRepo struct {
+type CheckRepo struct {
 	Ctx                context.Context
 	DeviceCache        dmExport.DeviceCacheT
 	UserShareCache     dmExport.UserShareCacheT
 	ProductCache       dmExport.ProductCacheT
 	ProductSchemaCache dmExport.SchemaCacheT
 	ProjectCache       sysExport.ProjectCacheT
+	DeviceMsg          devicemsg.DeviceMsg
+	Common             common.Common
 	GetSceneInfo       func(ctx context.Context, sceneID int64) (*Info, error)
 	Info               *Info
-}
-
-type WhenRepo interface {
-}
-
-// TermRepo 场景运行需要用到的对外仓储
-type TermRepo struct {
-	DeviceMsg  devicemsg.DeviceMsg
-	SchemaRepo schema.ReadRepo
 }
 
 type ActionRepo struct {

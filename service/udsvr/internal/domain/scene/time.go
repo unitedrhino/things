@@ -120,7 +120,7 @@ func (t *DateRange) Validate() error {
 	return nil
 }
 
-func (d *DateRange) IsHit(ctx context.Context, t time.Time, repo WhenRepo) bool {
+func (d *DateRange) IsHit(ctx context.Context, t time.Time, repo CheckRepo) bool {
 	if d.Type == DateRangeTypeAllDay {
 		return true
 	}
@@ -173,7 +173,7 @@ func (d *DateRange) IsHit(ctx context.Context, t time.Time, repo WhenRepo) bool 
 	return false
 }
 
-func (d *TimeRange) IsHit(ctx context.Context, t time.Time, repo WhenRepo) bool {
+func (d *TimeRange) IsHit(ctx context.Context, t time.Time, repo CheckRepo) bool {
 	switch d.Type {
 	case TimeRangeTypeAllDay:
 		return true

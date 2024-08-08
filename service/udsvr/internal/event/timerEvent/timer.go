@@ -57,7 +57,7 @@ func (l *TimerHandle) DeviceTriggerCheck() error {
 		do := rulelogic.PoToSceneInfoDo(po.SceneInfo)
 
 		ctx := ctxs.BindTenantCode(l.ctx, string(v.SceneInfo.TenantCode), int64(v.SceneInfo.ProjectID))
-		if !do.When.IsHit(ctx, now, nil) {
+		if !do.When.IsHit(ctx, now, rulelogic.NewSceneCheckRepo(l.ctx, l.svcCtx, do)) {
 			continue
 		}
 		ctxs.GoNewCtx(ctx, func(ctx context.Context) { //执行任务
@@ -153,7 +153,7 @@ func (l *TimerHandle) SceneTiming() error {
 				return
 			}
 			ctx = ctxs.BindTenantCode(ctx, string(v.SceneInfo.TenantCode), 0)
-			if !do.When.IsHit(ctx, now, nil) {
+			if !do.When.IsHit(ctx, now, rulelogic.NewSceneCheckRepo(l.ctx, l.svcCtx, do)) {
 				return
 			}
 

@@ -20,7 +20,7 @@ func (t *Then) GetFlowPath() (ret []*FlowInfo) {
 	return ret
 }
 
-func (t *Then) Validate(repo ValidateRepo) error {
+func (t *Then) Validate(repo CheckRepo) error {
 	if t == nil || len(t.Actions) == 0 {
 		return errors.Parameter.AddMsg("需要填写执行内容")
 	}

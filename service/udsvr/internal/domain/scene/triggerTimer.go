@@ -21,7 +21,7 @@ type TriggerTimer struct {
 
 type TriggerTimers []*TriggerTimer
 
-func (t *TriggerTimer) Validate(repo ValidateRepo) error {
+func (t *TriggerTimer) Validate(repo CheckRepo) error {
 	if t == nil {
 		return errors.Parameter.AddMsg("时间触发模式需要填写时间内容")
 	}
@@ -86,7 +86,7 @@ func (t *TriggerTimer) Validate(repo ValidateRepo) error {
 	return nil
 }
 
-func (t TriggerTimers) Validate(repo ValidateRepo) error {
+func (t TriggerTimers) Validate(repo CheckRepo) error {
 	if len(t) == 0 {
 		return nil
 	}

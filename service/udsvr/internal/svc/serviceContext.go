@@ -2,6 +2,7 @@ package svc
 
 import (
 	"gitee.com/i-Things/core/service/syssvr/client/areamanage"
+	"gitee.com/i-Things/core/service/syssvr/client/common"
 	"gitee.com/i-Things/core/service/syssvr/client/notifymanage"
 	"gitee.com/i-Things/core/service/syssvr/client/ops"
 	"gitee.com/i-Things/core/service/syssvr/client/projectmanage"
@@ -37,6 +38,7 @@ type SvrClient struct {
 	TimedM             timedmanage.TimedManage
 	NotifyM            notifymanage.NotifyManage
 	AreaM              areamanage.AreaManage
+	SysCommon          common.Common
 	ProjectM           projectmanage.ProjectManage
 	DeviceCache        dmExport.DeviceCacheT
 	UserShareCache     dmExport.UserShareCacheT
@@ -118,6 +120,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		SvrClient: SvrClient{
 			TimedM:             timedM,
 			AreaM:              areaM,
+			SysCommon:          common.NewCommon(zrpc.MustNewClient(c.SysRpc.Conf)),
 			NotifyM:            notifyM,
 			ProjectM:           projectM,
 			ProjectCache:       projectC,

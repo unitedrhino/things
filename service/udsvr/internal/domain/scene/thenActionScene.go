@@ -17,7 +17,7 @@ type ActionScene struct {
 	SceneName string `json:"sceneName"` //更新及创建的时候后端会赋值
 }
 
-func (a *ActionScene) Validate(repo ValidateRepo) error {
+func (a *ActionScene) Validate(repo CheckRepo) error {
 	s, err := repo.GetSceneInfo(repo.Ctx, a.SceneID)
 	if err != nil {
 		return err

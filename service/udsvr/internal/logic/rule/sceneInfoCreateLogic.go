@@ -42,7 +42,7 @@ func (l *SceneInfoCreateLogic) SceneInfoCreate(in *ud.SceneInfo) (*ud.WithID, er
 	if do.ProjectID == 0 {
 		do.ProjectID = ctxs.GetUserCtxNoNil(l.ctx).ProjectID
 	}
-	err := do.Validate(NewSceneValidateRepo(l.ctx, l.svcCtx))
+	err := do.Validate(NewSceneCheckRepo(l.ctx, l.svcCtx, do))
 	if err != nil {
 		return nil, err
 	}

@@ -20,14 +20,15 @@ const (
 
 type Triggers []*Trigger
 type Trigger struct {
-	Type   TriggerType    `json:"type"`
-	Order  int64          `json:"order"`
-	AreaID int64          `json:"areaID,string"`    //涉及到的区域ID
-	Device *TriggerDevice `json:"device,omitempty"` //设备触发
-	Timer  *TriggerTimer  `json:"timer,omitempty"`  //定时触发
+	Type    TriggerType     `json:"type"`
+	Order   int64           `json:"order"`
+	AreaID  int64           `json:"areaID,string"`    //涉及到的区域ID
+	Device  *TriggerDevice  `json:"device,omitempty"` //设备触发
+	Timer   *TriggerTimer   `json:"timer,omitempty"`  //定时触发
+	Weather *TriggerWeather `json:"weather,omitempty"`
 }
 
-func (t Triggers) Validate(repo ValidateRepo) error {
+func (t Triggers) Validate(repo CheckRepo) error {
 	if len(t) == 0 {
 		return nil
 	}
@@ -40,7 +41,7 @@ func (t Triggers) Validate(repo ValidateRepo) error {
 	return nil
 }
 
-func (t *Trigger) Validate(repo ValidateRepo) error {
+func (t *Trigger) Validate(repo CheckRepo) error {
 	if t == nil {
 		return errors.Parameter.AddMsg("需要填写触发内容")
 	}
@@ -56,7 +57,7 @@ func (t *Trigger) Validate(repo ValidateRepo) error {
 	return nil
 }
 
-func (i *If) Validate(t SceneType, repo ValidateRepo) error {
+func (i *If) Validate(t SceneType, repo CheckRepo) error {
 	switch t {
 	case SceneTypeManual:
 		return nil

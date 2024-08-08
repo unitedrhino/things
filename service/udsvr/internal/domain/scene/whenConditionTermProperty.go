@@ -24,7 +24,7 @@ type TermProperty struct {
 	Values           []string `json:"values"`           //条件值 参数根据动态条件类型会有多个参数
 }
 
-func (c *TermProperty) Validate(repo ValidateRepo) error {
+func (c *TermProperty) Validate(repo CheckRepo) error {
 	if c == nil {
 		return nil
 	}
@@ -61,8 +61,8 @@ func (c *TermProperty) Validate(repo ValidateRepo) error {
 	}
 	return nil
 }
-func (c *TermProperty) IsHit(ctx context.Context, columnType TermColumnType, repo TermRepo) bool {
-	sm, err := repo.SchemaRepo.GetSchemaModel(ctx, c.ProductID)
+func (c *TermProperty) IsHit(ctx context.Context, columnType TermColumnType, repo CheckRepo) bool {
+	sm, err := repo.ProductSchemaCache.GetData(ctx, c.ProductID)
 	if err != nil {
 		logx.WithContext(ctx).Errorf("%s.GetSchemaModel err:%v", utils.FuncName(), err)
 		return false

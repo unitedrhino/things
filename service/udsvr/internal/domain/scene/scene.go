@@ -74,7 +74,7 @@ func (i *Info) SetAccount(ctx context.Context) context.Context {
 	return ctxs.SetUserCtx(ctx, uc)
 }
 
-func (i *Info) Validate(repo ValidateRepo) error {
+func (i *Info) Validate(repo CheckRepo) error {
 	if !utils.SliceIn(i.Type, SceneTypeAuto, SceneTypeManual) {
 		return errors.Parameter.AddMsg("场景类型不支持的类型:" + string(i.Type))
 	}

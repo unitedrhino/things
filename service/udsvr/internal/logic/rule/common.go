@@ -7,13 +7,16 @@ import (
 	"github.com/i-Things/things/service/udsvr/internal/svc"
 )
 
-func NewSceneValidateRepo(ctx context.Context, svcCtx *svc.ServiceContext) scene.ValidateRepo {
-	return scene.ValidateRepo{
+func NewSceneCheckRepo(ctx context.Context, svcCtx *svc.ServiceContext, do *scene.Info) scene.CheckRepo {
+	return scene.CheckRepo{
 		Ctx: ctx, DeviceCache: svcCtx.DeviceCache,
 		ProductCache:       svcCtx.ProductCache,
 		ProductSchemaCache: svcCtx.ProductSchemaCache,
 		ProjectCache:       svcCtx.ProjectCache,
 		UserShareCache:     svcCtx.UserShareCache,
+		DeviceMsg:          svcCtx.DeviceMsg,
+		Common:             svcCtx.SysCommon,
+		Info:               do,
 		GetSceneInfo:       GetSceneInfo,
 	}
 }

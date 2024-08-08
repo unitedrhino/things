@@ -30,6 +30,7 @@ type (
 		LastLoginTime      *def.TimeRange
 		IsOnline           int64
 		Status             int64
+		Statuses           []int64
 		Range              int64
 		Position           stores.Point
 		DeviceAlias        string
@@ -168,7 +169,9 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	if f.Status != 0 {
 		db = db.Where("status = ?", f.Status)
 	}
-
+	if len(f.Statuses) != 0 {
+		db = db.Where("status in ?", f.Statuses)
+	}
 	if len(f.UserIDs) != 0 {
 		db = db.Where("user_id in ?", f.UserIDs)
 	}
