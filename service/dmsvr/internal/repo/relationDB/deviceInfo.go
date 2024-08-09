@@ -173,8 +173,8 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 			db = db.Where("user_id <= 1")
 		}
 	}
-	if len(f.NeedConfirmVersion) > 0 {
-		db = db.Where("need_confirm_version in ?", f.NeedConfirmVersion)
+	if f.NeedConfirmVersion != "" {
+		db = db.Where("need_confirm_version = ?", f.NeedConfirmVersion)
 	}
 	if f.NeedConfirmJobID != 0 {
 		db = db.Where("need_confirm_job_id = ?", f.NeedConfirmJobID)
