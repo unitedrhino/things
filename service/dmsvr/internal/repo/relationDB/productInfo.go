@@ -27,6 +27,7 @@ type ProductFilter struct {
 	ProtocolCode string
 	CategoryIDs  []int64
 	SceneMode    string
+	SceneModes   []string
 	Status       devices.ProductStatus
 	Statuses     []devices.ProductStatus
 	NetType      int64
@@ -52,6 +53,9 @@ func (p ProductInfoRepo) fmtFilter(ctx context.Context, f ProductFilter) *gorm.D
 	}
 	if f.SceneMode != "" {
 		db = db.Where("scene_mode=?", f.SceneMode)
+	}
+	if len(f.SceneModes) != 0 {
+		db = db.Where("scene_mode in ?", f.SceneModes)
 	}
 	if f.Status != 0 {
 		db = db.Where("status=?", f.Status)

@@ -2,8 +2,11 @@ package scene
 
 import (
 	"context"
+	"gitee.com/i-Things/core/service/syssvr/pb/sys"
+	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type WeatherType = string
@@ -20,7 +23,7 @@ type TermWeather struct {
 	Values   []string    `json:"values"`   //条件值 参数根据动态条件类型会有多个参数
 }
 
-func (c *TermWeather) Validate(repo ValidateRepo) error {
+func (c *TermWeather) Validate(repo CheckRepo) error {
 	if c == nil {
 		return nil
 	}
@@ -30,6 +33,17 @@ func (c *TermWeather) Validate(repo ValidateRepo) error {
 	return c.TermType.Validate(c.Values)
 }
 
-func (c *TermWeather) IsHit(ctx context.Context, columnType TermColumnType, repo TermRepo) bool {
-	return true
+func (c *TermWeather) IsHit(ctx context.Context, repo CheckRepo) bool {
+	weather, err := repo.Common.WeatherRead(ctx, &sys.WeatherReadReq{ProjectID: repo.Info.ProjectID})
+	if err != nil {
+		logx.WithContext(repo.Ctx).Error(err)
+		return false
+	}
+	switch c.Type {
+	case WeatherTypeTemp:
+		return c.TermType.IsHit(schema.DataTypeFloat, weather.Temp, c.Values)
+	case WeatherTypeHumidity:
+		return c.TermType.IsHit(schema.DataTypeInt, weather.Humidity, c.Values)
+	}
+	return false
 }

@@ -184,6 +184,7 @@ func (l *SendMessageToDevicesLogic) AddDevice(dmOtaJob *relationDB.DmOtaFirmware
 	}
 	return nil
 }
+
 func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirmwareJob) error {
 	firmware := jobInfo.Firmware
 	if jobInfo.IsNeedPush != def.True { //只有需要推送的才推送
@@ -309,10 +310,13 @@ func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirm
 		}
 	}
 	if jobInfo.UpgradeType == msgOta.DynamicUpgrade { //动态的需要将后面符合升级标准的加进去
-		err := l.AddDevice(jobInfo)
-		if err != nil {
-			l.Error(err)
+		if time.Now().Second() < 5 { //一分钟执行一次
+			err := l.AddDevice(jobInfo)
+			if err != nil {
+				l.Error(err)
+			}
 		}
+
 	}
 	func() {
 		total, err := stores.WithNoDebug(l.ctx, relationDB.NewOtaFirmwareDeviceRepo).CountByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{

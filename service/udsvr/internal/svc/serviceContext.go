@@ -2,9 +2,11 @@ package svc
 
 import (
 	"gitee.com/i-Things/core/service/syssvr/client/areamanage"
+	"gitee.com/i-Things/core/service/syssvr/client/common"
 	"gitee.com/i-Things/core/service/syssvr/client/notifymanage"
 	"gitee.com/i-Things/core/service/syssvr/client/ops"
 	"gitee.com/i-Things/core/service/syssvr/client/projectmanage"
+	"gitee.com/i-Things/core/service/syssvr/sysExport"
 	"gitee.com/i-Things/core/service/timed/timedjobsvr/client/timedmanage"
 	"gitee.com/i-Things/share/conf"
 	"gitee.com/i-Things/share/eventBus"
@@ -36,11 +38,13 @@ type SvrClient struct {
 	TimedM             timedmanage.TimedManage
 	NotifyM            notifymanage.NotifyManage
 	AreaM              areamanage.AreaManage
+	SysCommon          common.Common
 	ProjectM           projectmanage.ProjectManage
 	DeviceCache        dmExport.DeviceCacheT
 	UserShareCache     dmExport.UserShareCacheT
 	ProductCache       dmExport.ProductCacheT
 	ProductSchemaCache dmExport.SchemaCacheT
+	ProjectCache       sysExport.ProjectCacheT
 	Ops                ops.Ops
 }
 
@@ -105,6 +109,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 	udc, err := dmExport.NewUserShareCache(userDevice, fastEvent)
 	logx.Must(err)
+	projectC, err := sysExport.NewProjectInfoCache(projectmanage.NewProjectManage(zrpc.MustNewClient(c.SysRpc.Conf)), fastEvent)
+	logx.Must(err)
 	return &ServiceContext{
 		Config:    c,
 		FastEvent: fastEvent,
@@ -114,8 +120,10 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		SvrClient: SvrClient{
 			TimedM:             timedM,
 			AreaM:              areaM,
+			SysCommon:          common.NewCommon(zrpc.MustNewClient(c.SysRpc.Conf)),
 			NotifyM:            notifyM,
 			ProjectM:           projectM,
+			ProjectCache:       projectC,
 			ProductM:           productM,
 			Ops:                Ops,
 			DeviceInteract:     deviceInteract,

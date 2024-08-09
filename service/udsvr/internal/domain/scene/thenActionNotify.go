@@ -37,7 +37,7 @@ type ActionNotify struct {
 	Str3       string            `json:"str3"`
 }
 
-func (a *ActionNotify) Validate(repo ValidateRepo) error {
+func (a *ActionNotify) Validate(repo CheckRepo) error {
 	if a == nil {
 		return nil
 	}

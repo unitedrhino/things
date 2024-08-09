@@ -107,6 +107,7 @@ type (
         ProtocolCode string `json:"protocolCode,optional"`                                       //协议code,默认iThings  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
         WithProtocol bool   `json:"withProtocol,optional"` //同时返回协议详情
         WithCategory bool   `json:"withCategory,optional"` //同时返回品类详情
+        SceneModes    []string      `json:"sceneModes,optional"`                      //场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
         SceneMode    string      `json:"sceneMode,optional"`                      //场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
         Status int64 `json:"status,optional"` //产品状态 1:启用 2:禁用 3:开发中
         Statuses []int64 `json:"statuses,optional"` //产品状态 1:启用 2:禁用 3:开发中

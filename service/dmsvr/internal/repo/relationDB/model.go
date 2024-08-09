@@ -51,7 +51,7 @@ type DmDeviceInfo struct {
 	FirstBind          sql.NullTime      `gorm:"column:first_bind"`                                                    // 首次绑定事件
 	LastLogin          sql.NullTime      `gorm:"column:last_login"`                                                    // 最后上线时间
 	LogLevel           int64             `gorm:"column:log_level;type:smallint;default:1;NOT NULL"`                    // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
-	UserID             int64             `gorm:"column:user_id;type:BIGINT;default:0"`                                 // 用户id
+	UserID             int64             `gorm:"column:user_id;type:BIGINT;default:1"`                                 // 用户id
 	Status             int64             `gorm:"column:status;index;type:smallint;default:1;NOT NULL"`                 // 设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中) 5-禁用
 	IsEnable           int64             `gorm:"column:is_enable;index;type:smallint;default:1;"`                      // 是否启用: 1:是 2:否
 	ExpTime            sql.NullTime      `gorm:"column:exp_time"`                                                      // 过期时间,为0不限制

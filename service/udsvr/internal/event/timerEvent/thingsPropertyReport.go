@@ -78,7 +78,7 @@ func (l *TimerHandle) SceneThingPropertyReport(in application.PropertyReport) er
 		}()
 		ctx := ctxs.BindTenantCode(l.ctx, string(v.SceneInfo.TenantCode), int64(v.SceneInfo.ProjectID))
 
-		if !do.When.IsHit(ctx, now, nil) {
+		if !do.When.IsHit(ctx, now, rulelogic.NewSceneCheckRepo(l.ctx, l.svcCtx, do)) {
 			continue
 		}
 		ctxs.GoNewCtx(ctx, func(ctx context.Context) { //执行任务

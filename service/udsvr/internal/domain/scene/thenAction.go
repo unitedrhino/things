@@ -41,7 +41,7 @@ func (t *Action) GetFlowInfo() (ret *FlowInfo) {
 	}
 }
 
-func (a Actions) Validate(repo ValidateRepo) error {
+func (a Actions) Validate(repo CheckRepo) error {
 	if a == nil {
 		return nil
 	}
@@ -61,7 +61,7 @@ func (a Actions) Validate(repo ValidateRepo) error {
 	return nil
 }
 
-func (a *Action) Validate(repo ValidateRepo) error {
+func (a *Action) Validate(repo CheckRepo) error {
 	if a == nil {
 		return nil
 	}

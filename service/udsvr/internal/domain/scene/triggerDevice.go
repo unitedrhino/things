@@ -49,7 +49,7 @@ const (
 	TriggerDeviceTypeEventReport    TriggerDeviceType = "eventReport"
 )
 
-func (t *TriggerDevice) Validate(repo ValidateRepo) error {
+func (t *TriggerDevice) Validate(repo CheckRepo) error {
 	if t == nil {
 		return nil
 	}
@@ -125,7 +125,7 @@ func (t *TriggerDevice) Validate(repo ValidateRepo) error {
 	}
 	return nil
 }
-func (t TriggerDevices) Validate(repo ValidateRepo) error {
+func (t TriggerDevices) Validate(repo CheckRepo) error {
 	if len(t) == 0 {
 		return nil
 	}

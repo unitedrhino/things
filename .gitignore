@@ -64,3 +64,4 @@ service/usersvr/usersvr*
 /service/timedqueuesvr/scheduler/scheduler
 /service/timedjobsvr/job
 /service/apisvr/apisvr
+/service/udsvr/internal/domain/scene.zip

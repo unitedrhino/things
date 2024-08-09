@@ -31,6 +31,7 @@ const (
 // 多设备的场景联动
 type Info struct {
 	ID          int64       `json:"id"`
+	ProjectID   int64       `json:"projectID,string"`
 	AreaID      int64       `json:"areaID,string"`
 	HeadImg     string      `json:"headImg"`               // 头像
 	FlowPath    []*FlowInfo `json:"flowPath"`              //执行路径
@@ -73,7 +74,7 @@ func (i *Info) SetAccount(ctx context.Context) context.Context {
 	return ctxs.SetUserCtx(ctx, uc)
 }
 
-func (i *Info) Validate(repo ValidateRepo) error {
+func (i *Info) Validate(repo CheckRepo) error {
 	if !utils.SliceIn(i.Type, SceneTypeAuto, SceneTypeManual) {
 		return errors.Parameter.AddMsg("场景类型不支持的类型:" + string(i.Type))
 	}

@@ -52,7 +52,7 @@ type DeviceValue struct {
 	Value            string `json:"value"`            //传的值
 }
 
-func (a *ActionDevice) Validate(repo ValidateRepo) error {
+func (a *ActionDevice) Validate(repo CheckRepo) error {
 	if repo.Info.DeviceMode == DeviceModeSingle {
 		a.ProductID = repo.Info.ProductID
 		a.DeviceName = repo.Info.DeviceName

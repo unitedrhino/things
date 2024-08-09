@@ -34,7 +34,7 @@ type SceneIfTriggerFilter struct {
 	RepeatType       scene.RepeatType
 	ExecLoopStart    *stores.Cmp
 	ExecLoopEnd      *stores.Cmp
-	ExecType         scene.ExecType
+	ExecType         *stores.Cmp
 	Type             string
 	Device           *devices.Core
 	DataID           string
@@ -58,9 +58,7 @@ func (p SceneIfTriggerRepo) fmtFilter(ctx context.Context, f SceneIfTriggerFilte
 	if f.ID != 0 {
 		db = db.Where("id = ?", f.ID)
 	}
-	if f.ExecType != "" {
-		db = db.Where("timer_exec_type = ?", f.ExecType)
-	}
+	db = f.ExecType.Where(db, "timer_exec_type")
 	if f.RepeatType != "" {
 		db = db.Where("timer_repeat_type = ?", f.RepeatType)
 	}

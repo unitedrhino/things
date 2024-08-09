@@ -3,6 +3,8 @@ package scene
 import (
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/observerly/dusk/pkg/dusk"
+	"time"
 )
 
 // TriggerTimer 定时器类型
@@ -19,7 +21,7 @@ type TriggerTimer struct {
 
 type TriggerTimers []*TriggerTimer
 
-func (t *TriggerTimer) Validate() error {
+func (t *TriggerTimer) Validate(repo CheckRepo) error {
 	if t == nil {
 		return errors.Parameter.AddMsg("时间触发模式需要填写时间内容")
 	}
@@ -40,13 +42,31 @@ func (t *TriggerTimer) Validate() error {
 		if t.ExecLoopEnd < t.ExecLoopStart {
 			return errors.Parameter.AddMsg("时间执行时间范围只能在0到24小时之间")
 		}
-	case ExecTypeSunDown, ExecTypeSunRises:
+	case ExecTypeSunSet, ExecTypeSunRises:
 		if t.ExecAt > 3*60*60 {
 			return errors.Parameter.AddMsg("最晚只能三个小时后")
 		}
 		if t.ExecAt < (-3 * 60 * 60) {
 			return errors.Parameter.AddMsg("最早只能提前三个小时")
 		}
+		pi, err := repo.ProjectCache.GetData(repo.Ctx, repo.Info.ProjectID)
+		if err != nil {
+			return err
+		}
+		if pi.Position == nil || pi.Position.Latitude == 0 || pi.Position.Longitude == 0 {
+			return errors.Parameter.AddMsg("需要填写地理位置才可以使用日出日落触发")
+		}
+		twilight, _, err := dusk.GetLocalCivilTwilight(time.Now(), pi.Position.Longitude, pi.Position.Latitude, 0)
+		if err != nil {
+			return errors.System.AddMsg("计算日出日落时间失败").AddDetail(err)
+		}
+		switch t.ExecType {
+		case ExecTypeSunRises:
+			t.ExecAt = utils.TimeToDaySec(twilight.Until)
+		case ExecTypeSunSet:
+			t.ExecAt = utils.TimeToDaySec(twilight.From)
+		}
+		t.ExecAt += t.ExecAdd
 	default:
 		if t.ExecAt < 0 || t.ExecAt > 24*60*60 {
 			return errors.Parameter.AddMsg("时间执行时间范围只能在0到24小时之间")
@@ -66,12 +86,12 @@ func (t *TriggerTimer) Validate() error {
 	return nil
 }
 
-func (t TriggerTimers) Validate() error {
+func (t TriggerTimers) Validate(repo CheckRepo) error {
 	if len(t) == 0 {
 		return nil
 	}
 	for _, v := range t {
-		err := v.Validate()
+		err := v.Validate(repo)
 		if err != nil {
 			return err
 		}

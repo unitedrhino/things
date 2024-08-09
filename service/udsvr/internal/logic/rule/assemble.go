@@ -30,9 +30,10 @@ func ToSceneInfoDo(in *ud.SceneInfo) *scene.Info {
 
 func ToSceneInfoPo(in *scene.Info) *relationDB.UdSceneInfo {
 	return &relationDB.UdSceneInfo{
-		ID:     in.ID,
-		Type:   in.Type,
-		AreaID: stores.AreaID(in.AreaID),
+		ID:        in.ID,
+		Type:      in.Type,
+		ProjectID: stores.ProjectID(in.ProjectID),
+		AreaID:    stores.AreaID(in.AreaID),
 		//AreaIDs: in.AreaIDs,
 		FlowPath:    in.FlowPath,
 		Name:        in.Name,
@@ -84,10 +85,11 @@ func ToSceneTriggerPo(si *scene.Info, in *scene.Trigger) *relationDB.UdSceneIfTr
 			Time:  domain.GenLastRunTime(now, execAt),
 			Valid: true,
 		},
-		Order:  in.Order,
-		AreaID: in.AreaID,
-		Device: ToSceneTriggerDevicePo(in.Device),
-		Timer:  ToSceneTriggerTimerPo(si, in.Timer),
+		Order:   in.Order,
+		AreaID:  in.AreaID,
+		Device:  ToSceneTriggerDevicePo(in.Device),
+		Timer:   ToSceneTriggerTimerPo(si, in.Timer),
+		Weather: utils.Copy2[relationDB.UdSceneTriggerWeather](in.Weather),
 	}
 }
 
@@ -133,6 +135,7 @@ func PoToSceneInfoDo(in *relationDB.UdSceneInfo) *scene.Info {
 	}
 	return &scene.Info{
 		ID:          in.ID,
+		ProjectID:   int64(in.ProjectID),
 		AreaID:      int64(in.AreaID),
 		Name:        in.Name,
 		Tag:         in.Tag,
@@ -265,11 +268,12 @@ func ToSceneTriggerDo(in *relationDB.UdSceneIfTrigger) *scene.Trigger {
 		return nil
 	}
 	return &scene.Trigger{
-		Type:   in.Type,
-		Order:  in.Order,
-		AreaID: in.AreaID,
-		Device: ToSceneTriggerDeviceDo(in.Device),
-		Timer:  ToSceneTriggerTimerDo(in.Timer),
+		Type:    in.Type,
+		Order:   in.Order,
+		AreaID:  in.AreaID,
+		Device:  ToSceneTriggerDeviceDo(in.Device),
+		Timer:   ToSceneTriggerTimerDo(in.Timer),
+		Weather: utils.Copy[scene.TriggerWeather](in.Weather),
 	}
 }
 

@@ -30,6 +30,7 @@ type (
 		LastLoginTime      *def.TimeRange
 		IsOnline           int64
 		Status             int64
+		Statuses           []int64
 		Range              int64
 		Position           stores.Point
 		DeviceAlias        string
@@ -168,7 +169,9 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	if f.Status != 0 {
 		db = db.Where("status = ?", f.Status)
 	}
-
+	if len(f.Statuses) != 0 {
+		db = db.Where("status in ?", f.Statuses)
+	}
 	if len(f.UserIDs) != 0 {
 		db = db.Where("user_id in ?", f.UserIDs)
 	}
@@ -184,8 +187,8 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 			db = db.Where("user_id <= 1")
 		}
 	}
-	if len(f.NeedConfirmVersion) > 0 {
-		db = db.Where("need_confirm_version in ?", f.NeedConfirmVersion)
+	if f.NeedConfirmVersion != "" {
+		db = db.Where("need_confirm_version = ?", f.NeedConfirmVersion)
 	}
 	if f.NeedConfirmJobID != 0 {
 		db = db.Where("need_confirm_job_id = ?", f.NeedConfirmJobID)

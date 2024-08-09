@@ -10,6 +10,7 @@ import (
 	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
 	rulelogic "github.com/i-Things/things/service/udsvr/internal/logic/rule"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
+	"github.com/observerly/dusk/pkg/dusk"
 	"github.com/zeromicro/go-zero/core/logx"
 	"sync"
 	"time"
@@ -56,13 +57,74 @@ func (l *TimerHandle) DeviceTriggerCheck() error {
 		do := rulelogic.PoToSceneInfoDo(po.SceneInfo)
 
 		ctx := ctxs.BindTenantCode(l.ctx, string(v.SceneInfo.TenantCode), int64(v.SceneInfo.ProjectID))
-		if !do.When.IsHit(ctx, now, nil) {
+		if !do.When.IsHit(ctx, now, rulelogic.NewSceneCheckRepo(l.ctx, l.svcCtx, do)) {
 			continue
 		}
 		ctxs.GoNewCtx(ctx, func(ctx context.Context) { //执行任务
 			var err error
 			if err != nil { //如果失败了下次还可以执行
 				logx.WithContext(ctx).Errorf("scene err:%v", err)
+				return
+			}
+			l.SceneExec(ctx, do)
+		})
+	}
+	return nil
+}
+
+func (l *TimerHandle) SceneTimingTenMinutes() error {
+	now := time.Now()
+	db := stores.WithNoDebug(l.ctx, relationDB.NewSceneIfTriggerRepo)
+	list, err := db.FindByFilter(l.ctx, relationDB.SceneIfTriggerFilter{
+		Status: def.True,
+		Type:   scene.TriggerTypeWeather,
+	}, nil)
+	if err != nil {
+		return err
+	}
+	for _, v := range list {
+		var po = v
+		if po.SceneInfo == nil {
+			logx.WithContext(l.ctx).Errorf("trigger weather not bind scene, trigger:%v", utils.Fmt(po))
+			relationDB.NewSceneIfTriggerRepo(l.ctx).Delete(l.ctx, po.ID)
+			continue
+		}
+		po.SceneInfo.Triggers = append(po.SceneInfo.Triggers, po)
+		do := rulelogic.PoToSceneInfoDo(po.SceneInfo)
+
+		if !do.If.Triggers[0].Weather.IsHit(l.ctx, rulelogic.NewSceneCheckRepo(l.ctx, l.svcCtx, do)) {
+			if po.Weather.FirstTriggerTime.Valid { //如果处于触发状态,但是现在不触发了,则需要解除触发
+				err := db.UpdateWithField(l.ctx, relationDB.SceneIfTriggerFilter{ID: v.ID}, map[string]any{
+					"weather_first_trigger_time": nil,
+					"last_run_time":              nil,
+				})
+				if err != nil {
+					l.Error(err)
+				}
+			}
+			continue
+		}
+		if po.Weather.FirstTriggerTime.Valid { //如果已经触发过,则忽略(默认边缘触发)
+			continue
+		}
+		func() {
+			err := db.UpdateWithField(l.ctx, relationDB.SceneIfTriggerFilter{ID: v.ID}, map[string]any{
+				"weather_first_trigger_time": now,
+				"last_run_time":              now,
+			})
+			if err != nil {
+				l.Error(err)
+			}
+		}()
+		ctx := ctxs.BindTenantCode(l.ctx, string(v.SceneInfo.TenantCode), int64(v.SceneInfo.ProjectID))
+
+		if !do.When.IsHit(ctx, now, rulelogic.NewSceneCheckRepo(l.ctx, l.svcCtx, do)) {
+			continue
+		}
+		ctxs.GoNewCtx(ctx, func(ctx context.Context) { //执行任务
+			var err error
+			if err != nil { //如果失败了下次还可以执行
+				logx.WithContext(ctx).Error(err)
 				return
 			}
 			l.SceneExec(ctx, do)
@@ -78,7 +140,7 @@ func (l *TimerHandle) SceneTiming() error {
 	var triggerF = []relationDB.SceneIfTriggerFilter{
 		{Status: def.True,
 			Type:        scene.TriggerTypeTimer,
-			ExecType:    scene.ExecTypeAt,
+			ExecType:    stores.CmpIn(scene.ExecTypeAt, scene.ExecTypeSunSet, scene.ExecTypeSunSet),
 			ExecAt:      stores.CmpLte(utils.TimeToDaySec(now)),                  //小于等于当前时间点(需要执行的)
 			LastRunTime: stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)), //当天未执行的
 			RepeatType:  scene.RepeatTypeWeek,
@@ -86,14 +148,14 @@ func (l *TimerHandle) SceneTiming() error {
 		},
 		{Status: def.True,
 			Type:        scene.TriggerTypeTimer,
-			ExecType:    scene.ExecTypeAt,
+			ExecType:    stores.CmpIn(scene.ExecTypeAt, scene.ExecTypeSunSet, scene.ExecTypeSunSet),
 			ExecAt:      stores.CmpLte(utils.TimeToDaySec(now)),                  //小于等于当前时间点(需要执行的)
 			LastRunTime: stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)), //当天未执行的
 			RepeatType:  scene.RepeatTypeMount,
 			ExecRepeat:  stores.CmpOr(stores.CmpBinEq(int64(now.Day()), 1), stores.CmpEq(0)), //当天需要执行或只需要执行一次的
 		},
 		{Status: def.True,
-			ExecType:      scene.ExecTypeLoop,
+			ExecType:      stores.CmpEq(scene.ExecTypeLoop),
 			Type:          scene.TriggerTypeTimer,
 			ExecLoopStart: stores.CmpLte(utils.TimeToDaySec(now)), //
 			ExecLoopEnd:   stores.CmpGte(utils.TimeToDaySec(now)),
@@ -102,7 +164,7 @@ func (l *TimerHandle) SceneTiming() error {
 			ExecRepeat:    stores.CmpOr(stores.CmpBinEq(int64(now.Day()), 1), stores.CmpEq(0)), //当天需要执行或只需要执行一次的
 		},
 		{Status: def.True,
-			ExecType:      scene.ExecTypeLoop,
+			ExecType:      stores.CmpEq(scene.ExecTypeLoop),
 			Type:          scene.TriggerTypeTimer,
 			ExecLoopStart: stores.CmpLte(utils.TimeToDaySec(now)), //
 			ExecLoopEnd:   stores.CmpGte(utils.TimeToDaySec(now)),
@@ -152,7 +214,7 @@ func (l *TimerHandle) SceneTiming() error {
 				return
 			}
 			ctx = ctxs.BindTenantCode(ctx, string(v.SceneInfo.TenantCode), 0)
-			if !do.When.IsHit(ctx, now, nil) {
+			if !do.When.IsHit(ctx, now, rulelogic.NewSceneCheckRepo(l.ctx, l.svcCtx, do)) {
 				return
 			}
 
@@ -164,12 +226,13 @@ func (l *TimerHandle) SceneTiming() error {
 						f = nil
 					}
 				}()
-				if po.Timer.ExecType == scene.ExecTypeAt {
+				switch po.Timer.ExecType {
+				case scene.ExecTypeAt:
 					po.LastRunTime = sql.NullTime{
 						Time:  utils.GetEndTime(now),
 						Valid: true,
 					}
-				} else { //间隔时间执行
+				case scene.ExecTypeLoop:
 					lastRun := now.Add(time.Duration(po.Timer.ExecLoop) * time.Second)
 					if utils.TimeToDaySec(lastRun) > po.Timer.ExecLoopEnd { //如果下次执行时间已经超过了结束时间,那么就到下一天开始执行
 						po.LastRunTime = sql.NullTime{
@@ -182,6 +245,30 @@ func (l *TimerHandle) SceneTiming() error {
 							Valid: true,
 						}
 					}
+				case scene.ExecTypeSunSet, scene.ExecTypeSunRises:
+					po.LastRunTime = sql.NullTime{
+						Time:  utils.GetEndTime(now),
+						Valid: true,
+					}
+					func() { //更新太阳升起落下触发时间
+						pi, err := l.svcCtx.ProjectCache.GetData(ctx, int64(po.SceneInfo.ProjectID))
+						if err != nil {
+							log.Error(err)
+							return
+						}
+						twilight, _, err := dusk.GetLocalCivilTwilight(time.Now(), pi.Position.Longitude, pi.Position.Latitude, 0)
+						if err != nil {
+							log.Error(err)
+							return
+						}
+						switch po.Timer.ExecType {
+						case scene.ExecTypeSunRises:
+							po.Timer.ExecAt = utils.TimeToDaySec(twilight.Until)
+						case scene.ExecTypeSunSet:
+							po.Timer.ExecAt = utils.TimeToDaySec(twilight.From)
+						}
+						po.Timer.ExecAt += po.Timer.ExecAdd
+					}()
 				}
 				if po.Timer.ExecRepeat == 0 { //不重复执行的只执行一次
 					po.Status = def.False

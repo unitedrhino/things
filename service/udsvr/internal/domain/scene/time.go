@@ -64,7 +64,7 @@ type ExecType = string
 const (
 	ExecTypeAt       ExecType = "at"       //在时间点执行(默认)
 	ExecTypeSunRises ExecType = "sunRises" //太阳升起
-	ExecTypeSunDown  ExecType = "sunDown"  //太阳落下
+	ExecTypeSunSet   ExecType = "sunSet"   //太阳落下
 	ExecTypeLoop     ExecType = "loop"     //间隔时间执行
 )
 
@@ -120,7 +120,7 @@ func (t *DateRange) Validate() error {
 	return nil
 }
 
-func (d *DateRange) IsHit(ctx context.Context, t time.Time, repo WhenRepo) bool {
+func (d *DateRange) IsHit(ctx context.Context, t time.Time, repo CheckRepo) bool {
 	if d.Type == DateRangeTypeAllDay {
 		return true
 	}
@@ -173,7 +173,7 @@ func (d *DateRange) IsHit(ctx context.Context, t time.Time, repo WhenRepo) bool 
 	return false
 }
 
-func (d *TimeRange) IsHit(ctx context.Context, t time.Time, repo WhenRepo) bool {
+func (d *TimeRange) IsHit(ctx context.Context, t time.Time, repo CheckRepo) bool {
 	switch d.Type {
 	case TimeRangeTypeAllDay:
 		return true
