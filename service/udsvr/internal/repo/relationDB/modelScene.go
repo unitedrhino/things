@@ -73,9 +73,10 @@ type UdSceneTriggerTimer struct {
 }
 
 type UdSceneTriggerWeather struct {
-	Type     scene.WeatherType `gorm:"column:type;type:VARCHAR(25);default:''"`              //天气的类型
-	TermType string            `gorm:"column:term_type;type:VARCHAR(255);default:''"`        //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
-	Values   []string          `gorm:"column:values;type:json;serializer:json;default:'[]'"` //条件值 参数根据动态条件类型会有多个参数
+	Type             scene.WeatherType `gorm:"column:type;type:VARCHAR(25);default:''"`              //天气的类型
+	TermType         string            `gorm:"column:term_type;type:VARCHAR(255);default:''"`        //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
+	Values           []string          `gorm:"column:values;type:json;serializer:json;default:'[]'"` //条件值 参数根据动态条件类型会有多个参数
+	FirstTriggerTime sql.NullTime      `gorm:"column:first_trigger_time;index;default: NULL"`        //最后触发时间
 }
 
 type UdSceneTriggerDevice struct {
