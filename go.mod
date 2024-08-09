@@ -24,9 +24,9 @@ require (
 	github.com/hashicorp/go-uuid v1.0.3
 	github.com/hibiken/asynq v0.24.1
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
+	github.com/mholt/archiver/v4 v4.0.0-alpha.8
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/nats-io/nats.go v1.33.1
-	github.com/robfig/cron/v3 v3.0.1
 	github.com/spf13/cast v1.5.0
 	github.com/zeromicro/go-zero v1.6.3
 	go.uber.org/atomic v1.10.0
@@ -39,7 +39,6 @@ require (
 
 require (
 	gitee.com/asktop_golib/util v0.1.6 // indirect
-	github.com/Blank-Xu/sql-adapter v0.0.0-20210714092925-0bdd0d548758 // indirect
 	github.com/BurntSushi/toml v1.3.2 // indirect
 	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
 	github.com/alibabacloud-go/alibabacloud-gateway-spi v0.0.4 // indirect
@@ -62,7 +61,6 @@ require (
 	github.com/bradfitz/gomemcache v0.0.0-20220106215444-fb4bf637b56d // indirect
 	github.com/carlmjohnson/versioninfo v0.22.4 // indirect
 	github.com/casbin/casbin/v2 v2.68.0 // indirect
-	github.com/casbin/redis-watcher/v2 v2.5.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/clbanning/mxj/v2 v2.5.5 // indirect
@@ -85,7 +83,6 @@ require (
 	github.com/gammazero/deque v0.2.1 // indirect
 	github.com/glebarez/go-sqlite v1.21.1 // indirect
 	github.com/glebarez/sqlite v1.8.0 // indirect
-	github.com/go-co-op/gocron v1.18.1 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-openapi/jsonpointer v0.20.2 // indirect
@@ -138,7 +135,6 @@ require (
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/matttproud/golang_protobuf_extensions/v2 v2.0.0 // indirect
 	github.com/maypok86/otter v1.2.0 // indirect
-	github.com/mholt/archiver/v4 v4.0.0-alpha.8 // indirect
 	github.com/minio/md5-simd v1.1.0 // indirect
 	github.com/minio/minio-go/v7 v7.0.27 // indirect
 	github.com/minio/sha256-simd v0.1.1 // indirect
@@ -170,6 +166,7 @@ require (
 	github.com/richardlehane/mscfb v1.0.4 // indirect
 	github.com/richardlehane/msoleps v1.0.3 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
+	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/rs/xid v1.2.1 // indirect
 	github.com/samber/lo v1.39.0 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
