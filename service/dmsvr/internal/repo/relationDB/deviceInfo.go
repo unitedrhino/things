@@ -35,6 +35,7 @@ type (
 		Position           stores.Point
 		DeviceAlias        string
 		Versions           []string
+		NotVersion         string
 		Cores              []*devices.Core
 		Gateway            *devices.Core
 		WithProduct        bool
@@ -122,6 +123,9 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	}
 	if len(f.Versions) != 0 {
 		db = db.Where("version in ?", f.Versions)
+	}
+	if f.NotVersion != "" {
+		db = db.Where("version != ?", f.NotVersion)
 	}
 	if f.DeviceName != "" {
 		db = db.Where("device_name like ?", "%"+f.DeviceName+"%")

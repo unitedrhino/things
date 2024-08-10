@@ -135,7 +135,6 @@ func (l *TimerHandle) SceneTimingTenMinutes() error {
 
 func (l *TimerHandle) SceneTiming() error {
 	now := time.Now()
-
 	db := stores.WithNoDebug(l.ctx, relationDB.NewSceneIfTriggerRepo)
 	var triggerF = []relationDB.SceneIfTriggerFilter{
 		{Status: def.True,

@@ -6935,6 +6935,9 @@
             "type": "string"
           }
         },
+        "notVersion": {
+          "type": "string"
+        },
         "gateway": {
           "$ref": "#/definitions/DeviceCore",
           "description": "过滤网关"
