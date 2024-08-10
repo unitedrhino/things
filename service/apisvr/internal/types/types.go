@@ -330,6 +330,7 @@ type DeviceInfoIndexReq struct {
 	WithShared        int64         `json:"withShared,optional,range=[0:2]"`  // 过滤分享的设备1: 同时获取分享的设备 2:只获取分享的设备
 	WithCollect       int64         `json:"withCollect,optional,range=[0:2]"` // 过滤收藏的设备(这里只获取收藏的设备) 1: 同时获取收藏的设备 2:只获取收藏的设备
 	Versions          []string      `json:"versions,optional"`
+	NotVersion        string        `json:"notVersion,optional"`
 	Gateway           *DeviceCore   `json:"gateway,optional"` //过滤网关
 	GroupID           int64         `json:"groupID,optional,string"`
 	NotGroupID        int64         `json:"notGroupID,optional,string"`

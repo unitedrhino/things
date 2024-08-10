@@ -1196,6 +1196,7 @@ message DeviceInfoIndexReq{
 
   string tenantCode = 14;//租户过滤
   repeated string versions =15;//版本列表
+  string notVersion =39;//非版本
   int64  deviceType = 16; //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
   repeated int64 deviceTypes =21;
   DeviceCore gateway = 17;//获取网关下子设备列表
