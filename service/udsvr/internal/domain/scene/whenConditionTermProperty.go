@@ -36,13 +36,13 @@ func (c *TermProperty) Validate(repo CheckRepo) error {
 		c.DeviceName = repo.Info.DeviceName
 	}
 	if c.ProductID == "" {
-		return errors.Parameter.AddMsg("触发设备类型中的产品id需要填写")
+		return errors.Parameter.AddMsg("执行条件设备类型中的产品id需要填写")
 	}
 	if c.DeviceName == "" {
-		return errors.Parameter.AddMsg("触发设备类型中的设备名需要填写")
+		return errors.Parameter.AddMsg("执行条件设备类型中的设备名需要填写")
 	}
 	if len(c.DataID) == 0 {
-		return errors.Parameter.AddMsg("触发设备类型中的标识符需要填写")
+		return errors.Parameter.AddMsg("执行条件设备类型中的标识符需要填写")
 	}
 	if repo.Info.DeviceMode != DeviceModeSingle {
 		c.DeviceAlias = GetDeviceAlias(repo.Ctx, repo.DeviceCache, c.ProductID, c.DeviceName)

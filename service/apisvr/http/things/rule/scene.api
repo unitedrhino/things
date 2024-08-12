@@ -12,7 +12,7 @@ info(
     accessCodePrefix: "thingsRuleScene"
     accessNamePrefix: "场景联动"
     accessGroup: "规则引擎"
-    middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
+    middleware:  CheckTokenWare,InitCtxsWare
 )
 service api {
     @doc "新增场景"
@@ -41,7 +41,7 @@ service api {
     accessCodePrefix: "thingsRuleScene"
     accessNamePrefix: "场景联动"
     accessGroup: "规则引擎"
-    middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
+    middleware:  CheckTokenWare,InitCtxsWare
 )
 service api {
     @doc "获取场景日志列表"

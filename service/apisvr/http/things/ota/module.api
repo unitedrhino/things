@@ -16,7 +16,7 @@ info(
     accessGroup: "ota远程升级"
     defaultIsNeedAuth: "true"
     defaultAuthType: "admin"
-    middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
+    middleware:  CheckTokenWare,InitCtxsWare
 )
 service api{
     //验证升级包

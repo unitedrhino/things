@@ -8,7 +8,7 @@ info(
 @server(
     group: things/device/profile
     prefix: /api/v1/things/device/profile
-    middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
+    middleware:  CheckTokenWare,InitCtxsWare
     accessCodePrefix: "thingsDeviceInfo"
     accessNamePrefix: "设备信息"
     accessGroup: "设备管理"

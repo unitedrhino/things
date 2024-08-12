@@ -13,7 +13,7 @@ info(
     accessCodePrefix: "thingsDeviceInfo"
     accessNamePrefix: "设备信息"
     accessGroup: "设备管理"
-    middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
+    middleware:  CheckTokenWare,InitCtxsWare
 )
 
 service api {
