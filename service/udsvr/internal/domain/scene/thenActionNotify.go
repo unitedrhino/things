@@ -55,6 +55,7 @@ func (a *ActionNotify) Validate(repo CheckRepo) error {
 	}
 	return nil
 }
+
 func (a *ActionNotify) Execute(ctx context.Context, repo ActionRepo) error {
 	_, err := repo.NotifyM.NotifyConfigSend(ctx, &sys.NotifyConfigSendReq{
 		UserIDs:    []int64{repo.UserID},

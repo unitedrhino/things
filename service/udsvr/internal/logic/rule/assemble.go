@@ -39,6 +39,7 @@ func ToSceneInfoPo(in *scene.Info) *relationDB.UdSceneInfo {
 		Name:        in.Name,
 		Desc:        in.Desc,
 		Tag:         in.Tag,
+		Logo:        in.Logo,
 		Body:        in.Body,
 		DeviceMode:  in.DeviceMode,
 		ProductID:   in.ProductID,
@@ -140,6 +141,7 @@ func PoToSceneInfoDo(in *relationDB.UdSceneInfo) *scene.Info {
 		AreaID:      int64(in.AreaID),
 		Name:        in.Name,
 		Tag:         in.Tag,
+		Logo:        in.Logo,
 		HeadImg:     in.HeadImg,
 		FlowPath:    in.FlowPath,
 		Desc:        in.Desc,
@@ -188,7 +190,7 @@ func ToSceneActionPo(s *scene.Info, in *scene.Action) *relationDB.UdSceneThenAct
 		Alarm:   in.Alarm,
 	}
 	if in.Scene != nil {
-		po.Scene = relationDB.UdSceneActionScene{SceneID: in.Scene.SceneID, AreaID: in.Scene.AreaID}
+		po.Scene = relationDB.UdSceneActionScene{SceneID: in.Scene.SceneID, AreaID: in.Scene.AreaID, SceneType: in.Scene.SceneType, SceneName: in.Scene.SceneName}
 	}
 	if in.Device != nil {
 		po.Device = relationDB.UdSceneActionDevice{
@@ -232,7 +234,7 @@ func ToSceneActionDo(in *relationDB.UdSceneThenAction) *scene.Action {
 		Notify: in.Notify,
 		Alarm:  in.Alarm,
 	}
-	do.Scene = &scene.ActionScene{SceneID: in.Scene.SceneID, AreaID: in.Scene.AreaID}
+	do.Scene = &scene.ActionScene{SceneID: in.Scene.SceneID, AreaID: in.Scene.AreaID, SceneType: in.Scene.SceneType, SceneName: in.Scene.SceneName}
 	do.Device = &scene.ActionDevice{
 		//ProjectID:        int64(in.Device.ProjectID),
 		AreaID:           in.Device.AreaID,

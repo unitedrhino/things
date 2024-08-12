@@ -41,6 +41,7 @@ type Info struct {
 	DeviceAlias string      `json:"deviceAlias,omitempty"` //设备别名,只读
 	LastRunTime int64       `json:"lastRunTime"`
 	Tag         string      `json:"tag"`
+	Logo        string      `json:"logo"`
 	Name        string      `json:"name"`
 	Desc        string      `json:"desc"`
 	CreatedTime time.Time   `json:"createdTime"`

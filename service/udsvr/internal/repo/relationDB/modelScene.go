@@ -150,9 +150,11 @@ type UdSceneActionDevice struct {
 }
 
 type UdSceneActionScene struct {
-	SceneID int64 `gorm:"column:scene_id;index;type:bigint"` // 场景id编号
-	AreaID  int64 `gorm:"column:area_id;type:bigint;"`       // 项目区域ID(雪花ID)
-
+	SceneID   int64           `gorm:"column:scene_id;index;type:bigint"` // 场景id编号
+	AreaID    int64           `gorm:"column:area_id;type:bigint;"`       // 项目区域ID(雪花ID)
+	SceneType scene.SceneType `gorm:"column:scene_type;type:VARCHAR(25);NOT NULL"`
+	SceneName string          `gorm:"column:scene_name;type:VARCHAR(256);NOT NULL"`
+	Status    def.Bool        `gorm:"column:status;type:BIGINT;default:1"` //状态
 }
 
 type UdSceneLog struct {
