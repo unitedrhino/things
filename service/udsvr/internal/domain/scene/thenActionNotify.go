@@ -29,12 +29,12 @@ type ActionNotify struct {
 	Type       def.NotifyType    `json:"type"`
 	NotifyCode def.NotifyCode    `json:"notifyCode"` //支持: ruleScene: 场景联动通知(多设备模式使用)   ruleDeviceAlarm: 设备告警通知(单设备模式使用)
 	UserType   NotifyUserType    `json:"userType"`
-	Accounts   []string          `json:"accounts"` //通知的账号列表
-	UserIDs    []string          `json:"userIDs"`
-	Params     map[string]string `json:"params"` //需要填写告警的
-	Str1       string            `json:"str1"`
-	Str2       string            `json:"str2"`
-	Str3       string            `json:"str3"`
+	Accounts   []string          `json:"accounts,omitempty"` //通知的账号列表
+	UserIDs    []string          `json:"userIDs,omitempty"`
+	Params     map[string]string `json:"params,omitempty"` //需要填写告警的
+	Str1       string            `json:"str1,omitempty"`
+	Str2       string            `json:"str2,omitempty"`
+	Str3       string            `json:"str3,omitempty"`
 }
 
 func (a *ActionNotify) Validate(repo CheckRepo) error {

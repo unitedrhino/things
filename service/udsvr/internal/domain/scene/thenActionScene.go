@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/share/utils"
 )
 
 /*
@@ -12,9 +13,11 @@ import (
 */
 
 type ActionScene struct {
-	AreaID    int64  `json:"areaID,string"` //仅做记录
-	SceneID   int64  `json:"sceneID"`
-	SceneName string `json:"sceneName"` //更新及创建的时候后端会赋值
+	AreaID    int64     `json:"areaID,string"` //仅做记录
+	SceneID   int64     `json:"sceneID"`
+	SceneType SceneType `json:"sceneType"`        //类型,后端会赋值
+	SceneName string    `json:"sceneName"`        //更新及创建的时候后端会赋值
+	Status    def.Bool  `json:"status,omitempty"` //如果是自动化类型则为修改状态
 }
 
 func (a *ActionScene) Validate(repo CheckRepo) error {
@@ -22,14 +25,17 @@ func (a *ActionScene) Validate(repo CheckRepo) error {
 	if err != nil {
 		return err
 	}
-	if s.Type != SceneTypeManual {
-		return errors.Parameter.AddMsg("只能执行manual类型的场景")
+	if s.Type == SceneTypeAuto && utils.SliceIn(a.Status, def.False, def.False) {
+		return errors.Parameter.AddMsg("自动化类型需要填写修改的状态值")
+	} else {
+		a.Status = 0
 	}
+	a.SceneType = s.Type
 	a.SceneName = s.Name
 	return nil
 }
 func (a *ActionScene) Execute(ctx context.Context, repo ActionRepo) error {
-	err := repo.SceneExec(ctx, a.SceneID)
+	err := repo.SceneExec(ctx, a.SceneID, a.Status)
 	func() {
 		er := errors.Fmt(err)
 		status := int64(def.True)

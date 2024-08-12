@@ -4,6 +4,7 @@ import (
 	"gitee.com/i-Things/core/service/syssvr/client/common"
 	"gitee.com/i-Things/core/service/syssvr/client/notifymanage"
 	"gitee.com/i-Things/core/service/syssvr/sysExport"
+	"gitee.com/i-Things/share/def"
 	"github.com/i-Things/things/service/dmsvr/client/devicegroup"
 	deviceinteract "github.com/i-Things/things/service/dmsvr/client/deviceinteract"
 	devicemanage "github.com/i-Things/things/service/dmsvr/client/devicemanage"
@@ -34,7 +35,7 @@ type ActionRepo struct {
 	ProductCache   dmExport.ProductCacheT
 	DeviceG        devicegroup.DeviceGroup
 	NotifyM        notifymanage.NotifyManage
-	SceneExec      func(ctx context.Context, sceneID int64) error
+	SceneExec      func(ctx context.Context, sceneID int64, status def.Bool) error
 	AlarmExec      func(ctx context.Context, in AlarmSerial) error
 	SaveLog        func(ctx context.Context, log *Log) error
 }

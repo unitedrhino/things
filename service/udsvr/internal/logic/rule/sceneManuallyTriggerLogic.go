@@ -3,6 +3,7 @@ package rulelogic
 import (
 	"context"
 	"gitee.com/i-Things/share/ctxs"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
@@ -50,7 +51,7 @@ func (l *SceneManuallyTriggerLogic) SceneManuallyTrigger(in *ud.WithID) (*ud.Emp
 			ProductCache:   l.svcCtx.ProductCache,
 			DeviceCache:    l.svcCtx.DeviceCache,
 			DeviceG:        l.svcCtx.DeviceG,
-			SceneExec: func(ctx context.Context, sceneID int64) error {
+			SceneExec: func(ctx context.Context, sceneID int64, status def.Bool) error {
 				l.Error("not support yet")
 				return nil
 			},

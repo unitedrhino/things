@@ -46,6 +46,7 @@ func ToSceneInfoPo(in *scene.Info) *relationDB.UdSceneInfo {
 		DeviceAlias: in.DeviceAlias,
 		HeadImg:     in.HeadImg,
 		Status:      in.Status,
+		IsCommon:    in.IsCommon,
 		UdSceneIf: relationDB.UdSceneIf{
 			Triggers: ToSceneTriggersPo(in, in.If.Triggers),
 		},
@@ -161,7 +162,8 @@ func PoToSceneInfoDo(in *relationDB.UdSceneInfo) *scene.Info {
 		Then: scene.Then{
 			Actions: ToSceneActionsDo(in.UdSceneThen.Actions),
 		},
-		Status: in.Status,
+		Status:   in.Status,
+		IsCommon: in.IsCommon,
 	}
 }
 

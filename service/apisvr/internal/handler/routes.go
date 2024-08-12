@@ -225,11 +225,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/property-get-report-send",
 					Handler: thingsdeviceinteract.PropertyGetReportSendHandler(serverCtx),
 				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/send-msg",
-					Handler: thingsdeviceinteract.SendMsgHandler(serverCtx),
-				},
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/device/interact"),

@@ -2,6 +2,7 @@ package info
 
 import (
 	"context"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/udsvr/pb/ud"
@@ -36,6 +37,11 @@ func (l *IndexLogic) Index(req *types.SceneInfoIndexReq) (resp *types.SceneInfoI
 	pis := make([]*types.SceneInfo, 0, len(ruleResp.List))
 	for _, v := range ruleResp.List {
 		pi := ToSceneTypes(v)
+		if req.IsOnlyCore == def.True {
+			pi.If = ""
+			pi.When = ""
+			pi.Then = ""
+		}
 		pis = append(pis, pi)
 	}
 	return &types.SceneInfoIndexResp{

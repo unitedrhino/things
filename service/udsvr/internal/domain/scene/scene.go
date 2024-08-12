@@ -49,6 +49,7 @@ type Info struct {
 	When        When        `json:"when"`           //手动触发模式不生效
 	Then        Then        `json:"then"`           //触发后执行的动作
 	Status      def.Bool    `json:"status"`         // 状态（1启用 2禁用）
+	IsCommon    def.Bool    `json:"isCommon"`       // 是否是常用的
 	Body        string      `json:"body,omitempty"` //自定义字段
 	Log         *Log        `json:"-"`
 }

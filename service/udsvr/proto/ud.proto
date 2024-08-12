@@ -165,6 +165,7 @@ message SceneInfoIndexReq{
   string  deviceName = 9; //设备名称
   string hasActionType =11;//过滤有某个执行类型
   repeated int64 sceneIDs =12;
+  int64 isCommon =24;//是否是常用的
 }
 
 message SceneInfoIndexResp{
@@ -201,6 +202,7 @@ message SceneInfo{
   string deviceMode =19;//设备模式 single:单设备 multi:多设备
   string body =20;//自定义字段
   int64 updatedTime=22;//更新时间
+  int64 isCommon =24;//是否是常用的
 }
 
 
