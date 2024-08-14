@@ -6,10 +6,12 @@ import (
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
+	"gitee.com/i-Things/share/domain/deviceAuth"
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgGateway"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -41,7 +43,20 @@ func (l *DeviceGatewayMultiDeleteLogic) DeviceGatewayMultiDelete(in *dm.DeviceGa
 	if err != nil {
 		return nil, err
 	}
-	//todo debug
+	devicesDos := logic.ToDeviceCoreDos(in.List)
+	list, err := l.GdDB.FindByFilter(l.ctx, relationDB.GatewayDeviceFilter{
+		Gateway: &devices.Core{
+			ProductID:  in.Gateway.ProductID,
+			DeviceName: in.Gateway.DeviceName,
+		},
+		SubDevices: devicesDos,
+	}, nil)
+	if err != nil {
+		return nil, err
+	}
+	if len(list) != len(devicesDos) {
+		return &dm.Empty{}, errors.Permissions.AddMsg("有子设备未挂载到该网关下")
+	}
 	_, err = NewDeviceInfoMultiUpdateLogic(ctxs.WithRoot(l.ctx), l.svcCtx).DeviceInfoMultiUpdate(&dm.DeviceInfoMultiUpdateReq{
 		Devices: in.List,
 		AreaID:  def.NotClassified,
@@ -50,7 +65,6 @@ func (l *DeviceGatewayMultiDeleteLogic) DeviceGatewayMultiDelete(in *dm.DeviceGa
 		return nil, err
 	}
 
-	devicesDos := logic.ToDeviceCoreDos(in.List)
 	err = l.GdDB.MultiDelete(l.ctx, &devices.Core{
 		ProductID:  in.Gateway.ProductID,
 		DeviceName: in.Gateway.DeviceName,
@@ -62,12 +76,13 @@ func (l *DeviceGatewayMultiDeleteLogic) DeviceGatewayMultiDelete(in *dm.DeviceGa
 		CommonMsg: *deviceMsg.NewRespCommonMsg(l.ctx, deviceMsg.Change, devices.GenMsgToken(l.ctx, l.svcCtx.NodeID)).AddStatus(errors.OK),
 		Payload:   logic.ToGatewayPayload(def.GatewayUnbind, devicesDos),
 	}
+	now := time.Now()
 	respBytes, _ := json.Marshal(req)
 	msg := deviceMsg.PublishMsg{
 		Handle:       devices.Gateway,
 		Type:         msgGateway.TypeTopo,
 		Payload:      respBytes,
-		Timestamp:    time.Now().UnixMilli(),
+		Timestamp:    now.UnixMilli(),
 		ProductID:    in.Gateway.ProductID,
 		DeviceName:   in.Gateway.DeviceName,
 		ProtocolCode: pi.ProtocolCode,
@@ -76,6 +91,18 @@ func (l *DeviceGatewayMultiDeleteLogic) DeviceGatewayMultiDelete(in *dm.DeviceGa
 	if er != nil {
 		l.Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)
 		return nil, er
+	}
+	for _, v := range devicesDos {
+		//更新在线状态
+		err := HandleOnlineFix(l.ctx, l.svcCtx, &deviceStatus.ConnectMsg{
+			ClientID:  deviceAuth.GenClientID(v.ProductID, v.DeviceName),
+			Timestamp: now,
+			Action:    devices.ActionDisconnected,
+			Reason:    "gateway unbind",
+		})
+		if err != nil {
+			l.Error(err)
+		}
 	}
 	return &dm.Empty{}, nil
 }
