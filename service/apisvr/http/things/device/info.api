@@ -13,7 +13,7 @@ info(
     accessCodePrefix: "thingsDeviceInfo"
     accessNamePrefix: "设备信息"
     accessGroup: "设备管理"
-    middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
+    middleware:  CheckTokenWare,InitCtxsWare
 )
 
 service api {
@@ -66,21 +66,25 @@ service api {
     post /multi-import (DeviceMultiImportReq) returns (DeviceMultiImportResp)
     @doc(
         summary: "绑定"
+        businessType: "modify"
     )
     @handler bind
     post /bind (DeviceInfoBindReq) returns ()
     @doc(
         summary: "是否可以绑定设备"
+        businessType: "find"
     )
     @handler canBind
     post /can-bind (DeviceInfoCanBindReq) returns ()
     @doc(
         summary: "解绑设备"
+        businessType: "modify"
     )
     @handler unbind
     post /unbind (DeviceCore) returns ()
     @doc(
         summary: "转让设备"
+        businessType: "modify"
     )
     @handler transfer
     post /transfer (DeviceInfoTransferReq) returns ()

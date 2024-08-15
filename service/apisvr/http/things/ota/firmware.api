@@ -11,7 +11,7 @@ info(
 @server(
     group: things/ota/firmware/info
     prefix: /api/v1/things/ota/firmware/info
-    middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
+    middleware:  CheckTokenWare,InitCtxsWare
     accessCodePrefix: "thingsOtaFirmware"
     accessNamePrefix: "固件"
     accessGroup: "ota远程升级"

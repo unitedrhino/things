@@ -1,0 +1,1864 @@
+{
+  "Access": {
+    "thingsDeviceGatewayAdd": {
+      "name": "新增设备交互",
+      "code": "thingsDeviceGatewayAdd",
+      "group": "设备管理",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsDeviceGatewayAdd",
+          "method": "POST",
+          "route": "/api/v1/things/device/gateway/multi-create",
+          "name": "添加网关子设备",
+          "isNeedAuth": 2,
+          "businessType": "add",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsDeviceGatewayDelete": {
+      "name": "删除设备交互",
+      "code": "thingsDeviceGatewayDelete",
+      "group": "设备管理",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsDeviceGatewayDelete",
+          "method": "POST",
+          "route": "/api/v1/things/device/gateway/multi-delete",
+          "name": "解绑子设备",
+          "isNeedAuth": 2,
+          "businessType": "delete",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsDeviceGatewayFind": {
+      "name": "查询设备交互",
+      "code": "thingsDeviceGatewayFind",
+      "group": "设备管理",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsDeviceGatewayFind",
+          "method": "POST",
+          "route": "/api/v1/things/device/gateway/index",
+          "name": "获取子设备列表",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsDeviceGroupAdd": {
+      "name": "新增设备分组",
+      "code": "thingsDeviceGroupAdd",
+      "group": "设备管理",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsDeviceGroupAdd",
+          "method": "POST",
+          "route": "/api/v1/things/group/info/create",
+          "name": "创建分组",
+          "isNeedAuth": 2,
+          "businessType": "add",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsDeviceGroupDelete": {
+      "name": "删除设备分组",
+      "code": "thingsDeviceGroupDelete",
+      "group": "设备管理",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsDeviceGroupDelete",
+          "method": "POST",
+          "route": "/api/v1/things/group/info/delete",
+          "name": "删除分组",
+          "isNeedAuth": 2,
+          "businessType": "delete",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsDeviceGroupFind": {
+      "name": "查询设备分组",
+      "code": "thingsDeviceGroupFind",
+      "group": "设备管理",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsDeviceGroupFind",
+          "method": "POST",
+          "route": "/api/v1/things/group/info/index",
+          "name": "获取分组列表",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceGroupFind",
+          "method": "POST",
+          "route": "/api/v1/things/group/info/read",
+          "name": "获取分组详情信息",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsDeviceGroupModify": {
+      "name": "修改设备分组",
+      "code": "thingsDeviceGroupModify",
+      "group": "设备管理",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsDeviceGroupModify",
+          "method": "POST",
+          "route": "/api/v1/things/group/info/update",
+          "name": "更新分组信息",
+          "isNeedAuth": 2,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsDeviceInfoAdd": {
+      "name": "新增设备信息",
+      "code": "thingsDeviceInfoAdd",
+      "group": "设备管理",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsDeviceInfoAdd",
+          "method": "POST",
+          "route": "/api/v1/things/device/info/create",
+          "name": "新增设备",
+          "isNeedAuth": 1,
+          "businessType": "add",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsDeviceInfoDelete": {
+      "name": "删除设备信息",
+      "code": "thingsDeviceInfoDelete",
+      "group": "设备管理",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsDeviceInfoDelete",
+          "method": "POST",
+          "route": "/api/v1/things/device/info/delete",
+          "name": "删除设备",
+          "isNeedAuth": 1,
+          "businessType": "delete",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsDeviceInfoFind": {
+      "name": "查询设备信息",
+      "code": "thingsDeviceInfoFind",
+      "group": "设备管理",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsDeviceInfoFind",
+          "method": "POST",
+          "route": "/api/v1/things/device/info/can-bind",
+          "name": "是否可以绑定设备",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceInfoFind",
+          "method": "POST",
+          "route": "/api/v1/things/device/info/count",
+          "name": "设备统计详情",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceInfoFind",
+          "method": "POST",
+          "route": "/api/v1/things/device/info/index",
+          "name": "获取设备列表",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceInfoFind",
+          "method": "POST",
+          "route": "/api/v1/things/device/info/read",
+          "name": "获取设备详情",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceInfoFind",
+          "method": "POST",
+          "route": "/api/v1/things/device/profile/index",
+          "name": "获取设备配置列表",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceInfoFind",
+          "method": "POST",
+          "route": "/api/v1/things/device/profile/read",
+          "name": "获取设备配置详情",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsDeviceInfoModify": {
+      "name": "修改设备信息",
+      "code": "thingsDeviceInfoModify",
+      "group": "设备管理",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsDeviceInfoModify",
+          "method": "POST",
+          "route": "/api/v1/things/device/info/bind",
+          "name": "绑定",
+          "isNeedAuth": 2,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceInfoModify",
+          "method": "POST",
+          "route": "/api/v1/things/device/info/multi-update",
+          "name": "批量更新设备",
+          "isNeedAuth": 2,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceInfoModify",
+          "method": "POST",
+          "route": "/api/v1/things/device/info/transfer",
+          "name": "转让设备",
+          "isNeedAuth": 2,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceInfoModify",
+          "method": "POST",
+          "route": "/api/v1/things/device/info/unbind",
+          "name": "解绑设备",
+          "isNeedAuth": 2,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceInfoModify",
+          "method": "POST",
+          "route": "/api/v1/things/device/info/update",
+          "name": "更新设备",
+          "isNeedAuth": 2,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceInfoModify",
+          "method": "POST",
+          "route": "/api/v1/things/device/profile/delete",
+          "name": "删除设备配置",
+          "isNeedAuth": 2,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceInfoModify",
+          "method": "POST",
+          "route": "/api/v1/things/device/profile/update",
+          "name": "更新设备配置",
+          "isNeedAuth": 2,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsDeviceInfoOther": {
+      "name": "操作设备信息",
+      "code": "thingsDeviceInfoOther",
+      "group": "设备管理",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsDeviceInfoOther",
+          "method": "POST",
+          "route": "/api/v1/things/device/info/multi-import",
+          "name": "批量导入设备",
+          "isNeedAuth": 1,
+          "businessType": "other",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsDeviceInteractFind": {
+      "name": "查询设备交互",
+      "code": "thingsDeviceInteractFind",
+      "group": "设备管理",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsDeviceInteractFind",
+          "method": "POST",
+          "route": "/api/v1/things/device/interact/action-read",
+          "name": "获取调用设备行为的结果",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceInteractFind",
+          "method": "POST",
+          "route": "/api/v1/things/device/interact/property-control-read",
+          "name": "获取调用设备属性的结果",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsDeviceInteractModify": {
+      "name": "修改设备交互",
+      "code": "thingsDeviceInteractModify",
+      "group": "设备管理",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsDeviceInteractModify",
+          "method": "POST",
+          "route": "/api/v1/things/device/interact/action-send",
+          "name": "调用设备行为",
+          "isNeedAuth": 2,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceInteractModify",
+          "method": "POST",
+          "route": "/api/v1/things/device/interact/gateway-get-found-send",
+          "name": "请求网关上报拓扑关系",
+          "isNeedAuth": 2,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceInteractModify",
+          "method": "POST",
+          "route": "/api/v1/things/device/interact/gateway-notify-bind-send",
+          "name": "通知网关绑定子设备",
+          "isNeedAuth": 2,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceInteractModify",
+          "method": "POST",
+          "route": "/api/v1/things/device/interact/property-control-multi-send",
+          "name": "批量调用设备属性",
+          "isNeedAuth": 2,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceInteractModify",
+          "method": "POST",
+          "route": "/api/v1/things/device/interact/property-control-send",
+          "name": "调用设备属性",
+          "isNeedAuth": 2,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceInteractModify",
+          "method": "POST",
+          "route": "/api/v1/things/device/interact/property-get-report-send",
+          "name": "请求设备获取设备最新属性",
+          "isNeedAuth": 2,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsDeviceMsgFind": {
+      "name": "查询设备消息",
+      "code": "thingsDeviceMsgFind",
+      "group": "设备消息",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsDeviceMsgFind",
+          "method": "POST",
+          "route": "/api/v1/things/device/msg/event-log/index",
+          "name": "获取事件历史记录",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceMsgFind",
+          "method": "POST",
+          "route": "/api/v1/things/device/msg/gateway-can-bind-index",
+          "name": "获取网关可以绑定的子设备列表",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceMsgFind",
+          "method": "POST",
+          "route": "/api/v1/things/device/msg/hub-log/index",
+          "name": "获取云端诊断日志",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceMsgFind",
+          "method": "POST",
+          "route": "/api/v1/things/device/msg/property-log-latest/index",
+          "name": "获取最新属性记录",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceMsgFind",
+          "method": "POST",
+          "route": "/api/v1/things/device/msg/property-log/index",
+          "name": "获取单个id属性历史记录",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceMsgFind",
+          "method": "POST",
+          "route": "/api/v1/things/device/msg/sdk-log/index",
+          "name": "获取设备sdk日志",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceMsgFind",
+          "method": "POST",
+          "route": "/api/v1/things/device/msg/send-log/index",
+          "name": "获取设备命令日志",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceMsgFind",
+          "method": "POST",
+          "route": "/api/v1/things/device/msg/shadow/index",
+          "name": "获取设备影子列表",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceMsgFind",
+          "method": "POST",
+          "route": "/api/v1/things/device/msg/status-log/index",
+          "name": "获取设备状态日志",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsOtaDeviceFind": {
+      "name": "查询设备",
+      "code": "thingsOtaDeviceFind",
+      "group": "ota远程升级",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsOtaDeviceFind",
+          "method": "POST",
+          "route": "/api/v1/things/ota/firmware/device/cancel",
+          "name": "取消指定任务下的升级",
+          "isNeedAuth": 1,
+          "businessType": "find",
+          "desc": "",
+          "authType": "admin"
+        },
+        {
+          "accessCode": "thingsOtaDeviceFind",
+          "method": "POST",
+          "route": "/api/v1/things/ota/firmware/device/index",
+          "name": "查询升级设备列表",
+          "isNeedAuth": 1,
+          "businessType": "find",
+          "desc": "",
+          "authType": "admin"
+        },
+        {
+          "accessCode": "thingsOtaDeviceFind",
+          "method": "POST",
+          "route": "/api/v1/things/ota/firmware/device/retry",
+          "name": "重试设备升级",
+          "isNeedAuth": 1,
+          "businessType": "find",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsOtaDeviceOther": {
+      "name": "操作设备",
+      "code": "thingsOtaDeviceOther",
+      "group": "ota远程升级",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsOtaDeviceOther",
+          "method": "POST",
+          "route": "/api/v1/things/ota/firmware/device/confirm",
+          "name": "确认升级设备",
+          "isNeedAuth": 2,
+          "businessType": "other",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsOtaFirmwareAdd": {
+      "name": "新增固件",
+      "code": "thingsOtaFirmwareAdd",
+      "group": "ota远程升级",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsOtaFirmwareAdd",
+          "method": "POST",
+          "route": "/api/v1/things/ota/firmware/info/create",
+          "name": "添加升级包",
+          "isNeedAuth": 2,
+          "businessType": "add",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsOtaFirmwareDelete": {
+      "name": "删除固件",
+      "code": "thingsOtaFirmwareDelete",
+      "group": "ota远程升级",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsOtaFirmwareDelete",
+          "method": "POST",
+          "route": "/api/v1/things/ota/firmware/info/delete",
+          "name": "删除升级包",
+          "isNeedAuth": 2,
+          "businessType": "delete",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsOtaFirmwareFind": {
+      "name": "查询固件",
+      "code": "thingsOtaFirmwareFind",
+      "group": "ota远程升级",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsOtaFirmwareFind",
+          "method": "POST",
+          "route": "/api/v1/things/ota/firmware/info/index",
+          "name": "升级包列表",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "admin"
+        },
+        {
+          "accessCode": "thingsOtaFirmwareFind",
+          "method": "POST",
+          "route": "/api/v1/things/ota/firmware/info/read",
+          "name": "查询升级包",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsOtaFirmwareModify": {
+      "name": "修改固件",
+      "code": "thingsOtaFirmwareModify",
+      "group": "ota远程升级",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsOtaFirmwareModify",
+          "method": "POST",
+          "route": "/api/v1/things/ota/firmware/info/update",
+          "name": "修改升级包",
+          "isNeedAuth": 2,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsOtaJobAdd": {
+      "name": "新增任务",
+      "code": "thingsOtaJobAdd",
+      "group": "ota远程升级",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsOtaJobAdd",
+          "method": "POST",
+          "route": "/api/v1/things/ota/firmware/job/create",
+          "name": "创建升级任务",
+          "isNeedAuth": 2,
+          "businessType": "add",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsOtaJobFind": {
+      "name": "查询任务",
+      "code": "thingsOtaJobFind",
+      "group": "ota远程升级",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsOtaJobFind",
+          "method": "POST",
+          "route": "/api/v1/things/ota/firmware/job/index",
+          "name": "获取升级包下的升级任务批次列表",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "admin"
+        },
+        {
+          "accessCode": "thingsOtaJobFind",
+          "method": "POST",
+          "route": "/api/v1/things/ota/firmware/job/read",
+          "name": "查询指定升级批次的详情",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsOtaJobModify": {
+      "name": "修改任务",
+      "code": "thingsOtaJobModify",
+      "group": "ota远程升级",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsOtaJobModify",
+          "method": "POST",
+          "route": "/api/v1/things/ota/firmware/job/update",
+          "name": "更新升级批次",
+          "isNeedAuth": 2,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsOtaModuleAdd": {
+      "name": "新增模块",
+      "code": "thingsOtaModuleAdd",
+      "group": "ota远程升级",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsOtaModuleAdd",
+          "method": "POST",
+          "route": "/api/v1/things/ota/module/info/create",
+          "name": "创建模块",
+          "isNeedAuth": 2,
+          "businessType": "add",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsOtaModuleDelete": {
+      "name": "删除模块",
+      "code": "thingsOtaModuleDelete",
+      "group": "ota远程升级",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsOtaModuleDelete",
+          "method": "POST",
+          "route": "/api/v1/things/ota/module/info/delete",
+          "name": "删除模块",
+          "isNeedAuth": 2,
+          "businessType": "delete",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsOtaModuleFind": {
+      "name": "查询模块",
+      "code": "thingsOtaModuleFind",
+      "group": "ota远程升级",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsOtaModuleFind",
+          "method": "POST",
+          "route": "/api/v1/things/ota/module/info/index",
+          "name": "获取模块列表",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "admin"
+        },
+        {
+          "accessCode": "thingsOtaModuleFind",
+          "method": "POST",
+          "route": "/api/v1/things/ota/module/info/read",
+          "name": "查询模块详情",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsOtaModuleModify": {
+      "name": "修改模块",
+      "code": "thingsOtaModuleModify",
+      "group": "ota远程升级",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsOtaModuleModify",
+          "method": "POST",
+          "route": "/api/v1/things/ota/module/info/update",
+          "name": "更新模块",
+          "isNeedAuth": 2,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsProductCategoryAdd": {
+      "name": "新增产品品类",
+      "code": "thingsProductCategoryAdd",
+      "group": "产品管理",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProductCategoryAdd",
+          "method": "POST",
+          "route": "/api/v1/things/product/category/create",
+          "name": "新增产品品类",
+          "isNeedAuth": 1,
+          "businessType": "add",
+          "desc": "",
+          "authType": "admin"
+        },
+        {
+          "accessCode": "thingsProductCategoryAdd",
+          "method": "POST",
+          "route": "/api/v1/things/product/category/schema/multi-create",
+          "name": "批量新增产品品类物模型",
+          "isNeedAuth": 1,
+          "businessType": "add",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsProductCategoryDelete": {
+      "name": "删除产品品类",
+      "code": "thingsProductCategoryDelete",
+      "group": "产品管理",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProductCategoryDelete",
+          "method": "POST",
+          "route": "/api/v1/things/product/category/delete",
+          "name": "删除产品品类",
+          "isNeedAuth": 1,
+          "businessType": "delete",
+          "desc": "",
+          "authType": "admin"
+        },
+        {
+          "accessCode": "thingsProductCategoryDelete",
+          "method": "POST",
+          "route": "/api/v1/things/product/category/schema/multi-delete",
+          "name": "批量删除产品品类物模型",
+          "isNeedAuth": 1,
+          "businessType": "delete",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsProductCategoryFind": {
+      "name": "查询产品品类",
+      "code": "thingsProductCategoryFind",
+      "group": "产品管理",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProductCategoryFind",
+          "method": "POST",
+          "route": "/api/v1/things/product/category/index",
+          "name": "获取产品品类列表",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsProductCategoryFind",
+          "method": "POST",
+          "route": "/api/v1/things/product/category/read",
+          "name": "获取产品品类详情",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsProductCategoryFind",
+          "method": "POST",
+          "route": "/api/v1/things/product/category/schema/index",
+          "name": "获取产品品类列表",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsProductCategoryModify": {
+      "name": "修改产品品类",
+      "code": "thingsProductCategoryModify",
+      "group": "产品管理",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProductCategoryModify",
+          "method": "POST",
+          "route": "/api/v1/things/product/category/schema/multi-update",
+          "name": "批量更新产品品类物模型",
+          "isNeedAuth": 1,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "admin"
+        },
+        {
+          "accessCode": "thingsProductCategoryModify",
+          "method": "POST",
+          "route": "/api/v1/things/product/category/update",
+          "name": "更新产品品类",
+          "isNeedAuth": 1,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsProductInfoAdd": {
+      "name": "新增产品",
+      "code": "thingsProductInfoAdd",
+      "group": "产品管理",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProductInfoAdd",
+          "method": "POST",
+          "route": "/api/v1/things/product/info/create",
+          "name": "新增产品",
+          "isNeedAuth": 1,
+          "businessType": "add",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsProductInfoDelete": {
+      "name": "删除产品",
+      "code": "thingsProductInfoDelete",
+      "group": "产品管理",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProductInfoDelete",
+          "method": "POST",
+          "route": "/api/v1/things/product/info/delete",
+          "name": "删除产品",
+          "isNeedAuth": 1,
+          "businessType": "delete",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsProductInfoFind": {
+      "name": "查询产品",
+      "code": "thingsProductInfoFind",
+      "group": "产品管理",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProductInfoFind",
+          "method": "POST",
+          "route": "/api/v1/things/product/info/index",
+          "name": "获取产品信息列表",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsProductInfoFind",
+          "method": "POST",
+          "route": "/api/v1/things/product/info/read",
+          "name": "获取产品详情",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsProductInfoModify": {
+      "name": "修改产品",
+      "code": "thingsProductInfoModify",
+      "group": "产品管理",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProductInfoModify",
+          "method": "POST",
+          "route": "/api/v1/things/product/info/update",
+          "name": "更新产品",
+          "isNeedAuth": 1,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsProductInfoOther": {
+      "name": "操作产品",
+      "code": "thingsProductInfoOther",
+      "group": "产品管理",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProductInfoOther",
+          "method": "POST",
+          "route": "/api/v1/things/product/info/init",
+          "name": "初始化产品",
+          "isNeedAuth": 1,
+          "businessType": "other",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsProductSchemaAdd": {
+      "name": "新增产品物模型",
+      "code": "thingsProductSchemaAdd",
+      "group": "产品管理",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProductSchemaAdd",
+          "method": "POST",
+          "route": "/api/v1/things/product/schema/create",
+          "name": "创建产品物模型",
+          "isNeedAuth": 1,
+          "businessType": "add",
+          "desc": "",
+          "authType": "admin"
+        },
+        {
+          "accessCode": "thingsProductSchemaAdd",
+          "method": "POST",
+          "route": "/api/v1/things/product/schema/multi-create",
+          "name": "批量创建产品物模型",
+          "isNeedAuth": 1,
+          "businessType": "add",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsProductSchemaDelete": {
+      "name": "删除产品物模型",
+      "code": "thingsProductSchemaDelete",
+      "group": "产品管理",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProductSchemaDelete",
+          "method": "POST",
+          "route": "/api/v1/things/product/schema/delete",
+          "name": "删除产品物模型",
+          "isNeedAuth": 1,
+          "businessType": "delete",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsProductSchemaFind": {
+      "name": "查询产品物模型",
+      "code": "thingsProductSchemaFind",
+      "group": "产品管理",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProductSchemaFind",
+          "method": "POST",
+          "route": "/api/v1/things/product/schema/index",
+          "name": "获取产品物模型",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsProductSchemaFind",
+          "method": "POST",
+          "route": "/api/v1/things/product/schema/tsl-read",
+          "name": "获取产品物模型tsl",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsProductSchemaModify": {
+      "name": "修改产品物模型",
+      "code": "thingsProductSchemaModify",
+      "group": "产品管理",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProductSchemaModify",
+          "method": "POST",
+          "route": "/api/v1/things/product/schema/update",
+          "name": "更新产品物模型",
+          "isNeedAuth": 1,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsProductSchemaOther": {
+      "name": "操作产品物模型",
+      "code": "thingsProductSchemaOther",
+      "group": "产品管理",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProductSchemaOther",
+          "method": "POST",
+          "route": "/api/v1/things/product/schema/tsl-import",
+          "name": "导入产品物模型tsl",
+          "isNeedAuth": 1,
+          "businessType": "other",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsProtocolInfoAdd": {
+      "name": "新增协议管理",
+      "code": "thingsProtocolInfoAdd",
+      "group": "设备自定义",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProtocolInfoAdd",
+          "method": "POST",
+          "route": "/api/v1/things/protocol/info/create",
+          "name": "新增自定义协议",
+          "isNeedAuth": 1,
+          "businessType": "add",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsProtocolInfoDelete": {
+      "name": "删除协议管理",
+      "code": "thingsProtocolInfoDelete",
+      "group": "设备自定义",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProtocolInfoDelete",
+          "method": "POST",
+          "route": "/api/v1/things/protocol/info/delete",
+          "name": "删除自定义协议",
+          "isNeedAuth": 1,
+          "businessType": "delete",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsProtocolInfoFind": {
+      "name": "查询协议管理",
+      "code": "thingsProtocolInfoFind",
+      "group": "设备自定义",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProtocolInfoFind",
+          "method": "POST",
+          "route": "/api/v1/things/protocol/info/index",
+          "name": "获取自定义协议信息列表",
+          "isNeedAuth": 1,
+          "businessType": "find",
+          "desc": "",
+          "authType": "admin"
+        },
+        {
+          "accessCode": "thingsProtocolInfoFind",
+          "method": "POST",
+          "route": "/api/v1/things/protocol/info/read",
+          "name": "获取自定义协议详情",
+          "isNeedAuth": 1,
+          "businessType": "find",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsProtocolInfoModify": {
+      "name": "修改协议管理",
+      "code": "thingsProtocolInfoModify",
+      "group": "设备自定义",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProtocolInfoModify",
+          "method": "POST",
+          "route": "/api/v1/things/protocol/info/update",
+          "name": "更新自定义协议",
+          "isNeedAuth": 1,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsRuleAlarmAdd": {
+      "name": "新增告警管理",
+      "code": "thingsRuleAlarmAdd",
+      "group": "规则引擎",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsRuleAlarmAdd",
+          "method": "POST",
+          "route": "/api/v1/things/rule/alarm/info/create",
+          "name": "新增告警",
+          "isNeedAuth": 2,
+          "businessType": "add",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsRuleAlarmDelete": {
+      "name": "删除告警管理",
+      "code": "thingsRuleAlarmDelete",
+      "group": "规则引擎",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsRuleAlarmDelete",
+          "method": "POST",
+          "route": "/api/v1/things/rule/alarm/info/delete",
+          "name": "删除告警",
+          "isNeedAuth": 2,
+          "businessType": "delete",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsRuleAlarmFind": {
+      "name": "查询告警管理",
+      "code": "thingsRuleAlarmFind",
+      "group": "规则引擎",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsRuleAlarmFind",
+          "method": "POST",
+          "route": "/api/v1/things/rule/alarm/info/index",
+          "name": "获取告警信息列表",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsRuleAlarmFind",
+          "method": "POST",
+          "route": "/api/v1/things/rule/alarm/info/read",
+          "name": "获取告警信息",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsRuleAlarmModify": {
+      "name": "修改告警管理",
+      "code": "thingsRuleAlarmModify",
+      "group": "规则引擎",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsRuleAlarmModify",
+          "method": "POST",
+          "route": "/api/v1/things/rule/alarm/info/update",
+          "name": "更新告警",
+          "isNeedAuth": 2,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsRuleAlarmRecordFind": {
+      "name": "查询告警记录",
+      "code": "thingsRuleAlarmRecordFind",
+      "group": "规则引擎",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsRuleAlarmRecordFind",
+          "method": "POST",
+          "route": "/api/v1/things/rule/alarm/record/index",
+          "name": "获取告警记录列表",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsRuleAlarmRecordOther": {
+      "name": "操作告警记录",
+      "code": "thingsRuleAlarmRecordOther",
+      "group": "规则引擎",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsRuleAlarmRecordOther",
+          "method": "POST",
+          "route": "/api/v1/things/rule/alarm/record/deal",
+          "name": "处理告警",
+          "isNeedAuth": 2,
+          "businessType": "other",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsRuleAlarmSceneAdd": {
+      "name": "新增告警场景关联",
+      "code": "thingsRuleAlarmSceneAdd",
+      "group": "规则引擎",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsRuleAlarmSceneAdd",
+          "method": "POST",
+          "route": "/api/v1/things/rule/alarm/scene/multi-create",
+          "name": "更新告警和场景的关联",
+          "isNeedAuth": 2,
+          "businessType": "add",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsRuleAlarmSceneDelete": {
+      "name": "删除告警场景关联",
+      "code": "thingsRuleAlarmSceneDelete",
+      "group": "规则引擎",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsRuleAlarmSceneDelete",
+          "method": "POST",
+          "route": "/api/v1/things/rule/alarm/scene/delete",
+          "name": "删除告警和场景的关联",
+          "isNeedAuth": 2,
+          "businessType": "delete",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsRuleAlarmSceneFind": {
+      "name": "查询告警场景关联",
+      "code": "thingsRuleAlarmSceneFind",
+      "group": "规则引擎",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsRuleAlarmSceneFind",
+          "method": "POST",
+          "route": "/api/v1/things/rule/alarm/scene/index",
+          "name": "获取告警和场景的关联列表",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsRuleSceneAdd": {
+      "name": "新增场景联动",
+      "code": "thingsRuleSceneAdd",
+      "group": "规则引擎",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsRuleSceneAdd",
+          "method": "POST",
+          "route": "/api/v1/things/rule/scene/info/create",
+          "name": "新增场景",
+          "isNeedAuth": 2,
+          "businessType": "add",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsRuleSceneDelete": {
+      "name": "删除场景联动",
+      "code": "thingsRuleSceneDelete",
+      "group": "规则引擎",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsRuleSceneDelete",
+          "method": "POST",
+          "route": "/api/v1/things/rule/scene/info/delete",
+          "name": "删除场景",
+          "isNeedAuth": 2,
+          "businessType": "delete",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsRuleSceneFind": {
+      "name": "查询场景联动",
+      "code": "thingsRuleSceneFind",
+      "group": "规则引擎",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsRuleSceneFind",
+          "method": "POST",
+          "route": "/api/v1/things/rule/scene/info/index",
+          "name": "获取场景信息列表",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsRuleSceneFind",
+          "method": "POST",
+          "route": "/api/v1/things/rule/scene/info/read",
+          "name": "获取场景信息详情",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsRuleSceneFind",
+          "method": "POST",
+          "route": "/api/v1/things/rule/scene/log/index",
+          "name": "获取场景日志列表",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsRuleSceneModify": {
+      "name": "修改场景联动",
+      "code": "thingsRuleSceneModify",
+      "group": "规则引擎",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsRuleSceneModify",
+          "method": "POST",
+          "route": "/api/v1/things/rule/scene/info/update",
+          "name": "更新场景",
+          "isNeedAuth": 2,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsRuleSceneOther": {
+      "name": "操作场景联动",
+      "code": "thingsRuleSceneOther",
+      "group": "规则引擎",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsRuleSceneOther",
+          "method": "POST",
+          "route": "/api/v1/things/rule/scene/info/manually-trigger",
+          "name": "手动触发场景",
+          "isNeedAuth": 2,
+          "businessType": "other",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsSchemaCommonAdd": {
+      "name": "新增通用物模型",
+      "code": "thingsSchemaCommonAdd",
+      "group": "通用物模型",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsSchemaCommonAdd",
+          "method": "POST",
+          "route": "/api/v1/things/schema/common/create",
+          "name": "新增通用物模型",
+          "isNeedAuth": 1,
+          "businessType": "add",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsSchemaCommonDelete": {
+      "name": "删除通用物模型",
+      "code": "thingsSchemaCommonDelete",
+      "group": "通用物模型",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsSchemaCommonDelete",
+          "method": "POST",
+          "route": "/api/v1/things/schema/common/delete",
+          "name": "删除通用物模型",
+          "isNeedAuth": 1,
+          "businessType": "delete",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsSchemaCommonFind": {
+      "name": "查询通用物模型",
+      "code": "thingsSchemaCommonFind",
+      "group": "通用物模型",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsSchemaCommonFind",
+          "method": "POST",
+          "route": "/api/v1/things/schema/common/index",
+          "name": "获取通用物模型列表",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsSchemaCommonModify": {
+      "name": "修改通用物模型",
+      "code": "thingsSchemaCommonModify",
+      "group": "通用物模型",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsSchemaCommonModify",
+          "method": "POST",
+          "route": "/api/v1/things/schema/common/update",
+          "name": "更新通用物模型",
+          "isNeedAuth": 1,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsSchemaCommonOther": {
+      "name": "操作通用物模型",
+      "code": "thingsSchemaCommonOther",
+      "group": "通用物模型",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsSchemaCommonOther",
+          "method": "POST",
+          "route": "/api/v1/things/schema/common/init",
+          "name": "初始化通用物模型",
+          "isNeedAuth": 1,
+          "businessType": "other",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsUserDeviceAdd": {
+      "name": "新增设备分享",
+      "code": "thingsUserDeviceAdd",
+      "group": "用户设备",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsUserDeviceAdd",
+          "method": "POST",
+          "route": "/api/v1/things/user/device/collect/multi-create",
+          "name": "批量收藏设备",
+          "isNeedAuth": 2,
+          "businessType": "add",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsUserDeviceAdd",
+          "method": "POST",
+          "route": "/api/v1/things/user/device/share/create",
+          "name": "分享设备",
+          "isNeedAuth": 2,
+          "businessType": "add",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsUserDeviceDelete": {
+      "name": "删除设备分享",
+      "code": "thingsUserDeviceDelete",
+      "group": "用户设备",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsUserDeviceDelete",
+          "method": "POST",
+          "route": "/api/v1/things/user/device/collect/multi-delete",
+          "name": "批量取消收藏设备",
+          "isNeedAuth": 2,
+          "businessType": "delete",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsUserDeviceDelete",
+          "method": "POST",
+          "route": "/api/v1/things/user/device/share/delete",
+          "name": "取消分享设备",
+          "isNeedAuth": 2,
+          "businessType": "delete",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsUserDeviceDelete",
+          "method": "POST",
+          "route": "/api/v1/things/user/device/share/multi-delete",
+          "name": "批量取消分享设备",
+          "isNeedAuth": 2,
+          "businessType": "delete",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsUserDeviceFind": {
+      "name": "查询设备分享",
+      "code": "thingsUserDeviceFind",
+      "group": "用户设备",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsUserDeviceFind",
+          "method": "POST",
+          "route": "/api/v1/things/user/device/collect/index",
+          "name": "获取收藏设备列表",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsUserDeviceFind",
+          "method": "POST",
+          "route": "/api/v1/things/user/device/share/index",
+          "name": "获取分享设备列表",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsUserDeviceFind",
+          "method": "POST",
+          "route": "/api/v1/things/user/device/share/read",
+          "name": "获取分享设备详情",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsUserDeviceModify": {
+      "name": "修改设备分享",
+      "code": "thingsUserDeviceModify",
+      "group": "用户设备",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsUserDeviceModify",
+          "method": "POST",
+          "route": "/api/v1/things/user/device/share/update",
+          "name": "更新分享设备信息",
+          "isNeedAuth": 2,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    }
+  }
+}

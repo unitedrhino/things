@@ -43,6 +43,9 @@ func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *ud.SceneInfo) (*ud.Empty, err
 	if in.Status != 0 {
 		old.Status = in.Status
 	}
+	if in.IsCommon != 0 {
+		old.IsCommon = in.IsCommon
+	}
 	if in.Desc != "" {
 		old.Desc = in.Desc
 	}

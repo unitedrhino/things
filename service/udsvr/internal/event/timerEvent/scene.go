@@ -3,6 +3,7 @@ package timerEvent
 import (
 	"context"
 	"fmt"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
@@ -54,7 +55,12 @@ func (l *TimerHandle) SceneExec(ctx context.Context, do *scene.Info) {
 		DeviceG:        l.svcCtx.DeviceG,
 		ProductCache:   l.svcCtx.ProductCache,
 		DeviceCache:    l.svcCtx.DeviceCache,
-		SceneExec: func(ctx context.Context, sceneID int64) error {
+		SceneExec: func(ctx context.Context, sceneID int64, status def.Bool) error {
+			if status != 0 {
+				err := relationDB.NewSceneInfoRepo(l.ctx).UpdateWithField(ctx, relationDB.SceneInfoFilter{IDs: []int64{sceneID}},
+					map[string]any{"status": status})
+				return err
+			}
 			_, err := rulelogic.NewSceneManuallyTriggerLogic(ctx, l.svcCtx).SceneManuallyTrigger(&ud.WithID{Id: sceneID})
 			return err
 		},

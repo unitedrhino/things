@@ -13,7 +13,7 @@ info(
     accessCodePrefix: "thingsProductInfo"
     accessNamePrefix: "产品"
     accessGroup: "产品管理"
-    middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
+    middleware:  CheckTokenWare,InitCtxsWare
 )
 service api {
     @doc(

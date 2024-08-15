@@ -1,7 +1,7 @@
 package svc
 
 import (
-	"gitee.com/i-Things/core/service/apisvr/export"
+	"gitee.com/i-Things/core/service/apisvr/exportMiddleware"
 	"gitee.com/i-Things/core/service/syssvr/client/areamanage"
 	"gitee.com/i-Things/core/service/syssvr/client/log"
 	"gitee.com/i-Things/core/service/syssvr/client/projectmanage"
@@ -19,7 +19,6 @@ import (
 	"gitee.com/i-Things/share/verify"
 	ws "gitee.com/i-Things/share/websocket"
 	"github.com/i-Things/things/service/apisvr/internal/config"
-	"github.com/i-Things/things/service/apisvr/internal/middleware"
 	"github.com/i-Things/things/service/dgsvr/client/deviceauth"
 	"github.com/i-Things/things/service/dgsvr/dgdirect"
 	"github.com/i-Things/things/service/dmsvr/client/devicegroup"
@@ -69,11 +68,7 @@ type ServiceContext struct {
 	Ws             *ws.Server
 	Config         config.Config
 	InitCtxsWare   rest.Middleware
-	SetupWare      rest.Middleware
 	CheckTokenWare rest.Middleware
-	DataAuthWare   rest.Middleware
-	TeardownWare   rest.Middleware
-	CheckApiWare   rest.Middleware
 	Captcha        *verify.Captcha
 	OssClient      *oss.Client
 	OtaM           otamanage.OtaManage
@@ -186,12 +181,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	logx.Must(err)
 	return &ServiceContext{
 		Config:         c,
-		SetupWare:      middleware.NewSetupWareMiddleware(c, lo).Handle,
-		CheckTokenWare: export.NewCheckTokenWareMiddleware(ur, ro, tm).Handle,
+		CheckTokenWare: exportMiddleware.NewCheckTokenWareMiddleware(ur, ro, tm, lo).Handle,
 		InitCtxsWare:   ctxs.InitMiddleware,
-		DataAuthWare:   middleware.NewDataAuthWareMiddleware(c).Handle,
-		TeardownWare:   middleware.NewTeardownWareMiddleware(c, lo).Handle,
-		CheckApiWare:   middleware.NewCheckApiWareMiddleware().Handle,
 		Captcha:        captcha,
 		OssClient:      ossClient,
 		OtaM:           otaM,

@@ -10,7 +10,7 @@ info(
 @server(
     group: things/product/custom
     prefix: /api/v1/things/product/custom
-    middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
+    middleware:  CheckTokenWare,InitCtxsWare
 )
 service api {
     @doc "更新产品自定义信息"

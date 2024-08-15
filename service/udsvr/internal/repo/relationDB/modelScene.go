@@ -18,6 +18,7 @@ type UdSceneInfo struct {
 	DeviceName  string            `gorm:"column:device_name;type:VARCHAR(255);default:''"`                        //设备名
 	DeviceAlias string            `gorm:"column:device_alias;type:VARCHAR(255);default:''"`                       //设备别名
 	Tag         string            `gorm:"column:tag;type:VARCHAR(128);NOT NULL;default:normal"`                   //标签 admin: 管理员 normal: 普通
+	IsCommon    def.Bool          `gorm:"column:is_common;type:BIGINT;default:1"`                                 //是否是常用的
 	HeadImg     string            `gorm:"column:head_img;type:VARCHAR(256);NOT NULL"`                             // 头像
 	Logo        string            `gorm:"column:logo;type:VARCHAR(25);NOT NULL"`                                  // logo
 	Name        string            `gorm:"column:name;type:varchar(100);NOT NULL"`                                 // 名称
@@ -149,9 +150,11 @@ type UdSceneActionDevice struct {
 }
 
 type UdSceneActionScene struct {
-	SceneID int64 `gorm:"column:scene_id;index;type:bigint"` // 场景id编号
-	AreaID  int64 `gorm:"column:area_id;type:bigint;"`       // 项目区域ID(雪花ID)
-
+	SceneID   int64           `gorm:"column:scene_id;index;type:bigint"` // 场景id编号
+	AreaID    int64           `gorm:"column:area_id;type:bigint;"`       // 项目区域ID(雪花ID)
+	SceneType scene.SceneType `gorm:"column:scene_type;type:VARCHAR(25);NOT NULL"`
+	SceneName string          `gorm:"column:scene_name;type:VARCHAR(256);NOT NULL"`
+	Status    def.Bool        `gorm:"column:status;type:BIGINT;default:1"` //状态
 }
 
 type UdSceneLog struct {

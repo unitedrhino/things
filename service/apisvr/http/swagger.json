@@ -1186,45 +1186,6 @@
         ]
       }
     },
-    "/api/v1/things/device/interact/send-msg": {
-      "post": {
-        "summary": "发送消息给设备",
-        "operationId": "postApiV1ThingsDeviceInteractSend-msg",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "default": "200",
-                  "title": "返回code"
-                },
-                "msg": {
-                  "type": "string",
-                  "title": "返回的消息"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/DeviceInteractSendMsgReq"
-            }
-          }
-        ],
-        "tags": [
-          "things/device/interact",
-          "thingsDeviceInteract"
-        ]
-      }
-    },
     "/api/v1/things/device/msg/event-log/index": {
       "post": {
         "summary": "获取事件历史记录",
@@ -10992,6 +10953,11 @@
           "type": "string",
           "description": "标签 admin: 管理员 normal: 普通"
         },
+        "isCommon": {
+          "type": "integer",
+          "format": "int64",
+          "description": "是否是常用的"
+        },
         "type": {
           "type": "string"
         },
@@ -11082,6 +11048,11 @@
         "tag": {
           "type": "string",
           "description": "标签 admin: 管理员 normal: 普通"
+        },
+        "isCommon": {
+          "type": "integer",
+          "format": "int64",
+          "description": "是否是常用的"
         },
         "type": {
           "type": "string"
@@ -11205,6 +11176,16 @@
         "hasActionType": {
           "type": "string",
           "description": "过滤有某个执行类型"
+        },
+        "isCommon": {
+          "type": "integer",
+          "format": "int64",
+          "description": "是否是常用的"
+        },
+        "isOnlyCore": {
+          "type": "integer",
+          "format": "int64",
+          "description": "不返回if,when和then"
         }
       },
       "title": "SceneInfoIndexReq"
@@ -11260,6 +11241,11 @@
         "tag": {
           "type": "string",
           "description": "标签 admin: 管理员 normal: 普通"
+        },
+        "isCommon": {
+          "type": "integer",
+          "format": "int64",
+          "description": "是否是常用的"
         },
         "type": {
           "type": "string"

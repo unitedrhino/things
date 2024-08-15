@@ -41,6 +41,7 @@ type Info struct {
 	DeviceAlias string      `json:"deviceAlias,omitempty"` //设备别名,只读
 	LastRunTime int64       `json:"lastRunTime"`
 	Tag         string      `json:"tag"`
+	Logo        string      `json:"logo"`
 	Name        string      `json:"name"`
 	Desc        string      `json:"desc"`
 	CreatedTime time.Time   `json:"createdTime"`
@@ -49,6 +50,7 @@ type Info struct {
 	When        When        `json:"when"`           //手动触发模式不生效
 	Then        Then        `json:"then"`           //触发后执行的动作
 	Status      def.Bool    `json:"status"`         // 状态（1启用 2禁用）
+	IsCommon    def.Bool    `json:"isCommon"`       // 是否是常用的
 	Body        string      `json:"body,omitempty"` //自定义字段
 	Log         *Log        `json:"-"`
 }

@@ -13,7 +13,7 @@ info(
     accessCodePrefix: "thingsProtocolInfo"
     accessNamePrefix: "协议管理"
     accessGroup: "设备自定义"
-    middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
+    middleware:  CheckTokenWare,InitCtxsWare
 )
 service api {
     @doc(

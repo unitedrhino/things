@@ -12,7 +12,7 @@ info(
     accessCodePrefix: "thingsDeviceInteract"
     accessNamePrefix: "设备交互"
     accessGroup: "设备管理"
-    middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
+    middleware:  CheckTokenWare,InitCtxsWare
 )
 service api {
     @doc(
@@ -44,14 +44,14 @@ service api {
     post /property-control-read (DeviceInteractRespReadReq) returns (DeviceInteractSendPropertyResp)
 
 
-    @doc(
-        summary: "发送消息给设备"
-        isNeedAuth: "true"
-        authType: "admin"
-        businessType: "modify"
-    )
-    @handler sendMsg
-    post /send-msg (DeviceInteractSendMsgReq) returns ()
+//    @doc(
+//        summary: "发送消息给设备"
+//        isNeedAuth: "true"
+//        authType: "admin"
+//        businessType: "modify"
+//    )
+//    @handler sendMsg
+//    post /send-msg (DeviceInteractSendMsgReq) returns ()
     @doc(
         summary: "请求设备获取设备最新属性"
     )

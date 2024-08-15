@@ -13,7 +13,7 @@ info(
     accessCodePrefix: "thingsDeviceGateway"
     accessNamePrefix: "设备交互"
     accessGroup: "设备管理"
-    middleware:  CheckTokenWare,InitCtxsWare,CheckApiWare, DataAuthWare, TeardownWare
+    middleware:  CheckTokenWare,InitCtxsWare
 )
 service api {
     @doc "添加网关子设备"

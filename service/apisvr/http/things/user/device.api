@@ -12,7 +12,7 @@ info(
 	accessCodePrefix: "thingsUserDevice"
 	accessNamePrefix: "设备收藏"
 	accessGroup: "用户设备"
-	middleware:  CheckTokenWare,InitCtxsWare, DataAuthWare, TeardownWare
+	middleware:  CheckTokenWare,InitCtxsWare
 )
 service api {
 	@doc "批量收藏设备"
@@ -32,7 +32,7 @@ service api {
 	accessCodePrefix: "thingsUserDevice"
 	accessNamePrefix: "设备分享"
 	accessGroup: "用户设备"
-	middleware:  CheckTokenWare,InitCtxsWare, DataAuthWare, TeardownWare
+	middleware:  CheckTokenWare,InitCtxsWare
 )
 service api {
 	@doc "分享设备"
