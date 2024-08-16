@@ -148,6 +148,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/multi-bind",
+					Handler: thingsdeviceinfo.MultiBindHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/multi-import",
 					Handler: thingsdeviceinfo.MultiImportHandler(serverCtx),
 				},

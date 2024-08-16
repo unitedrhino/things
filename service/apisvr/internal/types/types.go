@@ -223,6 +223,13 @@ type DeviceCountResp struct {
 	List []*DeviceCountInfo `json:"list"`
 }
 
+type DeviceError struct {
+	ProductID  string `json:"productID,omitempty"`  //产品id
+	DeviceName string `json:"deviceName,omitempty"` //设备名称
+	Code       int64  `json:"code,omitempty"`
+	Msg        string `json:"msg,omitempty"`
+}
+
 type DeviceGateWayIndexReq struct {
 	Page              *PageInfo `json:"page,optional"`     //分页信息 只获取一个则不填
 	GateWayProductID  string    `json:"gateWayProductID"`  //产品ID
@@ -346,6 +353,15 @@ type DeviceInfoIndexReq struct {
 type DeviceInfoIndexResp struct {
 	List  []*DeviceInfo `json:"list"`  //设备信息
 	Total int64         `json:"total"` //总数(只有分页的时候会返回)
+}
+
+type DeviceInfoMultiBindReq struct {
+	Devices []*DeviceCore `json:"devices"`
+	AreaID  int64         `json:"areaID,optional,string"`
+}
+
+type DeviceInfoMultiBindResp struct {
+	Errs []*DeviceError `json:"errs"`
 }
 
 type DeviceInfoMultiUpdateReq struct {

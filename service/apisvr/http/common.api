@@ -55,7 +55,7 @@ type(
         RetryInterval  int64 `json:"retryInterval,optional"`   //重试间隔
     }
     CodeReq {
-     Code string `json:"code"`
+        Code string `json:"code"`
     }
     DeviceCore {
         ProductID string `json:"productID"`      //产品ID
@@ -78,7 +78,12 @@ type(
         ID int64 `json:"id,optional"`
         IDPath string  `json:"idPath,optional"`
     }
-
+    DeviceError  {
+        ProductID  string `json:"productID,omitempty"`   //产品id
+        DeviceName string `json:"deviceName,omitempty"` //设备名称
+        Code       int64  `json:"code,omitempty"`
+        Msg        string `json:"msg,omitempty"`
+    }
     CompareInt64{
         CmpTYpe string `json:"cmpTYpe"`//"=":相等 "!=":不相等 ">":大于">=":大于等于"<":小于"<=":小于等于 "like":模糊查询
         Value int64 `json:"value,string"`

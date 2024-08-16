@@ -280,6 +280,16 @@
         {
           "accessCode": "thingsDeviceInfoModify",
           "method": "POST",
+          "route": "/api/v1/things/device/info/multi-bind",
+          "name": "批量绑定",
+          "isNeedAuth": 2,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceInfoModify",
+          "method": "POST",
           "route": "/api/v1/things/device/info/multi-update",
           "name": "批量更新设备",
           "isNeedAuth": 2,

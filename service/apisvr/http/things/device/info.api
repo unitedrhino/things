@@ -71,6 +71,12 @@ service api {
     @handler bind
     post /bind (DeviceInfoBindReq) returns ()
     @doc(
+        summary: "批量绑定"
+        businessType: "modify"
+    )
+    @handler multiBind
+    post /multi-bind (DeviceInfoMultiBindReq) returns (DeviceInfoMultiBindResp)
+    @doc(
         summary: "是否可以绑定设备"
         businessType: "find"
     )
@@ -158,7 +164,13 @@ type (
     DeviceInfoCanBindReq{
         Device DeviceCore `json:"device"`
     }
-
+    DeviceInfoMultiBindReq{
+        Devices []*DeviceCore `json:"devices"`
+        AreaID int64  `json:"areaID,optional,string"`
+    }
+    DeviceInfoMultiBindResp{
+        Errs []*DeviceError `json:"errs"`
+    }
     DeviceInfoBindReq{
         Device DeviceCore `json:"device"`
         AreaID int64  `json:"areaID,optional,string"`

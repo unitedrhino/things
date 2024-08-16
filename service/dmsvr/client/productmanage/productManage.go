@@ -29,6 +29,7 @@ type (
 	DeviceCountInfo                   = dm.DeviceCountInfo
 	DeviceCountReq                    = dm.DeviceCountReq
 	DeviceCountResp                   = dm.DeviceCountResp
+	DeviceError                       = dm.DeviceError
 	DeviceGatewayBindDevice           = dm.DeviceGatewayBindDevice
 	DeviceGatewayIndexReq             = dm.DeviceGatewayIndexReq
 	DeviceGatewayIndexResp            = dm.DeviceGatewayIndexResp
@@ -43,6 +44,8 @@ type (
 	DeviceInfoDeleteReq               = dm.DeviceInfoDeleteReq
 	DeviceInfoIndexReq                = dm.DeviceInfoIndexReq
 	DeviceInfoIndexResp               = dm.DeviceInfoIndexResp
+	DeviceInfoMultiBindReq            = dm.DeviceInfoMultiBindReq
+	DeviceInfoMultiBindResp           = dm.DeviceInfoMultiBindResp
 	DeviceInfoMultiUpdateReq          = dm.DeviceInfoMultiUpdateReq
 	DeviceInfoReadReq                 = dm.DeviceInfoReadReq
 	DeviceModuleVersion               = dm.DeviceModuleVersion

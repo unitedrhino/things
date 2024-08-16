@@ -618,6 +618,48 @@
         ]
       }
     },
+    "/api/v1/things/device/info/multi-bind": {
+      "post": {
+        "summary": "批量绑定",
+        "operationId": "postApiV1ThingsDeviceInfoMulti-bind",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/DeviceInfoMultiBindResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceInfoMultiBindReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/info",
+          "thingsDeviceInfo"
+        ]
+      }
+    },
     "/api/v1/things/device/info/multi-import": {
       "post": {
         "summary": "批量导入设备",
@@ -6439,6 +6481,27 @@
         "list"
       ]
     },
+    "DeviceError": {
+      "type": "object",
+      "properties": {
+        "productID": {
+          "type": "string",
+          "description": "产品id"
+        },
+        "deviceName": {
+          "type": "string",
+          "description": "设备名称"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "msg": {
+          "type": "string"
+        }
+      },
+      "title": "DeviceError"
+    },
     "DeviceGateWayIndexReq": {
       "type": "object",
       "properties": {
@@ -6965,6 +7028,39 @@
       "required": [
         "list",
         "total"
+      ]
+    },
+    "DeviceInfoMultiBindReq": {
+      "type": "object",
+      "properties": {
+        "devices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceCore"
+          }
+        },
+        "areaID": {
+          "type": "string"
+        }
+      },
+      "title": "DeviceInfoMultiBindReq",
+      "required": [
+        "devices"
+      ]
+    },
+    "DeviceInfoMultiBindResp": {
+      "type": "object",
+      "properties": {
+        "errs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceError"
+          }
+        }
+      },
+      "title": "DeviceInfoMultiBindResp",
+      "required": [
+        "errs"
       ]
     },
     "DeviceInfoMultiUpdateReq": {

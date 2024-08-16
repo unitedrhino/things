@@ -29,6 +29,7 @@ type (
 	DeviceCountInfo                   = dm.DeviceCountInfo
 	DeviceCountReq                    = dm.DeviceCountReq
 	DeviceCountResp                   = dm.DeviceCountResp
+	DeviceError                       = dm.DeviceError
 	DeviceGatewayBindDevice           = dm.DeviceGatewayBindDevice
 	DeviceGatewayIndexReq             = dm.DeviceGatewayIndexReq
 	DeviceGatewayIndexResp            = dm.DeviceGatewayIndexResp
@@ -43,6 +44,8 @@ type (
 	DeviceInfoDeleteReq               = dm.DeviceInfoDeleteReq
 	DeviceInfoIndexReq                = dm.DeviceInfoIndexReq
 	DeviceInfoIndexResp               = dm.DeviceInfoIndexResp
+	DeviceInfoMultiBindReq            = dm.DeviceInfoMultiBindReq
+	DeviceInfoMultiBindResp           = dm.DeviceInfoMultiBindResp
 	DeviceInfoMultiUpdateReq          = dm.DeviceInfoMultiUpdateReq
 	DeviceInfoReadReq                 = dm.DeviceInfoReadReq
 	DeviceModuleVersion               = dm.DeviceModuleVersion
@@ -214,6 +217,7 @@ type (
 		// 获取设备信息详情
 		DeviceInfoRead(ctx context.Context, in *DeviceInfoReadReq, opts ...grpc.CallOption) (*DeviceInfo, error)
 		DeviceInfoBind(ctx context.Context, in *DeviceInfoBindReq, opts ...grpc.CallOption) (*Empty, error)
+		DeviceInfoMultiBind(ctx context.Context, in *DeviceInfoMultiBindReq, opts ...grpc.CallOption) (*DeviceInfoMultiBindResp, error)
 		DeviceInfoCanBind(ctx context.Context, in *DeviceInfoCanBindReq, opts ...grpc.CallOption) (*Empty, error)
 		DeviceInfoUnbind(ctx context.Context, in *DeviceCore, opts ...grpc.CallOption) (*Empty, error)
 		DeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error)
@@ -355,6 +359,15 @@ func (m *defaultDeviceManage) DeviceInfoBind(ctx context.Context, in *DeviceInfo
 
 func (d *directDeviceManage) DeviceInfoBind(ctx context.Context, in *DeviceInfoBindReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.DeviceInfoBind(ctx, in)
+}
+
+func (m *defaultDeviceManage) DeviceInfoMultiBind(ctx context.Context, in *DeviceInfoMultiBindReq, opts ...grpc.CallOption) (*DeviceInfoMultiBindResp, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceInfoMultiBind(ctx, in, opts...)
+}
+
+func (d *directDeviceManage) DeviceInfoMultiBind(ctx context.Context, in *DeviceInfoMultiBindReq, opts ...grpc.CallOption) (*DeviceInfoMultiBindResp, error) {
+	return d.svr.DeviceInfoMultiBind(ctx, in)
 }
 
 func (m *defaultDeviceManage) DeviceInfoCanBind(ctx context.Context, in *DeviceInfoCanBindReq, opts ...grpc.CallOption) (*Empty, error) {
