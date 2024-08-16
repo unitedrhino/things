@@ -267,7 +267,7 @@ type (
     }
     DeviceMultiImportRow {
         Row int64 `json:"row"`                  //【提示】数据所在表格行
-        ProductName string `json:"productName"` //【必填】产品名称
+        ProductID string `json:"productID"` //【必填】产品ID
         DeviceName string `json:"deviceName"`   //【必填】设备名称
         DeviceAlias string `json:"deviceAlias"` //【选填】设备别名
         Secret string `json:"secret"`           //【选填】设备秘钥

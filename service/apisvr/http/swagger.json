@@ -8258,9 +8258,9 @@
           "format": "int64",
           "description": "【提示】数据所在表格行"
         },
-        "productName": {
+        "productID": {
           "type": "string",
-          "description": "【必填】产品名称"
+          "description": "【必填】产品ID"
         },
         "deviceName": {
           "type": "string",
@@ -8298,7 +8298,7 @@
       "title": "DeviceMultiImportRow",
       "required": [
         "row",
-        "productName",
+        "productID",
         "deviceName",
         "deviceAlias",
         "secret",

@@ -96,7 +96,7 @@ func (l *MultiImportLogic) MultiImport(req *types.DeviceMultiImportReq, rows [][
 func (l *MultiImportLogic) deviceMultiImportRowToDto(idx int64, cell []string) *types.DeviceMultiImportRow {
 	return &types.DeviceMultiImportRow{
 		Row:         idx,
-		ProductName: strings.TrimSpace(utils.SliceIndex(cell, 0, "")),
+		ProductID:   strings.TrimSpace(utils.SliceIndex(cell, 0, "")),
 		DeviceName:  strings.TrimSpace(utils.SliceIndex(cell, 1, "")),
 		DeviceAlias: strings.TrimSpace(utils.SliceIndex(cell, 2, "")),
 		Secret:      strings.TrimSpace(utils.SliceIndex(cell, 3, "")),
@@ -115,10 +115,10 @@ func (l *MultiImportLogic) deviceMultiImportRowToDeviceInfo(importRow *types.Dev
 		deviceInfo  = &dm.DeviceInfo{}
 	)
 
-	if importRow.ProductName == "" {
-		return nil, errors.Parameter.WithMsg("缺少必填的产品名称")
+	if importRow.ProductID == "" {
+		return nil, errors.Parameter.WithMsg("缺少必填的产品ID")
 	} else {
-		deviceInfo.ProductName = importRow.ProductName
+		deviceInfo.ProductID = importRow.ProductID
 	}
 
 	if importRow.DeviceName == "" {
@@ -134,7 +134,7 @@ func (l *MultiImportLogic) deviceMultiImportRowToDeviceInfo(importRow *types.Dev
 		deviceInfo.Secret = importRow.Secret
 	}
 
-	if strings.Contains(strings.ToLower(importRow.ProductName), demoDataTag) ||
+	if strings.Contains(strings.ToLower(importRow.ProductID), demoDataTag) ||
 		strings.Contains(strings.ToLower(importRow.DeviceName), demoDataTag) {
 		return nil, errors.Parameter.WithMsg("请勿上传模板Demo数据")
 	}
