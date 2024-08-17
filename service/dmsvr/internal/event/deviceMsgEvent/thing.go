@@ -745,8 +745,7 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 	if l.dreq.NoAsk() { //如果不需要回复
 		respMsg = nil
 	}
-
-	_ = l.svcCtx.HubLogRepo.Insert(l.ctx, &deviceLog.Hub{
+	hub := &deviceLog.Hub{
 		ProductID:   msg.ProductID,
 		Action:      action,
 		Timestamp:   time.Now(), // 操作时间
@@ -757,6 +756,12 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 		Topic:       msg.Topic,
 		ResultCode:  errors.Fmt(err).GetCode(),
 		RespPayload: respMsg.GetPayload(),
+	}
+	_ = l.svcCtx.HubLogRepo.Insert(l.ctx, hub)
+	l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDevicePublish, hub, map[string]any{
+		"productID":  msg.ProductID,
+		"deviceName": msg.DeviceName,
 	})
+
 	return
 }

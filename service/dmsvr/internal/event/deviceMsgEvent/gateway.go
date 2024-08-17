@@ -62,9 +62,9 @@ func (l *GatewayLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Pub
 		resp, err = l.HandleStatus(msg)
 	}
 	respStr, _ := json.Marshal(resp)
-	l.svcCtx.HubLogRepo.Insert(l.ctx, &deviceLog.Hub{
+	hub := &deviceLog.Hub{
 		ProductID:   msg.ProductID,
-		Action:      "gateway",
+		Action:      deviceLog.ActionTypeGateway,
 		Timestamp:   time.Now(), // 记录当前时间
 		DeviceName:  msg.DeviceName,
 		TraceID:     utils.TraceIdFromContext(l.ctx),
@@ -73,6 +73,11 @@ func (l *GatewayLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Pub
 		Topic:       msg.Topic,
 		ResultCode:  errors.Fmt(err).GetCode(),
 		RespPayload: respMsg.GetPayload(),
+	}
+	l.svcCtx.HubLogRepo.Insert(l.ctx, hub)
+	l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDevicePublish, hub, map[string]any{
+		"productID":  msg.ProductID,
+		"deviceName": msg.DeviceName,
 	})
 	return &deviceMsg.PublishMsg{
 		Handle:       msg.Handle,

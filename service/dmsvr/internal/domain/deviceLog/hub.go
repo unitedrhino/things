@@ -6,18 +6,30 @@ import (
 	"time"
 )
 
+type ActionType = string
+
+const (
+	ActionTypeGateway  ActionType = "gateway"  //网关操作子设备
+	ActionTypeOta      ActionType = "ota"      //ota升级消息
+	ActionTypeProperty ActionType = "property" //物模型属性消息
+	ActionTypeEvent    ActionType = "event"    //事件消息
+	ActionTypeAction   ActionType = "action"   //行为消息
+	ActionTypeExt      ActionType = "ext"      //拓展消息
+	ActionTypeNtp      ActionType = "ntp"      //获取时间
+)
+
 type (
 	Hub struct {
-		ProductID   string    `json:"productID"`   // 产品id
-		DeviceName  string    `json:"deviceName"`  // 设备名称
-		Content     string    `json:"content"`     // 具体信息
-		Topic       string    `json:"topic"`       // 主题
-		Action      string    `json:"action"`      // 操作类型
-		Timestamp   time.Time `json:"timestamp"`   // 操作时间
-		RequestID   string    `json:"requestID"`   // 请求ID
-		TraceID     string    `json:"traceID"`     // 服务器端事务id
-		ResultCode  int64     `json:"resultCode"`  // 请求结果状态,200为成功
-		RespPayload string    `json:"respPayload"` //返回的内容
+		ProductID   string     `json:"productID"`             // 产品id
+		DeviceName  string     `json:"deviceName"`            // 设备名称
+		Content     string     `json:"content,omitempty"`     // 具体信息
+		Topic       string     `json:"topic,omitempty"`       // 主题
+		Action      ActionType `json:"action,omitempty"`      // 操作类型
+		Timestamp   time.Time  `json:"timestamp,omitempty"`   // 操作时间
+		RequestID   string     `json:"requestID,omitempty"`   // 请求ID
+		TraceID     string     `json:"traceID,omitempty"`     // 服务器端事务id
+		ResultCode  int64      `json:"resultCode,omitempty"`  // 请求结果状态,200为成功
+		RespPayload string     `json:"respPayload,omitempty"` //返回的内容
 	}
 	HubFilter struct {
 		ProductID  string   // 产品id

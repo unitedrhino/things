@@ -27,7 +27,7 @@ const (
 	ConfigOptDelete
 )
 
-type SyncDevicesFunc[pConf ConfImp] func(ctx context.Context, conf pConf, productID string) error
+type SyncDevicesFunc[pConf ConfImp] func(ctx context.Context, conf pConf, product *dm.ProductInfo) error
 
 type CloudProtocol[pConf ConfImp] struct {
 	ConfMap      map[string]ConfInfo[pConf]
@@ -164,12 +164,11 @@ func (p *CloudProtocol[pConf]) RegisterDeviceSync(fieldName string /*自定义�
 			if key == "" {
 				continue
 			}
-			productID := pi.ProtocolConf[p.ThirdProductIDFieldName]
 			c := p.GetConf(key)
 			if c == nil {
 				continue
 			}
-			f(ctx, *c, productID)
+			f(ctx, *c, pi)
 		}
 		return nil
 	})

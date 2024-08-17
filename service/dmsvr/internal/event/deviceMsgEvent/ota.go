@@ -60,9 +60,9 @@ func (l *OtaLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publish
 	if l.dreq.NoAsk() { //如果不需要回复
 		respMsg = nil
 	}
-	l.svcCtx.HubLogRepo.Insert(l.ctx, &deviceLog.Hub{
+	hub := &deviceLog.Hub{
 		ProductID:   msg.ProductID,
-		Action:      "otaLog",
+		Action:      deviceLog.ActionTypeOta,
 		Timestamp:   l.dreq.GetTimeStamp(), // 操作时间
 		DeviceName:  msg.DeviceName,
 		TraceID:     utils.TraceIdFromContext(l.ctx),
@@ -71,6 +71,11 @@ func (l *OtaLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publish
 		Topic:       msg.Topic,
 		ResultCode:  errors.Fmt(err).GetCode(),
 		RespPayload: respMsg.GetPayload(),
+	}
+	l.svcCtx.HubLogRepo.Insert(l.ctx, hub)
+	l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDevicePublish, hub, map[string]any{
+		"productID":  msg.ProductID,
+		"deviceName": msg.DeviceName,
 	})
 	return
 }

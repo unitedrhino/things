@@ -3,6 +3,7 @@ package deviceMsgEvent
 import (
 	"context"
 	"encoding/json"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgExt"
@@ -126,8 +127,7 @@ func (l *ExtLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publish
 	if l.dreq.NoAsk() { //如果不需要回复
 		respMsg = nil
 	}
-
-	_ = l.svcCtx.HubLogRepo.Insert(l.ctx, &deviceLog.Hub{
+	hub := &deviceLog.Hub{
 		ProductID:   msg.ProductID,
 		Action:      action,
 		Timestamp:   time.Now(), // 操作时间
@@ -138,6 +138,11 @@ func (l *ExtLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publish
 		Topic:       msg.Topic,
 		ResultCode:  errors.Fmt(err).GetCode(),
 		RespPayload: respMsg.GetPayload(),
+	}
+	_ = l.svcCtx.HubLogRepo.Insert(l.ctx, hub)
+	l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDevicePublish, hub, map[string]any{
+		"productID":  msg.ProductID,
+		"deviceName": msg.DeviceName,
 	})
 	return
 }
