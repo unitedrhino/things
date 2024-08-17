@@ -17,7 +17,6 @@ import (
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
-	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/shadow"
@@ -26,6 +25,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/internal/repo/cache"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
+	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
@@ -335,7 +335,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 func (l *ThingLogic) HandlePropertyReportInfo(msg *deviceMsg.PublishMsg, req msgThing.Req) (respMsg *deviceMsg.PublishMsg, err error) {
 	dev := devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName}
 	diDeviceBasicInfoDo := &msgThing.DeviceBasicInfo{Core: dev}
-	if err = gconv.Struct(req.Params, diDeviceBasicInfoDo); err != nil {
+	if err = mapstructure.Decode(req.Params, diDeviceBasicInfoDo); err != nil {
 		return nil, err
 	}
 

@@ -162,6 +162,9 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 		//设备影子模式
 		err = shadow.CheckEnableShadow(param, l.model)
 		if err != nil {
+			if !isOnline && in.ShadowControl == shadow.ControlAuto { //如果是自动且不在线的模式
+				err = errors.NotOnline
+			}
 			return nil, err
 		}
 		err = relationDB.NewShadowRepo(l.ctx).MultiUpdate(l.ctx, shadow.NewInfo(in.ProductID, in.DeviceName, param))
