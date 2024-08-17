@@ -39,8 +39,12 @@ func (l *ProtocolInfoUpdateLogic) ProtocolInfoUpdate(in *dm.ProtocolInfo) (*dm.E
 	old.Name = newPo.Name
 	old.TransProtocol = newPo.TransProtocol
 	old.Desc = newPo.Desc
-	old.ConfigFields = newPo.ConfigFields
-	old.ConfigInfos = newPo.ConfigInfos
+	if newPo.ConfigFields != nil {
+		old.ConfigFields = newPo.ConfigFields
+	}
+	if newPo.ConfigInfos != nil {
+		old.ConfigInfos = newPo.ConfigInfos
+	}
 	old.Endpoints = newPo.Endpoints
 	old.EtcdKey = newPo.EtcdKey
 	if err := protocol.Check(old.ConfigFields, old.ConfigInfos); err != nil {
