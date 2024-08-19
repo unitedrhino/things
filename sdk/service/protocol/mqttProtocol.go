@@ -100,10 +100,6 @@ type (
 )
 
 const (
-	ActionConnected    = "connected"
-	ActionDisconnected = "disconnected"
-)
-const (
 	DeviceMqttDevice   = "device:mqtt:device"
 	DeviceMqttClientID = "device:mqtt:clientID"
 	DeviceLastActivity = "device:lastActivity"
@@ -181,9 +177,9 @@ func (m *MqttProtocol) SubscribeDevConn(handle ConnHandle) error {
 		if strings.HasSuffix(topic, "/disconnected") {
 			logx.WithContext(ctx).Infof("%s.disconnected topic:%v message:%v err:%v",
 				utils.FuncName(), topic, string(payload), err)
-			do.Action = ActionDisconnected
+			do.Action = devices.ActionDisconnected
 		} else {
-			do.Action = ActionConnected
+			do.Action = devices.ActionConnected
 			logx.WithContext(ctx).Infof("%s.connected topic:%v message:%v err:%v",
 				utils.FuncName(), topic, string(payload), err)
 		}
@@ -209,9 +205,9 @@ func (m *MqttProtocol) SubscribeDevConn(handle ConnHandle) error {
 		}
 		newDo.ClientID = fmt.Sprintf("%s&%s", newDo.ProductID, newDo.DeviceName)
 		switch do.Action {
-		case ActionConnected:
+		case devices.ActionConnected:
 			err = m.FastEvent.Publish(ctx, topics.DeviceUpStatusConnected, newDo)
-		case ActionDisconnected:
+		case devices.ActionDisconnected:
 			err = m.FastEvent.Publish(ctx, topics.DeviceUpStatusDisconnected, newDo)
 		default:
 			panic("not support conn type")

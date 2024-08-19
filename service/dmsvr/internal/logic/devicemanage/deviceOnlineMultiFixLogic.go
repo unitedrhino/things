@@ -49,7 +49,7 @@ func (l *DeviceOnlineMultiFixLogic) DeviceOnlineMultiFix(in *dm.DeviceOnlineMult
 				action = devices.ActionDisconnected
 			}
 			insertList = append(insertList, &deviceStatus.ConnectMsg{
-				Device: &devices.Core{
+				Device: devices.Core{
 					ProductID:  ld.ProductID,
 					DeviceName: ld.DeviceName,
 				},
@@ -82,7 +82,7 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 			status = def.DisConnectedStatus
 		}
 		var ld *deviceAuth.LoginDevice
-		if msg.Device != nil {
+		if msg.Device.DeviceName != "" {
 			ld = &deviceAuth.LoginDevice{
 				ProductID:  msg.Device.ProductID,
 				DeviceName: msg.Device.DeviceName,
@@ -146,7 +146,7 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 				} else {
 					for _, v := range subDevs {
 						subDeviceInsert = append(subDeviceInsert, &deviceStatus.ConnectMsg{Action: msg.Action,
-							Device: &devices.Core{ProductID: v.ProductID, DeviceName: v.DeviceName}})
+							Device: devices.Core{ProductID: v.ProductID, DeviceName: v.DeviceName}})
 					}
 				}
 			}

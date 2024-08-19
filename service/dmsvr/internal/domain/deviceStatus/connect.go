@@ -12,7 +12,7 @@ import (
 // 连接和断连消息信息
 type ConnectMsg struct {
 	ClientID  string
-	Device    *devices.Core
+	Device    devices.Core
 	Username  string
 	Timestamp time.Time
 	Address   string
@@ -40,6 +40,10 @@ func GetDevConnMsg(ctx context.Context, data []byte) (*ConnectMsg, error) {
 		Address:   logInfo.Address,
 		Action:    logInfo.Action,
 		Reason:    logInfo.Reason,
+		Device: devices.Core{
+			ProductID:  logInfo.ProductID,
+			DeviceName: logInfo.DeviceName,
+		},
 	}
 	return &ele, nil
 }

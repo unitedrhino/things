@@ -2,7 +2,6 @@ package deviceMsgEvent
 
 import (
 	"context"
-	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/deviceAuth"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/domain/schema"
@@ -31,17 +30,15 @@ func NewDisconnectedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Disc
 }
 func (l *DisconnectedLogic) Handle(msg *deviceStatus.ConnectMsg) error {
 	l.Infof("%s req=%+v", utils.FuncName(), utils.Fmt(msg))
+	dev := msg.Device
 	ld, err := deviceAuth.GetClientIDInfo(msg.ClientID)
-	if err != nil {
+	if err != nil && dev.DeviceName == "" {
 		return err
 	}
-	if ld.IsNeedRegister {
+	if ld != nil && ld.IsNeedRegister {
 		return nil
 	}
-	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
-		ProductID:  ld.ProductID,
-		DeviceName: ld.DeviceName,
-	})
+	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, dev)
 	if err != nil {
 		return err
 	}

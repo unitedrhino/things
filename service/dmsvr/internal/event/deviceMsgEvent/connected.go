@@ -52,13 +52,13 @@ func (l *ConnectedLogic) UpdateLoginTime() {
 func (l *ConnectedLogic) Handle(msg *deviceStatus.ConnectMsg) error {
 	l.Infof("%s req=%+v", utils.FuncName(), utils.Fmt(msg))
 	ld, err := deviceAuth.GetClientIDInfo(msg.ClientID)
-	if err != nil {
+	if err != nil && msg.Device.DeviceName == "" {
 		return err
 	}
-	if ld.IsNeedRegister {
+	if ld != nil && ld.IsNeedRegister {
 		return nil
 	}
-	if msg.Device != nil {
+	if msg.Device.DeviceName == "" {
 		ld = &deviceAuth.LoginDevice{
 			ProductID:  msg.Device.ProductID,
 			DeviceName: msg.Device.DeviceName,

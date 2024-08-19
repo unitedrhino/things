@@ -5,9 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"gitee.com/i-Things/share/conf"
+	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/eventBus"
+	"gitee.com/i-Things/share/events/topics"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/mitchellh/mapstructure"
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/zrpc"
 	"sync"
 	"time"
@@ -226,5 +230,21 @@ func (p *CloudProtocol[pConf]) RegisterConfigChange() error {
 			err = p.UpdateConfig(ctx, conf)
 			return err
 		})
+	return err
+}
+
+func (p *CloudProtocol[pConf]) ReportDevConn(ctx context.Context, conn devices.DevConn) (err error) {
+	switch conn.Action {
+	case devices.ActionConnected:
+		err = p.FastEvent.Publish(ctx, topics.DeviceUpStatusConnected, conn)
+	case devices.ActionDisconnected:
+		err = p.FastEvent.Publish(ctx, topics.DeviceUpStatusDisconnected, conn)
+	default:
+		panic("not support conn type")
+	}
+	if err != nil {
+		logx.Errorf("%s.publish  err:%v", utils.FuncName(), err)
+		return err
+	}
 	return err
 }
