@@ -27,7 +27,7 @@ func NewSceneInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Sc
 }
 
 func (l *SceneInfoIndexLogic) SceneInfoIndex(in *ud.SceneInfoIndexReq) (*ud.SceneInfoIndexResp, error) {
-	f := relationDB.SceneInfoFilter{AreaID: in.AreaID, Tag: in.Tag, Status: in.Status, Name: in.Name,
+	f := relationDB.SceneInfoFilter{AreaID: in.AreaID, IsCommon: in.IsCommon, Tag: in.Tag, Status: in.Status, Name: in.Name,
 		Type: in.Type, HasActionType: in.HasActionType, IDs: in.SceneIDs, ProductID: in.ProductID, DeviceName: in.DeviceName}
 	list, err := relationDB.NewSceneInfoRepo(l.ctx).FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page).WithDefaultOrder(stores.OrderBy{
 		Field: "createdTime",

@@ -3,6 +3,7 @@ package relationDB
 import (
 	"context"
 	"fmt"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
 	"gorm.io/gorm"
@@ -30,6 +31,7 @@ type SceneInfoFilter struct {
 	Status        int64
 	Type          string
 	Tag           string
+	IsCommon      def.Bool
 	AreaID        int64
 	DeviceMode    scene.DeviceMode //设备模式
 	ProductID     string           //产品id
@@ -45,6 +47,9 @@ func (p SceneInfoRepo) fmtFilter(ctx context.Context, f SceneInfoFilter) *gorm.D
 	}
 	if f.ProjectID != 0 {
 		db = db.Where("project_id = ?", f.ProjectID)
+	}
+	if f.IsCommon != 0 {
+		db = db.Where("is_common = ?", f.IsCommon)
 	}
 	if f.AreaID != 0 {
 		db = db.Where("area_id = ?", f.AreaID)
