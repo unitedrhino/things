@@ -172,7 +172,10 @@ func (p *CloudProtocol[pConf]) RegisterDeviceSync(fieldName string /*自定义�
 			if c == nil {
 				continue
 			}
-			f(ctx, *c, pi)
+			err := f(ctx, *c, pi)
+			if err != nil {
+				logx.WithContext(ctx).Error(err)
+			}
 		}
 		return nil
 	})
