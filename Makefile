@@ -74,21 +74,21 @@ cp.etc:
 
 build.api:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@go build -o ./cmd/things/thingsvr ./service/apisvr
+	@go build -ldflags="-s -w" -o ./cmd/things/thingsvr ./service/apisvr
 
 
 build.dg:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@go build  -o ./cmd/things/dgsvr ./service/dgsvr
+	@go build -ldflags="-s -w"  -o ./cmd/things/dgsvr ./service/dgsvr
 
 build.dm:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@go build  -o ./cmd/things/dmsvr ./service/dmsvr
+	@go build -ldflags="-s -w"  -o ./cmd/things/dmsvr ./service/dmsvr
 
 
 build.ud:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>making $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@go build  -o ./cmd/things/udsvr ./service/udsvr
+	@go build -ldflags="-s -w"  -o ./cmd/things/udsvr ./service/udsvr
 
 
 run.api:

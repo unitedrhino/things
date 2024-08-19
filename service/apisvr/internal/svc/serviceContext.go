@@ -16,7 +16,6 @@ import (
 	"gitee.com/i-Things/share/eventBus"
 	"gitee.com/i-Things/share/oss"
 	"gitee.com/i-Things/share/utils"
-	"gitee.com/i-Things/share/verify"
 	ws "gitee.com/i-Things/share/websocket"
 	"github.com/i-Things/things/service/apisvr/internal/config"
 	"github.com/i-Things/things/service/dgsvr/client/deviceauth"
@@ -39,7 +38,6 @@ import (
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
 	"os"
-	"time"
 )
 
 type SvrClient struct {
@@ -69,7 +67,6 @@ type ServiceContext struct {
 	Config         config.Config
 	InitCtxsWare   rest.Middleware
 	CheckTokenWare rest.Middleware
-	Captcha        *verify.Captcha
 	OssClient      *oss.Client
 	OtaM           otamanage.OtaManage
 	ProductCache   dmExport.ProductCacheT
@@ -175,15 +172,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	logx.Must(err)
 	dc, err := dmExport.NewDeviceInfoCache(deviceM, serverMsg)
 	logx.Must(err)
-	captcha := verify.NewCaptcha(c.Captcha.ImgHeight, c.Captcha.ImgWidth,
-		c.Captcha.KeyLong, c.CacheRedis, time.Duration(c.Captcha.KeepTime)*time.Second)
 	uc, err := sysExport.NewUserInfoCache(ur, serverMsg)
 	logx.Must(err)
 	return &ServiceContext{
 		Config:         c,
 		CheckTokenWare: exportMiddleware.NewCheckTokenWareMiddleware(ur, ro, tm, lo).Handle,
 		InitCtxsWare:   ctxs.InitMiddleware,
-		Captcha:        captcha,
 		OssClient:      ossClient,
 		OtaM:           otaM,
 		Ws:             ws.MustNewServer(c.RestConf),
