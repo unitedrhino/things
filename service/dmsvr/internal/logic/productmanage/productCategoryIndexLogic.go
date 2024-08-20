@@ -2,6 +2,8 @@ package productmanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
+	"gitee.com/i-Things/share/errors"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
@@ -34,6 +36,17 @@ func (l *ProductCategoryIndexLogic) ProductCategoryIndex(in *dm.ProductCategoryI
 		piDB = relationDB.NewProductCategoryRepo(l.ctx)
 	)
 	f := relationDB.ProductCategoryFilter{Name: in.Name, ParentID: in.ParentID, IDs: in.Ids}
+	if in.ProjectID != 0 {
+		uc := ctxs.GetUserCtxNoNil(l.ctx)
+		if !uc.IsAdmin && uc.ProjectAuth[in.ProjectID] == nil { //如果没有项目的权限
+			return nil, errors.Permissions.AddMsg("没有项目权限")
+		}
+		pis, err := getProduct.GetData(l.ctx, in.ProjectID)
+		if err != nil {
+			return nil, err
+		}
+		f.ProductIDs = append(f.ProductIDs, *pis...)
+	}
 	size, err = piDB.CountByFilter(l.ctx, f)
 	if err != nil {
 		return nil, err

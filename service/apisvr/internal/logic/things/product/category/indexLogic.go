@@ -29,10 +29,11 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 
 func (l *IndexLogic) Index(req *types.ProductCategoryIndexReq) (resp *types.ProductCategoryIndexResp, err error) {
 	dmReq := &dm.ProductCategoryIndexReq{
-		Name:     req.Name,
-		Page:     logic.ToDmPageRpc(req.Page),
-		ParentID: req.ParentID,
-		Ids:      req.IDs,
+		Name:      req.Name,
+		Page:      logic.ToDmPageRpc(req.Page),
+		ParentID:  req.ParentID,
+		Ids:       req.IDs,
+		ProjectID: req.ProjectID,
 	}
 	dmResp, err := l.svcCtx.ProductM.ProductCategoryIndex(l.ctx, dmReq)
 	if err != nil {

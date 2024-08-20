@@ -63,7 +63,7 @@ service api {
     )
     @handler schemaMultiDelete
     post /schema/multi-delete (ProductCategorySchemaMultiSaveReq) returns ()
-    @doc "获取产品品类列表"
+    @doc "获取产品品类物模型列表"
     @handler schemaIndex
     post /schema/index (ProductCategorySchemaIndexReq) returns (ProductCategorySchemaIndexResp)
 }
@@ -101,6 +101,7 @@ type (
         Name string `json:"name,optional"` //过滤产品名称
         ParentID int64 `json:"parentID,optional"`
         IDs []int64 `json:"ids,optional"`//id过滤
+        ProjectID int64 `json:"projectID,string,optional"`                            //项目id,只获取项目下有设备的
     }
 
     ProductCategoryIndexResp  {

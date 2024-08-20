@@ -2,9 +2,13 @@ package productmanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/caches"
+	"gitee.com/i-Things/share/ctxs"
+	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
+	"time"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
@@ -26,6 +30,25 @@ func NewProductInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 	}
 }
 
+var (
+	getProduct *caches.Cache[[]string, int64]
+)
+
+func init() {
+	cache, err := caches.NewCache(caches.CacheConfig[[]string, int64]{
+		GetData: func(ctx context.Context, key int64) (*[]string, error) {
+			pis, err := relationDB.NewDeviceInfoRepo(ctx).FindProductIDsByFilter(ctx, relationDB.DeviceFilter{ProjectIDs: []int64{key}})
+			if err != nil {
+				return nil, err
+			}
+			return &pis, nil
+		},
+		ExpireTime: 10 * time.Minute,
+	})
+	logx.Must(err)
+	getProduct = cache
+}
+
 // 获取设备信息列表
 func (l *ProductInfoIndexLogic) ProductInfoIndex(in *dm.ProductInfoIndexReq) (*dm.ProductInfoIndexResp, error) {
 	var (
@@ -39,6 +62,17 @@ func (l *ProductInfoIndexLogic) ProductInfoIndex(in *dm.ProductInfoIndexReq) (*d
 		SceneMode: in.SceneMode, SceneModes: in.SceneModes, DeviceType: in.DeviceType, DeviceTypes: in.DeviceTypes, ProductName: in.ProductName, ProtocolCode: in.ProtocolCode,
 		Tags: in.Tags, ProductIDs: in.ProductIDs, WithProtocol: in.WithProtocol, WithCategory: in.WithCategory, ProtocolConf: in.ProtocolConf,
 		Statuses: in.Statuses, Status: in.Status, NetType: in.NetType,
+	}
+	if in.ProjectID != 0 {
+		uc := ctxs.GetUserCtxNoNil(l.ctx)
+		if !uc.IsAdmin && uc.ProjectAuth[in.ProjectID] == nil { //如果没有项目的权限
+			return nil, errors.Permissions.AddMsg("没有项目权限")
+		}
+		pis, err := getProduct.GetData(l.ctx, in.ProjectID)
+		if err != nil {
+			return nil, err
+		}
+		filter.ProductIDs = append(filter.ProductIDs, *pis...)
 	}
 	size, err = piDB.CountByFilter(l.ctx, filter)
 	if err != nil {
