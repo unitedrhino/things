@@ -3,8 +3,10 @@ package productmanagelogic
 import (
 	"context"
 	"fmt"
+	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/protocol"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
+	"gorm.io/gorm"
 	"regexp"
 
 	"gitee.com/i-Things/share/oss"
@@ -163,12 +165,48 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Empt
 		return nil, err
 	}
 
+	var schemas []*relationDB.DmProductSchema
+	if pi.CategoryID != 0 && pi.CategoryID != def.NotClassified { //如果选择了产品品类,需要获取该品类的物模型并绑定
+		var categoryIDs = []int64{def.RootNode}
+		if pi.CategoryID != def.RootNode {
+			pcs, err := relationDB.NewProductCategoryRepo(l.ctx).FindOne(l.ctx, pi.CategoryID)
+			if err != nil {
+				return nil, err
+			}
+			if pcs.IDPath != "" {
+				categoryIDs = append(categoryIDs, utils.GetIDPath(pcs.IDPath)...)
+			}
+		}
+		pcss, err := relationDB.NewCommonSchemaRepo(l.ctx).FindByFilter(l.ctx, relationDB.CommonSchemaFilter{
+			ProductCategoryIDs: categoryIDs,
+		}, nil)
+		if err != nil {
+			return nil, err
+		}
+		for _, pcs := range pcss {
+			pcs.Tag = schema.TagRequired
+			schemas = append(schemas, &relationDB.DmProductSchema{
+				ProductID:    pi.ProductID,
+				DmSchemaCore: pcs.DmSchemaCore,
+			})
+		}
+	}
+
 	err = l.InitProduct(pi)
 	if err != nil {
 		return nil, err
 	}
-
-	err = l.PiDB.Insert(l.ctx, pi)
+	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+		err = relationDB.NewProductInfoRepo(tx).Insert(l.ctx, pi)
+		if err != nil {
+			return err
+		}
+		err = relationDB.NewProductSchemaRepo(tx).MultiInsert(l.ctx, schemas)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
 	if err != nil {
 		l.Errorf("%s.Insert err=%+v", utils.FuncName(), err)
 		return nil, err

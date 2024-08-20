@@ -2,6 +2,7 @@ package schemamanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
@@ -47,23 +48,14 @@ func (l *CommonSchemaIndexLogic) CommonSchemaIndex(in *dm.CommonSchemaIndexReq) 
 	if in.ProductCategoryID != 0 {
 		var ProductCategoryIDs = []int64{in.ProductCategoryID}
 		if in.ProductCategoryWithFather {
+			ProductCategoryIDs = append(ProductCategoryIDs, def.RootNode)
 			pc, err := relationDB.NewProductCategoryRepo(l.ctx).FindOne(l.ctx, in.ProductCategoryID)
 			if err != nil {
 				return nil, err
 			}
 			ProductCategoryIDs = append(ProductCategoryIDs, utils.GetIDPath(pc.IDPath)...)
 		}
-		pcs, err := relationDB.NewProductCategorySchemaRepo(l.ctx).FindByFilter(l.ctx, relationDB.ProductCategorySchemaFilter{ProductCategoryIDs: ProductCategoryIDs}, nil)
-		if err != nil {
-			return nil, err
-		}
-		if len(pcs) == 0 {
-			return &dm.CommonSchemaIndexResp{}, nil
-		}
-		ids := utils.ToSliceWithFunc(pcs, func(in *relationDB.DmProductCategorySchema) string {
-			return in.Identifier
-		})
-		filter.Identifiers = append(filter.Identifiers, ids...)
+		filter.ProductCategoryIDs = ProductCategoryIDs
 	}
 	if in.AreaID != 0 {
 		cols, err := relationDB.NewDeviceInfoRepo(l.ctx).FindProductIDsByFilter(l.ctx, relationDB.DeviceFilter{AreaIDs: []int64{in.AreaID}})

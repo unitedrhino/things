@@ -40,7 +40,7 @@ func (l *CommonSchemaDeleteLogic) CommonSchemaDelete(in *dm.WithID) (*dm.Empty, 
 		return nil, err
 	}
 	count, err := relationDB.NewProductSchemaRepo(l.ctx).CountByFilter(l.ctx,
-		relationDB.ProductSchemaFilter{Identifiers: []string{po.Identifier}, Tag: 2})
+		relationDB.ProductSchemaFilter{Identifiers: []string{po.Identifier}, Tags: []int64{schema.TagRequired, schema.TagOptional}})
 	if err != nil {
 		return nil, err
 	}

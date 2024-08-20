@@ -229,7 +229,7 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 	}
 	rows, err := d.t.QueryContext(ctx, sqlStr, value...)
 	if err != nil {
-		return nil, err
+		return nil, errors.Fmt(err).AddDetailf("sql:%v", sqlStr)
 	}
 	var datas []map[string]any
 	stores.Scan(rows, &datas)

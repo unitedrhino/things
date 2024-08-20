@@ -36,13 +36,21 @@ func (l *ProductCategorySchemaMultiCreateLogic) ProductCategorySchemaMultiCreate
 	var productIDs []string
 	{
 		var productCategoryIDs = []int64{in.ProductCategoryID}
+		var idPath string
 		if in.ProductCategoryID != def.RootNode {
 			pc, err := pcDB.FindOne(l.ctx, in.ProductCategoryID)
 			if err != nil {
 				return nil, err
 			}
-			productCategoryIDs = append(productCategoryIDs, utils.GetIDPath(pc.IDPath)...)
+			idPath = pc.IDPath
 		}
+		pcs, err := pcDB.FindByFilter(l.ctx, relationDB.ProductCategoryFilter{IDPath: idPath}, nil)
+		if err != nil {
+			return nil, err
+		}
+		productCategoryIDs = append(productCategoryIDs, utils.ToSliceWithFunc(pcs, func(in *relationDB.DmProductCategory) int64 {
+			return in.ID
+		})...)
 		ps, err := relationDB.NewProductInfoRepo(l.ctx).FindByFilter(l.ctx, relationDB.ProductFilter{CategoryIDs: productCategoryIDs}, nil)
 		if err != nil {
 			return nil, err
@@ -118,7 +126,7 @@ func (l *ProductCategorySchemaMultiCreateLogic) ProductCategorySchemaMultiCreate
 				}
 				findProducts = utils.SliceToSet(ps)
 				var schemas []*relationDB.DmProductSchema
-				for _, v := range adds {
+				for _, v := range productIDs {
 					if _, ok := findProducts[v]; ok {
 						continue
 					}
