@@ -2,7 +2,7 @@
 
 # 本地安装goctl【非官方，请使用i-Things/go-zero】
 
-1. 本地将 `go-zero 项目克隆下来：  `git clone git@github.com:i-Things/go-zero.git`
+1. 本地将 `go-zero 项目克隆下来：  `git clone git@gitee.com:i-Things/go-zero.git`
 2. 到目录 `go-zero\tools\goctl 下 执行命令： `go install`
 3. 后续执行下面的各种goctl命令即可
 
