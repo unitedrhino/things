@@ -1053,6 +1053,7 @@ message DeviceInfo {
   string softInfo = 13; //模组软件版本 只读
   Point Position = 14;   //设备定位,默认百度坐标系
   google.protobuf.StringValue address = 15; // 所在地址 读写
+  google.protobuf.StringValue adcode = 45; // 地区编码 读写
   map<string, string> tags = 16;//设备标签
   int64 isOnline = 17; //在线状态  1离线 2在线 只读
   int64 firstLogin = 18; //激活时间 只读

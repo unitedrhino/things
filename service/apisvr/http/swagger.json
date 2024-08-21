@@ -6693,6 +6693,10 @@
           "type": "string",
           "description": "所在地址"
         },
+        "adcode": {
+          "type": "string",
+          "description": "地区编码"
+        },
         "tags": {
           "type": "array",
           "items": {

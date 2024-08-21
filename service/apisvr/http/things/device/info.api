@@ -121,6 +121,7 @@ type (
         Iccid          *string   `json:"iccid,optional,omitempty"`                        //SIM卡卡号
         Position *Point `json:"position,optional,omitempty"`                                        //设备定位,默认百度坐标系
         Address *string `json:"address,optional,omitempty"`                                         //所在地址
+        Adcode *string  `json:"adcode,optional,omitempty"`//地区编码
         Tags []*Tag `json:"tags,optional"`                                                // 设备tag
         SchemaAlias    map[string]string       `json:"schemaAlias,optional"` //设备物模型别名,如果是结构体类型则key为xxx.xxx
         IsOnline int64 `json:"isOnline,optional,range=[0:2]"`                                         // 在线状态  1离线 2在线 只读

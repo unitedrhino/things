@@ -41,7 +41,8 @@ type DmDeviceInfo struct {
 	MobileOperator     int64             `gorm:"column:mobile_operator;type:smallint;default:1;NOT NULL"`              // 移动运营商:1)移动 2)联通 3)电信 4)广电
 	Phone              sql.NullString    `gorm:"column:phone;type:varchar(20)"`                                        // 手机号
 	Iccid              sql.NullString    `gorm:"column:iccid;type:varchar(20)"`                                        // SIM卡卡号
-	Address            string            `gorm:"column:address;type:varchar(512);NOT NULL"`                            // 所在地址
+	Address            string            `gorm:"column:address;type:varchar(512);default:''"`                          // 所在地址
+	Adcode             string            `gorm:"column:adcode;type:varchar(125);default:''"`                           // 地区编码
 	Tags               map[string]string `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"`          // 设备标签
 	SchemaAlias        map[string]string `gorm:"column:schema_alias;type:json;serializer:json;NOT NULL;default:'{}'"`  // 设备物模型别名,如果是结构体类型则key为xxx.xxx
 	Rssi               int64             `gorm:"column:rssi;type:bigint;default:0;NOT NULL"`                           // 设备信号（信号极好[-55— 0]，信号好[-70— -55]，信号一般[-85— -70]，信号差[-100— -85]）

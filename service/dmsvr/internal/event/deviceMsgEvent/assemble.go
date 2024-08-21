@@ -50,6 +50,8 @@ func ToDmDevicesInfoReq(diDeviceBasicInfoDo *msgThing.DeviceBasicInfo) (dmDevice
 		Imei:           diDeviceBasicInfoDo.Imei,
 		Mac:            diDeviceBasicInfoDo.Mac,
 		Version:        utils.ToRpcNullString(diDeviceBasicInfoDo.Version),
+		Address:        utils.ToRpcNullString(diDeviceBasicInfoDo.Address),
+		Adcode:         utils.ToRpcNullString(diDeviceBasicInfoDo.Adcode),
 		HardInfo:       diDeviceBasicInfoDo.HardInfo,
 		MobileOperator: diDeviceBasicInfoDo.MobileOperator,
 		SoftInfo:       diDeviceBasicInfoDo.SoftInfo,

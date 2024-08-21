@@ -89,10 +89,11 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		Mac:                v.Mac,                         //MAC号信息 只读
 		Version:            utils.ToNullString(v.Version), //固件版本 读写
 		Rssi:               utils.ToEmptyInt64(v.Rssi),
-		HardInfo:           v.HardInfo,               //模组硬件型号 只读
-		SoftInfo:           v.SoftInfo,               //模组软件版本 只读
-		Position:           position,                 //设别定位（百度坐标）
-		Address:            &v.Address.Value,         //详细地址
+		HardInfo:           v.HardInfo,                    //模组硬件型号 只读
+		SoftInfo:           v.SoftInfo,                    //模组软件版本 只读
+		Position:           position,                      //设别定位（百度坐标）
+		Address:            utils.ToNullString(v.Address), //详细地址
+		Adcode:             utils.ToNullString(v.Adcode),
 		Tags:               logic.ToTagsType(v.Tags), //设备标签
 		ProtocolConf:       logic.ToTagsType(v.Tags),
 		SchemaAlias:        v.SchemaAlias, //设备物模型别名,如果是结构体类型则key为xxx.xxx

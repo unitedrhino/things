@@ -165,6 +165,9 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 	if data.Address != nil {
 		old.Address = data.Address.Value
 	}
+	if data.Adcode != nil {
+		old.Adcode = data.Adcode.Value
+	}
 	if data.Position != nil {
 		old.Position = logic.ToStorePoint(data.Position)
 	}
