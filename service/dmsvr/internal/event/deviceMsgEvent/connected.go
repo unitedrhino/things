@@ -90,9 +90,9 @@ func (l *ConnectedLogic) Handle(msg *deviceStatus.ConnectMsg) error {
 	//	return err
 	//}
 	//l.UpdateLoginTime()
-	//err = l.svcCtx.StatusRepo.Insert(l.ctx, &deviceLog.Status{
+	//err = l.svcCtx.StatusRepo.Insert(l.ctx, &deviceLog.Msg{
 	//	ProductID:  ld.ProductID,
-	//	Status:     def.ConnectedStatus,
+	//	Msg:     def.ConnectedStatus,
 	//	Timestamp:  msg.Timestamp, // 操作时间
 	//	DeviceName: ld.DeviceName,
 	//})

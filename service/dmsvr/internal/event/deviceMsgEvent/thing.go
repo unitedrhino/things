@@ -595,7 +595,7 @@ func (l *ThingLogic) HandleAction(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg
 			appMsg := application.ActionReport{
 				Device: core, Timestamp: timeStamp.UnixMilli(), ReqType: reqType, MsgToken: l.dreq.MsgToken,
 				ActionID: l.dreq.ActionID, Params: l.dreq.Params, Dir: schema.ActionDirUp,
-				Code: l.dreq.Code, Status: l.dreq.Msg,
+				Code: l.dreq.Code, Msg: l.dreq.Msg,
 			}
 			//应用事件通知-设备物模型事件上报通知 ↓↓↓
 			err := l.svcCtx.PubApp.DeviceThingActionReport(ctx, appMsg)
@@ -656,7 +656,7 @@ func (l *ThingLogic) HandleAction(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg
 			//应用事件通知-设备物模型事件上报通知 ↓↓↓
 			appMsg := application.ActionReport{
 				Device: core, Timestamp: timeStamp.UnixMilli(), ReqType: reqType, MsgToken: resp.MsgToken,
-				ActionID: resp.ActionID, Params: param, Dir: schema.ActionDirUp, Code: resp.Code, Status: resp.Msg,
+				ActionID: resp.ActionID, Params: param, Dir: schema.ActionDirUp, Code: resp.Code, Msg: resp.Msg,
 			}
 			err = l.svcCtx.PubApp.DeviceThingActionReport(ctx, appMsg)
 			if err != nil {
@@ -758,7 +758,7 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 		RespPayload: respMsg.GetPayload(),
 	}
 	_ = l.svcCtx.HubLogRepo.Insert(l.ctx, hub)
-	l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDevicePublish, hub, map[string]any{
+	l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDevicePublish, hub.ToApp(), map[string]any{
 		"productID":  msg.ProductID,
 		"deviceName": msg.DeviceName,
 	})

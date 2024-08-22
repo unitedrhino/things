@@ -3,6 +3,7 @@ package deviceLog
 import (
 	"context"
 	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/domain/application"
 	"time"
 )
 
@@ -46,3 +47,18 @@ type (
 		Insert(ctx context.Context, data *Hub) error
 	}
 )
+
+func (h Hub) ToApp() application.Hub {
+	return application.Hub{
+		ProductID:   h.ProductID,
+		DeviceName:  h.DeviceName,
+		Content:     h.Content,
+		Topic:       h.Topic,
+		Action:      h.Action,
+		Timestamp:   h.Timestamp.UnixMilli(),
+		RequestID:   h.RequestID,
+		TraceID:     h.TraceID,
+		ResultCode:  h.ResultCode,
+		RespPayload: h.RespPayload,
+	}
+}

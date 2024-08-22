@@ -21,7 +21,7 @@ func NewDeviceTimerIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 //func (l *DeviceTimerIndexLogic) DeviceTimerIndex(in *ud.DeviceTimerIndexReq) (*ud.DeviceTimerIndexResp, error) {
-//	f := relationDB.DeviceTimerInfoFilter{TriggerType: in.TriggerType, Status: in.Status}
+//	f := relationDB.DeviceTimerInfoFilter{TriggerType: in.TriggerType, Msg: in.Msg}
 //	total, err := relationDB.NewDeviceTimerInfoRepo(l.ctx).CountByFilter(l.ctx, f)
 //	if err != nil {
 //		return nil, err

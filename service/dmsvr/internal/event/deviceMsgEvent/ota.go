@@ -73,7 +73,7 @@ func (l *OtaLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publish
 		RespPayload: respMsg.GetPayload(),
 	}
 	l.svcCtx.HubLogRepo.Insert(l.ctx, hub)
-	l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDevicePublish, hub, map[string]any{
+	l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDevicePublish, hub.ToApp(), map[string]any{
 		"productID":  msg.ProductID,
 		"deviceName": msg.DeviceName,
 	})
@@ -121,7 +121,7 @@ func (l *OtaLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publish
 //					JobID:       job.ID,
 //					SrcVersion:  l.dreq.Params.Version,
 //					DestVersion: job.Firmware.Version,
-//					Status:      msgOta.DeviceStatusNotified,
+//					Msg:      msgOta.DeviceStatusNotified,
 //					Detail:      "设备主动拉取升级包",
 //				}
 //				err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).Insert(l.ctx, df)

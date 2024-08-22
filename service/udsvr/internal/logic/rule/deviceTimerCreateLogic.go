@@ -37,10 +37,10 @@ func NewDeviceTimerCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 //		Value:       in.Value,
 //		Name:        in.Name,
 //		LastRunTime: domain.GenLastRunTime(time.Now(), in.ExecAt),
-//		Status:      in.Status,
+//		Msg:      in.Msg,
 //	}
-//	if po.Status == 0 {
-//		po.Status = def.Enable
+//	if po.Msg == 0 {
+//		po.Msg = def.Enable
 //	}
 //	err := DeviceTimerCheck(l.ctx, &po)
 //	if err != nil {

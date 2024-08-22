@@ -140,7 +140,7 @@ func (l *ExtLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publish
 		RespPayload: respMsg.GetPayload(),
 	}
 	_ = l.svcCtx.HubLogRepo.Insert(l.ctx, hub)
-	l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDevicePublish, hub, map[string]any{
+	l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDevicePublish, hub.ToApp(), map[string]any{
 		"productID":  msg.ProductID,
 		"deviceName": msg.DeviceName,
 	})

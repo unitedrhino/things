@@ -71,9 +71,9 @@ func (l *DisconnectedLogic) Handle(msg *deviceStatus.ConnectMsg) error {
 	//	}
 	//}
 	//
-	//err = l.svcCtx.StatusRepo.Insert(l.ctx, &deviceLog.Status{
+	//err = l.svcCtx.StatusRepo.Insert(l.ctx, &deviceLog.Msg{
 	//	ProductID:  ld.ProductID,
-	//	Status:     def.DisConnectedStatus,
+	//	Msg:     def.DisConnectedStatus,
 	//	Timestamp:  msg.Timestamp, // 操作时间
 	//	DeviceName: ld.DeviceName,
 	//})

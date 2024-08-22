@@ -10,7 +10,7 @@ func (l *TimerHandle) DeviceTimer() error {
 	//		ctxs.GetUserCtx(ctx).AllProject = false
 	//	}()
 	//	db := stores.WithNoDebug(ctx, relationDB.NewDeviceTimerInfoRepo)
-	//	list, err := db.FindByFilter(ctx, relationDB.DeviceTimerInfoFilter{Status: def.True,
+	//	list, err := db.FindByFilter(ctx, relationDB.DeviceTimerInfoFilter{Msg: def.True,
 	//		ExecAt:      stores.CmpLte(utils.TimeToDaySec(now)),                                     //小于等于当前时间点(需要执行的)
 	//		LastRunTime: stores.CmpOr(stores.CmpLt(utils.GetZeroTime(now)), stores.CmpIsNull(true)), //当天未执行的
 	//		Repeat:      stores.CmpBinEq(int64(now.Weekday()), 1),                                   //当天需要执行
@@ -30,7 +30,7 @@ func (l *TimerHandle) DeviceTimer() error {
 	//				defer f() //数据库执行完成后就可以释放锁了
 	//				po.LastRunTime = utils.GetEndTime(now)
 	//				if po.ExecRepeat == 0 { //不重复执行的只执行一次
-	//					po.Status = def.False
+	//					po.Msg = def.False
 	//				}
 	//				db.Update(ctx, po)
 	//				if err != nil { //如果失败了下次还可以执行

@@ -31,7 +31,7 @@ func NewDeviceTimerUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 //	old.DataID = in.DataID
 //	old.Value = in.Value
 //	old.Name = in.Name
-//	old.Status = in.Status
+//	old.Msg = in.Msg
 //	old.LastRunTime = domain.GenLastRunTime(time.Now(), in.ExecAt)
 //
 //	err = DeviceTimerCheck(l.ctx, old)
