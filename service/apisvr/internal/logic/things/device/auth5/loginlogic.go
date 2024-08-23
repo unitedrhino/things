@@ -5,7 +5,6 @@ import (
 	"encoding/base64"
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/errors"
-	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/logic/things/device"
 	"github.com/i-Things/things/service/dgsvr/pb/dg"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
@@ -31,7 +30,6 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 }
 
 func (l *LoginLogic) Login(req *types.DeviceAuth5LoginReq) (resp *types.DeviceAuth5LoginResp, err error) {
-	l.Infof("%s req=%+v", utils.FuncName(), req)
 	var (
 		cert []byte
 	)

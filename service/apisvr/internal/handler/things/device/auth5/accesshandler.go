@@ -2,6 +2,7 @@ package auth5
 
 import (
 	"gitee.com/i-Things/share/result"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/logic/things/device/auth5"
 	"net/http"
 
@@ -20,6 +21,7 @@ func AccessHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := auth5.NewAccessLogic(r.Context(), svcCtx)
 		resp, err := l.Access(&req)
+		l.Infof("%s req=%v resp=%v err=%v", utils.FuncName(), utils.Fmt(req), utils.Fmt(resp), err)
 		result.HttpWithoutWrap(w, r, resp, err)
 	}
 }

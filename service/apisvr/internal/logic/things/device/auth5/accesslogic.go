@@ -4,7 +4,6 @@ import (
 	"context"
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/devices"
-	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/apisvr/internal/logic/things/device"
 	"github.com/i-Things/things/service/apisvr/internal/svc"
 	"github.com/i-Things/things/service/apisvr/internal/types"
@@ -28,7 +27,6 @@ func NewAccessLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AccessLogi
 }
 
 func (l *AccessLogic) Access(req *types.DeviceAuth5AccessReq) (resp *types.DeviceAuth5AccessResp, err error) {
-	l.Infof("%s req=%v", utils.FuncName(), req)
 	access := req.Action
 	//如果是
 	switch req.Action {
