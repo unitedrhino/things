@@ -32,7 +32,8 @@ func Init(svcCtx *svc.ServiceContext) {
 				logx.WithContext(ctx).Error(err)
 				return
 			}
-			for _, p := range pi.List {
+			for _, pp := range pi.List {
+				p := pp
 				func() {
 					protocolLinkMutex.Lock()
 					defer protocolLinkMutex.Unlock()
