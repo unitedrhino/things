@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
+	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
@@ -51,5 +52,27 @@ func (l *DeviceInfoReadLogic) DeviceInfoRead(in *dm.DeviceInfoReadReq) (*dm.Devi
 			return nil, err
 		}
 	}
-	return logic.ToDeviceInfo(l.ctx, l.svcCtx, di), nil
+	pb := logic.ToDeviceInfo(l.ctx, l.svcCtx, di)
+	if in.WithGateway && pb.DeviceType == def.DeviceTypeSubset {
+		gd, err := relationDB.NewGatewayDeviceRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.GatewayDeviceFilter{SubDevice: &devices.Core{
+			ProductID:  di.ProductID,
+			DeviceName: di.DeviceName,
+		}})
+		if err != nil && !errors.Cmp(err, errors.NotFind) {
+			return nil, err
+		}
+		if gd != nil {
+			ddi, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
+				ProductID:  gd.ProductID,
+				DeviceName: gd.DeviceName,
+			})
+			if err != nil && !errors.Cmp(err, errors.NotFind) {
+				return nil, err
+			}
+			if ddi != nil {
+				pb.Gateway = ddi
+			}
+		}
+	}
+	return pb, nil
 }

@@ -13,6 +13,9 @@ import (
 )
 
 func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo, withProperties []string, withProfiles []string, withOwner bool) *types.DeviceInfo {
+	if v == nil {
+		return nil
+	}
 	var properties map[string]*types.DeviceInfoWithProperty
 	var profiles map[string]string
 	var owner *types.UserCore
@@ -122,6 +125,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		CategoryID:         v.CategoryID,
 		UserID:             v.UserID,
 		Distributor:        utils.Copy[types.IDPath](v.Distributor),
+		Gateway:            InfoToApi(ctx, svcCtx, v.Gateway, nil, nil, false),
 	}
 }
 

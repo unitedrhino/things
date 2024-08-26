@@ -28,11 +28,11 @@ import (
 // 升级包附件列表
 type DmOtaFirmwareFile struct {
 	ID         int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	Name       string `gorm:"column:name;type:varchar(64)"`                 // 附件名称
-	FirmwareID int64  `gorm:"column:firmware_id;type:bigint;NOT NULL"`      // 固件id
-	Size       int64  `gorm:"column:size;type:bigint;NOT NULL"`             // 文件大小单位bit
-	FilePath   string `gorm:"column:file_path;type:varchar(2048);NOT NULL"` // 文件路径,拿来下载文件
-	Signature  string `gorm:"column:signature;type:char(32);NOT NULL"`      // 签名值
+	Name       string `gorm:"column:name;type:varchar(64)"`                // 附件名称
+	FirmwareID int64  `gorm:"column:firmware_id;type:bigint;NOT NULL"`     // 固件id
+	Size       int64  `gorm:"column:size;type:bigint;NOT NULL"`            // 文件大小单位bit
+	FilePath   string `gorm:"column:file_path;type:varchar(256);NOT NULL"` // 文件路径,拿来下载文件
+	Signature  string `gorm:"column:signature;type:char(32);NOT NULL"`     // 签名值
 	FileMd5    string `gorm:"column:file_md5;type:char(32);NOT NULL"`
 	stores.Time
 }

@@ -301,6 +301,7 @@ type DeviceInfo struct {
 	NeedConfirmVersion string                             `json:"needConfirmVersion,optional,omitempty"` //待确认升级的版本
 	UserID             int64                              `json:"userID,string,optional"`
 	Distributor        *IDPath                            `json:"distributor,optional,omitempty"`
+	Gateway            *DeviceInfo                        `json:"gateway,optional,omitempty"` //子设备绑定的网关信息,只读
 }
 
 type DeviceInfoBindReq struct {
@@ -379,6 +380,7 @@ type DeviceInfoReadReq struct {
 	WithProperties []string `json:"withProperties,optional"` //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表
 	WithProfiles   []string `json:"withProfiles,optional"`   //
 	WithOwner      bool     `json:"withOwner,optional"`      //同时获取拥有人的信息
+	WithGateway    bool     `json:"withGateway,optional"`    //同时返回子设备绑定的网关信息
 }
 
 type DeviceInfoSaveReq struct {

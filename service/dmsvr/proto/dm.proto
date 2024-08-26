@@ -1079,7 +1079,7 @@ message DeviceInfo {
   int64 userID =41;//拥有者的用户ID
   string productImg = 43; //产品图片
   int64   categoryID = 44;//产品品类
-
+  DeviceInfo Gateway =46;//子设备绑定的网关
 }
 
 message ProductInfo{
@@ -1176,6 +1176,7 @@ message DeviceError{
 message DeviceInfoReadReq{
   string   productID = 1; //产品id
   string  deviceName = 2; //设备名称
+  bool withGateway =3;//同时返回子设备的网关
 }
 
 message DeviceInfoMultiUpdateReq {

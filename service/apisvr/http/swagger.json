@@ -6790,6 +6790,10 @@
         },
         "distributor": {
           "$ref": "#/definitions/IDPath"
+        },
+        "gateway": {
+          "$ref": "#/definitions/DeviceInfo",
+          "description": "子设备绑定的网关信息,只读"
         }
       },
       "title": "DeviceInfo",
@@ -7117,6 +7121,11 @@
           "type": "boolean",
           "format": "boolean",
           "description": "同时获取拥有人的信息"
+        },
+        "withGateway": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "同时返回子设备绑定的网关信息"
         }
       },
       "title": "DeviceInfoReadReq",
