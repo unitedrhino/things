@@ -36,5 +36,5 @@ func (l *ReadLogic) Read(req *types.DeviceInfoReadReq) (resp *types.DeviceInfo, 
 		l.Errorf("%s.rpc.GetDeviceInfo req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
-	return things.InfoToApi(l.ctx, l.svcCtx, dmResp, req.WithProperties, req.WithProfiles, req.WithOwner), nil
+	return things.InfoToApi(l.ctx, l.svcCtx, dmResp, things.DeviceInfoWith{WithOwner: req.WithOwner, WithProperties: req.WithProperties, WithProfiles: req.WithProfiles}), nil
 }
