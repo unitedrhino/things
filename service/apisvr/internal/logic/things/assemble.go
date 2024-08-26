@@ -13,10 +13,10 @@ import (
 )
 
 type DeviceInfoWith struct {
-	WithProperties []string
-	WithProfiles   []string
-	WithOwner      bool
-	WithArea       bool
+	Properties []string
+	Profiles   []string
+	Owner      bool
+	Area       bool
 }
 
 func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo, w DeviceInfoWith) *types.DeviceInfo {
@@ -35,7 +35,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		Longitude: v.Position.Longitude, //经度
 		Latitude:  v.Position.Latitude,  //维度
 	}
-	if w.WithOwner && v.UserID > 0 {
+	if w.Owner && v.UserID > 0 {
 		ui, err := svcCtx.UserC.GetData(ctx, v.UserID)
 		if err != nil {
 			logx.WithContext(ctx).Error(err)
@@ -43,7 +43,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 			owner = utils.Copy[types.UserCore](ui)
 		}
 	}
-	if w.WithArea {
+	if w.Area {
 		a, err := svcCtx.AreaC.GetData(ctx, v.AreaID)
 		if err != nil {
 			logx.WithContext(ctx).Error(err)
@@ -51,12 +51,12 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 			area = utils.Copy[types.AreaInfo](a)
 		}
 	}
-	if w.WithProperties != nil {
+	if w.Properties != nil {
 		func() {
 			resp, err := svcCtx.DeviceMsg.PropertyLogLatestIndex(ctx, &dm.PropertyLogLatestIndexReq{
 				ProductID:  v.ProductID,
 				DeviceName: v.DeviceName,
-				DataIDs:    w.WithProperties,
+				DataIDs:    w.Properties,
 			})
 			if err != nil {
 				logx.WithContext(ctx).Errorf("%s.PropertyLatestIndex err:%v", utils.FuncName(), err)
@@ -74,13 +74,13 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 			}
 		}()
 	}
-	if w.WithProfiles != nil {
+	if w.Profiles != nil {
 		ret, err := svcCtx.DeviceM.DeviceProfileIndex(ctx, &dm.DeviceProfileIndexReq{
 			Device: &dm.DeviceCore{
 				ProductID:  v.ProductID,
 				DeviceName: v.DeviceName,
 			},
-			Codes: w.WithProfiles,
+			Codes: w.Profiles,
 		})
 		if err != nil {
 			logx.WithContext(ctx).Errorf("%s.DeviceProfileIndex err:%v", utils.FuncName(), err)

@@ -45,7 +45,7 @@ func (l *IndexLogic) Index(req *types.DeviceInfoIndexReq) (resp *types.DeviceInf
 		info := v
 		utils.Go(l.ctx, func() {
 			defer wait.Done()
-			pi := things.InfoToApi(l.ctx, l.svcCtx, info, things.DeviceInfoWith{WithArea: req.WithArea, WithOwner: req.WithOwner, WithProperties: req.WithProperties, WithProfiles: req.WithProfiles})
+			pi := things.InfoToApi(l.ctx, l.svcCtx, info, things.DeviceInfoWith{Area: req.WithArea, Owner: req.WithOwner, Properties: req.WithProperties, Profiles: req.WithProfiles})
 			mutex.Lock()
 			defer mutex.Unlock()
 			piMap[pi.ID] = pi
