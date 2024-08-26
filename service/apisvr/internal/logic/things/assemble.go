@@ -12,13 +12,21 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo, withProperties []string, withProfiles []string, withOwner bool) *types.DeviceInfo {
+type DeviceInfoWith struct {
+	WithProperties []string
+	WithProfiles   []string
+	WithOwner      bool
+	WithArea       bool
+}
+
+func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo, w DeviceInfoWith) *types.DeviceInfo {
 	if v == nil {
 		return nil
 	}
 	var properties map[string]*types.DeviceInfoWithProperty
 	var profiles map[string]string
 	var owner *types.UserCore
+	var area *types.AreaInfo
 	if err := ctxs.IsAdmin(ctx); err != nil {
 		v.Secret = ""
 		v.Cert = ""
@@ -27,7 +35,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		Longitude: v.Position.Longitude, //经度
 		Latitude:  v.Position.Latitude,  //维度
 	}
-	if withOwner && v.UserID > 0 {
+	if w.WithOwner && v.UserID > 0 {
 		ui, err := svcCtx.UserC.GetData(ctx, v.UserID)
 		if err != nil {
 			logx.WithContext(ctx).Error(err)
@@ -35,12 +43,20 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 			owner = utils.Copy[types.UserCore](ui)
 		}
 	}
-	if withProperties != nil {
+	if w.WithArea {
+		a, err := svcCtx.AreaC.GetData(ctx, v.AreaID)
+		if err != nil {
+			logx.WithContext(ctx).Error(err)
+		} else {
+			area = utils.Copy[types.AreaInfo](a)
+		}
+	}
+	if w.WithProperties != nil {
 		func() {
 			resp, err := svcCtx.DeviceMsg.PropertyLogLatestIndex(ctx, &dm.PropertyLogLatestIndexReq{
 				ProductID:  v.ProductID,
 				DeviceName: v.DeviceName,
-				DataIDs:    withProperties,
+				DataIDs:    w.WithProperties,
 			})
 			if err != nil {
 				logx.WithContext(ctx).Errorf("%s.PropertyLatestIndex err:%v", utils.FuncName(), err)
@@ -58,13 +74,13 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 			}
 		}()
 	}
-	if withProfiles != nil {
+	if w.WithProfiles != nil {
 		ret, err := svcCtx.DeviceM.DeviceProfileIndex(ctx, &dm.DeviceProfileIndexReq{
 			Device: &dm.DeviceCore{
 				ProductID:  v.ProductID,
 				DeviceName: v.DeviceName,
 			},
-			Codes: withProfiles,
+			Codes: w.WithProfiles,
 		})
 		if err != nil {
 			logx.WithContext(ctx).Errorf("%s.DeviceProfileIndex err:%v", utils.FuncName(), err)
@@ -125,7 +141,8 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		CategoryID:         v.CategoryID,
 		UserID:             v.UserID,
 		Distributor:        utils.Copy[types.IDPath](v.Distributor),
-		Gateway:            InfoToApi(ctx, svcCtx, v.Gateway, nil, nil, false),
+		Gateway:            InfoToApi(ctx, svcCtx, v.Gateway, DeviceInfoWith{}),
+		Area:               area,
 	}
 }
 

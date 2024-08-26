@@ -144,6 +144,7 @@ type (
         UserID int64  `json:"userID,string,optional"`
         Distributor *IDPath `json:"distributor,optional,omitempty"`
         Gateway *DeviceInfo `json:"gateway,optional,omitempty"`//子设备绑定的网关信息,只读
+        Area *AreaInfo `json:"area,optional,omitempty"` //区域信息
     }
 
 
@@ -245,6 +246,7 @@ type (
         HasOwner int64 `json:"hasOwner,optional"`//是否被人拥有,1为是 2为否
         UserID int64  `json:"userID,string,optional"`
         NetType int64 `json:"netType,optional,range=[0:8]"`                                           //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
+        WithArea bool `json:"withArea,optional"` //同时返回区域信息
     }
     DeviceInfoIndexResp  {
         List []*DeviceInfo `json:"list"`    //设备信息

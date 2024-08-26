@@ -4,12 +4,10 @@ import (
 	"gitee.com/i-Things/core/service/apisvr/exportMiddleware"
 	"gitee.com/i-Things/core/service/syssvr/client/areamanage"
 	"gitee.com/i-Things/core/service/syssvr/client/log"
-	"gitee.com/i-Things/core/service/syssvr/client/projectmanage"
 	role "gitee.com/i-Things/core/service/syssvr/client/rolemanage"
 	tenant "gitee.com/i-Things/core/service/syssvr/client/tenantmanage"
 	user "gitee.com/i-Things/core/service/syssvr/client/usermanage"
 	"gitee.com/i-Things/core/service/syssvr/sysExport"
-	"gitee.com/i-Things/core/service/syssvr/sysdirect"
 	"gitee.com/i-Things/share/caches"
 	"gitee.com/i-Things/share/conf"
 	"gitee.com/i-Things/share/ctxs"
@@ -57,7 +55,7 @@ type SvrClient struct {
 	UserDevice userdevice.UserDevice
 	UserM      user.UserManage
 	UserC      sysExport.UserCacheT
-	ProjectM   projectmanage.ProjectManage
+	AreaC      sysExport.AreaCacheT
 	AreaM      areamanage.AreaManage
 }
 
@@ -89,7 +87,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		otaM           otamanage.OtaManage
 		UserDevice     userdevice.UserDevice
 		Rule           rule.Rule
-		projectM       projectmanage.ProjectManage
 		areaM          areamanage.AreaManage
 	)
 	var ur user.UserManage
@@ -142,24 +139,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			Rule = uddirect.NewRule(c.UdRpc.RunProxy)
 		}
 	}
-	if c.SysRpc.Enable {
-		if c.SysRpc.Mode == conf.ClientModeGrpc {
-			ur = user.NewUserManage(zrpc.MustNewClient(c.SysRpc.Conf))
-			ro = role.NewRoleManage(zrpc.MustNewClient(c.SysRpc.Conf))
-			lo = log.NewLog(zrpc.MustNewClient(c.SysRpc.Conf))
-			areaM = areamanage.NewAreaManage(zrpc.MustNewClient(c.SysRpc.Conf))
-			tm = tenant.NewTenantManage(zrpc.MustNewClient(c.SysRpc.Conf))
-			projectM = projectmanage.NewProjectManage(zrpc.MustNewClient(c.SysRpc.Conf))
-		} else {
-			ur = sysdirect.NewUser(c.SysRpc.RunProxy)
-			ro = sysdirect.NewRole(c.SysRpc.RunProxy)
-			lo = sysdirect.NewLog(c.SysRpc.RunProxy)
-			areaM = sysdirect.NewAreaManage(c.SysRpc.RunProxy)
-			tm = sysdirect.NewTenantManage(c.SysRpc.RunProxy)
-			projectM = sysdirect.NewProjectManage(c.SysRpc.RunProxy)
-		}
-	}
 
+	ur = user.NewUserManage(zrpc.MustNewClient(c.SysRpc.Conf))
+	ro = role.NewRoleManage(zrpc.MustNewClient(c.SysRpc.Conf))
+	lo = log.NewLog(zrpc.MustNewClient(c.SysRpc.Conf))
+	areaM = areamanage.NewAreaManage(zrpc.MustNewClient(c.SysRpc.Conf))
+	tm = tenant.NewTenantManage(zrpc.MustNewClient(c.SysRpc.Conf))
 	ossClient, err := oss.NewOssClient(c.OssConf)
 	if err != nil {
 		logx.Errorf("NewOss err err:%v", err)
@@ -174,6 +159,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	logx.Must(err)
 	uc, err := sysExport.NewUserInfoCache(ur, serverMsg)
 	logx.Must(err)
+	areaC, err := sysExport.NewAreaInfoCache(areaM, serverMsg)
+	logx.Must(err)
 	return &ServiceContext{
 		Config:         c,
 		CheckTokenWare: exportMiddleware.NewCheckTokenWareMiddleware(ur, ro, tm, lo).Handle,
@@ -185,8 +172,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		DeviceCache:    dc,
 		SvrClient: SvrClient{
 			UserM:     ur,
-			ProjectM:  projectM,
 			ProtocolM: protocolM,
+			AreaC:     areaC,
 			SchemaM:   schemaM,
 			ProductM:  productM,
 			DeviceM:   deviceM,

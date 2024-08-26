@@ -41,7 +41,7 @@ func (l *IndexLogic) Index(req *types.GroupDeviceIndexReq) (resp *types.GroupDev
 		return nil, err
 	}
 	for _, v := range gd.List {
-		pi := things.InfoToApi(l.ctx, l.svcCtx, v, req.WithProperties, req.WithProfiles, false)
+		pi := things.InfoToApi(l.ctx, l.svcCtx, v, things.DeviceInfoWith{WithProperties: req.WithProperties, WithProfiles: req.WithProfiles})
 		list = append(list, pi)
 	}
 	return &types.GroupDeviceIndexResp{

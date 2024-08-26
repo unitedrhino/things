@@ -5961,6 +5961,24 @@
         "sceneIDs"
       ]
     },
+    "AreaInfo": {
+      "type": "object",
+      "properties": {
+        "projectID": {
+          "type": "string",
+          "description": "项目id（只读）"
+        },
+        "areaID": {
+          "type": "string",
+          "description": "项目区域id（只读）"
+        },
+        "areaName": {
+          "type": "string",
+          "description": "项目区域名称（读写）"
+        }
+      },
+      "title": "AreaInfo"
+    },
     "CodeReq": {
       "type": "object",
       "properties": {
@@ -6794,6 +6812,10 @@
         "gateway": {
           "$ref": "#/definitions/DeviceInfo",
           "description": "子设备绑定的网关信息,只读"
+        },
+        "area": {
+          "$ref": "#/definitions/AreaInfo",
+          "description": "区域信息"
         }
       },
       "title": "DeviceInfo",
@@ -7012,6 +7034,11 @@
           "format": "int64",
           "description": "通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网",
           "maximum": 8
+        },
+        "withArea": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "同时返回区域信息"
         }
       },
       "title": "DeviceInfoIndexReq"

@@ -57,7 +57,7 @@ func (l *IndexLogic) Index(req *types.DeviceGateWayIndexReq) (resp *types.Device
 		return nil, err
 	}
 	for _, v := range ret.List {
-		pi := things.InfoToApi(l.ctx, l.svcCtx, v, nil, nil, false)
+		pi := things.InfoToApi(l.ctx, l.svcCtx, v, things.DeviceInfoWith{})
 		pis = append(pis, pi)
 	}
 	return &types.DeviceGateWayIndexResp{

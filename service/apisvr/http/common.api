@@ -88,4 +88,9 @@ type(
         CmpTYpe string `json:"cmpTYpe"`//"=":相等 "!=":不相等 ">":大于">=":大于等于"<":小于"<=":小于等于 "like":模糊查询
         Value int64 `json:"value,string"`
     }
+    AreaInfo  {
+        ProjectID int64 `json:"projectID,string,optional"`       //项目id（只读）
+        AreaID int64 `json:"areaID,string,optional"`             //项目区域id（只读）
+        AreaName string `json:"areaName,optional"`               //项目区域名称（读写）
+    }
 )

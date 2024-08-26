@@ -83,6 +83,12 @@ type AlarmSceneMultiSaveReq struct {
 	SceneIDs []int64 `json:"sceneIDs"` //场景id
 }
 
+type AreaInfo struct {
+	ProjectID int64  `json:"projectID,string,optional"` //项目id（只读）
+	AreaID    int64  `json:"areaID,string,optional"`    //项目区域id（只读）
+	AreaName  string `json:"areaName,optional"`         //项目区域名称（读写）
+}
+
 type CodeReq struct {
 	Code string `json:"code"`
 }
@@ -302,6 +308,7 @@ type DeviceInfo struct {
 	UserID             int64                              `json:"userID,string,optional"`
 	Distributor        *IDPath                            `json:"distributor,optional,omitempty"`
 	Gateway            *DeviceInfo                        `json:"gateway,optional,omitempty"` //子设备绑定的网关信息,只读
+	Area               *AreaInfo                          `json:"area,optional,omitempty"`    //区域信息
 }
 
 type DeviceInfoBindReq struct {
@@ -352,6 +359,7 @@ type DeviceInfoIndexReq struct {
 	HasOwner          int64         `json:"hasOwner,optional"`  //是否被人拥有,1为是 2为否
 	UserID            int64         `json:"userID,string,optional"`
 	NetType           int64         `json:"netType,optional,range=[0:8]"` //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
+	WithArea          bool          `json:"withArea,optional"`            //同时返回区域信息
 }
 
 type DeviceInfoIndexResp struct {
