@@ -11,11 +11,13 @@ import (
 	"gitee.com/i-Things/share/domain/deviceMsg/msgOta"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
+	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"
+	"sync"
 	"time"
 )
 
@@ -190,30 +192,38 @@ func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirm
 	if jobInfo.IsNeedPush != def.True { //只有需要推送的才推送
 		return nil
 	}
+	var wait sync.WaitGroup
+	defer func() {
+		wait.Wait()
+	}()
 	pushDevice := func(devs []devices.Core, status int64, detail string) {
-		for _, df := range devs {
-			appMsg := application.OtaReport{
-				Device:    df,
-				Timestamp: time.Now().UnixMilli(), Status: status, Detail: detail,
+		wait.Add(1)
+		utils.Go(l.ctx, func() {
+			wait.Done()
+			for _, df := range devs {
+				appMsg := application.OtaReport{
+					Device:    df,
+					Timestamp: time.Now().UnixMilli(), Status: status, Detail: detail,
+				}
+				di, err := l.svcCtx.DeviceCache.GetData(l.ctx, df)
+				if err != nil {
+					l.Error(err)
+					continue
+				}
+				err = l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDeviceOtaReport, appMsg, map[string]any{
+					"productID":  di.ProductID,
+					"deviceName": di.DeviceName,
+				}, map[string]any{
+					"projectID": di.ProjectID,
+				}, map[string]any{
+					"projectID": cast.ToString(di.ProjectID),
+					"areaID":    cast.ToString(di.AreaID),
+				})
+				if err != nil {
+					l.Error(err)
+				}
 			}
-			di, err := l.svcCtx.DeviceCache.GetData(l.ctx, df)
-			if err != nil {
-				l.Error(err)
-				continue
-			}
-			err = l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDeviceOtaReport, appMsg, map[string]any{
-				"productID":  di.ProductID,
-				"deviceName": di.DeviceName,
-			}, map[string]any{
-				"projectID": di.ProjectID,
-			}, map[string]any{
-				"projectID": cast.ToString(di.ProjectID),
-				"areaID":    cast.ToString(di.AreaID),
-			})
-			if err != nil {
-				l.Error(err)
-			}
-		}
+		})
 	}
 	{ //处理超时设备,置为失败
 		f := relationDB.OtaFirmwareDeviceFilter{
@@ -316,7 +326,6 @@ func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirm
 				l.Error(err)
 			}
 		}
-
 	}
 	func() {
 		total, err := stores.WithNoDebug(l.ctx, relationDB.NewOtaFirmwareDeviceRepo).CountByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
