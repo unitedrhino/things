@@ -336,7 +336,17 @@ func (l *ThingLogic) HandlePropertyReportInfo(msg *deviceMsg.PublishMsg, req msg
 	dev := devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName}
 	diDeviceBasicInfoDo := &msgThing.DeviceBasicInfo{Core: dev}
 	if err = mapstructure.Decode(req.Params, diDeviceBasicInfoDo); err != nil {
-		return nil, err
+		pos, ok := req.Params["position"].(map[string]interface{})
+		if !ok {
+			return nil, err
+		}
+		pos["latitude"] = cast.ToFloat64(pos["latitude"])
+		pos["longitude"] = cast.ToFloat64(pos["longitude"])
+		req.Params["position"] = pos
+		err = mapstructure.Decode(req.Params, diDeviceBasicInfoDo)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	dmDeviceInfoReq := ToDmDevicesInfoReq(diDeviceBasicInfoDo)
