@@ -86,6 +86,9 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	if len(f.TenantCodes) != 0 {
 		db = db.Where("tenant_code in ?", f.TenantCodes)
 	}
+	if len(f.ProjectIDs) != 0 {
+		db = db.Where("project_id IN ?", f.ProjectIDs)
+	}
 	if f.TenantCode != "" {
 		db = db.Where("tenant_code = ?", f.TenantCode)
 	}
