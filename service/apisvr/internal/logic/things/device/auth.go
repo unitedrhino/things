@@ -81,6 +81,7 @@ func ThirdProtoLoginAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *t
 	protocolLinkMutex.RLock()
 	defer protocolLinkMutex.RUnlock()
 	for key, cli := range protocolLink {
+		var start = time.Now()
 		k := key
 		c := cli
 		wait.Add(1)
@@ -95,7 +96,7 @@ func ThirdProtoLoginAuth(ctx context.Context, svcCtx *svc.ServiceContext, req *t
 			})
 			if err == nil {
 				succ = true
-				logx.WithContext(runCtx).Infof("LoginAuth ProtocolKey:%v succ", k)
+				logx.WithContext(runCtx).Infof("LoginAuth ProtocolKey:%v succ use:%v", k, time.Now().Sub(start))
 				cancel()
 			}
 		})
