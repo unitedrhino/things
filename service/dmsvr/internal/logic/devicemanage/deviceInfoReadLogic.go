@@ -62,8 +62,8 @@ func (l *DeviceInfoReadLogic) DeviceInfoRead(in *dm.DeviceInfoReadReq) (*dm.Devi
 		}
 		if gd != nil {
 			ddi, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
-				ProductID:  gd.ProductID,
-				DeviceName: gd.DeviceName,
+				ProductID:  gd.GatewayProductID,
+				DeviceName: gd.GatewayDeviceName,
 			})
 			if err != nil && !errors.Cmp(err, errors.NotFind) {
 				return nil, err
