@@ -6,6 +6,13 @@ import (
 	"gitee.com/i-Things/share/devices"
 )
 
+type MsgType = string
+
+const (
+	MsgTypeSend    = "send" //控制下发
+	MsgTypePublish = "publish"
+)
+
 type ManageRepo interface {
 	InitProduct(ctx context.Context, productID string) error
 	InitDevice(ctx context.Context, device devices.Info) error

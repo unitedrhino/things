@@ -6,6 +6,7 @@ import (
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/stores"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/productCustom"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/protocol"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -67,6 +68,19 @@ type DmDeviceInfo struct {
 
 func (m *DmDeviceInfo) TableName() string {
 	return "dm_device_info"
+}
+
+// 设备信息表
+type DmDeviceMsgCount struct {
+	ID   int64             `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	Type deviceLog.MsgType `gorm:"column:type;index;type:VARCHAR(50);uniqueIndex:date_type;NOT NULL"` // 消息类型
+	Num  int64             `gorm:"column:num;type:bigint;default:0"`                                  //数量
+	Date time.Time         `gorm:"column:date;NOT NULL;uniqueIndex:date_type"`                        //统计的日期
+	stores.OnlyTime
+}
+
+func (m *DmDeviceMsgCount) TableName() string {
+	return "dm_device_msg_count"
 }
 
 var ClearDeviceInfo func(ctx context.Context, dev devices.Core) error

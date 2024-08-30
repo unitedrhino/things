@@ -8,6 +8,7 @@ import (
 	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/sdk/service/protocol"
+	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -33,7 +34,7 @@ func NewStaticHandle(ctx context.Context, svcCtx *svc.ServiceContext) *StaticHan
 
 func (l *StaticHandle) Handle() error { //产品品类设备数量统计
 	w := sync.WaitGroup{}
-	w.Add(3)
+	w.Add(4)
 	utils.Go(l.ctx, func() {
 		defer w.Done()
 		err := l.ProductCategoryStatic()
@@ -57,6 +58,13 @@ func (l *StaticHandle) Handle() error { //产品品类设备数量统计
 	utils.Go(l.ctx, func() {
 		defer w.Done()
 		err := l.DeviceOnlineFix()
+		if err != nil {
+			l.Error(err)
+		}
+	})
+	utils.Go(l.ctx, func() {
+		defer w.Done()
+		err := l.DeviceMsgCount()
 		if err != nil {
 			l.Error(err)
 		}
@@ -124,6 +132,47 @@ func (l *StaticHandle) DeviceExp() error { //设备过期处理
 		if err != nil {
 			l.Error(err)
 		}
+	}
+	return nil
+}
+
+func (l *StaticHandle) DeviceMsgCount() error { //产品品类设备数量统计
+	end := time.Now()
+	var fm = end.Minute() / 30 * 30
+	var countData []*relationDB.DmDeviceMsgCount
+	end = time.Date(end.Year(), end.Month(), end.Day(), end.Hour(), fm, 0, 0, time.Local)
+	start := end.Add(-time.Minute * 30)
+	{
+		hubCount, err := l.svcCtx.HubLogRepo.GetCountLog(l.ctx, deviceLog.HubFilter{}, def.PageInfo2{
+			TimeStart: start.UnixMilli(),
+			TimeEnd:   end.UnixMilli(),
+		})
+		if err != nil {
+			l.Error(err)
+		}
+		countData = append(countData, &relationDB.DmDeviceMsgCount{
+			Type: deviceLog.MsgTypePublish,
+			Num:  hubCount,
+			Date: end,
+		})
+	}
+	{
+		sendCount, err := l.svcCtx.SendRepo.GetCountLog(l.ctx, deviceLog.SendFilter{}, def.PageInfo2{
+			TimeStart: start.UnixMilli(),
+			TimeEnd:   end.UnixMilli(),
+		})
+		if err != nil {
+			l.Error(err)
+		}
+		countData = append(countData, &relationDB.DmDeviceMsgCount{
+			Type: deviceLog.MsgTypeSend,
+			Num:  sendCount,
+			Date: end,
+		})
+	}
+	err := relationDB.NewDeviceMsgCountRepo(l.ctx).MultiInsert(l.ctx, countData)
+	if err != nil {
+		l.Error(err)
 	}
 	return nil
 }

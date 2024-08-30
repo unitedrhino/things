@@ -42,9 +42,6 @@ func (h *HubLogRepo) GetCountLog(ctx context.Context, filter deviceLog.HubFilter
 		return 0, err
 	}
 	row := h.t.QueryRowContext(ctx, sqlStr, value...)
-	if err != nil {
-		return 0, err
-	}
 	var (
 		total int64
 	)
@@ -58,10 +55,10 @@ func (h *HubLogRepo) GetCountLog(ctx context.Context, filter deviceLog.HubFilter
 
 func (h *HubLogRepo) GetDeviceLog(ctx context.Context, filter deviceLog.HubFilter, page def.PageInfo2) (
 	[]*deviceLog.Hub, error) {
-	sql := sq.Select("*").From(h.GetLogStableName()).OrderBy("`ts` desc")
-	sql = h.fillFilter(sql, filter)
-	sql = page.FmtSql(sql)
-	sqlStr, value, err := sql.ToSql()
+	sqql := sq.Select("*").From(h.GetLogStableName()).OrderBy("`ts` desc")
+	sqql = h.fillFilter(sqql, filter)
+	sqql = page.FmtSql(sqql)
+	sqlStr, value, err := sqql.ToSql()
 	if err != nil {
 		return nil, err
 	}
