@@ -263,20 +263,20 @@ type DeviceGateWayMultiDeleteReq struct {
 
 type DeviceInfo struct {
 	ID                 int64                              `json:"id,optional,omitempty"`
-	TenantCode         string                             `json:"tenantCode,optional"`
+	TenantCode         string                             `json:"tenantCode,optional,omitempty"`
 	ProductID          string                             `json:"productID"`                 //产品id 只读
 	ProjectID          int64                              `json:"projectID,string,optional"` //项目id 只读
-	ProductName        string                             `json:"productName,optional"`
-	DeviceType         int64                              `json:"deviceType,optional"`                           //设备类型:1:设备,2:网关,3:子设备
-	ProductImg         string                             `json:"productImg,optional"`                           //产品图片
-	AreaID             int64                              `json:"areaID,string,optional"`                        //项目区域id 只读
+	ProductName        string                             `json:"productName,optional,omitempty"`
+	DeviceType         int64                              `json:"deviceType,optional,omitempty"`                 //设备类型:1:设备,2:网关,3:子设备
+	ProductImg         string                             `json:"productImg,optional,omitempty"`                 //产品图片
+	AreaID             int64                              `json:"areaID,string,optional,omitempty"`              //项目区域id 只读
 	DeviceName         string                             `json:"deviceName"`                                    //设备名称 读写
 	DeviceAlias        *string                            `json:"deviceAlias,optional"`                          //设备别名 读写
 	Secret             string                             `json:"secret,optional,omitempty"`                     //设备秘钥 只读
 	Cert               string                             `json:"cert,optional,omitempty"`                       // 设备证书  只读
 	Imei               string                             `json:"imei,optional,omitempty"`                       // IMEI号信息 只读
 	Mac                string                             `json:"mac,optional,omitempty"`                        // MAC号信息 只读
-	CategoryID         int64                              `json:"categoryID,optional"`                           //产品品类
+	CategoryID         int64                              `json:"categoryID,optional,omitempty"`                 //产品品类
 	Version            *string                            `json:"version,optional,omitempty"`                    // 固件版本  读写
 	HardInfo           string                             `json:"hardInfo,optional,omitempty"`                   // 模组硬件型号 只读
 	SoftInfo           string                             `json:"softInfo,optional,omitempty"`                   // 模组软件版本 只读
@@ -286,26 +286,26 @@ type DeviceInfo struct {
 	Position           *Point                             `json:"position,optional,omitempty"`                   //设备定位,默认百度坐标系
 	Address            *string                            `json:"address,optional,omitempty"`                    //所在地址
 	Adcode             *string                            `json:"adcode,optional,omitempty"`                     //地区编码
-	Tags               []*Tag                             `json:"tags,optional"`                                 // 设备tag
-	SchemaAlias        map[string]string                  `json:"schemaAlias,optional"`                          //设备物模型别名,如果是结构体类型则key为xxx.xxx
-	IsOnline           int64                              `json:"isOnline,optional,range=[0:2]"`                 // 在线状态  1离线 2在线 只读
-	FirstLogin         int64                              `json:"firstLogin,optional,string"`                    //激活时间 只读
-	FirstBind          int64                              `json:"firstBind,optional,string"`
-	LastLogin          int64                              `json:"lastLogin,optional,string"`         //最后上线时间 只读
-	ExpTime            int64                              `json:"expTime,optional,string"`           //到期时间
-	LogLevel           int64                              `json:"logLevel,optional,range=[0:5]"`     // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
-	Rssi               int64                              `json:"rssi,optional,omitempty"`           //信号强度
-	CreatedTime        int64                              `json:"createdTime,optional,string"`       //创建时间 只读
-	Status             int64                              `json:"status,optional"`                   //设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)
-	IsEnable           int64                              `json:"isEnable,optional"`                 //是否启用
-	WithProperties     map[string]*DeviceInfoWithProperty `json:"withProperties,optional,omitempty"` //获取的属性列表,如果不传withProperty,则不会返回
-	ProtocolConf       []*Tag                             `json:"protocolConf,optional,omitempty"`   //协议配置
+	Tags               []*Tag                             `json:"tags,optional,omitempty"`                       // 设备tag
+	SchemaAlias        map[string]string                  `json:"schemaAlias,optional,omitempty"`                //设备物模型别名,如果是结构体类型则key为xxx.xxx
+	IsOnline           int64                              `json:"isOnline,optional,range=[0:2],omitempty"`       // 在线状态  1离线 2在线 只读
+	FirstLogin         int64                              `json:"firstLogin,optional,string,omitempty"`          //激活时间 只读
+	FirstBind          int64                              `json:"firstBind,optional,string,omitempty"`
+	LastLogin          int64                              `json:"lastLogin,optional,string,omitempty"`     //最后上线时间 只读
+	ExpTime            int64                              `json:"expTime,optional,string,omitempty"`       //到期时间
+	LogLevel           int64                              `json:"logLevel,optional,range=[0:5],omitempty"` // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
+	Rssi               int64                              `json:"rssi,optional,omitempty"`                 //信号强度
+	CreatedTime        int64                              `json:"createdTime,optional,string,omitempty"`   //创建时间 只读
+	Status             int64                              `json:"status,optional,omitempty"`               //设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)
+	IsEnable           int64                              `json:"isEnable,optional,omitempty"`             //是否启用
+	WithProperties     map[string]*DeviceInfoWithProperty `json:"withProperties,optional,omitempty"`       //获取的属性列表,如果不传withProperty,则不会返回
+	ProtocolConf       []*Tag                             `json:"protocolConf,optional,omitempty"`         //协议配置
 	Profiles           map[string]string                  `json:"profiles,optional,omitempty"`
 	Owner              *UserCore                          `json:"owner,optional,omitempty"`
 	RatedPower         int64                              `json:"ratedPower,optional,omitempty"`
-	NetType            int64                              `json:"netType,optional,range=[0:8]"`          //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
-	NeedConfirmVersion string                             `json:"needConfirmVersion,optional,omitempty"` //待确认升级的版本
-	UserID             int64                              `json:"userID,string,optional"`
+	NetType            int64                              `json:"netType,optional,range=[0:8],omitempty"` //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
+	NeedConfirmVersion string                             `json:"needConfirmVersion,optional,omitempty"`  //待确认升级的版本
+	UserID             int64                              `json:"userID,string,optional,omitempty"`
 	Distributor        *IDPath                            `json:"distributor,optional,omitempty"`
 	Gateway            *DeviceInfo                        `json:"gateway,optional,omitempty"` //子设备绑定的网关信息,只读
 	Area               *AreaInfo                          `json:"area,optional,omitempty"`    //区域信息
@@ -360,6 +360,7 @@ type DeviceInfoIndexReq struct {
 	UserID            int64         `json:"userID,string,optional"`
 	NetType           int64         `json:"netType,optional,range=[0:8]"` //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
 	WithArea          bool          `json:"withArea,optional"`            //同时返回区域信息
+	IsOnlyCore        bool          `json:"isOnlyCore,optional"`          //只返回核心信息
 }
 
 type DeviceInfoIndexResp struct {

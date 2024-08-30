@@ -17,6 +17,7 @@ type DeviceInfoWith struct {
 	Profiles   []string
 	Owner      bool
 	Area       bool
+	IsOnlyCore bool
 }
 
 func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo, w DeviceInfoWith) *types.DeviceInfo {
@@ -94,6 +95,28 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 	if uc := ctxs.GetUserCtx(ctx); uc != nil && !uc.IsAdmin {
 		v.Secret = "" // 设备秘钥
 		v.Cert = ""   // 设备证书
+		v.FirstBind = 0
+		v.FirstLogin = 0
+	}
+	if w.IsOnlyCore {
+		return &types.DeviceInfo{
+			ID:             v.Id,
+			ProductID:      v.ProductID,          //产品id 只读
+			DeviceName:     v.DeviceName,         //设备名称 读写
+			DeviceAlias:    &v.DeviceAlias.Value, //设备别名 读写
+			Rssi:           utils.ToEmptyInt64(v.Rssi),
+			IsOnline:       v.IsOnline,  //在线状态 1离线 2在线 只读
+			ProjectID:      v.ProjectID, //项目id 只读
+			AreaID:         v.AreaID,    //项目区域id 只读
+			WithProperties: properties,
+			Status:         v.Status,
+			ProductName:    v.ProductName,
+			NetType:        v.NetType,
+			ProductImg:     v.ProductImg,
+			Distributor:    utils.Copy[types.IDPath](v.Distributor),
+			Gateway:        InfoToApi(ctx, svcCtx, v.Gateway, DeviceInfoWith{}),
+			Area:           area,
+		}
 	}
 	return &types.DeviceInfo{
 		ID:                 v.Id,

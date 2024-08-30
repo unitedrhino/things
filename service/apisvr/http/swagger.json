@@ -7039,6 +7039,11 @@
           "type": "boolean",
           "format": "boolean",
           "description": "同时返回区域信息"
+        },
+        "isOnlyCore": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "只返回核心信息"
         }
       },
       "title": "DeviceInfoIndexReq"
