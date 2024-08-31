@@ -113,6 +113,7 @@ type (
         Statuses []int64 `json:"statuses,optional"` //产品状态 1:启用 2:禁用 3:开发中
         NetType int64 `json:"netType,optional,range=[0:8]"`                                           //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
         ProjectID int64 `json:"projectID,string,optional"`                            //项目id,只获取项目下有设备的
+        AreaID int64 `json:"areaID,string,optional"` //过滤区域下有设备的产品
     }
 
     ProductInfoIndexResp  {

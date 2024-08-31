@@ -10450,6 +10450,10 @@
         "projectID": {
           "type": "string",
           "description": "项目id,只获取项目下有设备的"
+        },
+        "areaID": {
+          "type": "string",
+          "description": "过滤区域下有设备的产品"
         }
       },
       "title": "ProductInfoIndexReq"
