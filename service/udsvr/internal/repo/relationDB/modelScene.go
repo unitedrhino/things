@@ -45,7 +45,8 @@ type UdSceneIfTrigger struct {
 	ID              int64             `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"` // id编号
 	Type            scene.TriggerType `gorm:"column:type;type:VARCHAR(25);NOT NULL"`            //触发类型 device: 设备触发 timer: 定时触发
 	SceneID         int64             `gorm:"column:scene_id;index;type:bigint"`                // 场景id编号
-	AreaID          int64             `gorm:"column:area_id;type:bigint;default:0;"`            // 项目区域ID(雪花ID)
+	ProjectID       stores.ProjectID  `gorm:"column:project_id;type:bigint;default:1;"`         // 项目ID(雪花ID)
+	AreaID          stores.AreaID     `gorm:"column:area_id;type:bigint;default:1;"`            // 项目区域ID(雪花ID)
 	Order           int64             `gorm:"column:order;type:BIGINT;default:1;NOT NULL"`      // 排序序号
 	Status          int64             `gorm:"column:status;type:BIGINT;default:1"`              //状态 同步场景联动的status
 	LastRunTime     sql.NullTime      `gorm:"column:last_run_time;index;default: NULL"`         //最后执行时间
