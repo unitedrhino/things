@@ -301,8 +301,8 @@ github.com/hexops/gotextdiff v1.0.3/go.mod h1:pSWU5MAI3yDq+fZBTazCSJysOMbxWL1BSo
 github.com/hibiken/asynq v0.24.1 h1:+5iIEAyA9K/lcSPvx3qoPtsKJeKI5u9aOIvUmSsazEw=
 github.com/hibiken/asynq v0.24.1/go.mod h1:u5qVeSbrnfT+vtG5Mq8ZPzQu/BmCKMHvTGb91uy9Tts=
 github.com/hpcloud/tail v1.0.0/go.mod h1:ab1qPbhIpdTxEkNHXyeSf5vhxWSCs/tWer42PpOxQnU=
-github.com/i-Things/driver-go/v3 v3.10.5 h1:Mqq3UGrMzE2KEUDhBHY1Pp/odbuldhUiCsbMpvd8TNo=
-github.com/i-Things/driver-go/v3 v3.10.5/go.mod h1:2Sfdg1AVy4n3fZ/1iIPcaIpDQuhHByXBAhSrxFeTSzU=
+github.com/i-Things/driver-go/v3 v3.25.6 h1:2bXO+5M8vWtPgD4uVe9SeOAoKB45tmEbTSmS8HuC1yw=
+github.com/i-Things/driver-go/v3 v3.25.6/go.mod h1:HIXXEN99PAmbkJHuicaAvlQJ4grI+iW/fjtTC8nheO8=
 github.com/i-Things/squirrel v1.20.2 h1:36ShZg0sXYDS/+yly0JdyG21WPL0Cwnbc8kSC+3UIQo=
 github.com/i-Things/squirrel v1.20.2/go.mod h1:NNaOrjSoIDfDA40n7sr2tPNZRfjzjA400rg+riTZj10=
 github.com/ianlancetaylor/demangle v0.0.0-20181102032728-5e5cf60278f6/go.mod h1:aSSvb/t6k1mPoxDqO4vJh6VOCGPwU4O0C2/Eqndh1Sc=

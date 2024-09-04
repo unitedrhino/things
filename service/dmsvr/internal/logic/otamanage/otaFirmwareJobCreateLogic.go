@@ -275,25 +275,44 @@ func (l *OtaFirmwareJobCreateLogic) getDevice(in *dm.OtaFirmwareJobInfo, fi *rel
 		}
 	case msgOta.AllUpgrade, msgOta.GrayUpgrade:
 		f := relationDB.DeviceFilter{ProductID: fi.ProductID, Versions: in.SrcVersions, TenantCodes: in.TenantCodes}
-		var page *stores.PageInfo
+		var size int64 = 99999999
 		if selection == msgOta.GrayUpgrade {
 			total, err := l.DiDB.CountByFilter(l.ctx, f)
 			if err != nil {
 				return nil, err
 			}
-			size := int64(float64(total)*(float64(in.Static.GrayPercent)/10000)) + 1
-			page = &stores.PageInfo{Size: size}
-		}
-		ret, err := l.DiDB.FindByFilter(l.ctx, f, page)
-		if err != nil {
-			return nil, err
-		}
-		for _, v := range ret {
-			if v.Version == fi.Version {
-				continue
+			size = int64(float64(total)*(float64(in.Static.GrayPercent)/10000)) + 1
+		} else {
+			var err error
+			size, err = l.DiDB.CountByFilter(l.ctx, f)
+			if err != nil {
+				return nil, err
 			}
-			devices = append(devices, v)
 		}
+		var p int64 = 0
+		var psize int64 = 500
+		var finish bool
+		for p*500 < size && !finish {
+			p++
+			if psize*p > size { //如果是最后一页,获取剩余数量
+				psize = size - (psize * (p - 1)) //580-(500*(2-1))
+				finish = true
+			}
+			ret, err := l.DiDB.FindByFilter(l.ctx, f, &stores.PageInfo{
+				Page: p,
+				Size: psize,
+			})
+			if err != nil {
+				return nil, err
+			}
+			for _, v := range ret {
+				if v.Version == fi.Version {
+					continue
+				}
+				devices = append(devices, v)
+			}
+		}
+
 	case msgOta.SpecificUpgrade:
 		ret, err := l.DiDB.FindByFilter(l.ctx, relationDB.DeviceFilter{ProductID: fi.ProductID, Versions: in.SrcVersions, DeviceNames: in.Static.TargetDeviceNames, TenantCodes: in.TenantCodes}, nil)
 		if err != nil {

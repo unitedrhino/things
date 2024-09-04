@@ -233,16 +233,14 @@ func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirm
 			PushTime:   stores.CmpLte(time.Now().Add(-time.Duration(jobInfo.TimeoutInMinutes) * time.Minute)),
 			Statues:    []int64{msgOta.DeviceStatusNotified, msgOta.DeviceStatusInProgress}, //只处理待推送的设备
 		}
-		var devs []devices.Core
-		err := stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+		var pos []*relationDB.DmOtaFirmwareDevice
+		var err error
+		err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
 			ofdr := relationDB.NewOtaFirmwareDeviceRepo(tx)
-			pos, err := ofdr.FindByFilter(l.ctx, f, nil)
+			pos, err = ofdr.FindByFilter(l.ctx, f, nil)
 			if err != nil {
 				l.Error(err)
 				return err
-			}
-			for _, po := range pos {
-				devs = append(devs, devices.Core{ProductID: po.ProductID, DeviceName: po.DeviceName})
 			}
 			err = ofdr.UpdateStatusByFilter(l.ctx, f, msgOta.DeviceStatusFailure, "设备超时") //如果超过了超时时间,则修改为失败
 			if err != nil {
@@ -253,6 +251,10 @@ func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirm
 		if err != nil {
 			l.Error(err)
 		} else {
+			var devs []devices.Core
+			for _, po := range pos {
+				devs = append(devs, devices.Core{ProductID: po.ProductID, DeviceName: po.DeviceName})
+			}
 			pushDevice(devs, msgOta.DeviceStatusFailure, "设备超时")
 		}
 
@@ -274,14 +276,13 @@ func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirm
 			status = msgOta.DeviceStatusConfirm
 			detail = "升级失败,再次升级等待确认"
 		}
-		err := stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+		var pos []*relationDB.DmOtaFirmwareDevice
+		var err error
+		err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
 			ofdr := relationDB.NewOtaFirmwareDeviceRepo(tx)
-			pos, err := ofdr.FindByFilter(l.ctx, f, nil)
+			pos, err = ofdr.FindByFilter(l.ctx, f, nil)
 			if err != nil {
 				return err
-			}
-			for _, po := range pos {
-				devs = append(devs, devices.Core{ProductID: po.ProductID, DeviceName: po.DeviceName})
 			}
 			err = ofdr.UpdateStatusByFilter(l.ctx, f, status, detail) //如果超过了超时时间,则修改为失败
 			return err
@@ -289,11 +290,15 @@ func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirm
 		if err != nil {
 			l.Error(err)
 		} else if status == msgOta.DeviceStatusQueued {
+			for _, po := range pos {
+				devs = append(devs, devices.Core{ProductID: po.ProductID, DeviceName: po.DeviceName})
+			}
 			pushDevice(devs, status, detail)
 		}
 	}
 	{
-		var devs []devices.Core
+		var pos []*relationDB.DmOtaFirmwareDevice
+		var err error
 		f := relationDB.OtaFirmwareDeviceFilter{
 			FirmwareID: jobInfo.FirmwareID,
 			JobID:      jobInfo.ID,
@@ -301,14 +306,11 @@ func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirm
 			RetryCount: stores.CmpGte(jobInfo.RetryCount),   //重试次数
 			Statues:    []int64{msgOta.DeviceStatusFailure}, //需要重试的设备更换为待推送
 		}
-		err := stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+		err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
 			ofdr := relationDB.NewOtaFirmwareDeviceRepo(tx)
-			pos, err := ofdr.FindByFilter(l.ctx, f, nil)
+			pos, err = ofdr.FindByFilter(l.ctx, f, nil)
 			if err != nil {
 				return err
-			}
-			for _, po := range pos {
-				devs = append(devs, devices.Core{ProductID: po.ProductID, DeviceName: po.DeviceName})
 			}
 			err = ofdr.UpdateStatusByFilter(l.ctx, f, msgOta.DeviceStatusCanceled, "超过重试次数,取消升级") //如果超过了超时时间,则修改为失败
 			return err
@@ -316,6 +318,10 @@ func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirm
 		if err != nil {
 			l.Error(err)
 		} else {
+			var devs []devices.Core
+			for _, po := range pos {
+				devs = append(devs, devices.Core{ProductID: po.ProductID, DeviceName: po.DeviceName})
+			}
 			pushDevice(devs, msgOta.DeviceStatusCanceled, "超过重试次数,取消升级")
 		}
 	}
@@ -382,7 +388,7 @@ func (l *SendMessageToDevicesLogic) PushMessageToDevices(jobInfo *relationDB.DmO
 		return err
 	}
 	if len(deviceList) == 0 {
-		//todo 这里需要结束任务,没有需要执行的了
+		//没有可升级的设备
 		return nil
 	}
 	firmwareFiles, err := l.OffDB.FindByFilter(l.ctx, relationDB.OtaFirmwareFileFilter{FirmwareID: jobInfo.FirmwareID}, nil)
@@ -405,6 +411,7 @@ func (l *SendMessageToDevicesLogic) PushMessageToDevices(jobInfo *relationDB.DmO
 	if err != nil {
 		return err
 	}
+	var pubDevices []devices.Core
 	for _, device := range deviceList {
 		reqMsg := deviceMsg.PublishMsg{
 			Handle:       devices.Ota,
@@ -415,8 +422,9 @@ func (l *SendMessageToDevicesLogic) PushMessageToDevices(jobInfo *relationDB.DmO
 			DeviceName:   device.DeviceName,
 			ProtocolCode: pi.ProtocolCode,
 		}
-		err := l.svcCtx.PubDev.PublishToDev(l.ctx, &reqMsg)
+		err = l.svcCtx.PubDev.PublishToDev(l.ctx, &reqMsg)
 		if err != nil {
+			l.Error(err)
 			return err
 		}
 		device.Status = msgOta.DeviceStatusNotified
@@ -427,12 +435,14 @@ func (l *SendMessageToDevicesLogic) PushMessageToDevices(jobInfo *relationDB.DmO
 		}
 		err = relationDB.NewOtaFirmwareDeviceRepo(l.ctx).Update(l.ctx, device)
 		if err != nil {
+			l.Error(err)
 			return err
 		}
 		core := devices.Core{
 			ProductID:  device.ProductID,
 			DeviceName: device.DeviceName,
 		}
+		pubDevices = append(pubDevices, core)
 		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, core)
 		if err != nil {
 			l.Error(err)
@@ -454,6 +464,13 @@ func (l *SendMessageToDevicesLogic) PushMessageToDevices(jobInfo *relationDB.DmO
 			"projectID": cast.ToString(di.ProjectID),
 			"areaID":    cast.ToString(di.AreaID),
 		})
+		if err != nil {
+			l.Error(err)
+			return nil
+		}
+	}
+	if len(pubDevices) > 0 {
+		l.Infof("job:%v pushDevices:%v", utils.Fmt(jobInfo), utils.Fmt(pubDevices))
 	}
 	return nil
 }

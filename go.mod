@@ -8,7 +8,7 @@ replace (
 	gitee.com/i-Things/core => ../core
 	gitee.com/i-Things/share => ../share
 	github.com/Masterminds/squirrel => github.com/i-Things/squirrel v1.20.2
-	github.com/taosdata/driver-go/v3 => github.com/i-Things/driver-go/v3 v3.10.5
+//github.com/i-Things/driver-go/v3 => github.com/i-Things/driver-go/v3 v3.10.5
 )
 
 require (
@@ -108,6 +108,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.20.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
+	github.com/i-Things/driver-go/v3 v3.25.6 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/pgx/v5 v5.6.0 // indirect
@@ -167,7 +168,6 @@ require (
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/suifengtec/gocoord v0.0.0-20210116135606-a0cd8c71c959 // indirect
-	github.com/taosdata/driver-go/v3 v3.0.0 // indirect
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.898 // indirect
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms v1.0.898 // indirect
 	github.com/therootcompany/xz v1.0.1 // indirect

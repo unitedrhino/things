@@ -181,7 +181,7 @@ func (l *TimerHandle) SceneTiming() error {
 		}
 		list = append(list, pos...)
 	}
-	l.Infof("scene sceneTrigger now:%v list:%v", now, utils.Fmt(list))
+	l.Debugf("scene sceneTrigger now:%v list:%v", now, utils.Fmt(list))
 	var sceneSet sync.Map
 	for _, v := range list {
 		var po = v
