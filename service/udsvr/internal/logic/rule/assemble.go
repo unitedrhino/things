@@ -87,11 +87,12 @@ func ToSceneTriggerPo(si *scene.Info, in *scene.Trigger) *relationDB.UdSceneIfTr
 			Time:  domain.GenLastRunTime(now, execAt),
 			Valid: true,
 		},
-		Order:   in.Order,
-		AreaID:  in.AreaID,
-		Device:  ToSceneTriggerDevicePo(in.Device),
-		Timer:   ToSceneTriggerTimerPo(si, in.Timer),
-		Weather: utils.Copy2[relationDB.UdSceneTriggerWeather](in.Weather),
+		Order:     in.Order,
+		ProjectID: stores.ProjectID(si.ProjectID),
+		AreaID:    stores.AreaID(in.AreaID),
+		Device:    ToSceneTriggerDevicePo(in.Device),
+		Timer:     ToSceneTriggerTimerPo(si, in.Timer),
+		Weather:   utils.Copy2[relationDB.UdSceneTriggerWeather](in.Weather),
 	}
 }
 
@@ -274,7 +275,7 @@ func ToSceneTriggerDo(in *relationDB.UdSceneIfTrigger) *scene.Trigger {
 	return &scene.Trigger{
 		Type:    in.Type,
 		Order:   in.Order,
-		AreaID:  in.AreaID,
+		AreaID:  int64(in.AreaID),
 		Device:  ToSceneTriggerDeviceDo(in.Device),
 		Timer:   ToSceneTriggerTimerDo(in.Timer),
 		Weather: utils.Copy[scene.TriggerWeather](in.Weather),
