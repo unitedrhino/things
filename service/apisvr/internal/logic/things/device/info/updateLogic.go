@@ -27,7 +27,6 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 
 func (l *UpdateLogic) Update(req *types.DeviceInfo) error {
 	in := ToRpcDeviceInfo(req)
-	in.ExpTime = nil
 	in.Status = 0
 	in.Rssi = nil
 	in.ProjectID = 0

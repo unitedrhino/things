@@ -43,6 +43,7 @@ func NewDeviceInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, data *dm.DeviceInfo) error {
+	uc := ctxs.GetUserCtx(l.ctx)
 	if data.AreaID != 0 && data.AreaID != int64(old.AreaID) {
 		old.AreaID = stores.AreaID(data.AreaID)
 		ai, err := l.svcCtx.AreaCache.GetData(l.ctx, data.AreaID)
@@ -59,14 +60,14 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 		old.ProjectID = stores.ProjectID(data.ProjectID)
 	}
 
-	if data.ExpTime != nil {
+	if uc.IsAdmin && data.ExpTime != nil {
 		old.ExpTime = utils.ToNullTime2(data.ExpTime)
 	}
 
 	if data.Tags != nil {
 		old.Tags = data.Tags
 	}
-	if data.ProtocolConf != nil {
+	if uc.IsAdmin && data.ProtocolConf != nil {
 		old.ProtocolConf = data.ProtocolConf
 	}
 	if data.SchemaAlias != nil {
@@ -82,7 +83,7 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 	if data.Mac != "" {
 		old.Mac = data.Mac
 	}
-	if data.Version != nil && old.Version != data.Version.GetValue() {
+	if uc.IsAdmin && data.Version != nil && old.Version != data.Version.GetValue() {
 		old.Version = data.Version.GetValue()
 		//如果不一样则需要判断是否是ota升级的,如果是,则需要更新升级状态
 		dfs, err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).FindByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
@@ -142,7 +143,7 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 	if data.RatedPower != 0 {
 		old.RatedPower = data.RatedPower
 	}
-	if data.IsOnline != def.Unknown {
+	if uc.IsAdmin && data.IsOnline != def.Unknown {
 		old.IsOnline = data.IsOnline
 		if old.Status <= def.DeviceStatusOffline {
 			old.Status = data.IsOnline + 1
@@ -158,7 +159,7 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 			old.LastLogin = now
 		}
 	}
-	if data.Status != 0 {
+	if uc.IsAdmin && data.Status != 0 {
 		old.Status = data.Status
 	}
 
@@ -178,7 +179,7 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 	if data.MobileOperator != 0 {
 		old.MobileOperator = data.MobileOperator
 	}
-	if data.Distributor != nil {
+	if uc.IsAdmin && data.Distributor != nil {
 		old.Distributor = utils.Copy2[stores.IDPathWithUpdate](data.Distributor)
 		old.Distributor.UpdatedTime = time.Now()
 	}

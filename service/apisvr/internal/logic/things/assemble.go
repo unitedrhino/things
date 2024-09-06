@@ -157,7 +157,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		ProductName:        v.ProductName,
 		DeviceType:         v.DeviceType,
 		NetType:            v.NetType,
-		ExpTime:            utils.ToEmptyInt64(v.ExpTime),
+		ExpTime:            utils.ToNullInt64(v.ExpTime),
 		RatedPower:         v.RatedPower,
 		NeedConfirmVersion: v.NeedConfirmVersion,
 		ProductImg:         v.ProductImg,
