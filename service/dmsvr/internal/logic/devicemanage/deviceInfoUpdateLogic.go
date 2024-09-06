@@ -62,6 +62,13 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 
 	if uc.IsAdmin && data.ExpTime != nil {
 		old.ExpTime = utils.ToNullTime2(data.ExpTime)
+		if old.Status == def.DeviceStatusArrearage && (!old.ExpTime.Valid || old.ExpTime.Time.After(time.Now())) {
+			//如果设备是欠费状态需要修改为正常状态
+			old.Status = old.IsOnline + 1
+		}
+		if old.Status != def.DeviceStatusArrearage && old.ExpTime.Valid && old.ExpTime.Time.Before(time.Now()) {
+			old.Status = def.DeviceStatusArrearage
+		}
 	}
 
 	if data.Tags != nil {

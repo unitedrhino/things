@@ -3,6 +3,7 @@ package relationDB
 import (
 	"context"
 	"database/sql"
+	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/stores"
@@ -54,7 +55,7 @@ type DmDeviceInfo struct {
 	LastLogin          sql.NullTime      `gorm:"column:last_login"`                                                    // 最后上线时间
 	LogLevel           int64             `gorm:"column:log_level;type:smallint;default:1;NOT NULL"`                    // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
 	UserID             int64             `gorm:"column:user_id;type:BIGINT;default:1"`                                 // 用户id
-	Status             int64             `gorm:"column:status;index;type:smallint;default:1;NOT NULL"`                 // 设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中) 5-禁用
+	Status             def.DeviceStatus  `gorm:"column:status;index;type:smallint;default:1;NOT NULL"`                 // 设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中) 5-禁用
 	IsEnable           int64             `gorm:"column:is_enable;index;type:smallint;default:1;"`                      // 是否启用: 1:是 2:否
 	ExpTime            sql.NullTime      `gorm:"column:exp_time"`                                                      // 过期时间,为0不限制
 	NeedConfirmJobID   int64             `gorm:"column:need_confirm_job_id;type:smallint;default:0;"`                  // 需要app确认升级的任务ID,为0是没有
