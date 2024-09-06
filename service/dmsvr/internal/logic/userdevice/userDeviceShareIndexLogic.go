@@ -31,7 +31,7 @@ func NewUserDeviceShareIndexLogic(ctx context.Context, svcCtx *svc.ServiceContex
 // 获取设备分享列表(只有)
 func (l *UserDeviceShareIndexLogic) UserDeviceShareIndex(in *dm.UserDeviceShareIndexReq) (*dm.UserDeviceShareIndexResp, error) {
 	uc := ctxs.GetUserCtx(l.ctx)
-	if in.Device != nil {
+	if in.Device == nil {
 		return nil, errors.Parameter.AddMsg("设备需要填写")
 	}
 	di, err := relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(ctxs.WithAllProject(l.ctx), relationDB.DeviceFilter{ProductID: in.Device.ProductID, DeviceNames: []string{in.Device.DeviceName}})
