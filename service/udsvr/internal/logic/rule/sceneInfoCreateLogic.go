@@ -39,8 +39,13 @@ func (l *SceneInfoCreateLogic) SceneInfoCreate(in *ud.SceneInfo) (*ud.WithID, er
 	if do.AreaID == 0 {
 		return nil, errors.Parameter.AddMsg("areaID必填")
 	}
+
+	uc := ctxs.GetUserCtx(l.ctx)
 	if do.ProjectID == 0 {
 		do.ProjectID = ctxs.GetUserCtxNoNil(l.ctx).ProjectID
+	}
+	if !uc.IsAdmin && do.ProjectID <= def.RootNode {
+		return nil, errors.Parameter.AddMsg("只有管理员可以创建全局场景联动")
 	}
 	err := do.Validate(NewSceneCheckRepo(l.ctx, l.svcCtx, do))
 	if err != nil {

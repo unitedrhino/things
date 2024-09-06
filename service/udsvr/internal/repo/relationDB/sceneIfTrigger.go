@@ -36,6 +36,8 @@ type SceneIfTriggerFilter struct {
 	ExecLoopEnd      *stores.Cmp
 	ExecType         *stores.Cmp
 	Type             string
+	ProjectID        *stores.Cmp
+	AreaID           *stores.Cmp
 	Device           *devices.Core
 	DataID           string
 	FirstTriggerTime *stores.Cmp
@@ -45,6 +47,8 @@ type SceneIfTriggerFilter struct {
 
 func (p SceneIfTriggerRepo) fmtFilter(ctx context.Context, f SceneIfTriggerFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
+	db = f.ProjectID.Where(db, "project_id")
+	db = f.AreaID.Where(db, "area_id")
 	db = f.ExecAt.Where(db, "timer_exec_at")
 	db = f.LastRunTime.Where(db, "last_run_time")
 	db = f.ExecRepeat.Where(db, "timer_exec_repeat")

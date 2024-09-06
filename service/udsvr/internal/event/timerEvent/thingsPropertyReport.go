@@ -17,16 +17,35 @@ import (
 func (l *TimerHandle) SceneThingPropertyReport(in application.PropertyReport) error {
 	now := time.Now()
 	db := stores.WithNoDebug(l.ctx, relationDB.NewSceneIfTriggerRepo)
-
-	list, err := db.FindByFilter(l.ctx, relationDB.SceneIfTriggerFilter{
-		Status: def.True,
-		Type:   scene.TriggerTypeDevice,
-		Device: &in.Device,
-		DataID: in.Identifier,
-	}, nil)
+	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, in.Device)
 	if err != nil {
 		return err
 	}
+	var triggerF = []relationDB.SceneIfTriggerFilter{
+		{
+			Status:    def.True,
+			Type:      scene.TriggerTypeDevice,
+			ProjectID: stores.CmpIn(def.RootNode, di.ProjectID),
+			AreaID:    stores.CmpIn(def.RootNode, di.AreaID),
+			DataID:    in.Identifier,
+		},
+		{
+			Status: def.True,
+			Type:   scene.TriggerTypeDevice,
+			Device: &in.Device,
+			DataID: in.Identifier,
+		},
+	}
+	var list []*relationDB.UdSceneIfTrigger
+	for _, v := range triggerF {
+		pos, err := db.FindByFilter(l.ctx, v, nil)
+		if err != nil {
+			l.Error(err)
+			return err
+		}
+		list = append(list, pos...)
+	}
+
 	for _, v := range list {
 		var po = v
 		if po.SceneInfo == nil {
