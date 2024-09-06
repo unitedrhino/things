@@ -39,6 +39,7 @@ func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*d
 	if err := ctxs.IsAdmin(l.ctx); err != nil {
 		return nil, err
 	}
+	l.ctx = ctxs.WithDefaultAllProject(l.ctx)
 	di, err := l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductID, DeviceNames: []string{in.DeviceName}})
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {

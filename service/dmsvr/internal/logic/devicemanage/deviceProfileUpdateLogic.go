@@ -2,6 +2,7 @@ package devicemanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
@@ -27,6 +28,7 @@ func NewDeviceProfileUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext
 }
 
 func (l *DeviceProfileUpdateLogic) DeviceProfileUpdate(in *dm.DeviceProfile) (*dm.Empty, error) {
+	l.ctx = ctxs.WithDefaultAllProject(l.ctx)
 	old, err := relationDB.NewDeviceProfileRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.DeviceProfileFilter{
 		Code: in.Code,
 		Device: devices.Core{

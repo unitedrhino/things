@@ -24,6 +24,9 @@ func (d *DeviceDataRepo) DeleteProduct(ctx context.Context, t *schema.Model, pro
 func (d *DeviceDataRepo) InitProduct(ctx context.Context, t *schema.Model, productID string) error {
 	if t != nil {
 		for _, p := range t.Property {
+			if p.Tag != schema.TagCustom {
+				continue
+			}
 			err := d.createPropertyStable(ctx, p, productID)
 			if err != nil {
 				logx.WithContext(ctx).Errorf("%s.createPropertyStable product_id:%v,properties:%v,err:%v",

@@ -78,6 +78,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 	if err := ctxs.IsAdmin(l.ctx); err != nil {
 		return nil, err
 	}
+	l.ctx = ctxs.WithDefaultAllProject(l.ctx)
 	if in.ProductID == "" && in.ProductName != "" { //通过唯一的产品名 查找唯一的产品ID
 		if pid, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductNames: []string{in.ProductName}}); err != nil {
 			return nil, err

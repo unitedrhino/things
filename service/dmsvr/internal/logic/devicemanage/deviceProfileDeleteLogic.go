@@ -2,6 +2,7 @@ package devicemanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/devices"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
@@ -26,6 +27,7 @@ func NewDeviceProfileDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext
 }
 
 func (l *DeviceProfileDeleteLogic) DeviceProfileDelete(in *dm.DeviceProfileReadReq) (*dm.Empty, error) {
+	l.ctx = ctxs.WithDefaultAllProject(l.ctx)
 	err := relationDB.NewDeviceProfileRepo(l.ctx).DeleteByFilter(l.ctx, relationDB.DeviceProfileFilter{
 		Code: in.Code,
 		Device: devices.Core{
