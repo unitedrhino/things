@@ -294,16 +294,16 @@ func (l *OtaFirmwareJobCreateLogic) getDevice(in *dm.OtaFirmwareJobInfo, fi *rel
 		var finish bool
 		for p*500 < size && !finish {
 			p++
-			if psize*p > size { //如果是最后一页,获取剩余数量
-				psize = size - (psize * (p - 1)) //580-(500*(2-1))
-				finish = true
-			}
 			ret, err := l.DiDB.FindByFilter(l.ctx, f, &stores.PageInfo{
 				Page: p,
 				Size: psize,
 			})
 			if err != nil {
 				return nil, err
+			}
+			if selection == msgOta.GrayUpgrade && psize*p > size { //如果是最后一页,获取剩余数量
+				s := size - (psize * (p - 1))
+				ret = ret[0:s]
 			}
 			for _, v := range ret {
 				if v.Version == fi.Version {
