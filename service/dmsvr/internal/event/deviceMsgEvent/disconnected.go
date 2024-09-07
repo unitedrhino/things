@@ -35,6 +35,10 @@ func (l *DisconnectedLogic) Handle(msg *deviceStatus.ConnectMsg) error {
 	if err != nil && dev.DeviceName == "" {
 		return err
 	}
+	if dev.DeviceName == "" {
+		dev.DeviceName = ld.DeviceName
+		dev.ProductID = ld.ProductID
+	}
 	if ld != nil && ld.IsNeedRegister {
 		return nil
 	}
