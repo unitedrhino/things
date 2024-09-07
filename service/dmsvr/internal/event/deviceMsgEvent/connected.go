@@ -58,12 +58,6 @@ func (l *ConnectedLogic) Handle(msg *deviceStatus.ConnectMsg) error {
 	if ld != nil && ld.IsNeedRegister {
 		return nil
 	}
-	if msg.Device.DeviceName == "" {
-		ld = &deviceAuth.LoginDevice{
-			ProductID:  msg.Device.ProductID,
-			DeviceName: msg.Device.DeviceName,
-		}
-	}
 	//di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
 	//	ProductID:  ld.ProductID,
 	//	DeviceName: ld.DeviceName,
