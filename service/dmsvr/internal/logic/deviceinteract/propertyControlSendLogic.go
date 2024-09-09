@@ -3,9 +3,11 @@ package deviceinteractlogic
 import (
 	"context"
 	"encoding/json"
+	"gitee.com/i-Things/core/service/syssvr/sysExport"
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
+	"gitee.com/i-Things/share/domain/application"
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/domain/schema"
@@ -116,7 +118,31 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 			})
 		}
 	}()
-
+	if utils.SliceIn(in.ShadowControl, shadow.ControlOnlyCloud, shadow.ControlOnlyCloudWithLog) {
+		for k, v := range req.Params {
+			appMsg := application.PropertyReport{
+				Device: dev, Timestamp: time.Now().UnixMilli(),
+				Identifier: k, Param: v,
+			}
+			//应用事件通知-设备物模型属性上报通知 ↓↓↓
+			err := l.svcCtx.PubApp.DeviceThingPropertyReport(l.ctx, appMsg)
+			if err != nil {
+				logx.WithContext(l.ctx).Errorf("%s.DeviceThingPropertyReport  identifier:%v, param:%v,err:%v", utils.FuncName(), k, param, err)
+			}
+			err = l.svcCtx.WebHook.Publish(l.svcCtx.WithDeviceTenant(l.ctx, dev), sysExport.CodeDmDevicePropertyReport, appMsg)
+			if err != nil {
+				l.Error(err)
+			}
+			err = l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDevicePropertyReport, appMsg, map[string]any{
+				"productID":  in.ProductID,
+				"deviceName": in.DeviceName,
+				"identifier": k,
+			}, map[string]any{
+				"productID":  dev.ProductID,
+				"deviceName": dev.DeviceName,
+			})
+		}
+	}
 	if in.ShadowControl == shadow.ControlOnlyCloud {
 		//插入多条设备物模型属性数据
 		err = l.svcCtx.SchemaManaRepo.InsertPropertiesData(l.ctx, l.model, in.ProductID, in.DeviceName, params, time.Now())
