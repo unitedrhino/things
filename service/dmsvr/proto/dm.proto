@@ -1140,6 +1140,7 @@ message ProductInfoIndexReq{
   int64   netType = 11;//通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
   int64 projectID =12;//项目id,只获取项目下有设备的
   int64 areaID = 22;//区域下有设备的产品列表
+  repeated int64   categoryIDs = 23;//产品品类
 }
 
 message ProductInfoIndexResp{

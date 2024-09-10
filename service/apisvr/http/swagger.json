@@ -10454,6 +10454,14 @@
         "areaID": {
           "type": "string",
           "description": "过滤区域下有设备的产品"
+        },
+        "categoryIDs": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": "产品品类"
         }
       },
       "title": "ProductInfoIndexReq"
