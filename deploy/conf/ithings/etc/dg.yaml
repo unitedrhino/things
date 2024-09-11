@@ -1,0 +1,53 @@
+Name: dg.rpc
+ListenOn: 0.0.0.0:6166
+#Etcd:
+#  Hosts:
+#  - 127.0.0.1:2379
+#  Key: dg.rpc
+Log:
+  Encoding: plain
+  #Mode: file
+CacheRedis:
+  - Host: redis:6379
+    Pass:
+    Type: node
+
+Event:
+  Nats:
+    Url: nats://nats:4222
+    Consumer: dgsvr
+DevLink:
+  Mode: mqtt
+  SubMode: emq
+  Mqtt:
+    ClientID: dg.rpc
+    Pass: iThings
+    User: dgsvr
+    Brokers:
+      - tcp://emqx:1883
+    OpenApi:
+      Host: http://emqx:18083
+      ApiKey: c0d931d242831cde
+      SecretKey: Pbd9A3iMLtE46zAulj2u05aM89CrnUIeWo1BChJrfXl8O
+#      ApiKey: a4372308268d07d4
+#      SecretKey: JRELoqeZVRlTwmXmvYxr2S7g9BkNE9B9BZFoJMXNYIaOrC
+DmRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000
+#Telemetry:
+#  Name: dd
+#  Endpoint: http://127.0.0.1:14268/api/traces
+#  Sampler: 1.0
+#  Batcher: jaeger
+
+TimedJobRpc:
+  Enable: true
+  Mode: grpc
+  Conf:
+    Timeout: 1000000
+    Etcd:
+      Hosts:
+        - etcd:2379
+      Key: timedjob.rpc

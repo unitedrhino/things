@@ -16,17 +16,16 @@ type Captcha struct {
 
 type Config struct {
 	rest.RestConf
-	Etcd              discov.EtcdConf `json:",optional,inherit"`
-	CacheRedis        cache.ClusterConf
-	SysRpc            conf.RpcClientConf `json:",optional"`
-	DgRpc             conf.RpcClientConf `json:",optional"`
-	DmRpc             conf.RpcClientConf `json:",optional"`
-	UdRpc             conf.RpcClientConf `json:",optional"`
-	VidRpc            conf.RpcClientConf `json:",optional"`
-	VidSip            conf.RpcClientConf `json:",optional"`
-	TimedJobRpc       conf.RpcClientConf `json:",optional"`
-	TimedSchedulerRpc conf.RpcClientConf `json:",optional"`
-	Rej               struct {
+	Etcd        discov.EtcdConf `json:",optional,inherit"`
+	CacheRedis  cache.ClusterConf
+	SysRpc      conf.RpcClientConf `json:",optional"`
+	DgRpc       conf.RpcClientConf `json:",optional"`
+	DmRpc       conf.RpcClientConf `json:",optional"`
+	UdRpc       conf.RpcClientConf `json:",optional"`
+	VidRpc      conf.RpcClientConf `json:",optional"`
+	VidSip      conf.RpcClientConf `json:",optional"`
+	TimedJobRpc conf.RpcClientConf `json:",optional"`
+	Rej         struct {
 		AccessSecret string
 		AccessExpire int64
 	} //注册token相关配置

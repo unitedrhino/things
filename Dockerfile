@@ -1,25 +1,18 @@
-FROM golang:1.19-alpine3.16 as go-builder
+FROM golang:1.21.13-alpine3.20 as go-builder
 WORKDIR /ithings/
-COPY ./go.mod ./go.mod
-RUN go mod download
 COPY ./ ./
-RUN cd ./src/apisvr && go mod tidy && go build .
+RUN go env -w GOPROXY=https://goproxy.cn,direct
+RUN go mod download
+RUN cd ./service/apisvr && go mod tidy && go build -ldflags="-s -w" .
 
-FROM node:19 as web-builder
-WORKDIR /ithings/
-COPY ./assets/package.json ./assets/package.json
-RUN cd assets && yarn install --no-lockfile
-COPY ./assets ./assets
-RUN cd assets && yarn build
 
-FROM alpine:3.16
+FROM alpine:3.20
 LABEL homepage="https://github.com/i-Things/iThings"
 ENV TZ Asia/Shanghai
 RUN apk add tzdata
 
 WORKDIR /ithings/
-COPY --from=go-builder /ithings/src/apisvr/apisvr ./apisvr
-COPY --from=go-builder /ithings/src/apisvr/etc/ ./etc
-COPY --from=web-builder /ithings/assets/dist/ ./dist/front/iThingsCore
+COPY --from=go-builder /ithings/service/apisvr/apisvr ./apisvr
+COPY --from=go-builder /ithings/deploy/conf/ithings/etc/ ./etc
 
 ENTRYPOINT ["./apisvr"]

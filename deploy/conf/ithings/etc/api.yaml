@@ -1,17 +1,23 @@
-#api网关接口代理模块配置-apisvr
+#api网关接口代理模块-apisvr
 Name: api
 Host: 0.0.0.0
 CpuThreshold: 0
 Timeout: 1000000
 MaxBytes: 1000000000
-Port: 7777
+Port: 7788
 NodeID: 1
+Etcd:
+  Hosts:
+    - etcd:2379
+  Key: ithings
 Log:
   Encoding: plain
+  #Mode: file
 CacheRedis:
   - Host: redis:6379
     Pass:
     Type: node
+
 Rej:
   AccessSecret: ad879037-c7a4-4063-9236-6bfc35d54b7d
   AccessExpire: 600     #过期时间单位秒
@@ -21,38 +27,37 @@ OpenAuth:
       Password: iThings
     - UserName: root
       Password: iThings
-Proxy:
-  FileProxy:
-    - FrontDir: ./dist
-      FrontDefaultPage: front/iThingsCore/index.html
-  StaticProxy:
-    - Router: /api/v1/app/
-      Dest: http://127.0.0.1:8000
-    - Router: /api/v1/oss/
-      DeletePrefix: true
-      Dest: minio:9000
-DdEnable: true
-SysRpc:
+DgRpc:
   Enable: true
   Mode: direct
+  Conf:
+    Timeout: 1000000
 DmRpc:
   Enable: true
   Mode: direct
   Conf:
     Timeout: 1000000
+SysRpc:
+  Enable: true
+  Mode: grpc
+  Conf:
+    Timeout: 1000000
+    Etcd:
+      Key: sys.rpc
+
 TimedJobRpc:
   Enable: true
-  Mode: direct
+  Mode: grpc
   Conf:
     Timeout: 1000000
-TimedSchedulerRpc:
+    Etcd:
+      Key: timedjob.rpc
+UdRpc:
   Enable: true
   Mode: direct
   Conf:
     Timeout: 1000000
-RuleRpc:
-  Enable: false
-  Mode: direct
+
 OssConf:
   OssType: minio
   PublicBucketName: ithings-public
@@ -64,7 +69,7 @@ OssConf:
   ConnectTimeout: 6000
   ReadWriteTimeout: 60000
   UseSSL: false
+
 Event:
-  
   Nats:
     Url: nats://nats:4222

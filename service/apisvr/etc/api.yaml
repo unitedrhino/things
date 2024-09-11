@@ -43,18 +43,13 @@ SysRpc:
   Conf:
     Timeout: 1000000
     Etcd:
-      Hosts:
-        - 127.0.0.1:2379
       Key: sys.rpc
-
 TimedJobRpc:
   Enable: true
   Mode: grpc
   Conf:
     Timeout: 1000000
     Etcd:
-      Hosts:
-        - 127.0.0.1:2379
       Key: timedjob.rpc
 TimedSchedulerRpc:
   Enable: true
@@ -62,8 +57,6 @@ TimedSchedulerRpc:
   Conf:
     Timeout: 1000000
     Etcd:
-      Hosts:
-        - 127.0.0.1:2379
       Key: timedscheduler.rpc
 UdRpc:
   Enable: true
