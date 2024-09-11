@@ -7,15 +7,15 @@ networks:
         - subnet: 172.19.0.0/16
 
 services:
-  ithings:
-    image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:ithings-latest
-    container_name: ithings
-    hostname: ithings
+  things:
+    image: registry.cn-qingdao.aliyuncs.com/ithings/things:latest
+    container_name: things
+    hostname: things
     restart: always
     ports:
-      - "7777:7777"
+      - "7788:7788"
     volumes:
-      - ../../deploy/conf/ithings/apisvr/etc:/ithings/etc
+      - ../conf/things/etc:/ithings/etc
     depends_on:
       - tdengine
       - nats-server
@@ -23,6 +23,8 @@ services:
       - mariadb
       - redis
       - emqx
+      - core
+      - init-db
     logging:
       options:
         max-size: "50M"
@@ -31,7 +33,30 @@ services:
     networks:
       ithings_net:
         ipv4_address: 172.19.0.8
-
+  core:
+    image: registry.cn-qingdao.aliyuncs.com/ithings/core:latest
+    container_name: core
+    hostname: core
+    restart: always
+    ports:
+      - "7777:7777"
+    depends_on:
+      - tdengine
+      - nats-server
+      - etcd
+      - mariadb
+      - redis
+      - emqx
+    volumes:
+      - ../conf/core/etc:/ithings/etc
+    logging:
+      options:
+        max-size: "50M"
+        max-file: "10"
+      driver: json-file
+    networks:
+      ithings_net:
+        ipv4_address: 172.19.0.22
   nats-server:
     image: nats:latest
     container_name: nats
@@ -81,7 +106,7 @@ services:
       MYSQL_ROOT_PASSWORD: password
       TZ: Asia/Shanghai
     volumes:
-      - ../../deploy/conf/mysql/sql:/docker-entrypoint-initdb.d
+      - ../conf/mysql/sql:/docker-entrypoint-initdb.d
     logging:
       options:
         max-size: "50M"
@@ -127,17 +152,17 @@ services:
       ithings_net:
         ipv4_address: 172.19.0.6
 
-#  init-db:
-#    image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:tdengine-tdengine-3.0.4.2
-#    container_name: init-db
-#    depends_on:
-#      - tdengine
-#    volumes:
-#      - ./init-db.sh:/init-db.sh
-#    command: /bin/bash /init-db.sh
-#    networks:
-#      ithings_net:
-#        ipv4_address: 172.19.0.9
+  init-db:
+    image: alpine:3.20
+    container_name: init-db
+    depends_on:
+      - tdengine
+    volumes:
+      - ./init-db.sh:/init-db.sh
+    command: /bin/sh /init-db.sh
+    networks:
+      ithings_net:
+        ipv4_address: 172.19.0.9
 
 # emqx:
 #   image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:emqx-4.4.17
@@ -179,7 +204,7 @@ services:
       - "18083:18083"
     volumes:
       - /etc/localtime:/etc/localtime
-      - ../../deploy/conf/emqx5/etc:/opt/emqx/etc
+      - ../conf/emqx5/etc:/opt/emqx/etc
     environment:
       - EMQX_NAME=emqx
       - EMQX_HOST=emqx
@@ -231,8 +256,8 @@ services:
       - "30000-30500:30000-30500"
       - "30000-30500:30000-30500/udp"
     volumes:
-      - ../../deploy/conf/zlmediakit/config:/opt/media/conf
-      - ../../deploy/conf/zlmediakit/record:/opt/media/record
+      - ../conf/zlmediakit/config:/opt/media/conf
+      - ../conf/zlmediakit/record:/opt/media/record
     logging:
       options:
         max-size: "50M" # 最大文件上传限制

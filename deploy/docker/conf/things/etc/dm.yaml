@@ -23,9 +23,9 @@ CacheRedis:
     Pass:
     Type: node
 TSDB:
-#  Driver: taosRestful
-#  DSN: root:taosdata@http(localhost:6041)/ithings?readBufferSize=52428800
-  DSN: root:taosdata@ws(tdengine:6041)/ithings?readBufferSize=52428800
+  Driver: taosRestful
+  DSN: root:taosdata@http(tdengine:6041)/ithings?readBufferSize=52428800
+#  DSN: root:taosdata@ws(tdengine:6041)/ithings?readBufferSize=52428800
 #  Driver: taosSql
 #  DSN: root:taosdata@tcp(localhost:6030)/ithings
 AuthWhite:
@@ -57,6 +57,7 @@ TimedJobRpc:
       Hosts:
         - etcd:2379
       Key: timedjob.rpc
+
 SysRpc:
   Enable: true
   Mode: grpc

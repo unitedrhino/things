@@ -1,0 +1,79 @@
+#api网关接口代理模块-apisvr
+Name: api
+Host: 0.0.0.0
+CpuThreshold: 0
+Timeout: 1000000
+MaxBytes: 1000000000
+Port: 7777
+NodeID: 1
+Log:
+  Encoding: plain
+  #Mode: file
+CacheRedis:
+  - Host: redis:6379
+    Pass:
+    Type: node
+
+Rej:
+  AccessSecret: ad879037-c7a4-4063-9236-6bfc35d54b7d
+  AccessExpire: 600     #过期时间单位秒
+OpenAuth:
+  Users:
+    - UserName: nodeRed
+      Password: iThings
+    - UserName: root
+      Password: iThings
+Proxy:
+  StaticProxy:
+    - Router: /api/v1/view/
+      Dest: http://127.0.0.1:7789
+    - Router: /api/v1/app/
+      Dest: http://127.0.0.1:8000
+    - Router: /api/v1/things/
+      Dest: http://things:7788
+    - Router: /api/v1/protocol/cloud/tencent/
+      Dest: http://tencent:9363
+    - Router: /api/v1/video/
+      Dest: http://video:7800
+    - Router: /api/v1/media/
+      Dest: http://media:8088
+    - Router: /api/v1/data/
+      Dest: http://127.0.0.1:9218
+    - Router: /oss/
+      DeletePrefix: true
+      Dest: http://minio:9000
+
+SysRpc:
+  Enable: true
+  Mode: direct
+  RunProxy: true
+  Conf:
+    Timeout: 1000000
+
+TimedJobRpc:
+  Enable: true
+  Mode: direct
+  RunProxy: true
+  Conf:
+    Timeout: 1000000
+TimedSchedulerRpc:
+  Enable: true
+  Mode: direct
+  RunProxy: true
+  Conf:
+    Timeout: 1000000
+
+OssConf:
+  OssType: minio
+  PublicBucketName: ithings-public
+  PrivateBucketName: ithings-private
+  TemporaryBucketName: ithings-temporary
+  AccessKeyID: root
+  AccessKeySecret: password
+  Location: minio:9000
+  ConnectTimeout: 6000
+  ReadWriteTimeout: 60000
+  UseSSL: false
+Event:
+  Nats:
+    Url: nats://nats:4222

@@ -56,7 +56,7 @@ services:
       MYSQL_ROOT_PASSWORD: password
       TZ: Asia/Shanghai
     volumes:
-      - ../../deploy/conf/mysql/sql:/docker-entrypoint-initdb.d
+      - ../conf/mysql/sql:/docker-entrypoint-initdb.d
     logging:
       options:
         max-size: "50M"
@@ -81,6 +81,17 @@ services:
     networks:
       ithings_env_net:
         ipv4_address: 172.20.0.5
+  init-db:
+    image: alpine:3.20
+    container_name: init-db
+    depends_on:
+      - tdengine
+    volumes:
+      - ./init-db.sh:/init-db.sh
+    command: /bin/sh /init-db.sh
+    networks:
+      ithings_net:
+        ipv4_address: 172.20.0.9
 
   tdengine:
     image: tdengine/tdengine:latest
@@ -114,7 +125,7 @@ services:
       - "8084:8084"
       - "18083:18083"
     volumes:
-      - ../../deploy/conf/emqx5/etc:/opt/emqx/etc
+      - ../conf/emqx5/etc:/opt/emqx/etc
     environment:
       - "EMQX_NAME=emqx"
       - "EMQX_HOST=emqx"
@@ -165,8 +176,8 @@ services:
       - "30000-30500:30000-30500"
       - "30000-30500:30000-30500/udp"
     volumes:
-      - ../../deploy/conf/zlmediakit/config:/root/zlmediakit/config
-      - ../../deploy/conf/zlmediakit/record:/root/zlmediakit/record
+      - ../conf/zlmediakit/config:/root/zlmediakit/config
+      - ../conf/zlmediakit/record:/root/zlmediakit/record
     logging:
       options:
         max-size: "50M" # 最大文件上传限制

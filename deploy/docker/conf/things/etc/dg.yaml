@@ -15,7 +15,6 @@ CacheRedis:
 Event:
   Nats:
     Url: nats://nats:4222
-    Consumer: dgsvr
 DevLink:
   Mode: mqtt
   SubMode: emq
