@@ -1,3 +1,5 @@
+use iThings;
+
 create table sys_app_module
 (
     id           bigint auto_increment

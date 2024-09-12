@@ -1,3 +1,5 @@
+use iThings;
+
 create table data_statistics_info
 (
     id                bigint auto_increment

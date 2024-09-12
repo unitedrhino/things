@@ -1,3 +1,5 @@
+use iThings;
+
 create table sys_tenant_app_module
 (
     tenant_code  varchar(50)                              not null,

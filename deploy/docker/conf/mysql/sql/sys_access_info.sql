@@ -1,3 +1,5 @@
+use iThings;
+
 create table sys_access_info
 (
     id             bigint auto_increment

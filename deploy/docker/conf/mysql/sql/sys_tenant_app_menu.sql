@@ -1,3 +1,5 @@
+use iThings;
+
 create table sys_tenant_app_menu
 (
     template_id  bigint                                   not null,

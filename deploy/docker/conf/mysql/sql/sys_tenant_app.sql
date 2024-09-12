@@ -1,3 +1,5 @@
+use iThings;
+
 create table sys_tenant_app
 (
     id                     bigint auto_increment

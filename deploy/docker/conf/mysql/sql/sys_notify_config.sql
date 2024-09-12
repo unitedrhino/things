@@ -1,3 +1,5 @@
+use iThings;
+
 create table sys_notify_config
 (
     id            bigint auto_increment

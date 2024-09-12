@@ -1,3 +1,5 @@
+use iThings;
+
 create table sys_module_menu
 (
     id           bigint auto_increment
