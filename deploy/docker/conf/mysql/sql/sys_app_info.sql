@@ -1,4 +1,3 @@
-use iThings;
 create table sys_app_info
 (
     id                  bigint auto_increment
@@ -30,5 +29,5 @@ create table sys_app_info
 create index idx_sys_app_info_created_time
     on sys_app_info (created_time);
 
-INSERT INTO sys_app_info (id, code, name, `desc`, base_url, logo_url, created_time, updated_time, deleted_time, type, created_by, deleted_by, updated_by, sub_type, mini_wx_app_id, mini_wx_app_key, mini_wx_app_secret, mini_wx_mini_app_id) VALUES (1, 'core', '管理后台', ' ', '', '', '2023-12-29 19:31:30.838', '2024-09-07 13:56:00.747', 0, 'web', 0, 0, 1740358057038188544, 'android', '', '', '', '');
-INSERT INTO sys_app_info (id, code, name, `desc`, base_url, logo_url, created_time, updated_time, deleted_time, type, created_by, deleted_by, updated_by, sub_type, mini_wx_app_id, mini_wx_app_key, mini_wx_app_secret, mini_wx_mini_app_id) VALUES (12, 'client-mini-wx', 'c端微信小程序', 'c端微信小程序', 'c端微信小程序', 'c端微信小程序', '2024-05-07 18:47:10.679', '2024-07-26 18:39:54.428', 0, 'mini', 1740358057038188544, 0, 1740358057038188544, 'wx', '', '', '', '');
+INSERT INTO iThings.sys_app_info (id, code, name, `desc`, base_url, logo_url, created_time, updated_time, deleted_time, type, created_by, deleted_by, updated_by, sub_type, mini_wx_app_id, mini_wx_app_key, mini_wx_app_secret, mini_wx_mini_app_id) VALUES (1, 'core', '管理后台', ' ', '', '', '2023-12-29 19:31:30.838', '2024-09-07 13:56:00.747', 0, 'web', 0, 0, 1740358057038188544, 'web', '', '', '', '');
+INSERT INTO iThings.sys_app_info (id, code, name, `desc`, base_url, logo_url, created_time, updated_time, deleted_time, type, created_by, deleted_by, updated_by, sub_type, mini_wx_app_id, mini_wx_app_key, mini_wx_app_secret, mini_wx_mini_app_id) VALUES (12, 'client-mini-wx', 'c端微信小程序', 'c端微信小程序', 'c端微信小程序', 'c端微信小程序', '2024-05-07 18:47:10.679', '2024-07-26 18:39:54.428', 0, 'mini', 1740358057038188544, 0, 1740358057038188544, 'wx', '', '', '', '');

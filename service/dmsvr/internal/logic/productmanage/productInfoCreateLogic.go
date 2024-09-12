@@ -201,9 +201,11 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Empt
 		if err != nil {
 			return err
 		}
-		err = relationDB.NewProductSchemaRepo(tx).MultiInsert(l.ctx, schemas)
-		if err != nil {
-			return err
+		if len(schemas) != 0 {
+			err = relationDB.NewProductSchemaRepo(tx).MultiInsert(l.ctx, schemas)
+			if err != nil {
+				return err
+			}
 		}
 		return nil
 	})
