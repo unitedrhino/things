@@ -15,7 +15,7 @@ Database:
 #  DBType: pgsql
 #  DSN: pgsql:host=localhost;port=5432;dbname=ithings;user=postgres;password=password
 CacheRedis:
-  - Host: 127.0.0.1:6379
+  - Host: redis:6379
     Pass:
     Type: node
 UserToken:

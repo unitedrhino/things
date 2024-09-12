@@ -163,34 +163,6 @@ services:
     networks:
       ithings_net:
         ipv4_address: 172.19.0.9
-
-# emqx:
-#   image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:emqx-4.4.17
-#   container_name: emqx
-#   hostname: emqx
-#   restart: always
-#   ports:
-#     - "1883:1883"
-#     - "8083:8083"
-#     - "8883:8883"
-#     - "8084:8084"
-#     - "18083:18083"
-#   volumes:
-#     - ../../deploy/conf/emqx/etc/plugins/emqx_auth_http.conf:/opt/emqx/etc/plugins/emqx_auth_http.conf
-#     - ../../deploy/conf/emqx/data/loaded_plugins:/opt/emqx/data/loaded_plugins
-#   environment:
-#     - "EMQX_NAME=emqx"
-#     - "EMQX_HOST=emqx"
-#   logging:
-#     options:
-#       max-size: "50M"
-#       max-file: "10"
-#     driver: json-file
-#   networks:
-#     ithings_net:
-#       ipv4_address: 172.19.0.7
-
-
   emqx:
     image: emqx/emqx:5.4.0
     container_name: emqx
@@ -240,29 +212,29 @@ services:
     networks:
       ithings_net:
         ipv4_address: 172.19.0.10
-
-  zlmediakit:
-    image: registry.cn-shenzhen.aliyuncs.com/airgens/zlmediakit:v1
-    container_name: zlmediakit
-    hostname: zlmediakit
-    restart: always
-    ports:
-      - "8088:80"
-      - "1935:1935"
-      - "8554:554"
-      - "10000:10000"
-      - "10000:10000/udp"
-      - "8000:8000/udp"
-      - "30000-30500:30000-30500"
-      - "30000-30500:30000-30500/udp"
-    volumes:
-      - ../conf/zlmediakit/config:/opt/media/conf
-      - ../conf/zlmediakit/record:/opt/media/record
-    logging:
-      options:
-        max-size: "50M" # 最大文件上传限制
-        max-file: "10"
-      driver: json-file
-    networks:
-      ithings_net:
-        ipv4_address: 172.19.0.11
+#
+#  zlmediakit:
+#    image: registry.cn-shenzhen.aliyuncs.com/airgens/zlmediakit:v1
+#    container_name: zlmediakit
+#    hostname: zlmediakit
+#    restart: always
+#    ports:
+#      - "8088:80"
+#      - "1935:1935"
+#      - "8554:554"
+#      - "10000:10000"
+#      - "10000:10000/udp"
+#      - "8000:8000/udp"
+#      - "30000-30500:30000-30500"
+#      - "30000-30500:30000-30500/udp"
+#    volumes:
+#      - ../conf/zlmediakit/config:/opt/media/conf
+#      - ../conf/zlmediakit/record:/opt/media/record
+#    logging:
+#      options:
+#        max-size: "50M" # 最大文件上传限制
+#        max-file: "10"
+#      driver: json-file
+#    networks:
+#      ithings_net:
+#        ipv4_address: 172.19.0.11
