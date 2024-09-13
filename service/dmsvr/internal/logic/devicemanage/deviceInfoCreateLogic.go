@@ -46,10 +46,7 @@ func NewDeviceInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 发现返回true 没有返回false
 */
 func (l *DeviceInfoCreateLogic) CheckDevice(in *dm.DeviceInfo) (bool, error) {
-	_, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
-		ProductID:  in.ProductID,
-		DeviceName: in.DeviceName,
-	})
+	_, err := relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductID, DeviceNames: []string{in.DeviceName}})
 	if err == nil {
 		return true, nil
 	}

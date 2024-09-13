@@ -36,7 +36,7 @@ func (l *UserDeviceShareUpdateLogic) UserDeviceShareUpdate(in *dm.UserDeviceShar
 		return nil, err
 	}
 	uc := ctxs.GetUserCtx(l.ctx)
-	di, err := relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: uds.ProductID, DeviceName: uds.DeviceName})
+	di, err := relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: uds.ProductID, DeviceNames: []string{uds.DeviceName}})
 	if err != nil {
 		return nil, err
 	}
