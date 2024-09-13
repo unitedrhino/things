@@ -23,7 +23,7 @@ require (
 	github.com/nats-io/nats.go v1.33.1
 	github.com/observerly/dusk v1.16.0
 	github.com/spf13/cast v1.5.0
-	github.com/zeromicro/go-zero v1.6.3
+	github.com/zeromicro/go-zero v1.7.2
 	go.uber.org/atomic v1.10.0
 	golang.org/x/exp v0.0.0-20240222234643-814bf88cf225
 	golang.org/x/sync v0.8.0
@@ -147,7 +147,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.2 // indirect
 	github.com/pierrec/lz4/v4 v4.1.21 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/prometheus/client_golang v1.20.0 // indirect
+	github.com/prometheus/client_golang v1.20.2 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
 	github.com/prometheus/common v0.55.0 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
