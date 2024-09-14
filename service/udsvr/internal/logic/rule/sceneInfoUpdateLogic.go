@@ -8,7 +8,6 @@ import (
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/oss"
-	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 
@@ -35,19 +34,12 @@ func NewSceneInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *S
 func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *ud.SceneInfo) (*ud.Empty, error) {
 	newPo := ToSceneInfoPo(ToSceneInfoDo(in))
 	db := relationDB.NewSceneInfoRepo(l.ctx)
-	old, err := SceneInfoRead(l.ctx, l.svcCtx, in.Id)
+	old, err := SceneInfoRead(l.ctx, l.svcCtx, in.Id, def.AuthReadWrite)
 	if err != nil {
 		return nil, err
 	}
 	if old.Tag == "deviceTiming" { //单设备定时
 		uc := ctxs.GetUserCtx(l.ctx)
-		err := dmExport.AccessPerm(l.ctx, l.svcCtx.DeviceCache, l.svcCtx.UserShareCache, def.AuthReadWrite, devices.Core{
-			ProductID:  old.ProductID,
-			DeviceName: old.DeviceName,
-		}, "deviceTiming")
-		if err != nil {
-			return nil, err
-		}
 		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
 			ProductID:  in.ProductID,
 			DeviceName: in.DeviceName,

@@ -5,7 +5,6 @@ import (
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
-	"github.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/service/udsvr/internal/svc"
@@ -29,19 +28,12 @@ func NewSceneInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *S
 }
 
 func (l *SceneInfoDeleteLogic) SceneInfoDelete(in *ud.WithID) (*ud.Empty, error) {
-	old, err := relationDB.NewSceneInfoRepo(l.ctx).FindOne(l.ctx, in.Id)
+	old, err := SceneInfoRead(l.ctx, l.svcCtx, in.Id, def.AuthReadWrite)
 	if err != nil {
 		return nil, err
 	}
 	if old.Tag == "deviceTiming" { //单设备定时
 		uc := ctxs.GetUserCtx(l.ctx)
-		err := dmExport.AccessPerm(l.ctx, l.svcCtx.DeviceCache, l.svcCtx.UserShareCache, def.AuthReadWrite, devices.Core{
-			ProductID:  old.ProductID,
-			DeviceName: old.DeviceName,
-		}, "deviceTiming")
-		if err != nil {
-			return nil, err
-		}
 		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
 			ProductID:  old.ProductID,
 			DeviceName: old.DeviceName,
