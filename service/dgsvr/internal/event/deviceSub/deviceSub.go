@@ -196,7 +196,7 @@ func (s *DeviceSubServer) Disconnected(info *devices.DevConn) error {
 		return nil
 	}
 	if info.Reason == "takeovered" || info.Reason == "takenover" || info.Reason == "discard" || info.Reason == "discarded" { //连接还在的时候被别人顶了,忽略这种下线
-		logx.Errorf("忽略的下线状态:%v", utils.Fmt(info))
+		s.Errorf("忽略的下线状态:%v", utils.Fmt(info))
 		return nil
 	}
 	dev := devices.Core{
