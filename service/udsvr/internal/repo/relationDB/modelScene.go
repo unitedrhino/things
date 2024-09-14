@@ -13,7 +13,7 @@ type UdSceneInfo struct {
 	ProjectID   stores.ProjectID  `gorm:"column:project_id;type:bigint;default:0;NOT NULL"`                       // 项目ID(雪花ID)
 	AreaID      stores.AreaID     `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"` // 项目区域ID(雪花ID)
 	FlowPath    []*scene.FlowInfo `gorm:"column:flow_path;type:json;serializer:json;"`                            //执行路径
-	DeviceMode  scene.DeviceMode  `gorm:"column:tenant_code;type:VARCHAR(50);default:'single'"`                   //设备模式
+	DeviceMode  scene.DeviceMode  `gorm:"column:device_mode;type:VARCHAR(50);default:'single'"`                   //设备模式
 	ProductID   string            `gorm:"column:product_id;index;type:VARCHAR(25);default:''"`                    //产品id
 	DeviceName  string            `gorm:"column:device_name;type:VARCHAR(255);default:''"`                        //设备名
 	DeviceAlias string            `gorm:"column:device_alias;type:VARCHAR(255);default:''"`                       //设备别名

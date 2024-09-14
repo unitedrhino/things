@@ -55,7 +55,7 @@ func (p SceneInfoRepo) fmtFilter(ctx context.Context, f SceneInfoFilter) *gorm.D
 		db = db.Where("area_id = ?", f.AreaID)
 	}
 	if f.DeviceMode != "" {
-		db = db.Where("device_mode=?", f.DeviceMode)
+		//db = db.Where("device_mode=?", f.DeviceMode)
 	}
 	if f.ProductID != "" {
 		db = db.Where("product_id=?", f.ProductID)
