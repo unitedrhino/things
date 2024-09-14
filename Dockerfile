@@ -1,4 +1,4 @@
-FROM golang:1.21.13-alpine3.20 as go-builder
+FROM golang:alpine3.20 as go-builder
 WORKDIR /ithings/
 COPY ./ ./
 RUN go env -w GOPROXY=https://goproxy.cn,direct
