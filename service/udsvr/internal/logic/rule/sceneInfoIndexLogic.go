@@ -49,6 +49,7 @@ func (l *SceneInfoIndexLogic) SceneInfoIndex(in *ud.SceneInfoIndexReq) (*ud.Scen
 		}
 		if uc.ProjectID != di.ProjectID {
 			uc.ProjectID = di.ProjectID
+			uc.IsAdmin = true
 		}
 	}
 	f := relationDB.SceneInfoFilter{AreaID: in.AreaID, IsCommon: in.IsCommon, Tag: in.Tag, Status: in.Status, Name: in.Name, DeviceMode: in.DeviceMode,

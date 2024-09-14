@@ -51,6 +51,7 @@ func (l *SceneInfoDeleteLogic) SceneInfoDelete(in *ud.WithID) (*ud.Empty, error)
 		}
 		if uc.ProjectID != di.ProjectID {
 			uc.ProjectID = di.ProjectID
+			uc.IsAdmin = true
 		}
 	}
 	err = relationDB.NewSceneInfoRepo(l.ctx).Delete(l.ctx, in.Id)

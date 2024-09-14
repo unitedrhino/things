@@ -57,6 +57,7 @@ func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *ud.SceneInfo) (*ud.Empty, err
 		}
 		if uc.ProjectID != di.ProjectID {
 			uc.ProjectID = di.ProjectID
+			uc.IsAdmin = true
 		}
 	}
 	var doUpdate bool

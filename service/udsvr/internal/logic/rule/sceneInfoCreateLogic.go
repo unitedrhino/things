@@ -59,6 +59,7 @@ func (l *SceneInfoCreateLogic) SceneInfoCreate(in *ud.SceneInfo) (*ud.WithID, er
 		}
 		if uc.ProjectID != di.ProjectID {
 			uc.ProjectID = di.ProjectID
+			uc.IsAdmin = true
 		}
 	}
 
