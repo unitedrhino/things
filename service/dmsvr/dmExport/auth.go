@@ -47,3 +47,34 @@ func SchemaAccess(ctx context.Context, dc DeviceCacheT, usc UserShareCacheT, aut
 	}
 	return param, nil
 }
+
+func AccessPerm(ctx context.Context, dc DeviceCacheT, usc UserShareCacheT, authType def.AuthType, dev devices.Core, access string) (err error) {
+	uc := ctxs.GetUserCtx(ctx)
+	if uc != nil && !uc.IsAdmin {
+		di, err := dc.GetData(ctx, dev)
+		if err != nil {
+			return err
+		}
+		_, ok := uc.ProjectAuth[di.ProjectID]
+		if !ok {
+			uds, err := usc.GetData(ctx, userShared.UserShareKey{
+				ProductID:    dev.ProductID,
+				DeviceName:   dev.DeviceName,
+				SharedUserID: uc.UserID,
+			})
+			if err != nil {
+				return errors.Permissions
+			}
+			if uds.AuthType == def.AuthAdmin {
+				return nil
+			}
+			sp := uds.AccessPerm[access]
+			if sp != nil && sp.Perm > authType {
+				return errors.Permissions.AddMsgf("操作:%v 没有控制权限", access)
+			}
+			return nil
+		}
+		return nil
+	}
+	return nil
+}
