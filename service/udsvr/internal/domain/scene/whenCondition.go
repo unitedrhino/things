@@ -8,7 +8,7 @@ import (
 )
 
 type Conditions struct {
-	Terms []Term       `json:"terms"`
+	Terms []Term       `json:"terms,omitempty"`
 	Type  TermCondType `json:"type"`
 }
 
@@ -31,10 +31,10 @@ const (
 
 type Term struct {
 	Order      int64          `json:"order"`
-	ColumnType TermColumnType `json:"columnType"` //字段类型 property:属性 weather:天气
-	Property   *TermProperty  `json:"property"`   //属性类型
-	Weather    *TermWeather   `json:"weather"`
-	Time       *TermTime      `json:"time"`
+	ColumnType TermColumnType `json:"columnType"`         //字段类型 property:属性 weather:天气
+	Property   *TermProperty  `json:"property,omitempty"` //属性类型
+	Weather    *TermWeather   `json:"weather,omitempty"`
+	Time       *TermTime      `json:"time,omitempty"`
 }
 
 func (t *Conditions) Validate(repo CheckRepo) error {

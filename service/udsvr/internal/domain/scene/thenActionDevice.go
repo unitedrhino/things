@@ -26,22 +26,22 @@ const (
 )
 
 type ActionDevice struct {
-	ProjectID        int64            `json:"-"`                     //项目id
-	AreaID           int64            `json:"areaID,string"`         //涉及到的区域ID
-	AreaName         string           `json:"areaName"`              //区域的名字
-	ProductID        string           `json:"productID"`             //产品id
-	ProductName      string           `json:"productName"`           //产品名称--填写产品ID的时候会自动补充
-	SelectType       SelectType       `json:"selectType"`            //设备选择方式
-	DeviceName       string           `json:"deviceName"`            //选择的设备列表 指定设备的时候才需要填写(如果设备换到其他区域里,这里删除该设备)
-	DeviceAlias      string           `json:"deviceAlias,omitempty"` //设备别名,只读
-	GroupID          int64            `json:"groupID"`               //分组id
-	Type             ActionDeviceType `json:"type"`                  // 云端向设备发起属性控制: propertyControl  应用调用设备行为:action  todo:通知设备上报
-	DataID           string           `json:"dataID"`                // 属性的id及事件的id,不填则取values里面的
-	DataName         string           `json:"dataName"`              //对应的物模型定义,只读
-	SchemaAffordance string           `json:"schemaAffordance"`      //只读,返回物模型定义
-	Value            string           `json:"value"`                 //传的值
-	Values           DeviceValues     `json:"values"`                //如果需要控制多个参数
-	Body             string           `json:"body,omitempty"`        //自定义字段
+	ProjectID        int64            `json:"-"`                          //项目id
+	AreaID           int64            `json:"areaID,string,omitempty"`    //涉及到的区域ID
+	AreaName         string           `json:"areaName,omitempty"`         //区域的名字
+	ProductID        string           `json:"productID,omitempty"`        //产品id
+	ProductName      string           `json:"productName,omitempty"`      //产品名称--填写产品ID的时候会自动补充
+	SelectType       SelectType       `json:"selectType,omitempty"`       //设备选择方式
+	DeviceName       string           `json:"deviceName,omitempty"`       //选择的设备列表 指定设备的时候才需要填写(如果设备换到其他区域里,这里删除该设备)
+	DeviceAlias      string           `json:"deviceAlias,omitempty"`      //设备别名,只读
+	GroupID          int64            `json:"groupID,omitempty"`          //分组id
+	Type             ActionDeviceType `json:"type,omitempty"`             // 云端向设备发起属性控制: propertyControl  应用调用设备行为:action  todo:通知设备上报
+	DataID           string           `json:"dataID,omitempty"`           // 属性的id及事件的id,不填则取values里面的
+	DataName         string           `json:"dataName,omitempty"`         //对应的物模型定义,只读
+	SchemaAffordance string           `json:"schemaAffordance,omitempty"` //只读,返回物模型定义
+	Value            string           `json:"value,omitempty"`            //传的值
+	Values           DeviceValues     `json:"values,omitempty"`           //如果需要控制多个参数
+	Body             string           `json:"body,omitempty"`             //自定义字段
 }
 
 type DeviceValues = []*DeviceValue

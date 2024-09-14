@@ -35,9 +35,9 @@ const (
 
 // TimeRange 时间范围 只支持后面几种特殊字符:*  - ,
 type TimeRange struct {
-	Type      TimeRangeType `json:"type"`      //时间类型  allDay:全天 light:白天(从日出到日落) night:夜间(从日落到日出) customRange:自定义范围
-	StartTime int64         `json:"startTime"` //自定义开始时间 从0点加起来的秒数
-	EndTime   int64         `json:"endTime"`   //自定义结束时间 从0点加起来的秒数
+	Type      TimeRangeType `json:"type"`                //时间类型  allDay:全天 light:白天(从日出到日落) night:夜间(从日落到日出) customRange:自定义范围
+	StartTime int64         `json:"startTime,omitempty"` //自定义开始时间 从0点加起来的秒数
+	EndTime   int64         `json:"endTime,omitempty"`   //自定义结束时间 从0点加起来的秒数
 }
 
 type DateRange struct {

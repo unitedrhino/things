@@ -13,15 +13,15 @@ import (
 
 // TermProperty 物模型类型 属性
 type TermProperty struct {
-	AreaID           int64    `json:"areaID,string"` //仅做记录
-	ProductID        string   `json:"productID"`     //产品id
-	DeviceName       string   `json:"deviceName"`
-	DeviceAlias      string   `json:"deviceAlias"`
-	DataID           string   `json:"dataID"` //属性的id   aa.bb.cc
-	DataName         string   `json:"dataName"`
-	SchemaAffordance string   `json:"schemaAffordance"` //只读,返回物模型定义
-	TermType         CmpType  `json:"termType"`         //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
-	Values           []string `json:"values"`           //条件值 参数根据动态条件类型会有多个参数
+	AreaID           int64    `json:"areaID,string,omitempty"` //仅做记录
+	ProductID        string   `json:"productID,omitempty"`     //产品id
+	DeviceName       string   `json:"deviceName,omitempty"`
+	DeviceAlias      string   `json:"deviceAlias,omitempty"`
+	DataID           string   `json:"dataID,omitempty"` //属性的id   aa.bb.cc
+	DataName         string   `json:"dataName,omitempty"`
+	SchemaAffordance string   `json:"schemaAffordance,omitempty"` //只读,返回物模型定义
+	TermType         CmpType  `json:"termType,omitempty"`         //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
+	Values           []string `json:"values,omitempty"`           //条件值 参数根据动态条件类型会有多个参数
 }
 
 func (c *TermProperty) Validate(repo CheckRepo) error {

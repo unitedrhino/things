@@ -13,11 +13,11 @@ import (
 */
 
 type ActionScene struct {
-	AreaID    int64     `json:"areaID,string"` //仅做记录
-	SceneID   int64     `json:"sceneID"`
-	SceneType SceneType `json:"sceneType"`        //类型,后端会赋值
-	SceneName string    `json:"sceneName"`        //更新及创建的时候后端会赋值
-	Status    def.Bool  `json:"status,omitempty"` //如果是自动化类型则为修改状态
+	AreaID    int64     `json:"areaID,string,omitempty"` //仅做记录
+	SceneID   int64     `json:"sceneID,omitempty"`
+	SceneType SceneType `json:"sceneType,omitempty"` //类型,后端会赋值
+	SceneName string    `json:"sceneName,omitempty"` //更新及创建的时候后端会赋值
+	Status    def.Bool  `json:"status,omitempty"`    //如果是自动化类型则为修改状态
 }
 
 func (a *ActionScene) Validate(repo CheckRepo) error {

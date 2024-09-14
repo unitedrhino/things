@@ -25,7 +25,7 @@ const (
 )
 
 type ActionAlarm struct {
-	Mode ActionAlarmMode `json:"mode"` //告警模式  trigger: 触发告警  relieve: 解除告警
+	Mode ActionAlarmMode `json:"mode,omitempty"` //告警模式  trigger: 触发告警  relieve: 解除告警
 }
 
 type AlarmSerial struct {

@@ -35,7 +35,7 @@ func NewSceneInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *S
 func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *ud.SceneInfo) (*ud.Empty, error) {
 	newPo := ToSceneInfoPo(ToSceneInfoDo(in))
 	db := relationDB.NewSceneInfoRepo(l.ctx)
-	old, err := db.FindOne(l.ctx, in.Id)
+	old, err := SceneInfoRead(l.ctx, l.svcCtx, in.Id)
 	if err != nil {
 		return nil, err
 	}
