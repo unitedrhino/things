@@ -65,8 +65,17 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceCore) (*dm.Empty, 
 	di.AreaID = stores.AreaID(def.NotClassified)
 	di.AreaIDPath = def.NotClassifiedPath
 	if di.FirstBind.Valid && di.FirstBind.Time.After(time.Now().AddDate(0, 0, -1)) { //绑定一天内的不算绑定时间
-		di.FirstBind.Valid = false
-		di.ExpTime.Valid = false
+		pc, err := l.svcCtx.ProductCache.GetData(l.ctx, di.ProductID)
+		if err != nil {
+			return nil, err
+		}
+		if pc.TrialTime != nil && di.ExpTime.Valid { //如果设备的有效期大于从当前算起的有效期,那说明充值过,这时候不能清除过期时间
+			expTime := time.Now().Add(time.Hour * 24 * time.Duration(pc.TrialTime.GetValue()))
+			if expTime.After(di.ExpTime.Time) {
+				di.FirstBind.Valid = false
+				di.ExpTime.Valid = false
+			}
+		}
 	}
 	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
 		err := relationDB.NewDeviceInfoRepo(tx).Update(ctxs.WithRoot(l.ctx), di)
