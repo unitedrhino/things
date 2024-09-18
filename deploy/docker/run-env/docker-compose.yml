@@ -154,7 +154,17 @@ services:
     networks:
       ithings_env_net:
         ipv4_address: 172.20.0.10
-
+  init-db:
+    image: alpine:3.20
+    container_name: init-db
+    depends_on:
+      - tdengine
+    volumes:
+      - ./init-db.sh:/init-db.sh
+    command: /bin/sh /init-db.sh
+    networks:
+      ithings_net:
+        ipv4_address: 172.20.0.9
 #  zlmediakit:
 #    image: registry.cn-shenzhen.aliyuncs.com/airgens/zlmediakit:v1
 #    container_name: ienv-zlmediakit

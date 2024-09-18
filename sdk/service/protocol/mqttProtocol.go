@@ -187,10 +187,11 @@ func (m *MqttProtocol) SubscribeDevConn(handle ConnHandle) error {
 		if err != nil {
 			return nil //不是该类型的设备
 		}
-		if do.Reason == "takeovered" || do.Reason == "takenover" || do.Reason == "discard" || do.Reason == "discarded" { //连接还在的时候被别人顶了,忽略这种下线
-			logx.Errorf("忽略的下线状态:%v", utils.Fmt(do))
-			return nil
-		}
+		// 忽略下线后会导致设备正常上下线也会被忽略,这里先不处理
+		//if do.Reason == "takeovered" || do.Reason == "takenover" || do.Reason == "discard" || do.Reason == "discarded" { //连接还在的时候被别人顶了,忽略这种下线
+		//	logx.Errorf("忽略的下线状态:%v", utils.Fmt(do))
+		//	return nil
+		//}
 		dev := devices.Core{
 			ProductID:  newDo.ProductID,
 			DeviceName: newDo.DeviceName,
