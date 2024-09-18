@@ -8,7 +8,7 @@ import (
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
-	sq "github.com/Masterminds/squirrel"
+	sq "gitee.com/i-Things/squirrel"
 )
 
 func (d *DeviceDataRepo) InsertEventData(ctx context.Context, productID string,

@@ -8,7 +8,7 @@ import (
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 
 	"gitee.com/i-Things/share/def"
-	sq "github.com/Masterminds/squirrel"
+	sq "gitee.com/i-Things/squirrel"
 )
 
 func (d SDKLogRepo) GetDeviceSDKLog(ctx context.Context,

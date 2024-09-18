@@ -7,7 +7,7 @@ import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
-	sq "github.com/Masterminds/squirrel"
+	sq "gitee.com/i-Things/squirrel"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 )
 
