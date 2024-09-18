@@ -58,6 +58,7 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		DeviceNames:       in.DeviceNames,
 		Gateway:           utils.Copy[devices.Core](in.Gateway),
 		Cores:             cores,
+		Iccid:             in.Iccid,
 		Tags:              in.Tags,
 		Range:             in.Range,
 		Position:          logic.ToStorePoint(in.Position),

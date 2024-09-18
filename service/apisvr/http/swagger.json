@@ -7044,6 +7044,10 @@
           "type": "boolean",
           "format": "boolean",
           "description": "只返回核心信息"
+        },
+        "iccid": {
+          "type": "string",
+          "description": "SIM卡卡号"
         }
       },
       "title": "DeviceInfoIndexReq"

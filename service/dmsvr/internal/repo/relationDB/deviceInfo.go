@@ -38,6 +38,7 @@ type (
 		NotVersion         string
 		Cores              []*devices.Core
 		Gateway            *devices.Core
+		Iccid              string
 		WithProduct        bool
 		ProductCategoryID  int64
 		ProductCategoryIDs []int64
@@ -76,6 +77,9 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	db = f.ExpTime.Where(db, "exp_time")
 	if f.WithProduct {
 		db = db.Preload("ProductInfo")
+	}
+	if f.Iccid != "" {
+		db = db.Where("iccid = ?", f.Iccid)
 	}
 	if f.AreaIDPath != "" {
 		db = db.Where("area_id_path like ?", f.AreaIDPath+"%")
