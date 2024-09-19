@@ -34,7 +34,7 @@ func NewStaticHandle(ctx context.Context, svcCtx *svc.ServiceContext) *StaticHan
 
 func (l *StaticHandle) Handle() error { //产品品类设备数量统计
 	w := sync.WaitGroup{}
-	w.Add(4)
+	w.Add(6)
 	utils.Go(l.ctx, func() {
 		defer w.Done()
 		err := l.ProductCategoryStatic()
@@ -65,6 +65,20 @@ func (l *StaticHandle) Handle() error { //产品品类设备数量统计
 	utils.Go(l.ctx, func() {
 		defer w.Done()
 		err := l.DeviceMsgCount()
+		if err != nil {
+			l.Error(err)
+		}
+	})
+	utils.Go(l.ctx, func() {
+		defer w.Done()
+		err := l.DeviceAbnormalRecover()
+		if err != nil {
+			l.Error(err)
+		}
+	})
+	utils.Go(l.ctx, func() {
+		defer w.Done()
+		err := l.DeviceAbnormalSet()
 		if err != nil {
 			l.Error(err)
 		}
@@ -129,6 +143,88 @@ func (l *StaticHandle) DeviceExp() error { //设备过期处理
 		err := relationDB.NewUserDeviceShareRepo(l.ctx).DeleteByFilter(l.ctx, relationDB.UserDeviceShareFilter{
 			ExpTime: stores.CmpAnd(stores.CmpLte(time.Now()), stores.CmpIsNull(false)),
 		})
+		if err != nil {
+			l.Error(err)
+		}
+	}
+	return nil
+}
+func (l *StaticHandle) DeviceAbnormalRecover() error { //设备上下线异常恢复
+	now := time.Now()
+	dis, err := relationDB.NewDeviceInfoRepo(l.ctx).FindByFilter(l.ctx, relationDB.DeviceFilter{
+		Statuses: []int64{def.DeviceStatusAbnormal},
+	}, nil)
+	if err != nil {
+		return err
+	}
+	var recoverDevices []*devices.Core
+
+	for _, d := range dis {
+		count, err := l.svcCtx.StatusRepo.GetCountLog(l.ctx, deviceLog.StatusFilter{
+			ProductID:  d.ProductID,
+			DeviceName: d.DeviceName,
+		}, def.PageInfo2{
+			TimeStart: now.Add(-time.Minute * 60).UnixMilli(),
+		})
+		if err != nil {
+			continue
+		}
+		if count > 5 { //如果前一个小时还超过5次的登入登出,则保持异常状态
+			continue
+		}
+		recoverDevices = append(recoverDevices, &devices.Core{
+			ProductID:  d.ProductID,
+			DeviceName: d.DeviceName,
+		})
+	}
+	if len(recoverDevices) > 0 {
+		l.Infof("recoverDevices:%v", utils.Fmt(recoverDevices))
+		err := relationDB.NewDeviceInfoRepo(l.ctx).UpdateWithField(l.ctx,
+			relationDB.DeviceFilter{Cores: recoverDevices},
+			map[string]any{"status": stores.Expr("is_online + 1")})
+		if err != nil {
+			l.Error(err)
+		}
+	}
+	return nil
+}
+
+func (l *StaticHandle) DeviceAbnormalSet() error { //设备上下线异常设置
+	now := time.Now()
+	dis, err := relationDB.NewDeviceInfoRepo(l.ctx).FindByFilter(l.ctx, relationDB.DeviceFilter{
+		LastLoginTime: &def.TimeRange{
+			Start: now.Add(-time.Minute * 60).Unix(),
+		},
+		Statuses: []int64{def.DeviceStatusOnline, def.DeviceStatusOffline},
+	}, nil)
+	if err != nil {
+		return err
+	}
+	var abnormalDevices []*devices.Core
+	for _, d := range dis {
+		count, err := l.svcCtx.StatusRepo.GetCountLog(l.ctx, deviceLog.StatusFilter{
+			ProductID:  d.ProductID,
+			DeviceName: d.DeviceName,
+		}, def.PageInfo2{
+			TimeStart: now.Add(-time.Minute * 60).UnixMilli(),
+		})
+		if err != nil {
+			continue
+		}
+		if count < 10 {
+			continue
+		}
+		//如果一个小时内上下线次数大于10次,则判断为异常设备
+		abnormalDevices = append(abnormalDevices, &devices.Core{
+			ProductID:  d.ProductID,
+			DeviceName: d.DeviceName,
+		})
+	}
+	if len(abnormalDevices) > 0 {
+		l.Infof("abnormalDevices:%v", utils.Fmt(abnormalDevices))
+		err := relationDB.NewDeviceInfoRepo(l.ctx).UpdateWithField(l.ctx,
+			relationDB.DeviceFilter{Cores: abnormalDevices},
+			map[string]any{"status": def.DeviceStatusAbnormal})
 		if err != nil {
 			l.Error(err)
 		}

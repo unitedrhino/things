@@ -29,8 +29,8 @@ type (
 		Tags               map[string]string
 		LastLoginTime      *def.TimeRange
 		IsOnline           int64
-		Status             int64
-		Statuses           []int64
+		Status             def.DeviceStatus
+		Statuses           []def.DeviceStatus
 		Range              int64
 		Position           stores.Point
 		DeviceAlias        string
