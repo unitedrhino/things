@@ -7,7 +7,7 @@ go 1.21.4
 
 require (
 	gitee.com/i-Things/core v0.1.4
-	gitee.com/i-Things/share v0.1.18
+	gitee.com/i-Things/share v0.1.19
 	gitee.com/i-Things/squirrel v1.20.4
 	github.com/dgraph-io/ristretto v0.1.0
 	github.com/dop251/goja v0.0.0-20230402114112-623f9dda9079
