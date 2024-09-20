@@ -223,7 +223,7 @@ func (l *StaticHandle) DeviceAbnormalSet() error { //设备上下线异常设置
 	if len(abnormalDevices) > 0 {
 		l.Infof("abnormalDevices:%v", utils.Fmt(abnormalDevices))
 		err := relationDB.NewDeviceInfoRepo(l.ctx).UpdateWithField(l.ctx,
-			relationDB.DeviceFilter{Cores: abnormalDevices},
+			relationDB.DeviceFilter{Cores: abnormalDevices, Statuses: []int64{def.DeviceStatusOnline, def.DeviceStatusOffline}},
 			map[string]any{"status": def.DeviceStatusAbnormal})
 		if err != nil {
 			l.Error(err)
