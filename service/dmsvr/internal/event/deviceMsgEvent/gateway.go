@@ -265,6 +265,7 @@ func (l *GatewayLogic) HandleTopo(msg *deviceMsg.PublishMsg) (respMsg *msgGatewa
 			}
 			resp.Payload = &payload
 			return &resp, err
+		case deviceMsg.GetFound:
 		default:
 			return nil, errors.Method.AddMsg(l.dreq.Method)
 		}
