@@ -19,9 +19,9 @@ const (
 	TimeTypeSunSet   ExecType = "sunSet"   //太阳落下
 )
 
-// TermProperty 物模型类型 属性
+// TermTime 时间执行条件
 type TermTime struct {
-	Type     TimeType `json:"type"`     //天气的类型
+	Type     TimeType `json:"type"`     //时间的类型
 	TermType CmpType  `json:"termType"` //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
 	/*
 			条件值 参数根据动态条件类型会有多个参数
