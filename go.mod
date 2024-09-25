@@ -6,7 +6,7 @@ go 1.21.4
 //gitee.com/i-Things/share => ../share
 
 require (
-	gitee.com/i-Things/core v0.1.4
+	gitee.com/i-Things/core v0.1.5
 	gitee.com/i-Things/share v0.1.21
 	gitee.com/i-Things/squirrel v1.20.4
 	github.com/dgraph-io/ristretto v0.1.0
@@ -146,7 +146,6 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.2 // indirect
 	github.com/pierrec/lz4/v4 v4.1.21 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/prometheus/client_golang v1.20.2 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
 	github.com/prometheus/common v0.55.0 // indirect

@@ -34,10 +34,10 @@ type Action struct {
 	Scene  *ActionScene  `json:"scene,omitempty"`
 }
 
-func (t *Action) GetFlowInfo() (ret *FlowInfo) {
+func (a *Action) GetFlowInfo() (ret *FlowInfo) {
 	return &FlowInfo{
 		Type:    "then",
-		SubType: t.Type,
+		SubType: a.Type,
 	}
 }
 
