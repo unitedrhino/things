@@ -42,7 +42,7 @@ type (
     }
     DeviceProfileIndexReq  {
         Device *DeviceCore `json:"device"`
-        Codes  []string    `json:"codes"`
+        Codes  []string    `json:"codes,optional"`
     }
     DeviceProfile  {
         Device DeviceCore `json:"device"`

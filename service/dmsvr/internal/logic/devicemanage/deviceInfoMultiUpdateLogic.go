@@ -44,6 +44,7 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 	var columns []string
 	var Distributor stores.IDPathWithUpdate
 	var areaIDPath string
+	var projectIDSet = map[int64]struct{}{}
 	var changeAreaIDPaths = map[string]struct{}{}
 	var devs = logic.ToDeviceCores(in.Devices)
 	if in.AreaID != 0 {
@@ -60,6 +61,7 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 				continue
 			}
 			changeAreaIDPaths[val.AreaIDPath] = struct{}{}
+			projectIDSet[val.ProjectID] = struct{}{}
 		}
 	}
 	if in.Distributor != nil {
@@ -87,6 +89,7 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 	if len(changeAreaIDPaths) > 0 {
 		ctxs.GoNewCtx(l.ctx, func(ctx2 context.Context) {
 			logic.FillAreaDeviceCount(ctx2, l.svcCtx, utils.SetToSlice(changeAreaIDPaths)...)
+			logic.FillProjectDeviceCount(l.ctx, l.svcCtx, utils.SetToSlice(projectIDSet)...)
 		})
 	}
 	return &dm.Empty{}, err

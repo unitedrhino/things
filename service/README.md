@@ -22,7 +22,7 @@ goctl rpc new rpcsvr  --style=goZero -m
 ```
 ## api服务
 ```
-goctl api new viewsvr  --style=goZero 
+goctl api new apisvr  --style=goZero 
 ```
 
 # 库表新增方案

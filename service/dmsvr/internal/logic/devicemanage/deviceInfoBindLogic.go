@@ -125,6 +125,6 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 		}
 	}
 	logic.FillAreaDeviceCount(l.ctx, l.svcCtx, ai.AreaIDPath, oldAreaIDPath)
-
+	logic.FillProjectDeviceCount(l.ctx, l.svcCtx, int64(di.ProjectID))
 	return &dm.Empty{}, err
 }

@@ -8489,8 +8489,7 @@
       },
       "title": "DeviceProfileIndexReq",
       "required": [
-        "device",
-        "codes"
+        "device"
       ]
     },
     "DeviceProfileIndexResp": {

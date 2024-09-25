@@ -56,6 +56,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 	diDB := relationDB.NewDeviceInfoRepo(l.ctx)
 	var dis []*relationDB.DmDeviceInfo
 	var changeAreaIDPaths = map[string]struct{}{}
+	var projectIDSet = map[int64]struct{}{}
 	if in.Device != nil && in.Device.ProductID != "" {
 		di, err := diDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{
 			ProductID:   in.Device.ProductID,
@@ -87,6 +88,8 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 			return nil, errors.Permissions
 		}
 		changeAreaIDPaths[di.AreaIDPath] = struct{}{}
+		projectIDSet[int64(di.ProjectID)] = struct{}{}
+
 	}
 	var (
 		ProjectID  stores.ProjectID
@@ -131,6 +134,8 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 			AreaID = stores.AreaID(ai.AreaID)
 			AreaIDPath = ai.AreaIDPath
 			changeAreaIDPaths[AreaIDPath] = struct{}{}
+			projectIDSet[ai.ProjectID] = struct{}{}
+
 		}
 		pi, err := l.svcCtx.ProjectCache.GetData(l.ctx, in.ProjectID)
 		if err != nil {
@@ -190,6 +195,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 	if len(changeAreaIDPaths) > 0 {
 		ctxs.GoNewCtx(l.ctx, func(ctx2 context.Context) {
 			logic.FillAreaDeviceCount(ctx2, l.svcCtx, utils.SetToSlice(changeAreaIDPaths)...)
+			logic.FillProjectDeviceCount(l.ctx, l.svcCtx, utils.SetToSlice(projectIDSet)...)
 		})
 	}
 	return &dm.Empty{}, nil

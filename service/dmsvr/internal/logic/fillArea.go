@@ -46,3 +46,27 @@ func FillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, areaID
 
 	return nil
 }
+
+func FillProjectDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, projectIDs ...int64) error {
+	logx.WithContext(ctx).Infof("FillProjectDeviceCount projectIDs:%v", projectIDs)
+	defer utils.Recover(ctx)
+	ctx = ctxs.WithRoot(ctx)
+	log := logx.WithContext(ctx)
+	for _, id := range projectIDs {
+		if id <= def.NotClassified {
+			continue
+		}
+		count, err := relationDB.NewDeviceInfoRepo(ctx).CountByFilter(ctx, relationDB.DeviceFilter{ProjectIDs: []int64{id}})
+		if err != nil {
+			log.Error(err)
+			continue
+		}
+		_, err = svcCtx.ProjectM.ProjectInfoUpdate(ctx, &sys.ProjectInfo{ProjectID: id, DeviceCount: &wrapperspb.Int64Value{Value: count}})
+		if err != nil {
+			log.Error(err)
+			continue
+		}
+	}
+
+	return nil
+}

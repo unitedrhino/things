@@ -730,7 +730,7 @@ type DeviceProfile struct {
 
 type DeviceProfileIndexReq struct {
 	Device *DeviceCore `json:"device"`
-	Codes  []string    `json:"codes"`
+	Codes  []string    `json:"codes,optional"`
 }
 
 type DeviceProfileIndexResp struct {

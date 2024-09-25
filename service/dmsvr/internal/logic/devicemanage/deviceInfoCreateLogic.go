@@ -212,6 +212,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 		return nil, errors.Database.AddDetail(err)
 	}
 	logic.FillAreaDeviceCount(l.ctx, l.svcCtx, areaIDPath)
+	logic.FillProjectDeviceCount(l.ctx, l.svcCtx, int64(di.ProjectID))
 	return &dm.Empty{}, nil
 }
 

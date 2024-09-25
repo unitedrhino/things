@@ -102,6 +102,5 @@ func (t *Term) IsHit(ctx context.Context, repo CheckRepo) bool {
 	case TermColumnTypeWeather:
 		isHit = t.Weather.IsHit(ctx, repo)
 	}
-
 	return isHit
 }
