@@ -72,14 +72,14 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 					DataID:     dataID,
 				})
 				if err != nil {
-					l.Errorf("%s.GetLatestPropertyDataByID err=%v", utils.FuncName(), err)
+					l.Errorf("%s.GetLatestPropertyDataByID err=%v", utils.FuncName(), utils.Fmt(err))
 					return
 				}
 				var diData dm.PropertyLogInfo
 				if data == nil {
 					v, err := property.Define.GetDefaultValue()
 					if err != nil {
-						l.Errorf("%s.GetDefaultValue err=%v", utils.FuncName(), err)
+						l.Errorf("%s.GetDefaultValue err=%v", utils.FuncName(), utils.Fmt(err))
 						return
 					}
 

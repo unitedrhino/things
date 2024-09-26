@@ -31,6 +31,7 @@ func NewSceneManuallyTriggerLogic(ctx context.Context, svcCtx *svc.ServiceContex
 }
 
 func (l *SceneManuallyTriggerLogic) SceneManuallyTrigger(in *ud.WithID) (*ud.Empty, error) {
+	l.ctx = ctxs.WithDefaultAllProject(l.ctx)
 	si, err := relationDB.NewSceneInfoRepo(l.ctx).FindOne(l.ctx, in.Id)
 	if err != nil {
 		return nil, err

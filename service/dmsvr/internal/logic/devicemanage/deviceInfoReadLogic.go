@@ -44,10 +44,11 @@ func (l *DeviceInfoReadLogic) DeviceInfoRead(in *dm.DeviceInfoReadReq) (*dm.Devi
 		return nil, err
 	}
 	if di == nil {
-		di, err = relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(ctxs.WithRoot(l.ctx), relationDB.DeviceFilter{
-			DeviceNames: []string{in.DeviceName},
-		})
+		di, err = l.DiDB.FindOneByFilter(l.ctx,
+			relationDB.DeviceFilter{DeviceNames: []string{in.DeviceName},
+				SharedType: def.SelectTypeAll})
 		if err != nil {
+			l.Error(err)
 			return nil, err
 		}
 	}
