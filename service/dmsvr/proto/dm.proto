@@ -1224,7 +1224,6 @@ message DeviceInfoIndexReq{
   int64 userID =31;//用户id查询
   CompareInt64  expTime =38; //到期时间
   string iccid = 40;//SIM卡卡号
-
 }
 
 message DeviceInfoIndexResp{

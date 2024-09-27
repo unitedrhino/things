@@ -13,6 +13,27 @@ import (
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
+func FillAreaGroupCount(ctx context.Context, svcCtx *svc.ServiceContext, areaID int64) error {
+	logx.WithContext(ctx).Infof("FillAreaDeviceCount areaID:%v", areaID)
+	defer utils.Recover(ctx)
+	ctx = ctxs.WithRoot(ctx)
+	log := logx.WithContext(ctx)
+	if areaID <= def.NotClassified {
+		return nil
+	}
+	count, err := relationDB.NewGroupInfoRepo(ctx).CountByFilter(ctx, relationDB.GroupInfoFilter{AreaID: areaID})
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	_, err = svcCtx.AreaM.AreaInfoUpdate(ctx, &sys.AreaInfo{AreaID: areaID, GroupCount: &wrapperspb.Int64Value{Value: count}})
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	return nil
+}
+
 func FillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, areaIDPaths ...string) error {
 	logx.WithContext(ctx).Infof("FillAreaDeviceCount areaIDPaths:%v", areaIDPaths)
 	defer utils.Recover(ctx)

@@ -17,8 +17,8 @@ cloud.google.com/go/storage v1.5.0/go.mod h1:tpKbwo567HUNpVclU5sGELwQWBDZ8gh0Zeo
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 filippo.io/edwards25519 v1.1.0 h1:FNf4tywRC1HmFuKW5xopWpigGjJKiJSV0Cqo0cJWDaA=
 filippo.io/edwards25519 v1.1.0/go.mod h1:BxyFTGdWcka3PhytdK4V28tE5sGfRvvvRV7EaN4VDT4=
-gitee.com/i-Things/core v0.1.5 h1:wioUzojgLkiwaSExUDfusnxX6HcxjhjP2MqczAzG+ek=
-gitee.com/i-Things/core v0.1.5/go.mod h1:jrn2RAHA1AVL+4okL9rCR53sA1okjt9yKfUjokv6kFQ=
+gitee.com/i-Things/core v0.1.6 h1:YMBX6YIWkDG8di7Vdv1KHOKm0fI7GOxuT5/5JvAJaS8=
+gitee.com/i-Things/core v0.1.6/go.mod h1:jrn2RAHA1AVL+4okL9rCR53sA1okjt9yKfUjokv6kFQ=
 gitee.com/i-Things/share v0.1.21 h1:G3zMuLvevOcw8MO4/jaq7cnuQdyt3+1V4HjltGCDzGY=
 gitee.com/i-Things/share v0.1.21/go.mod h1:+Y311GH9GMIMFeY2fqeZNlziRVci3+Gq7umhkg8OKuo=
 gitee.com/i-Things/squirrel v1.20.4 h1:BcW/OiDgANT/VpI0mGPzrSzcjgBdpfTkY/AvstJUCvc=

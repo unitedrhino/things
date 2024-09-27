@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/stores"
+	"github.com/i-Things/things/service/dmsvr/internal/logic"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/i-Things/things/service/dmsvr/pb/dm"
@@ -51,5 +52,6 @@ func (l *GroupInfoDeleteLogic) GroupInfoDelete(in *dm.WithID) (*dm.Empty, error)
 		err := relationDB.NewGroupInfoRepo(l.ctx).Delete(l.ctx, in.Id)
 		return err
 	})
+	logic.FillAreaGroupCount(l.ctx, l.svcCtx, int64(po.AreaID))
 	return &dm.Empty{}, nil
 }
