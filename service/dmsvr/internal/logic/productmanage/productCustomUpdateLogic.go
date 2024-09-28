@@ -2,6 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/eventBus"
 	"gitee.com/i-Things/share/events"
@@ -31,6 +32,9 @@ func NewProductCustomUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext
 }
 
 func (l *ProductCustomUpdateLogic) ProductCustomUpdate(in *dm.ProductCustom) (*dm.Empty, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
 	pi, err := l.PcDB.FindOneByProductID(l.ctx, in.ProductID)
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {

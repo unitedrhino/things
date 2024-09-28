@@ -4,6 +4,7 @@ import (
 	"archive/zip"
 	"context"
 	"fmt"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/oss"
@@ -215,6 +216,9 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 
 // 更新设备
 func (l *ProductInfoUpdateLogic) ProductInfoUpdate(in *dm.ProductInfo) (*dm.Empty, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
 	po, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {

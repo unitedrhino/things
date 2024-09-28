@@ -2,6 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
@@ -31,6 +32,9 @@ func NewProductSchemaDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext
 
 // 删除产品
 func (l *ProductSchemaDeleteLogic) ProductSchemaDelete(in *dm.ProductSchemaDeleteReq) (*dm.Empty, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
 	l.Infof("%s req=%v", utils.FuncName(), utils.Fmt(in))
 	po, err := l.PsDB.FindOneByFilter(l.ctx, relationDB.ProductSchemaFilter{
 		ProductID: in.ProductID, Identifiers: []string{in.Identifier},

@@ -2,6 +2,7 @@ package schemamanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
@@ -87,6 +88,9 @@ func (l *CommonSchemaUpdateLogic) ruleCheck(in *dm.CommonSchemaUpdateReq) (*rela
 
 // 更新产品物模型
 func (l *CommonSchemaUpdateLogic) CommonSchemaUpdate(in *dm.CommonSchemaUpdateReq) (*dm.Empty, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
 	po, newPo, schemaIsUpdate, err := l.ruleCheck(in)
 	if err != nil {
 		return nil, err

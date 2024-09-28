@@ -3,6 +3,7 @@ package protocolmanagelogic
 import (
 	"context"
 	"fmt"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/eventBus"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/protocol"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
@@ -30,6 +31,9 @@ func NewProtocolInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 
 // 协议更新
 func (l *ProtocolInfoUpdateLogic) ProtocolInfoUpdate(in *dm.ProtocolInfo) (*dm.Empty, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
 	old, err := relationDB.NewProtocolInfoRepo(l.ctx).FindOne(l.ctx, in.Id)
 	if err != nil {
 		return nil, err

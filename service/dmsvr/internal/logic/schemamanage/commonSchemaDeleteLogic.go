@@ -2,6 +2,7 @@ package schemamanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
@@ -30,6 +31,9 @@ func NewCommonSchemaDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 
 // 删除产品
 func (l *CommonSchemaDeleteLogic) CommonSchemaDelete(in *dm.WithID) (*dm.Empty, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
 	po, err := l.PsDB.FindOneByFilter(l.ctx, relationDB.CommonSchemaFilter{
 		ID: in.Id,
 	})

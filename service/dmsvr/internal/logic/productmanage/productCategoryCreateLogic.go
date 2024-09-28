@@ -3,6 +3,7 @@ package productmanagelogic
 import (
 	"context"
 	"fmt"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/oss"
@@ -34,6 +35,9 @@ func NewProductCategoryCreateLogic(ctx context.Context, svcCtx *svc.ServiceConte
 
 // 新增产品
 func (l *ProductCategoryCreateLogic) ProductCategoryCreate(in *dm.ProductCategory) (*dm.WithID, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
 	po := relationDB.DmProductCategory{
 		ParentID: in.ParentID,
 		Name:     in.Name,

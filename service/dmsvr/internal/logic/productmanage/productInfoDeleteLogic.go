@@ -2,6 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/eventBus"
 	"gitee.com/i-Things/share/utils"
@@ -33,6 +34,9 @@ func NewProductInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 
 // 删除设备
 func (l *ProductInfoDeleteLogic) ProductInfoDelete(in *dm.ProductInfoDeleteReq) (*dm.Empty, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
 	err := l.Check(in)
 	if err != nil {
 		return nil, err

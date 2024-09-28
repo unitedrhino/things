@@ -2,6 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
@@ -29,6 +30,9 @@ func NewProductSchemaMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceCo
 
 // 批量新增物模型,只新增没有的,已有的不处理
 func (l *ProductSchemaMultiCreateLogic) ProductSchemaMultiCreate(in *dm.ProductSchemaMultiCreateReq) (*dm.Empty, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
 	createLogic := NewProductSchemaCreateLogic(l.ctx, l.svcCtx)
 	var errGroup errgroup.Group
 	for _, v := range in.List {

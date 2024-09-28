@@ -2,6 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/stores"
@@ -30,6 +31,9 @@ func NewProductCategorySchemaMultiDeleteLogic(ctx context.Context, svcCtx *svc.S
 }
 
 func (l *ProductCategorySchemaMultiDeleteLogic) ProductCategorySchemaMultiDelete(in *dm.ProductCategorySchemaMultiSaveReq) (*dm.Empty, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
 	pcDB := relationDB.NewProductCategoryRepo(l.ctx)
 	var productIDs []string
 	{

@@ -2,6 +2,7 @@ package schemamanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
@@ -56,6 +57,9 @@ func (l *CommonSchemaCreateLogic) ruleCheck(in *dm.CommonSchemaCreateReq) (*rela
 
 // 新增产品
 func (l *CommonSchemaCreateLogic) CommonSchemaCreate(in *dm.CommonSchemaCreateReq) (*dm.Empty, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
 	po, err := l.ruleCheck(in)
 	if err != nil {
 		l.Errorf("%s.ruleCheck err:%v", err)

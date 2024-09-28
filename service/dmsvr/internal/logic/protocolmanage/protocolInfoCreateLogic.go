@@ -3,6 +3,7 @@ package protocolmanagelogic
 import (
 	"context"
 	"fmt"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/eventBus"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/protocol"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
@@ -30,6 +31,9 @@ func NewProtocolInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 
 // 协议创建
 func (l *ProtocolInfoCreateLogic) ProtocolInfoCreate(in *dm.ProtocolInfo) (*dm.WithID, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
 	po := logic.ToProtocolInfoPo(in)
 	if err := protocol.Check(po.ConfigFields, po.ConfigInfos); err != nil {
 		return nil, err

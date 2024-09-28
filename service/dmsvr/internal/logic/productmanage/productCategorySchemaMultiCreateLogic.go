@@ -32,6 +32,9 @@ func NewProductCategorySchemaMultiCreateLogic(ctx context.Context, svcCtx *svc.S
 }
 
 func (l *ProductCategorySchemaMultiCreateLogic) ProductCategorySchemaMultiCreate(in *dm.ProductCategorySchemaMultiSaveReq) (*dm.Empty, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
 	pcDB := relationDB.NewProductCategoryRepo(l.ctx)
 	var productIDs []string
 	{

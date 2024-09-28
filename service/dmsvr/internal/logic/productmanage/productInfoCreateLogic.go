@@ -3,6 +3,7 @@ package productmanagelogic
 import (
 	"context"
 	"fmt"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/internal/domain/protocol"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
@@ -134,6 +135,9 @@ func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relatio
 
 // 新增设备
 func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Empty, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
 	find, err := l.CheckProduct(in)
 	if err != nil {
 		return nil, errors.System.AddDetail(err)

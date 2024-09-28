@@ -2,6 +2,7 @@ package protocolmanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
 	"github.com/i-Things/things/service/dmsvr/internal/svc"
@@ -26,6 +27,9 @@ func NewProtocolInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 
 // 协议删除
 func (l *ProtocolInfoDeleteLogic) ProtocolInfoDelete(in *dm.WithID) (*dm.Empty, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
 	err := relationDB.NewProtocolInfoRepo(l.ctx).Delete(l.ctx, in.Id)
 	return &dm.Empty{}, err
 }

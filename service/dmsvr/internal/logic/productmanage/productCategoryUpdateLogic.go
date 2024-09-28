@@ -3,6 +3,7 @@ package productmanagelogic
 import (
 	"context"
 	"fmt"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/oss"
 	"gitee.com/i-Things/share/oss/common"
@@ -31,6 +32,9 @@ func NewProductCategoryUpdateLogic(ctx context.Context, svcCtx *svc.ServiceConte
 
 // 更新产品
 func (l *ProductCategoryUpdateLogic) ProductCategoryUpdate(in *dm.ProductCategory) (*dm.Empty, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
 	old, err := relationDB.NewProductCategoryRepo(l.ctx).FindOne(l.ctx, in.Id)
 	if err != nil {
 		return nil, err

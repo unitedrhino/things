@@ -53,6 +53,7 @@ func (p ProductInfoRepo) fmtFilter(ctx context.Context, f ProductFilter) *gorm.D
 	if len(f.CategoryIDs) != 0 {
 		db = db.Where("category_id in ?", f.CategoryIDs)
 	}
+
 	if f.ProtocolCode != "" {
 		db = db.Where("protocol_code=?", f.ProtocolCode)
 	}

@@ -2,6 +2,7 @@ package schemamanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/utils"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 
@@ -26,6 +27,9 @@ func NewCommonSchemaInitLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 func (l *CommonSchemaInitLogic) CommonSchemaInit(in *dm.Empty) (*dm.Empty, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
 	pos, err := relationDB.NewCommonSchemaRepo(l.ctx).FindByFilter(l.ctx, relationDB.CommonSchemaFilter{Type: 1}, nil)
 	if err != nil {
 		return nil, err

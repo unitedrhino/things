@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/share/caches"
 	"gitee.com/i-Things/share/ctxs"
+	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/internal/logic"
@@ -63,6 +64,9 @@ func (l *ProductInfoIndexLogic) ProductInfoIndex(in *dm.ProductInfoIndexReq) (*d
 		SceneMode:   in.SceneMode, SceneModes: in.SceneModes, DeviceType: in.DeviceType, DeviceTypes: in.DeviceTypes, ProductName: in.ProductName, ProtocolCode: in.ProtocolCode,
 		Tags: in.Tags, ProductIDs: in.ProductIDs, WithProtocol: in.WithProtocol, WithCategory: in.WithCategory, ProtocolConf: in.ProtocolConf,
 		Statuses: in.Statuses, Status: in.Status, NetType: in.NetType, AreaID: in.AreaID,
+	}
+	if !ctxs.IsTenantDefault(l.ctx) {
+		filter.Status = devices.ProductStatusEnable
 	}
 	if in.ProjectID != 0 {
 		uc := ctxs.GetUserCtxNoNil(l.ctx)

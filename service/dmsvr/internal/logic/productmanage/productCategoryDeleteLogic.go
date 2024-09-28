@@ -2,6 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
+	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/stores"
 	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
@@ -29,6 +30,9 @@ func NewProductCategoryDeleteLogic(ctx context.Context, svcCtx *svc.ServiceConte
 
 // 删除产品
 func (l *ProductCategoryDeleteLogic) ProductCategoryDelete(in *dm.WithID) (*dm.Empty, error) {
+	if err := ctxs.IsRoot(l.ctx); err != nil {
+		return nil, err
+	}
 	po, err := relationDB.NewProductCategoryRepo(l.ctx).FindOne(l.ctx, in.Id)
 	if err != nil {
 		return nil, err
