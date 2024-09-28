@@ -12,3 +12,5 @@ git tag $tag
 git push origin $tag
 git push gitee master
 git push gitee $tag
+git push github master
+git push github $tag
