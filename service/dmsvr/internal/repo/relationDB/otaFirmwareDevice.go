@@ -150,12 +150,12 @@ func (p OtaFirmwareDeviceRepo) UpdateStatusByFilter(ctx context.Context, f OtaFi
 
 func (p OtaFirmwareDeviceRepo) DeleteByFilter(ctx context.Context, f OtaFirmwareDeviceFilter) error {
 	db := p.fmtFilter(ctx, f)
-	err := db.Delete(&DmOtaFirmwareDevice{}).Error
+	err := db.Unscoped().Delete(&DmOtaFirmwareDevice{}).Error
 	return stores.ErrFmt(err)
 }
 
 func (p OtaFirmwareDeviceRepo) Delete(ctx context.Context, id int64) error {
-	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&DmOtaFirmwareDevice{}).Error
+	err := p.db.Unscoped().WithContext(ctx).Where("id = ?", id).Delete(&DmOtaFirmwareDevice{}).Error
 	return stores.ErrFmt(err)
 }
 func (p OtaFirmwareDeviceRepo) FindOne(ctx context.Context, id int64) (*DmOtaFirmwareDevice, error) {
