@@ -9,8 +9,9 @@ fi
 # 获取第一个参数
 tag="$1"
 git tag $tag
+git push  origin master
 git push origin $tag
-git push gitee master
+git push  gitee master
 git push gitee $tag
-git push github master
+git push  github master
 git push github $tag
