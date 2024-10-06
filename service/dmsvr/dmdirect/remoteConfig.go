@@ -1,8 +1,8 @@
 package dmdirect
 
 import (
-	client "github.com/i-Things/things/service/dmsvr/client/remoteconfig"
-	server "github.com/i-Things/things/service/dmsvr/internal/server/remoteconfig"
+	client "gitee.com/i-Things/things/service/dmsvr/client/remoteconfig"
+	server "gitee.com/i-Things/things/service/dmsvr/internal/server/remoteconfig"
 )
 
 var (

@@ -8,9 +8,9 @@ import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/sdk/service/protocol"
-	"github.com/i-Things/things/service/dgsvr/internal/svc"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/i-Things/things/sdk/service/protocol"
+	"gitee.com/i-Things/things/service/dgsvr/internal/svc"
+	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.uber.org/atomic"
 )

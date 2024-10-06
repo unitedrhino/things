@@ -5,8 +5,8 @@ import (
 	schema "gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
+	"gitee.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/dgraph-io/ristretto"
-	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )

@@ -13,13 +13,13 @@ import (
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/events/topics"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
-	"github.com/i-Things/things/service/dmsvr/internal/logic"
-	"github.com/i-Things/things/service/dmsvr/internal/repo/cache"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
+	"gitee.com/i-Things/things/service/dmsvr/internal/logic"
+	"gitee.com/i-Things/things/service/dmsvr/internal/repo/cache"
+	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
 	"time"
 
-	"github.com/i-Things/things/service/dmsvr/internal/svc"
+	"gitee.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

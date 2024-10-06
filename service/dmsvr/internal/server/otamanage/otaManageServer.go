@@ -7,9 +7,9 @@ package server
 import (
 	"context"
 
-	"github.com/i-Things/things/service/dmsvr/internal/logic/otamanage"
-	"github.com/i-Things/things/service/dmsvr/internal/svc"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/i-Things/things/service/dmsvr/internal/logic/otamanage"
+	"gitee.com/i-Things/things/service/dmsvr/internal/svc"
+	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
 )
 
 type OtaManageServer struct {

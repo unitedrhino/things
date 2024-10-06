@@ -9,9 +9,9 @@ import (
 	"gitee.com/i-Things/share/domain/application"
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
-	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
-	"github.com/i-Things/things/service/dmsvr/internal/svc"
+	"gitee.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
+	"gitee.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )

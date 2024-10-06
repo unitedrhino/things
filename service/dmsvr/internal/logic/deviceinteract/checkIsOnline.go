@@ -5,8 +5,8 @@ import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
-	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
-	"github.com/i-Things/things/service/dmsvr/internal/svc"
+	"gitee.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/i-Things/things/service/dmsvr/internal/svc"
 )
 
 func CheckIsOnline(ctx context.Context, svcCtx *svc.ServiceContext, core devices.Core) (protocolCode string, err error) {

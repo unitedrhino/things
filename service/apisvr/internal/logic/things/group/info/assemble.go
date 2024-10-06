@@ -1,9 +1,9 @@
 package info
 
 import (
-	"github.com/i-Things/things/service/apisvr/internal/logic"
-	"github.com/i-Things/things/service/apisvr/internal/types"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/i-Things/things/service/apisvr/internal/logic"
+	"gitee.com/i-Things/things/service/apisvr/internal/types"
+	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
 )
 
 func ToGroupInfosTypes(in []*dm.GroupInfo) []*types.GroupInfo {

@@ -6,8 +6,8 @@ package deviceauth
 import (
 	"context"
 
-	"github.com/i-Things/things/service/dgsvr/internal/svc"
-	"github.com/i-Things/things/service/dgsvr/pb/dg"
+	"gitee.com/i-Things/things/service/dgsvr/internal/svc"
+	"gitee.com/i-Things/things/service/dgsvr/pb/dg"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"

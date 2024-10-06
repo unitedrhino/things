@@ -1,9 +1,9 @@
 package logic
 
 import (
-	"github.com/i-Things/things/service/dmsvr/internal/domain/protocol"
-	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/i-Things/things/service/dmsvr/internal/domain/protocol"
+	"gitee.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
 )
 
 func ToProtocolInfoPb(in *relationDB.DmProtocolInfo) *dm.ProtocolInfo {

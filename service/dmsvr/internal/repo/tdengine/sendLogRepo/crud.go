@@ -8,7 +8,7 @@ import (
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
 	sq "gitee.com/i-Things/squirrel"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
+	"gitee.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 )
 
 func (s *SendLogRepo) fillFilter(sql sq.SelectBuilder, filter deviceLog.SendFilter) sq.SelectBuilder {

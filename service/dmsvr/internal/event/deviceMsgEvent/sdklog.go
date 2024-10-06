@@ -3,15 +3,15 @@ package deviceMsgEvent
 import (
 	"context"
 	"gitee.com/i-Things/share/domain/deviceMsg/msgSdkLog"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
-	devicemanage "github.com/i-Things/things/service/dmsvr/internal/server/devicemanage"
+	"gitee.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
+	devicemanage "gitee.com/i-Things/things/service/dmsvr/internal/server/devicemanage"
 	"time"
 
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/internal/svc"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/i-Things/things/service/dmsvr/internal/svc"
+	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

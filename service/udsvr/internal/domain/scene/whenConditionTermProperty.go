@@ -5,7 +5,7 @@ import (
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
-	devicemsg "github.com/i-Things/things/service/dmsvr/client/devicemsg"
+	devicemsg "gitee.com/i-Things/things/service/dmsvr/client/devicemsg"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"

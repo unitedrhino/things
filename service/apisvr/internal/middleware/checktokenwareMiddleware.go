@@ -4,7 +4,7 @@ import (
 	role "gitee.com/i-Things/core/service/syssvr/client/rolemanage"
 	user "gitee.com/i-Things/core/service/syssvr/client/usermanage"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/apisvr/internal/config"
+	"gitee.com/i-Things/things/service/apisvr/internal/config"
 	"github.com/zeromicro/go-zero/core/logx"
 	"net/http"
 )

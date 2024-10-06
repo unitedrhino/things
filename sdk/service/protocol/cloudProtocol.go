@@ -9,7 +9,7 @@ import (
 	"gitee.com/i-Things/share/eventBus"
 	"gitee.com/i-Things/share/events/topics"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/mitchellh/mapstructure"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/zrpc"

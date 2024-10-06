@@ -4,7 +4,7 @@ import (
 	"context"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/stores"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/shadow"
+	"gitee.com/i-Things/things/service/dmsvr/internal/domain/shadow"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )

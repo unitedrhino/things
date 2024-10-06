@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
+	"gitee.com/i-Things/things/service/dmsvr/internal/domain/productCustom"
+	"gitee.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/dgraph-io/ristretto"
 	"github.com/dop251/goja"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/productCustom"
-	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"sync"
 	"time"
 )

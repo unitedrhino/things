@@ -3,11 +3,11 @@ package auth5
 import (
 	"gitee.com/i-Things/share/result"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/apisvr/internal/logic/things/device/auth5"
+	"gitee.com/i-Things/things/service/apisvr/internal/logic/things/device/auth5"
 	"net/http"
 
-	"github.com/i-Things/things/service/apisvr/internal/svc"
-	"github.com/i-Things/things/service/apisvr/internal/types"
+	"gitee.com/i-Things/things/service/apisvr/internal/svc"
+	"gitee.com/i-Things/things/service/apisvr/internal/types"
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 

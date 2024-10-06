@@ -3,9 +3,9 @@ package user
 import (
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/result"
-	"github.com/i-Things/things/service/apisvr/internal/logic/things/slot/user"
-	"github.com/i-Things/things/service/apisvr/internal/svc"
-	"github.com/i-Things/things/service/apisvr/internal/types"
+	"gitee.com/i-Things/things/service/apisvr/internal/logic/things/slot/user"
+	"gitee.com/i-Things/things/service/apisvr/internal/svc"
+	"gitee.com/i-Things/things/service/apisvr/internal/types"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"net/http"
 )

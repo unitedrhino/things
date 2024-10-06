@@ -7,7 +7,7 @@ import (
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/dmExport"
+	"gitee.com/i-Things/things/service/dmsvr/dmExport"
 	"github.com/spf13/cast"
 	"strings"
 )

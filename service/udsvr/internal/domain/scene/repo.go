@@ -5,11 +5,11 @@ import (
 	"gitee.com/i-Things/core/service/syssvr/client/notifymanage"
 	"gitee.com/i-Things/core/service/syssvr/sysExport"
 	"gitee.com/i-Things/share/def"
-	"github.com/i-Things/things/service/dmsvr/client/devicegroup"
-	deviceinteract "github.com/i-Things/things/service/dmsvr/client/deviceinteract"
-	devicemanage "github.com/i-Things/things/service/dmsvr/client/devicemanage"
-	devicemsg "github.com/i-Things/things/service/dmsvr/client/devicemsg"
-	"github.com/i-Things/things/service/dmsvr/dmExport"
+	"gitee.com/i-Things/things/service/dmsvr/client/devicegroup"
+	deviceinteract "gitee.com/i-Things/things/service/dmsvr/client/deviceinteract"
+	devicemanage "gitee.com/i-Things/things/service/dmsvr/client/devicemanage"
+	devicemsg "gitee.com/i-Things/things/service/dmsvr/client/devicemsg"
+	"gitee.com/i-Things/things/service/dmsvr/dmExport"
 )
 import "context"
 

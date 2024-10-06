@@ -1,8 +1,8 @@
 package uddirect
 
 import (
-	"github.com/i-Things/things/service/udsvr/client/rule"
-	ruleServer "github.com/i-Things/things/service/udsvr/internal/server/rule"
+	"gitee.com/i-Things/things/service/udsvr/client/rule"
+	ruleServer "gitee.com/i-Things/things/service/udsvr/internal/server/rule"
 )
 
 func NewRule(runSvr bool) rule.Rule {

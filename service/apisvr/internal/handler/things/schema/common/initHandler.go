@@ -5,8 +5,8 @@ import (
 
 	"gitee.com/i-Things/share/result"
 
-	"github.com/i-Things/things/service/apisvr/internal/logic/things/schema/common"
-	"github.com/i-Things/things/service/apisvr/internal/svc"
+	"gitee.com/i-Things/things/service/apisvr/internal/logic/things/schema/common"
+	"gitee.com/i-Things/things/service/apisvr/internal/svc"
 )
 
 func InitHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {

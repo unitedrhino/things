@@ -7,9 +7,9 @@ import (
 	"gitee.com/i-Things/share/domain/application"
 	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
-	rulelogic "github.com/i-Things/things/service/udsvr/internal/logic/rule"
-	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
+	"gitee.com/i-Things/things/service/udsvr/internal/domain/scene"
+	rulelogic "gitee.com/i-Things/things/service/udsvr/internal/logic/rule"
+	"gitee.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )

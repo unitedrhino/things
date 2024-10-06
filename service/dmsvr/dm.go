@@ -4,7 +4,7 @@ package main
 import (
 	"context"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/dmdirect"
+	"gitee.com/i-Things/things/service/dmsvr/dmdirect"
 	_ "net/http/pprof"
 )
 

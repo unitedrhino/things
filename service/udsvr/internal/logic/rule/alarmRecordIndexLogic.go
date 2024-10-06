@@ -4,11 +4,11 @@ import (
 	"context"
 	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/udsvr/internal/logic"
-	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
+	"gitee.com/i-Things/things/service/udsvr/internal/logic"
+	"gitee.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 
-	"github.com/i-Things/things/service/udsvr/internal/svc"
-	"github.com/i-Things/things/service/udsvr/pb/ud"
+	"gitee.com/i-Things/things/service/udsvr/internal/svc"
+	"gitee.com/i-Things/things/service/udsvr/pb/ud"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

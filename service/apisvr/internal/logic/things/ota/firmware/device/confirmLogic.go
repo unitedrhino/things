@@ -2,10 +2,10 @@ package device
 
 import (
 	"context"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
 
-	"github.com/i-Things/things/service/apisvr/internal/svc"
-	"github.com/i-Things/things/service/apisvr/internal/types"
+	"gitee.com/i-Things/things/service/apisvr/internal/svc"
+	"gitee.com/i-Things/things/service/apisvr/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

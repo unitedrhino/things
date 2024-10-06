@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"gitee.com/i-Things/share/stores"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
+	"gitee.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
 
 	"gitee.com/i-Things/share/def"
 	sq "gitee.com/i-Things/squirrel"

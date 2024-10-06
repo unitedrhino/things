@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"gitee.com/i-Things/share/utils"
 
-	"github.com/i-Things/things/service/udsvr/internal/config"
-	ruleServer "github.com/i-Things/things/service/udsvr/internal/server/rule"
-	"github.com/i-Things/things/service/udsvr/internal/svc"
-	"github.com/i-Things/things/service/udsvr/pb/ud"
+	"gitee.com/i-Things/things/service/udsvr/internal/config"
+	ruleServer "gitee.com/i-Things/things/service/udsvr/internal/server/rule"
+	"gitee.com/i-Things/things/service/udsvr/internal/svc"
+	"gitee.com/i-Things/things/service/udsvr/pb/ud"
 
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"

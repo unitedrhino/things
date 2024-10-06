@@ -2,9 +2,9 @@ package logic
 
 import (
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/apisvr/internal/types"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
-	"github.com/i-Things/things/service/udsvr/pb/ud"
+	"gitee.com/i-Things/things/service/apisvr/internal/types"
+	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/i-Things/things/service/udsvr/pb/ud"
 )
 
 func ToTagsMap(tags []*types.Tag) map[string]string {

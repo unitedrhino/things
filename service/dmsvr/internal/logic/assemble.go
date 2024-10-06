@@ -4,7 +4,7 @@ import (
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
 )
 
 func ToPageInfo(info *dm.PageInfo) *stores.PageInfo {

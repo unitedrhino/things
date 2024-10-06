@@ -8,12 +8,12 @@ import (
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/oss"
-	"github.com/i-Things/things/service/dmsvr/dmExport"
-	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
-	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
+	"gitee.com/i-Things/things/service/dmsvr/dmExport"
+	"gitee.com/i-Things/things/service/udsvr/internal/domain/scene"
+	"gitee.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 
-	"github.com/i-Things/things/service/udsvr/internal/svc"
-	"github.com/i-Things/things/service/udsvr/pb/ud"
+	"gitee.com/i-Things/things/service/udsvr/internal/svc"
+	"gitee.com/i-Things/things/service/udsvr/pb/ud"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

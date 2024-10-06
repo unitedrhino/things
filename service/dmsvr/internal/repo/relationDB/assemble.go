@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/domain/schema"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/shadow"
+	"gitee.com/i-Things/things/service/dmsvr/internal/domain/shadow"
 )
 
 func ToPropertyPo(productID string, in *schema.Property) *DmProductSchema {

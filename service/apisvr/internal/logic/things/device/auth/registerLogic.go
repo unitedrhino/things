@@ -4,9 +4,9 @@ import (
 	"context"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/apisvr/internal/svc"
-	"github.com/i-Things/things/service/apisvr/internal/types"
-	"github.com/i-Things/things/service/dgsvr/pb/dg"
+	"gitee.com/i-Things/things/service/apisvr/internal/svc"
+	"gitee.com/i-Things/things/service/apisvr/internal/types"
+	"gitee.com/i-Things/things/service/dgsvr/pb/dg"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

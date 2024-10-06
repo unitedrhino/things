@@ -3,7 +3,7 @@ package scene
 import (
 	"context"
 	"gitee.com/i-Things/share/devices"
-	"github.com/i-Things/things/service/dmsvr/dmExport"
+	"gitee.com/i-Things/things/service/dmsvr/dmExport"
 )
 
 func GetDeviceAlias(ctx context.Context, cache dmExport.DeviceCacheT, productID string, deviceName string) string {

@@ -3,7 +3,7 @@ package relationDB
 import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/stores"
-	"github.com/i-Things/things/service/udsvr/internal/domain/scene"
+	"gitee.com/i-Things/things/service/udsvr/internal/domain/scene"
 	"time"
 )
 

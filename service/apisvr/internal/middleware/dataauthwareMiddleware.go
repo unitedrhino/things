@@ -8,7 +8,7 @@ import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/apisvr/internal/config"
+	"gitee.com/i-Things/things/service/apisvr/internal/config"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"io"
 	"net/http"

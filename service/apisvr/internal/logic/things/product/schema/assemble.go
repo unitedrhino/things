@@ -2,8 +2,8 @@ package schema
 
 import (
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/apisvr/internal/types"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/i-Things/things/service/apisvr/internal/types"
+	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
 )
 
 func ToSchemaSpecRpc(in *types.SchemaSpec) *dm.SchemaSpec {

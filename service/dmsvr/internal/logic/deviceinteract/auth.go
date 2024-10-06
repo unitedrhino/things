@@ -6,8 +6,8 @@ import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/errors"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/userShared"
-	"github.com/i-Things/things/service/dmsvr/internal/svc"
+	"gitee.com/i-Things/things/service/dmsvr/internal/domain/userShared"
+	"gitee.com/i-Things/things/service/dmsvr/internal/svc"
 )
 
 func Auth(ctx context.Context, svcCtx *svc.ServiceContext, dev devices.Core, param map[string]any) (outParam map[string]any, err error) {

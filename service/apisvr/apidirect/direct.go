@@ -3,10 +3,10 @@ package apidirect
 import (
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/apisvr/internal/config"
-	"github.com/i-Things/things/service/apisvr/internal/handler"
-	"github.com/i-Things/things/service/apisvr/internal/startup"
-	"github.com/i-Things/things/service/apisvr/internal/svc"
+	"gitee.com/i-Things/things/service/apisvr/internal/config"
+	"gitee.com/i-Things/things/service/apisvr/internal/handler"
+	"gitee.com/i-Things/things/service/apisvr/internal/startup"
+	"gitee.com/i-Things/things/service/apisvr/internal/svc"
 	"github.com/zeromicro/go-zero/rest"
 	"net/http"
 )

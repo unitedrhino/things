@@ -11,16 +11,13 @@ import (
 	"gitee.com/i-Things/share/oss/common"
 	"gitee.com/i-Things/share/systems"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
-	"github.com/i-Things/things/service/dmsvr/internal/svc"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
-	"github.com/mholt/archiver/v4"
+	"gitee.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/i-Things/things/service/dmsvr/internal/svc"
+	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/spf13/cast"
-	"io"
+	"github.com/zeromicro/go-zero/core/logx"
 	"os"
 	"strings"
-
-	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type ProductInfoUpdateLogic struct {
@@ -39,61 +36,62 @@ func NewProductInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 	}
 }
 
-// archiver解压压缩包
-func ArchiverTest(path string) {
-	f, _ := os.Open(path)
-	format, readStream, err := archiver.Identify(path, f)
-	if err != nil {
-		return
-	}
-	extractor, ok := format.(archiver.Extractor)
-	if !ok {
-		return
-	}
-	switch extractor.(type) {
-	case archiver.Zip:
-		extractor = archiver.Zip{TextEncoding: "gbk"}
-		fmt.Println("archiver.Zip")
-	case archiver.SevenZip:
-		extractor = archiver.SevenZip{}
-		fmt.Println("archiver.SevenZip")
-	case archiver.Rar:
-		extractor = archiver.Rar{}
-		fmt.Println("archiver.Rar")
-	default:
-		fmt.Println("unsupported compression algorithm")
-		return
-	}
-
-	//fileList := []string{"file1.txt", "subfolder"}
-	ctx := context.Background()
-	handler := func(ctx context.Context, f archiver.File) error {
-		filename := f.Name()
-		newfile, err := os.Create(filename)
-		if err != nil {
-			panic(err)
-		}
-		defer newfile.Close()
-		old, err := f.Open()
-		if err != nil {
-			panic(err)
-		}
-		defer old.Close()
-		_, err = io.Copy(newfile, old)
-
-		if err != nil {
-			panic(err)
-		}
-		fmt.Printf("extracted %s \n", f.Name())
-		return nil
-	}
-
-	err = extractor.Extract(ctx, readStream, nil, handler)
-	if err != nil {
-		return
-	}
-
-}
+//
+//// archiver解压压缩包
+//func ArchiverTest(path string) {
+//	f, _ := os.Open(path)
+//	format, readStream, err := archiver.Identify(path, f)
+//	if err != nil {
+//		return
+//	}
+//	extractor, ok := format.(archiver.Extractor)
+//	if !ok {
+//		return
+//	}
+//	switch extractor.(type) {
+//	case archiver.Zip:
+//		extractor = archiver.Zip{TextEncoding: "gbk"}
+//		fmt.Println("archiver.Zip")
+//	case archiver.SevenZip:
+//		extractor = archiver.SevenZip{}
+//		fmt.Println("archiver.SevenZip")
+//	case archiver.Rar:
+//		extractor = archiver.Rar{}
+//		fmt.Println("archiver.Rar")
+//	default:
+//		fmt.Println("unsupported compression algorithm")
+//		return
+//	}
+//
+//	//fileList := []string{"file1.txt", "subfolder"}
+//	ctx := context.Background()
+//	handler := func(ctx context.Context, f archiver.File) error {
+//		filename := f.Name()
+//		newfile, err := os.Create(filename)
+//		if err != nil {
+//			panic(err)
+//		}
+//		defer newfile.Close()
+//		old, err := f.Open()
+//		if err != nil {
+//			panic(err)
+//		}
+//		defer old.Close()
+//		_, err = io.Copy(newfile, old)
+//
+//		if err != nil {
+//			panic(err)
+//		}
+//		fmt.Printf("extracted %s \n", f.Name())
+//		return nil
+//	}
+//
+//	err = extractor.Extract(ctx, readStream, nil, handler)
+//	if err != nil {
+//		return
+//	}
+//
+//}
 
 func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *dm.ProductInfo) error {
 	if data.Tags != nil {

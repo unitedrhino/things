@@ -10,12 +10,12 @@ import (
 	"gitee.com/i-Things/share/eventBus"
 	"gitee.com/i-Things/share/stores"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/internal/logic"
-	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/i-Things/things/service/dmsvr/internal/logic"
+	"gitee.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"gorm.io/gorm"
 
-	"github.com/i-Things/things/service/dmsvr/internal/svc"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/i-Things/things/service/dmsvr/internal/svc"
+	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

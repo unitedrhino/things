@@ -8,15 +8,15 @@ import (
 	"gitee.com/i-Things/share/domain/application"
 	"gitee.com/i-Things/share/domain/deviceAuth"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/sdk/service/protocol"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
-	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/i-Things/things/sdk/service/protocol"
+	"gitee.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
+	"gitee.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
+	"gitee.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/spf13/cast"
 	"time"
 
-	"github.com/i-Things/things/service/dmsvr/internal/svc"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/i-Things/things/service/dmsvr/internal/svc"
+	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

@@ -3,14 +3,14 @@ package devicemsglogic
 import (
 	"context"
 	"gitee.com/i-Things/share/devices"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
-	"github.com/i-Things/things/service/dmsvr/internal/logic"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
+	"gitee.com/i-Things/things/service/dmsvr/internal/logic"
+	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
 
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/errors"
 
-	"github.com/i-Things/things/service/dmsvr/internal/svc"
+	"gitee.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

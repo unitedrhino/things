@@ -5,7 +5,7 @@ import (
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
 )
 
 func ToDmDevicesCore(devices []*msgGateway.Device) (ret []*dm.DeviceCore) {

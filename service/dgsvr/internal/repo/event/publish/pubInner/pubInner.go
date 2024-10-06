@@ -1,7 +1,7 @@
 package pubInner
 
 import (
-	//"github.com/i-Things/things/service/dgsvr/internal/domain"
+	//"gitee.com/i-Things/things/service/dgsvr/internal/domain"
 	"context"
 	"gitee.com/i-Things/share/conf"
 	"gitee.com/i-Things/share/devices"

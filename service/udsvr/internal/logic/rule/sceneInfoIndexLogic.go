@@ -6,12 +6,12 @@ import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/stores"
-	"github.com/i-Things/things/service/dmsvr/dmExport"
-	"github.com/i-Things/things/service/udsvr/internal/logic"
-	"github.com/i-Things/things/service/udsvr/internal/repo/relationDB"
+	"gitee.com/i-Things/things/service/dmsvr/dmExport"
+	"gitee.com/i-Things/things/service/udsvr/internal/logic"
+	"gitee.com/i-Things/things/service/udsvr/internal/repo/relationDB"
 
-	"github.com/i-Things/things/service/udsvr/internal/svc"
-	"github.com/i-Things/things/service/udsvr/pb/ud"
+	"gitee.com/i-Things/things/service/udsvr/internal/svc"
+	"gitee.com/i-Things/things/service/udsvr/pb/ud"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

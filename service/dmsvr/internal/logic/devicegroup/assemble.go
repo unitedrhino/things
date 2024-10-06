@@ -1,8 +1,8 @@
 package devicegrouplogic
 
 import (
-	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
 )
 
 func ToGroupInfoPb(ro *relationDB.DmGroupInfo) *dm.GroupInfo {

@@ -1,8 +1,8 @@
 package custom
 
 import (
-	"github.com/i-Things/things/service/apisvr/internal/types"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/i-Things/things/service/apisvr/internal/types"
+	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
 )
 
 func ToCustomTopicPb(info *types.ProductCustomTopic) *dm.CustomTopic {

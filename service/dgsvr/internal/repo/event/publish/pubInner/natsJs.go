@@ -9,7 +9,7 @@ import (
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/events/topics"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/sdk/service/protocol"
+	"gitee.com/i-Things/things/sdk/service/protocol"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

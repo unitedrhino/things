@@ -5,12 +5,12 @@ import (
 	"gitee.com/i-Things/share/ctxs"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/utils"
-	devicemanagelogic "github.com/i-Things/things/service/dmsvr/internal/logic/devicemanage"
-	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
+	devicemanagelogic "gitee.com/i-Things/things/service/dmsvr/internal/logic/devicemanage"
+	"gitee.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 	"sync"
 
-	"github.com/i-Things/things/service/dmsvr/internal/svc"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/i-Things/things/service/dmsvr/internal/svc"
+	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

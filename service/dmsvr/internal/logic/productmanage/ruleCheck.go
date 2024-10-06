@@ -2,7 +2,7 @@ package productmanagelogic
 
 import (
 	"gitee.com/i-Things/share/domain/schema"
-	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
 )
 
 func CheckAffordance(po *relationDB.DmSchemaCore, cs *relationDB.DmCommonSchema) error {

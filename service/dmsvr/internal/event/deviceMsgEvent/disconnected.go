@@ -6,9 +6,9 @@ import (
 	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
-	devicemanagelogic "github.com/i-Things/things/service/dmsvr/internal/logic/devicemanage"
-	"github.com/i-Things/things/service/dmsvr/internal/svc"
+	"gitee.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
+	devicemanagelogic "gitee.com/i-Things/things/service/dmsvr/internal/logic/devicemanage"
+	"gitee.com/i-Things/things/service/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

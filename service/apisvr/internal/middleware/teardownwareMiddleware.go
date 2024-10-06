@@ -2,7 +2,7 @@ package middleware
 
 import (
 	operLog "gitee.com/i-Things/core/service/syssvr/client/log"
-	"github.com/i-Things/things/service/apisvr/internal/config"
+	"gitee.com/i-Things/things/service/apisvr/internal/config"
 	"net/http"
 	"sync"
 )

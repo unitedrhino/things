@@ -5,7 +5,7 @@ import (
 	"gitee.com/i-Things/share/conf"
 	"gitee.com/i-Things/share/domain/deviceMsg"
 	"gitee.com/i-Things/share/errors"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
+	"gitee.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
 )
 
 type (

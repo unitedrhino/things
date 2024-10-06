@@ -3,9 +3,9 @@ package otamanagelogic
 import (
 	"context"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
-	"github.com/i-Things/things/service/dmsvr/internal/svc"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/i-Things/things/service/dmsvr/internal/svc"
+	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
 )
 
 func ToFirmwareInfoPb(ctx context.Context, svcCtx *svc.ServiceContext, in *relationDB.DmOtaFirmwareInfo) *dm.OtaFirmwareInfo {

@@ -6,11 +6,11 @@ import (
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/domain/schema"
 	"gitee.com/i-Things/share/eventBus"
-	"github.com/i-Things/things/service/dmsvr/client/devicemanage"
-	"github.com/i-Things/things/service/dmsvr/client/productmanage"
-	"github.com/i-Things/things/service/dmsvr/client/userdevice"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/userShared"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/i-Things/things/service/dmsvr/client/devicemanage"
+	"gitee.com/i-Things/things/service/dmsvr/client/productmanage"
+	"gitee.com/i-Things/things/service/dmsvr/client/userdevice"
+	"gitee.com/i-Things/things/service/dmsvr/internal/domain/userShared"
+	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
 )
 
 type ProductCacheT = *caches.Cache[dm.ProductInfo, string]

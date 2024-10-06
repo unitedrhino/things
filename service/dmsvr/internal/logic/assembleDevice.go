@@ -7,10 +7,10 @@ import (
 	"gitee.com/i-Things/share/domain/deviceMsg/msgGateway"
 	"gitee.com/i-Things/share/events"
 	"gitee.com/i-Things/share/utils"
+	"gitee.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/i-Things/things/service/dmsvr/internal/svc"
+	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
 	"github.com/golang/protobuf/ptypes/wrappers"
-	"github.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
-	"github.com/i-Things/things/service/dmsvr/internal/svc"
-	"github.com/i-Things/things/service/dmsvr/pb/dm"
 )
 
 func ToDeviceInfo(ctx context.Context, svcCtx *svc.ServiceContext, in *relationDB.DmDeviceInfo) *dm.DeviceInfo {

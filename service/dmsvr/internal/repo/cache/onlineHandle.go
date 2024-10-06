@@ -3,7 +3,7 @@ package cache
 import (
 	"context"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
+	"gitee.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 	"time"
 )

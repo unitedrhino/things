@@ -9,8 +9,8 @@ import (
 	"gitee.com/i-Things/share/domain/deviceAuth"
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dgsvr/internal/svc"
-	"github.com/i-Things/things/service/dgsvr/pb/dg"
+	"gitee.com/i-Things/things/service/dgsvr/internal/svc"
+	"gitee.com/i-Things/things/service/dgsvr/pb/dg"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

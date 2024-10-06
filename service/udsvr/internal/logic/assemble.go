@@ -3,7 +3,7 @@ package logic
 import (
 	"gitee.com/i-Things/share/def"
 	"gitee.com/i-Things/share/stores"
-	"github.com/i-Things/things/service/udsvr/pb/ud"
+	"gitee.com/i-Things/things/service/udsvr/pb/ud"
 )
 
 func ToPageInfo(info *ud.PageInfo) *stores.PageInfo {

@@ -3,9 +3,9 @@ package log
 import (
 	"gitee.com/i-Things/share/errors"
 	"gitee.com/i-Things/share/result"
-	"github.com/i-Things/things/service/apisvr/internal/logic/things/rule/scene/log"
-	"github.com/i-Things/things/service/apisvr/internal/svc"
-	"github.com/i-Things/things/service/apisvr/internal/types"
+	"gitee.com/i-Things/things/service/apisvr/internal/logic/things/rule/scene/log"
+	"gitee.com/i-Things/things/service/apisvr/internal/svc"
+	"gitee.com/i-Things/things/service/apisvr/internal/types"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"net/http"
 )

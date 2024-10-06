@@ -1,8 +1,8 @@
 package dmdirect
 
 import (
-	client "github.com/i-Things/things/service/dmsvr/client/protocolmanage"
-	server "github.com/i-Things/things/service/dmsvr/internal/server/protocolmanage"
+	client "gitee.com/i-Things/things/service/dmsvr/client/protocolmanage"
+	server "gitee.com/i-Things/things/service/dmsvr/internal/server/protocolmanage"
 )
 
 var (

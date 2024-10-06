@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"gitee.com/i-Things/share/devices"
 	"gitee.com/i-Things/share/utils"
-	"github.com/i-Things/things/service/dgsvr/internal/domain/custom"
-	"github.com/i-Things/things/service/dgsvr/internal/svc"
+	"gitee.com/i-Things/things/service/dgsvr/internal/domain/custom"
+	"gitee.com/i-Things/things/service/dgsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
