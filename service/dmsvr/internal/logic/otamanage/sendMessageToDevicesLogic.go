@@ -374,10 +374,11 @@ func (l *SendMessageToDevicesLogic) PushMessageToDevices(jobInfo *relationDB.DmO
 		return nil
 	}
 
-	deviceList, err := stores.WithNoDebug(l.ctx, relationDB.NewOtaFirmwareDeviceRepo).FindByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
+	deviceList, err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).FindByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
 		FirmwareID: jobInfo.FirmwareID,
 		JobID:      jobInfo.ID,
 		ProductID:  firmware.ProductID,
+		LastLogin:  time.Now().Add(-time.Second * 3),
 		IsOnline:   def.True,                           //只有在线的设备才推送
 		Statues:    []int64{msgOta.DeviceStatusQueued}, //只处理待推送的设备
 	}, &stores.PageInfo{

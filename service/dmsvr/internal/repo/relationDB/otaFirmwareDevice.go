@@ -40,6 +40,7 @@ type OtaFirmwareDeviceFilter struct {
 	WithJob         bool
 	WithFiles       bool
 	IsOnline        int64
+	LastLogin       time.Time
 	RetryCount      *stores.Cmp
 	PushTime        *stores.Cmp
 	LastFailureTime *stores.Cmp
@@ -58,6 +59,9 @@ func (p OtaFirmwareDeviceRepo) fmtFilter(ctx context.Context, f OtaFirmwareDevic
 	}
 	if f.IsOnline != 0 && f.ProductID != "" {
 		subSelect := p.db.WithContext(ctx).Model(&DmDeviceInfo{}).Select("device_name").Where("is_online=? and product_id = ?", f.IsOnline, f.ProductID)
+		if !f.LastLogin.IsZero() {
+			subSelect = subSelect.Where("last_login <= ?", f.LastLogin)
+		}
 		db = db.Where("device_name in (?)", subSelect)
 	}
 	if f.ProductID != "" {
