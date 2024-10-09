@@ -65,7 +65,7 @@ func (l *LoginLogic) Login(req *types.DeviceAuthLoginReq) error {
 	}
 	err = device.ThirdProtoLoginAuth(l.ctx, l.svcCtx, req, cert)
 	if err != nil {
-		l.Errorf("authLogin iThings err:%v third err:%v", er, err)
+		l.Errorf("authLogin req:%v iThings err:%v third err:%v", req, er, err)
 	}
 	return err
 }
