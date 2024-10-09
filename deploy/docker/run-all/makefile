@@ -9,7 +9,8 @@ start:
 update:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>$@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	@docker compose pull
-	@docker compose down
+	@docker compose down core
+	@docker compose down things
 	@docker compose up -d
 
 reset:
