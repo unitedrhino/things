@@ -374,7 +374,7 @@ func (l *SendMessageToDevicesLogic) PushMessageToDevices(jobInfo *relationDB.DmO
 		return nil
 	}
 
-	deviceList, err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).FindByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
+	deviceList, err := stores.WithNoDebug(l.ctx, relationDB.NewOtaFirmwareDeviceRepo).FindByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
 		FirmwareID: jobInfo.FirmwareID,
 		JobID:      jobInfo.ID,
 		ProductID:  firmware.ProductID,

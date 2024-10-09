@@ -97,7 +97,7 @@ func NewLightProtocol(c conf.EventConf, pi *dm.ProtocolInfo, pc *LightProtocolCo
 }
 
 func (p *LightProtocol) Start() error {
-	ctx := context.Background()
+	ctx := ctxs.WithRoot(context.Background())
 	_, err := p.ProtocolM.ProtocolInfoCreate(ctx, p.Pi) //初始化协议
 	if err != nil && !errors.Cmp(errors.Fmt(err), errors.Duplicate) {
 		logx.Must(err)
