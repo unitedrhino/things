@@ -143,6 +143,16 @@ func (l *GatewayLogic) HandleRegister(msg *deviceMsg.PublishMsg, resp *msgGatewa
 				continue
 			}
 		}
+		if di == nil {
+			di, err = l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
+				ProductID:  v.ProductID,
+				DeviceName: v.DeviceName,
+			})
+			if err != nil {
+				resp.AddStatus(err)
+				continue
+			}
+		}
 		c, err := relationDB.NewGatewayDeviceRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.GatewayDeviceFilter{
 			SubDevice: &devices.Core{
 				ProductID:  v.ProductID,
