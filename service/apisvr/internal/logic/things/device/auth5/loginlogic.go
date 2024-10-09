@@ -55,13 +55,13 @@ func (l *LoginLogic) Login(req *types.DeviceAuth5LoginReq) (resp *types.DeviceAu
 		}, nil
 	}
 	l.ctx = ctxs.WithRoot(l.ctx)
-	_, err = l.svcCtx.DeviceA.LoginAuth(l.ctx, &dg.LoginAuthReq{Username: req.Username, //用户名
+	_, er := l.svcCtx.DeviceA.LoginAuth(l.ctx, &dg.LoginAuthReq{Username: req.Username, //用户名
 		Password:    req.Password, //密码
 		ClientID:    req.ClientID, //clientID
 		Ip:          req.Ip,       //访问的ip地址
 		Certificate: cert,         //客户端证书
 	})
-	if err == nil {
+	if er == nil {
 		return &types.DeviceAuth5LoginResp{
 			Result:      "allow",
 			IsSuperuser: false,
@@ -75,6 +75,7 @@ func (l *LoginLogic) Login(req *types.DeviceAuth5LoginReq) (resp *types.DeviceAu
 		Certificate: req.Certificate,
 	}, cert)
 	if err != nil {
+		l.Errorf("auth5Login iThings err:%v third err:%v", er, err)
 		return &types.DeviceAuth5LoginResp{Result: "deny"}, nil
 	}
 	return &types.DeviceAuth5LoginResp{
