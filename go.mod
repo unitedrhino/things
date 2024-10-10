@@ -6,9 +6,9 @@ go 1.21.4
 //gitee.com/unitedrhino/share => ../share
 
 require (
-	gitee.com/i-Things/squirrel v1.20.4
-	gitee.com/unitedrhino/core v0.2.1
-	gitee.com/unitedrhino/share v0.2.1
+	gitee.com/unitedrhino/core v0.2.2
+	gitee.com/unitedrhino/share v0.2.2
+	gitee.com/unitedrhino/squirrel v1.20.5
 	github.com/dgraph-io/ristretto v0.1.0
 	github.com/dop251/goja v0.0.0-20230402114112-623f9dda9079
 	github.com/eclipse/paho.mqtt.golang v1.4.3
@@ -30,6 +30,7 @@ require (
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
+	gitee.com/unitedrhino/driver-go/v3 v3.30.1 // indirect
 	github.com/BurntSushi/toml v1.3.2 // indirect
 	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
 	github.com/alibabacloud-go/alibabacloud-gateway-spi v0.0.4 // indirect
@@ -92,7 +93,6 @@ require (
 	github.com/gorilla/websocket v1.5.1 // indirect
 	github.com/grokify/html-strip-tags-go v0.1.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.20.0 // indirect
-	github.com/i-Things/driver-go/v3 v3.25.6 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/pgx/v5 v5.6.0 // indirect

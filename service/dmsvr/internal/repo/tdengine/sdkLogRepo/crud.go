@@ -7,8 +7,8 @@ import (
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 
-	sq "gitee.com/i-Things/squirrel"
 	"gitee.com/unitedrhino/share/def"
+	sq "gitee.com/unitedrhino/squirrel"
 )
 
 func (d SDKLogRepo) GetDeviceSDKLog(ctx context.Context,

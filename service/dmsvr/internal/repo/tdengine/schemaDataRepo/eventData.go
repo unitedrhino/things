@@ -8,7 +8,7 @@ import (
 	"gitee.com/unitedrhino/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
-	sq "gitee.com/i-Things/squirrel"
+	sq "gitee.com/unitedrhino/squirrel"
 )
 
 func (d *DeviceDataRepo) InsertEventData(ctx context.Context, productID string,

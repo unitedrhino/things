@@ -10,10 +10,10 @@ fi
 tag="$1"
 git tag $tag
 git push origin $tag
-git push github $tag
+#git push github $tag
 git push gitee $tag
 git checkout master
 git pull origin master
 git push  gitee master
-git push  github master
+#git push  github master
 git checkout dev

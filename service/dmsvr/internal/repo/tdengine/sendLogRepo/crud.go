@@ -4,10 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	sq "gitee.com/i-Things/squirrel"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
+	sq "gitee.com/unitedrhino/squirrel"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 )
 

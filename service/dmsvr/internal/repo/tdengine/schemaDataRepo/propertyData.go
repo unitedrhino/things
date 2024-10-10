@@ -11,7 +11,7 @@ import (
 	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
-	sq "gitee.com/i-Things/squirrel"
+	sq "gitee.com/unitedrhino/squirrel"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
