@@ -1,8 +1,8 @@
 package info
 
 import (
-	"gitee.com/i-Things/things/service/apisvr/internal/types"
-	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/types"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 )
 
 func ToInfoPb(in *types.ProtocolInfo) *dm.ProtocolInfo {

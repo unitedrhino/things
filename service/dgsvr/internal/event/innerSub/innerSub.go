@@ -3,13 +3,13 @@ package innerSub
 import (
 	"context"
 	"fmt"
-	"gitee.com/i-Things/share/devices"
-	"gitee.com/i-Things/share/domain/deviceMsg"
-	"gitee.com/i-Things/share/domain/deviceMsg/msgGateway"
-	"gitee.com/i-Things/share/errors"
-	"gitee.com/i-Things/share/utils"
-	"gitee.com/i-Things/things/service/dgsvr/internal/domain/custom"
-	"gitee.com/i-Things/things/service/dgsvr/internal/svc"
+	"gitee.com/unitedrhino/share/devices"
+	"gitee.com/unitedrhino/share/domain/deviceMsg"
+	"gitee.com/unitedrhino/share/domain/deviceMsg/msgGateway"
+	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dgsvr/internal/domain/custom"
+	"gitee.com/unitedrhino/things/service/dgsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

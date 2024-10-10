@@ -1,7 +1,7 @@
 package config
 
 import (
-	"gitee.com/i-Things/share/conf"
+	"gitee.com/unitedrhino/share/conf"
 	"github.com/zeromicro/go-zero/core/discov"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/rest"

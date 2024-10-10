@@ -1,7 +1,7 @@
 package hubLogRepo
 
 import (
-	"gitee.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"github.com/spf13/cast"
 )
 

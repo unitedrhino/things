@@ -1,9 +1,9 @@
 package relationDB
 
 import (
-	"gitee.com/i-Things/share/def"
-	"gitee.com/i-Things/share/stores"
-	"gitee.com/i-Things/things/service/udsvr/internal/domain/scene"
+	"gitee.com/unitedrhino/share/def"
+	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/things/service/udsvr/internal/domain/scene"
 	"time"
 )
 

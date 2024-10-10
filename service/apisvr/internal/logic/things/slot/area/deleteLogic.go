@@ -2,12 +2,12 @@ package area
 
 import (
 	"context"
-	"gitee.com/i-Things/core/service/syssvr/pb/sys"
-	"gitee.com/i-Things/share/def"
-	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
+	"gitee.com/unitedrhino/share/def"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 
-	"gitee.com/i-Things/things/service/apisvr/internal/svc"
-	"gitee.com/i-Things/things/service/apisvr/internal/types"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

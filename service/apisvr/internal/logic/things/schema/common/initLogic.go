@@ -2,9 +2,9 @@ package common
 
 import (
 	"context"
-	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 
-	"gitee.com/i-Things/things/service/apisvr/internal/svc"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

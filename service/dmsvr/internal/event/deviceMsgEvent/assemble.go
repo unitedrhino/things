@@ -1,11 +1,11 @@
 package deviceMsgEvent
 
 import (
-	"gitee.com/i-Things/share/domain/deviceMsg/msgGateway"
-	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
-	"gitee.com/i-Things/share/errors"
-	"gitee.com/i-Things/share/utils"
-	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/share/domain/deviceMsg/msgGateway"
+	"gitee.com/unitedrhino/share/domain/deviceMsg/msgThing"
+	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 )
 
 func ToDmDevicesCore(devices []*msgGateway.Device) (ret []*dm.DeviceCore) {

@@ -2,9 +2,9 @@ package interact
 
 import (
 	"context"
-	"gitee.com/i-Things/share/ctxs"
-	"gitee.com/i-Things/things/service/apisvr/internal/svc"
-	"gitee.com/i-Things/things/service/apisvr/internal/types"
+	"gitee.com/unitedrhino/share/ctxs"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/types"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

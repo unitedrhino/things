@@ -2,10 +2,10 @@ package cache
 
 import (
 	"context"
-	schema "gitee.com/i-Things/share/domain/schema"
-	"gitee.com/i-Things/share/errors"
-	"gitee.com/i-Things/share/utils"
-	"gitee.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
+	schema "gitee.com/unitedrhino/share/domain/schema"
+	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/dgraph-io/ristretto"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"

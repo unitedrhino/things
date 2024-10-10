@@ -2,13 +2,13 @@ package auth
 
 import (
 	"context"
-	"gitee.com/i-Things/share/ctxs"
-	"gitee.com/i-Things/share/devices"
-	"gitee.com/i-Things/share/utils"
-	"gitee.com/i-Things/things/service/apisvr/internal/logic/things/device"
-	"gitee.com/i-Things/things/service/apisvr/internal/svc"
-	"gitee.com/i-Things/things/service/apisvr/internal/types"
-	"gitee.com/i-Things/things/service/dgsvr/pb/dg"
+	"gitee.com/unitedrhino/share/ctxs"
+	"gitee.com/unitedrhino/share/devices"
+	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/logic/things/device"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/types"
+	"gitee.com/unitedrhino/things/service/dgsvr/pb/dg"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

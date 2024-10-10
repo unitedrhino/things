@@ -1,8 +1,8 @@
 package dgdirect
 
 import (
-	client "gitee.com/i-Things/things/service/dgsvr/client/deviceauth"
-	server "gitee.com/i-Things/things/service/dgsvr/internal/server/deviceauth"
+	client "gitee.com/unitedrhino/things/service/dgsvr/client/deviceauth"
+	server "gitee.com/unitedrhino/things/service/dgsvr/internal/server/deviceauth"
 )
 
 var (

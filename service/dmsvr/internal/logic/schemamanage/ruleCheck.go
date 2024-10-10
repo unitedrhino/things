@@ -1,8 +1,8 @@
 package schemamanagelogic
 
 import (
-	"gitee.com/i-Things/share/domain/schema"
-	"gitee.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/share/domain/schema"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 )
 
 func CheckAffordance(po *relationDB.DmSchemaCore) error {

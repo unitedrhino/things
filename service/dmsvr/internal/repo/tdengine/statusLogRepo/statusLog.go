@@ -2,8 +2,8 @@ package statusLogRepo
 
 import (
 	"fmt"
-	"gitee.com/i-Things/share/clients"
-	"gitee.com/i-Things/share/conf"
+	"gitee.com/unitedrhino/share/clients"
+	"gitee.com/unitedrhino/share/conf"
 	"github.com/zeromicro/go-zero/core/logx"
 	"os"
 	"sync"

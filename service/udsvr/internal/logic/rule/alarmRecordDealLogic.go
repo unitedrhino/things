@@ -2,15 +2,15 @@ package rulelogic
 
 import (
 	"context"
-	"gitee.com/i-Things/core/service/syssvr/pb/sys"
-	"gitee.com/i-Things/share/devices"
-	"gitee.com/i-Things/share/domain/ops"
-	"gitee.com/i-Things/share/errors"
-	"gitee.com/i-Things/things/service/udsvr/internal/domain/scene"
-	"gitee.com/i-Things/things/service/udsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
+	"gitee.com/unitedrhino/share/devices"
+	"gitee.com/unitedrhino/share/domain/ops"
+	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/things/service/udsvr/internal/domain/scene"
+	"gitee.com/unitedrhino/things/service/udsvr/internal/repo/relationDB"
 
-	"gitee.com/i-Things/things/service/udsvr/internal/svc"
-	"gitee.com/i-Things/things/service/udsvr/pb/ud"
+	"gitee.com/unitedrhino/things/service/udsvr/internal/svc"
+	"gitee.com/unitedrhino/things/service/udsvr/pb/ud"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

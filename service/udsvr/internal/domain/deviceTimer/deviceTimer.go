@@ -1,7 +1,7 @@
 package deviceTimer
 
 import (
-	"gitee.com/i-Things/share/devices"
+	"gitee.com/unitedrhino/share/devices"
 )
 
 type Info struct {

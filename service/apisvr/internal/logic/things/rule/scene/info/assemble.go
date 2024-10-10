@@ -1,9 +1,9 @@
 package info
 
 import (
-	"gitee.com/i-Things/share/utils"
-	"gitee.com/i-Things/things/service/apisvr/internal/types"
-	"gitee.com/i-Things/things/service/udsvr/pb/ud"
+	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/types"
+	"gitee.com/unitedrhino/things/service/udsvr/pb/ud"
 )
 
 func ToSceneTypes(in *ud.SceneInfo) *types.SceneInfo {

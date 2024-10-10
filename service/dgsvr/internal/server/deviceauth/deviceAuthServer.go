@@ -6,9 +6,9 @@ package server
 import (
 	"context"
 
-	"gitee.com/i-Things/things/service/dgsvr/internal/logic/deviceauth"
-	"gitee.com/i-Things/things/service/dgsvr/internal/svc"
-	"gitee.com/i-Things/things/service/dgsvr/pb/dg"
+	"gitee.com/unitedrhino/things/service/dgsvr/internal/logic/deviceauth"
+	"gitee.com/unitedrhino/things/service/dgsvr/internal/svc"
+	"gitee.com/unitedrhino/things/service/dgsvr/pb/dg"
 )
 
 type DeviceAuthServer struct {

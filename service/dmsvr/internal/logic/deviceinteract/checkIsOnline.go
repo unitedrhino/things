@@ -2,11 +2,11 @@ package deviceinteractlogic
 
 import (
 	"context"
-	"gitee.com/i-Things/share/def"
-	"gitee.com/i-Things/share/devices"
-	"gitee.com/i-Things/share/errors"
-	"gitee.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
-	"gitee.com/i-Things/things/service/dmsvr/internal/svc"
+	"gitee.com/unitedrhino/share/def"
+	"gitee.com/unitedrhino/share/devices"
+	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 )
 
 func CheckIsOnline(ctx context.Context, svcCtx *svc.ServiceContext, core devices.Core) (protocolCode string, err error) {

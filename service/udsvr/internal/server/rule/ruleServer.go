@@ -6,9 +6,9 @@ package server
 import (
 	"context"
 
-	"gitee.com/i-Things/things/service/udsvr/internal/logic/rule"
-	"gitee.com/i-Things/things/service/udsvr/internal/svc"
-	"gitee.com/i-Things/things/service/udsvr/pb/ud"
+	"gitee.com/unitedrhino/things/service/udsvr/internal/logic/rule"
+	"gitee.com/unitedrhino/things/service/udsvr/internal/svc"
+	"gitee.com/unitedrhino/things/service/udsvr/pb/ud"
 )
 
 type RuleServer struct {

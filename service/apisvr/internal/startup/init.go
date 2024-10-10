@@ -1,11 +1,11 @@
 package startup
 
 import (
-	"gitee.com/i-Things/share/utils"
-	"gitee.com/i-Things/things/service/apisvr/internal/logic"
-	"gitee.com/i-Things/things/service/apisvr/internal/logic/things/device"
-	"gitee.com/i-Things/things/service/apisvr/internal/svc"
-	"gitee.com/i-Things/things/service/apisvr/internal/types"
+	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/logic"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/logic/things/device"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/types"
 )
 
 func Init(svcCtx *svc.ServiceContext) {

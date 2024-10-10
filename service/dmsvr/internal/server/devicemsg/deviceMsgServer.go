@@ -7,9 +7,9 @@ package server
 import (
 	"context"
 
-	"gitee.com/i-Things/things/service/dmsvr/internal/logic/devicemsg"
-	"gitee.com/i-Things/things/service/dmsvr/internal/svc"
-	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic/devicemsg"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 )
 
 type DeviceMsgServer struct {

@@ -2,7 +2,7 @@ package thing
 
 import (
 	"fmt"
-	"gitee.com/i-Things/things/tests/device/mqttTest"
+	"gitee.com/unitedrhino/things/tests/device/mqttTest"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"sync"
 	"testing"

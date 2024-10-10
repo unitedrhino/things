@@ -5,12 +5,12 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
-	"gitee.com/i-Things/share/devices"
-	"gitee.com/i-Things/share/domain/deviceAuth"
-	"gitee.com/i-Things/share/errors"
-	"gitee.com/i-Things/share/utils"
-	"gitee.com/i-Things/things/service/dgsvr/internal/svc"
-	"gitee.com/i-Things/things/service/dgsvr/pb/dg"
+	"gitee.com/unitedrhino/share/devices"
+	"gitee.com/unitedrhino/share/domain/deviceAuth"
+	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dgsvr/internal/svc"
+	"gitee.com/unitedrhino/things/service/dgsvr/pb/dg"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

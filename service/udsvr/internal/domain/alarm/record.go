@@ -1,6 +1,6 @@
 package alarm
 
-import "gitee.com/i-Things/share/def"
+import "gitee.com/unitedrhino/share/def"
 
 type RecordFilter struct {
 	AlarmID     int64 // 告警配置ID

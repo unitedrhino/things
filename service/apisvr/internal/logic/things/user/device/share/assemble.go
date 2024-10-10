@@ -1,9 +1,9 @@
 package share
 
 import (
-	"gitee.com/i-Things/share/utils"
-	"gitee.com/i-Things/things/service/apisvr/internal/types"
-	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/types"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 )
 
 func ToSharePb(in *types.UserDeviceShareInfo) *dm.UserDeviceShareInfo {

@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	role "gitee.com/i-Things/core/service/syssvr/client/rolemanage"
+	role "gitee.com/unitedrhino/core/service/syssvr/client/rolemanage"
 	"net/http"
 )
 

@@ -1,7 +1,7 @@
 package deviceMsgEvent
 
 import (
-	"gitee.com/i-Things/share/domain/deviceMsg/msgThing"
+	"gitee.com/unitedrhino/share/domain/deviceMsg/msgThing"
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/cast"
 	"strings"

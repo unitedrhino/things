@@ -2,7 +2,7 @@ package otaEvent
 
 import (
 	"context"
-	"gitee.com/i-Things/things/service/dgsvr/internal/svc"
+	"gitee.com/unitedrhino/things/service/dgsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

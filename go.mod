@@ -1,14 +1,14 @@
-module gitee.com/i-Things/things
+module gitee.com/unitedrhino/things
 
 go 1.21.4
 
-//gitee.com/i-Things/core => ../core
-//gitee.com/i-Things/share => ../share
+//gitee.com/unitedrhino/core => ../core
+//gitee.com/unitedrhino/share => ../share
 
 require (
-	gitee.com/i-Things/core v0.1.6
-	gitee.com/i-Things/share v0.1.25
 	gitee.com/i-Things/squirrel v1.20.4
+	gitee.com/unitedrhino/core v0.2.1
+	gitee.com/unitedrhino/share v0.2.1
 	github.com/dgraph-io/ristretto v0.1.0
 	github.com/dop251/goja v0.0.0-20230402114112-623f9dda9079
 	github.com/eclipse/paho.mqtt.golang v1.4.3

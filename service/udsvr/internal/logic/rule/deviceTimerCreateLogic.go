@@ -2,11 +2,11 @@ package rulelogic
 
 import (
 	"context"
-	"gitee.com/i-Things/share/devices"
-	"gitee.com/i-Things/share/errors"
-	"gitee.com/i-Things/things/service/udsvr/internal/domain/deviceTimer"
-	"gitee.com/i-Things/things/service/udsvr/internal/repo/relationDB"
-	"gitee.com/i-Things/things/service/udsvr/internal/svc"
+	"gitee.com/unitedrhino/share/devices"
+	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/things/service/udsvr/internal/domain/deviceTimer"
+	"gitee.com/unitedrhino/things/service/udsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/things/service/udsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

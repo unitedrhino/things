@@ -2,8 +2,8 @@ package cache
 
 import (
 	"context"
-	"gitee.com/i-Things/share/devices"
-	"gitee.com/i-Things/things/service/dgsvr/internal/domain/custom"
+	"gitee.com/unitedrhino/share/devices"
+	"gitee.com/unitedrhino/things/service/dgsvr/internal/domain/custom"
 	"github.com/dgraph-io/ristretto"
 	"time"
 )

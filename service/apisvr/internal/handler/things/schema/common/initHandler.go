@@ -3,10 +3,10 @@ package common
 import (
 	"net/http"
 
-	"gitee.com/i-Things/share/result"
+	"gitee.com/unitedrhino/share/result"
 
-	"gitee.com/i-Things/things/service/apisvr/internal/logic/things/schema/common"
-	"gitee.com/i-Things/things/service/apisvr/internal/svc"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/logic/things/schema/common"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
 )
 
 func InitHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {

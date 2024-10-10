@@ -2,11 +2,11 @@ package subDev
 
 import (
 	"context"
-	"gitee.com/i-Things/share/clients"
-	"gitee.com/i-Things/share/conf"
-	"gitee.com/i-Things/share/ctxs"
-	"gitee.com/i-Things/share/domain/deviceMsg"
-	"gitee.com/i-Things/share/utils"
+	"gitee.com/unitedrhino/share/clients"
+	"gitee.com/unitedrhino/share/conf"
+	"gitee.com/unitedrhino/share/ctxs"
+	"gitee.com/unitedrhino/share/domain/deviceMsg"
+	"gitee.com/unitedrhino/share/utils"
 	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"
 )

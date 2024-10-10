@@ -2,9 +2,9 @@ package relationDB
 
 import (
 	"encoding/json"
-	"gitee.com/i-Things/share/def"
-	"gitee.com/i-Things/share/domain/schema"
-	"gitee.com/i-Things/things/service/dmsvr/internal/domain/shadow"
+	"gitee.com/unitedrhino/share/def"
+	"gitee.com/unitedrhino/share/domain/schema"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/shadow"
 )
 
 func ToPropertyPo(productID string, in *schema.Property) *DmProductSchema {

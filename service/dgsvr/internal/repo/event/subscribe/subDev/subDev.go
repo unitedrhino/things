@@ -3,8 +3,8 @@ package subDev
 import (
 	"context"
 	"fmt"
-	"gitee.com/i-Things/share/conf"
-	"gitee.com/i-Things/share/devices"
+	"gitee.com/unitedrhino/share/conf"
+	"gitee.com/unitedrhino/share/devices"
 )
 
 type (

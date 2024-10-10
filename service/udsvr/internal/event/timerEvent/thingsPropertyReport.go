@@ -2,14 +2,14 @@ package timerEvent
 
 import (
 	"context"
-	"gitee.com/i-Things/share/ctxs"
-	"gitee.com/i-Things/share/def"
-	"gitee.com/i-Things/share/domain/application"
-	"gitee.com/i-Things/share/stores"
-	"gitee.com/i-Things/share/utils"
-	"gitee.com/i-Things/things/service/udsvr/internal/domain/scene"
-	rulelogic "gitee.com/i-Things/things/service/udsvr/internal/logic/rule"
-	"gitee.com/i-Things/things/service/udsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/share/ctxs"
+	"gitee.com/unitedrhino/share/def"
+	"gitee.com/unitedrhino/share/domain/application"
+	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/udsvr/internal/domain/scene"
+	rulelogic "gitee.com/unitedrhino/things/service/udsvr/internal/logic/rule"
+	"gitee.com/unitedrhino/things/service/udsvr/internal/repo/relationDB"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )

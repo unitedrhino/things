@@ -1,6 +1,6 @@
 package protocol
 
-import "gitee.com/i-Things/share/errors"
+import "gitee.com/unitedrhino/share/errors"
 
 const (
 	CodeIThings = "iThings" //默认协议

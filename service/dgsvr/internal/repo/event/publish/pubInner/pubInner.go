@@ -1,11 +1,11 @@
 package pubInner
 
 import (
-	//"gitee.com/i-Things/things/service/dgsvr/internal/domain"
+	//"gitee.com/unitedrhino/things/service/dgsvr/internal/domain"
 	"context"
-	"gitee.com/i-Things/share/conf"
-	"gitee.com/i-Things/share/devices"
-	"gitee.com/i-Things/share/errors"
+	"gitee.com/unitedrhino/share/conf"
+	"gitee.com/unitedrhino/share/devices"
+	"gitee.com/unitedrhino/share/errors"
 )
 
 type ConnType int8

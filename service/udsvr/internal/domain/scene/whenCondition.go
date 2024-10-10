@@ -3,8 +3,8 @@ package scene
 
 import (
 	"context"
-	"gitee.com/i-Things/share/errors"
-	"gitee.com/i-Things/share/utils"
+	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/share/utils"
 )
 
 type Conditions struct {

@@ -3,7 +3,7 @@ package statusLogRepo
 import (
 	"context"
 	"fmt"
-	"gitee.com/i-Things/share/devices"
+	"gitee.com/unitedrhino/share/devices"
 )
 
 func (s *StatusLogRepo) InitProduct(ctx context.Context, productID string) (err error) {

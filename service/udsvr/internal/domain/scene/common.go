@@ -2,8 +2,8 @@ package scene
 
 import (
 	"context"
-	"gitee.com/i-Things/share/devices"
-	"gitee.com/i-Things/things/service/dmsvr/dmExport"
+	"gitee.com/unitedrhino/share/devices"
+	"gitee.com/unitedrhino/things/service/dmsvr/dmExport"
 )
 
 func GetDeviceAlias(ctx context.Context, cache dmExport.DeviceCacheT, productID string, deviceName string) string {

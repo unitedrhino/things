@@ -1,7 +1,7 @@
 package deviceTimer
 
 import (
-	"gitee.com/i-Things/things/service/udsvr/internal/domain/scene"
+	"gitee.com/unitedrhino/things/service/udsvr/internal/domain/scene"
 	"time"
 )
 

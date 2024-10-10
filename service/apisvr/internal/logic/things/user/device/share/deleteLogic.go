@@ -2,11 +2,11 @@ package share
 
 import (
 	"context"
-	"gitee.com/i-Things/things/service/apisvr/internal/logic/things"
-	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/logic/things"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 
-	"gitee.com/i-Things/things/service/apisvr/internal/svc"
-	"gitee.com/i-Things/things/service/apisvr/internal/types"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

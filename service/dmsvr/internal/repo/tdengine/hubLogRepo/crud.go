@@ -4,11 +4,11 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"gitee.com/i-Things/share/def"
-	"gitee.com/i-Things/share/errors"
-	"gitee.com/i-Things/share/stores"
 	sq "gitee.com/i-Things/squirrel"
-	"gitee.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
+	"gitee.com/unitedrhino/share/def"
+	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 )
 
 func (h *HubLogRepo) fillFilter(sql sq.SelectBuilder, filter deviceLog.HubFilter) sq.SelectBuilder {

@@ -1,8 +1,8 @@
 package scene
 
 import (
-	"gitee.com/i-Things/share/errors"
-	"gitee.com/i-Things/share/utils"
+	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/share/utils"
 	"github.com/observerly/dusk/pkg/dusk"
 	"time"
 )

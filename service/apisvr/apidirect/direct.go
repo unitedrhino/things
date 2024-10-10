@@ -1,12 +1,12 @@
 package apidirect
 
 import (
-	"gitee.com/i-Things/share/ctxs"
-	"gitee.com/i-Things/share/utils"
-	"gitee.com/i-Things/things/service/apisvr/internal/config"
-	"gitee.com/i-Things/things/service/apisvr/internal/handler"
-	"gitee.com/i-Things/things/service/apisvr/internal/startup"
-	"gitee.com/i-Things/things/service/apisvr/internal/svc"
+	"gitee.com/unitedrhino/share/ctxs"
+	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/config"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/handler"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/startup"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
 	"github.com/zeromicro/go-zero/rest"
 	"net/http"
 )

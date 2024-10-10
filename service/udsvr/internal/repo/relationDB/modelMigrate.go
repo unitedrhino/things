@@ -2,8 +2,8 @@ package relationDB
 
 import (
 	"context"
-	"gitee.com/i-Things/share/conf"
-	"gitee.com/i-Things/share/stores"
+	"gitee.com/unitedrhino/share/conf"
+	"gitee.com/unitedrhino/share/stores"
 )
 
 func Migrate(c conf.Database) error {

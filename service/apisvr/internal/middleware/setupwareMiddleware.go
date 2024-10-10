@@ -1,10 +1,10 @@
 package middleware
 
 import (
-	operLog "gitee.com/i-Things/core/service/syssvr/client/log"
-	"gitee.com/i-Things/share/ctxs"
-	"gitee.com/i-Things/share/utils"
-	"gitee.com/i-Things/things/service/apisvr/internal/config"
+	operLog "gitee.com/unitedrhino/core/service/syssvr/client/log"
+	"gitee.com/unitedrhino/share/ctxs"
+	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/config"
 	"github.com/zeromicro/go-zero/core/logx"
 	"net/http"
 )

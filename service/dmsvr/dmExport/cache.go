@@ -2,15 +2,15 @@ package dmExport
 
 import (
 	"context"
-	"gitee.com/i-Things/share/caches"
-	"gitee.com/i-Things/share/devices"
-	"gitee.com/i-Things/share/domain/schema"
-	"gitee.com/i-Things/share/eventBus"
-	"gitee.com/i-Things/things/service/dmsvr/client/devicemanage"
-	"gitee.com/i-Things/things/service/dmsvr/client/productmanage"
-	"gitee.com/i-Things/things/service/dmsvr/client/userdevice"
-	"gitee.com/i-Things/things/service/dmsvr/internal/domain/userShared"
-	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/share/caches"
+	"gitee.com/unitedrhino/share/devices"
+	"gitee.com/unitedrhino/share/domain/schema"
+	"gitee.com/unitedrhino/share/eventBus"
+	"gitee.com/unitedrhino/things/service/dmsvr/client/devicemanage"
+	"gitee.com/unitedrhino/things/service/dmsvr/client/productmanage"
+	"gitee.com/unitedrhino/things/service/dmsvr/client/userdevice"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/userShared"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 )
 
 type ProductCacheT = *caches.Cache[dm.ProductInfo, string]

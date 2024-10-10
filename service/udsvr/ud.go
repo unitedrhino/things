@@ -3,12 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
-	"gitee.com/i-Things/share/utils"
+	"gitee.com/unitedrhino/share/utils"
 
-	"gitee.com/i-Things/things/service/udsvr/internal/config"
-	ruleServer "gitee.com/i-Things/things/service/udsvr/internal/server/rule"
-	"gitee.com/i-Things/things/service/udsvr/internal/svc"
-	"gitee.com/i-Things/things/service/udsvr/pb/ud"
+	"gitee.com/unitedrhino/things/service/udsvr/internal/config"
+	ruleServer "gitee.com/unitedrhino/things/service/udsvr/internal/server/rule"
+	"gitee.com/unitedrhino/things/service/udsvr/internal/svc"
+	"gitee.com/unitedrhino/things/service/udsvr/pb/ud"
 
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"

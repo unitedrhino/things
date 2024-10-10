@@ -2,8 +2,8 @@ package cache
 
 import (
 	"context"
-	"gitee.com/i-Things/share/utils"
-	"gitee.com/i-Things/things/service/dmsvr/internal/domain/deviceStatus"
+	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceStatus"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 	"time"
 )

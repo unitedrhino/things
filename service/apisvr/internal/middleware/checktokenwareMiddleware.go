@@ -1,10 +1,10 @@
 package middleware
 
 import (
-	role "gitee.com/i-Things/core/service/syssvr/client/rolemanage"
-	user "gitee.com/i-Things/core/service/syssvr/client/usermanage"
-	"gitee.com/i-Things/share/utils"
-	"gitee.com/i-Things/things/service/apisvr/internal/config"
+	role "gitee.com/unitedrhino/core/service/syssvr/client/rolemanage"
+	user "gitee.com/unitedrhino/core/service/syssvr/client/usermanage"
+	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/config"
 	"github.com/zeromicro/go-zero/core/logx"
 	"net/http"
 )

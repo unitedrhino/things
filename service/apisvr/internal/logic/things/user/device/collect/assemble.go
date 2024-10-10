@@ -1,8 +1,8 @@
 package collect
 
 import (
-	"gitee.com/i-Things/things/service/apisvr/internal/types"
-	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/types"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 )
 
 func ToUserCollectDeviceSavePb(in *types.UserCollectDeviceSave) *dm.UserDeviceCollectSave {

@@ -1,15 +1,15 @@
 package scene
 
 import (
-	"gitee.com/i-Things/core/service/syssvr/client/common"
-	"gitee.com/i-Things/core/service/syssvr/client/notifymanage"
-	"gitee.com/i-Things/core/service/syssvr/sysExport"
-	"gitee.com/i-Things/share/def"
-	"gitee.com/i-Things/things/service/dmsvr/client/devicegroup"
-	deviceinteract "gitee.com/i-Things/things/service/dmsvr/client/deviceinteract"
-	devicemanage "gitee.com/i-Things/things/service/dmsvr/client/devicemanage"
-	devicemsg "gitee.com/i-Things/things/service/dmsvr/client/devicemsg"
-	"gitee.com/i-Things/things/service/dmsvr/dmExport"
+	"gitee.com/unitedrhino/core/service/syssvr/client/common"
+	"gitee.com/unitedrhino/core/service/syssvr/client/notifymanage"
+	"gitee.com/unitedrhino/core/service/syssvr/sysExport"
+	"gitee.com/unitedrhino/share/def"
+	"gitee.com/unitedrhino/things/service/dmsvr/client/devicegroup"
+	deviceinteract "gitee.com/unitedrhino/things/service/dmsvr/client/deviceinteract"
+	devicemanage "gitee.com/unitedrhino/things/service/dmsvr/client/devicemanage"
+	devicemsg "gitee.com/unitedrhino/things/service/dmsvr/client/devicemsg"
+	"gitee.com/unitedrhino/things/service/dmsvr/dmExport"
 )
 import "context"
 

@@ -3,10 +3,10 @@ package server
 import (
 	"context"
 	"encoding/json"
-	"gitee.com/i-Things/share/clients"
-	"gitee.com/i-Things/share/conf"
-	"gitee.com/i-Things/share/domain/deviceMsg"
-	"gitee.com/i-Things/share/events/topics"
+	"gitee.com/unitedrhino/share/clients"
+	"gitee.com/unitedrhino/share/conf"
+	"gitee.com/unitedrhino/share/domain/deviceMsg"
+	"gitee.com/unitedrhino/share/events/topics"
 	"github.com/nats-io/nats.go"
 )
 

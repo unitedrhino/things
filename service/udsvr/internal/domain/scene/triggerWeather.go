@@ -1,7 +1,7 @@
 package scene
 
 import (
-	"gitee.com/i-Things/share/errors"
+	"gitee.com/unitedrhino/share/errors"
 )
 
 // TriggerWeather 定时器类型

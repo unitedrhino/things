@@ -4,11 +4,11 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"gitee.com/i-Things/share/stores"
-	"gitee.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
+	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 
-	"gitee.com/i-Things/share/def"
 	sq "gitee.com/i-Things/squirrel"
+	"gitee.com/unitedrhino/share/def"
 )
 
 func (d SDKLogRepo) GetDeviceSDKLog(ctx context.Context,

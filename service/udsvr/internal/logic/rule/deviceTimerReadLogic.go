@@ -2,7 +2,7 @@ package rulelogic
 
 import (
 	"context"
-	"gitee.com/i-Things/things/service/udsvr/internal/svc"
+	"gitee.com/unitedrhino/things/service/udsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

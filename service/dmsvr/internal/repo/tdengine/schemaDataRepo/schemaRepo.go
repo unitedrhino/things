@@ -1,9 +1,9 @@
 package schemaDataRepo
 
 import (
-	"gitee.com/i-Things/share/clients"
-	"gitee.com/i-Things/share/conf"
-	schema "gitee.com/i-Things/share/domain/schema"
+	"gitee.com/unitedrhino/share/clients"
+	"gitee.com/unitedrhino/share/conf"
+	schema "gitee.com/unitedrhino/share/domain/schema"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 	"os"

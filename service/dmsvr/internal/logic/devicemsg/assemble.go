@@ -1,8 +1,8 @@
 package devicemsglogic
 
 import (
-	"gitee.com/i-Things/things/service/dmsvr/internal/domain/deviceLog"
-	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 )
 
 func ToDataHubLogIndex(log *deviceLog.Hub) *dm.HubLogInfo {

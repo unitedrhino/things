@@ -2,8 +2,8 @@ package relationDB
 
 import (
 	"database/sql"
-	"gitee.com/i-Things/share/def"
-	"gitee.com/i-Things/share/stores"
+	"gitee.com/unitedrhino/share/def"
+	"gitee.com/unitedrhino/share/stores"
 )
 
 type DmUserDeviceCollect struct {

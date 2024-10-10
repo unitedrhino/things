@@ -1,12 +1,12 @@
 package info
 
 import (
-	"gitee.com/i-Things/share/errors"
-	"gitee.com/i-Things/share/result"
-	"gitee.com/i-Things/share/utils"
-	"gitee.com/i-Things/things/service/apisvr/internal/logic/things/device/info"
-	"gitee.com/i-Things/things/service/apisvr/internal/svc"
-	"gitee.com/i-Things/things/service/apisvr/internal/types"
+	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/share/result"
+	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/logic/things/device/info"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/types"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"net/http"

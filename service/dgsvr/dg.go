@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"gitee.com/i-Things/share/utils"
-	"gitee.com/i-Things/things/service/dgsvr/dgdirect"
+	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dgsvr/dgdirect"
 )
 
 func main() {

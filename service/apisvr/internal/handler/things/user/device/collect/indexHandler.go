@@ -3,10 +3,10 @@ package collect
 import (
 	"net/http"
 
-	"gitee.com/i-Things/share/result"
+	"gitee.com/unitedrhino/share/result"
 
-	"gitee.com/i-Things/things/service/apisvr/internal/logic/things/user/device/collect"
-	"gitee.com/i-Things/things/service/apisvr/internal/svc"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/logic/things/user/device/collect"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
 )
 
 func IndexHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {

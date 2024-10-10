@@ -2,16 +2,16 @@ package logic
 
 import (
 	"context"
-	"gitee.com/i-Things/share/oss/common"
-	"gitee.com/i-Things/things/service/dmsvr/internal/domain/productCustom"
-	"gitee.com/i-Things/things/service/dmsvr/internal/domain/protocol"
-	"gitee.com/i-Things/things/service/dmsvr/internal/repo/relationDB"
-	"gitee.com/i-Things/things/service/dmsvr/internal/svc"
+	"gitee.com/unitedrhino/share/oss/common"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/productCustom"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/protocol"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 
-	"gitee.com/i-Things/share/def"
-	"gitee.com/i-Things/share/utils"
-	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/share/def"
+	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 )
 
 func ToProductInfo(ctx context.Context, svcCtx *svc.ServiceContext, pi *relationDB.DmProductInfo) *dm.ProductInfo {

@@ -4,12 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"gitee.com/i-Things/share/clients"
-	"gitee.com/i-Things/share/conf"
-	"gitee.com/i-Things/share/devices"
-	"gitee.com/i-Things/share/events/topics"
-	"gitee.com/i-Things/share/utils"
-	"gitee.com/i-Things/things/sdk/service/protocol"
+	"gitee.com/unitedrhino/share/clients"
+	"gitee.com/unitedrhino/share/conf"
+	"gitee.com/unitedrhino/share/devices"
+	"gitee.com/unitedrhino/share/events/topics"
+	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/sdk/service/protocol"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

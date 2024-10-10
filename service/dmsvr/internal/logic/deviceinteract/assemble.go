@@ -1,8 +1,8 @@
 package deviceinteractlogic
 
 import (
-	"gitee.com/i-Things/things/service/dmsvr/internal/domain/serverDo"
-	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/serverDo"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 )
 
 func ToSendOptionDo(in *dm.SendOption) *serverDo.SendOption {

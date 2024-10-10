@@ -2,8 +2,8 @@ package deviceLog
 
 import (
 	"context"
-	"gitee.com/i-Things/share/def"
-	"gitee.com/i-Things/share/domain/application"
+	"gitee.com/unitedrhino/share/def"
+	"gitee.com/unitedrhino/share/domain/application"
 	"time"
 )
 

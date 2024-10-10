@@ -1,8 +1,8 @@
 package dmdirect
 
 import (
-	client "gitee.com/i-Things/things/service/dmsvr/client/devicemanage"
-	server "gitee.com/i-Things/things/service/dmsvr/internal/server/devicemanage"
+	client "gitee.com/unitedrhino/things/service/dmsvr/client/devicemanage"
+	server "gitee.com/unitedrhino/things/service/dmsvr/internal/server/devicemanage"
 )
 
 var (

@@ -3,8 +3,8 @@ package main
 
 import (
 	"context"
-	"gitee.com/i-Things/share/utils"
-	"gitee.com/i-Things/things/service/dmsvr/dmdirect"
+	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/dmdirect"
 	_ "net/http/pprof"
 )
 

@@ -2,10 +2,10 @@ package scene
 
 import (
 	"context"
-	"gitee.com/i-Things/share/domain/schema"
-	"gitee.com/i-Things/share/errors"
-	"gitee.com/i-Things/share/utils"
-	devicemsg "gitee.com/i-Things/things/service/dmsvr/client/devicemsg"
+	"gitee.com/unitedrhino/share/domain/schema"
+	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/share/utils"
+	devicemsg "gitee.com/unitedrhino/things/service/dmsvr/client/devicemsg"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"

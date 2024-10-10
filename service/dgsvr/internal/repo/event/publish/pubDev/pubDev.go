@@ -3,7 +3,7 @@ package pubDev
 import (
 	"context"
 	"fmt"
-	"gitee.com/i-Things/share/conf"
+	"gitee.com/unitedrhino/share/conf"
 )
 
 type (

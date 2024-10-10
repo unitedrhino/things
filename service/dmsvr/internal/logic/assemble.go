@@ -1,10 +1,10 @@
 package logic
 
 import (
-	"gitee.com/i-Things/share/devices"
-	"gitee.com/i-Things/share/stores"
-	"gitee.com/i-Things/share/utils"
-	"gitee.com/i-Things/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/share/devices"
+	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 )
 
 func ToPageInfo(info *dm.PageInfo) *stores.PageInfo {

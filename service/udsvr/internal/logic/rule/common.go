@@ -2,9 +2,9 @@ package rulelogic
 
 import (
 	"context"
-	"gitee.com/i-Things/things/service/udsvr/internal/domain/scene"
-	"gitee.com/i-Things/things/service/udsvr/internal/repo/relationDB"
-	"gitee.com/i-Things/things/service/udsvr/internal/svc"
+	"gitee.com/unitedrhino/things/service/udsvr/internal/domain/scene"
+	"gitee.com/unitedrhino/things/service/udsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/things/service/udsvr/internal/svc"
 )
 
 func NewSceneCheckRepo(ctx context.Context, svcCtx *svc.ServiceContext, do *scene.Info) scene.CheckRepo {
