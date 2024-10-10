@@ -99,6 +99,9 @@ func (l *DeviceGatewayMultiUpdateLogic) DeviceGatewayMultiUpdate(in *dm.DeviceGa
 	if err != nil {
 		return nil, err
 	}
+	if in.IsNotNotify {
+		return &dm.Empty{}, nil
+	}
 	req := &msgGateway.Msg{
 		CommonMsg: *deviceMsg.NewRespCommonMsg(l.ctx, deviceMsg.Change, devices.GenMsgToken(l.ctx, l.svcCtx.NodeID)).AddStatus(errors.OK),
 		Payload:   logic.ToGatewayPayload(def.GatewayBind, devicesDos),

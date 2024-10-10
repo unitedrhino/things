@@ -72,11 +72,26 @@ func (l *DeviceGatewayMultiDeleteLogic) DeviceGatewayMultiDelete(in *dm.DeviceGa
 	if err != nil {
 		return nil, err
 	}
+	now := time.Now()
+	for _, v := range devicesDos {
+		//更新在线状态
+		err := HandleOnlineFix(l.ctx, l.svcCtx, &deviceStatus.ConnectMsg{
+			ClientID:  deviceAuth.GenClientID(v.ProductID, v.DeviceName),
+			Timestamp: now,
+			Action:    devices.ActionDisconnected,
+			Reason:    "gateway unbind",
+		})
+		if err != nil {
+			l.Error(err)
+		}
+	}
+	if in.IsNotNotify {
+		return &dm.Empty{}, nil
+	}
 	req := &msgGateway.Msg{
 		CommonMsg: *deviceMsg.NewRespCommonMsg(l.ctx, deviceMsg.Change, devices.GenMsgToken(l.ctx, l.svcCtx.NodeID)).AddStatus(errors.OK),
 		Payload:   logic.ToGatewayPayload(def.GatewayUnbind, devicesDos),
 	}
-	now := time.Now()
 	respBytes, _ := json.Marshal(req)
 	msg := deviceMsg.PublishMsg{
 		Handle:       devices.Gateway,
@@ -92,17 +107,6 @@ func (l *DeviceGatewayMultiDeleteLogic) DeviceGatewayMultiDelete(in *dm.DeviceGa
 		l.Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)
 		return nil, er
 	}
-	for _, v := range devicesDos {
-		//更新在线状态
-		err := HandleOnlineFix(l.ctx, l.svcCtx, &deviceStatus.ConnectMsg{
-			ClientID:  deviceAuth.GenClientID(v.ProductID, v.DeviceName),
-			Timestamp: now,
-			Action:    devices.ActionDisconnected,
-			Reason:    "gateway unbind",
-		})
-		if err != nil {
-			l.Error(err)
-		}
-	}
+
 	return &dm.Empty{}, nil
 }

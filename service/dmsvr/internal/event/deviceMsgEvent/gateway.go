@@ -205,7 +205,8 @@ func (l *GatewayLogic) HandleTopo(msg *deviceMsg.PublishMsg) (respMsg *msgGatewa
 				return &resp, err
 			}
 			_, err = devicemanage.NewDeviceManageServer(l.svcCtx).DeviceGatewayMultiCreate(l.ctx, &dm.DeviceGatewayMultiCreateReq{
-				IsAuthSign: true,
+				IsAuthSign:  true,
+				IsNotNotify: true,
 				Gateway: &dm.DeviceCore{
 					ProductID:  msg.ProductID,
 					DeviceName: msg.DeviceName,
@@ -224,13 +225,15 @@ func (l *GatewayLogic) HandleTopo(msg *deviceMsg.PublishMsg) (respMsg *msgGatewa
 					ProductID:  msg.ProductID,
 					DeviceName: msg.DeviceName,
 				},
-				List: ToDmDevicesCore(l.dreq.Payload.Devices),
+				IsNotNotify: true,
+				List:        ToDmDevicesCore(l.dreq.Payload.Devices),
 			})
 			if err != nil {
 				resp.AddStatus(err)
 				return &resp, err
 			}
 			resp.Payload = &msgGateway.GatewayPayload{Devices: l.dreq.Payload.Devices.GetCore()}
+			return &resp, nil
 		case deviceMsg.Found:
 			var devs []*devices.Core
 			devs, err = devicemanagelogic.FilterCanBindSubDevices(l.ctx, l.svcCtx, &devices.Core{

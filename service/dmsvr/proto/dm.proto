@@ -926,6 +926,7 @@ message DeviceGatewaySign{
 
 message DeviceGatewayMultiCreateReq{
   DeviceCore gateway = 1;//
+  bool isNotNotify =2;//不通知网关设备状态做了调整
   bool isAuthSign = 3;//是否校验设备签名
   repeated DeviceGatewayBindDevice list = 4;
 }
@@ -944,6 +945,7 @@ message DeviceGatewayIndexResp{
 
 message DeviceGatewayMultiSaveReq{
   DeviceCore gateway = 1;
+  bool isNotNotify =2;//不通知网关设备状态做了调整
   repeated DeviceCore list = 3;
 }
 message GatewayCanBindIndexReq{
