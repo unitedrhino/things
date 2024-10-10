@@ -7,7 +7,7 @@ RUN cd ./service/apisvr && go mod tidy && go build -tags no_k8s -ldflags="-s -w"
 
 
 FROM registry.cn-qingdao.aliyuncs.com/ithings/alpine:3.20
-LABEL homepage="https://github.com/i-Things/iThings"
+LABEL homepage="https://gitee.com/unitedrhino"
 ENV TZ Asia/Shanghai
 RUN apk add tzdata
 

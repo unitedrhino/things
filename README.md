@@ -1,6 +1,6 @@
 
 # 产品概述
-**iThings** 是一款基于 Go 语言开发的商业级 SaaS 云原生微服务物联网平台，致力于帮助企业快速构建自己的物联网应用，实现数字化转型。  
+**联犀** 是一款基于 Go 语言开发的商业级 SaaS 云原生微服务物联网平台，致力于帮助企业快速构建自己的物联网应用，实现数字化转型。  
 [文档](http://doc.ithings.net.cn/)
 ## 技术优势
 - **高性能**：采用 Go 语言和高性能组件（如 emqx, nats, tdengine），结合 gozero 微服务框架，确保服务的稳定性与性能。
@@ -9,13 +9,13 @@
 - **易集成**：支持通过 HTTP, gRPC 或直接集成，同时兼容 MySQL 和 PostgreSQL，实现无缝集成。
 
 ## 开源社区
-- **GitHub**: [iThings GitHub](https://github.com/i-Things/iThings)
-- **Gitee**: [iThings Gitee](https://gitee.com/i-Things/iThings)
+- **GitHub**: [联犀 GitHub](https://github.com/unitedrhino)
+- **Gitee**: [联犀 Gitee](https://gitee.com/unitedrhino)
 
 # 产品架构
-iThings 物联网平台作为物联网架构中的关键中介，实现设备与应用层的高效联动。它不仅向下管理物联网设备，完成数据的收集与存储，而且向上为开发者和集成商提供统一的数据接口和工具，加速物联网解决方案的开发和部署。
+联犀物联网平台作为物联网架构中的关键中介，实现设备与应用层的高效联动。它不仅向下管理物联网设备，完成数据的收集与存储，而且向上为开发者和集成商提供统一的数据接口和工具，加速物联网解决方案的开发和部署。
 
-通过 HTTP, gRPC 应用厂商可以快速将 iThings 集成到自己的系统中，实现轻量级且高效的物联网能力扩展。
+通过 HTTP, gRPC 应用厂商可以快速将 联犀 集成到自己的系统中，实现轻量级且高效的物联网能力扩展。
 <img style="width:300px;" src="./doc/assets/部署架构图.png">
 
 ## 产品价值
@@ -36,7 +36,7 @@ iThings 物联网平台作为物联网架构中的关键中介，实现设备与
 - **多租户多项目多应用**：支持低成本开发应用，便于多企业共享使用。
 - **应用支撑**：提供 HTTP, gRPC 接口，简化物联网解决方案开发，缩短上市周期，节省研发时间和成本。
 - **自主可控**：支持私有云、公有云、边缘部署等多种部署方式。
-- **快速开发及维护**：iThings 通过简化的接入流程和模块化开发，优化了物联网平台的开发体验。它提供了商业级小程序和 App 模板，允许快速上线，同时支持多租户架构以降低维护成本，并具备灵活的扩展能力以应对设备数量增长。
+- **快速开发及维护**：联犀 通过简化的接入流程和模块化开发，优化了物联网平台的开发体验。它提供了商业级小程序和 App 模板，允许快速上线，同时支持多租户架构以降低维护成本，并具备灵活的扩展能力以应对设备数量增长。
 
 ### 物联网模块
 
@@ -71,11 +71,6 @@ iThings 物联网平台作为物联网架构中的关键中介，实现设备与
   <img src="https://contributors-img.web.app/image?repo=i-Things/iThings" />
 </a>
 
-### 前端
-
-<a href="https://github.com/i-Things/iThings-admin-react/graphs/contributors">
-  <img src="https://contributors-img.web.app/image?repo=i-Things/iThings-admin-react" />
-</a>
 
 ## 社区
 
@@ -87,7 +82,7 @@ iThings 物联网平台作为物联网架构中的关键中介，实现设备与
 
 ## 赞赏
 
-- 如果iThings对你有帮助或者有启发,欢迎赞赏,这是对我们的认可及动力
+- 如果联犀对你有帮助或者有启发,欢迎赞赏,这是对我们的认可及动力
 - <img style="width: 300px;" src="./doc/assets/微信赞赏码.jpg">
 
 ## 收藏
