@@ -237,6 +237,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 		return true
 	})
 	if err != nil {
+		l.Error(err)
 		return nil, errors.Fmt(err).WithMsg("指令发送失败")
 	}
 

@@ -56,8 +56,6 @@ func (l *PropertyControlMultiSendLogic) MultiSendOneProductProperty(in *dm.Prope
 		wg.Add(1)
 		utils.Go(l.ctx, func() {
 			defer wg.Done()
-			logx.Error("开始1")
-			defer logx.Error("结束1")
 			ret, err := sigSend.PropertyControlSend(&dm.PropertyControlSendReq{
 				ProductID:   in.ProductID,
 				DeviceName:  v,

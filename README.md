@@ -9,8 +9,8 @@
 - **易集成**：支持通过 HTTP, gRPC 或直接集成，同时兼容 MySQL 和 PostgreSQL，实现无缝集成。
 
 ## 开源社区
-- **GitHub**: [联犀 GitHub](https://github.com/unitedrhino)
-- **Gitee**: [联犀 Gitee](https://gitee.com/unitedrhino)
+- **GitHub**: [联犀 GitHub](https://github.com/unitedrhino/things)
+- **Gitee**: [联犀 Gitee](https://gitee.com/unitedrhino/things)
 
 # 产品架构
 联犀物联网平台作为物联网架构中的关键中介，实现设备与应用层的高效联动。它不仅向下管理物联网设备，完成数据的收集与存储，而且向上为开发者和集成商提供统一的数据接口和工具，加速物联网解决方案的开发和部署。
@@ -67,8 +67,8 @@
 
 ### 后端
 
-<a href="https://github.com/i-Things/iThings/graphs/contributors">
-  <img src="https://contributors-img.web.app/image?repo=i-Things/iThings" />
+<a href="https://github.com/unitedrhino/things/graphs/contributors">
+  <img src="https://contributors-img.web.app/image?repo=unitedrhino/things" />
 </a>
 
 
@@ -79,11 +79,6 @@
 - 微信二维码
 - <img style="width: 300px;" src="./doc/assets/微信二维码.jpg">
 
-## 赞赏
-
-- 如果联犀对你有帮助或者有启发,欢迎赞赏,这是对我们的认可及动力
-- <img style="width: 300px;" src="./doc/assets/微信赞赏码.jpg">
-
 ## 收藏
 
-<img src="https://starchart.cc/i-Things/iThings.svg">
+<img src="https://starchart.cc/unitedrhino/things.svg">
