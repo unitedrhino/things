@@ -381,7 +381,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 func TimerInit(svcCtx *svc.ServiceContext) {
 	ctx := context.Background()
 	_, err := svcCtx.TimedM.TaskInfoCreate(ctx, &timedmanage.TaskInfo{
-		GroupCode: def.TimedIThingsQueueGroupCode,                                              //组编码
+		GroupCode: def.TimedUnitedRhinoQueueGroupCode,                                          //组编码
 		Type:      1,                                                                           //任务类型 1 定时任务 2 延时任务
 		Name:      "iThings ota升级定时任务",                                                         // 任务名称
 		Code:      "iThingsOtaDeviceUpgradePush",                                               //任务编码
@@ -394,7 +394,7 @@ func TimerInit(svcCtx *svc.ServiceContext) {
 		logx.Must(err)
 	}
 	_, err = svcCtx.TimedM.TaskInfoCreate(ctx, &timedmanage.TaskInfo{
-		GroupCode: def.TimedIThingsQueueGroupCode,                                                  //组编码
+		GroupCode: def.TimedUnitedRhinoQueueGroupCode,                                              //组编码
 		Type:      1,                                                                               //任务类型 1 定时任务 2 延时任务
 		Name:      "iThings 设备在线状态改变处理",                                                            // 任务名称
 		Code:      "dmDeviceOnlineStatusChange",                                                    //任务编码
@@ -407,7 +407,7 @@ func TimerInit(svcCtx *svc.ServiceContext) {
 		logx.Must(err)
 	}
 	_, err = svcCtx.TimedM.TaskInfoCreate(ctx, &timedmanage.TaskInfo{
-		GroupCode: def.TimedIThingsQueueGroupCode,                                              //组编码
+		GroupCode: def.TimedUnitedRhinoQueueGroupCode,                                          //组编码
 		Type:      1,                                                                           //任务类型 1 定时任务 2 延时任务
 		Name:      "iThings 设备半小时统计",                                                           // 任务名称
 		Code:      "dmDeviceStaticHalfHour",                                                    //任务编码

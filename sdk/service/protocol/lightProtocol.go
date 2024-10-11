@@ -170,7 +170,7 @@ func (p *LightProtocol) RegisterTimerHandler(f func(ctx context.Context, t time.
 	ctx := context.Background()
 	p.taskCreateOnce.Do(func() {
 		_, err := p.TimedM.TaskInfoCreate(ctx, &timedmanage.TaskInfo{
-			GroupCode: def.TimedIThingsQueueGroupCode,                                //组编码
+			GroupCode: def.TimedUnitedRhinoQueueGroupCode,                            //组编码
 			Type:      1,                                                             //任务类型 1 定时任务 2 延时任务
 			Name:      fmt.Sprintf("自定义协议-%s-定时任务-数据同步", p.Pi.Name),                  // 任务名称
 			Code:      p.genCode(),                                                   //任务编码
@@ -226,7 +226,7 @@ func (p *LightProtocol) GetProductID(productID string) string {
 	return p.ProductIDMap[productID]
 }
 
-func (p *LightProtocol) GetIThingsProductIDs() []string {
+func (p *LightProtocol) GetUnitedRhinoProductIDs() []string {
 	p.ProductIDMapMutex.RLock()
 	defer p.ProductIDMapMutex.RUnlock()
 	return p.UnitedRhinoProductIDs

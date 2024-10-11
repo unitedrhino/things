@@ -215,7 +215,7 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 	})
 	if dmOtaJob.Status == msgOta.JobStatusPlanned {
 		_, err := l.svcCtx.TimedM.TaskSend(l.ctx, &timedjob.TaskSendReq{
-			GroupCode: def.TimedIThingsQueueGroupCode,
+			GroupCode: def.TimedUnitedRhinoQueueGroupCode,
 			Code:      "iThingsDmOtaJobDelayRun",
 			Option: &timedjob.TaskSendOption{
 				ProcessIn: dmOtaJob.Static.ScheduleTime,

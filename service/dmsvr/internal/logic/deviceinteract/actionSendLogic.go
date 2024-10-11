@@ -137,7 +137,7 @@ func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (ret *dm.ActionSendRe
 		if in.Option != nil {
 			payload, _ := json.Marshal(reqMsg)
 			_, err := l.svcCtx.TimedM.TaskSend(l.ctx, &timedjob.TaskSendReq{
-				GroupCode: def.TimedIThingsQueueGroupCode,
+				GroupCode: def.TimedUnitedRhinoQueueGroupCode,
 				Code:      "disvr-action-check-delay",
 				Option: &timedjob.TaskSendOption{
 					ProcessIn: in.Option.RequestTimeout,

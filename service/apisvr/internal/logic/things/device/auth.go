@@ -27,7 +27,7 @@ func Init(svcCtx *svc.ServiceContext) {
 	utils.Go(ctx, func() {
 		ticket := time.NewTicker(time.Minute)
 		run := func() {
-			pi, err := svcCtx.ProtocolM.ProtocolInfoIndex(ctx, &dm.ProtocolInfoIndexReq{TransProtocol: def.ProtocolMqtt, NotCodes: []string{def.ProtocolCodeIThings}})
+			pi, err := svcCtx.ProtocolM.ProtocolInfoIndex(ctx, &dm.ProtocolInfoIndexReq{TransProtocol: def.ProtocolMqtt, NotCodes: []string{def.ProtocolCodeUnitedRhino}})
 			if err != nil {
 				logx.WithContext(ctx).Error(err)
 				return

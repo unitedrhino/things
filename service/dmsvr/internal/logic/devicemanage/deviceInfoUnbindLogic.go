@@ -117,5 +117,27 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceCore) (*dm.Empty, 
 	if err != nil {
 		l.Error(err)
 	}
+	if di.DeviceType == def.DeviceTypeGateway { //网关类型的需要解绑子设备
+		ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
+			subs, err := relationDB.NewGatewayDeviceRepo(ctx).FindByFilter(l.ctx, relationDB.GatewayDeviceFilter{Gateway: &devices.Core{
+				ProductID:  di.ProductID,
+				DeviceName: di.DeviceName,
+			}}, nil)
+			if err != nil {
+				logx.WithContext(ctx).Error(err)
+				return
+			}
+			for _, sub := range subs {
+				_, err := NewDeviceInfoUnbindLogic(ctx, l.svcCtx).DeviceInfoUnbind(&dm.DeviceCore{
+					ProductID:  sub.ProductID,
+					DeviceName: sub.DeviceName,
+				})
+				if err != nil {
+					logx.WithContext(ctx).Error(err)
+					continue
+				}
+			}
+		})
+	}
 	return &dm.Empty{}, err
 }

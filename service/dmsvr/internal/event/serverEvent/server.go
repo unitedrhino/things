@@ -200,7 +200,7 @@ func (l *ServerHandle) ActionCheck(in *deviceMsg.PublishMsg) error {
 		l.Errorf("TaskSend err:%v", err)
 	}
 	_, err = l.svcCtx.TimedM.TaskSend(l.ctx, &timedjob.TaskSendReq{
-		GroupCode: def.TimedIThingsQueueGroupCode,
+		GroupCode: def.TimedUnitedRhinoQueueGroupCode,
 		Code:      "disvr-action-check-delay",
 		Option: &timedjob.TaskSendOption{
 			ProcessIn: option.RetryInterval,

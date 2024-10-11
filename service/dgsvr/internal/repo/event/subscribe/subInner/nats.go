@@ -32,7 +32,7 @@ func newNatsClient(conf conf.EventConf, nodeID int64) (SubInner, error) {
 }
 
 func (n *NatsClient) SubToDevMsg(handle Handle) error {
-	topic := fmt.Sprintf(topics.DeviceDownAll, def.ProtocolCodeIThings)
+	topic := fmt.Sprintf(topics.DeviceDownAll, def.ProtocolCodeUnitedRhino)
 	_, err := n.client.QueueSubscribe(topic, ThingsDDDeliverGroup,
 		func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
 			//给设备回包之前，将链路信息span推送至jaeger

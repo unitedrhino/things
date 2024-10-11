@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/domain/deviceAuth"
@@ -94,7 +95,7 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-	_, err = NewDeviceInfoMultiUpdateLogic(l.ctx, l.svcCtx).DeviceInfoMultiUpdate(&dm.DeviceInfoMultiUpdateReq{
+	_, err = NewDeviceInfoMultiUpdateLogic(ctxs.WithProjectID(l.ctx, gd.ProjectID), l.svcCtx).DeviceInfoMultiUpdate(&dm.DeviceInfoMultiUpdateReq{
 		Devices: utils.CopySlice[dm.DeviceCore](devicesDos),
 		AreaID:  gd.AreaID,
 	})

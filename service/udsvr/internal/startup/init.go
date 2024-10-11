@@ -153,7 +153,7 @@ func TimerInit(svcCtx *svc.ServiceContext) {
 	ctx := context.Background()
 	{
 		_, err := svcCtx.TimedM.TaskInfoCreate(ctx, &timedmanage.TaskInfo{
-			GroupCode: def.TimedIThingsQueueGroupCode,                                   //组编码
+			GroupCode: def.TimedUnitedRhinoQueueGroupCode,                               //组编码
 			Type:      1,                                                                //任务类型 1 定时任务 2 延时任务
 			Name:      "iThings规则引擎定时任务",                                                // 任务名称
 			Code:      "iThingsRuleTimer",                                               //任务编码
@@ -168,7 +168,7 @@ func TimerInit(svcCtx *svc.ServiceContext) {
 	}
 	{
 		_, err := svcCtx.TimedM.TaskInfoCreate(ctx, &timedmanage.TaskInfo{
-			GroupCode: def.TimedIThingsQueueGroupCode,                                             //组编码
+			GroupCode: def.TimedUnitedRhinoQueueGroupCode,                                         //组编码
 			Type:      1,                                                                          //任务类型 1 定时任务 2 延时任务
 			Name:      "iThings规则引擎定时任务10分钟",                                                      // 任务名称
 			Code:      "UdRuleTimerTenMinutes",                                                    //任务编码

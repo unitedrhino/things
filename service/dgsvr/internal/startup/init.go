@@ -31,7 +31,7 @@ func PostInit(svcCtx *svc.ServiceContext) {
 	dl, err := pubDev.NewPubDev(svcCtx.Config.DevLink)
 	logx.Must(err)
 
-	il, err := pubInner.NewPubInner(svcCtx.Config.Event, def.ProtocolCodeIThings, svcCtx.NodeID)
+	il, err := pubInner.NewPubInner(svcCtx.Config.Event, def.ProtocolCodeUnitedRhino, svcCtx.NodeID)
 	logx.Must(err)
 
 	svcCtx.PubDev = dl
@@ -75,7 +75,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 func TimerInit(svcCtx *svc.ServiceContext) {
 	ctx := context.Background()
 	_, err := svcCtx.TimedM.TaskInfoCreate(ctx, &timedmanage.TaskInfo{
-		GroupCode: def.TimedIThingsQueueGroupCode,                                     //组编码
+		GroupCode: def.TimedUnitedRhinoQueueGroupCode,                                 //组编码
 		Type:      1,                                                                  //任务类型 1 定时任务 2 延时任务
 		Name:      "iThings协议网关定时处理",                                                  // 任务名称
 		Code:      "iThingsDgOnlineTimer",                                             //任务编码

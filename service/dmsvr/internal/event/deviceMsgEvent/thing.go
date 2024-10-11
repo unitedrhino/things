@@ -73,7 +73,7 @@ func (l *ThingLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) 
 		Data: data,
 	}
 	if msg.ProtocolCode == "" {
-		msg.ProtocolCode = def.ProtocolCodeIThings
+		msg.ProtocolCode = def.ProtocolCodeUnitedRhino
 	}
 	return &deviceMsg.PublishMsg{
 		Handle:       msg.Handle,

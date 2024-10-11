@@ -27,7 +27,7 @@ func newNatsClient(fast *eventBus.FastEvent) (*NatsClient, error) {
 func (n *NatsClient) PublishToDev(ctx context.Context, respMsg *deviceMsg.PublishMsg) error {
 	startTime := time.Now()
 	if respMsg.ProtocolCode == "" {
-		respMsg.ProtocolCode = def.ProtocolCodeIThings
+		respMsg.ProtocolCode = def.ProtocolCodeUnitedRhino
 	}
 	defer func() {
 		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).

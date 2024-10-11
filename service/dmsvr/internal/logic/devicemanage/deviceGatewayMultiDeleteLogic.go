@@ -57,7 +57,7 @@ func (l *DeviceGatewayMultiDeleteLogic) DeviceGatewayMultiDelete(in *dm.DeviceGa
 	if len(list) != len(devicesDos) {
 		return &dm.Empty{}, errors.Permissions.AddMsg("有子设备未挂载到该网关下")
 	}
-	_, err = NewDeviceInfoMultiUpdateLogic(ctxs.WithRoot(l.ctx), l.svcCtx).DeviceInfoMultiUpdate(&dm.DeviceInfoMultiUpdateReq{
+	_, err = NewDeviceInfoMultiUpdateLogic(ctxs.WithProjectID(l.ctx, def.NotClassified), l.svcCtx).DeviceInfoMultiUpdate(&dm.DeviceInfoMultiUpdateReq{
 		Devices: in.List,
 		AreaID:  def.NotClassified,
 	})
