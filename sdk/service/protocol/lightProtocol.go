@@ -37,12 +37,12 @@ type LightSvrClient struct {
 }
 
 type LightProtocol struct {
-	FastEvent         *eventBus.FastEvent
-	Pi                *dm.ProtocolInfo
-	ServerName        string
-	ProductIDMap      map[string]string //key 是外部的产品ID,value是内部的产品ID
-	IThingsProductIDs []string          //iThings 的产品ID列表
-	ProductIDMapMutex sync.RWMutex
+	FastEvent             *eventBus.FastEvent
+	Pi                    *dm.ProtocolInfo
+	ServerName            string
+	ProductIDMap          map[string]string //key 是外部的产品ID,value是内部的产品ID
+	UnitedRhinoProductIDs []string          //iThings 的产品ID列表
+	ProductIDMapMutex     sync.RWMutex
 	LightSvrClient
 	ThirdProductIDFieldName devices.ProtocolKey
 	taskCreateOnce          sync.Once
@@ -205,13 +205,13 @@ func (p *LightProtocol) RegisterProductIDSync() error {
 		p.ProductIDMapMutex.Lock()
 		defer p.ProductIDMapMutex.Unlock()
 		p.ProductIDMap = map[string]string{}
-		p.IThingsProductIDs = nil
+		p.UnitedRhinoProductIDs = nil
 		for _, pi := range pis.List {
 			id := pi.ProtocolConf[p.ThirdProductIDFieldName]
 			if id == "" {
 				continue
 			}
-			p.IThingsProductIDs = append(p.IThingsProductIDs, pi.ProductID)
+			p.UnitedRhinoProductIDs = append(p.UnitedRhinoProductIDs, pi.ProductID)
 			p.ProductIDMap[id] = pi.ProductID
 		}
 		return nil
@@ -219,7 +219,7 @@ func (p *LightProtocol) RegisterProductIDSync() error {
 	return err
 }
 
-// 通过外部的产品iD查询iThings的产品iD
+// 通过外部的产品iD查询联犀的产品iD
 func (p *LightProtocol) GetProductID(productID string) string {
 	p.ProductIDMapMutex.RLock()
 	defer p.ProductIDMapMutex.RUnlock()
@@ -229,5 +229,5 @@ func (p *LightProtocol) GetProductID(productID string) string {
 func (p *LightProtocol) GetIThingsProductIDs() []string {
 	p.ProductIDMapMutex.RLock()
 	defer p.ProductIDMapMutex.RUnlock()
-	return p.IThingsProductIDs
+	return p.UnitedRhinoProductIDs
 }

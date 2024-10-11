@@ -75,7 +75,6 @@
 ## 社区
 
 - 微信(加我拉微信群): `godLei6` (需备注“来自github”)
-- QQ群(需备注“来自github”): <a href="https://jq.qq.com/?_wv=1027&k=1J4ZL7mn">776725046</a>
 - [官网](http://doc.ithings.net.cn/)
 - 微信二维码
 - <img style="width: 300px;" src="./doc/assets/微信二维码.jpg">

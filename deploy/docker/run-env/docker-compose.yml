@@ -1,7 +1,7 @@
 version: '3.2'
 # Network
 networks:
-  ithings_env_net:
+  unitedrhino_env_net:
     ipam:
       config:
         - subnet: 172.20.0.0/16
@@ -23,7 +23,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      ithings_env_net:
+      unitedrhino_env_net:
         ipv4_address: 172.20.0.2
 
   etcd:
@@ -47,7 +47,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      ithings_env_net:
+      unitedrhino_env_net:
         ipv4_address: 172.20.0.3
 
   mariadb:
@@ -68,7 +68,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      ithings_env_net:
+      unitedrhino_env_net:
         ipv4_address: 172.20.0.4
 
   redis:
@@ -84,7 +84,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      ithings_env_net:
+      unitedrhino_env_net:
         ipv4_address: 172.20.0.5
 
   tdengine:
@@ -104,7 +104,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      ithings_env_net:
+      unitedrhino_env_net:
         ipv4_address: 172.20.0.6
 
   emqx:
@@ -129,7 +129,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      ithings_env_net:
+      unitedrhino_env_net:
         ipv4_address: 172.20.0.7
   minio:
     image: minio/minio:latest
@@ -152,7 +152,7 @@ services:
 #      - /docker/minio/data:/data               #映射当前目录下的data目录至容器内/data目录
 #      - /docker/minio/config:/root/.minio/     #映射配置目录
     networks:
-      ithings_env_net:
+      unitedrhino_env_net:
         ipv4_address: 172.20.0.10
   init-db:
     image: alpine:3.20
@@ -188,5 +188,5 @@ services:
 #        max-file: "10"
 #      driver: json-file
 #    networks:
-#      ithings_env_net:
+#      unitedrhino_env_net:
 #        ipv4_address: 172.20.0.11

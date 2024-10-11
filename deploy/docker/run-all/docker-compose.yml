@@ -1,21 +1,21 @@
 version: '3.2'
 # Network
 networks:
-  ithings_net:
+  unitedrhino_net:
     ipam:
       config:
         - subnet: 172.19.0.0/16
 
 services:
   things:
-    image: registry.cn-qingdao.aliyuncs.com/ithings/things:latest
+    image: registry.cn-qingdao.aliyuncs.com/unitedrhino/things:latest
     container_name: things
     hostname: things
     restart: always
     ports:
       - "7788:7788"
     volumes:
-      - ../conf/things/etc:/ithings/etc
+      - ../conf/things/etc:/unitedrhino/etc
     depends_on:
       - tdengine
       - nats-server
@@ -30,10 +30,10 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      ithings_net:
+      unitedrhino_net:
         ipv4_address: 172.19.0.8
   core:
-    image: registry.cn-qingdao.aliyuncs.com/ithings/core:latest
+    image: registry.cn-qingdao.aliyuncs.com/unitedrhino/core:latest
     container_name: core
     hostname: core
     restart: always
@@ -47,14 +47,14 @@ services:
       - redis
       - emqx
     volumes:
-      - ../conf/core/etc:/ithings/etc
+      - ../conf/core/etc:/unitedrhino/etc
     logging:
       options:
         max-size: "50M"
         max-file: "10"
       driver: json-file
     networks:
-      ithings_net:
+      unitedrhino_net:
         ipv4_address: 172.19.0.22
   nats-server:
     image: nats:latest
@@ -72,7 +72,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      ithings_net:
+      unitedrhino_net:
         ipv4_address: 172.19.0.2
 
   etcd:
@@ -96,7 +96,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      ithings_net:
+      unitedrhino_net:
         ipv4_address: 172.19.0.3
 
   mariadb:
@@ -117,7 +117,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      ithings_net:
+      unitedrhino_net:
         ipv4_address: 172.19.0.4
 
   redis:
@@ -133,7 +133,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      ithings_net:
+      unitedrhino_net:
         ipv4_address: 172.19.0.5
 
   tdengine:
@@ -153,7 +153,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      ithings_net:
+      unitedrhino_net:
         ipv4_address: 172.19.0.6
   emqx:
     image: emqx/emqx:5.4.0
@@ -178,7 +178,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      ithings_net:
+      unitedrhino_net:
         ipv4_address: 172.19.0.7
 
   minio:
@@ -202,7 +202,7 @@ services:
 #      - /docker/minio/data:/data               #映射当前目录下的data目录至容器内/data目录
 #      - /docker/minio/config:/root/.minio/     #映射配置目录
     networks:
-      ithings_net:
+      unitedrhino_net:
         ipv4_address: 172.19.0.10
 #
 #  zlmediakit:
@@ -228,5 +228,5 @@ services:
 #        max-file: "10"
 #      driver: json-file
 #    networks:
-#      ithings_net:
+#      unitedrhino_net:
 #        ipv4_address: 172.19.0.11
