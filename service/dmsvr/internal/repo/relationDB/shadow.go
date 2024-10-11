@@ -42,9 +42,9 @@ func (p *ShadowRepo) fmtFilter(ctx context.Context, f shadow.Filter) *gorm.DB {
 	}
 	if f.UpdatedDeviceStatus != 0 {
 		if f.UpdatedDeviceStatus == shadow.UpdatedDevice {
-			db = db.Where("updatedDeviceTime is not null")
+			db = db.Where("updated_device_time is not null")
 		} else {
-			db = db.Where("updatedDeviceTime is null")
+			db = db.Where("updated_device_time is null")
 		}
 	}
 	return db
