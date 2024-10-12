@@ -7,7 +7,7 @@
 - **云原生可扩展**：一套代码支持 k8s, docker, 微服务及单体模式部署，便于业务架构的灵活切换。
 - **易部署**：一键安装和运行，简化部署流程。
 - **易集成**：支持通过 HTTP, gRPC 或直接集成，同时兼容 MySQL 和 PostgreSQL，实现无缝集成。
-
+    
 ## 开源社区
 - **GitHub**: [联犀 GitHub](https://github.com/unitedrhino/things)
 - **Gitee**: [联犀 Gitee](https://gitee.com/unitedrhino/things)
