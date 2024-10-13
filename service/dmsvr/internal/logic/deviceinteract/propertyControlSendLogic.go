@@ -145,7 +145,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 	}
 	if in.ShadowControl == shadow.ControlOnlyCloud {
 		//插入多条设备物模型属性数据
-		err = l.svcCtx.SchemaManaRepo.InsertPropertiesData(l.ctx, l.model, in.ProductID, in.DeviceName, params, time.Now())
+		err = l.svcCtx.SchemaManaRepo.InsertPropertiesData(l.ctx, l.model, in.ProductID, in.DeviceName, params, time.Now(), msgThing.Optional{})
 		if err != nil {
 			l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
 			return nil, err
@@ -177,7 +177,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 	}()
 	if in.ShadowControl == shadow.ControlOnlyCloudWithLog {
 		//插入多条设备物模型属性数据
-		err = l.svcCtx.SchemaManaRepo.InsertPropertiesData(l.ctx, l.model, in.ProductID, in.DeviceName, params, time.Now())
+		err = l.svcCtx.SchemaManaRepo.InsertPropertiesData(l.ctx, l.model, in.ProductID, in.DeviceName, params, time.Now(), msgThing.Optional{})
 		if err != nil {
 			l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
 			return nil, err

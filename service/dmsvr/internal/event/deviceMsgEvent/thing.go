@@ -218,7 +218,7 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 		})
 
 		//插入多条设备物模型属性数据
-		err = l.repo.InsertPropertiesData(l.ctx, t, device.ProductID, device.DeviceName, tp.Params, timeStamp)
+		err = l.repo.InsertPropertiesData(l.ctx, t, device.ProductID, device.DeviceName, tp.Params, timeStamp, msgThing.Optional{})
 		if err != nil {
 			l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
 			return err
@@ -322,7 +322,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 	})
 
 	//插入多条设备物模型属性数据
-	err = l.repo.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, tp, timeStamp)
+	err = l.repo.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, tp, timeStamp, msgThing.Optional{})
 	if err != nil {
 		l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
 		return l.DeviceResp(msg, errors.Database.AddDetail(err), nil), err
@@ -460,7 +460,7 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 		}
 		if len(shadows) != 0 {
 			//插入多条设备物模型属性数据
-			err = l.repo.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, shadow.ToValues(shadows, l.schema.Property), time.Now())
+			err = l.repo.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, shadow.ToValues(shadows, l.schema.Property), time.Now(), msgThing.Optional{Sync: true})
 			if err != nil {
 				l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
 				return l.DeviceResp(msg, errors.Database.AddDetail(err), nil), err

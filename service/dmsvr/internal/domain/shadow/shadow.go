@@ -15,6 +15,7 @@ const (
 	ControlOnly             = 2 //如果有设备影子只修改影子,没有的也不下发
 	ControlOnlyCloud        = 3 //只修改云端的值
 	ControlOnlyCloudWithLog = 4 //只修改云端的值并记录操作日志
+	ControlNoLog            = 5 //只实时下发,不在线报错,且不记录日志
 )
 const (
 	UpdatedDevice   = 1 //已经更新到过设备
