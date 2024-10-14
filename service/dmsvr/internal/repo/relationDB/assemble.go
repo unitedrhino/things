@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/domain/schema"
+	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/shadow"
 )
 
@@ -219,8 +220,8 @@ func ToShadowPo(info *shadow.Info) *DmDeviceShadow {
 		ID:                info.ID,
 		ProductID:         info.ProductID,
 		DeviceName:        info.DeviceName,
+		UpdatedDeviceTime: utils.TimeToNullTime(info.UpdatedDeviceTime),
 		DataID:            info.DataID,
-		UpdatedDeviceTime: info.UpdatedDeviceTime,
 		Value:             info.Value,
 	}
 }
@@ -231,7 +232,7 @@ func ToShadowDo(in *DmDeviceShadow) *shadow.Info {
 		DeviceName:        in.DeviceName,
 		DataID:            in.DataID,
 		Value:             in.Value,
-		UpdatedDeviceTime: in.UpdatedDeviceTime,
+		UpdatedDeviceTime: utils.NullTimeToTime(in.UpdatedDeviceTime),
 		CreatedTime:       in.CreatedTime,
 		UpdatedTime:       in.UpdatedTime,
 	}

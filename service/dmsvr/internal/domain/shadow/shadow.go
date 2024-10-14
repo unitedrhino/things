@@ -80,6 +80,9 @@ func ToValues(in []*Info, property schema.PropertyMap) map[string]msgThing.Param
 		if p == nil {
 			continue
 		}
+		if len(v.Value) > 2 && v.Value[0] == '"' && v.Value[len(v.Value)-1] == '"' { //转换的时候可能会带上双引号,需要去掉
+			v.Value = v.Value[1 : len(v.Value)-1]
+		}
 		val, err := p.Define.FmtValue(v.Value)
 		if err != nil {
 			continue
