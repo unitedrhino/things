@@ -80,6 +80,9 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 		return &dm.Empty{}, nil
 	}
 	for _, di := range dis {
+		if di.ProjectID <= def.NotClassified && uc.IsAdmin {
+			continue
+		}
 		pi, err := l.svcCtx.ProjectCache.GetData(l.ctx, int64(di.ProjectID))
 		if err != nil {
 			return nil, err
