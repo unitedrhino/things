@@ -95,9 +95,11 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-	_, err = NewDeviceInfoMultiUpdateLogic(ctxs.WithProjectID(l.ctx, gd.ProjectID), l.svcCtx).DeviceInfoMultiUpdate(&dm.DeviceInfoMultiUpdateReq{
-		Devices: utils.CopySlice[dm.DeviceCore](devicesDos),
-		AreaID:  gd.AreaID,
+	_, err = NewDeviceTransferLogic(ctxs.WithRoot(l.ctx), l.svcCtx).DeviceTransfer(&dm.DeviceTransferReq{
+		TransferTo: DeviceTransferToProject,
+		Devices:    utils.CopySlice[dm.DeviceCore](devicesDos),
+		AreaID:     gd.AreaID,
+		ProjectID:  gd.ProjectID,
 	})
 	if err != nil {
 		l.Error(err)
