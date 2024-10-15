@@ -41,6 +41,6 @@ func (l *OtaFirmwareDeviceRetryLogic) OtaFirmwareDeviceRetry(in *dm.OtaFirmwareD
 		JobID:       in.JobID,
 		DeviceNames: in.DeviceNames,
 		Statues:     []int64{msgOta.DeviceStatusSuccess, msgOta.DeviceStatusFailure, msgOta.DeviceStatusCanceled},
-	}, map[string]interface{}{"status": msgOta.DeviceStatusQueued})
+	}, map[string]interface{}{"status": msgOta.DeviceStatusQueued, "detail": "重试待推送中"})
 	return &dm.Empty{}, err
 }
