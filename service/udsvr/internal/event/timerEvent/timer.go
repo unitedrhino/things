@@ -277,7 +277,7 @@ func (l *TimerHandle) SceneTiming() error {
 					log.Errorf("scene err:%v", err)
 					return
 				}
-				err = relationDB.NewSceneInfoRepo(ctx).UpdateWithField(ctx, relationDB.SceneInfoFilter{IDs: []int64{po.SceneID}}, map[string]any{"last_run_time": time.Now()})
+				err = relationDB.NewSceneInfoRepo(ctx).UpdateWithField(ctx, relationDB.SceneInfoFilter{IDs: []int64{po.SceneID}}, map[string]any{"last_run_time": po.LastRunTime})
 				if err != nil {
 					log.Errorf("scene err:%v", err)
 					return

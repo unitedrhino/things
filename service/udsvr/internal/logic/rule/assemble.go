@@ -6,7 +6,6 @@ import (
 	"gitee.com/unitedrhino/share/oss/common"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
-	"gitee.com/unitedrhino/things/service/udsvr/internal/domain"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/domain/scene"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/svc"
@@ -75,16 +74,12 @@ func ToSceneTriggerPo(si *scene.Info, in *scene.Trigger) *relationDB.UdSceneIfTr
 		return nil
 	}
 	now := time.Now()
-	var execAt int64
-	if in.Timer != nil {
-		execAt = in.Timer.ExecAt
-	}
 	return &relationDB.UdSceneIfTrigger{
 		SceneID: si.ID,
 		Type:    in.Type,
 		Status:  si.Status,
 		LastRunTime: sql.NullTime{
-			Time:  domain.GenLastRunTime(now, execAt),
+			Time:  in.Timer.GenLastRunTime(now),
 			Valid: true,
 		},
 		Order:     in.Order,

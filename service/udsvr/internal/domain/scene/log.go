@@ -7,6 +7,7 @@ import (
 )
 
 type Log struct {
+	ProjectID   int64        `json:"projectID,string"`
 	AreaID      int64        `json:"areaID,string"`
 	SceneID     int64        `json:"sceneID"`
 	Type        SceneType    `json:"type"`
@@ -71,7 +72,7 @@ func NewLog(scene *Info) *Log {
 	if scene == nil {
 		return nil
 	}
-	var log = Log{Type: scene.Type, AreaID: scene.AreaID, SceneID: scene.ID, Status: def.True, CreatedTime: time.Now()}
+	var log = Log{ProjectID: scene.ProjectID, Type: scene.Type, AreaID: scene.AreaID, SceneID: scene.ID, Status: def.True, CreatedTime: time.Now()}
 	if len(scene.If.Triggers) == 0 {
 		return &log
 	}
