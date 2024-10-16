@@ -17,6 +17,7 @@ const (
 	ControlOnlyCloudWithLog = 4 //只修改云端的值并记录操作日志
 	ControlNoLog            = 5 //只实时下发,不在线报错,且不记录日志
 )
+
 const (
 	UpdatedDevice   = 1 //已经更新到过设备
 	NotUpdateDevice = 2 //尚未更新到过设备
