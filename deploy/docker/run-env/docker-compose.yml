@@ -1,7 +1,7 @@
 version: '3.2'
 # Network
 networks:
-  unitedrhino_env_net:
+  unitedrhino_net:
     ipam:
       config:
         - subnet: 172.20.0.0/16
@@ -23,7 +23,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_env_net:
+      unitedrhino_net:
         ipv4_address: 172.20.0.2
 
   etcd:
@@ -37,7 +37,7 @@ services:
     environment:
       - ALLOW_NONE_AUTHENTICATION=yes # 允许不用密码登录
       - ETCD_NAME=etcd                                     # etcd 的名字
-      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd:2380  # 列出这个成员的伙伴 URL 以便通告给集群的其他成员
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://172.20.0.3:2380  # 列出这个成员的伙伴 URL 以便通告给集群的其他成员
       - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380           # 用于监听伙伴通讯的URL列表
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379         # 用于监听客户端通讯的URL列表
       - ETCD_ADVERTISE_CLIENT_URLS=http://172.20.0.3:2379        # 列出这个成员的客户端URL，通告给集群中的其他成员
@@ -47,7 +47,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_env_net:
+      unitedrhino_net:
         ipv4_address: 172.20.0.3
 
   mariadb:
@@ -68,7 +68,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_env_net:
+      unitedrhino_net:
         ipv4_address: 172.20.0.4
 
   redis:
@@ -84,7 +84,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_env_net:
+      unitedrhino_net:
         ipv4_address: 172.20.0.5
 
   tdengine:
@@ -104,7 +104,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_env_net:
+      unitedrhino_net:
         ipv4_address: 172.20.0.6
 
   emqx:
@@ -129,7 +129,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_env_net:
+      unitedrhino_net:
         ipv4_address: 172.20.0.7
   minio:
     image: minio/minio:latest
@@ -152,7 +152,7 @@ services:
 #      - /docker/minio/data:/data               #映射当前目录下的data目录至容器内/data目录
 #      - /docker/minio/config:/root/.minio/     #映射配置目录
     networks:
-      unitedrhino_env_net:
+      unitedrhino_net:
         ipv4_address: 172.20.0.10
   init-db:
     image: alpine:3.20
@@ -163,7 +163,7 @@ services:
       - ./init-db.sh:/init-db.sh
     command: /bin/sh /init-db.sh
     networks:
-      ithings_net:
+      unitedrhino_net:
         ipv4_address: 172.20.0.9
 #  zlmediakit:
 #    image: registry.cn-shenzhen.aliyuncs.com/airgens/zlmediakit:v1

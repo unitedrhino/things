@@ -5751,8 +5751,8 @@
           "type": "string"
         },
         "triggerType": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string",
+          "description": "触发类型 device:设备触发 timer:定时触发 weather:天气触发"
         },
         "productID": {
           "type": "string",
@@ -5790,6 +5790,15 @@
           "type": "integer",
           "format": "int64",
           "description": "告警记录状态（1告警中 2忽略 3正在处理 4已处理）"
+        },
+        "alarmCount": {
+          "type": "integer",
+          "format": "int64",
+          "description": "告警次数"
+        },
+        "desc": {
+          "type": "string",
+          "description": "描述"
         }
       },
       "title": "AlarmRecord",
@@ -5804,7 +5813,9 @@
         "level",
         "lastAlarm",
         "createdTime",
-        "dealStatus"
+        "dealStatus",
+        "alarmCount",
+        "desc"
       ]
     },
     "AlarmRecordDealReq": {

@@ -76,10 +76,10 @@ func (l *TimerHandle) SceneExec(ctx context.Context, do *scene.Info) {
 				SceneID:     in.Scene.ID,
 				Mode:        scene.ActionAlarmModeTrigger,
 			}
-			if trigger.Type == scene.TriggerTypeDevice && trigger.Device != nil {
-				req.ProductID = trigger.Device.ProductID
-				req.DeviceName = trigger.Device.DeviceName
-				req.DeviceAlias = trigger.Device.DeviceAlias
+			if trigger.Type == scene.TriggerTypeDevice && in.Scene.DeviceName != "" {
+				req.ProductID = in.Scene.ProductID
+				req.DeviceName = in.Scene.DeviceName
+				req.DeviceAlias = in.Scene.DeviceAlias
 			}
 			_, err := rulelogic.NewAlarmRecordCreateLogic(stores.SetIsDebug(ctx, false), l.svcCtx).
 				AlarmRecordCreate(&req)

@@ -109,6 +109,24 @@ func (p SceneIfTriggerRepo) FindByFilter(ctx context.Context, f SceneIfTriggerFi
 	return results, nil
 }
 
+func (p SceneIfTriggerRepo) FindByFilters(ctx context.Context, f []SceneIfTriggerFilter, page *stores.PageInfo) ([]*UdSceneIfTrigger, error) {
+	var results []*UdSceneIfTrigger
+	if len(f) == 0 {
+		return results, nil
+	}
+	db := p.fmtFilter(ctx, f[0]).Model(&UdSceneIfTrigger{})
+	for _, ff := range f[1:] {
+		db = db.Or(p.fmtFilter(ctx, ff))
+	}
+
+	db = page.ToGorm(db)
+	err := db.Preload("SceneInfo").Preload("SceneInfo.Actions").Find(&results).Error
+	if err != nil {
+		return nil, stores.ErrFmt(err)
+	}
+	return results, nil
+}
+
 func (p SceneIfTriggerRepo) CountByFilter(ctx context.Context, f SceneIfTriggerFilter) (size int64, err error) {
 	db := p.fmtFilter(ctx, f).Model(&UdSceneIfTrigger{})
 	err = db.Count(&size).Error

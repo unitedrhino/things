@@ -36,18 +36,18 @@ func (l *TimerHandle) SceneThingPropertyReport(in application.PropertyReport) er
 			DataID: in.Identifier,
 		},
 	}
-	var list []*relationDB.UdSceneIfTrigger
-	for _, v := range triggerF {
-		pos, err := db.FindByFilter(l.ctx, v, nil)
-		if err != nil {
-			l.Error(err)
-			return err
-		}
-		list = append(list, pos...)
+	list, err := db.FindByFilters(l.ctx, triggerF, nil)
+	if err != nil {
+		l.Error(err)
+		return err
 	}
-
+	var sceneIDSet = map[int64]struct{}{}
 	for _, v := range list {
 		var po = v
+		if _, ok := sceneIDSet[po.SceneID]; ok {
+			continue
+		}
+		sceneIDSet[po.SceneID] = struct{}{}
 		if po.SceneInfo == nil {
 			logx.WithContext(l.ctx).Errorf("trigger device not bind scene, trigger:%v", utils.Fmt(po))
 			relationDB.NewSceneIfTriggerRepo(l.ctx).Delete(l.ctx, po.ID)
@@ -55,7 +55,9 @@ func (l *TimerHandle) SceneThingPropertyReport(in application.PropertyReport) er
 		}
 		po.SceneInfo.Triggers = append(po.SceneInfo.Triggers, po)
 		do := rulelogic.PoToSceneInfoDo(po.SceneInfo)
-
+		do.DeviceName = di.DeviceName
+		do.DeviceAlias = di.DeviceAlias.GetValue()
+		do.ProductID = di.ProductID
 		ps, err := l.svcCtx.ProductSchemaCache.GetData(l.ctx, in.Device.ProductID)
 		if err != nil {
 			l.Error(err)
