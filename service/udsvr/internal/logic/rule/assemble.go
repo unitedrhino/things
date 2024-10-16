@@ -84,7 +84,7 @@ func ToSceneTriggerPo(si *scene.Info, in *scene.Trigger) *relationDB.UdSceneIfTr
 		},
 		Order:     in.Order,
 		ProjectID: stores.ProjectID(si.ProjectID),
-		AreaID:    stores.AreaID(in.AreaID),
+		AreaID:    stores.AreaID(si.AreaID),
 		Device:    ToSceneTriggerDevicePo(in.Device),
 		Timer:     ToSceneTriggerTimerPo(si, in.Timer),
 		Weather:   utils.Copy2[relationDB.UdSceneTriggerWeather](in.Weather),
