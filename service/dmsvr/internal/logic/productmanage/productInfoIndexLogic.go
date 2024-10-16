@@ -77,6 +77,9 @@ func (l *ProductInfoIndexLogic) ProductInfoIndex(in *dm.ProductInfoIndexReq) (*d
 		if err != nil {
 			return nil, err
 		}
+		if pis == nil || len(*pis) == 0 {
+			return &dm.ProductInfoIndexResp{}, nil
+		}
 		filter.ProductIDs = append(filter.ProductIDs, *pis...)
 	}
 	size, err = piDB.CountByFilter(l.ctx, filter)
