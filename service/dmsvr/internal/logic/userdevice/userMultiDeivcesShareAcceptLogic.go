@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"gitee.com/unitedrhino/share/ctxs"
+	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
@@ -38,10 +40,12 @@ func (l *UserMultiDeivcesShareAcceptLogic) UserMultiDeivcesShareAccept(in *dm.Us
 		key := fmt.Sprintf("%s_%s", d.ProductID, d.DeviceName)
 		sharedDevicesMap[key] = d.ID
 	}
+	tenantCode := ctxs.GetUserCtxNoNil(l.ctx).TenantCode
 	for _, v := range multiDevices.Device {
 		key := fmt.Sprintf("%s_%s", v.ProductID, v.DeviceName)
 		po := relationDB.DmUserDeviceShare{
 			ProjectID:         multiDevices.ProjectID,
+			TenantCode:        stores.TenantCode(tenantCode),
 			SharedUserID:      in.SharedUserID,
 			SharedUserAccount: in.SharedUserAccount,
 			ProductID:         v.ProductID,
