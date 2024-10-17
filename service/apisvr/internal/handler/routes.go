@@ -1124,10 +1124,28 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: thingsuserdeviceshare.IndexHandler(serverCtx),
 				},
 				{
+					// 接受批量分享设备
+					Method:  http.MethodPost,
+					Path:    "/multi-accept",
+					Handler: thingsuserdeviceshare.MultiAcceptHandler(serverCtx),
+				},
+				{
+					// 生成批量分享设备二维码
+					Method:  http.MethodPost,
+					Path:    "/multi-create",
+					Handler: thingsuserdeviceshare.MultiCreateHandler(serverCtx),
+				},
+				{
 					// 批量取消分享设备
 					Method:  http.MethodPost,
 					Path:    "/multi-delete",
 					Handler: thingsuserdeviceshare.MultiDeleteHandler(serverCtx),
+				},
+				{
+					// 获取批量分享的设备列表
+					Method:  http.MethodPost,
+					Path:    "/multi-index",
+					Handler: thingsuserdeviceshare.MultiIndexHandler(serverCtx),
 				},
 				{
 					// 获取分享设备详情

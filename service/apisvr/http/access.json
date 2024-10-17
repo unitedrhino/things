@@ -1766,6 +1766,16 @@
           "businessType": "add",
           "desc": "",
           "authType": "all"
+        },
+        {
+          "accessCode": "thingsUserDeviceAdd",
+          "method": "POST",
+          "route": "/api/v1/things/user/device/share/multi-create",
+          "name": "生成批量分享设备二维码",
+          "isNeedAuth": 2,
+          "businessType": "add",
+          "desc": "",
+          "authType": "all"
         }
       ],
       "authType": "all"
@@ -1840,6 +1850,16 @@
         {
           "accessCode": "thingsUserDeviceFind",
           "method": "POST",
+          "route": "/api/v1/things/user/device/share/multi-index",
+          "name": "获取批量分享的设备列表",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsUserDeviceFind",
+          "method": "POST",
           "route": "/api/v1/things/user/device/share/read",
           "name": "获取分享设备详情",
           "isNeedAuth": 2,
@@ -1864,6 +1884,26 @@
           "name": "更新分享设备信息",
           "isNeedAuth": 2,
           "businessType": "modify",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsUserDeviceOther": {
+      "name": "操作设备分享",
+      "code": "thingsUserDeviceOther",
+      "group": "用户设备",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsUserDeviceOther",
+          "method": "POST",
+          "route": "/api/v1/things/user/device/share/multi-accept",
+          "name": "接受批量分享设备",
+          "isNeedAuth": 2,
+          "businessType": "other",
           "desc": "",
           "authType": "all"
         }

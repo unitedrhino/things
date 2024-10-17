@@ -80,3 +80,21 @@ func (s *UserDeviceServer) UserDeviceTransfer(ctx context.Context, in *dm.Device
 	l := userdevicelogic.NewUserDeviceTransferLogic(ctx, s.svcCtx)
 	return l.UserDeviceTransfer(in)
 }
+
+// rpc userDeviceOtaGetVersion(UserDeviceOtaGetVersionReq)returns(userDeviceOtaGetVersionResp);
+func (s *UserDeviceServer) UserMultiDevicesShareCreate(ctx context.Context, in *dm.UserMultiDevicesShareInfo) (*dm.UserMultiDevicesShareKeyword, error) {
+	l := userdevicelogic.NewUserMultiDevicesShareCreateLogic(ctx, s.svcCtx)
+	return l.UserMultiDevicesShareCreate(in)
+}
+
+// 扫码后获取设备列表
+func (s *UserDeviceServer) UserMultiDeivcesShareIndex(ctx context.Context, in *dm.UserMultiDevicesShareKeyword) (*dm.UserMultiDevicesShareInfo, error) {
+	l := userdevicelogic.NewUserMultiDeivcesShareIndexLogic(ctx, s.svcCtx)
+	return l.UserMultiDeivcesShareIndex(in)
+}
+
+// 接受批量分享的设备
+func (s *UserDeviceServer) UserMultiDeivcesShareAccept(ctx context.Context, in *dm.UserMultiDevicesShareAcceptReq) (*dm.Empty, error) {
+	l := userdevicelogic.NewUserMultiDeivcesShareAcceptLogic(ctx, s.svcCtx)
+	return l.UserMultiDeivcesShareAccept(in)
+}

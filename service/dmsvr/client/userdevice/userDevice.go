@@ -196,6 +196,9 @@ type (
 	UserDeviceShareInfo               = dm.UserDeviceShareInfo
 	UserDeviceShareMultiDeleteReq     = dm.UserDeviceShareMultiDeleteReq
 	UserDeviceShareReadReq            = dm.UserDeviceShareReadReq
+	UserMultiDevicesShareAcceptReq    = dm.UserMultiDevicesShareAcceptReq
+	UserMultiDevicesShareInfo         = dm.UserMultiDevicesShareInfo
+	UserMultiDevicesShareKeyword      = dm.UserMultiDevicesShareKeyword
 	WithID                            = dm.WithID
 	WithIDChildren                    = dm.WithIDChildren
 	WithIDCode                        = dm.WithIDCode
@@ -220,6 +223,12 @@ type (
 		UserDeviceShareRead(ctx context.Context, in *UserDeviceShareReadReq, opts ...grpc.CallOption) (*UserDeviceShareInfo, error)
 		// 转让设备
 		UserDeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error)
+		// rpc userDeviceOtaGetVersion(UserDeviceOtaGetVersionReq)returns(userDeviceOtaGetVersionResp);
+		UserMultiDevicesShareCreate(ctx context.Context, in *UserMultiDevicesShareInfo, opts ...grpc.CallOption) (*UserMultiDevicesShareKeyword, error)
+		// 扫码后获取设备列表
+		UserMultiDeivcesShareIndex(ctx context.Context, in *UserMultiDevicesShareKeyword, opts ...grpc.CallOption) (*UserMultiDevicesShareInfo, error)
+		// 接受批量分享的设备
+		UserMultiDeivcesShareAccept(ctx context.Context, in *UserMultiDevicesShareAcceptReq, opts ...grpc.CallOption) (*Empty, error)
 	}
 
 	defaultUserDevice struct {
@@ -349,4 +358,37 @@ func (m *defaultUserDevice) UserDeviceTransfer(ctx context.Context, in *DeviceTr
 // 转让设备
 func (d *directUserDevice) UserDeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.UserDeviceTransfer(ctx, in)
+}
+
+// rpc userDeviceOtaGetVersion(UserDeviceOtaGetVersionReq)returns(userDeviceOtaGetVersionResp);
+func (m *defaultUserDevice) UserMultiDevicesShareCreate(ctx context.Context, in *UserMultiDevicesShareInfo, opts ...grpc.CallOption) (*UserMultiDevicesShareKeyword, error) {
+	client := dm.NewUserDeviceClient(m.cli.Conn())
+	return client.UserMultiDevicesShareCreate(ctx, in, opts...)
+}
+
+// rpc userDeviceOtaGetVersion(UserDeviceOtaGetVersionReq)returns(userDeviceOtaGetVersionResp);
+func (d *directUserDevice) UserMultiDevicesShareCreate(ctx context.Context, in *UserMultiDevicesShareInfo, opts ...grpc.CallOption) (*UserMultiDevicesShareKeyword, error) {
+	return d.svr.UserMultiDevicesShareCreate(ctx, in)
+}
+
+// 扫码后获取设备列表
+func (m *defaultUserDevice) UserMultiDeivcesShareIndex(ctx context.Context, in *UserMultiDevicesShareKeyword, opts ...grpc.CallOption) (*UserMultiDevicesShareInfo, error) {
+	client := dm.NewUserDeviceClient(m.cli.Conn())
+	return client.UserMultiDeivcesShareIndex(ctx, in, opts...)
+}
+
+// 扫码后获取设备列表
+func (d *directUserDevice) UserMultiDeivcesShareIndex(ctx context.Context, in *UserMultiDevicesShareKeyword, opts ...grpc.CallOption) (*UserMultiDevicesShareInfo, error) {
+	return d.svr.UserMultiDeivcesShareIndex(ctx, in)
+}
+
+// 接受批量分享的设备
+func (m *defaultUserDevice) UserMultiDeivcesShareAccept(ctx context.Context, in *UserMultiDevicesShareAcceptReq, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewUserDeviceClient(m.cli.Conn())
+	return client.UserMultiDeivcesShareAccept(ctx, in, opts...)
+}
+
+// 接受批量分享的设备
+func (d *directUserDevice) UserMultiDeivcesShareAccept(ctx context.Context, in *UserMultiDevicesShareAcceptReq, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.UserMultiDeivcesShareAccept(ctx, in)
 }

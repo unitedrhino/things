@@ -5504,6 +5504,87 @@
         ]
       }
     },
+    "/api/v1/things/user/device/share/multi-accept": {
+      "post": {
+        "summary": "接受批量分享设备",
+        "operationId": "postApiV1ThingsUserDeviceShareMulti-accept",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserMultiDevicesShareKey"
+            }
+          }
+        ],
+        "tags": [
+          "things/user/device/share",
+          "thingsUserDeviceShare"
+        ]
+      }
+    },
+    "/api/v1/things/user/device/share/multi-create": {
+      "post": {
+        "summary": "生成批量分享设备二维码",
+        "operationId": "postApiV1ThingsUserDeviceShareMulti-create",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/UserMultiDevicesShareKey"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserMultiDevicesShareInfo"
+            }
+          }
+        ],
+        "tags": [
+          "things/user/device/share",
+          "thingsUserDeviceShare"
+        ]
+      }
+    },
     "/api/v1/things/user/device/share/multi-delete": {
       "post": {
         "summary": "批量取消分享设备",
@@ -5534,6 +5615,48 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/UserDeviceShareMultiDeleteReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/user/device/share",
+          "thingsUserDeviceShare"
+        ]
+      }
+    },
+    "/api/v1/things/user/device/share/multi-index": {
+      "post": {
+        "summary": "获取批量分享的设备列表",
+        "operationId": "postApiV1ThingsUserDeviceShareMulti-index",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/UserMultiDevicesShareInfo"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserMultiDevicesShareKey"
             }
           }
         ],
@@ -12149,6 +12272,50 @@
         }
       },
       "title": "UserDeviceShareReadReq"
+    },
+    "UserMultiDevicesShareInfo": {
+      "type": "object",
+      "properties": {
+        "devices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceCore"
+          },
+          "description": "批量设备信息"
+        },
+        "authType": {
+          "type": "integer",
+          "format": "int64",
+          "description": "授权类型:1:全部授权 2:部分授权"
+        },
+        "schemaPerm": {
+          "type": "object",
+          "description": "普通功能权限 2:读写权限 3读权限"
+        },
+        "accessPerm": {
+          "type": "object",
+          "description": "系统功能权限 2:读写权限 3读权限"
+        },
+        "expTime": {
+          "type": "string",
+          "description": "到期时间"
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "UserMultiDevicesShareInfo"
+    },
+    "UserMultiDevicesShareKey": {
+      "type": "object",
+      "properties": {
+        "shareKey": {
+          "type": "string",
+          "description": "分享后的用于生成二维码的字符串"
+        }
+      },
+      "title": "UserMultiDevicesShareKey"
     },
     "WithID": {
       "type": "object",

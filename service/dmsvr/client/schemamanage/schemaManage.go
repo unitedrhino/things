@@ -196,6 +196,9 @@ type (
 	UserDeviceShareInfo               = dm.UserDeviceShareInfo
 	UserDeviceShareMultiDeleteReq     = dm.UserDeviceShareMultiDeleteReq
 	UserDeviceShareReadReq            = dm.UserDeviceShareReadReq
+	UserMultiDevicesShareAcceptReq    = dm.UserMultiDevicesShareAcceptReq
+	UserMultiDevicesShareInfo         = dm.UserMultiDevicesShareInfo
+	UserMultiDevicesShareKeyword      = dm.UserMultiDevicesShareKeyword
 	WithID                            = dm.WithID
 	WithIDChildren                    = dm.WithIDChildren
 	WithIDCode                        = dm.WithIDCode

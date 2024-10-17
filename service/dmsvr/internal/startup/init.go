@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
+
 	"gitee.com/unitedrhino/core/service/timed/timedjobsvr/client/timedmanage"
 	"gitee.com/unitedrhino/share/caches"
 	"gitee.com/unitedrhino/share/ctxs"
@@ -30,7 +32,6 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
-	"time"
 )
 
 func Init(svcCtx *svc.ServiceContext) {
@@ -98,6 +99,18 @@ func InitCache(svcCtx *svc.ServiceContext) {
 		})
 		logx.Must(err)
 		svcCtx.UserDeviceShare = userDeviceShare
+	}
+	{
+		userMultiDeviceShare, err := caches.NewCache(caches.CacheConfig[dm.UserMultiDevicesShareInfo, string]{
+			KeyType:   eventBus.ServerCacheKeyDmMultiDevicesShare,
+			FastEvent: svcCtx.FastEvent,
+			GetData: func(ctx context.Context, key string) (*dm.UserMultiDevicesShareInfo, error) {
+				return &dm.UserMultiDevicesShareInfo{}, errors.Failure.WithMsg("分享已过期")
+			},
+			ExpireTime: 24 * time.Hour,
+		})
+		logx.Must(err)
+		svcCtx.UserMultiDeviceShare = userMultiDeviceShare
 	}
 
 	productCache, err := caches.NewCache(caches.CacheConfig[dm.ProductInfo, string]{
