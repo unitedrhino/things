@@ -145,6 +145,20 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		return th.SceneThingPropertyReport(stu)
 	})
 	logx.Must(err)
+	err = svcCtx.FastEvent.QueueSubscribe(topics.ApplicationDeviceStatusAllDevice, func(ctx context.Context, t time.Time, body []byte) error {
+		if t.Before(time.Now().Add(-time.Second * 2)) { //2秒之前的跳过
+			return nil
+		}
+		th := timerEvent.NewSceneHandle(ctxs.WithRoot(ctx), svcCtx)
+		var stu application.ConnectMsg
+		err := utils.Unmarshal(body, &stu)
+		if err != nil {
+			logx.WithContext(ctx).Errorf("Subscribe.QueueSubscribe.Unmarshal body:%v err:%v", string(body), err)
+			return err
+		}
+		return th.SceneDeviceOnline(stu)
+	})
+	logx.Must(err)
 	err = svcCtx.FastEvent.Start()
 	logx.Must(err)
 }

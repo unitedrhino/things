@@ -172,15 +172,12 @@ func (l *TimerHandle) SceneTiming() error {
 			ExecRepeat:    stores.CmpOr(stores.CmpBinEq(int64(now.Weekday()), 1), stores.CmpEq(0)), //当天需要执行或只需要执行一次的
 		},
 	}
-	var list []*relationDB.UdSceneIfTrigger
-	for _, v := range triggerF {
-		pos, err := db.FindByFilter(l.ctx, v, nil)
-		if err != nil {
-			l.Error(err)
-			return err
-		}
-		list = append(list, pos...)
+	list, err := db.FindByFilters(l.ctx, triggerF, nil)
+	if err != nil {
+		l.Error(err)
+		return err
 	}
+
 	l.Debugf("scene sceneTrigger now:%v list:%v", now, utils.Fmt(list))
 	var sceneSet sync.Map
 	for _, v := range list {

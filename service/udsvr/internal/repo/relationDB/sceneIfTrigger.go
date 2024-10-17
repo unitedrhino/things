@@ -25,24 +25,25 @@ func NewSceneIfTriggerRepo(in any) *SceneIfTriggerRepo {
 }
 
 type SceneIfTriggerFilter struct {
-	ID               int64
-	SceneID          int64
-	Status           int64
-	ExecAt           *stores.Cmp
-	LastRunTime      *stores.Cmp
-	ExecRepeat       *stores.Cmp
-	RepeatType       scene.RepeatType
-	ExecLoopStart    *stores.Cmp
-	ExecLoopEnd      *stores.Cmp
-	ExecType         *stores.Cmp
-	Type             string
-	ProjectID        *stores.Cmp
-	AreaID           *stores.Cmp
-	Device           *devices.Core
-	DataID           string
-	FirstTriggerTime *stores.Cmp
-	StateKeepType    scene.StateKeepType
-	StateKeepValue   *stores.Cmp
+	ID                int64
+	SceneID           int64
+	Status            int64
+	ExecAt            *stores.Cmp
+	LastRunTime       *stores.Cmp
+	ExecRepeat        *stores.Cmp
+	RepeatType        scene.RepeatType
+	ExecLoopStart     *stores.Cmp
+	ExecLoopEnd       *stores.Cmp
+	ExecType          *stores.Cmp
+	Type              string
+	ProjectID         *stores.Cmp
+	AreaID            *stores.Cmp
+	Device            *devices.Core
+	DataID            string
+	TriggerDeviceType scene.TriggerDeviceType
+	FirstTriggerTime  *stores.Cmp
+	StateKeepType     scene.StateKeepType
+	StateKeepValue    *stores.Cmp
 }
 
 func (p SceneIfTriggerRepo) fmtFilter(ctx context.Context, f SceneIfTriggerFilter) *gorm.DB {
@@ -76,10 +77,17 @@ func (p SceneIfTriggerRepo) fmtFilter(ctx context.Context, f SceneIfTriggerFilte
 		db = db.Where("scene_id = ?", f.SceneID)
 	}
 	if f.Device != nil {
-		db = db.Where("device_select_type=? and device_product_id=? and device_device_name=? and device_data_id=?",
-			scene.SelectDeviceFixed, f.Device.ProductID, f.Device.DeviceName, f.DataID).
-			Or("device_select_type=? and device_product_id=? and device_data_id=?", scene.SelectorDeviceAll,
-				f.Device.ProductID, f.DataID)
+		if f.DataID != "" {
+			db = db.Where("device_select_type=? and device_product_id=? and device_device_name=? and device_data_id=?",
+				scene.SelectDeviceFixed, f.Device.ProductID, f.Device.DeviceName, f.DataID).
+				Or("device_select_type=? and device_product_id=? and device_data_id=?", scene.SelectorDeviceAll,
+					f.Device.ProductID, f.DataID)
+		} else if f.TriggerDeviceType != "" {
+			db = db.Where("device_select_type=? and device_type=? and device_product_id=? and device_device_name=? ",
+				scene.SelectDeviceFixed, f.TriggerDeviceType, f.Device.ProductID, f.Device.DeviceName).
+				Or("device_select_type=? and device_type=?  and device_product_id=? ", scene.SelectorDeviceAll, f.TriggerDeviceType,
+					f.Device.ProductID)
+		}
 	}
 	return db
 }

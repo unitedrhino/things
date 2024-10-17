@@ -14,27 +14,32 @@ import (
 	"time"
 )
 
-func (l *TimerHandle) SceneThingPropertyReport(in application.PropertyReport) error {
+func (l *TimerHandle) SceneDeviceOnline(in application.ConnectMsg) error {
 	now := time.Now()
-	db := stores.WithNoDebug(l.ctx, relationDB.NewSceneIfTriggerRepo)
+	//db := stores.WithNoDebug(l.ctx, relationDB.NewSceneIfTriggerRepo)
+	db := relationDB.NewSceneIfTriggerRepo(l.ctx)
 	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, in.Device)
 	if err != nil {
 		return err
 	}
+	triggerType := scene.TriggerDeviceTypeConnected
+	if in.Status == def.DisConnectedStatus {
+		triggerType = scene.TriggerDeviceTypeDisConnected
+	}
 	var triggerF = []relationDB.SceneIfTriggerFilter{
 		{
-			Status:    def.True,
-			Type:      scene.TriggerTypeDevice,
-			ProjectID: stores.CmpIn(def.RootNode, di.ProjectID),
-			AreaID:    stores.CmpIn(def.RootNode, di.AreaID),
-			Device:    &in.Device,
-			DataID:    in.Identifier,
+			Status:            def.True,
+			Type:              scene.TriggerTypeDevice,
+			ProjectID:         stores.CmpIn(def.RootNode, di.ProjectID),
+			AreaID:            stores.CmpIn(def.RootNode, di.AreaID),
+			TriggerDeviceType: triggerType,
+			Device:            &in.Device,
 		},
 		{
-			Status: def.True,
-			Type:   scene.TriggerTypeDevice,
-			Device: &in.Device,
-			DataID: in.Identifier,
+			Status:            def.True,
+			Type:              scene.TriggerTypeDevice,
+			Device:            &in.Device,
+			TriggerDeviceType: triggerType,
 		},
 	}
 	list, err := db.FindByFilters(l.ctx, triggerF, nil)
@@ -59,36 +64,6 @@ func (l *TimerHandle) SceneThingPropertyReport(in application.PropertyReport) er
 		do.DeviceName = di.DeviceName
 		do.DeviceAlias = di.DeviceAlias.GetValue()
 		do.ProductID = di.ProductID
-		ps, err := l.svcCtx.ProductSchemaCache.GetData(l.ctx, in.Device.ProductID)
-		if err != nil {
-			l.Error(err)
-			continue
-		}
-		if !do.If.Triggers[0].Device.IsHit(ps, in.Identifier, in.Param) {
-			if po.Device.FirstTriggerTime.Valid { //如果处于触发状态,但是现在不触发了,则需要解除触发
-				err := db.UpdateWithField(l.ctx, relationDB.SceneIfTriggerFilter{ID: v.ID}, map[string]any{
-					"device_first_trigger_time": nil,
-					"last_run_time":             nil,
-				})
-				if err != nil {
-					l.Error(err)
-				}
-			}
-			continue
-		}
-		if po.Device.FirstTriggerTime.Valid { //如果已经触发过,则忽略(默认边缘触发)
-			continue
-		}
-		if v.Device.StateKeep.Type == scene.StateKeepTypeDuration {
-			err := db.UpdateWithField(l.ctx, relationDB.SceneIfTriggerFilter{ID: v.ID}, map[string]any{
-				"device_first_trigger_time": now,
-				"last_run_time":             nil,
-			})
-			if err != nil {
-				l.Error(err)
-			}
-			continue
-		}
 		func() {
 			err := db.UpdateWithField(l.ctx, relationDB.SceneIfTriggerFilter{ID: v.ID}, map[string]any{
 				"device_first_trigger_time": now,
