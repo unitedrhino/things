@@ -14,6 +14,7 @@ import (
 // TermProperty 物模型类型 属性
 type TermProperty struct {
 	AreaID           int64    `json:"areaID,string,omitempty"` //仅做记录
+	ProductName      string   `json:"productName,omitempty"`   //产品名称,只读
 	ProductID        string   `json:"productID,omitempty"`     //产品id
 	DeviceName       string   `json:"deviceName,omitempty"`
 	DeviceAlias      string   `json:"deviceAlias,omitempty"`
@@ -59,6 +60,11 @@ func (c *TermProperty) Validate(repo CheckRepo) error {
 	if c.DataName == "" {
 		c.DataName = p.Name
 	}
+	pi, err := repo.ProductCache.GetData(repo.Ctx, c.ProductID)
+	if err != nil {
+		return err
+	}
+	c.ProductName = pi.ProductName
 	return nil
 }
 func (c *TermProperty) IsHit(ctx context.Context, columnType TermColumnType, repo CheckRepo) bool {

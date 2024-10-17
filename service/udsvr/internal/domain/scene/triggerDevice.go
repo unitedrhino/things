@@ -25,6 +25,7 @@ type TriggerDevices []*TriggerDevice
 
 type TriggerDevice struct {
 	StateKeep        *StateKeep        `json:"stateKeep,omitempty"`   //状态保持
+	ProductName      string            `json:"productName,omitempty"` //产品名称,只读
 	ProductID        string            `json:"productID,omitempty"`   //产品id
 	SelectType       SelectType        `json:"selectType"`            //设备选择方式  all: 全部 fixed:指定的设备
 	GroupID          int64             `json:"groupID,omitempty"`     //分组id
@@ -123,6 +124,11 @@ func (t *TriggerDevice) Validate(repo CheckRepo) error {
 	if repo.Info.DeviceMode != DeviceModeSingle {
 		t.DeviceAlias = GetDeviceAlias(repo.Ctx, repo.DeviceCache, t.ProductID, t.DeviceName)
 	}
+	pi, err := repo.ProductCache.GetData(repo.Ctx, t.ProductID)
+	if err != nil {
+		return err
+	}
+	t.ProductName = pi.ProductName
 	return nil
 }
 func (t TriggerDevices) Validate(repo CheckRepo) error {
