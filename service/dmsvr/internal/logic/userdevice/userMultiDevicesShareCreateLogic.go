@@ -30,7 +30,7 @@ func NewUserMultiDevicesShareCreateLogic(ctx context.Context, svcCtx *svc.Servic
 // rpc userDeviceOtaGetVersion(UserDeviceOtaGetVersionReq)returns(userDeviceOtaGetVersionResp);
 func (l *UserMultiDevicesShareCreateLogic) UserMultiDevicesShareCreate(in *dm.UserMultiDevicesShareInfo) (*dm.UserMultiDevicesShareKeyword, error) {
 	// 写入caches
-	shareKey, _ := uuid.GenerateUUID()
+	shareToken, _ := uuid.GenerateUUID()
 	uc := ctxs.GetUserCtx(l.ctx)
 	in.UserID = uc.UserID
 	//判断是否有分享的权限
@@ -41,6 +41,6 @@ func (l *UserMultiDevicesShareCreateLogic) UserMultiDevicesShareCreate(in *dm.Us
 	if pi.AdminUserID != uc.UserID {
 		return nil, errors.Permissions.AddMsg("只有所有者才能分享设备")
 	}
-	l.svcCtx.UserMultiDeviceShare.SetData(l.ctx, shareKey, in)
-	return &dm.UserMultiDevicesShareKeyword{Key: shareKey}, nil
+	l.svcCtx.UserMultiDeviceShare.SetData(l.ctx, shareToken, in)
+	return &dm.UserMultiDevicesShareKeyword{ShareToken: shareToken}, nil
 }

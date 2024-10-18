@@ -5533,7 +5533,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UserMultiDevicesShareKey"
+              "$ref": "#/definitions/UserMultiDevicesShareAcceptInfo"
             }
           }
         ],
@@ -5563,7 +5563,7 @@
                   "title": "返回的消息"
                 },
                 "data": {
-                  "$ref": "#/definitions/UserMultiDevicesShareKey"
+                  "$ref": "#/definitions/UserMultiDevicesShareToken"
                 }
               }
             }
@@ -5656,7 +5656,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UserMultiDevicesShareKey"
+              "$ref": "#/definitions/UserMultiDevicesShareToken"
             }
           }
         ],
@@ -12273,6 +12273,23 @@
       },
       "title": "UserDeviceShareReadReq"
     },
+    "UserMultiDevicesShareAcceptInfo": {
+      "type": "object",
+      "properties": {
+        "shareToken": {
+          "type": "string",
+          "description": "分享后的用于生成二维码的字符串"
+        },
+        "devices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceCore"
+          },
+          "description": "批量设备信息"
+        }
+      },
+      "title": "UserMultiDevicesShareAcceptInfo"
+    },
     "UserMultiDevicesShareInfo": {
       "type": "object",
       "properties": {
@@ -12297,7 +12314,8 @@
           "description": "系统功能权限 2:读写权限 3读权限"
         },
         "expTime": {
-          "type": "string",
+          "type": "integer",
+          "format": "int64",
           "description": "到期时间"
         },
         "createdTime": {
@@ -12307,15 +12325,14 @@
       },
       "title": "UserMultiDevicesShareInfo"
     },
-    "UserMultiDevicesShareKey": {
+    "UserMultiDevicesShareToken": {
       "type": "object",
       "properties": {
-        "shareKey": {
-          "type": "string",
-          "description": "分享后的用于生成二维码的字符串"
+        "shareToken": {
+          "type": "string"
         }
       },
-      "title": "UserMultiDevicesShareKey"
+      "title": "UserMultiDevicesShareToken"
     },
     "WithID": {
       "type": "object",

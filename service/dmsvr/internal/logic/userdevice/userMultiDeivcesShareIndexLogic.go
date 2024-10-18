@@ -24,6 +24,6 @@ func NewUserMultiDeivcesShareIndexLogic(ctx context.Context, svcCtx *svc.Service
 }
 
 func (l *UserMultiDeivcesShareIndexLogic) UserMultiDeivcesShareIndex(in *dm.UserMultiDevicesShareKeyword) (resp *dm.UserMultiDevicesShareInfo, err error) {
-	resp, err = l.svcCtx.UserMultiDeviceShare.GetData(l.ctx, in.Key)
+	resp, err = l.svcCtx.UserMultiDeviceShare.GetData(l.ctx, in.ShareToken)
 	return resp, err
 }

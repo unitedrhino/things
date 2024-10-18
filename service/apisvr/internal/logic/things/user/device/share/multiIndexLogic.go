@@ -25,9 +25,9 @@ func NewMultiIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MultiI
 	}
 }
 
-func (l *MultiIndexLogic) MultiIndex(req *types.UserMultiDevicesShareKey) (resp *types.UserMultiDevicesShareInfo, err error) {
+func (l *MultiIndexLogic) MultiIndex(req *types.UserMultiDevicesShareToken) (resp *types.UserMultiDevicesShareInfo, err error) {
 
-	ret, err := l.svcCtx.UserDevice.UserMultiDeivcesShareIndex(l.ctx, &dm.UserMultiDevicesShareKeyword{Key: req.ShareKey})
+	ret, err := l.svcCtx.UserDevice.UserMultiDeivcesShareIndex(l.ctx, &dm.UserMultiDevicesShareKeyword{ShareToken: req.ShareToken})
 	if err != nil {
 		return nil, err
 	}

@@ -40,13 +40,13 @@ service api {
 	post /create (UserDeviceShareInfo) returns (WithID)
 	@doc "生成批量分享设备二维码"
 	@handler multiCreate
-	post /multi-create (UserMultiDevicesShareInfo) returns (UserMultiDevicesShareKey)
+	post /multi-create (UserMultiDevicesShareInfo) returns (UserMultiDevicesShareToken)
 	@doc "获取批量分享的设备列表"
 	@handler multiIndex
-	post /multi-index (UserMultiDevicesShareKey) returns (UserMultiDevicesShareInfo)
+	post /multi-index (UserMultiDevicesShareToken) returns (UserMultiDevicesShareInfo)
 	@doc "接受批量分享设备"
 	@handler multiAccept
-	post /multi-accept (UserMultiDevicesShareKey) returns ()
+	post /multi-accept (UserMultiDevicesShareAcceptInfo) returns ()
 	@doc "取消分享设备"
 	@handler delete
 	post /delete (UserDeviceShareReadReq) returns ()
@@ -86,11 +86,15 @@ type (
 		AuthType int64  `json:"authType,optional"`//授权类型:1:全部授权 2:部分授权
 		SchemaPerm map[string ]*SharePerm  `json:"schemaPerm,optional"`//普通功能权限 2:读写权限 3读权限
 		AccessPerm map[string ]*SharePerm  `json:"accessPerm,optional"`//系统功能权限 2:读写权限 3读权限
-		ExpTime int64 `json:"expTime,optional,string"` //到期时间
+		ExpTime int64 `json:"expTime,optional"` //到期时间
 		CreatedTime int64  `json:"createdTime,optional"`
 	}
-	UserMultiDevicesShareKey{
-		ShareKey string `json:"shareKey,optional"` //分享后的用于生成二维码的字符串
+	UserMultiDevicesShareAcceptInfo{
+		ShareToken string `json:"shareToken,optional"` //分享后的用于生成二维码的字符串
+		Devices     []*DeviceCore `json:"devices,optional"`         //批量设备信息
+	}
+	UserMultiDevicesShareToken{
+		ShareToken string `json:"shareToken,optional"` 
 	}
 	SharePerm{
 		Perm int64 `json:"perm,optional,default=3"`//2:读写权限 3读权限

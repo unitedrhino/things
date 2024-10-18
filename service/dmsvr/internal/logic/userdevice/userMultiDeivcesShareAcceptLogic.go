@@ -30,7 +30,7 @@ func NewUserMultiDeivcesShareAcceptLogic(ctx context.Context, svcCtx *svc.Servic
 
 // 接受批量分享的设备
 func (l *UserMultiDeivcesShareAcceptLogic) UserMultiDeivcesShareAccept(in *dm.UserMultiDevicesShareAcceptReq) (*dm.Empty, error) {
-	multiDevices, err := l.svcCtx.UserMultiDeviceShare.GetData(l.ctx, in.Keyword)
+	multiDevices, err := l.svcCtx.UserMultiDeviceShare.GetData(l.ctx, in.ShareToken)
 	if err != nil {
 		return &dm.Empty{}, err
 	}
@@ -40,9 +40,16 @@ func (l *UserMultiDeivcesShareAcceptLogic) UserMultiDeivcesShareAccept(in *dm.Us
 		key := fmt.Sprintf("%s_%s", d.ProductID, d.DeviceName)
 		sharedDevicesMap[key] = d.ID
 	}
+	acceptDevicesMap := make(map[string]bool)
+	for _, v := range in.Devices {
+		acceptDevicesMap[fmt.Sprintf("%s_%s", v.ProductID, v.DeviceName)] = true
+	}
 	tenantCode := ctxs.GetUserCtxNoNil(l.ctx).TenantCode
-	for _, v := range multiDevices.Device {
+	for _, v := range multiDevices.Devices {
 		key := fmt.Sprintf("%s_%s", v.ProductID, v.DeviceName)
+		if !acceptDevicesMap[key] {
+			continue
+		}
 		po := relationDB.DmUserDeviceShare{
 			ProjectID:         multiDevices.ProjectID,
 			TenantCode:        stores.TenantCode(tenantCode),
