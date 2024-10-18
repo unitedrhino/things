@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"gitee.com/unitedrhino/share/ctxs"
+	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
@@ -41,7 +42,12 @@ func (l *UserDeviceShareCreateLogic) UserDeviceShareCreate(in *dm.UserDeviceShar
 	}
 	uc := ctxs.GetUserCtx(l.ctx)
 	if pi.AdminUserID != uc.UserID {
-		return nil, errors.Permissions.AddMsg("只有所有者才能分享设备")
+		pa := uc.ProjectAuth[pi.ProjectID]
+		if pa.AuthType != def.AuthAdmin {
+			if pa.Area == nil || pa.Area[int64(di.AreaID)] != def.AuthAdmin {
+				return nil, errors.Permissions.AddMsg("只有管理员才能分享设备")
+			}
+		}
 	}
 	if in.SharedUserID == uc.UserID {
 		return nil, errors.Parameter.AddMsg("不能分享给自己")
