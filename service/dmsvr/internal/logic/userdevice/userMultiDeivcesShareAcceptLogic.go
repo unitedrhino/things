@@ -7,6 +7,7 @@ import (
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/userShared"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -79,6 +80,11 @@ func (l *UserMultiDeivcesShareAcceptLogic) UserMultiDeivcesShareAccept(in *dm.Us
 				return &dm.Empty{}, err
 			}
 		}
+		l.svcCtx.UserDeviceShare.SetData(l.ctx, userShared.UserShareKey{
+			ProductID:    po.ProductID,
+			DeviceName:   po.DeviceName,
+			SharedUserID: po.SharedUserID,
+		}, nil)
 	}
 	return &dm.Empty{}, nil
 }
