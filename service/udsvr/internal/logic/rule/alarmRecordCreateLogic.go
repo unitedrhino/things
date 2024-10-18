@@ -61,54 +61,59 @@ func (l *AlarmRecordCreateLogic) AlarmRecordCreate(in *ud.AlarmRecordCreateReq) 
 			})
 			//err = errors.NotFind //先不开重复
 			if err != nil {
-				if errors.Cmp(err, errors.NotFind) { //直接创建并且进行通知
-					po := relationDB.UdAlarmRecord{
-						TenantCode:  alarm.TenantCode,
-						ProjectID:   alarm.ProjectID,
-						AlarmID:     alarm.AlarmID,
-						AlarmName:   alarm.AlarmInfo.Name,
-						TriggerType: in.TriggerType,
-						ProductID:   in.ProductID,
-						DeviceName:  in.DeviceName,
-						Level:       alarm.AlarmInfo.Level,
-						SceneName:   alarm.SceneInfo.Name,
-						SceneID:     alarm.SceneID,
-						DealStatus:  scene.AlarmDealStatusWaring,
-						Desc:        fmt.Sprintf("自动化触发告警:%v", in.SceneName),
-						AlarmCount:  1,
-						LastAlarm:   time.Now(),
-					}
-					err = relationDB.NewAlarmRecordRepo(l.ctx).Insert(l.ctx, &po)
-					if err != nil {
-						return nil, err
-					}
-					for _, notify := range alarm.AlarmInfo.Notifies {
-						_, err := l.svcCtx.NotifyM.NotifyConfigSend(l.ctx, &sys.NotifyConfigSendReq{
-							UserIDs:    alarm.AlarmInfo.UserIDs,
-							Accounts:   alarm.AlarmInfo.Accounts,
-							NotifyCode: def.NotifyCodeDeviceAlarm,
-							TemplateID: notify.TemplateID,
-							Type:       notify.Type,
-							Params: map[string]string{
-								"productID":   in.ProductID,
-								"deviceName":  in.DeviceName,
-								"sceneName":   in.SceneName,
-								"deviceAlias": in.DeviceAlias,
-							},
-						})
-						if err != nil {
-							l.Error(err)
-							continue
-						}
-					}
-					return &ud.Empty{}, err
+				if !errors.Cmp(err, errors.NotFind) { //直接创建并且进行通知
+					l.Errorf("NewAlarmRecordFind alarm:%v err:%v", alarm, err)
+					return nil, err
 				}
-				return nil, err
+				po := relationDB.UdAlarmRecord{
+					TenantCode:  alarm.TenantCode,
+					ProjectID:   alarm.ProjectID,
+					AlarmID:     alarm.AlarmID,
+					AlarmName:   alarm.AlarmInfo.Name,
+					TriggerType: in.TriggerType,
+					ProductID:   in.ProductID,
+					DeviceName:  in.DeviceName,
+					Level:       alarm.AlarmInfo.Level,
+					SceneName:   alarm.SceneInfo.Name,
+					SceneID:     alarm.SceneID,
+					DealStatus:  scene.AlarmDealStatusWaring,
+					Desc:        fmt.Sprintf("自动化触发告警:%v", in.SceneName),
+					AlarmCount:  1,
+					LastAlarm:   time.Now(),
+				}
+				err = relationDB.NewAlarmRecordRepo(l.ctx).Insert(l.ctx, &po)
+				if err != nil {
+					return nil, err
+				}
+				for _, notify := range alarm.AlarmInfo.Notifies {
+					_, err := l.svcCtx.NotifyM.NotifyConfigSend(l.ctx, &sys.NotifyConfigSendReq{
+						UserIDs:    alarm.AlarmInfo.UserIDs,
+						Accounts:   alarm.AlarmInfo.Accounts,
+						NotifyCode: def.NotifyCodeDeviceAlarm,
+						TemplateID: notify.TemplateID,
+						Type:       notify.Type,
+						Params: map[string]string{
+							"productID":   in.ProductID,
+							"deviceName":  in.DeviceName,
+							"sceneName":   in.SceneName,
+							"deviceAlias": in.DeviceAlias,
+						},
+					})
+					if err != nil {
+						l.Error(err)
+						continue
+					}
+				}
+				continue
 			}
 			po.LastAlarm = time.Now()
 			po.AlarmCount++
 			err = relationDB.NewAlarmRecordRepo(l.ctx).Update(l.ctx, po)
-			return &ud.Empty{}, err
+			if err != nil {
+				l.Errorf("NewAlarmRecordUpdate alarm:%v err:%v", alarm, err)
+				return nil, err
+			}
+			continue
 		}
 	}
 	return &ud.Empty{}, nil
