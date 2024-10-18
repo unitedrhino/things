@@ -2,11 +2,6 @@ package area
 
 import (
 	"context"
-	"gitee.com/unitedrhino/share/ctxs"
-	"gitee.com/unitedrhino/share/def"
-	"gitee.com/unitedrhino/share/errors"
-	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
-
 	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/types"
 
@@ -28,16 +23,16 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 }
 
 func (l *CreateLogic) Create(req *types.SlotAreaSaveReq) error {
-	if req.ParentAreaID != def.RootNode {
-		dmRep, err := l.svcCtx.DeviceM.DeviceInfoIndex(ctxs.WithRoot(l.ctx), &dm.DeviceInfoIndexReq{
-			Page:    &dm.PageInfo{Page: 1, Size: 2}, //只需要知道是否有设备即可
-			AreaIDs: []int64{req.ParentAreaID}})
-		if err != nil {
-			return err
-		}
-		if len(dmRep.List) != 0 {
-			return errors.Parameter.AddMsg("父级区域已绑定了设备，不允许再添加子区域")
-		}
-	}
+	//if req.ParentAreaID != def.RootNode {
+	//	dmRep, err := l.svcCtx.DeviceM.DeviceInfoIndex(ctxs.WithRoot(l.ctx), &dm.DeviceInfoIndexReq{
+	//		Page:    &dm.PageInfo{Page: 1, Size: 2}, //只需要知道是否有设备即可
+	//		AreaIDs: []int64{req.ParentAreaID}})
+	//	if err != nil {
+	//		return err
+	//	}
+	//	if len(dmRep.List) != 0 {
+	//		return errors.Parameter.AddMsg("父级区域已绑定了设备，不允许再添加子区域")
+	//	}
+	//}
 	return nil
 }
