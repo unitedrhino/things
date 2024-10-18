@@ -51,3 +51,45 @@ func ToSharesTypes(in []*dm.UserDeviceShareInfo) (ret []*types.UserDeviceShareIn
 	}
 	return
 }
+func ToMuitlSharePb(in *types.UserMultiDevicesShareInfo) *dm.UserMultiDevicesShareInfo {
+	if in == nil {
+		return nil
+	}
+	devices := in.Devices
+	return &dm.UserMultiDevicesShareInfo{
+		Devices:    ToSharesDevices(devices),
+		AuthType:   in.AuthType,
+		ExpTime:    in.ExpTime,
+		AccessPerm: utils.CopyMap[dm.SharePerm](in.AccessPerm),
+		SchemaPerm: utils.CopyMap[dm.SharePerm](in.SchemaPerm),
+	}
+}
+func ToSharesDevices(in []*types.DeviceCore) (ret []*dm.DeviceCore) {
+	for _, v := range in {
+		ret = append(ret, &dm.DeviceCore{
+			DeviceName: v.DeviceName,
+			ProductID:  v.ProductID,
+		})
+	}
+	return ret
+}
+func ToMultiShareTypes(in *dm.UserMultiDevicesShareInfo) *types.UserMultiDevicesShareInfo {
+	if in == nil {
+		return nil
+	}
+	var dvs []*types.DeviceCore
+	for _, v := range in.Devices {
+		dvs = append(dvs, &types.DeviceCore{
+			DeviceName: v.DeviceName,
+			ProductID:  v.ProductID,
+		})
+	}
+	return &types.UserMultiDevicesShareInfo{
+		Devices:     dvs,
+		AuthType:    in.AuthType,
+		CreatedTime: in.CreatedTime,
+		ExpTime:     in.ExpTime,
+		AccessPerm:  utils.CopyMap[types.SharePerm](in.AccessPerm),
+		SchemaPerm:  utils.CopyMap[types.SharePerm](in.SchemaPerm),
+	}
+}

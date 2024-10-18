@@ -2,6 +2,9 @@ package svc
 
 import (
 	"context"
+	"os"
+	"time"
+
 	"gitee.com/unitedrhino/core/service/syssvr/client/areamanage"
 	"gitee.com/unitedrhino/core/service/syssvr/client/common"
 	"gitee.com/unitedrhino/core/service/syssvr/client/datamanage"
@@ -26,8 +29,6 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 	"github.com/zeromicro/go-zero/zrpc"
-	"os"
-	"time"
 
 	"gitee.com/unitedrhino/share/stores"
 
@@ -49,32 +50,33 @@ type ServiceContext struct {
 	PubDev pubDev.PubDev
 	PubApp pubApp.PubApp
 
-	OssClient       *oss.Client
-	TimedM          timedmanage.TimedManage
-	SchemaRepo      *caches.Cache[schema.Model, string]
-	SchemaManaRepo  msgThing.SchemaDataRepo
-	HubLogRepo      deviceLog.HubRepo
-	StatusRepo      deviceLog.StatusRepo
-	SendRepo        deviceLog.SendRepo
-	SDKLogRepo      deviceLog.SDKRepo
-	Cache           kv.Store
-	DeviceStatus    *cache.DeviceStatus
-	FastEvent       *eventBus.FastEvent
-	AreaM           areamanage.AreaManage
-	UserM           usermanage.UserManage
-	DataM           datamanage.DataManage
-	ProjectM        projectmanage.ProjectManage
-	ProductCache    *caches.Cache[dm.ProductInfo, string]
-	DeviceCache     *caches.Cache[dm.DeviceInfo, devices.Core]
-	UserDeviceShare *caches.Cache[dm.UserDeviceShareInfo, userShared.UserShareKey]
-	TenantCache     sysExport.TenantCacheT
-	ProjectCache    sysExport.ProjectCacheT
-	AreaCache       sysExport.AreaCacheT
-	WebHook         *sysExport.Webhook
-	Slot            sysExport.SlotCacheT
-	UserSubscribe   *ws.UserSubscribe
-	GatewayCanBind  *cache.GatewayCanBind
-	NodeID          int64
+	OssClient            *oss.Client
+	TimedM               timedmanage.TimedManage
+	SchemaRepo           *caches.Cache[schema.Model, string]
+	SchemaManaRepo       msgThing.SchemaDataRepo
+	HubLogRepo           deviceLog.HubRepo
+	StatusRepo           deviceLog.StatusRepo
+	SendRepo             deviceLog.SendRepo
+	SDKLogRepo           deviceLog.SDKRepo
+	Cache                kv.Store
+	DeviceStatus         *cache.DeviceStatus
+	FastEvent            *eventBus.FastEvent
+	AreaM                areamanage.AreaManage
+	UserM                usermanage.UserManage
+	DataM                datamanage.DataManage
+	ProjectM             projectmanage.ProjectManage
+	ProductCache         *caches.Cache[dm.ProductInfo, string]
+	DeviceCache          *caches.Cache[dm.DeviceInfo, devices.Core]
+	UserDeviceShare      *caches.Cache[dm.UserDeviceShareInfo, userShared.UserShareKey]
+	UserMultiDeviceShare *caches.Cache[dm.UserMultiDevicesShareInfo, string]
+	TenantCache          sysExport.TenantCacheT
+	ProjectCache         sysExport.ProjectCacheT
+	AreaCache            sysExport.AreaCacheT
+	WebHook              *sysExport.Webhook
+	Slot                 sysExport.SlotCacheT
+	UserSubscribe        *ws.UserSubscribe
+	GatewayCanBind       *cache.GatewayCanBind
+	NodeID               int64
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
