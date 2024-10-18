@@ -181,6 +181,11 @@ func (l *TimerHandle) SceneTiming() error {
 	l.Debugf("scene sceneTrigger now:%v list:%v", now, utils.Fmt(list))
 	var sceneSet sync.Map
 	for _, v := range list {
+		if v.SceneInfo == nil {
+			db.Delete(l.ctx, v.ID)
+			l.Error(v)
+			continue
+		}
 		var po = v
 		ctxs.GoNewCtx(l.ctx, func(ctx context.Context) { //执行任务
 			startTime := time.Now()
