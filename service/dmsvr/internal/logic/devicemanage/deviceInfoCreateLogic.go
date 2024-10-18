@@ -102,7 +102,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 	uc := ctxs.GetUserCtxNoNil(l.ctx)
 	projectID := stores.ProjectID(uc.ProjectID)
 	areaID := stores.AreaID(def.NotClassified)
-	if projectID == 0 || projectID == def.NotClassified { //如果没有传项目,则分配到未分类项目中
+	if projectID <= def.NotClassified { //如果没有传项目,则分配到未分类项目中
 		ti, err := l.svcCtx.TenantCache.GetData(l.ctx, uc.TenantCode)
 		if err != nil {
 			return nil, err
