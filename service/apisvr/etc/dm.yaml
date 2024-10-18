@@ -25,8 +25,8 @@ CacheRedis:
     Type: node
 TSDB:
   Driver: taosRestful
-  DSN: root:taosdata@http(localhost:6041)/ithings?readBufferSize=52428800
-#  DSN: root:taosdata@ws(localhost:6041)/ithings?readBufferSize=52428800
+  DSN: root:taosdata@http(localhost:6041)/ithings?readBufferSize=5242880
+#  DSN: root:taosdata@ws(localhost:6041)/ithings?readBufferSize=5242880
 #  Driver: taosSql
 #  DSN: root:taosdata@tcp(localhost:6030)/ithings
 AuthWhite:
