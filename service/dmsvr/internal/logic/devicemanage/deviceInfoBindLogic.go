@@ -127,6 +127,10 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 			Valid: true,
 		}
 	}
+	if pi.NetType == def.NetBle { //蓝牙绑定了就是上线
+		di.IsOnline = def.True
+		di.Status = def.DeviceStatusOnline
+	}
 	err = diDB.Update(ctxs.WithRoot(l.ctx), di)
 	if err != nil {
 		l.Error(err)
