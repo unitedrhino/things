@@ -69,7 +69,7 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 				return nil, errors.NotFind
 			}
 			//如果是蓝牙模式并且打开了自动注册,那么绑定的时候需要创建该设备
-			_, err = NewDeviceInfoCreateLogic(ctxs.WithProjectID(l.ctx, def.NotClassified), l.svcCtx).DeviceInfoCreate(&dm.DeviceInfo{ProductID: in.Device.ProductID, DeviceName: in.Device.DeviceName})
+			_, err = NewDeviceInfoCreateLogic(ctxs.WithProjectID(ctxs.WithAdmin(l.ctx), def.NotClassified), l.svcCtx).DeviceInfoCreate(&dm.DeviceInfo{ProductID: in.Device.ProductID, DeviceName: in.Device.DeviceName})
 			if err != nil {
 				return nil, err
 			}
