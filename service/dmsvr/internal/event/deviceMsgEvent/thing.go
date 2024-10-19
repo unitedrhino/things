@@ -441,6 +441,10 @@ func OtaVersionCheck(ctx context.Context, svcCtx *svc.ServiceContext, msg device
 	return
 }
 
+func (l *ThingLogic) HandlePropertyGetSchema(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
+	return l.DeviceResp(msg, errors.OK, l.schema.ToSimple()), nil
+}
+
 // 设备请求获取 云端记录的最新设备信息
 func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	respData := make(map[string]any, len(l.schema.Property))
@@ -535,6 +539,8 @@ func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceM
 		return l.HandlePropertyReportInfo(msg, l.dreq)
 	case deviceMsg.GetStatus: //设备请求获取 云端记录的最新设备信息
 		return l.HandlePropertyGetStatus(msg)
+	case deviceMsg.GetSchema:
+		return l.HandlePropertyGetSchema(msg)
 	case deviceMsg.ControlReply: //设备响应的 “云端下发控制指令” 的处理结果
 		return l.HandleControl(msg)
 	default:

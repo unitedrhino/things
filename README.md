@@ -1,7 +1,7 @@
 
 # 产品概述
 **联犀** 是一款基于 Go 语言开发的商业级 SaaS 云原生微服务物联网平台，致力于帮助企业快速构建自己的物联网应用，实现数字化转型。  
-[文档](http://doc.ithings.net.cn/)
+[文档](https://doc.unitedrhino.com/)
 ## 技术优势
 - **高性能**：采用 Go 语言和高性能组件（如 emqx, nats, tdengine），结合 gozero 微服务框架，确保服务的稳定性与性能。
 - **云原生可扩展**：一套代码支持 k8s, docker, 微服务及单体模式部署，便于业务架构的灵活切换。
@@ -75,7 +75,7 @@
 ## 社区
 
 - 微信(加我拉微信群): `godLei6` (需备注“来自github”)
-- [官网](http://doc.ithings.net.cn/)
+- [官网](https://doc.unitedrhino.com/)
 - 微信二维码
 - <img style="width: 300px;" src="./doc/assets/微信二维码.jpg">
 
