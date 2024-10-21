@@ -194,11 +194,11 @@ type (
 	UserDeviceShareIndexReq           = dm.UserDeviceShareIndexReq
 	UserDeviceShareIndexResp          = dm.UserDeviceShareIndexResp
 	UserDeviceShareInfo               = dm.UserDeviceShareInfo
+	UserDeviceShareMultiAcceptReq     = dm.UserDeviceShareMultiAcceptReq
 	UserDeviceShareMultiDeleteReq     = dm.UserDeviceShareMultiDeleteReq
+	UserDeviceShareMultiInfo          = dm.UserDeviceShareMultiInfo
+	UserDeviceShareMultiToken         = dm.UserDeviceShareMultiToken
 	UserDeviceShareReadReq            = dm.UserDeviceShareReadReq
-	UserMultiDevicesShareAcceptReq    = dm.UserMultiDevicesShareAcceptReq
-	UserMultiDevicesShareInfo         = dm.UserMultiDevicesShareInfo
-	UserMultiDevicesShareKeyword      = dm.UserMultiDevicesShareKeyword
 	WithID                            = dm.WithID
 	WithIDChildren                    = dm.WithIDChildren
 	WithIDCode                        = dm.WithIDCode

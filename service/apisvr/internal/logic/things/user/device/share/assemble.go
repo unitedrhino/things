@@ -51,12 +51,12 @@ func ToSharesTypes(in []*dm.UserDeviceShareInfo) (ret []*types.UserDeviceShareIn
 	}
 	return
 }
-func ToMuitlSharePb(in *types.UserMultiDevicesShareInfo) *dm.UserMultiDevicesShareInfo {
+func ToMuitlSharePb(in *types.UserDeviceShareMultiInfo) *dm.UserDeviceShareMultiInfo {
 	if in == nil {
 		return nil
 	}
 	devices := in.Devices
-	return &dm.UserMultiDevicesShareInfo{
+	return &dm.UserDeviceShareMultiInfo{
 		Devices:    ToSharesDevices(devices),
 		AuthType:   in.AuthType,
 		ExpTime:    in.ExpTime,
@@ -73,7 +73,7 @@ func ToSharesDevices(in []*types.DeviceCore) (ret []*dm.DeviceCore) {
 	}
 	return ret
 }
-func ToMultiShareTypes(in *dm.UserMultiDevicesShareInfo) *types.UserMultiDevicesShareInfo {
+func ToMultiShareTypes(in *dm.UserDeviceShareMultiInfo) *types.UserDeviceShareMultiInfo {
 	if in == nil {
 		return nil
 	}
@@ -84,7 +84,7 @@ func ToMultiShareTypes(in *dm.UserMultiDevicesShareInfo) *types.UserMultiDevices
 			ProductID:  v.ProductID,
 		})
 	}
-	return &types.UserMultiDevicesShareInfo{
+	return &types.UserDeviceShareMultiInfo{
 		Devices:     dvs,
 		AuthType:    in.AuthType,
 		CreatedTime: in.CreatedTime,

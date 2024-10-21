@@ -1621,22 +1621,17 @@ type UserDeviceShareInfo struct {
 	CreatedTime       int64                 `json:"createdTime,optional"`
 }
 
+type UserDeviceShareMultiAcceptInfo struct {
+	ShareToken string        `json:"shareToken,optional"` //分享后的用于生成二维码的字符串
+	Devices    []*DeviceCore `json:"devices,optional"`    //批量设备信息
+}
+
 type UserDeviceShareMultiDeleteReq struct {
 	IDs       []int64 `json:"ids,optional"`
 	ProjectID int64   `json:"projectID,optional"`
 }
 
-type UserDeviceShareReadReq struct {
-	ID     int64       `json:"id,optional"`
-	Device *DeviceCore `json:"device,optional"` //设备信息
-}
-
-type UserMultiDevicesShareAcceptInfo struct {
-	ShareToken string        `json:"shareToken,optional"` //分享后的用于生成二维码的字符串
-	Devices    []*DeviceCore `json:"devices,optional"`    //批量设备信息
-}
-
-type UserMultiDevicesShareInfo struct {
+type UserDeviceShareMultiInfo struct {
 	Devices     []*DeviceCore         `json:"devices,optional"`    //批量设备信息
 	AuthType    int64                 `json:"authType,optional"`   //授权类型:1:全部授权 2:部分授权
 	SchemaPerm  map[string]*SharePerm `json:"schemaPerm,optional"` //普通功能权限 2:读写权限 3读权限
@@ -1645,8 +1640,13 @@ type UserMultiDevicesShareInfo struct {
 	CreatedTime int64                 `json:"createdTime,optional"`
 }
 
-type UserMultiDevicesShareToken struct {
+type UserDeviceShareMultiToken struct {
 	ShareToken string `json:"shareToken,optional"`
+}
+
+type UserDeviceShareReadReq struct {
+	ID     int64       `json:"id,optional"`
+	Device *DeviceCore `json:"device,optional"` //设备信息
 }
 
 type WithID struct {

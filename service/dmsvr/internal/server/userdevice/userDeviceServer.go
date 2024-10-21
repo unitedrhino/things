@@ -82,19 +82,19 @@ func (s *UserDeviceServer) UserDeviceTransfer(ctx context.Context, in *dm.Device
 }
 
 // rpc userDeviceOtaGetVersion(UserDeviceOtaGetVersionReq)returns(userDeviceOtaGetVersionResp);
-func (s *UserDeviceServer) UserMultiDevicesShareCreate(ctx context.Context, in *dm.UserMultiDevicesShareInfo) (*dm.UserMultiDevicesShareKeyword, error) {
-	l := userdevicelogic.NewUserMultiDevicesShareCreateLogic(ctx, s.svcCtx)
-	return l.UserMultiDevicesShareCreate(in)
+func (s *UserDeviceServer) UserDeviceShareMultiCreate(ctx context.Context, in *dm.UserDeviceShareMultiInfo) (*dm.UserDeviceShareMultiToken, error) {
+	l := userdevicelogic.NewUserDeviceShareMultiCreateLogic(ctx, s.svcCtx)
+	return l.UserDeviceShareMultiCreate(in)
 }
 
 // 扫码后获取设备列表
-func (s *UserDeviceServer) UserMultiDeivcesShareIndex(ctx context.Context, in *dm.UserMultiDevicesShareKeyword) (*dm.UserMultiDevicesShareInfo, error) {
-	l := userdevicelogic.NewUserMultiDeivcesShareIndexLogic(ctx, s.svcCtx)
-	return l.UserMultiDeivcesShareIndex(in)
+func (s *UserDeviceServer) UserDeivceShareMultiIndex(ctx context.Context, in *dm.UserDeviceShareMultiToken) (*dm.UserDeviceShareMultiInfo, error) {
+	l := userdevicelogic.NewUserDeivceShareMultiIndexLogic(ctx, s.svcCtx)
+	return l.UserDeivceShareMultiIndex(in)
 }
 
 // 接受批量分享的设备
-func (s *UserDeviceServer) UserMultiDeivcesShareAccept(ctx context.Context, in *dm.UserMultiDevicesShareAcceptReq) (*dm.Empty, error) {
-	l := userdevicelogic.NewUserMultiDeivcesShareAcceptLogic(ctx, s.svcCtx)
-	return l.UserMultiDeivcesShareAccept(in)
+func (s *UserDeviceServer) UserDeivceShareMultiAccept(ctx context.Context, in *dm.UserDeviceShareMultiAcceptReq) (*dm.Empty, error) {
+	l := userdevicelogic.NewUserDeivceShareMultiAcceptLogic(ctx, s.svcCtx)
+	return l.UserDeivceShareMultiAccept(in)
 }

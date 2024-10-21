@@ -26,15 +26,15 @@ func NewMultiAcceptLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Multi
 	}
 }
 
-func (l *MultiAcceptLogic) MultiAccept(req *types.UserMultiDevicesShareAcceptInfo) error {
+func (l *MultiAcceptLogic) MultiAccept(req *types.UserDeviceShareMultiAcceptInfo) error {
 	uc := ctxs.GetUserCtx(l.ctx)
-	dmreq := dm.UserMultiDevicesShareAcceptReq{
+	dmreq := dm.UserDeviceShareMultiAcceptReq{
 		ShareToken:        req.ShareToken,
 		SharedUserAccount: uc.UserName,
 		SharedUserID:      uc.UserID,
 		Devices:           ToSharesDevices(req.Devices),
 	}
-	_, err := l.svcCtx.UserDevice.UserMultiDeivcesShareAccept(l.ctx, &dmreq)
+	_, err := l.svcCtx.UserDevice.UserDeivceShareMultiAccept(l.ctx, &dmreq)
 	if err != nil {
 		return err
 	}

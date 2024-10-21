@@ -5533,7 +5533,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UserMultiDevicesShareAcceptInfo"
+              "$ref": "#/definitions/UserDeviceShareMultiAcceptInfo"
             }
           }
         ],
@@ -5563,7 +5563,7 @@
                   "title": "返回的消息"
                 },
                 "data": {
-                  "$ref": "#/definitions/UserMultiDevicesShareToken"
+                  "$ref": "#/definitions/UserDeviceShareMultiToken"
                 }
               }
             }
@@ -5575,7 +5575,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UserMultiDevicesShareInfo"
+              "$ref": "#/definitions/UserDeviceShareMultiInfo"
             }
           }
         ],
@@ -5644,7 +5644,7 @@
                   "title": "返回的消息"
                 },
                 "data": {
-                  "$ref": "#/definitions/UserMultiDevicesShareInfo"
+                  "$ref": "#/definitions/UserDeviceShareMultiInfo"
                 }
               }
             }
@@ -5656,7 +5656,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UserMultiDevicesShareToken"
+              "$ref": "#/definitions/UserDeviceShareMultiToken"
             }
           }
         ],
@@ -12253,6 +12253,23 @@
       },
       "title": "UserDeviceShareInfo"
     },
+    "UserDeviceShareMultiAcceptInfo": {
+      "type": "object",
+      "properties": {
+        "shareToken": {
+          "type": "string",
+          "description": "分享后的用于生成二维码的字符串"
+        },
+        "devices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceCore"
+          },
+          "description": "批量设备信息"
+        }
+      },
+      "title": "UserDeviceShareMultiAcceptInfo"
+    },
     "UserDeviceShareMultiDeleteReq": {
       "type": "object",
       "properties": {
@@ -12270,38 +12287,7 @@
       },
       "title": "UserDeviceShareMultiDeleteReq"
     },
-    "UserDeviceShareReadReq": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "device": {
-          "$ref": "#/definitions/DeviceCore",
-          "description": "设备信息"
-        }
-      },
-      "title": "UserDeviceShareReadReq"
-    },
-    "UserMultiDevicesShareAcceptInfo": {
-      "type": "object",
-      "properties": {
-        "shareToken": {
-          "type": "string",
-          "description": "分享后的用于生成二维码的字符串"
-        },
-        "devices": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/DeviceCore"
-          },
-          "description": "批量设备信息"
-        }
-      },
-      "title": "UserMultiDevicesShareAcceptInfo"
-    },
-    "UserMultiDevicesShareInfo": {
+    "UserDeviceShareMultiInfo": {
       "type": "object",
       "properties": {
         "devices": {
@@ -12334,16 +12320,30 @@
           "format": "int64"
         }
       },
-      "title": "UserMultiDevicesShareInfo"
+      "title": "UserDeviceShareMultiInfo"
     },
-    "UserMultiDevicesShareToken": {
+    "UserDeviceShareMultiToken": {
       "type": "object",
       "properties": {
         "shareToken": {
           "type": "string"
         }
       },
-      "title": "UserMultiDevicesShareToken"
+      "title": "UserDeviceShareMultiToken"
+    },
+    "UserDeviceShareReadReq": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "device": {
+          "$ref": "#/definitions/DeviceCore",
+          "description": "设备信息"
+        }
+      },
+      "title": "UserDeviceShareReadReq"
     },
     "WithID": {
       "type": "object",
