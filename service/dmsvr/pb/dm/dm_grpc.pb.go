@@ -4644,11 +4644,11 @@ type UserDeviceClient interface {
 	UserDeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error)
 	//  rpc userDeviceOtaGetVersion(UserDeviceOtaGetVersionReq)returns(userDeviceOtaGetVersionResp);
 	//创建批量分享二维码，设备列表写入缓存
-	UserMultiDevicesShareCreate(ctx context.Context, in *UserMultiDevicesShareInfo, opts ...grpc.CallOption) (*UserMultiDevicesShareKeyword, error)
+	UserDeviceShareMultiCreate(ctx context.Context, in *UserDeviceShareMultiInfo, opts ...grpc.CallOption) (*UserDeviceShareMultiToken, error)
 	//扫码后获取设备列表
-	UserMultiDeivcesShareIndex(ctx context.Context, in *UserMultiDevicesShareKeyword, opts ...grpc.CallOption) (*UserMultiDevicesShareInfo, error)
+	UserDeivceShareMultiIndex(ctx context.Context, in *UserDeviceShareMultiToken, opts ...grpc.CallOption) (*UserDeviceShareMultiInfo, error)
 	//接受批量分享的设备
-	UserMultiDeivcesShareAccept(ctx context.Context, in *UserMultiDevicesShareAcceptReq, opts ...grpc.CallOption) (*Empty, error)
+	UserDeivceShareMultiAccept(ctx context.Context, in *UserDeviceShareMultiAcceptReq, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type userDeviceClient struct {
@@ -4749,27 +4749,27 @@ func (c *userDeviceClient) UserDeviceTransfer(ctx context.Context, in *DeviceTra
 	return out, nil
 }
 
-func (c *userDeviceClient) UserMultiDevicesShareCreate(ctx context.Context, in *UserMultiDevicesShareInfo, opts ...grpc.CallOption) (*UserMultiDevicesShareKeyword, error) {
-	out := new(UserMultiDevicesShareKeyword)
-	err := c.cc.Invoke(ctx, "/dm.userDevice/userMultiDevicesShareCreate", in, out, opts...)
+func (c *userDeviceClient) UserDeviceShareMultiCreate(ctx context.Context, in *UserDeviceShareMultiInfo, opts ...grpc.CallOption) (*UserDeviceShareMultiToken, error) {
+	out := new(UserDeviceShareMultiToken)
+	err := c.cc.Invoke(ctx, "/dm.userDevice/userDeviceShareMultiCreate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userDeviceClient) UserMultiDeivcesShareIndex(ctx context.Context, in *UserMultiDevicesShareKeyword, opts ...grpc.CallOption) (*UserMultiDevicesShareInfo, error) {
-	out := new(UserMultiDevicesShareInfo)
-	err := c.cc.Invoke(ctx, "/dm.userDevice/userMultiDeivcesShareIndex", in, out, opts...)
+func (c *userDeviceClient) UserDeivceShareMultiIndex(ctx context.Context, in *UserDeviceShareMultiToken, opts ...grpc.CallOption) (*UserDeviceShareMultiInfo, error) {
+	out := new(UserDeviceShareMultiInfo)
+	err := c.cc.Invoke(ctx, "/dm.userDevice/userDeivceShareMultiIndex", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userDeviceClient) UserMultiDeivcesShareAccept(ctx context.Context, in *UserMultiDevicesShareAcceptReq, opts ...grpc.CallOption) (*Empty, error) {
+func (c *userDeviceClient) UserDeivceShareMultiAccept(ctx context.Context, in *UserDeviceShareMultiAcceptReq, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/dm.userDevice/userMultiDeivcesShareAccept", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dm.userDevice/userDeivceShareMultiAccept", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -4800,11 +4800,11 @@ type UserDeviceServer interface {
 	UserDeviceTransfer(context.Context, *DeviceTransferReq) (*Empty, error)
 	//  rpc userDeviceOtaGetVersion(UserDeviceOtaGetVersionReq)returns(userDeviceOtaGetVersionResp);
 	//创建批量分享二维码，设备列表写入缓存
-	UserMultiDevicesShareCreate(context.Context, *UserMultiDevicesShareInfo) (*UserMultiDevicesShareKeyword, error)
+	UserDeviceShareMultiCreate(context.Context, *UserDeviceShareMultiInfo) (*UserDeviceShareMultiToken, error)
 	//扫码后获取设备列表
-	UserMultiDeivcesShareIndex(context.Context, *UserMultiDevicesShareKeyword) (*UserMultiDevicesShareInfo, error)
+	UserDeivceShareMultiIndex(context.Context, *UserDeviceShareMultiToken) (*UserDeviceShareMultiInfo, error)
 	//接受批量分享的设备
-	UserMultiDeivcesShareAccept(context.Context, *UserMultiDevicesShareAcceptReq) (*Empty, error)
+	UserDeivceShareMultiAccept(context.Context, *UserDeviceShareMultiAcceptReq) (*Empty, error)
 	mustEmbedUnimplementedUserDeviceServer()
 }
 
@@ -4842,14 +4842,14 @@ func (UnimplementedUserDeviceServer) UserDeviceShareRead(context.Context, *UserD
 func (UnimplementedUserDeviceServer) UserDeviceTransfer(context.Context, *DeviceTransferReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserDeviceTransfer not implemented")
 }
-func (UnimplementedUserDeviceServer) UserMultiDevicesShareCreate(context.Context, *UserMultiDevicesShareInfo) (*UserMultiDevicesShareKeyword, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserMultiDevicesShareCreate not implemented")
+func (UnimplementedUserDeviceServer) UserDeviceShareMultiCreate(context.Context, *UserDeviceShareMultiInfo) (*UserDeviceShareMultiToken, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserDeviceShareMultiCreate not implemented")
 }
-func (UnimplementedUserDeviceServer) UserMultiDeivcesShareIndex(context.Context, *UserMultiDevicesShareKeyword) (*UserMultiDevicesShareInfo, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserMultiDeivcesShareIndex not implemented")
+func (UnimplementedUserDeviceServer) UserDeivceShareMultiIndex(context.Context, *UserDeviceShareMultiToken) (*UserDeviceShareMultiInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserDeivceShareMultiIndex not implemented")
 }
-func (UnimplementedUserDeviceServer) UserMultiDeivcesShareAccept(context.Context, *UserMultiDevicesShareAcceptReq) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserMultiDeivcesShareAccept not implemented")
+func (UnimplementedUserDeviceServer) UserDeivceShareMultiAccept(context.Context, *UserDeviceShareMultiAcceptReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserDeivceShareMultiAccept not implemented")
 }
 func (UnimplementedUserDeviceServer) mustEmbedUnimplementedUserDeviceServer() {}
 
@@ -5044,56 +5044,56 @@ func _UserDevice_UserDeviceTransfer_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserDevice_UserMultiDevicesShareCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserMultiDevicesShareInfo)
+func _UserDevice_UserDeviceShareMultiCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserDeviceShareMultiInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserDeviceServer).UserMultiDevicesShareCreate(ctx, in)
+		return srv.(UserDeviceServer).UserDeviceShareMultiCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.userDevice/userMultiDevicesShareCreate",
+		FullMethod: "/dm.userDevice/userDeviceShareMultiCreate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserDeviceServer).UserMultiDevicesShareCreate(ctx, req.(*UserMultiDevicesShareInfo))
+		return srv.(UserDeviceServer).UserDeviceShareMultiCreate(ctx, req.(*UserDeviceShareMultiInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserDevice_UserMultiDeivcesShareIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserMultiDevicesShareKeyword)
+func _UserDevice_UserDeivceShareMultiIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserDeviceShareMultiToken)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserDeviceServer).UserMultiDeivcesShareIndex(ctx, in)
+		return srv.(UserDeviceServer).UserDeivceShareMultiIndex(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.userDevice/userMultiDeivcesShareIndex",
+		FullMethod: "/dm.userDevice/userDeivceShareMultiIndex",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserDeviceServer).UserMultiDeivcesShareIndex(ctx, req.(*UserMultiDevicesShareKeyword))
+		return srv.(UserDeviceServer).UserDeivceShareMultiIndex(ctx, req.(*UserDeviceShareMultiToken))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserDevice_UserMultiDeivcesShareAccept_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserMultiDevicesShareAcceptReq)
+func _UserDevice_UserDeivceShareMultiAccept_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserDeviceShareMultiAcceptReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserDeviceServer).UserMultiDeivcesShareAccept(ctx, in)
+		return srv.(UserDeviceServer).UserDeivceShareMultiAccept(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dm.userDevice/userMultiDeivcesShareAccept",
+		FullMethod: "/dm.userDevice/userDeivceShareMultiAccept",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserDeviceServer).UserMultiDeivcesShareAccept(ctx, req.(*UserMultiDevicesShareAcceptReq))
+		return srv.(UserDeviceServer).UserDeivceShareMultiAccept(ctx, req.(*UserDeviceShareMultiAcceptReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -5146,16 +5146,16 @@ var UserDevice_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserDevice_UserDeviceTransfer_Handler,
 		},
 		{
-			MethodName: "userMultiDevicesShareCreate",
-			Handler:    _UserDevice_UserMultiDevicesShareCreate_Handler,
+			MethodName: "userDeviceShareMultiCreate",
+			Handler:    _UserDevice_UserDeviceShareMultiCreate_Handler,
 		},
 		{
-			MethodName: "userMultiDeivcesShareIndex",
-			Handler:    _UserDevice_UserMultiDeivcesShareIndex_Handler,
+			MethodName: "userDeivceShareMultiIndex",
+			Handler:    _UserDevice_UserDeivceShareMultiIndex_Handler,
 		},
 		{
-			MethodName: "userMultiDeivcesShareAccept",
-			Handler:    _UserDevice_UserMultiDeivcesShareAccept_Handler,
+			MethodName: "userDeivceShareMultiAccept",
+			Handler:    _UserDevice_UserDeivceShareMultiAccept_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

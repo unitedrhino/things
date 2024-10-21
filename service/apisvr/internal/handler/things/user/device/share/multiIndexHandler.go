@@ -14,7 +14,7 @@ import (
 // 获取批量分享的设备列表
 func MultiIndexHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.UserMultiDevicesShareToken
+		var req types.UserDeviceShareMultiToken
 		if err := httpx.Parse(r, &req); err != nil {
 			result.Http(w, r, nil, errors.Parameter.WithMsg("入参不正确:"+err.Error()))
 			return

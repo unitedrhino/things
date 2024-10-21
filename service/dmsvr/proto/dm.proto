@@ -340,11 +340,11 @@ service userDevice{
 
 //  rpc userDeviceOtaGetVersion(UserDeviceOtaGetVersionReq)returns(userDeviceOtaGetVersionResp);
 //创建批量分享二维码，设备列表写入缓存
-  rpc userMultiDevicesShareCreate(UserMultiDevicesShareInfo)returns(UserMultiDevicesShareKeyword);
+  rpc userDeviceShareMultiCreate(UserDeviceShareMultiInfo)returns(UserDeviceShareMultiToken);
   //扫码后获取设备列表
-  rpc userMultiDeivcesShareIndex(UserMultiDevicesShareKeyword)returns(UserMultiDevicesShareInfo);
+  rpc userDeivceShareMultiIndex(UserDeviceShareMultiToken)returns(UserDeviceShareMultiInfo);
   //接受批量分享的设备
-  rpc userMultiDeivcesShareAccept(UserMultiDevicesShareAcceptReq)returns(Empty);
+  rpc userDeivceShareMultiAccept(UserDeviceShareMultiAcceptReq)returns(Empty);
 }
 
 message OtaModuleInfoIndexReq{
@@ -454,7 +454,7 @@ message SharePerm{
   int64 perm =1;//1:r(只读) 3(默认):rw(可读可写)
 }
 
-message UserMultiDevicesShareInfo{
+message UserDeviceShareMultiInfo{
   repeated DeviceCore devices = 1;//设备信息
   map<string,SharePerm>  schemaPerm = 2;//物模型权限,只需要填写需要授权并授权的物模型id
   map<string,SharePerm> accessPerm = 3;//操作权限 hubLog:设备消息记录,ota:ota升级权限,deviceTiming:设备定时
@@ -465,11 +465,11 @@ message UserMultiDevicesShareInfo{
   int64 userID = 8;//生成分享的人id
 }
 
-message UserMultiDevicesShareKeyword{
+message UserDeviceShareMultiToken{
   string shareToken = 1;
 }
 
-message UserMultiDevicesShareAcceptReq{
+message UserDeviceShareMultiAcceptReq{
   string shareToken = 1;
   int64 sharedUserID = 3;//分享的对象
   string sharedUserAccount =2;//分享的账号(只读)

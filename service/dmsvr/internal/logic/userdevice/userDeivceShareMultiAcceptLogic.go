@@ -11,18 +11,17 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type UserMultiDeivcesShareAcceptLogic struct {
+type UserDeivceShareMultiAcceptLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewUserMultiDeivcesShareAcceptLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserMultiDeivcesShareAcceptLogic {
-	return &UserMultiDeivcesShareAcceptLogic{
+func NewUserDeivceShareMultiAcceptLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserDeivceShareMultiAcceptLogic {
+	return &UserDeivceShareMultiAcceptLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
@@ -30,7 +29,7 @@ func NewUserMultiDeivcesShareAcceptLogic(ctx context.Context, svcCtx *svc.Servic
 }
 
 // 接受批量分享的设备
-func (l *UserMultiDeivcesShareAcceptLogic) UserMultiDeivcesShareAccept(in *dm.UserMultiDevicesShareAcceptReq) (*dm.Empty, error) {
+func (l *UserDeivceShareMultiAcceptLogic) UserDeivceShareMultiAccept(in *dm.UserDeviceShareMultiAcceptReq) (*dm.Empty, error) {
 	multiDevices, err := l.svcCtx.UserMultiDeviceShare.GetData(l.ctx, in.ShareToken)
 	if err != nil {
 		return &dm.Empty{}, err
