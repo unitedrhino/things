@@ -101,11 +101,11 @@ func InitCache(svcCtx *svc.ServiceContext) {
 		svcCtx.UserDeviceShare = userDeviceShare
 	}
 	{
-		userMultiDeviceShare, err := caches.NewCache(caches.CacheConfig[dm.UserMultiDevicesShareInfo, string]{
+		userMultiDeviceShare, err := caches.NewCache(caches.CacheConfig[dm.UserDeviceShareMultiInfo, string]{
 			KeyType:   eventBus.ServerCacheKeyDmMultiDevicesShare,
 			FastEvent: svcCtx.FastEvent,
-			GetData: func(ctx context.Context, key string) (*dm.UserMultiDevicesShareInfo, error) {
-				return &dm.UserMultiDevicesShareInfo{}, errors.Failure.WithMsg("分享已过期")
+			GetData: func(ctx context.Context, key string) (*dm.UserDeviceShareMultiInfo, error) {
+				return &dm.UserDeviceShareMultiInfo{}, errors.Failure.WithMsg("分享已过期")
 			},
 			ExpireTime: 24 * time.Hour,
 		})

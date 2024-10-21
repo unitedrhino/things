@@ -15,14 +15,14 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type UserMultiDevicesShareCreateLogic struct {
+type UserDeviceShareMultiCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewUserMultiDevicesShareCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserMultiDevicesShareCreateLogic {
-	return &UserMultiDevicesShareCreateLogic{
+func NewUserDeviceShareMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserDeviceShareMultiCreateLogic {
+	return &UserDeviceShareMultiCreateLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
@@ -30,7 +30,7 @@ func NewUserMultiDevicesShareCreateLogic(ctx context.Context, svcCtx *svc.Servic
 }
 
 // rpc userDeviceOtaGetVersion(UserDeviceOtaGetVersionReq)returns(userDeviceOtaGetVersionResp);
-func (l *UserMultiDevicesShareCreateLogic) UserMultiDevicesShareCreate(in *dm.UserMultiDevicesShareInfo) (*dm.UserMultiDevicesShareKeyword, error) {
+func (l *UserDeviceShareMultiCreateLogic) UserDeviceShareMultiCreate(in *dm.UserDeviceShareMultiInfo) (*dm.UserDeviceShareMultiToken, error) {
 	// 写入caches
 	shareToken, _ := uuid.GenerateUUID()
 	uc := ctxs.GetUserCtx(l.ctx)
@@ -62,5 +62,5 @@ func (l *UserMultiDevicesShareCreateLogic) UserMultiDevicesShareCreate(in *dm.Us
 		}
 	}
 	l.svcCtx.UserMultiDeviceShare.SetData(l.ctx, shareToken, in)
-	return &dm.UserMultiDevicesShareKeyword{ShareToken: shareToken}, nil
+	return &dm.UserDeviceShareMultiToken{ShareToken: shareToken}, nil
 }

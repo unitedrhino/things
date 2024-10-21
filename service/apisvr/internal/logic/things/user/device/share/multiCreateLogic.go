@@ -24,11 +24,11 @@ func NewMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Multi
 	}
 }
 
-func (l *MultiCreateLogic) MultiCreate(req *types.UserMultiDevicesShareInfo) (resp *types.UserMultiDevicesShareToken, err error) {
+func (l *MultiCreateLogic) MultiCreate(req *types.UserDeviceShareMultiInfo) (resp *types.UserDeviceShareMultiToken, err error) {
 	//将需要分享的设备记录缓存
-	ret, err := l.svcCtx.UserDevice.UserMultiDevicesShareCreate(l.ctx, ToMuitlSharePb(req))
+	ret, err := l.svcCtx.UserDevice.UserDeviceShareMultiCreate(l.ctx, ToMuitlSharePb(req))
 	if err != nil {
 		return nil, err
 	}
-	return &types.UserMultiDevicesShareToken{ShareToken: ret.ShareToken}, err
+	return &types.UserDeviceShareMultiToken{ShareToken: ret.ShareToken}, err
 }
