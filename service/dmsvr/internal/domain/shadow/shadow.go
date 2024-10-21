@@ -11,7 +11,8 @@ import (
 
 const (
 	ControlAuto             = 0 //自动,当设备不在线的时候设置设备影子,设备在线时直接下发给设备
-	ControlOnly             = 2 //如果有设备影子只修改影子,没有的也不下发	ControlNo               = 1 //只实时下发,不在线报错
+	ControlNo               = 1 //只实时下发,不在线报错
+	ControlOnly             = 2 //如果有设备影子只修改影子,没有的也不下发
 	ControlOnlyCloud        = 3 //只修改云端的值
 	ControlOnlyCloudWithLog = 4 //只修改云端的值并记录操作日志
 	ControlNoLog            = 5 //只实时下发,不在线报错,且不记录日志
