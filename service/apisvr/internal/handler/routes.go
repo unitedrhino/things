@@ -26,6 +26,7 @@ import (
 	thingsproductremoteConfig "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/product/remoteConfig"
 	thingsproductschema "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/product/schema"
 	thingsprotocolinfo "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/protocol/info"
+	thingsprotocolservice "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/protocol/service"
 	thingsrulealarminfo "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/rule/alarm/info"
 	thingsrulealarmrecord "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/rule/alarm/record"
 	thingsrulealarmscene "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/rule/alarm/scene"
@@ -850,6 +851,27 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/protocol/info"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckTokenWare, serverCtx.InitCtxsWare},
+			[]rest.Route{
+				{
+					// 删除自定义协议服务器
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsprotocolservice.DeleteHandler(serverCtx),
+				},
+				{
+					// 获取自定义协议服务器信息列表
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsprotocolservice.IndexHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/protocol/service"),
 	)
 
 	server.AddRoutes(

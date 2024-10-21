@@ -21,6 +21,7 @@ func Migrate(c conf.Database) error {
 	err := db.AutoMigrate(
 		&DmDeviceMsgCount{},
 		&DmManufacturerInfo{},
+		&DmProtocolService{},
 		&DmOtaModuleInfo{},
 		&DmProductInfo{},
 		&DmProductCategory{},

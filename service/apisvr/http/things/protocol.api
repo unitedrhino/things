@@ -53,6 +53,31 @@ service api {
     post /read (WithIDOrCode) returns (ProtocolInfo)
 }
 
+@server(
+    group: things/protocol/service
+    prefix: /api/v1/things/protocol/service
+    accessCodePrefix: "thingsProtocolInfo"
+    accessNamePrefix: "协议管理"
+    accessGroup: "设备自定义"
+    middleware:  CheckTokenWare,InitCtxsWare
+)
+service api {
+    @doc(
+        summary: "删除自定义协议服务器"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
+    @handler delete
+    post /delete (WithID) returns ()
+    @doc(
+        summary: "获取自定义协议服务器信息列表"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
+    @handler index
+    post /index (ProtocolServiceIndexReq) returns (ProtocolServiceIndexResp)
+}
+
 type (
     ProtocolInfo  {
         ID            int64                  `json:"id,optional"`
@@ -90,6 +115,25 @@ type (
 
     ProtocolInfoIndexResp  {
         List []*ProtocolInfo `json:"list"`    //自定义协议信息
+        Total int64 `json:"total,optional"`  //拥有的总数
+    }
+)
+type (
+    ProtocolService {
+        ID  int64 `json:"id"`
+        Code  string `json:"code"`//协议code
+        IP  string `json:"ip"`// 协议服务的ip地址
+        Port  int64 `json:"port"`//监听的端口,如果没有填0即可
+        Status  int64 `json:"status"`//服务状态
+        UpdatedTime  int64 `json:"updatedTime"`//更新时间
+        CreatedTime  int64 `json:"createdTime"`//首次加入时间
+    }
+    ProtocolServiceIndexReq  {
+        Page *PageInfo `json:"page,optional"`           //分页信息,只获取一个则不填
+        Code string `json:"code"` //
+    }
+    ProtocolServiceIndexResp  {
+        List []*ProtocolService `json:"list"`    //自定义协议信息
         Total int64 `json:"total,optional"`  //拥有的总数
     }
 )

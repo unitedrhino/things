@@ -166,6 +166,9 @@ type (
 	ProtocolInfo                      = dm.ProtocolInfo
 	ProtocolInfoIndexReq              = dm.ProtocolInfoIndexReq
 	ProtocolInfoIndexResp             = dm.ProtocolInfoIndexResp
+	ProtocolService                   = dm.ProtocolService
+	ProtocolServiceIndexReq           = dm.ProtocolServiceIndexReq
+	ProtocolServiceIndexResp          = dm.ProtocolServiceIndexResp
 	RemoteConfigCreateReq             = dm.RemoteConfigCreateReq
 	RemoteConfigIndexReq              = dm.RemoteConfigIndexReq
 	RemoteConfigIndexResp             = dm.RemoteConfigIndexResp

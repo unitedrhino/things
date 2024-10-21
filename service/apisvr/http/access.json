@@ -1276,6 +1276,16 @@
           "businessType": "delete",
           "desc": "",
           "authType": "admin"
+        },
+        {
+          "accessCode": "thingsProtocolInfoDelete",
+          "method": "POST",
+          "route": "/api/v1/things/protocol/service/delete",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "delete",
+          "desc": "",
+          "authType": "admin"
         }
       ],
       "authType": "admin"
@@ -1301,6 +1311,16 @@
           "accessCode": "thingsProtocolInfoFind",
           "method": "POST",
           "route": "/api/v1/things/protocol/info/read",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "find",
+          "desc": "",
+          "authType": "admin"
+        },
+        {
+          "accessCode": "thingsProtocolInfoFind",
+          "method": "POST",
+          "route": "/api/v1/things/protocol/service/index",
           "name": "",
           "isNeedAuth": 1,
           "businessType": "find",

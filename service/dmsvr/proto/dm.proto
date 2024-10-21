@@ -196,6 +196,11 @@ service ProtocolManage {
   rpc protocolInfoUpdate(ProtocolInfo)     returns (Empty);
   //协议删除
   rpc protocolInfoDelete(WithID)     returns (Empty);
+
+  //更新服务状态,只给服务调用
+  rpc protocolServiceUpdate(ProtocolService)returns(Empty);
+  rpc protocolServiceDelete(WithID)returns(Empty);
+  rpc protocolServiceIndex(ProtocolServiceIndexReq)returns(ProtocolServiceIndexResp);
 }
 
 service DeviceGroup {
@@ -535,6 +540,26 @@ message ProtocolInfoIndexReq{
 message ProtocolInfoIndexResp{
   repeated ProtocolInfo list = 1;
   int64 total = 2;
+}
+
+message ProtocolServiceIndexReq{
+  PageInfo page = 1;
+  string  code =2;//  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
+}
+
+message ProtocolServiceIndexResp{
+  repeated ProtocolService list = 1;
+  int64 total = 2;
+}
+
+message ProtocolService {
+  int64  id = 1;
+  string code =2;//协议code
+  string ip =3;// 协议服务的ip地址
+  int64 port =4;//监听的端口,如果没有填0即可
+  int64 status =5;//服务状态
+  int64 updatedTime =6;//更新时间
+  int64 createdTime = 7;//首次加入时间
 }
 
 message ProtocolInfo{

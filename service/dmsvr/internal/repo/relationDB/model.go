@@ -235,6 +235,19 @@ func (m *DmProtocolInfo) TableName() string {
 	return "dm_protocol_info"
 }
 
+type DmProtocolService struct {
+	ID     int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	Code   string `gorm:"column:code;uniqueIndex:pc;type:varchar(100);default:iThings"` //
+	Ip     string `gorm:"column:ip;uniqueIndex:pc;type:varchar(100);not null"`          //
+	Port   int64  `gorm:"column:port;uniqueIndex:pc;type:varchar(200)"`                 //
+	Status int64  `gorm:"column:status;type:bigint;default:2"`
+	stores.NoDelTime
+}
+
+func (m *DmProtocolService) TableName() string {
+	return "dm_protocol_service"
+}
+
 // 产品自定义协议表
 type DmProductCustom struct {
 	ID              int64                        `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`

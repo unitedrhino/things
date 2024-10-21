@@ -1377,6 +1377,26 @@ type ProtocolInfoIndexResp struct {
 	Total int64           `json:"total,optional"` //拥有的总数
 }
 
+type ProtocolService struct {
+	ID          int64  `json:"id"`
+	Code        string `json:"code"`        //协议code
+	IP          string `json:"ip"`          // 协议服务的ip地址
+	Port        int64  `json:"port"`        //监听的端口,如果没有填0即可
+	Status      int64  `json:"status"`      //服务状态
+	UpdatedTime int64  `json:"updatedTime"` //更新时间
+	CreatedTime int64  `json:"createdTime"` //首次加入时间
+}
+
+type ProtocolServiceIndexReq struct {
+	Page *PageInfo `json:"page,optional"` //分页信息,只获取一个则不填
+	Code string    `json:"code"`          //
+}
+
+type ProtocolServiceIndexResp struct {
+	List  []*ProtocolService `json:"list"`           //自定义协议信息
+	Total int64              `json:"total,optional"` //拥有的总数
+}
+
 type SceneFlowInfo struct {
 	Type    string `json:"type"`           //流程类型 then
 	SubType string `json:"subType"`        //子类型 设备执行
