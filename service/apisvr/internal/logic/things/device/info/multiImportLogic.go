@@ -2,7 +2,9 @@ package info
 
 import (
 	"context"
+	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
+	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/logic"
@@ -33,10 +35,12 @@ func NewMultiImportLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Multi
 
 func (l *MultiImportLogic) MultiImport(req *types.DeviceMultiImportReq, rows [][]string) (resp *types.DeviceMultiImportResp, err error) {
 	var (
-		sm      = sync.Map{}
-		egg     errgroup.Group
-		headers *types.DeviceMultiImportRow
-		errdata []*types.DeviceMultiImportRow
+		sm           = sync.Map{}
+		egg          errgroup.Group
+		headers      *types.DeviceMultiImportRow
+		errdata      []*types.DeviceMultiImportRow
+		GatewayMap   map[devices.Core][]*devices.Core
+		gatewayMutex sync.Mutex
 	)
 
 	for i, cell := range rows {
@@ -63,6 +67,27 @@ func (l *MultiImportLogic) MultiImport(req *types.DeviceMultiImportReq, rows [][
 					return nil
 				}
 				sm.Store(idx, errors.Fmt(err).GetMsg())
+				return nil
+			}
+			if importRow.GatewayDeviceName != "" {
+				core := devices.Core{
+					ProductID:  importRow.ProductID,
+					DeviceName: importRow.DeviceName,
+				}
+				if core.ProductID == "" {
+					di, err := l.svcCtx.DeviceCache.GetData(l.ctx, core)
+					if err != nil {
+						l.Errorf("importRow:%v err:%v", importRow, err)
+						return nil
+					}
+					core.ProductID = di.ProductID
+				}
+				gatewayMutex.Lock()
+				defer gatewayMutex.Unlock()
+				GatewayMap[core] = append(GatewayMap[core], &devices.Core{
+					ProductID:  importRow.ProductID,
+					DeviceName: importRow.DeviceName,
+				})
 			}
 			return nil
 		})
@@ -74,6 +99,20 @@ func (l *MultiImportLogic) MultiImport(req *types.DeviceMultiImportReq, rows [][
 		return nil, err
 	}
 
+	if len(GatewayMap) > 0 {
+		ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
+			for g, d := range GatewayMap {
+				_, err := l.svcCtx.DeviceM.DeviceGatewayMultiCreate(ctx, &dm.DeviceGatewayMultiCreateReq{
+					Gateway:     utils.Copy[dm.DeviceCore](g),
+					IsNotNotify: true,
+					List:        utils.CopySlice[dm.DeviceGatewayBindDevice](d),
+				})
+				if err != nil {
+					logx.WithContext(ctx).Errorf("g:%v,dev:%v", g, d, err)
+				}
+			}
+		})
+	}
 	sm.Range(func(i, value any) bool {
 		idx := i.(int64) //这里必须是 int64，因为下面 key.(int64) 要推断
 		importRow := l.deviceMultiImportRowToDto(idx, rows[idx])

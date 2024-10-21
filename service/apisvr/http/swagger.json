@@ -8553,6 +8553,14 @@
           "type": "string",
           "description": "【选填】设备秘钥"
         },
+        "gatewayProductID": {
+          "type": "string",
+          "description": "【选填】绑定的网关产品ID(网关的设备ID全局唯一可不填)"
+        },
+        "gatewayDeviceName": {
+          "type": "string",
+          "description": "【选填】绑定的网关设备ID"
+        },
         "logLevel": {
           "type": "string",
           "description": "【选填】日志级别（关闭/错误/告警/信息/调试）"
@@ -8581,6 +8589,8 @@
         "deviceName",
         "deviceAlias",
         "secret",
+        "gatewayProductID",
+        "gatewayDeviceName",
         "logLevel",
         "tags",
         "position",
