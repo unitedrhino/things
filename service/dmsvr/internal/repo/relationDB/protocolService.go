@@ -2,9 +2,11 @@ package relationDB
 
 import (
 	"context"
+	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/stores"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
+	"time"
 )
 
 /*
@@ -79,6 +81,12 @@ func (p ProtocolServiceRepo) CountByFilter(ctx context.Context, f ProtocolServic
 
 func (p ProtocolServiceRepo) Update(ctx context.Context, data *DmProtocolService) error {
 	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
+	return stores.ErrFmt(err)
+}
+
+func (p ProtocolServiceRepo) DownStatus(ctx context.Context) error {
+	err := p.db.WithContext(ctx).Model(DmProtocolService{}).Where("status = ? and updated_time<?", def.True, time.Now().Add(-time.Minute*5)).
+		Update("status", def.False).Error
 	return stores.ErrFmt(err)
 }
 

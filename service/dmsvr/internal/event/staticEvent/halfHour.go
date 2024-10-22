@@ -18,21 +18,21 @@ import (
 	"time"
 )
 
-type StaticHandle struct {
+type HalfHourHandle struct {
 	svcCtx *svc.ServiceContext
 	ctx    context.Context
 	logx.Logger
 }
 
-func NewStaticHandle(ctx context.Context, svcCtx *svc.ServiceContext) *StaticHandle {
-	return &StaticHandle{
+func NewHalfHourHandle(ctx context.Context, svcCtx *svc.ServiceContext) *HalfHourHandle {
+	return &HalfHourHandle{
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 	}
 }
 
-func (l *StaticHandle) Handle() error { //产品品类设备数量统计
+func (l *HalfHourHandle) Handle() error { //产品品类设备数量统计
 	w := sync.WaitGroup{}
 	w.Add(6)
 	utils.Go(l.ctx, func() {
@@ -86,7 +86,7 @@ func (l *StaticHandle) Handle() error { //产品品类设备数量统计
 	w.Wait()
 	return nil
 }
-func (l *StaticHandle) AreaDeviceStatic() error { //区域下的设备数量统计
+func (l *HalfHourHandle) AreaDeviceStatic() error { //区域下的设备数量统计
 	ret, err := l.svcCtx.AreaM.AreaInfoIndex(l.ctx, &sys.AreaInfoIndexReq{})
 	if err != nil {
 		return err
@@ -101,7 +101,7 @@ func (l *StaticHandle) AreaDeviceStatic() error { //区域下的设备数量统�
 
 var count atomic.Int64
 
-func (l *StaticHandle) DeviceOnlineFix() error { //设备在线修复
+func (l *HalfHourHandle) DeviceOnlineFix() error { //设备在线修复
 	nc := count.Add(1)
 	if nc/2 == 1 { //1小时处理一次
 		return nil
@@ -130,7 +130,7 @@ func (l *StaticHandle) DeviceOnlineFix() error { //设备在线修复
 	return nil
 }
 
-func (l *StaticHandle) DeviceExp() error { //设备过期处理
+func (l *HalfHourHandle) DeviceExp() error { //设备过期处理
 	{ //有效期到了之后不启用
 		err := relationDB.NewDeviceInfoRepo(l.ctx).UpdateWithField(l.ctx,
 			relationDB.DeviceFilter{ExpTime: stores.CmpAnd(stores.CmpLte(time.Now()), stores.CmpIsNull(false))},
@@ -149,7 +149,7 @@ func (l *StaticHandle) DeviceExp() error { //设备过期处理
 	}
 	return nil
 }
-func (l *StaticHandle) DeviceAbnormalRecover() error { //设备上下线异常恢复
+func (l *HalfHourHandle) DeviceAbnormalRecover() error { //设备上下线异常恢复
 	now := time.Now()
 	dis, err := relationDB.NewDeviceInfoRepo(l.ctx).FindByFilter(l.ctx, relationDB.DeviceFilter{
 		Statuses: []int64{def.DeviceStatusAbnormal},
@@ -189,7 +189,7 @@ func (l *StaticHandle) DeviceAbnormalRecover() error { //设备上下线异常�
 	return nil
 }
 
-func (l *StaticHandle) DeviceAbnormalSet() error { //设备上下线异常设置
+func (l *HalfHourHandle) DeviceAbnormalSet() error { //设备上下线异常设置
 	now := time.Now()
 	dis, err := relationDB.NewDeviceInfoRepo(l.ctx).FindByFilter(l.ctx, relationDB.DeviceFilter{
 		LastLoginTime: &def.TimeRange{
@@ -232,7 +232,7 @@ func (l *StaticHandle) DeviceAbnormalSet() error { //设备上下线异常设置
 	return nil
 }
 
-func (l *StaticHandle) DeviceMsgCount() error { //产品品类设备数量统计
+func (l *HalfHourHandle) DeviceMsgCount() error { //产品品类设备数量统计
 	end := time.Now()
 	var fm = end.Minute() / 30 * 30
 	var countData []*relationDB.DmDeviceMsgCount
@@ -273,7 +273,7 @@ func (l *StaticHandle) DeviceMsgCount() error { //产品品类设备数量统计
 	return nil
 }
 
-func (l *StaticHandle) ProductCategoryStatic() error { //产品品类设备数量统计
+func (l *HalfHourHandle) ProductCategoryStatic() error { //产品品类设备数量统计
 	pcDB := relationDB.NewProductCategoryRepo(l.ctx)
 	pcs, err := pcDB.FindByFilter(l.ctx, relationDB.ProductCategoryFilter{}, nil)
 	if err != nil {
