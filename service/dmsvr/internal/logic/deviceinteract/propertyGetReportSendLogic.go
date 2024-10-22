@@ -34,9 +34,9 @@ func NewPropertyGetReportSendLogic(ctx context.Context, svcCtx *svc.ServiceConte
 		Logger: logx.WithContext(ctx),
 	}
 }
-func (l *PropertyGetReportSendLogic) initMsg(productID string) error {
+func (l *PropertyGetReportSendLogic) initMsg(dev devices.Core) error {
 	var err error
-	l.schema, err = l.svcCtx.SchemaRepo.GetData(l.ctx, productID)
+	l.schema, err = l.svcCtx.SchemaRepo.GetData(l.ctx, dev)
 	if err != nil {
 		return errors.System.AddDetail(err)
 	}
@@ -61,7 +61,7 @@ func (l *PropertyGetReportSendLogic) PropertyGetReportSend(in *dm.PropertyGetRep
 		return nil, err
 	}
 
-	err = l.initMsg(in.ProductID)
+	err = l.initMsg(devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
 	if err != nil {
 		return nil, err
 	}

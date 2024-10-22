@@ -63,7 +63,7 @@ func (l *ProductInitLogic) initOne(in *relationDB.DmProductInfo) error {
 		return err
 	}
 	{ //物模型初始化
-		t, err := l.svcCtx.SchemaRepo.GetData(l.ctx, in.ProductID)
+		t, err := l.svcCtx.SchemaRepo.GetData(l.ctx, devices.Core{ProductID: in.ProductID})
 		if err != nil {
 			l.Errorf("%s.SchemaManaRepo.GetSchemaModel failure,err:%v", utils.FuncName(), err)
 			return err

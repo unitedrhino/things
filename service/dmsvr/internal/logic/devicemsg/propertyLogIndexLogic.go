@@ -49,7 +49,11 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 	if in.Interval != 0 && in.ArgFunc == "" {
 		return nil, errors.Parameter.AddMsg("填写了间隔就必须填写聚合函数")
 	}
-	t, err := l.svcCtx.SchemaRepo.GetData(l.ctx, in.ProductID)
+	gd := devices.Core{ProductID: in.ProductID}
+	if len(in.DeviceNames) == 1 {
+		gd.DeviceName = in.DeviceNames[0]
+	}
+	t, err := l.svcCtx.SchemaRepo.GetData(l.ctx, gd)
 	if err != nil {
 		return nil, err
 	}

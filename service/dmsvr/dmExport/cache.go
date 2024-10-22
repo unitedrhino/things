@@ -63,17 +63,17 @@ func NewUserShareCache(devM userdevice.UserDevice, fastEvent *eventBus.FastEvent
 	})
 }
 
-type SchemaCacheT = *caches.Cache[schema.Model, string]
+type SchemaCacheT = *caches.Cache[schema.Model, devices.Core]
 
 func NewSchemaInfoCache(pm productmanage.ProductManage, fastEvent *eventBus.FastEvent) (SchemaCacheT, error) {
-	return caches.NewCache(caches.CacheConfig[schema.Model, string]{
+	return caches.NewCache(caches.CacheConfig[schema.Model, devices.Core]{
 		KeyType:   eventBus.ServerCacheKeyDmSchema,
 		FastEvent: fastEvent,
-		Fmt: func(ctx context.Context, key string, data *schema.Model) {
+		Fmt: func(ctx context.Context, key devices.Core, data *schema.Model) {
 			data.ValidateWithFmt()
 		},
-		GetData: func(ctx context.Context, key string) (*schema.Model, error) {
-			info, err := pm.ProductSchemaTslRead(ctx, &dm.ProductSchemaTslReadReq{ProductID: key})
+		GetData: func(ctx context.Context, key devices.Core) (*schema.Model, error) {
+			info, err := pm.ProductSchemaTslRead(ctx, &dm.ProductSchemaTslReadReq{ProductID: key.ProductID})
 			if err != nil {
 				return nil, err
 			}

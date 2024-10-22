@@ -42,9 +42,9 @@ type SvrClient struct {
 	ProjectM           projectmanage.ProjectManage
 	DeviceCache        dmExport.DeviceCacheT
 	UserShareCache     dmExport.UserShareCacheT
-	ProductCache       dmExport.ProductCacheT
-	ProductSchemaCache dmExport.SchemaCacheT
-	ProjectCache       sysExport.ProjectCacheT
+	ProductCache dmExport.ProductCacheT
+	SchemaCache  dmExport.SchemaCacheT
+	ProjectCache sysExport.ProjectCacheT
 	Ops                ops.Ops
 }
 
@@ -123,17 +123,17 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			SysCommon:          common.NewCommon(zrpc.MustNewClient(c.SysRpc.Conf)),
 			NotifyM:            notifyM,
 			ProjectM:           projectM,
-			ProjectCache:       projectC,
-			ProductM:           productM,
-			Ops:                Ops,
-			DeviceInteract:     deviceInteract,
-			DeviceMsg:          deviceMsg,
-			DeviceM:            deviceM,
-			DeviceG:            deviceG,
-			DeviceCache:        dic,
-			ProductCache:       pic,
-			UserShareCache:     udc,
-			ProductSchemaCache: psc,
+			ProjectCache:   projectC,
+			ProductM:       productM,
+			Ops:            Ops,
+			DeviceInteract: deviceInteract,
+			DeviceMsg:      deviceMsg,
+			DeviceM:        deviceM,
+			DeviceG:        deviceG,
+			DeviceCache:    dic,
+			ProductCache:   pic,
+			UserShareCache: udc,
+			SchemaCache:    psc,
 		},
 	}
 }

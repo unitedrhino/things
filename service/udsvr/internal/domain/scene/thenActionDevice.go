@@ -114,7 +114,7 @@ func (a *ActionDevice) Validate(repo CheckRepo) error {
 	if repo.Info.DeviceMode != DeviceModeSingle {
 		a.DeviceAlias = GetDeviceAlias(repo.Ctx, repo.DeviceCache, a.ProductID, a.DeviceName)
 	}
-	v, err := repo.ProductSchemaCache.GetData(repo.Ctx, a.ProductID)
+	v, err := repo.SchemaCache.GetData(repo.Ctx, devices.Core{ProductID: a.ProductID, DeviceName: a.DeviceName})
 	if err != nil {
 		return err
 	}

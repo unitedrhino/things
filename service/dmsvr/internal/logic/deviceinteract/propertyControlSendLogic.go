@@ -41,9 +41,9 @@ func NewPropertyControlSendLogic(ctx context.Context, svcCtx *svc.ServiceContext
 		Logger: logx.WithContext(ctx),
 	}
 }
-func (l *PropertyControlSendLogic) initMsg(productID string) error {
+func (l *PropertyControlSendLogic) initMsg(dev devices.Core) error {
 	var err error
-	l.model, err = l.svcCtx.SchemaRepo.GetData(l.ctx, productID)
+	l.model, err = l.svcCtx.SchemaRepo.GetData(l.ctx, dev)
 	if err != nil {
 		return errors.System.AddDetail(err)
 	}
@@ -69,7 +69,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 			return nil, err
 		}
 	}
-	err = l.initMsg(in.ProductID)
+	err = l.initMsg(devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
 	if err != nil {
 		return nil, err
 	}

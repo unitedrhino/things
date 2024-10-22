@@ -39,14 +39,15 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 		total   int
 		dataMap map[string]*schema.Property
 	)
-	_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{
+	dc := devices.Core{
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
-	}, nil)
+	}
+	_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, dc, nil)
 	if err != nil {
 		return nil, err
 	}
-	temp, err := l.svcCtx.SchemaRepo.GetData(l.ctx, in.ProductID)
+	temp, err := l.svcCtx.SchemaRepo.GetData(l.ctx, dc)
 	if err != nil {
 		return nil, errors.System.AddDetail(err)
 	}

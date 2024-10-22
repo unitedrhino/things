@@ -33,9 +33,9 @@ func NewActionRespLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Action
 		Logger: logx.WithContext(ctx),
 	}
 }
-func (l *ActionRespLogic) initMsg(productID string) error {
+func (l *ActionRespLogic) initMsg(dev devices.Core) error {
 	var err error
-	l.schema, err = l.svcCtx.SchemaRepo.GetData(l.ctx, productID)
+	l.schema, err = l.svcCtx.SchemaRepo.GetData(l.ctx, dev)
 	if err != nil {
 		return errors.System.AddDetail(err)
 	}
@@ -44,7 +44,7 @@ func (l *ActionRespLogic) initMsg(productID string) error {
 
 // 回复调用设备行为
 func (l *ActionRespLogic) ActionResp(in *dm.ActionRespReq) (*dm.Empty, error) {
-	err := l.initMsg(in.ProductID)
+	err := l.initMsg(devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
 	if err != nil {
 		return nil, err
 	}

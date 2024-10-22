@@ -52,7 +52,7 @@ type ServiceContext struct {
 
 	OssClient            *oss.Client
 	TimedM               timedmanage.TimedManage
-	SchemaRepo           *caches.Cache[schema.Model, string]
+	SchemaRepo           *caches.Cache[schema.Model, devices.Core]
 	SchemaManaRepo       msgThing.SchemaDataRepo
 	HubLogRepo           deviceLog.HubRepo
 	StatusRepo           deviceLog.StatusRepo
@@ -107,20 +107,20 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	serverMsg, err := eventBus.NewFastEvent(c.Event, c.Name, nodeID)
 	logx.Must(err)
 
-	ccSchemaR, err := caches.NewCache(caches.CacheConfig[schema.Model, string]{
+	ccSchemaR, err := caches.NewCache(caches.CacheConfig[schema.Model, devices.Core]{
 		KeyType:   eventBus.ServerCacheKeyDmSchema,
 		FastEvent: serverMsg,
-		GetData: func(ctx context.Context, key string) (*schema.Model, error) {
+		GetData: func(ctx context.Context, key devices.Core) (*schema.Model, error) {
 			db := relationDB.NewProductSchemaRepo(ctx)
-			dbSchemas, err := db.FindByFilter(ctx, relationDB.ProductSchemaFilter{ProductID: key}, nil)
+			dbSchemas, err := db.FindByFilter(ctx, relationDB.ProductSchemaFilter{ProductID: key.ProductID}, nil)
 			if err != nil {
 				return nil, err
 			}
-			schemaModel := relationDB.ToSchemaDo(key, dbSchemas)
+			schemaModel := relationDB.ToSchemaDo(key.ProductID, dbSchemas)
 			schemaModel.ValidateWithFmt()
 			return schemaModel, nil
 		},
-		Fmt: func(ctx context.Context, key string, data *schema.Model) {
+		Fmt: func(ctx context.Context, key devices.Core, data *schema.Model) {
 			data.ValidateWithFmt()
 		},
 		ExpireTime: 10 * time.Minute,

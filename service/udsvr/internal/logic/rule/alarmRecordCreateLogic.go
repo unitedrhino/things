@@ -5,7 +5,10 @@ import (
 	"fmt"
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"gitee.com/unitedrhino/share/def"
+	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/domain/scene"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/repo/relationDB"
 	"time"
@@ -114,6 +117,36 @@ func (l *AlarmRecordCreateLogic) AlarmRecordCreate(in *ud.AlarmRecordCreateReq) 
 				return nil, err
 			}
 			continue
+		}
+	}
+	if in.DeviceName != "" && in.ProductID != "" {
+		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
+		if err != nil {
+			l.Error(err)
+			return &ud.Empty{}, nil
+		}
+		total, err := relationDB.NewAlarmRecordRepo(l.ctx).CountByFilter(l.ctx, relationDB.AlarmRecordFilter{
+			ProductID:    in.ProductID,
+			DeviceName:   in.DeviceName,
+			DealStatuses: []int64{scene.AlarmDealStatusWaring, scene.AlarmDealStatusInHand},
+		})
+		if err != nil {
+			l.Error(err)
+			return &ud.Empty{}, nil
+		}
+		if total > 0 && utils.SliceIn(di.Status, def.DeviceStatusOnline, def.DeviceStatusOffline) { //告警中的状态
+			_, err := l.svcCtx.DeviceM.DeviceInfoUpdate(l.ctx, &dm.DeviceInfo{ProductID: in.ProductID, DeviceName: in.DeviceName, Status: def.DeviceStatusWarming})
+			if err != nil {
+				l.Error(err)
+				return &ud.Empty{}, nil
+			}
+		}
+		if total == 0 && di.Status == def.DeviceStatusWarming {
+			_, err := l.svcCtx.DeviceM.DeviceInfoUpdate(l.ctx, &dm.DeviceInfo{ProductID: in.ProductID, DeviceName: in.DeviceName, Status: di.IsOnline + 1})
+			if err != nil {
+				l.Error(err)
+				return &ud.Empty{}, nil
+			}
 		}
 	}
 	return &ud.Empty{}, nil

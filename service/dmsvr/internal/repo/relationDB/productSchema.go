@@ -116,7 +116,7 @@ func (p ProductSchemaRepo) UpdateTag(ctx context.Context, productIDs []string, i
 func (p ProductSchemaRepo) UpdateWithCommon(ctx context.Context, common *DmCommonSchema) error {
 	data := DmProductSchema{
 		DmSchemaCore: DmSchemaCore{
-			ExtendConfig:      common.ExtendConfig,
+			//ExtendConfig:      common.ExtendConfig,
 			Name:              common.Name,
 			Required:          common.Required,
 			IsCanSceneLinkage: common.IsCanSceneLinkage,

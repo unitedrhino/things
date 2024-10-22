@@ -3,6 +3,7 @@ package productmanagelogic
 import (
 	"context"
 	"gitee.com/unitedrhino/share/ctxs"
+	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/eventBus"
 	"gitee.com/unitedrhino/share/utils"
@@ -58,7 +59,7 @@ func (l *ProductInfoDeleteLogic) ProductInfoDelete(in *dm.ProductInfoDeleteReq) 
 	return &dm.Empty{}, nil
 }
 func (l *ProductInfoDeleteLogic) DropProduct(in *dm.ProductInfoDeleteReq) error {
-	pt, err := l.svcCtx.SchemaRepo.GetData(l.ctx, in.ProductID)
+	pt, err := l.svcCtx.SchemaRepo.GetData(l.ctx, devices.Core{ProductID: in.ProductID})
 	if err != nil {
 		return errors.System.AddDetail(err)
 	}
@@ -77,7 +78,7 @@ func (l *ProductInfoDeleteLogic) DropProduct(in *dm.ProductInfoDeleteReq) error 
 		l.Errorf("%s.SchemaManaRepo.DeleteProduct err=%v", utils.FuncName(), utils.Fmt(err))
 		return err
 	}
-	err = l.svcCtx.SchemaRepo.SetData(l.ctx, in.ProductID, nil)
+	err = l.svcCtx.SchemaRepo.SetData(l.ctx, devices.Core{ProductID: in.ProductID}, nil)
 	if err != nil {
 		l.Errorf("%s.SchemaRepo.ClearCache err=%v", utils.FuncName(), utils.Fmt(err))
 		return err

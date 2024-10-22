@@ -37,9 +37,9 @@ func NewActionSendLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Action
 		Logger: logx.WithContext(ctx),
 	}
 }
-func (l *ActionSendLogic) initMsg(productID string) error {
+func (l *ActionSendLogic) initMsg(dev devices.Core) error {
 	var err error
-	l.schema, err = l.svcCtx.SchemaRepo.GetData(l.ctx, productID)
+	l.schema, err = l.svcCtx.SchemaRepo.GetData(l.ctx, dev)
 	if err != nil {
 		return errors.System.AddDetail(err)
 	}
@@ -64,7 +64,7 @@ func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (ret *dm.ActionSendRe
 		return nil, err
 	}
 
-	err = l.initMsg(in.ProductID)
+	err = l.initMsg(devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
 	if err != nil {
 		return nil, err
 	}

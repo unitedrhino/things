@@ -14,16 +14,16 @@ import (
 import "context"
 
 type CheckRepo struct {
-	Ctx                context.Context
-	DeviceCache        dmExport.DeviceCacheT
-	UserShareCache     dmExport.UserShareCacheT
-	ProductCache       dmExport.ProductCacheT
-	ProductSchemaCache dmExport.SchemaCacheT
-	ProjectCache       sysExport.ProjectCacheT
-	DeviceMsg          devicemsg.DeviceMsg
-	Common             common.Common
-	GetSceneInfo       func(ctx context.Context, sceneID int64) (*Info, error)
-	Info               *Info
+	Ctx            context.Context
+	DeviceCache    dmExport.DeviceCacheT
+	UserShareCache dmExport.UserShareCacheT
+	ProductCache   dmExport.ProductCacheT
+	SchemaCache    dmExport.SchemaCacheT
+	ProjectCache   sysExport.ProjectCacheT
+	DeviceMsg      devicemsg.DeviceMsg
+	Common         common.Common
+	GetSceneInfo   func(ctx context.Context, sceneID int64) (*Info, error)
+	Info           *Info
 }
 
 type ActionRepo struct {

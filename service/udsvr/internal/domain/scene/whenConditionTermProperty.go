@@ -2,6 +2,7 @@ package scene
 
 import (
 	"context"
+	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
@@ -48,7 +49,7 @@ func (c *TermProperty) Validate(repo CheckRepo) error {
 	if repo.Info.DeviceMode != DeviceModeSingle {
 		c.DeviceAlias = GetDeviceAlias(repo.Ctx, repo.DeviceCache, c.ProductID, c.DeviceName)
 	}
-	v, err := repo.ProductSchemaCache.GetData(repo.Ctx, c.ProductID)
+	v, err := repo.SchemaCache.GetData(repo.Ctx, devices.Core{ProductID: c.ProductID, DeviceName: c.DeviceName})
 	if err != nil {
 		return err
 	}
@@ -68,7 +69,7 @@ func (c *TermProperty) Validate(repo CheckRepo) error {
 	return nil
 }
 func (c *TermProperty) IsHit(ctx context.Context, columnType TermColumnType, repo CheckRepo) bool {
-	sm, err := repo.ProductSchemaCache.GetData(ctx, c.ProductID)
+	sm, err := repo.SchemaCache.GetData(ctx, devices.Core{ProductID: c.ProductID, DeviceName: c.DeviceName})
 	if err != nil {
 		logx.WithContext(ctx).Errorf("%s.GetSchemaModel err:%v", utils.FuncName(), err)
 		return false

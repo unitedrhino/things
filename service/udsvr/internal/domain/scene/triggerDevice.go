@@ -84,7 +84,7 @@ func (t *TriggerDevice) Validate(repo CheckRepo) error {
 		if len(t.DataID) == 0 {
 			return errors.Parameter.AddMsg("触发设备类型中的标识符需要填写")
 		}
-		v, err := repo.ProductSchemaCache.GetData(repo.Ctx, t.ProductID)
+		v, err := repo.SchemaCache.GetData(repo.Ctx, devices.Core{ProductID: t.ProductID, DeviceName: t.DeviceName})
 		if err != nil {
 			return err
 		}
@@ -104,7 +104,7 @@ func (t *TriggerDevice) Validate(repo CheckRepo) error {
 		if len(t.DataID) == 0 {
 			return errors.Parameter.AddMsg("触发设备类型中的标识符需要填写")
 		}
-		v, err := repo.ProductSchemaCache.GetData(repo.Ctx, t.ProductID)
+		v, err := repo.SchemaCache.GetData(repo.Ctx, devices.Core{ProductID: t.ProductID, DeviceName: t.DeviceName})
 		if err != nil {
 			return err
 		}

@@ -279,6 +279,21 @@ func (m *DmProductSchema) TableName() string {
 	return "dm_product_schema"
 }
 
+// 产品物模型表
+type DmDeviceSchema struct {
+	ID         int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	ProductID  string `gorm:"column:product_id;uniqueIndex:identifier;index:product_id_type;type:varchar(100);NOT NULL"`  // 产品id
+	DeviceName string `gorm:"column:device_name;uniqueIndex:identifier;index:product_id_type;type:varchar(100);NOT NULL"` // 设备名
+	DmSchemaCore
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:identifier"`
+	ProductInfo *DmProductInfo     `gorm:"foreignKey:ProductID;references:ProductID"`
+}
+
+func (m *DmDeviceSchema) TableName() string {
+	return "dm_device_schema"
+}
+
 type DmSchemaCore struct {
 	Tag               schema.Tag `gorm:"column:tag;type:smallint;default:1"`                                  // 物模型标签 1:自定义 2:可选 3:必选  必选不可删除
 	Type              int64      `gorm:"column:type;index:product_id_type;type:smallint;default:1"`           // 物模型类型 1:property属性 2:event事件 3:action行为

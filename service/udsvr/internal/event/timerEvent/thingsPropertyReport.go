@@ -59,7 +59,7 @@ func (l *TimerHandle) SceneThingPropertyReport(in application.PropertyReport) er
 		do.DeviceName = di.DeviceName
 		do.DeviceAlias = di.DeviceAlias.GetValue()
 		do.ProductID = di.ProductID
-		ps, err := l.svcCtx.ProductSchemaCache.GetData(l.ctx, in.Device.ProductID)
+		ps, err := l.svcCtx.SchemaCache.GetData(l.ctx, in.Device)
 		if err != nil {
 			l.Error(err)
 			continue

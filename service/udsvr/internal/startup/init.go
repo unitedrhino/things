@@ -14,6 +14,8 @@ import (
 	"gitee.com/unitedrhino/share/events/topics"
 	"gitee.com/unitedrhino/share/tools"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/service/udsvr/internal/domain/scene"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/event/timerEvent"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/svc"
@@ -159,6 +161,53 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		return th.SceneDeviceOnline(stu)
 	})
 	logx.Must(err)
+
+	{
+		err = svcCtx.FastEvent.QueueSubscribe(eventBus.SysCoreOpsWorkOrderFinish, func(ctx context.Context, t time.Time, body []byte) error {
+			pi := cast.ToInt64(string(body))
+			logx.WithContext(ctx).Infof("SysProjectInfoDelete value:%v err:%v", string(body), err)
+			if pi == 0 {
+				return nil
+			}
+			ctx = ctxs.WithRoot(ctx)
+			ar, err := relationDB.NewAlarmRecordRepo(ctx).FindOneByFilter(ctx, relationDB.AlarmRecordFilter{WorkOrderID: pi})
+			if err != nil {
+				logx.WithContext(ctx).Error(err)
+				return nil
+			}
+			ar.DealStatus = scene.AlarmDealStatusProcessed
+			err = relationDB.NewAlarmRecordRepo(ctx).Update(ctx, ar)
+			if err != nil {
+				logx.WithContext(ctx).Error(err)
+				return nil
+			}
+			if ar.DeviceName != "" && ar.ProductID != "" {
+				di, err := svcCtx.DeviceCache.GetData(ctx, devices.Core{ProductID: ar.ProductID, DeviceName: ar.DeviceName})
+				if err != nil {
+					logx.WithContext(ctx).Error(err)
+					return nil
+				}
+				total, err := relationDB.NewAlarmRecordRepo(ctx).CountByFilter(ctx, relationDB.AlarmRecordFilter{
+					ProductID:    ar.ProductID,
+					DeviceName:   ar.DeviceName,
+					DealStatuses: []int64{scene.AlarmDealStatusWaring, scene.AlarmDealStatusInHand},
+				})
+				if err != nil {
+					logx.WithContext(ctx).Error(err)
+					return nil
+				}
+				if total == 0 && di.Status == def.DeviceStatusWarming {
+					_, err := svcCtx.DeviceM.DeviceInfoUpdate(ctx, &dm.DeviceInfo{ProductID: ar.ProductID, DeviceName: ar.DeviceName, Status: di.IsOnline + 1})
+					if err != nil {
+						logx.WithContext(ctx).Error(err)
+						return nil
+					}
+				}
+			}
+			return nil
+		})
+		logx.Must(err)
+	}
 	err = svcCtx.FastEvent.Start()
 	logx.Must(err)
 }

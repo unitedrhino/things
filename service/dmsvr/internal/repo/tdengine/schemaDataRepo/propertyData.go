@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
+	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/errors"
@@ -251,7 +252,11 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 	ctx context.Context,
 	filter msgThing.FilterOpt) (sq.SelectBuilder, error) {
-	schemaModel, err := d.getSchemaModel(ctx, filter.ProductID)
+	gd := devices.Core{ProductID: filter.ProductID}
+	if len(filter.DeviceNames) == 1 {
+		gd.DeviceName = filter.DeviceNames[0]
+	}
+	schemaModel, err := d.getSchemaModel(ctx, gd)
 	if err != nil {
 		return sq.SelectBuilder{}, err
 	}
