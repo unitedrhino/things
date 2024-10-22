@@ -2266,6 +2266,10 @@ type ProtocolManageClient interface {
 	ProtocolInfoUpdate(ctx context.Context, in *ProtocolInfo, opts ...grpc.CallOption) (*Empty, error)
 	//协议删除
 	ProtocolInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
+	//更新服务状态,只给服务调用
+	ProtocolServiceUpdate(ctx context.Context, in *ProtocolService, opts ...grpc.CallOption) (*Empty, error)
+	ProtocolServiceDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
+	ProtocolServiceIndex(ctx context.Context, in *ProtocolServiceIndexReq, opts ...grpc.CallOption) (*ProtocolServiceIndexResp, error)
 }
 
 type protocolManageClient struct {
@@ -2321,6 +2325,33 @@ func (c *protocolManageClient) ProtocolInfoDelete(ctx context.Context, in *WithI
 	return out, nil
 }
 
+func (c *protocolManageClient) ProtocolServiceUpdate(ctx context.Context, in *ProtocolService, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/dm.ProtocolManage/protocolServiceUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolManageClient) ProtocolServiceDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/dm.ProtocolManage/protocolServiceDelete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolManageClient) ProtocolServiceIndex(ctx context.Context, in *ProtocolServiceIndexReq, opts ...grpc.CallOption) (*ProtocolServiceIndexResp, error) {
+	out := new(ProtocolServiceIndexResp)
+	err := c.cc.Invoke(ctx, "/dm.ProtocolManage/protocolServiceIndex", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProtocolManageServer is the server API for ProtocolManage service.
 // All implementations must embed UnimplementedProtocolManageServer
 // for forward compatibility
@@ -2335,6 +2366,10 @@ type ProtocolManageServer interface {
 	ProtocolInfoUpdate(context.Context, *ProtocolInfo) (*Empty, error)
 	//协议删除
 	ProtocolInfoDelete(context.Context, *WithID) (*Empty, error)
+	//更新服务状态,只给服务调用
+	ProtocolServiceUpdate(context.Context, *ProtocolService) (*Empty, error)
+	ProtocolServiceDelete(context.Context, *WithID) (*Empty, error)
+	ProtocolServiceIndex(context.Context, *ProtocolServiceIndexReq) (*ProtocolServiceIndexResp, error)
 	mustEmbedUnimplementedProtocolManageServer()
 }
 
@@ -2356,6 +2391,15 @@ func (UnimplementedProtocolManageServer) ProtocolInfoUpdate(context.Context, *Pr
 }
 func (UnimplementedProtocolManageServer) ProtocolInfoDelete(context.Context, *WithID) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProtocolInfoDelete not implemented")
+}
+func (UnimplementedProtocolManageServer) ProtocolServiceUpdate(context.Context, *ProtocolService) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProtocolServiceUpdate not implemented")
+}
+func (UnimplementedProtocolManageServer) ProtocolServiceDelete(context.Context, *WithID) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProtocolServiceDelete not implemented")
+}
+func (UnimplementedProtocolManageServer) ProtocolServiceIndex(context.Context, *ProtocolServiceIndexReq) (*ProtocolServiceIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProtocolServiceIndex not implemented")
 }
 func (UnimplementedProtocolManageServer) mustEmbedUnimplementedProtocolManageServer() {}
 
@@ -2460,6 +2504,60 @@ func _ProtocolManage_ProtocolInfoDelete_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProtocolManage_ProtocolServiceUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProtocolService)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolManageServer).ProtocolServiceUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.ProtocolManage/protocolServiceUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolManageServer).ProtocolServiceUpdate(ctx, req.(*ProtocolService))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtocolManage_ProtocolServiceDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WithID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolManageServer).ProtocolServiceDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.ProtocolManage/protocolServiceDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolManageServer).ProtocolServiceDelete(ctx, req.(*WithID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtocolManage_ProtocolServiceIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProtocolServiceIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolManageServer).ProtocolServiceIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dm.ProtocolManage/protocolServiceIndex",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolManageServer).ProtocolServiceIndex(ctx, req.(*ProtocolServiceIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ProtocolManage_ServiceDesc is the grpc.ServiceDesc for ProtocolManage service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -2486,6 +2584,18 @@ var ProtocolManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "protocolInfoDelete",
 			Handler:    _ProtocolManage_ProtocolInfoDelete_Handler,
+		},
+		{
+			MethodName: "protocolServiceUpdate",
+			Handler:    _ProtocolManage_ProtocolServiceUpdate_Handler,
+		},
+		{
+			MethodName: "protocolServiceDelete",
+			Handler:    _ProtocolManage_ProtocolServiceDelete_Handler,
+		},
+		{
+			MethodName: "protocolServiceIndex",
+			Handler:    _ProtocolManage_ProtocolServiceIndex_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

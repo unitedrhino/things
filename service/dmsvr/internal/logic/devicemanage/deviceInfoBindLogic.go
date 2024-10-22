@@ -57,7 +57,29 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 			DeviceNames: []string{in.Device.DeviceName},
 		})
 		if err != nil {
-			return nil, err
+			if !errors.Cmp(err, errors.NotFind) {
+				return nil, err
+			}
+			pi, err := l.svcCtx.ProductCache.GetData(l.ctx, in.Device.ProductID)
+			if err != nil {
+				l.Error(err)
+				return nil, err
+			}
+			if !(pi.NetType == def.NetBle && pi.AutoRegister == def.AutoRegAuto) {
+				return nil, errors.NotFind
+			}
+			//如果是蓝牙模式并且打开了自动注册,那么绑定的时候需要创建该设备
+			_, err = NewDeviceInfoCreateLogic(ctxs.WithProjectID(ctxs.WithAdmin(l.ctx), def.NotClassified), l.svcCtx).DeviceInfoCreate(&dm.DeviceInfo{ProductID: in.Device.ProductID, DeviceName: in.Device.DeviceName})
+			if err != nil {
+				return nil, err
+			}
+			di, err = relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(ctxs.WithRoot(l.ctx), relationDB.DeviceFilter{
+				ProductID:   in.Device.ProductID,
+				DeviceNames: []string{in.Device.DeviceName},
+			})
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
 
@@ -104,6 +126,10 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 			Time:  time.Now().Add(time.Hour * 24 * time.Duration(pi.TrialTime.GetValue())),
 			Valid: true,
 		}
+	}
+	if pi.NetType == def.NetBle { //蓝牙绑定了就是上线
+		di.IsOnline = def.True
+		di.Status = def.DeviceStatusOnline
 	}
 	err = diDB.Update(ctxs.WithRoot(l.ctx), di)
 	if err != nil {

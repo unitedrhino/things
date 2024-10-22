@@ -19,6 +19,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/dmExport"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/netx"
 	"github.com/zeromicro/go-zero/zrpc"
 	"sync"
 	"time"
@@ -53,6 +54,7 @@ type LightProtocolConf struct {
 	DmClient   zrpc.Client
 	TimedM     zrpc.Client
 	NodeID     int64
+	Port       int64
 }
 
 func NewLightProtocol(c conf.EventConf, pi *dm.ProtocolInfo, pc *LightProtocolConf) (*LightProtocol, error) {
@@ -102,6 +104,24 @@ func (p *LightProtocol) Start() error {
 	if err != nil && !errors.Cmp(errors.Fmt(err), errors.Duplicate) {
 		logx.Must(err)
 	}
+	utils.Go(ctx, func() {
+		run := func() {
+			_, err := p.ProtocolM.ProtocolServiceUpdate(ctx, &dm.ProtocolService{
+				Code:   p.Pi.Code,
+				Ip:     netx.InternalIp(),
+				Port:   1,
+				Status: def.True,
+			})
+			if err != nil {
+				logx.WithContext(ctx).Error(err)
+			}
+		}
+		run()
+		tick := time.Tick(time.Minute)
+		for _ = range tick {
+			run()
+		}
+	})
 
 	err = p.FastEvent.Start()
 	if err != nil {

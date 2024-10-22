@@ -16,6 +16,7 @@ import (
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.uber.org/atomic"
+	"regexp"
 )
 
 type DeviceInfoCreateLogic struct {
@@ -42,10 +43,24 @@ func NewDeviceInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 	}
 }
 
+// 识别手机号码
+func IsPhone(mobile string) bool {
+	result, _ := regexp.MatchString(`^[a-zA-Z0-9-_]+$`, mobile)
+	if result {
+		return true
+	} else {
+		return false
+	}
+}
+
 /*
 发现返回true 没有返回false
 */
 func (l *DeviceInfoCreateLogic) CheckDevice(in *dm.DeviceInfo) (bool, error) {
+	result, _ := regexp.MatchString(`^[a-zA-Z0-9-_]+$`, in.DeviceName)
+	if !result {
+		return false, errors.Parameter.AddMsg("设备ID支持英文、数字、-,_ 的组合，最多不超过48个字符")
+	}
 	_, err := relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductID, DeviceNames: []string{in.DeviceName}})
 	if err == nil {
 		return true, nil
@@ -87,7 +102,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 	find, err := l.CheckDevice(in)
 	if err != nil {
 		l.Errorf("%s.CheckDevice in=%v\n", utils.FuncName(), in)
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	} else if find == true {
 		return nil, errors.Duplicate.WithMsgf("设备名称重复:%s", in.DeviceName).AddDetail("DeviceName:" + in.DeviceName)
 	}
@@ -102,7 +117,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 	uc := ctxs.GetUserCtxNoNil(l.ctx)
 	projectID := stores.ProjectID(uc.ProjectID)
 	areaID := stores.AreaID(def.NotClassified)
-	if projectID == 0 || projectID == def.NotClassified { //如果没有传项目,则分配到未分类项目中
+	if projectID <= def.NotClassified { //如果没有传项目,则分配到未分类项目中
 		ti, err := l.svcCtx.TenantCache.GetData(l.ctx, uc.TenantCode)
 		if err != nil {
 			return nil, err

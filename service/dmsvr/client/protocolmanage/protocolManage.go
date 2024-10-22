@@ -167,6 +167,9 @@ type (
 	ProtocolInfo                      = dm.ProtocolInfo
 	ProtocolInfoIndexReq              = dm.ProtocolInfoIndexReq
 	ProtocolInfoIndexResp             = dm.ProtocolInfoIndexResp
+	ProtocolService                   = dm.ProtocolService
+	ProtocolServiceIndexReq           = dm.ProtocolServiceIndexReq
+	ProtocolServiceIndexResp          = dm.ProtocolServiceIndexResp
 	RemoteConfigCreateReq             = dm.RemoteConfigCreateReq
 	RemoteConfigIndexReq              = dm.RemoteConfigIndexReq
 	RemoteConfigIndexResp             = dm.RemoteConfigIndexResp
@@ -216,6 +219,10 @@ type (
 		ProtocolInfoUpdate(ctx context.Context, in *ProtocolInfo, opts ...grpc.CallOption) (*Empty, error)
 		// 协议删除
 		ProtocolInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
+		// 更新服务状态,只给服务调用
+		ProtocolServiceUpdate(ctx context.Context, in *ProtocolService, opts ...grpc.CallOption) (*Empty, error)
+		ProtocolServiceDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
+		ProtocolServiceIndex(ctx context.Context, in *ProtocolServiceIndexReq, opts ...grpc.CallOption) (*ProtocolServiceIndexResp, error)
 	}
 
 	defaultProtocolManage struct {
@@ -294,4 +301,33 @@ func (m *defaultProtocolManage) ProtocolInfoDelete(ctx context.Context, in *With
 // 协议删除
 func (d *directProtocolManage) ProtocolInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.ProtocolInfoDelete(ctx, in)
+}
+
+// 更新服务状态,只给服务调用
+func (m *defaultProtocolManage) ProtocolServiceUpdate(ctx context.Context, in *ProtocolService, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewProtocolManageClient(m.cli.Conn())
+	return client.ProtocolServiceUpdate(ctx, in, opts...)
+}
+
+// 更新服务状态,只给服务调用
+func (d *directProtocolManage) ProtocolServiceUpdate(ctx context.Context, in *ProtocolService, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.ProtocolServiceUpdate(ctx, in)
+}
+
+func (m *defaultProtocolManage) ProtocolServiceDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewProtocolManageClient(m.cli.Conn())
+	return client.ProtocolServiceDelete(ctx, in, opts...)
+}
+
+func (d *directProtocolManage) ProtocolServiceDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.ProtocolServiceDelete(ctx, in)
+}
+
+func (m *defaultProtocolManage) ProtocolServiceIndex(ctx context.Context, in *ProtocolServiceIndexReq, opts ...grpc.CallOption) (*ProtocolServiceIndexResp, error) {
+	client := dm.NewProtocolManageClient(m.cli.Conn())
+	return client.ProtocolServiceIndex(ctx, in, opts...)
+}
+
+func (d *directProtocolManage) ProtocolServiceIndex(ctx context.Context, in *ProtocolServiceIndexReq, opts ...grpc.CallOption) (*ProtocolServiceIndexResp, error) {
+	return d.svr.ProtocolServiceIndex(ctx, in)
 }

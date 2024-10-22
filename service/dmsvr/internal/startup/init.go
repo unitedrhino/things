@@ -384,7 +384,14 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		if t.Before(time.Now().Add(-time.Second * 2)) { //2秒之前的跳过
 			return nil
 		}
-		return staticEvent.NewStaticHandle(ctxs.WithRoot(ctx), svcCtx).Handle()
+		return staticEvent.NewHalfHourHandle(ctxs.WithRoot(ctx), svcCtx).Handle()
+	})
+	logx.Must(err)
+	err = svcCtx.FastEvent.QueueSubscribe(eventBus.DmDeviceStaticOneMinute, func(ctx context.Context, t time.Time, body []byte) error {
+		if t.Before(time.Now().Add(-time.Second * 2)) { //2秒之前的跳过
+			return nil
+		}
+		return staticEvent.NewOneMinuteHandle(ctxs.WithRoot(ctx), svcCtx).Handle()
 	})
 	logx.Must(err)
 	err = svcCtx.FastEvent.Start()
@@ -396,7 +403,7 @@ func TimerInit(svcCtx *svc.ServiceContext) {
 	_, err := svcCtx.TimedM.TaskInfoCreate(ctx, &timedmanage.TaskInfo{
 		GroupCode: def.TimedUnitedRhinoQueueGroupCode,                                          //组编码
 		Type:      1,                                                                           //任务类型 1 定时任务 2 延时任务
-		Name:      "iThings ota升级定时任务",                                                         // 任务名称
+		Name:      "联犀 ota升级定时任务",                                                              // 任务名称
 		Code:      "iThingsOtaDeviceUpgradePush",                                               //任务编码
 		Params:    fmt.Sprintf(`{"topic":"%s","payload":""}`, eventBus.DmOtaDeviceUpgradePush), // 任务参数,延时任务如果没有传任务参数会拿数据库的参数来执行
 		CronExpr:  "@every 5s",                                                                 // cron执行表达式
@@ -409,7 +416,7 @@ func TimerInit(svcCtx *svc.ServiceContext) {
 	_, err = svcCtx.TimedM.TaskInfoCreate(ctx, &timedmanage.TaskInfo{
 		GroupCode: def.TimedUnitedRhinoQueueGroupCode,                                              //组编码
 		Type:      1,                                                                               //任务类型 1 定时任务 2 延时任务
-		Name:      "iThings 设备在线状态改变处理",                                                            // 任务名称
+		Name:      "联犀 设备在线状态改变处理",                                                                 // 任务名称
 		Code:      "dmDeviceOnlineStatusChange",                                                    //任务编码
 		Params:    fmt.Sprintf(`{"topic":"%s","payload":""}`, eventBus.DmDeviceOnlineStatusChange), // 任务参数,延时任务如果没有传任务参数会拿数据库的参数来执行
 		CronExpr:  "@every 1s",                                                                     // cron执行表达式
@@ -422,12 +429,22 @@ func TimerInit(svcCtx *svc.ServiceContext) {
 	_, err = svcCtx.TimedM.TaskInfoCreate(ctx, &timedmanage.TaskInfo{
 		GroupCode: def.TimedUnitedRhinoQueueGroupCode,                                          //组编码
 		Type:      1,                                                                           //任务类型 1 定时任务 2 延时任务
-		Name:      "iThings 设备半小时统计",                                                           // 任务名称
+		Name:      "联犀 设备半小时统计",                                                                // 任务名称
 		Code:      "dmDeviceStaticHalfHour",                                                    //任务编码
 		Params:    fmt.Sprintf(`{"topic":"%s","payload":""}`, eventBus.DmDeviceStaticHalfHour), // 任务参数,延时任务如果没有传任务参数会拿数据库的参数来执行
 		CronExpr:  "@every 30m",                                                                // cron执行表达式
 		Status:    def.StatusWaitRun,                                                           // 状态
 		Priority:  3,                                                                           //优先级: 10:critical 最高优先级  3: default 普通优先级 1:low 低优先级
+	})
+	_, err = svcCtx.TimedM.TaskInfoCreate(ctx, &timedmanage.TaskInfo{
+		GroupCode: def.TimedUnitedRhinoQueueGroupCode,                                           //组编码
+		Type:      1,                                                                            //任务类型 1 定时任务 2 延时任务
+		Name:      "联犀 设备1分钟统计",                                                                 // 任务名称
+		Code:      "dmDeviceStaticOneMinute",                                                    //任务编码
+		Params:    fmt.Sprintf(`{"topic":"%s","payload":""}`, eventBus.DmDeviceStaticOneMinute), // 任务参数,延时任务如果没有传任务参数会拿数据库的参数来执行
+		CronExpr:  "@every 1m",                                                                  // cron执行表达式
+		Status:    def.StatusWaitRun,                                                            // 状态
+		Priority:  3,                                                                            //优先级: 10:critical 最高优先级  3: default 普通优先级 1:low 低优先级
 	})
 	if err != nil && !errors.Cmp(errors.Fmt(err), errors.Duplicate) {
 		logx.Must(err)

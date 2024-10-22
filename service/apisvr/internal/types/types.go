@@ -712,16 +712,18 @@ type DeviceMultiImportResp struct {
 }
 
 type DeviceMultiImportRow struct {
-	Row         int64  `json:"row"`         //【提示】数据所在表格行
-	ProductID   string `json:"productID"`   //【必填】产品ID
-	DeviceName  string `json:"deviceName"`  //【必填】设备名称
-	DeviceAlias string `json:"deviceAlias"` //【选填】设备别名
-	Secret      string `json:"secret"`      //【选填】设备秘钥
-	LogLevel    string `json:"logLevel"`    //【选填】日志级别（关闭/错误/告警/信息/调试）
-	Tags        string `json:"tags"`        //【选填】设备标签（格式k1:v1;k2:v2;...）
-	Position    string `json:"position"`    //【选填】设备位置百度坐标（格式:经,纬）
-	Address     string `json:"address"`     //【选填】设备所在详细地址
-	Tips        string `json:"tips"`        //【提示】模板使用提示
+	Row               int64  `json:"row"`               //【提示】数据所在表格行
+	ProductID         string `json:"productID"`         //【必填】产品ID
+	DeviceName        string `json:"deviceName"`        //【必填】设备名称
+	DeviceAlias       string `json:"deviceAlias"`       //【选填】设备别名
+	Secret            string `json:"secret"`            //【选填】设备秘钥
+	GatewayProductID  string `json:"gatewayProductID"`  //【选填】绑定的网关产品ID(网关的设备ID全局唯一可不填)
+	GatewayDeviceName string `json:"gatewayDeviceName"` //【选填】绑定的网关设备ID
+	LogLevel          string `json:"logLevel"`          //【选填】日志级别（关闭/错误/告警/信息/调试）
+	Tags              string `json:"tags"`              //【选填】设备标签（格式k1:v1;k2:v2;...）
+	Position          string `json:"position"`          //【选填】设备位置百度坐标（格式:经,纬）
+	Address           string `json:"address"`           //【选填】设备所在详细地址
+	Tips              string `json:"tips"`              //【提示】模板使用提示
 }
 
 type DeviceProfile struct {
@@ -1381,6 +1383,26 @@ type ProtocolInfoIndexReq struct {
 type ProtocolInfoIndexResp struct {
 	List  []*ProtocolInfo `json:"list"`           //自定义协议信息
 	Total int64           `json:"total,optional"` //拥有的总数
+}
+
+type ProtocolService struct {
+	ID          int64  `json:"id"`
+	Code        string `json:"code"`        //协议code
+	IP          string `json:"ip"`          // 协议服务的ip地址
+	Port        int64  `json:"port"`        //监听的端口,如果没有填0即可
+	Status      int64  `json:"status"`      //服务状态
+	UpdatedTime int64  `json:"updatedTime"` //更新时间
+	CreatedTime int64  `json:"createdTime"` //首次加入时间
+}
+
+type ProtocolServiceIndexReq struct {
+	Page *PageInfo `json:"page,optional"` //分页信息,只获取一个则不填
+	Code string    `json:"code"`          //
+}
+
+type ProtocolServiceIndexResp struct {
+	List  []*ProtocolService `json:"list"`           //自定义协议信息
+	Total int64              `json:"total,optional"` //拥有的总数
 }
 
 type SceneFlowInfo struct {

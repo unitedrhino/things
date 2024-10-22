@@ -52,3 +52,19 @@ func (s *ProtocolManageServer) ProtocolInfoDelete(ctx context.Context, in *dm.Wi
 	l := protocolmanagelogic.NewProtocolInfoDeleteLogic(ctx, s.svcCtx)
 	return l.ProtocolInfoDelete(in)
 }
+
+// 更新服务状态,只给服务调用
+func (s *ProtocolManageServer) ProtocolServiceUpdate(ctx context.Context, in *dm.ProtocolService) (*dm.Empty, error) {
+	l := protocolmanagelogic.NewProtocolServiceUpdateLogic(ctx, s.svcCtx)
+	return l.ProtocolServiceUpdate(in)
+}
+
+func (s *ProtocolManageServer) ProtocolServiceDelete(ctx context.Context, in *dm.WithID) (*dm.Empty, error) {
+	l := protocolmanagelogic.NewProtocolServiceDeleteLogic(ctx, s.svcCtx)
+	return l.ProtocolServiceDelete(in)
+}
+
+func (s *ProtocolManageServer) ProtocolServiceIndex(ctx context.Context, in *dm.ProtocolServiceIndexReq) (*dm.ProtocolServiceIndexResp, error) {
+	l := protocolmanagelogic.NewProtocolServiceIndexLogic(ctx, s.svcCtx)
+	return l.ProtocolServiceIndex(in)
+}

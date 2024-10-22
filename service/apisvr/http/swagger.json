@@ -4276,6 +4276,87 @@
         ]
       }
     },
+    "/api/v1/things/protocol/service/delete": {
+      "post": {
+        "summary": "删除自定义协议服务器",
+        "operationId": "postApiV1ThingsProtocolServiceDelete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/WithID"
+            }
+          }
+        ],
+        "tags": [
+          "things/protocol/service",
+          "thingsProtocolService"
+        ]
+      }
+    },
+    "/api/v1/things/protocol/service/index": {
+      "post": {
+        "summary": "获取自定义协议服务器信息列表",
+        "operationId": "postApiV1ThingsProtocolServiceIndex",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/ProtocolServiceIndexResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProtocolServiceIndexReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/protocol/service",
+          "thingsProtocolService"
+        ]
+      }
+    },
     "/api/v1/things/rule/alarm/info/create": {
       "post": {
         "summary": "新增告警",
@@ -5644,7 +5725,7 @@
                   "title": "返回的消息"
                 },
                 "data": {
-                  "$ref": "#/definitions/UserDeviceShareMultiInfo"
+                  "$ref": "#/definitions/UserDeviceShareMultiIndexResp"
                 }
               }
             }
@@ -8553,6 +8634,14 @@
           "type": "string",
           "description": "【选填】设备秘钥"
         },
+        "gatewayProductID": {
+          "type": "string",
+          "description": "【选填】绑定的网关产品ID(网关的设备ID全局唯一可不填)"
+        },
+        "gatewayDeviceName": {
+          "type": "string",
+          "description": "【选填】绑定的网关设备ID"
+        },
         "logLevel": {
           "type": "string",
           "description": "【选填】日志级别（关闭/错误/告警/信息/调试）"
@@ -8581,6 +8670,8 @@
         "deviceName",
         "deviceAlias",
         "secret",
+        "gatewayProductID",
+        "gatewayDeviceName",
         "logLevel",
         "tags",
         "position",
@@ -8705,6 +8796,35 @@
       "required": [
         "len",
         "payload"
+      ]
+    },
+    "DeviceShareInfo": {
+      "type": "object",
+      "properties": {
+        "productID": {
+          "type": "string",
+          "description": "产品ID"
+        },
+        "productName": {
+          "type": "string"
+        },
+        "productImg": {
+          "type": "string",
+          "description": "产品图片"
+        },
+        "deviceName": {
+          "type": "string",
+          "description": "设备名称"
+        },
+        "deviceAlias": {
+          "type": "string",
+          "description": "设备别名 读写"
+        }
+      },
+      "title": "DeviceShareInfo",
+      "required": [
+        "productID",
+        "deviceName"
       ]
     },
     "FirmwareCreateReq": {
@@ -11206,6 +11326,90 @@
         "list"
       ]
     },
+    "ProtocolService": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "code": {
+          "type": "string",
+          "description": "协议code"
+        },
+        "ip": {
+          "type": "string",
+          "description": " 协议服务的ip地址"
+        },
+        "port": {
+          "type": "integer",
+          "format": "int64",
+          "description": "监听的端口,如果没有填0即可"
+        },
+        "status": {
+          "type": "integer",
+          "format": "int64",
+          "description": "服务状态"
+        },
+        "updatedTime": {
+          "type": "integer",
+          "format": "int64",
+          "description": "更新时间"
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64",
+          "description": "首次加入时间"
+        }
+      },
+      "title": "ProtocolService",
+      "required": [
+        "id",
+        "code",
+        "ip",
+        "port",
+        "status",
+        "updatedTime",
+        "createdTime"
+      ]
+    },
+    "ProtocolServiceIndexReq": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "$ref": "#/definitions/PageInfo",
+          "description": "分页信息,只获取一个则不填"
+        },
+        "code": {
+          "type": "string"
+        }
+      },
+      "title": "ProtocolServiceIndexReq",
+      "required": [
+        "code"
+      ]
+    },
+    "ProtocolServiceIndexResp": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ProtocolService"
+          },
+          "description": "自定义协议信息"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64",
+          "description": "拥有的总数"
+        }
+      },
+      "title": "ProtocolServiceIndexResp",
+      "required": [
+        "list"
+      ]
+    },
     "SceneFlowInfo": {
       "type": "object",
       "properties": {
@@ -12286,6 +12490,41 @@
         }
       },
       "title": "UserDeviceShareMultiDeleteReq"
+    },
+    "UserDeviceShareMultiIndexResp": {
+      "type": "object",
+      "properties": {
+        "devices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceShareInfo"
+          },
+          "description": "批量设备信息"
+        },
+        "authType": {
+          "type": "integer",
+          "format": "int64",
+          "description": "授权类型:1:全部授权 2:部分授权"
+        },
+        "schemaPerm": {
+          "type": "object",
+          "description": "普通功能权限 2:读写权限 3读权限"
+        },
+        "accessPerm": {
+          "type": "object",
+          "description": "系统功能权限 2:读写权限 3读权限"
+        },
+        "expTime": {
+          "type": "integer",
+          "format": "int64",
+          "description": "到期时间"
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "UserDeviceShareMultiIndexResp"
     },
     "UserDeviceShareMultiInfo": {
       "type": "object",
