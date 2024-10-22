@@ -29,7 +29,6 @@ func NewUserDeviceShareMultiCreateLogic(ctx context.Context, svcCtx *svc.Service
 	}
 }
 
-// rpc userDeviceOtaGetVersion(UserDeviceOtaGetVersionReq)returns(userDeviceOtaGetVersionResp);
 func (l *UserDeviceShareMultiCreateLogic) UserDeviceShareMultiCreate(in *dm.UserDeviceShareMultiInfo) (*dm.UserDeviceShareMultiToken, error) {
 	// 写入caches
 	shareToken, _ := uuid.GenerateUUID()
@@ -58,7 +57,22 @@ func (l *UserDeviceShareMultiCreateLogic) UserDeviceShareMultiCreate(in *dm.User
 						return nil, errors.Permissions.AddMsg("您无权分享所选的设备")
 					}
 				}
+				d.DeviceAlias = di.DeviceAlias
+				d.ProductName = di.ProductName
+				d.ProductImg = di.ProductImg
 			}
+		}
+	}
+	for _, d := range in.Devices {
+		//补全设备信息
+		if d.ProductImg == "" {
+			di, _ := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
+				ProductID:  d.ProductID,
+				DeviceName: d.DeviceName,
+			})
+			d.DeviceAlias = di.DeviceAlias
+			d.ProductName = di.ProductName
+			d.ProductImg = di.ProductImg
 		}
 	}
 	l.svcCtx.UserMultiDeviceShare.SetData(l.ctx, shareToken, in)

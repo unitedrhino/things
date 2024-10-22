@@ -55,9 +55,15 @@ func ToMuitlSharePb(in *types.UserDeviceShareMultiInfo) *dm.UserDeviceShareMulti
 	if in == nil {
 		return nil
 	}
-	devices := in.Devices
+	var dvs []*dm.DeviceShareInfo
+	for _, v := range in.Devices {
+		dvs = append(dvs, &dm.DeviceShareInfo{
+			DeviceName: v.DeviceName,
+			ProductID:  v.ProductID,
+		})
+	}
 	return &dm.UserDeviceShareMultiInfo{
-		Devices:    ToSharesDevices(devices),
+		Devices:    dvs,
 		AuthType:   in.AuthType,
 		ExpTime:    in.ExpTime,
 		AccessPerm: utils.CopyMap[dm.SharePerm](in.AccessPerm),
@@ -73,18 +79,21 @@ func ToSharesDevices(in []*types.DeviceCore) (ret []*dm.DeviceCore) {
 	}
 	return ret
 }
-func ToMultiShareTypes(in *dm.UserDeviceShareMultiInfo) *types.UserDeviceShareMultiInfo {
+func ToMultiShareTypes(in *dm.UserDeviceShareMultiInfo) *types.UserDeviceShareMultiIndexResp {
 	if in == nil {
 		return nil
 	}
-	var dvs []*types.DeviceCore
+	var dvs []*types.DeviceShareInfo
 	for _, v := range in.Devices {
-		dvs = append(dvs, &types.DeviceCore{
-			DeviceName: v.DeviceName,
-			ProductID:  v.ProductID,
+		dvs = append(dvs, &types.DeviceShareInfo{
+			DeviceName:  v.DeviceName,
+			ProductID:   v.ProductID,
+			ProductName: v.ProductName,
+			DeviceAlias: v.DeviceAlias.GetValue(),
+			ProductImg:  v.ProductImg,
 		})
 	}
-	return &types.UserDeviceShareMultiInfo{
+	return &types.UserDeviceShareMultiIndexResp{
 		Devices:     dvs,
 		AuthType:    in.AuthType,
 		CreatedTime: in.CreatedTime,

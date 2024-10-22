@@ -759,6 +759,14 @@ type DeviceRegisterResp struct {
 	Payload string `json:"payload"`
 }
 
+type DeviceShareInfo struct {
+	ProductID   string `json:"productID"` //产品ID
+	ProductName string `json:"productName,optional,omitempty"`
+	ProductImg  string `json:"productImg,optional,omitempty"` //产品图片
+	DeviceName  string `json:"deviceName"`                    //设备名称
+	DeviceAlias string `json:"deviceAlias,optional"`          //设备别名 读写
+}
+
 type FirmwareCreateReq struct {
 	ProductID      string   `json:"productID"`
 	Name           string   `json:"name"`
@@ -1651,6 +1659,15 @@ type UserDeviceShareMultiAcceptInfo struct {
 type UserDeviceShareMultiDeleteReq struct {
 	IDs       []int64 `json:"ids,optional"`
 	ProjectID int64   `json:"projectID,optional"`
+}
+
+type UserDeviceShareMultiIndexResp struct {
+	Devices     []*DeviceShareInfo    `json:"devices,optional"`    //批量设备信息
+	AuthType    int64                 `json:"authType,optional"`   //授权类型:1:全部授权 2:部分授权
+	SchemaPerm  map[string]*SharePerm `json:"schemaPerm,optional"` //普通功能权限 2:读写权限 3读权限
+	AccessPerm  map[string]*SharePerm `json:"accessPerm,optional"` //系统功能权限 2:读写权限 3读权限
+	ExpTime     int64                 `json:"expTime,optional"`    //到期时间
+	CreatedTime int64                 `json:"createdTime,optional"`
 }
 
 type UserDeviceShareMultiInfo struct {

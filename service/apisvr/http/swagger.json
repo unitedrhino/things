@@ -5725,7 +5725,7 @@
                   "title": "返回的消息"
                 },
                 "data": {
-                  "$ref": "#/definitions/UserDeviceShareMultiInfo"
+                  "$ref": "#/definitions/UserDeviceShareMultiIndexResp"
                 }
               }
             }
@@ -8796,6 +8796,35 @@
       "required": [
         "len",
         "payload"
+      ]
+    },
+    "DeviceShareInfo": {
+      "type": "object",
+      "properties": {
+        "productID": {
+          "type": "string",
+          "description": "产品ID"
+        },
+        "productName": {
+          "type": "string"
+        },
+        "productImg": {
+          "type": "string",
+          "description": "产品图片"
+        },
+        "deviceName": {
+          "type": "string",
+          "description": "设备名称"
+        },
+        "deviceAlias": {
+          "type": "string",
+          "description": "设备别名 读写"
+        }
+      },
+      "title": "DeviceShareInfo",
+      "required": [
+        "productID",
+        "deviceName"
       ]
     },
     "FirmwareCreateReq": {
@@ -12461,6 +12490,41 @@
         }
       },
       "title": "UserDeviceShareMultiDeleteReq"
+    },
+    "UserDeviceShareMultiIndexResp": {
+      "type": "object",
+      "properties": {
+        "devices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceShareInfo"
+          },
+          "description": "批量设备信息"
+        },
+        "authType": {
+          "type": "integer",
+          "format": "int64",
+          "description": "授权类型:1:全部授权 2:部分授权"
+        },
+        "schemaPerm": {
+          "type": "object",
+          "description": "普通功能权限 2:读写权限 3读权限"
+        },
+        "accessPerm": {
+          "type": "object",
+          "description": "系统功能权限 2:读写权限 3读权限"
+        },
+        "expTime": {
+          "type": "integer",
+          "format": "int64",
+          "description": "到期时间"
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "UserDeviceShareMultiIndexResp"
     },
     "UserDeviceShareMultiInfo": {
       "type": "object",
