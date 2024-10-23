@@ -30,14 +30,16 @@ type ActionRepo struct {
 	Info           *Info
 	UserID         int64
 	DeviceInteract deviceinteract.DeviceInteract
-	DeviceM        devicemanage.DeviceManage
-	DeviceCache    dmExport.DeviceCacheT
-	ProductCache   dmExport.ProductCacheT
-	DeviceG        devicegroup.DeviceGroup
-	NotifyM        notifymanage.NotifyManage
-	SceneExec      func(ctx context.Context, sceneID int64, status def.Bool) error
-	AlarmExec      func(ctx context.Context, in AlarmSerial) error
-	SaveLog        func(ctx context.Context, log *Log) error
+	SchemaCache    dmExport.SchemaCacheT
+
+	DeviceM      devicemanage.DeviceManage
+	DeviceCache  dmExport.DeviceCacheT
+	ProductCache dmExport.ProductCacheT
+	DeviceG      devicegroup.DeviceGroup
+	NotifyM      notifymanage.NotifyManage
+	SceneExec    func(ctx context.Context, sceneID int64, status def.Bool) error
+	AlarmExec    func(ctx context.Context, in AlarmSerial) error
+	SaveLog      func(ctx context.Context, log *Log) error
 }
 
 //type AlarmRepo interface {

@@ -27,7 +27,7 @@ type Cmps []Cmp
 
 // 只有结构体类型需要用这个参数
 type Cmp struct {
-	Column   string   `json:"column"`   //结构体类型,数组及事件需要填写 dataID为aa 结构体类型需要填写:aa.bb 数组类型需要填写 aa.1  数组结构体需要填写 aa.1.abc  事件需要填写 过滤的参数 aa.bb
+	Column   string   `json:"column"`   //结构体类型,数组及事件需要填写 dataID为aa 结构体类型需要填写:aa.bb 数组类型需要填写 aa.1  数组结构体需要填写 aa.1.bb  事件需要填写 过滤的参数 aa.bb
 	TermType CmpType  `json:"termType"` //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
 	Values   []string `json:"values"`   //比较条件列表
 }

@@ -36,10 +36,10 @@ type ActionDevice struct {
 	DeviceAlias      string           `json:"deviceAlias,omitempty"`      //设备别名,只读
 	GroupID          int64            `json:"groupID,omitempty"`          //分组id
 	Type             ActionDeviceType `json:"type,omitempty"`             // 云端向设备发起属性控制: propertyControl  应用调用设备行为:action  todo:通知设备上报
-	DataID           string           `json:"dataID,omitempty"`           // 属性的id及事件的id,不填则取values里面的
+	DataID           string           `json:"dataID,omitempty"`           // 属性的id及事件的id,不填则取values里面的 数组类型填写 aaa.123
 	DataName         string           `json:"dataName,omitempty"`         //对应的物模型定义,只读
 	SchemaAffordance string           `json:"schemaAffordance,omitempty"` //只读,返回物模型定义
-	Value            string           `json:"value,omitempty"`            //传的值
+	Value            string           `json:"value,omitempty"`            //传的值 如果是结构体类型 填写json对象 {ccc:12,bbb:234}
 	Values           DeviceValues     `json:"values,omitempty"`           //如果需要控制多个参数
 	Body             string           `json:"body,omitempty"`             //自定义字段
 }
@@ -163,8 +163,28 @@ func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 		deviceList  []devices.Core
 	)
 	ctx = repo.Info.SetAccount(ctx)
+
 	toData := func() string {
 		if a.DataID != "" {
+			v, err := repo.SchemaCache.GetData(ctx, devices.Core{ProductID: a.ProductID, DeviceName: a.DeviceName})
+			if err != nil {
+				logx.WithContext(ctx).Error(err)
+			}
+			dataIDs := strings.Split(a.DataID, ".")
+			if v != nil {
+				p := v.Property[dataIDs[0]]
+				if p != nil && (p.Define.Type == schema.DataTypeStruct ||
+					(p.Define.Type == schema.DataTypeArray && p.Define.ArrayInfo.Type == schema.DataTypeStruct)) {
+					//如果是结构体类型需要先解析出来
+					var val = map[string]any{}
+					json.Unmarshal([]byte(a.Value), &val)
+					var data = map[string]any{
+						a.DataID: val,
+					}
+					ret, _ := json.Marshal(data)
+					return string(ret)
+				}
+			}
 			var data = map[string]any{
 				a.DataID: a.Value,
 			}

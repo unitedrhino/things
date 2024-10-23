@@ -48,6 +48,7 @@ func (l *SceneManuallyTriggerLogic) SceneManuallyTrigger(in *ud.WithID) (*ud.Emp
 		err = do.Then.Execute(ctx, scene.ActionRepo{
 			Info:           do,
 			DeviceInteract: l.svcCtx.DeviceInteract,
+			SchemaCache:    l.svcCtx.SchemaCache,
 			DeviceM:        l.svcCtx.DeviceM,
 			ProductCache:   l.svcCtx.ProductCache,
 			DeviceCache:    l.svcCtx.DeviceCache,

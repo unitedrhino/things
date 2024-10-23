@@ -51,6 +51,7 @@ func (l *TimerHandle) SceneExec(ctx context.Context, do *scene.Info) {
 	err := do.Then.Execute(ctx, scene.ActionRepo{
 		Info:           do,
 		DeviceInteract: l.svcCtx.DeviceInteract,
+		SchemaCache:    l.svcCtx.SchemaCache,
 		DeviceM:        l.svcCtx.DeviceM,
 		DeviceG:        l.svcCtx.DeviceG,
 		ProductCache:   l.svcCtx.ProductCache,
