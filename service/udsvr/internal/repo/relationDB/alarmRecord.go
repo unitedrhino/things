@@ -25,11 +25,11 @@ func NewAlarmRecordRepo(in any) *AlarmRecordRepo {
 }
 
 type AlarmRecordFilter struct {
-	AlarmID     int64 // 告警配置ID
-	AlarmName   string
-	TriggerType scene.TriggerType
-	WorkOrderID int64 //工作流ID
-
+	AlarmID       int64 // 告警配置ID
+	AlarmName     string
+	TriggerType   scene.TriggerType
+	WorkOrderID   int64 //工作流ID
+	DeviceAlias   string
 	ProductID     string
 	DeviceName    string
 	DealStatus    scene.AlarmDealStatus
@@ -64,6 +64,9 @@ func (p AlarmRecordRepo) fmtFilter(ctx context.Context, f AlarmRecordFilter) *go
 	}
 	if f.DeviceName != "" {
 		db = db.Where("device_name=?", f.DeviceName)
+	}
+	if f.DeviceAlias != "" {
+		db = db.Where("device_alias=?", f.DeviceAlias)
 	}
 	if f.WithSceneInfo {
 		db = db.Preload("SceneInfo")

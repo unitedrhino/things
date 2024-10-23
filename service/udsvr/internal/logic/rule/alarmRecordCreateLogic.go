@@ -76,6 +76,7 @@ func (l *AlarmRecordCreateLogic) AlarmRecordCreate(in *ud.AlarmRecordCreateReq) 
 					TriggerType: in.TriggerType,
 					ProductID:   in.ProductID,
 					DeviceName:  in.DeviceName,
+					DeviceAlias: in.DeviceAlias,
 					Level:       alarm.AlarmInfo.Level,
 					SceneName:   alarm.SceneInfo.Name,
 					SceneID:     alarm.SceneID,

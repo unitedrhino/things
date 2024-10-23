@@ -33,7 +33,9 @@ type (
         Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
         TimeRange        *TimeRange    `json:"timeRange,optional"` //时间范围
         AlarmName string `json:"alarmName,optional"`
-        DealStatus   []int64 `json:"dealStatus"`//告警记录状态（1告警中 2忽略 3正在处理 4已处理）
+        DealStatus   []int64 `json:"dealStatus,optional"`//告警记录状态（1告警中 2忽略 3正在处理 4已处理）
+        DeviceName   string `json:"deviceName,optional"`  //触发设备ID
+        DeviceAlias string `json:"deviceAlias,optional"`  //触发设备名称
     }
     AlarmRecordIndexResp  {
         List []*AlarmRecord `json:"list"`    //告警信息
@@ -47,7 +49,8 @@ type AlarmRecord  {
     AlarmName string `json:"alarmName"`
     TriggerType string `json:"triggerType"` //触发类型 device:设备触发 timer:定时触发 weather:天气触发
     ProductID   string `json:"productID"`  //触发产品id
-    DeviceName   string `json:"deviceName"`  //触发设备名称
+    DeviceName   string `json:"deviceName"`  //触发设备ID
+    DeviceAlias string `json:"deviceAlias"`  //触发设备名称
     SceneName   string `json:"sceneName"`  //场景名称
     SceneID   int64 `json:"sceneID"`  //场景ID
     Level   int64 `json:"level"`  //告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）

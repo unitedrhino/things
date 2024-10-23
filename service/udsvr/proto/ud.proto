@@ -66,7 +66,8 @@ message AlarmRecordIndexReq{
   PageInfo page       = 2;  // 分页信息 获取全部不填
   TimeRange timeRange = 3;       // 时间范围
   repeated int64 dealStatus = 4;//告警记录状态（1无告警 2告警中 3已处理 4 无效）
-
+  string deviceName =6;//告警设备ID
+  string deviceAlias =7;//告警设备名称
 }
 message AlarmRecordIndexResp{
   repeated AlarmRecord list =1;
@@ -79,7 +80,8 @@ message AlarmRecord{
   string alarmName =12;//告警名称
   string triggerType = 3;//触发类型 device:设备触发 timer:定时触发 weather:天气触发
   string productID = 4;//触发产品id
-  string deviceName = 5;//触发设备名称
+  string deviceName = 5;//触发设备ID
+  string deviceAlias = 15;//设备名称
   string sceneName = 6;//场景名称
   int64 sceneID = 7;//场景ID
   int64 level = 8;//告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）

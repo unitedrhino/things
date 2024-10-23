@@ -5964,6 +5964,10 @@
         },
         "deviceName": {
           "type": "string",
+          "description": "触发设备ID"
+        },
+        "deviceAlias": {
+          "type": "string",
           "description": "触发设备名称"
         },
         "sceneName": {
@@ -6012,6 +6016,7 @@
         "triggerType",
         "productID",
         "deviceName",
+        "deviceAlias",
         "sceneName",
         "sceneID",
         "level",
@@ -6068,12 +6073,17 @@
             "format": "int64"
           },
           "description": "告警记录状态（1告警中 2忽略 3正在处理 4已处理）"
+        },
+        "deviceName": {
+          "type": "string",
+          "description": "触发设备ID"
+        },
+        "deviceAlias": {
+          "type": "string",
+          "description": "触发设备名称"
         }
       },
-      "title": "AlarmRecordIndexReq",
-      "required": [
-        "dealStatus"
-      ]
+      "title": "AlarmRecordIndexReq"
     },
     "AlarmRecordIndexResp": {
       "type": "object",
