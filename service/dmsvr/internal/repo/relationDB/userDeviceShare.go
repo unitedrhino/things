@@ -2,6 +2,7 @@ package relationDB
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/stores"
 	"gorm.io/gorm"
@@ -73,6 +74,7 @@ func (p UserDeviceShareRepo) fmtFilter(ctx context.Context, f UserDeviceShareFil
 }
 
 func (p UserDeviceShareRepo) Insert(ctx context.Context, data *DmUserDeviceShare) error {
+
 	result := p.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }

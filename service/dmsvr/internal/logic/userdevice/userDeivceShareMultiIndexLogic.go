@@ -24,6 +24,7 @@ func NewUserDeivceShareMultiIndexLogic(ctx context.Context, svcCtx *svc.ServiceC
 }
 
 // 扫码后获取设备列表
+// 如果有分页需求，在前端处理
 func (l *UserDeivceShareMultiIndexLogic) UserDeivceShareMultiIndex(in *dm.UserDeviceShareMultiToken) (*dm.UserDeviceShareMultiInfo, error) {
 	resp, err := l.svcCtx.UserMultiDeviceShare.GetData(l.ctx, in.ShareToken)
 	return resp, err
