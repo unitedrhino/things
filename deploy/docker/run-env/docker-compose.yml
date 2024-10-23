@@ -37,10 +37,10 @@ services:
     environment:
       - ALLOW_NONE_AUTHENTICATION=yes # 允许不用密码登录
       - ETCD_NAME=etcd                                     # etcd 的名字
-      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://172.20.0.3:2380  # 列出这个成员的伙伴 URL 以便通告给集群的其他成员
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://172.20.0.3:2380  # 列出这个成员的客户端URL，如果是wsl2需要修改为服务可以访问的地址
       - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380           # 用于监听伙伴通讯的URL列表
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379         # 用于监听客户端通讯的URL列表
-      - ETCD_ADVERTISE_CLIENT_URLS=http://172.20.0.3:2379        # 列出这个成员的客户端URL，通告给集群中的其他成员
+      - ETCD_ADVERTISE_CLIENT_URLS=http://172.20.0.3:2379        # 列出这个成员的客户端URL，如果是wsl2需要修改为服务可以访问的地址
     logging:
       options:
         max-size: "50M"
