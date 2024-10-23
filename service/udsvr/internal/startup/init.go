@@ -165,7 +165,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 	{
 		err = svcCtx.FastEvent.QueueSubscribe(eventBus.SysCoreOpsWorkOrderFinish, func(ctx context.Context, t time.Time, body []byte) error {
 			pi := cast.ToInt64(string(body))
-			logx.WithContext(ctx).Infof("SysProjectInfoDelete value:%v err:%v", string(body), err)
+			logx.WithContext(ctx).Infof("SysCoreOpsWorkOrderFinish value:%v err:%v", string(body), err)
 			if pi == 0 {
 				return nil
 			}
