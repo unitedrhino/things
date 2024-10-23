@@ -7,31 +7,25 @@ import (
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	devicemsg "gitee.com/unitedrhino/things/service/dmsvr/client/devicemsg"
-	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
 )
 
 // TermProperty 物模型类型 属性
 type TermProperty struct {
-	AreaID           int64    `json:"areaID,string,omitempty"` //仅做记录
-	ProductName      string   `json:"productName,omitempty"`   //产品名称,只读
-	ProductID        string   `json:"productID,omitempty"`     //产品id
-	DeviceName       string   `json:"deviceName,omitempty"`
-	DeviceAlias      string   `json:"deviceAlias,omitempty"`
-	DataID           string   `json:"dataID,omitempty"` //属性的id   aa.bb.cc
-	DataName         string   `json:"dataName,omitempty"`
-	SchemaAffordance string   `json:"schemaAffordance,omitempty"` //只读,返回物模型定义
-	TermType         CmpType  `json:"termType,omitempty"`         //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
-	Values           []string `json:"values,omitempty"`           //条件值 参数根据动态条件类型会有多个参数
+	AreaID           int64  `json:"areaID,string,omitempty"` //仅做记录
+	ProductName      string `json:"productName,omitempty"`   //产品名称,只读
+	ProductID        string `json:"productID,omitempty"`     //产品id
+	DeviceName       string `json:"deviceName,omitempty"`
+	DeviceAlias      string `json:"deviceAlias,omitempty"`
+	SchemaAffordance string `json:"schemaAffordance,omitempty"` //只读,返回物模型定义
+	Compare
+	Terms Cmps `json:"terms,omitempty"` //如果需要多个条件,则可以填写到这里来
 }
 
 func (c *TermProperty) Validate(repo CheckRepo) error {
 	if c == nil {
 		return nil
-	}
-	if err := c.TermType.Validate(c.Values); err != nil {
-		return err
 	}
 	if repo.Info.DeviceMode == DeviceModeSingle {
 		c.ProductID = repo.Info.ProductID
@@ -53,9 +47,13 @@ func (c *TermProperty) Validate(repo CheckRepo) error {
 	if err != nil {
 		return err
 	}
-	p := v.Property[c.DataID]
+	dataID := strings.Split(c.DataID, ".")
+	p := v.Property[dataID[0]]
 	if p == nil {
 		return errors.Parameter.AddMsg("dataID不存在")
+	}
+	if err := c.PropertyValidate(p); err != nil {
+		return err
 	}
 	c.SchemaAffordance = schema.DoToAffordanceStr(p)
 	if c.DataName == "" {
@@ -74,12 +72,10 @@ func (c *TermProperty) IsHit(ctx context.Context, columnType TermColumnType, rep
 		logx.WithContext(ctx).Errorf("%s.GetSchemaModel err:%v", utils.FuncName(), err)
 		return false
 	}
-	var val string
-	var dataType schema.DataType
 	switch columnType {
 	case TermColumnTypeProperty:
-		dataID := strings.Split(c.DataID, ".")
-		info, err := repo.DeviceMsg.PropertyLogLatestIndex(ctx, &devicemsg.PropertyLogLatestIndexReq{ProductID: c.ProductID, DeviceName: c.DeviceName, DataIDs: dataID[:1]})
+		info, err := repo.DeviceMsg.PropertyLogLatestIndex(ctx, &devicemsg.PropertyLogLatestIndexReq{
+			ProductID: c.ProductID, DeviceName: c.DeviceName, DataIDs: []string{c.DataID}})
 		if err != nil {
 			logx.WithContext(ctx).Errorf("%s.PropertyLatestIndex err:%v", utils.FuncName(), err)
 			return false
@@ -89,28 +85,27 @@ func (c *TermProperty) IsHit(ctx context.Context, columnType TermColumnType, rep
 			return false
 		}
 		if info.List[0].Timestamp != 0 { //如果有值
-			dataType = sm.Property[dataID[0]].Define.Type
-			def := sm.Property[dataID[0]].Define
-			switch def.Type {
-			case schema.DataTypeStruct:
-				if len(dataID) < 2 { //必须指定到结构体的成员
-					return false
-				}
-				var dataMap = map[string]any{}
-				utils.Unmarshal([]byte(info.List[0].Value), &dataMap)
-				v, ok := dataMap[dataID[1]]
-				if ok {
-					val = cast.ToString(v)
-					dataType = def.Spec[dataID[1]].DataType.Type
-				}
-			case schema.DataTypeArray:
-				logx.WithContext(ctx).Errorf("%s scene not support array yet", utils.FuncName())
+			dataIDs := strings.Split(c.DataID, ".")
+			p := sm.Property[dataIDs[0]]
+			if p == nil {
 				return false
-			default:
-				val = info.List[0].Value
 			}
+			return func() bool {
+			RUN:
+				switch p.Define.Type {
+				case schema.DataTypeStruct:
+					var dataMap = map[string]any{}
+					utils.Unmarshal([]byte(info.List[0].Value), &dataMap)
+					return c.PropertyIsHit(p, c.DataID, dataMap)
+				case schema.DataTypeArray:
+					p.Define = *p.Define.ArrayInfo
+					goto RUN
+				default:
+					return c.PropertyIsHit(p, c.DataID, info.List[0].Value)
+				}
+			}()
 		}
-		return c.TermType.IsHit(dataType, val, c.Values)
+		return false
 	case TermColumnTypeEvent:
 		logx.WithContext(ctx).Errorf("scene not support event yet")
 		return false

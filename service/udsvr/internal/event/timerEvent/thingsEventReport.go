@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-func (l *TimerHandle) SceneThingPropertyReport(in application.PropertyReport) error {
+func (l *TimerHandle) SceneThingEventReport(in application.EventReport) error {
 	now := time.Now()
 	db := stores.WithNoDebug(l.ctx, relationDB.NewSceneIfTriggerRepo)
 	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, in.Device)
@@ -25,7 +25,7 @@ func (l *TimerHandle) SceneThingPropertyReport(in application.PropertyReport) er
 		{
 			Status:            def.True,
 			Type:              scene.TriggerTypeDevice,
-			TriggerDeviceType: scene.TriggerDeviceTypePropertyReport,
+			TriggerDeviceType: scene.TriggerDeviceTypeEventReport,
 			ProjectID:         stores.CmpIn(def.RootNode, di.ProjectID),
 			AreaID:            stores.CmpIn(def.RootNode, di.AreaID),
 			Device:            &in.Device,
@@ -34,7 +34,7 @@ func (l *TimerHandle) SceneThingPropertyReport(in application.PropertyReport) er
 		{
 			Status:            def.True,
 			Type:              scene.TriggerTypeDevice,
-			TriggerDeviceType: scene.TriggerDeviceTypePropertyReport,
+			TriggerDeviceType: scene.TriggerDeviceTypeEventReport,
 			Device:            &in.Device,
 			DataID:            in.Identifier,
 		},
@@ -66,7 +66,7 @@ func (l *TimerHandle) SceneThingPropertyReport(in application.PropertyReport) er
 			l.Error(err)
 			continue
 		}
-		if !do.If.Triggers[0].Device.IsHit(ps, in.Identifier, in.Param) {
+		if !do.If.Triggers[0].Device.IsHit(ps, in.Identifier, in.Params) {
 			if po.Device.FirstTriggerTime.Valid { //如果处于触发状态,但是现在不触发了,则需要解除触发
 				err := db.UpdateWithField(l.ctx, relationDB.SceneIfTriggerFilter{ID: v.ID}, map[string]any{
 					"device_first_trigger_time": nil,

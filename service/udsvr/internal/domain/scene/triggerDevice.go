@@ -8,7 +8,6 @@ import (
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/dmExport"
-	"github.com/spf13/cast"
 	"strings"
 )
 
@@ -32,13 +31,9 @@ type TriggerDevice struct {
 	DeviceName       string            `json:"deviceName,omitempty"`  //选择的列表  选择的列表, fixedDevice类型是设备名列表
 	DeviceAlias      string            `json:"deviceAlias,omitempty"` //设备别名,只读
 	Type             TriggerDeviceType `json:"type,omitempty"`        //触发类型  connected:上线 disConnected:下线 reportProperty:属性上报 reportEvent: 事件上报
-	DataID           string            `json:"dataID"`                //选择为属性或事件时需要填该字段 属性的id及事件的id aa.bb.cc
 	SchemaAffordance string            `json:"schemaAffordance"`      //只读,返回物模型定义
-	DataName         string            `json:"dataName"`              //对应的物模型定义,只读
-	TermType         CmpType           `json:"termType"`              //动态条件类型  eq: 相等  not:不相等  btw:在xx之间  gt: 大于  gte:大于等于 lt:小于  lte:小于等于   in:在xx值之间
-	Values           []string          `json:"values"`                //比较条件列表
-	Body             string            `json:"body,omitempty"`        //自定义字段
-	Param            string            `json:"-"`                     //触发的参数
+	Compare
+	Body string `json:"body,omitempty"` //自定义字段
 }
 
 type TriggerDeviceType = string
@@ -97,8 +92,18 @@ func (t *TriggerDevice) Validate(repo CheckRepo) error {
 			t.DataName = p.Name
 		}
 		t.SchemaAffordance = schema.DoToAffordanceStr(p)
-		if err := t.TermType.Validate(t.Values); err != nil {
+		err = t.Compare.EventValidate(p)
+		if err != nil {
 			return err
+		}
+		if t.TermType != "" {
+			if err := t.TermType.Validate(t.Values); err != nil {
+				return err
+			}
+		} else {
+			if err := t.Terms.EventValidate(p); err != nil {
+				return err
+			}
 		}
 	case TriggerDeviceTypePropertyReport:
 		if len(t.DataID) == 0 {
@@ -116,11 +121,14 @@ func (t *TriggerDevice) Validate(repo CheckRepo) error {
 		if t.DataName == "" {
 			t.DataName = p.Name
 		}
-		t.SchemaAffordance = schema.DoToAffordanceStr(p)
-		if err := t.TermType.Validate(t.Values); err != nil {
+		err = t.Compare.PropertyValidate(p)
+		if err != nil {
 			return err
 		}
+		t.SchemaAffordance = schema.DoToAffordanceStr(p)
+
 	}
+
 	if repo.Info.DeviceMode != DeviceModeSingle {
 		t.DeviceAlias = GetDeviceAlias(repo.Ctx, repo.DeviceCache, t.ProductID, t.DeviceName)
 	}
@@ -191,13 +199,14 @@ func (t *TriggerDevice) IsHit(model *schema.Model, dataID string, param any) boo
 	if t.DataID != dataID {
 		return false
 	}
-	property := model.Property[dataID]
-	if property == nil {
-		return false
+	dataIDs := strings.Split(t.DataID, ".")
+	switch t.Type {
+	case TriggerDeviceTypePropertyReport:
+		property := model.Property[dataIDs[0]]
+		if property == nil {
+			return false
+		}
+		return t.PropertyIsHit(property, dataID, param)
 	}
-	hit := t.TermType.IsHit(property.Define.Type, param, t.Values)
-	if hit {
-		t.Param = cast.ToString(param)
-	}
-	return hit
+	return false
 }

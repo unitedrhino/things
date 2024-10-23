@@ -95,6 +95,7 @@ type UdSceneTriggerDevice struct {
 	SchemaAffordance string                  `gorm:"column:schema_affordance;type:VARCHAR(500);default:''"`
 	Body             string                  `gorm:"column:body;type:VARCHAR(1024)"` // 自定义数据
 	StateKeep        UdStateKeep             `gorm:"embedded;embeddedPrefix:state_keep_"`
+	Terms            scene.Cmps              `gorm:"column:terms;type:json;serializer:json"`        //如果需要多个条件,则可以填写到这里来
 	FirstTriggerTime sql.NullTime            `gorm:"column:first_trigger_time;index;default: NULL"` //最后触发时间
 }
 
