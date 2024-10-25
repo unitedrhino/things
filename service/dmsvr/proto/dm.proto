@@ -114,6 +114,9 @@ service DeviceManage {
   rpc deviceProfileUpdate(DeviceProfile)returns(Empty);
   rpc deviceProfileIndex(DeviceProfileIndexReq)returns(DeviceProfileIndexResp);
 
+
+
+
 }
 
 //产品管理
@@ -183,6 +186,18 @@ service SchemaManage{
   rpc commonSchemaDelete(WithID)     returns (Empty);
   //获取产品信息列表
   rpc commonSchemaIndex(CommonSchemaIndexReq)     returns (CommonSchemaIndexResp);
+
+
+  //更新设备物模型
+  rpc schemaInfoUpdate(SchemaInfo)returns (Empty);
+  //新增设备
+  rpc schemaInfoCreate(SchemaInfo)     returns (Empty);
+  //批量新增物模型,只新增没有的,已有的不处理
+  rpc schemaInfoMultiCreate(SchemaInfoMultiCreateReq)     returns (Empty);
+  //删除设备物模型
+  rpc schemaInfoMultiDelete(SchemaInfoMultiDeleteReq)     returns (Empty);
+  //获取设备物模型列表
+  rpc schemaInfoIndex(SchemaInfoIndexReq)     returns (SchemaInfoIndexResp);
 }
 
 service ProtocolManage {
@@ -1449,6 +1464,65 @@ message ProductSchemaTslReadReq{
 message ProductSchemaTslReadResp{
   string   tsl = 1;//物模型tsl
 }
+
+
+
+
+
+message SchemaInfoMultiCreateReq{
+  string productID = 1;
+  string deviceName =3;
+  repeated SchemaInfo list = 2;//物模型信息
+}
+
+
+
+message SchemaInfoMultiDeleteReq{
+  string productID = 1; //产品id  如果为空返回所有产品的信息
+  string deviceName =3;
+  repeated string identifiers = 2;           //标识符
+}
+
+message SchemaInfoIndexReq{
+  PageInfo page = 1;//分页信息 只获取一个则不填
+  string productID = 2; //产品id  必填
+  string deviceName = 19;
+  int64  type = 3; //物模型类型 1:property属性 2:event事件 3:action行为
+  repeated int64 types =17;
+  int64  tag = 4; //过滤条件: 物模型标签 1:自定义 2:可选 3:必选
+  repeated string   identifiers = 5; //过滤标识符列表
+  string name =6;//标识符名字过滤
+  int64 isCanSceneLinkage =8;//是否支持场景联动控制
+  int64 funcGroup =14; // 功能分类: 1:普通功能 2:系统功能
+  int64 userPerm =15;//用户权限操作: 1:r(只读) 3:rw(可读可写)
+  string  propertyMode =16;//属性类型可用 读写类型: 1:r(只读) 2:rw(可读可写)
+  int64 controlMode = 18;  //控制模式: 1: 可以群控,可以单控  2:只能单控
+
+}
+
+message SchemaInfoIndexResp{
+  repeated SchemaInfo list = 1;
+  int64  total = 2;//总数(只有分页的时候会返回)
+}
+
+message SchemaInfo{
+  string productID = 1; //产品id  必填
+  string deviceName =17;//设备ID 必填
+  int64 type = 2;         //物模型类型 1:property属性 2:event事件 3:action行为
+  string identifier = 4;           //标识符
+  google.protobuf.StringValue name = 5;       //功能名称
+  google.protobuf.StringValue desc = 6;       //描述
+  int64 required = 7;  //是否必须 1:是 2:否
+  int64 isCanSceneLinkage =8;//是否支持场景联动控制
+  int64 funcGroup =14; // 功能分类: 1:普通功能 2:系统功能
+  int64 userPerm =15;//用户权限操作: 1:r(只读) 3:rw(可读可写)
+  int64 controlMode = 16;  //控制模式: 1: 可以群控,可以单控  2:只能单控
+  int64 isHistory = 10;// 是否存储历史记录
+  google.protobuf.StringValue affordance = 11;//各功能类型的详细参数定义
+  string extendConfig = 12; //拓展参数
+  int64 order =13;//排序
+}
+
 
 
 message DeviceProfile{

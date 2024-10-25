@@ -51,3 +51,33 @@ func (s *SchemaManageServer) CommonSchemaIndex(ctx context.Context, in *dm.Commo
 	l := schemamanagelogic.NewCommonSchemaIndexLogic(ctx, s.svcCtx)
 	return l.CommonSchemaIndex(in)
 }
+
+// 更新设备物模型
+func (s *SchemaManageServer) SchemaInfoUpdate(ctx context.Context, in *dm.SchemaInfo) (*dm.Empty, error) {
+	l := schemamanagelogic.NewSchemaInfoUpdateLogic(ctx, s.svcCtx)
+	return l.SchemaInfoUpdate(in)
+}
+
+// 新增设备
+func (s *SchemaManageServer) SchemaInfoCreate(ctx context.Context, in *dm.SchemaInfo) (*dm.Empty, error) {
+	l := schemamanagelogic.NewSchemaInfoCreateLogic(ctx, s.svcCtx)
+	return l.SchemaInfoCreate(in)
+}
+
+// 批量新增物模型,只新增没有的,已有的不处理
+func (s *SchemaManageServer) SchemaInfoMultiCreate(ctx context.Context, in *dm.SchemaInfoMultiCreateReq) (*dm.Empty, error) {
+	l := schemamanagelogic.NewSchemaInfoMultiCreateLogic(ctx, s.svcCtx)
+	return l.SchemaInfoMultiCreate(in)
+}
+
+// 删除设备物模型
+func (s *SchemaManageServer) SchemaInfoMultiDelete(ctx context.Context, in *dm.SchemaInfoMultiDeleteReq) (*dm.Empty, error) {
+	l := schemamanagelogic.NewSchemaInfoMultiDeleteLogic(ctx, s.svcCtx)
+	return l.SchemaInfoMultiDelete(in)
+}
+
+// 获取设备物模型列表
+func (s *SchemaManageServer) SchemaInfoIndex(ctx context.Context, in *dm.SchemaInfoIndexReq) (*dm.SchemaInfoIndexResp, error) {
+	l := schemamanagelogic.NewSchemaInfoIndexLogic(ctx, s.svcCtx)
+	return l.SchemaInfoIndex(in)
+}

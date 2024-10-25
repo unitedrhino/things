@@ -178,6 +178,11 @@ type (
 	RemoteConfigPushAllReq            = dm.RemoteConfigPushAllReq
 	RespReadReq                       = dm.RespReadReq
 	RootCheckReq                      = dm.RootCheckReq
+	SchemaInfo                        = dm.SchemaInfo
+	SchemaInfoIndexReq                = dm.SchemaInfoIndexReq
+	SchemaInfoIndexResp               = dm.SchemaInfoIndexResp
+	SchemaInfoMultiCreateReq          = dm.SchemaInfoMultiCreateReq
+	SchemaInfoMultiDeleteReq          = dm.SchemaInfoMultiDeleteReq
 	SdkLogIndexReq                    = dm.SdkLogIndexReq
 	SdkLogIndexResp                   = dm.SdkLogIndexResp
 	SdkLogInfo                        = dm.SdkLogInfo

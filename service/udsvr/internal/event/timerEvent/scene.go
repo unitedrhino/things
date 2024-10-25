@@ -82,6 +82,11 @@ func (l *TimerHandle) SceneExec(ctx context.Context, do *scene.Info) {
 				req.DeviceName = in.Scene.DeviceName
 				req.DeviceAlias = in.Scene.DeviceAlias
 			}
+			if req.DeviceName == "" {
+				logx.WithContext(ctx).Infof("定时触发不能触发告警:%v", in)
+				return nil
+			}
+
 			_, err := rulelogic.NewAlarmRecordCreateLogic(stores.SetIsDebug(ctx, false), l.svcCtx).
 				AlarmRecordCreate(&req)
 			if err != nil {

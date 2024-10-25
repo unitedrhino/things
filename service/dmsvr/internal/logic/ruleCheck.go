@@ -1,4 +1,4 @@
-package productmanagelogic
+package logic
 
 import (
 	"gitee.com/unitedrhino/share/domain/schema"

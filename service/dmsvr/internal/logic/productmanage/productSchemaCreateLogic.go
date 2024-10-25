@@ -47,11 +47,7 @@ func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*re
 	if err == nil {
 		return nil, errors.Duplicate.AddMsgf("标识符在该产品中已经被使用:%s", in.Info.Identifier)
 	}
-	if err != nil {
-		if !errors.Cmp(err, errors.NotFind) {
-			return nil, err
-		}
-	}
+
 	po := logic.ToProductSchemaPo(in.Info)
 
 	var cs *relationDB.DmCommonSchema
@@ -98,7 +94,7 @@ func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*re
 		po.ExtendConfig = cs.ExtendConfig
 	}
 
-	if err = CheckAffordance(&po.DmSchemaCore, cs); err != nil {
+	if err = logic.CheckAffordance(&po.DmSchemaCore, cs); err != nil {
 		return nil, err
 	}
 	return po, nil

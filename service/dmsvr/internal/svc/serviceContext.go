@@ -63,6 +63,7 @@ type ServiceContext struct {
 	FastEvent            *eventBus.FastEvent
 	AreaM                areamanage.AreaManage
 	UserM                usermanage.UserManage
+	Common               common.Common
 	DataM                datamanage.DataManage
 	ProjectM             projectmanage.ProjectManage
 	ProductCache         *caches.Cache[dm.ProductInfo, string]
@@ -84,6 +85,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		timedM   timedmanage.TimedManage
 		areaM    areamanage.AreaManage
 		projectM projectmanage.ProjectManage
+		Common   common.Common
 	)
 	stores.InitConn(c.Database)
 	err := relationDB.Migrate(c.Database)
@@ -143,6 +145,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	userM := usermanage.NewUserManage(zrpc.MustNewClient(c.SysRpc.Conf))
 	dataM := datamanage.NewDataManage(zrpc.MustNewClient(c.SysRpc.Conf))
 	projectM = projectmanage.NewProjectManage(zrpc.MustNewClient(c.SysRpc.Conf))
+	Common = common.NewCommon(zrpc.MustNewClient(c.SysRpc.Conf))
 	tenantCache, err := sysExport.NewTenantInfoCache(tenantmanage.NewTenantManage(zrpc.MustNewClient(c.SysRpc.Conf)), serverMsg)
 	logx.Must(err)
 	webHook, err := sysExport.NewTenantOpenWebhook(tenantmanage.NewTenantManage(zrpc.MustNewClient(c.SysRpc.Conf)), serverMsg)
@@ -170,6 +173,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		PubDev:         pd,
 		Cache:          ca,
 		UserM:          userM,
+		Common:         Common,
 		DataM:          dataM,
 		UserSubscribe:  ws.NewUserSubscribe(ca, serverMsg),
 		SchemaRepo:     ccSchemaR,

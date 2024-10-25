@@ -29,6 +29,7 @@ func Migrate(c conf.Database) error {
 		&DmProtocolInfo{},
 		&DmDeviceInfo{},
 		&DmProductCustom{},
+		&DmSchemaInfo{},
 		&DmProductSchema{},
 		&DmGroupInfo{},
 		&DmGroupDevice{},
@@ -48,6 +49,7 @@ func Migrate(c conf.Database) error {
 	if err != nil {
 		return err
 	}
+
 	//{
 	//	db := stores.GetCommonConn(context.TODO()).Clauses(clause.OnConflict{DoNothing: true})
 	//	if err := db.CreateInBatches(&MigrateManufacturerInfo, 100).Error; err != nil {
