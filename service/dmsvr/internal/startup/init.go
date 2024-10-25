@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"time"
 
 	"gitee.com/unitedrhino/core/service/timed/timedjobsvr/client/timedmanage"
@@ -62,13 +61,13 @@ func init() {
 const Version = "v1.1.0"
 
 func VersionUpdate(svcCtx *svc.ServiceContext) {
-	ctx := ctxs.WithRoot(context.Background())
-	s, err := svcCtx.Common.ServiceInfoRead(ctx, &sys.WithCode{Code: svcCtx.Config.Name})
-	logx.Must(err)
-	switch s.Version {
-	case "":
-
-	}
+	//ctx := ctxs.WithRoot(context.Background())
+	//s, err := svcCtx.Common.ServiceInfoRead(ctx, &sys.WithCode{Code: svcCtx.Config.Name})
+	//logx.Must(err)
+	//switch s.Version {
+	//case "":
+	//
+	//}
 }
 
 func InitSubscribe(svcCtx *svc.ServiceContext) {
