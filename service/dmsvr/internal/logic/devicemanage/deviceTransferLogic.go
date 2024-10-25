@@ -90,7 +90,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 		if pi.AdminUserID != pi.AdminUserID {
 			return nil, errors.Permissions
 		}
-		changeAreaIDPaths[di.AreaIDPath] = struct{}{}
+		changeAreaIDPaths[string(di.AreaIDPath)] = struct{}{}
 		projectIDSet[int64(di.ProjectID)] = struct{}{}
 
 	}

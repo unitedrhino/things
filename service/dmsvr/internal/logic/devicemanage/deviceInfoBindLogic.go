@@ -111,7 +111,7 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 		return nil, err
 	}
 	oldAreaIDPath := di.AreaIDPath
-	di.AreaIDPath = ai.AreaIDPath
+	di.AreaIDPath = stores.AreaIDPath(ai.AreaIDPath)
 
 	if !di.FirstBind.Valid { //没有绑定过需要绑定
 		di.FirstBind = sql.NullTime{Time: time.Now(), Valid: true}
@@ -150,7 +150,7 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 			l.Error(err)
 		}
 	}
-	logic.FillAreaDeviceCount(l.ctx, l.svcCtx, ai.AreaIDPath, oldAreaIDPath)
+	logic.FillAreaDeviceCount(l.ctx, l.svcCtx, ai.AreaIDPath, string(oldAreaIDPath))
 	logic.FillProjectDeviceCount(l.ctx, l.svcCtx, int64(di.ProjectID))
 	return &dm.Empty{}, err
 }

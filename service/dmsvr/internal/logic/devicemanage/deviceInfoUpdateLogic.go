@@ -52,9 +52,9 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 		}
 		ctxs.GoNewCtx(l.ctx, func(ctx2 context.Context) {
 			time.Sleep(2 * time.Second)
-			logic.FillAreaDeviceCount(l.ctx, l.svcCtx, ai.AreaIDPath, old.AreaIDPath)
+			logic.FillAreaDeviceCount(l.ctx, l.svcCtx, ai.AreaIDPath, string(old.AreaIDPath))
 		})
-		old.AreaIDPath = ai.AreaIDPath
+		old.AreaIDPath = stores.AreaIDPath(ai.AreaIDPath)
 	}
 	if data.ProjectID != 0 && data.ProjectID != int64(old.ProjectID) {
 		ctxs.GoNewCtx(l.ctx, func(ctx2 context.Context) {
