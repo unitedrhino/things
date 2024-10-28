@@ -65,7 +65,7 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 	}
 
 	if uc.IsAdmin && data.ExpTime != nil {
-		if data.ExpTime.Value == 0 { //如果是主动传0 则需要看下过期时间是否正确
+		if data.ExpTime.Value == 0 && old.UserID > def.RootNode { //如果是主动传0且被绑定了则需要看下过期时间是否正确
 			pi, err := l.svcCtx.ProductCache.GetData(l.ctx, data.ProductID)
 			if err != nil && !errors.Cmp(err, errors.NotFind) {
 				l.Error(err)
