@@ -83,6 +83,7 @@ type UdSceneTriggerWeather struct {
 
 type UdSceneTriggerDevice struct {
 	ProductID        string                  `gorm:"column:product_id;index;type:VARCHAR(25);default:''"`  //产品id
+	ProductName      string                  `gorm:"column:product_name;type:VARCHAR(25);default:''"`      //产品id
 	SelectType       scene.SelectType        `gorm:"column:select_type;type:VARCHAR(25);default:''"`       //设备选择方式  all: 全部 fixed:指定的设备
 	GroupID          int64                   `gorm:"column:group_id;index;type:bigint;default:0"`          //group类型传GroupID
 	DeviceName       string                  `gorm:"column:device_name;type:VARCHAR(255);default:''"`      //选择的列表  选择的列表, fixed类型是设备名列表
