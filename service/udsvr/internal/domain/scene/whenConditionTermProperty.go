@@ -20,7 +20,6 @@ type TermProperty struct {
 	DeviceAlias      string `json:"deviceAlias,omitempty"`
 	SchemaAffordance string `json:"schemaAffordance,omitempty"` //只读,返回物模型定义
 	Compare
-	Terms Cmps `json:"terms,omitempty"` //如果需要多个条件,则可以填写到这里来
 }
 
 func (c *TermProperty) Validate(repo CheckRepo) error {
