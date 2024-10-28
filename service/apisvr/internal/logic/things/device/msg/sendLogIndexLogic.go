@@ -3,6 +3,7 @@ package msg
 import (
 	"context"
 	"gitee.com/unitedrhino/share/ctxs"
+	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/logic"
@@ -46,6 +47,20 @@ func (l *SendLogIndexLogic) SendLogIndex(req *types.DeviceMsgSendLogIndexReq) (r
 	}
 	info := make([]*types.DeviceMsgSendLogInfo, 0, len(dmResp.List))
 	for _, v := range dmResp.List {
+		var user *types.UserCore
+		if req.WithUser {
+			if v.UserID <= def.RootNode {
+				user = &types.UserCore{
+					UserID:   v.UserID,
+					UserName: v.Account,
+				}
+			} else {
+				ui, err := l.svcCtx.UserC.GetData(l.ctx, v.UserID)
+				if err == nil {
+					user = utils.Copy[types.UserCore](ui)
+				}
+			}
+		}
 		info = append(info, &types.DeviceMsgSendLogInfo{
 			Timestamp:  v.Timestamp,
 			Account:    v.Account,
@@ -57,6 +72,7 @@ func (l *SendLogIndexLogic) SendLogIndex(req *types.DeviceMsgSendLogIndexReq) (r
 			TraceID:    v.TraceID,
 			Content:    v.Content,
 			ResultCode: v.ResultCode,
+			User:       user,
 		})
 	}
 	return &types.DeviceMsgSendLogIndexResp{List: info, Total: dmResp.Total}, err

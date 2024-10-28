@@ -649,6 +649,7 @@ type DeviceMsgSendLogIndexReq struct {
 	UserID     int64     `json:"userID,string,optional"`
 	Actions    []string  `json:"actions,optional"`
 	ResultCode int64     `json:"resultCode,optional"` //请求结果状态,200为成功
+	WithUser   bool      `json:"withUser,optional"`   //同时返回用户信息
 }
 
 type DeviceMsgSendLogIndexResp struct {
@@ -657,16 +658,17 @@ type DeviceMsgSendLogIndexResp struct {
 }
 
 type DeviceMsgSendLogInfo struct {
-	Timestamp  int64  `json:"timestamp,string,optional"` //发生时间戳(毫秒时间戳)
-	Account    string `json:"account,optional"`
-	UserID     int64  `json:"userID,string,optional"` //
-	ProductID  string `json:"productID,optional"`     //
-	DeviceName string `json:"deviceName,optional"`    //
-	Action     string `json:"action,optional"`        //操作类型 propertySend:属性控制 actionSend:操作控制 propertyGetReportSend:获取最新属性请求
-	DataID     string `json:"dataID,optional"`        //identify
-	TraceID    string `json:"traceID,optional"`       //服务器端事务id
-	Content    string `json:"content,optional"`       //操作的内容
-	ResultCode int64  `json:"resultCode,optional"`    //请求结果状态,200为成功
+	Timestamp  int64     `json:"timestamp,string,optional"` //发生时间戳(毫秒时间戳)
+	Account    string    `json:"account,optional"`
+	UserID     int64     `json:"userID,string,optional"` //
+	ProductID  string    `json:"productID,optional"`     //
+	DeviceName string    `json:"deviceName,optional"`    //
+	Action     string    `json:"action,optional"`        //操作类型 propertySend:属性控制 actionSend:操作控制 propertyGetReportSend:获取最新属性请求
+	DataID     string    `json:"dataID,optional"`        //identify
+	TraceID    string    `json:"traceID,optional"`       //服务器端事务id
+	Content    string    `json:"content,optional"`       //操作的内容
+	ResultCode int64     `json:"resultCode,optional"`    //请求结果状态,200为成功
+	User       *UserCore `json:"user,optional,omitempty"`
 }
 
 type DeviceMsgShadowIndex struct {
