@@ -153,7 +153,7 @@ func (l *SendMessageToDevicesLogic) AddDevice(dmOtaJob *relationDB.DmOtaFirmware
 			return err
 		}
 		if len(clearConfirmDevices) > 0 {
-			err = relationDB.NewDeviceInfoRepo(tx).UpdateWithField(l.ctx, relationDB.DeviceFilter{Cores: confirmDevices},
+			err = relationDB.NewDeviceInfoRepo(tx).UpdateWithField(l.ctx, relationDB.DeviceFilter{Cores: clearConfirmDevices},
 				map[string]any{"need_confirm_job_id": 0, "need_confirm_version": ""})
 			if err != nil {
 				return err
