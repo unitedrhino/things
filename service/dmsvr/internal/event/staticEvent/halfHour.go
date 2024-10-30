@@ -133,7 +133,7 @@ func (l *HalfHourHandle) DeviceOnlineFix() error { //设备在线修复
 func (l *HalfHourHandle) DeviceExp() error { //设备过期处理
 	{ //有效期到了之后不启用
 		err := relationDB.NewDeviceInfoRepo(l.ctx).UpdateWithField(l.ctx,
-			relationDB.DeviceFilter{ExpTime: stores.CmpAnd(stores.CmpLte(time.Now()), stores.CmpIsNull(false))},
+			relationDB.DeviceFilter{HasOwner: def.False, ExpTime: stores.CmpAnd(stores.CmpLte(time.Now()), stores.CmpIsNull(false))},
 			map[string]any{"status": def.DeviceStatusArrearage})
 		if err != nil {
 			l.Error(err)
