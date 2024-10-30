@@ -69,7 +69,11 @@ func (i *Info) InitScript() *Vm {
 func (v *Vm) DataUp(ctx context.Context,
 	handle string, /*对应 mqtt topic的第一个 thing ota config 等等*/
 	Type string /*操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为*/) ConvertFunc {
-	vm := v.Get().(*goja.Runtime)
+	vv := v.Get()
+	if vv == nil {
+		return nil
+	}
+	vm := vv.(*goja.Runtime)
 	funName := fmt.Sprintf("%s%sUp", handle, utils.FirstUpper(Type))
 	convert, ok := goja.AssertFunction(vm.Get(funName))
 	if !ok {
