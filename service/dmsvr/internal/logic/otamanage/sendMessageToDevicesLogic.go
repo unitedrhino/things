@@ -365,10 +365,6 @@ func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirm
 	return nil
 }
 func (l *SendMessageToDevicesLogic) PushMessageToDevices(jobInfo *relationDB.DmOtaFirmwareJob) error {
-	err := l.DevicesTimeout(jobInfo)
-	if err != nil {
-		l.Error(err)
-	}
 	firmware := jobInfo.Firmware
 	if jobInfo.IsNeedPush != def.True { //只有需要推送的才推送
 		return nil
