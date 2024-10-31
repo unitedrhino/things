@@ -26,9 +26,9 @@ OpenAuth:
 Proxy:
   StaticProxy:
     - Router: /api/v1/view/
-      Dest: http://127.0.0.1:7789
+      Dest: http://localhost:7789
     - Router: /api/v1/app/
-      Dest: http://127.0.0.1:8000
+      Dest: http://localhost:8000
     - Router: /api/v1/things/
       Dest: http://things:7788
     - Router: /api/v1/protocol/cloud/tencent/
@@ -38,7 +38,7 @@ Proxy:
     - Router: /api/v1/media/
       Dest: http://media:8088
     - Router: /api/v1/data/
-      Dest: http://127.0.0.1:9218
+      Dest: http://localhost:9218
     - Router: /oss/
       DeletePrefix: true
       Dest: http://minio:9000

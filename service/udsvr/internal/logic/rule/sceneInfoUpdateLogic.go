@@ -88,7 +88,7 @@ func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *ud.SceneInfo) (*ud.Empty, err
 		}
 		old.HeadImg = path
 	}
-	do := PoToSceneInfoDo(old)
+	do := PoToSceneInfoDo(l.ctx, l.svcCtx, old)
 	if doUpdate {
 		err = do.Validate(NewSceneCheckRepo(l.ctx, l.svcCtx, do))
 		if err != nil {

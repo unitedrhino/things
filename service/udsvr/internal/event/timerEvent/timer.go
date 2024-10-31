@@ -54,7 +54,7 @@ func (l *TimerHandle) DeviceTriggerCheck() error {
 			}
 		}()
 		po.SceneInfo.Triggers = append(po.SceneInfo.Triggers, po)
-		do := rulelogic.PoToSceneInfoDo(po.SceneInfo)
+		do := rulelogic.PoToSceneInfoDo(l.ctx, l.svcCtx, po.SceneInfo)
 
 		ctx := ctxs.BindTenantCode(l.ctx, string(v.SceneInfo.TenantCode), int64(v.SceneInfo.ProjectID))
 		if !do.When.IsHit(ctx, now, rulelogic.NewSceneCheckRepo(l.ctx, l.svcCtx, do)) {
@@ -90,7 +90,7 @@ func (l *TimerHandle) SceneTimingTenMinutes() error {
 			continue
 		}
 		po.SceneInfo.Triggers = append(po.SceneInfo.Triggers, po)
-		do := rulelogic.PoToSceneInfoDo(po.SceneInfo)
+		do := rulelogic.PoToSceneInfoDo(l.ctx, l.svcCtx, po.SceneInfo)
 
 		if !do.If.Triggers[0].Weather.IsHit(l.ctx, rulelogic.NewSceneCheckRepo(l.ctx, l.svcCtx, do)) {
 			if po.Weather.FirstTriggerTime.Valid { //如果处于触发状态,但是现在不触发了,则需要解除触发
@@ -208,7 +208,7 @@ func (l *TimerHandle) SceneTiming() error {
 				}
 			}()
 			po.SceneInfo.Triggers = append(po.SceneInfo.Triggers, po)
-			do := rulelogic.PoToSceneInfoDo(po.SceneInfo)
+			do := rulelogic.PoToSceneInfoDo(l.ctx, l.svcCtx, po.SceneInfo)
 			if po.SceneInfo == nil {
 				log.Errorf("scene trigger timer not bind scene, trigger:%v", utils.Fmt(po))
 				relationDB.NewSceneIfTriggerRepo(ctx).Delete(ctx, po.ID)
@@ -276,11 +276,6 @@ func (l *TimerHandle) SceneTiming() error {
 				}
 				err = relationDB.NewSceneIfTriggerRepo(ctx).Update(ctx, po)
 				if err != nil { //如果失败了下次还可以执行
-					log.Errorf("scene err:%v", err)
-					return
-				}
-				err = relationDB.NewSceneInfoRepo(ctx).UpdateWithField(ctx, relationDB.SceneInfoFilter{IDs: []int64{po.SceneID}}, map[string]any{"last_run_time": po.LastRunTime})
-				if err != nil {
 					log.Errorf("scene err:%v", err)
 					return
 				}

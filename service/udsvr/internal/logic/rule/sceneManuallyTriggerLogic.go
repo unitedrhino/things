@@ -39,9 +39,10 @@ func (l *SceneManuallyTriggerLogic) SceneManuallyTrigger(in *ud.WithID) (*ud.Emp
 	//if si.Type != string(scene.SceneTypeManual) {
 	//	return nil, errors.TriggerType.AddMsg("该场景不是手动触发类型,无法执行")
 	//}
-	do := PoToSceneInfoDo(si)
+	do := PoToSceneInfoDo(l.ctx, l.svcCtx, si)
 	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) { //异步执行
-		err = stores.WithNoDebug(ctx, relationDB.NewSceneInfoRepo).UpdateWithField(ctx, relationDB.SceneInfoFilter{IDs: []int64{si.ID}}, map[string]any{"last_run_time": time.Now()})
+		err = stores.WithNoDebug(ctx, relationDB.NewSceneInfoRepo).UpdateWithField(ctx,
+			relationDB.SceneInfoFilter{IDs: []int64{si.ID}}, map[string]any{"last_run_time": time.Now()})
 		if err != nil {
 			logx.WithContext(ctx).Error(err)
 		}

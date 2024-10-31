@@ -60,7 +60,7 @@ func (l *TimerHandle) SceneDeviceOnline(in application.ConnectMsg) error {
 			continue
 		}
 		po.SceneInfo.Triggers = append(po.SceneInfo.Triggers, po)
-		do := rulelogic.PoToSceneInfoDo(po.SceneInfo)
+		do := rulelogic.PoToSceneInfoDo(l.ctx, l.svcCtx, po.SceneInfo)
 		do.DeviceName = di.DeviceName
 		do.DeviceAlias = di.DeviceAlias.GetValue()
 		do.ProductID = di.ProductID

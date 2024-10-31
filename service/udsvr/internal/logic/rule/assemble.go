@@ -3,6 +3,7 @@ package rulelogic
 import (
 	"context"
 	"database/sql"
+	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/oss/common"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
@@ -129,11 +130,11 @@ func ToSceneTriggerDevicePo(in *scene.TriggerDevice) (ret relationDB.UdSceneTrig
 	}
 }
 
-func PoToSceneInfoDo(in *relationDB.UdSceneInfo) *scene.Info {
+func PoToSceneInfoDo(ctx context.Context, svcCtx *svc.ServiceContext, in *relationDB.UdSceneInfo) *scene.Info {
 	if in == nil {
 		return nil
 	}
-	return &scene.Info{
+	ret := &scene.Info{
 		ID:          in.ID,
 		ProjectID:   int64(in.ProjectID),
 		AreaID:      int64(in.AreaID),
@@ -152,7 +153,7 @@ func PoToSceneInfoDo(in *relationDB.UdSceneInfo) *scene.Info {
 		LastRunTime: utils.GetNullTime(in.LastRunTime),
 		Type:        in.Type,
 		If: scene.If{
-			Triggers: ToSceneTriggersDo(in.Triggers),
+			Triggers: ToSceneTriggersDo(ctx, svcCtx, in.Triggers),
 		},
 		When: scene.When{
 			ValidRanges:   in.UdSceneWhen.ValidRanges,
@@ -160,11 +161,27 @@ func PoToSceneInfoDo(in *relationDB.UdSceneInfo) *scene.Info {
 			Conditions:    in.UdSceneWhen.Conditions,
 		},
 		Then: scene.Then{
-			Actions: ToSceneActionsDo(in.UdSceneThen.Actions),
+			Actions: ToSceneActionsDo(ctx, svcCtx, in.UdSceneThen.Actions),
 		},
 		Status:   in.Status,
 		IsCommon: in.IsCommon,
 	}
+	for i, v := range ret.When.Conditions.Terms {
+		if v.ColumnType != scene.TermColumnTypeProperty {
+			continue
+		}
+		p := v.Property
+		di, err := svcCtx.DeviceCache.GetData(ctx, devices.Core{
+			ProductID:  p.ProductID,
+			DeviceName: p.DeviceName,
+		})
+		if err == nil {
+			v.Property.ProductName = di.ProductName
+			v.Property.DeviceAlias = di.DeviceAlias.GetValue()
+			ret.When.Conditions.Terms[i] = v
+		}
+	}
+	return ret
 }
 
 func ToSceneActionsPo(s *scene.Info, in scene.Actions) (ret []*relationDB.UdSceneThenAction) {
@@ -213,14 +230,14 @@ func ToSceneActionPo(s *scene.Info, in *scene.Action) *relationDB.UdSceneThenAct
 	return po
 }
 
-func ToSceneActionsDo(in []*relationDB.UdSceneThenAction) (ret scene.Actions) {
+func ToSceneActionsDo(ctx context.Context, svcCtx *svc.ServiceContext, in []*relationDB.UdSceneThenAction) (ret scene.Actions) {
 	for _, v := range in {
-		ret = append(ret, ToSceneActionDo(v))
+		ret = append(ret, ToSceneActionDo(ctx, svcCtx, v))
 	}
 	return
 }
 
-func ToSceneActionDo(in *relationDB.UdSceneThenAction) *scene.Action {
+func ToSceneActionDo(ctx context.Context, svcCtx *svc.ServiceContext, in *relationDB.UdSceneThenAction) *scene.Action {
 	if in == nil {
 		return nil
 	}
@@ -251,21 +268,30 @@ func ToSceneActionDo(in *relationDB.UdSceneThenAction) *scene.Action {
 		Values:           in.Device.Values,
 		Body:             in.Device.Body,
 	}
-
+	if in.Type == scene.ActionExecutorDevice {
+		di, err := svcCtx.DeviceCache.GetData(ctx, devices.Core{
+			ProductID:  in.Device.ProductID,
+			DeviceName: in.Device.DeviceName,
+		})
+		if err == nil {
+			do.Device.ProductName = di.ProductName
+			do.Device.DeviceAlias = di.DeviceAlias.GetValue()
+		}
+	}
 	return do
 }
 
-func ToSceneTriggersDo(in []*relationDB.UdSceneIfTrigger) (ret scene.Triggers) {
+func ToSceneTriggersDo(ctx context.Context, svcCtx *svc.ServiceContext, in []*relationDB.UdSceneIfTrigger) (ret scene.Triggers) {
 	if in == nil {
 		return nil
 	}
 	for _, v := range in {
-		ret = append(ret, ToSceneTriggerDo(v))
+		ret = append(ret, ToSceneTriggerDo(ctx, svcCtx, v))
 	}
 	return
 }
 
-func ToSceneTriggerDo(in *relationDB.UdSceneIfTrigger) *scene.Trigger {
+func ToSceneTriggerDo(ctx context.Context, svcCtx *svc.ServiceContext, in *relationDB.UdSceneIfTrigger) *scene.Trigger {
 	if in == nil {
 		return nil
 	}
@@ -273,7 +299,7 @@ func ToSceneTriggerDo(in *relationDB.UdSceneIfTrigger) *scene.Trigger {
 		Type:    in.Type,
 		Order:   in.Order,
 		AreaID:  int64(in.AreaID),
-		Device:  ToSceneTriggerDeviceDo(in.Device),
+		Device:  ToSceneTriggerDeviceDo(ctx, svcCtx, in.Device),
 		Timer:   ToSceneTriggerTimerDo(in.Timer),
 		Weather: utils.Copy[scene.TriggerWeather](in.Weather),
 	}
@@ -292,8 +318,8 @@ func ToSceneTriggerTimerDo(in relationDB.UdSceneTriggerTimer) (ret *scene.Trigge
 	}
 }
 
-func ToSceneTriggerDeviceDo(in relationDB.UdSceneTriggerDevice) (ret *scene.TriggerDevice) {
-	return &scene.TriggerDevice{
+func ToSceneTriggerDeviceDo(ctx context.Context, svcCtx *svc.ServiceContext, in relationDB.UdSceneTriggerDevice) (ret *scene.TriggerDevice) {
+	ret = &scene.TriggerDevice{
 		ProductID:   in.ProductID,
 		ProductName: in.ProductName,
 		SelectType:  in.SelectType,
@@ -311,13 +337,22 @@ func ToSceneTriggerDeviceDo(in relationDB.UdSceneTriggerDevice) (ret *scene.Trig
 		Body:             in.Body,
 		StateKeep:        utils.Copy[scene.StateKeep](in.StateKeep),
 	}
+	di, err := svcCtx.DeviceCache.GetData(ctx, devices.Core{
+		ProductID:  in.ProductID,
+		DeviceName: in.DeviceName,
+	})
+	if err == nil {
+		ret.ProductName = di.ProductName
+		ret.DeviceAlias = di.DeviceAlias.GetValue()
+	}
+	return
 }
 
 func PoToSceneInfoPb(ctx context.Context, svcCtx *svc.ServiceContext, in *relationDB.UdSceneInfo) *ud.SceneInfo {
 	if in == nil {
 		return nil
 	}
-	do := PoToSceneInfoDo(in)
+	do := PoToSceneInfoDo(ctx, svcCtx, in)
 	if in.HeadImg != "" {
 		var err error
 		in.HeadImg, err = svcCtx.OssClient.PrivateBucket().SignedGetUrl(ctx, in.HeadImg, 24*60*60, common.OptionKv{})

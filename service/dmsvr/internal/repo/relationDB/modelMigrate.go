@@ -18,6 +18,7 @@ func Migrate(c conf.Database) error {
 		//需要初始化表
 		needInitColumn = true
 	}
+
 	err := db.AutoMigrate(
 		&DmDeviceMsgCount{},
 		&DmManufacturerInfo{},
@@ -50,13 +51,12 @@ func Migrate(c conf.Database) error {
 		return err
 	}
 
-	//{
-	//	db := stores.GetCommonConn(context.TODO()).Clauses(clause.OnConflict{DoNothing: true})
-	//	if err := db.CreateInBatches(&MigrateManufacturerInfo, 100).Error; err != nil {
-	//		return err
-	//	}
-	//}
-	//stores.SetAuthIncrement(db, &DmGroupInfo{ID: 10})
+	{ //版本升级兼容
+		err := db.Migrator().DropTable(&DmGatewayDevice{}, "tenant_code")
+		if err != nil {
+			return err
+		}
+	}
 	if needInitColumn {
 		return migrateTableColumn()
 	}

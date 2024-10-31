@@ -17,13 +17,16 @@ func NewSceneCheckRepo(ctx context.Context, svcCtx *svc.ServiceContext, do *scen
 		DeviceMsg:      svcCtx.DeviceMsg,
 		Common:         svcCtx.SysCommon,
 		Info:           do,
-		GetSceneInfo:   GetSceneInfo,
+		GetSceneInfo:   GetSceneInfo(svcCtx),
 	}
 }
-func GetSceneInfo(ctx context.Context, sceneID int64) (info *scene.Info, err error) {
-	po, err := relationDB.NewSceneInfoRepo(ctx).FindOne(ctx, sceneID)
-	if err != nil {
-		return nil, err
+func GetSceneInfo(svcCtx *svc.ServiceContext) func(ctx context.Context, sceneID int64) (info *scene.Info, err error) {
+	return func(ctx context.Context, sceneID int64) (info *scene.Info, err error) {
+		po, err := relationDB.NewSceneInfoRepo(ctx).FindOne(ctx, sceneID)
+		if err != nil {
+			return nil, err
+		}
+		return PoToSceneInfoDo(ctx, svcCtx, po), nil
 	}
-	return PoToSceneInfoDo(po), nil
+
 }
