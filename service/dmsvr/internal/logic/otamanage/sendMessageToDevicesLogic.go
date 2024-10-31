@@ -153,7 +153,7 @@ func (l *SendMessageToDevicesLogic) AddDevice(dmOtaJob *relationDB.DmOtaFirmware
 			return err
 		}
 		if len(clearConfirmDevices) > 0 {
-			err = relationDB.NewDeviceInfoRepo(tx).UpdateWithField(l.ctx, relationDB.DeviceFilter{Cores: confirmDevices},
+			err = relationDB.NewDeviceInfoRepo(tx).UpdateWithField(l.ctx, relationDB.DeviceFilter{Cores: clearConfirmDevices},
 				map[string]any{"need_confirm_job_id": 0, "need_confirm_version": ""})
 			if err != nil {
 				return err
@@ -365,10 +365,6 @@ func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirm
 	return nil
 }
 func (l *SendMessageToDevicesLogic) PushMessageToDevices(jobInfo *relationDB.DmOtaFirmwareJob) error {
-	err := l.DevicesTimeout(jobInfo)
-	if err != nil {
-		l.Error(err)
-	}
 	firmware := jobInfo.Firmware
 	if jobInfo.IsNeedPush != def.True { //只有需要推送的才推送
 		return nil

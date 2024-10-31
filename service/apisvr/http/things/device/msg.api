@@ -98,7 +98,7 @@ type (
         UserID     int64     `json:"userID,string,optional"`
         Actions    []string  `json:"actions,optional"`
         ResultCode int64     `json:"resultCode,optional"` //请求结果状态,200为成功
-
+        WithUser bool  `json:"withUser,optional"`  //同时返回用户信息
     }
     DeviceMsgSendLogIndexResp  {
         List []*DeviceMsgSendLogInfo `json:"list"`//数据
@@ -115,6 +115,7 @@ type (
         TraceID    string `json:"traceID,optional"`         //服务器端事务id
         Content    string `json:"content,optional"`        //操作的内容
         ResultCode int64  `json:"resultCode,optional"` //请求结果状态,200为成功
+        User *UserCore `json:"user,optional,omitempty"`
     }
 
 

@@ -118,7 +118,7 @@ func (a *ActionDevice) Validate(repo CheckRepo) error {
 	if err != nil {
 		return err
 	}
-	if a.DataID != "" {
+	if a.DataID != "" && a.Value != "" {
 		dataIDs := strings.Split(a.DataID, ".")
 		p := v.Property[dataIDs[0]]
 		if p == nil {
@@ -128,9 +128,6 @@ func (a *ActionDevice) Validate(repo CheckRepo) error {
 			a.DataName = p.Name
 		}
 		a.SchemaAffordance = schema.DoToAffordanceStr(p)
-		if a.Value == "" {
-			return errors.Parameter.AddMsg("传的值不能为空:%v")
-		}
 	} else if len(a.Values) != 0 {
 		for _, val := range a.Values {
 			dataIDs := strings.Split(val.DataID, ".")
@@ -146,6 +143,8 @@ func (a *ActionDevice) Validate(repo CheckRepo) error {
 				return errors.Parameter.AddMsg("传的值不能为空:%v")
 			}
 		}
+	} else {
+		return errors.Parameter.AddMsg("执行参数未填写完整")
 	}
 
 	return nil

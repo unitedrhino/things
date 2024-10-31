@@ -8387,6 +8387,11 @@
           "type": "integer",
           "format": "int64",
           "description": "请求结果状态,200为成功"
+        },
+        "withUser": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "同时返回用户信息"
         }
       },
       "title": "DeviceMsgSendLogIndexReq"
@@ -8452,6 +8457,9 @@
           "type": "integer",
           "format": "int64",
           "description": "请求结果状态,200为成功"
+        },
+        "user": {
+          "$ref": "#/definitions/UserCore"
         }
       },
       "title": "DeviceMsgSendLogInfo"

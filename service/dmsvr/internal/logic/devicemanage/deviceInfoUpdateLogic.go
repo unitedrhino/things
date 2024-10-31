@@ -65,7 +65,21 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 	}
 
 	if uc.IsAdmin && data.ExpTime != nil {
-		old.ExpTime = utils.ToNullTime2(data.ExpTime)
+		if data.ExpTime.Value == 0 && old.UserID > def.RootNode { //如果是主动传0且被绑定了则需要看下过期时间是否正确
+			pi, err := l.svcCtx.ProductCache.GetData(l.ctx, data.ProductID)
+			if err != nil && !errors.Cmp(err, errors.NotFind) {
+				l.Error(err)
+				return err
+			}
+			if pi.TrialTime.GetValue() != 0 {
+				old.ExpTime = sql.NullTime{
+					Time:  time.Now().Add(time.Hour * 24 * time.Duration(pi.TrialTime.GetValue())),
+					Valid: true,
+				}
+			}
+		} else {
+			old.ExpTime = utils.ToNullTime2(data.ExpTime)
+		}
 		if old.Status == def.DeviceStatusArrearage && (!old.ExpTime.Valid || old.ExpTime.Time.After(time.Now())) {
 			//如果设备是欠费状态需要修改为正常状态
 			old.Status = old.IsOnline + 1

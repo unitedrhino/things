@@ -123,6 +123,24 @@ func (p OtaFirmwareDeviceRepo) FindByFilter(ctx context.Context, f OtaFirmwareDe
 	return results, nil
 }
 
+func (p OtaFirmwareDeviceRepo) FindByFilters(ctx context.Context, f []OtaFirmwareDeviceFilter, page *stores.PageInfo) ([]*DmOtaFirmwareDevice, error) {
+	var results []*DmOtaFirmwareDevice
+	if len(f) == 0 {
+		return results, nil
+	}
+	db := p.fmtFilter(ctx, f[0]).Model(&DmOtaFirmwareDevice{})
+	for _, ff := range f[1:] {
+		db = db.Or(p.fmtFilter(ctx, ff))
+	}
+
+	db = page.ToGorm(db)
+	err := db.Find(&results).Error
+	if err != nil {
+		return nil, stores.ErrFmt(err)
+	}
+	return results, nil
+}
+
 func (p OtaFirmwareDeviceRepo) CountByFilter(ctx context.Context, f OtaFirmwareDeviceFilter) (size int64, err error) {
 	db := p.fmtFilter(ctx, f).Model(&DmOtaFirmwareDevice{})
 	err = db.Count(&size).Error
@@ -131,6 +149,28 @@ func (p OtaFirmwareDeviceRepo) CountByFilter(ctx context.Context, f OtaFirmwareD
 
 func (p OtaFirmwareDeviceRepo) Update(ctx context.Context, data *DmOtaFirmwareDevice) error {
 	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
+	return stores.ErrFmt(err)
+}
+
+func (p OtaFirmwareDeviceRepo) UpdateStatusByFilters(ctx context.Context, f []OtaFirmwareDeviceFilter, status int64, detail string) error {
+	db := p.fmtFilter(ctx, f[0]).Model(&DmOtaFirmwareDevice{})
+	for _, ff := range f[1:] {
+		db = db.Or(p.fmtFilter(ctx, ff))
+	}
+
+	update := map[string]any{
+		"status": status,
+	}
+	if status == msgOta.DeviceStatusFailure {
+		update["last_failure_time"] = time.Now()
+	}
+	if status == msgOta.DeviceStatusQueued {
+		update["retry_count"] = stores.Expr("retry_count+1")
+	}
+	if detail != "" {
+		update["detail"] = detail
+	}
+	err := db.Updates(update).Error
 	return stores.ErrFmt(err)
 }
 

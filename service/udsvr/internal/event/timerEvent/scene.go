@@ -48,7 +48,12 @@ func (l *TimerHandle) LockRunning(ctx context.Context, Type string /*scene devic
 
 func (l *TimerHandle) SceneExec(ctx context.Context, do *scene.Info) {
 	logx.WithContext(ctx).Infof("scene SceneExec do:%v", utils.Fmt(do))
-	err := do.Then.Execute(ctx, scene.ActionRepo{
+	err := stores.WithNoDebug(ctx, relationDB.NewSceneInfoRepo).UpdateWithField(ctx,
+		relationDB.SceneInfoFilter{IDs: []int64{do.ID}}, map[string]any{"last_run_time": time.Now()})
+	if err != nil {
+		logx.WithContext(ctx).Error(err)
+	}
+	err = do.Then.Execute(ctx, scene.ActionRepo{
 		Info:           do,
 		DeviceInteract: l.svcCtx.DeviceInteract,
 		SchemaCache:    l.svcCtx.SchemaCache,
