@@ -5,6 +5,7 @@ import (
 	"gitee.com/unitedrhino/share/conf"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/stores"
+	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
@@ -18,6 +19,7 @@ func Migrate(c conf.Database) error {
 		//需要初始化表
 		needInitColumn = true
 	}
+
 	err := db.AutoMigrate(
 		&DmDeviceMsgCount{},
 		&DmManufacturerInfo{},
@@ -29,7 +31,7 @@ func Migrate(c conf.Database) error {
 		&DmProtocolInfo{},
 		&DmDeviceInfo{},
 		&DmProductCustom{},
-		&DmSchemaInfo{},
+		&DmDeviceSchema{},
 		&DmProductSchema{},
 		&DmGroupInfo{},
 		&DmGroupDevice{},
@@ -50,18 +52,32 @@ func Migrate(c conf.Database) error {
 		return err
 	}
 
-	//{
-	//	db := stores.GetCommonConn(context.TODO()).Clauses(clause.OnConflict{DoNothing: true})
-	//	if err := db.CreateInBatches(&MigrateManufacturerInfo, 100).Error; err != nil {
-	//		return err
-	//	}
-	//}
-	//stores.SetAuthIncrement(db, &DmGroupInfo{ID: 10})
+	err = versionUpdate(db)
+	if err != nil {
+		return err
+	}
+
 	if needInitColumn {
 		return migrateTableColumn()
 	}
 	return err
 }
+
+func versionUpdate(db *gorm.DB) error {
+	m := db.Migrator()
+	{ //版本升级兼容
+
+		if m.HasColumn(&DmGatewayDevice{}, "tenant_code") {
+			err := db.Migrator().DropColumn(&DmGatewayDevice{}, "tenant_code")
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
 func migrateTableColumn() error {
 	db := stores.GetCommonConn(context.TODO()).Clauses(clause.OnConflict{DoNothing: true})
 	if err := db.CreateInBatches(&MigrateProtocolInfo, 100).Error; err != nil {

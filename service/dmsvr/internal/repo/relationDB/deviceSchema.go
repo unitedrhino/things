@@ -10,12 +10,12 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-type SchemaInfoRepo struct {
+type DeviceSchemaRepo struct {
 	db *gorm.DB
 }
 
 type (
-	SchemaInfoFilter struct {
+	DeviceSchemaFilter struct {
 		ID                int64
 		ProductID         string //产品id  必填
 		DeviceName        string //设备ID
@@ -34,11 +34,11 @@ type (
 	}
 )
 
-func NewSchemaInfoRepo(in any) *SchemaInfoRepo {
-	return &SchemaInfoRepo{db: stores.GetCommonConn(in)}
+func NewDeviceSchemaRepo(in any) *DeviceSchemaRepo {
+	return &DeviceSchemaRepo{db: stores.GetCommonConn(in)}
 }
 
-func (p SchemaInfoRepo) fmtFilter(ctx context.Context, f SchemaInfoFilter) *gorm.DB {
+func (p DeviceSchemaRepo) fmtFilter(ctx context.Context, f DeviceSchemaFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	db = db.Where("product_id=?", f.ProductID)
 	db = db.Where("device_name=?", f.DeviceName)
@@ -86,13 +86,13 @@ func (p SchemaInfoRepo) fmtFilter(ctx context.Context, f SchemaInfoFilter) *gorm
 	}
 	return db
 }
-func (p SchemaInfoRepo) Insert(ctx context.Context, data *DmSchemaInfo) error {
+func (p DeviceSchemaRepo) Insert(ctx context.Context, data *DmDeviceSchema) error {
 	result := p.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (p SchemaInfoRepo) FindOneByFilter(ctx context.Context, f SchemaInfoFilter) (*DmSchemaInfo, error) {
-	var result DmSchemaInfo
+func (p DeviceSchemaRepo) FindOneByFilter(ctx context.Context, f DeviceSchemaFilter) (*DmDeviceSchema, error) {
+	var result DmDeviceSchema
 	db := p.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
@@ -101,26 +101,26 @@ func (p SchemaInfoRepo) FindOneByFilter(ctx context.Context, f SchemaInfoFilter)
 	return &result, nil
 }
 
-func (p SchemaInfoRepo) Update(ctx context.Context, data *DmSchemaInfo) error {
+func (p DeviceSchemaRepo) Update(ctx context.Context, data *DmDeviceSchema) error {
 	err := p.db.WithContext(ctx).Omit("product_id", "identifier").Where("product_id = ? and identifier = ?", data.ProductID, data.Identifier).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
-func (p SchemaInfoRepo) UpdateTag(ctx context.Context, productIDs []string, identifiers []string, oldTag, newTag int64) error {
-	err := p.db.WithContext(ctx).Model(&DmSchemaInfo{}).Where(
+func (p DeviceSchemaRepo) UpdateTag(ctx context.Context, productIDs []string, identifiers []string, oldTag, newTag int64) error {
+	err := p.db.WithContext(ctx).Model(&DmDeviceSchema{}).Where(
 		"product_id in ? and identifier in ? and tag =?", productIDs, identifiers, oldTag).Update("tag", newTag).Error
 	return stores.ErrFmt(err)
 }
 
-func (p SchemaInfoRepo) DeleteByFilter(ctx context.Context, f SchemaInfoFilter) error {
+func (p DeviceSchemaRepo) DeleteByFilter(ctx context.Context, f DeviceSchemaFilter) error {
 	db := p.fmtFilter(ctx, f)
-	err := db.Delete(&DmSchemaInfo{}).Error
+	err := db.Delete(&DmDeviceSchema{}).Error
 	return stores.ErrFmt(err)
 }
 
-func (p SchemaInfoRepo) FindByFilter(ctx context.Context, f SchemaInfoFilter, page *stores.PageInfo) ([]*DmSchemaInfo, error) {
-	var results []*DmSchemaInfo
-	db := p.fmtFilter(ctx, f).Model(&DmSchemaInfo{})
+func (p DeviceSchemaRepo) FindByFilter(ctx context.Context, f DeviceSchemaFilter, page *stores.PageInfo) ([]*DmDeviceSchema, error) {
+	var results []*DmDeviceSchema
+	db := p.fmtFilter(ctx, f).Model(&DmDeviceSchema{})
 	db = page.ToGorm(db)
 	newDB := NewProductSchemaRepo(ctx).fmtFilter(ctx, utils.Copy2[ProductSchemaFilter](f))
 	db2 := p.db.Raw("(?) union all (?)", db, newDB.Select(fmt.Sprintf("'%v' as device_name,dm_product_schema.*", f.DeviceName)).Model(&DmProductSchema{}))
@@ -133,38 +133,44 @@ func (p SchemaInfoRepo) FindByFilter(ctx context.Context, f SchemaInfoFilter, pa
 	return results, nil
 }
 
-func (p SchemaInfoRepo) CountByFilter(ctx context.Context, f SchemaInfoFilter) (size int64, err error) {
-	db := p.fmtFilter(ctx, f).Model(&DmSchemaInfo{})
+func (p DeviceSchemaRepo) CountByFilter(ctx context.Context, f DeviceSchemaFilter) (size int64, err error) {
+	db := p.fmtFilter(ctx, f).Model(&DmDeviceSchema{})
 	err = db.Count(&size).Error
 	return size, stores.ErrFmt(err)
 }
 
 // 批量插入 LightStrategyDevice 记录
-func (p SchemaInfoRepo) MultiInsert(ctx context.Context, data []*DmSchemaInfo) error {
-	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmSchemaInfo{}).Create(data).Error
+func (p DeviceSchemaRepo) MultiInsert(ctx context.Context, data []*DmDeviceSchema) error {
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmDeviceSchema{}).Create(data).Error
 	return stores.ErrFmt(err)
 }
 
-func (p SchemaInfoRepo) MultiUpdate(ctx context.Context, productID string, deviceName string, schemaInfo *schema.Model) error {
-	var datas []*DmSchemaInfo
-	//toD := func(in *DmProductSchema) *DmSchemaInfo {
-	//	return &DmSchemaInfo{
-	//		DeviceName:      deviceName,
-	//		DmProductSchema: *in,
-	//	}
-	//}
-	//for _, item := range schemaInfo.Property {
-	//	datas = append(datas, toD(ToPropertyPo(productID, item)))
-	//}
-	//for _, item := range schemaInfo.Event {
-	//	datas = append(datas, toD(ToEventPo(productID, item)))
-	//}
-	//for _, item := range schemaInfo.Action {
-	//	datas = append(datas, toD(ToActionPo(productID, item)))
-	//}
+func (p DeviceSchemaRepo) MultiUpdate(ctx context.Context, productID string, deviceName string, schemaInfo *schema.Model) error {
+	var datas []*DmDeviceSchema
+	for _, item := range schemaInfo.Property {
+		datas = append(datas, &DmDeviceSchema{
+			ProductID:    productID,
+			DeviceName:   deviceName,
+			DmSchemaCore: ToPropertyPo(item),
+		})
+	}
+	for _, item := range schemaInfo.Event {
+		datas = append(datas, &DmDeviceSchema{
+			ProductID:    productID,
+			DeviceName:   deviceName,
+			DmSchemaCore: ToEventPo(item),
+		})
+	}
+	for _, item := range schemaInfo.Action {
+		datas = append(datas, &DmDeviceSchema{
+			ProductID:    productID,
+			DeviceName:   deviceName,
+			DmSchemaCore: ToActionPo(item),
+		})
+	}
 	err := p.db.Transaction(func(tx *gorm.DB) error {
-		rm := NewSchemaInfoRepo(tx)
-		err := rm.DeleteByFilter(ctx, SchemaInfoFilter{ProductID: productID})
+		rm := NewDeviceSchemaRepo(tx)
+		err := rm.DeleteByFilter(ctx, DeviceSchemaFilter{ProductID: productID})
 		if err != nil {
 			return err
 		}
@@ -174,7 +180,6 @@ func (p SchemaInfoRepo) MultiUpdate(ctx context.Context, productID string, devic
 				return err
 			}
 		}
-
 		return nil
 	})
 	return stores.ErrFmt(err)

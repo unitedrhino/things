@@ -39,19 +39,28 @@ func (s SchemaRepo) TslImport(ctx context.Context, productID string, schemaInfo 
 		return errors.Database
 	}
 	for _, item := range schemaInfo.Property {
-		err = db.Insert(ctx, relationDB.ToPropertyPo(productID, item))
+		err = db.Insert(ctx, &relationDB.DmProductSchema{
+			ProductID:    productID,
+			DmSchemaCore: relationDB.ToPropertyPo(item),
+		})
 		if err != nil {
 			return err
 		}
 	}
 	for _, item := range schemaInfo.Event {
-		err = db.Insert(ctx, relationDB.ToEventPo(productID, item))
+		err = db.Insert(ctx, &relationDB.DmProductSchema{
+			ProductID:    productID,
+			DmSchemaCore: relationDB.ToEventPo(item),
+		})
 		if err != nil {
 			return err
 		}
 	}
 	for _, item := range schemaInfo.Action {
-		err = db.Insert(ctx, relationDB.ToActionPo(productID, item))
+		err = db.Insert(ctx, &relationDB.DmProductSchema{
+			ProductID:    productID,
+			DmSchemaCore: relationDB.ToActionPo(item),
+		})
 		if err != nil {
 			return err
 		}

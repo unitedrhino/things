@@ -8,7 +8,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/shadow"
 )
 
-func ToPropertyPo(productID string, in *schema.Property) *DmProductSchema {
+func ToPropertyPo(in *schema.Property) DmSchemaCore {
 	define := schema.PropertyAffordance{
 		Define:      in.Define,
 		Mode:        in.Mode,
@@ -16,18 +16,15 @@ func ToPropertyPo(productID string, in *schema.Property) *DmProductSchema {
 		IsNoRecord:  in.IsNoRecord,
 	}
 	defineStr, _ := json.Marshal(define)
-	return &DmProductSchema{
-		ProductID: productID,
-		DmSchemaCore: DmSchemaCore{
-			Type:         int64(schema.AffordanceTypeProperty),
-			Identifier:   in.Identifier,
-			Name:         in.Name,
-			ExtendConfig: in.ExtendConfig,
-			Desc:         in.Desc,
-			Required:     def.ToIntBool[int64](in.Required),
-			Affordance:   string(defineStr),
-			Tag:          in.Tag,
-		},
+	return DmSchemaCore{
+		Type:         int64(schema.AffordanceTypeProperty),
+		Identifier:   in.Identifier,
+		Name:         in.Name,
+		ExtendConfig: in.ExtendConfig,
+		Desc:         in.Desc,
+		Required:     def.ToIntBool[int64](in.Required),
+		Affordance:   string(defineStr),
+		Tag:          in.Tag,
 	}
 }
 
@@ -63,30 +60,27 @@ func ToPropertyDo(in *DmSchemaCore) *schema.Property {
 	return do
 }
 
-func ToEventPo(productID string, in *schema.Event) *DmProductSchema {
+func ToEventPo(in *schema.Event) DmSchemaCore {
 	define := schema.EventAffordance{
 		Type:   in.Type,
 		Params: in.Params,
 	}
 	defineStr, _ := json.Marshal(define)
-	return &DmProductSchema{
-		ProductID: productID,
-		DmSchemaCore: DmSchemaCore{
-			Type:              int64(schema.AffordanceTypeEvent),
-			Identifier:        in.Identifier,
-			Name:              in.Name,
-			Desc:              in.Desc,
-			ExtendConfig:      in.ExtendConfig,
-			Required:          def.ToIntBool[int64](in.Required),
-			Affordance:        string(defineStr),
-			IsHistory:         in.IsHistory,
-			FuncGroup:         in.FuncGroup,
-			ControlMode:       in.ControlMode,
-			UserPerm:          in.UserPerm,
-			IsCanSceneLinkage: in.IsCanSceneLinkage,
-			//IsShareAuthPerm:   in.IsShareAuthPerm,
-			Tag: in.Tag,
-		},
+	return DmSchemaCore{
+		Type:              int64(schema.AffordanceTypeEvent),
+		Identifier:        in.Identifier,
+		Name:              in.Name,
+		Desc:              in.Desc,
+		ExtendConfig:      in.ExtendConfig,
+		Required:          def.ToIntBool[int64](in.Required),
+		Affordance:        string(defineStr),
+		IsHistory:         in.IsHistory,
+		FuncGroup:         in.FuncGroup,
+		ControlMode:       in.ControlMode,
+		UserPerm:          in.UserPerm,
+		IsCanSceneLinkage: in.IsCanSceneLinkage,
+		//IsShareAuthPerm:   in.IsShareAuthPerm,
+		Tag: in.Tag,
 	}
 }
 
@@ -104,29 +98,26 @@ func ToEventDo(in *DmSchemaCore) *schema.Event {
 	return do
 }
 
-func ToActionPo(productID string, in *schema.Action) *DmProductSchema {
+func ToActionPo(in *schema.Action) DmSchemaCore {
 	define := schema.ActionAffordance{
 		Input:  in.Input,
 		Output: in.Output,
 	}
 	defineStr, _ := json.Marshal(define)
-	return &DmProductSchema{
-		ProductID: productID,
-		DmSchemaCore: DmSchemaCore{
-			Identifier:        in.Identifier,
-			Type:              int64(schema.AffordanceTypeAction),
-			Name:              in.Name,
-			ExtendConfig:      in.ExtendConfig,
-			Desc:              in.Desc,
-			Required:          def.ToIntBool[int64](in.Required),
-			Affordance:        string(defineStr),
-			IsHistory:         in.IsHistory,
-			IsCanSceneLinkage: in.IsCanSceneLinkage,
-			FuncGroup:         in.FuncGroup,
-			ControlMode:       in.ControlMode,
-			UserPerm:          in.UserPerm,
-			Tag:               in.Tag,
-		},
+	return DmSchemaCore{
+		Identifier:        in.Identifier,
+		Type:              int64(schema.AffordanceTypeAction),
+		Name:              in.Name,
+		ExtendConfig:      in.ExtendConfig,
+		Desc:              in.Desc,
+		Required:          def.ToIntBool[int64](in.Required),
+		Affordance:        string(defineStr),
+		IsHistory:         in.IsHistory,
+		IsCanSceneLinkage: in.IsCanSceneLinkage,
+		FuncGroup:         in.FuncGroup,
+		ControlMode:       in.ControlMode,
+		UserPerm:          in.UserPerm,
+		Tag:               in.Tag,
 	}
 }
 

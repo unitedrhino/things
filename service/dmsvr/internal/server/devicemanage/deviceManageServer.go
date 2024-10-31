@@ -170,3 +170,33 @@ func (s *DeviceManageServer) DeviceProfileIndex(ctx context.Context, in *dm.Devi
 	l := devicemanagelogic.NewDeviceProfileIndexLogic(ctx, s.svcCtx)
 	return l.DeviceProfileIndex(in)
 }
+
+// 更新设备物模型
+func (s *DeviceManageServer) DeviceSchemaUpdate(ctx context.Context, in *dm.DeviceSchema) (*dm.Empty, error) {
+	l := devicemanagelogic.NewDeviceSchemaUpdateLogic(ctx, s.svcCtx)
+	return l.DeviceSchemaUpdate(in)
+}
+
+// 新增设备
+func (s *DeviceManageServer) DeviceSchemaCreate(ctx context.Context, in *dm.DeviceSchema) (*dm.Empty, error) {
+	l := devicemanagelogic.NewDeviceSchemaCreateLogic(ctx, s.svcCtx)
+	return l.DeviceSchemaCreate(in)
+}
+
+// 批量新增物模型,只新增没有的,已有的不处理
+func (s *DeviceManageServer) DeviceSchemaMultiCreate(ctx context.Context, in *dm.DeviceSchemaMultiCreateReq) (*dm.Empty, error) {
+	l := devicemanagelogic.NewDeviceSchemaMultiCreateLogic(ctx, s.svcCtx)
+	return l.DeviceSchemaMultiCreate(in)
+}
+
+// 删除设备物模型
+func (s *DeviceManageServer) DeviceSchemaMultiDelete(ctx context.Context, in *dm.DeviceSchemaMultiDeleteReq) (*dm.Empty, error) {
+	l := devicemanagelogic.NewDeviceSchemaMultiDeleteLogic(ctx, s.svcCtx)
+	return l.DeviceSchemaMultiDelete(in)
+}
+
+// 获取设备物模型列表
+func (s *DeviceManageServer) DeviceSchemaIndex(ctx context.Context, in *dm.DeviceSchemaIndexReq) (*dm.DeviceSchemaIndexResp, error) {
+	l := devicemanagelogic.NewDeviceSchemaIndexLogic(ctx, s.svcCtx)
+	return l.DeviceSchemaIndex(in)
+}

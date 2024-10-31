@@ -60,6 +60,11 @@ type (
 	DeviceProfileIndexReq             = dm.DeviceProfileIndexReq
 	DeviceProfileIndexResp            = dm.DeviceProfileIndexResp
 	DeviceProfileReadReq              = dm.DeviceProfileReadReq
+	DeviceSchema                      = dm.DeviceSchema
+	DeviceSchemaIndexReq              = dm.DeviceSchemaIndexReq
+	DeviceSchemaIndexResp             = dm.DeviceSchemaIndexResp
+	DeviceSchemaMultiCreateReq        = dm.DeviceSchemaMultiCreateReq
+	DeviceSchemaMultiDeleteReq        = dm.DeviceSchemaMultiDeleteReq
 	DeviceShareInfo                   = dm.DeviceShareInfo
 	DeviceTransferReq                 = dm.DeviceTransferReq
 	DeviceTypeCountReq                = dm.DeviceTypeCountReq
@@ -178,11 +183,6 @@ type (
 	RemoteConfigPushAllReq            = dm.RemoteConfigPushAllReq
 	RespReadReq                       = dm.RespReadReq
 	RootCheckReq                      = dm.RootCheckReq
-	SchemaInfo                        = dm.SchemaInfo
-	SchemaInfoIndexReq                = dm.SchemaInfoIndexReq
-	SchemaInfoIndexResp               = dm.SchemaInfoIndexResp
-	SchemaInfoMultiCreateReq          = dm.SchemaInfoMultiCreateReq
-	SchemaInfoMultiDeleteReq          = dm.SchemaInfoMultiDeleteReq
 	SdkLogIndexReq                    = dm.SdkLogIndexReq
 	SdkLogIndexResp                   = dm.SdkLogIndexResp
 	SdkLogInfo                        = dm.SdkLogInfo
@@ -254,6 +254,16 @@ type (
 		DeviceProfileDelete(ctx context.Context, in *DeviceProfileReadReq, opts ...grpc.CallOption) (*Empty, error)
 		DeviceProfileUpdate(ctx context.Context, in *DeviceProfile, opts ...grpc.CallOption) (*Empty, error)
 		DeviceProfileIndex(ctx context.Context, in *DeviceProfileIndexReq, opts ...grpc.CallOption) (*DeviceProfileIndexResp, error)
+		// 更新设备物模型
+		DeviceSchemaUpdate(ctx context.Context, in *DeviceSchema, opts ...grpc.CallOption) (*Empty, error)
+		// 新增设备
+		DeviceSchemaCreate(ctx context.Context, in *DeviceSchema, opts ...grpc.CallOption) (*Empty, error)
+		// 批量新增物模型,只新增没有的,已有的不处理
+		DeviceSchemaMultiCreate(ctx context.Context, in *DeviceSchemaMultiCreateReq, opts ...grpc.CallOption) (*Empty, error)
+		// 删除设备物模型
+		DeviceSchemaMultiDelete(ctx context.Context, in *DeviceSchemaMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error)
+		// 获取设备物模型列表
+		DeviceSchemaIndex(ctx context.Context, in *DeviceSchemaIndexReq, opts ...grpc.CallOption) (*DeviceSchemaIndexResp, error)
 	}
 
 	defaultDeviceManage struct {
@@ -546,4 +556,59 @@ func (m *defaultDeviceManage) DeviceProfileIndex(ctx context.Context, in *Device
 
 func (d *directDeviceManage) DeviceProfileIndex(ctx context.Context, in *DeviceProfileIndexReq, opts ...grpc.CallOption) (*DeviceProfileIndexResp, error) {
 	return d.svr.DeviceProfileIndex(ctx, in)
+}
+
+// 更新设备物模型
+func (m *defaultDeviceManage) DeviceSchemaUpdate(ctx context.Context, in *DeviceSchema, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceSchemaUpdate(ctx, in, opts...)
+}
+
+// 更新设备物模型
+func (d *directDeviceManage) DeviceSchemaUpdate(ctx context.Context, in *DeviceSchema, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.DeviceSchemaUpdate(ctx, in)
+}
+
+// 新增设备
+func (m *defaultDeviceManage) DeviceSchemaCreate(ctx context.Context, in *DeviceSchema, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceSchemaCreate(ctx, in, opts...)
+}
+
+// 新增设备
+func (d *directDeviceManage) DeviceSchemaCreate(ctx context.Context, in *DeviceSchema, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.DeviceSchemaCreate(ctx, in)
+}
+
+// 批量新增物模型,只新增没有的,已有的不处理
+func (m *defaultDeviceManage) DeviceSchemaMultiCreate(ctx context.Context, in *DeviceSchemaMultiCreateReq, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceSchemaMultiCreate(ctx, in, opts...)
+}
+
+// 批量新增物模型,只新增没有的,已有的不处理
+func (d *directDeviceManage) DeviceSchemaMultiCreate(ctx context.Context, in *DeviceSchemaMultiCreateReq, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.DeviceSchemaMultiCreate(ctx, in)
+}
+
+// 删除设备物模型
+func (m *defaultDeviceManage) DeviceSchemaMultiDelete(ctx context.Context, in *DeviceSchemaMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceSchemaMultiDelete(ctx, in, opts...)
+}
+
+// 删除设备物模型
+func (d *directDeviceManage) DeviceSchemaMultiDelete(ctx context.Context, in *DeviceSchemaMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.DeviceSchemaMultiDelete(ctx, in)
+}
+
+// 获取设备物模型列表
+func (m *defaultDeviceManage) DeviceSchemaIndex(ctx context.Context, in *DeviceSchemaIndexReq, opts ...grpc.CallOption) (*DeviceSchemaIndexResp, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceSchemaIndex(ctx, in, opts...)
+}
+
+// 获取设备物模型列表
+func (d *directDeviceManage) DeviceSchemaIndex(ctx context.Context, in *DeviceSchemaIndexReq, opts ...grpc.CallOption) (*DeviceSchemaIndexResp, error) {
+	return d.svr.DeviceSchemaIndex(ctx, in)
 }

@@ -48,6 +48,11 @@ const (
 	DeviceManage_DeviceProfileDelete_FullMethodName      = "/dm.DeviceManage/deviceProfileDelete"
 	DeviceManage_DeviceProfileUpdate_FullMethodName      = "/dm.DeviceManage/deviceProfileUpdate"
 	DeviceManage_DeviceProfileIndex_FullMethodName       = "/dm.DeviceManage/deviceProfileIndex"
+	DeviceManage_DeviceSchemaUpdate_FullMethodName       = "/dm.DeviceManage/deviceSchemaUpdate"
+	DeviceManage_DeviceSchemaCreate_FullMethodName       = "/dm.DeviceManage/deviceSchemaCreate"
+	DeviceManage_DeviceSchemaMultiCreate_FullMethodName  = "/dm.DeviceManage/deviceSchemaMultiCreate"
+	DeviceManage_DeviceSchemaMultiDelete_FullMethodName  = "/dm.DeviceManage/deviceSchemaMultiDelete"
+	DeviceManage_DeviceSchemaIndex_FullMethodName        = "/dm.DeviceManage/deviceSchemaIndex"
 )
 
 // DeviceManageClient is the client API for DeviceManage service.
@@ -94,6 +99,16 @@ type DeviceManageClient interface {
 	DeviceProfileDelete(ctx context.Context, in *DeviceProfileReadReq, opts ...grpc.CallOption) (*Empty, error)
 	DeviceProfileUpdate(ctx context.Context, in *DeviceProfile, opts ...grpc.CallOption) (*Empty, error)
 	DeviceProfileIndex(ctx context.Context, in *DeviceProfileIndexReq, opts ...grpc.CallOption) (*DeviceProfileIndexResp, error)
+	// 更新设备物模型
+	DeviceSchemaUpdate(ctx context.Context, in *DeviceSchema, opts ...grpc.CallOption) (*Empty, error)
+	// 新增设备
+	DeviceSchemaCreate(ctx context.Context, in *DeviceSchema, opts ...grpc.CallOption) (*Empty, error)
+	// 批量新增物模型,只新增没有的,已有的不处理
+	DeviceSchemaMultiCreate(ctx context.Context, in *DeviceSchemaMultiCreateReq, opts ...grpc.CallOption) (*Empty, error)
+	// 删除设备物模型
+	DeviceSchemaMultiDelete(ctx context.Context, in *DeviceSchemaMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error)
+	// 获取设备物模型列表
+	DeviceSchemaIndex(ctx context.Context, in *DeviceSchemaIndexReq, opts ...grpc.CallOption) (*DeviceSchemaIndexResp, error)
 }
 
 type deviceManageClient struct {
@@ -347,6 +362,51 @@ func (c *deviceManageClient) DeviceProfileIndex(ctx context.Context, in *DeviceP
 	return out, nil
 }
 
+func (c *deviceManageClient) DeviceSchemaUpdate(ctx context.Context, in *DeviceSchema, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceSchemaUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceManageClient) DeviceSchemaCreate(ctx context.Context, in *DeviceSchema, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceSchemaCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceManageClient) DeviceSchemaMultiCreate(ctx context.Context, in *DeviceSchemaMultiCreateReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceSchemaMultiCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceManageClient) DeviceSchemaMultiDelete(ctx context.Context, in *DeviceSchemaMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceSchemaMultiDelete_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceManageClient) DeviceSchemaIndex(ctx context.Context, in *DeviceSchemaIndexReq, opts ...grpc.CallOption) (*DeviceSchemaIndexResp, error) {
+	out := new(DeviceSchemaIndexResp)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceSchemaIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DeviceManageServer is the server API for DeviceManage service.
 // All implementations must embed UnimplementedDeviceManageServer
 // for forward compatibility
@@ -391,6 +451,16 @@ type DeviceManageServer interface {
 	DeviceProfileDelete(context.Context, *DeviceProfileReadReq) (*Empty, error)
 	DeviceProfileUpdate(context.Context, *DeviceProfile) (*Empty, error)
 	DeviceProfileIndex(context.Context, *DeviceProfileIndexReq) (*DeviceProfileIndexResp, error)
+	// 更新设备物模型
+	DeviceSchemaUpdate(context.Context, *DeviceSchema) (*Empty, error)
+	// 新增设备
+	DeviceSchemaCreate(context.Context, *DeviceSchema) (*Empty, error)
+	// 批量新增物模型,只新增没有的,已有的不处理
+	DeviceSchemaMultiCreate(context.Context, *DeviceSchemaMultiCreateReq) (*Empty, error)
+	// 删除设备物模型
+	DeviceSchemaMultiDelete(context.Context, *DeviceSchemaMultiDeleteReq) (*Empty, error)
+	// 获取设备物模型列表
+	DeviceSchemaIndex(context.Context, *DeviceSchemaIndexReq) (*DeviceSchemaIndexResp, error)
 	mustEmbedUnimplementedDeviceManageServer()
 }
 
@@ -478,6 +548,21 @@ func (UnimplementedDeviceManageServer) DeviceProfileUpdate(context.Context, *Dev
 }
 func (UnimplementedDeviceManageServer) DeviceProfileIndex(context.Context, *DeviceProfileIndexReq) (*DeviceProfileIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceProfileIndex not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceSchemaUpdate(context.Context, *DeviceSchema) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceSchemaUpdate not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceSchemaCreate(context.Context, *DeviceSchema) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceSchemaCreate not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceSchemaMultiCreate(context.Context, *DeviceSchemaMultiCreateReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceSchemaMultiCreate not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceSchemaMultiDelete(context.Context, *DeviceSchemaMultiDeleteReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceSchemaMultiDelete not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceSchemaIndex(context.Context, *DeviceSchemaIndexReq) (*DeviceSchemaIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceSchemaIndex not implemented")
 }
 func (UnimplementedDeviceManageServer) mustEmbedUnimplementedDeviceManageServer() {}
 
@@ -978,6 +1063,96 @@ func _DeviceManage_DeviceProfileIndex_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DeviceManage_DeviceSchemaUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceSchema)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceSchemaUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceSchemaUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceSchemaUpdate(ctx, req.(*DeviceSchema))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceManage_DeviceSchemaCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceSchema)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceSchemaCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceSchemaCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceSchemaCreate(ctx, req.(*DeviceSchema))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceManage_DeviceSchemaMultiCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceSchemaMultiCreateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceSchemaMultiCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceSchemaMultiCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceSchemaMultiCreate(ctx, req.(*DeviceSchemaMultiCreateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceManage_DeviceSchemaMultiDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceSchemaMultiDeleteReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceSchemaMultiDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceSchemaMultiDelete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceSchemaMultiDelete(ctx, req.(*DeviceSchemaMultiDeleteReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceManage_DeviceSchemaIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceSchemaIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceSchemaIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceSchemaIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceSchemaIndex(ctx, req.(*DeviceSchemaIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DeviceManage_ServiceDesc is the grpc.ServiceDesc for DeviceManage service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1092,6 +1267,26 @@ var DeviceManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "deviceProfileIndex",
 			Handler:    _DeviceManage_DeviceProfileIndex_Handler,
+		},
+		{
+			MethodName: "deviceSchemaUpdate",
+			Handler:    _DeviceManage_DeviceSchemaUpdate_Handler,
+		},
+		{
+			MethodName: "deviceSchemaCreate",
+			Handler:    _DeviceManage_DeviceSchemaCreate_Handler,
+		},
+		{
+			MethodName: "deviceSchemaMultiCreate",
+			Handler:    _DeviceManage_DeviceSchemaMultiCreate_Handler,
+		},
+		{
+			MethodName: "deviceSchemaMultiDelete",
+			Handler:    _DeviceManage_DeviceSchemaMultiDelete_Handler,
+		},
+		{
+			MethodName: "deviceSchemaIndex",
+			Handler:    _DeviceManage_DeviceSchemaIndex_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -2078,16 +2273,11 @@ var ProductManage_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	SchemaManage_CommonSchemaInit_FullMethodName      = "/dm.SchemaManage/commonSchemaInit"
-	SchemaManage_CommonSchemaUpdate_FullMethodName    = "/dm.SchemaManage/commonSchemaUpdate"
-	SchemaManage_CommonSchemaCreate_FullMethodName    = "/dm.SchemaManage/commonSchemaCreate"
-	SchemaManage_CommonSchemaDelete_FullMethodName    = "/dm.SchemaManage/commonSchemaDelete"
-	SchemaManage_CommonSchemaIndex_FullMethodName     = "/dm.SchemaManage/commonSchemaIndex"
-	SchemaManage_SchemaInfoUpdate_FullMethodName      = "/dm.SchemaManage/schemaInfoUpdate"
-	SchemaManage_SchemaInfoCreate_FullMethodName      = "/dm.SchemaManage/schemaInfoCreate"
-	SchemaManage_SchemaInfoMultiCreate_FullMethodName = "/dm.SchemaManage/schemaInfoMultiCreate"
-	SchemaManage_SchemaInfoMultiDelete_FullMethodName = "/dm.SchemaManage/schemaInfoMultiDelete"
-	SchemaManage_SchemaInfoIndex_FullMethodName       = "/dm.SchemaManage/schemaInfoIndex"
+	SchemaManage_CommonSchemaInit_FullMethodName   = "/dm.SchemaManage/commonSchemaInit"
+	SchemaManage_CommonSchemaUpdate_FullMethodName = "/dm.SchemaManage/commonSchemaUpdate"
+	SchemaManage_CommonSchemaCreate_FullMethodName = "/dm.SchemaManage/commonSchemaCreate"
+	SchemaManage_CommonSchemaDelete_FullMethodName = "/dm.SchemaManage/commonSchemaDelete"
+	SchemaManage_CommonSchemaIndex_FullMethodName  = "/dm.SchemaManage/commonSchemaIndex"
 )
 
 // SchemaManageClient is the client API for SchemaManage service.
@@ -2103,16 +2293,6 @@ type SchemaManageClient interface {
 	CommonSchemaDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
 	// 获取产品信息列表
 	CommonSchemaIndex(ctx context.Context, in *CommonSchemaIndexReq, opts ...grpc.CallOption) (*CommonSchemaIndexResp, error)
-	// 更新设备物模型
-	SchemaInfoUpdate(ctx context.Context, in *SchemaInfo, opts ...grpc.CallOption) (*Empty, error)
-	// 新增设备
-	SchemaInfoCreate(ctx context.Context, in *SchemaInfo, opts ...grpc.CallOption) (*Empty, error)
-	// 批量新增物模型,只新增没有的,已有的不处理
-	SchemaInfoMultiCreate(ctx context.Context, in *SchemaInfoMultiCreateReq, opts ...grpc.CallOption) (*Empty, error)
-	// 删除设备物模型
-	SchemaInfoMultiDelete(ctx context.Context, in *SchemaInfoMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error)
-	// 获取设备物模型列表
-	SchemaInfoIndex(ctx context.Context, in *SchemaInfoIndexReq, opts ...grpc.CallOption) (*SchemaInfoIndexResp, error)
 }
 
 type schemaManageClient struct {
@@ -2168,51 +2348,6 @@ func (c *schemaManageClient) CommonSchemaIndex(ctx context.Context, in *CommonSc
 	return out, nil
 }
 
-func (c *schemaManageClient) SchemaInfoUpdate(ctx context.Context, in *SchemaInfo, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
-	err := c.cc.Invoke(ctx, SchemaManage_SchemaInfoUpdate_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *schemaManageClient) SchemaInfoCreate(ctx context.Context, in *SchemaInfo, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
-	err := c.cc.Invoke(ctx, SchemaManage_SchemaInfoCreate_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *schemaManageClient) SchemaInfoMultiCreate(ctx context.Context, in *SchemaInfoMultiCreateReq, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
-	err := c.cc.Invoke(ctx, SchemaManage_SchemaInfoMultiCreate_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *schemaManageClient) SchemaInfoMultiDelete(ctx context.Context, in *SchemaInfoMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
-	err := c.cc.Invoke(ctx, SchemaManage_SchemaInfoMultiDelete_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *schemaManageClient) SchemaInfoIndex(ctx context.Context, in *SchemaInfoIndexReq, opts ...grpc.CallOption) (*SchemaInfoIndexResp, error) {
-	out := new(SchemaInfoIndexResp)
-	err := c.cc.Invoke(ctx, SchemaManage_SchemaInfoIndex_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // SchemaManageServer is the server API for SchemaManage service.
 // All implementations must embed UnimplementedSchemaManageServer
 // for forward compatibility
@@ -2226,16 +2361,6 @@ type SchemaManageServer interface {
 	CommonSchemaDelete(context.Context, *WithID) (*Empty, error)
 	// 获取产品信息列表
 	CommonSchemaIndex(context.Context, *CommonSchemaIndexReq) (*CommonSchemaIndexResp, error)
-	// 更新设备物模型
-	SchemaInfoUpdate(context.Context, *SchemaInfo) (*Empty, error)
-	// 新增设备
-	SchemaInfoCreate(context.Context, *SchemaInfo) (*Empty, error)
-	// 批量新增物模型,只新增没有的,已有的不处理
-	SchemaInfoMultiCreate(context.Context, *SchemaInfoMultiCreateReq) (*Empty, error)
-	// 删除设备物模型
-	SchemaInfoMultiDelete(context.Context, *SchemaInfoMultiDeleteReq) (*Empty, error)
-	// 获取设备物模型列表
-	SchemaInfoIndex(context.Context, *SchemaInfoIndexReq) (*SchemaInfoIndexResp, error)
 	mustEmbedUnimplementedSchemaManageServer()
 }
 
@@ -2257,21 +2382,6 @@ func (UnimplementedSchemaManageServer) CommonSchemaDelete(context.Context, *With
 }
 func (UnimplementedSchemaManageServer) CommonSchemaIndex(context.Context, *CommonSchemaIndexReq) (*CommonSchemaIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CommonSchemaIndex not implemented")
-}
-func (UnimplementedSchemaManageServer) SchemaInfoUpdate(context.Context, *SchemaInfo) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SchemaInfoUpdate not implemented")
-}
-func (UnimplementedSchemaManageServer) SchemaInfoCreate(context.Context, *SchemaInfo) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SchemaInfoCreate not implemented")
-}
-func (UnimplementedSchemaManageServer) SchemaInfoMultiCreate(context.Context, *SchemaInfoMultiCreateReq) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SchemaInfoMultiCreate not implemented")
-}
-func (UnimplementedSchemaManageServer) SchemaInfoMultiDelete(context.Context, *SchemaInfoMultiDeleteReq) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SchemaInfoMultiDelete not implemented")
-}
-func (UnimplementedSchemaManageServer) SchemaInfoIndex(context.Context, *SchemaInfoIndexReq) (*SchemaInfoIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SchemaInfoIndex not implemented")
 }
 func (UnimplementedSchemaManageServer) mustEmbedUnimplementedSchemaManageServer() {}
 
@@ -2376,96 +2486,6 @@ func _SchemaManage_CommonSchemaIndex_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SchemaManage_SchemaInfoUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SchemaInfo)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(SchemaManageServer).SchemaInfoUpdate(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: SchemaManage_SchemaInfoUpdate_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SchemaManageServer).SchemaInfoUpdate(ctx, req.(*SchemaInfo))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _SchemaManage_SchemaInfoCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SchemaInfo)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(SchemaManageServer).SchemaInfoCreate(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: SchemaManage_SchemaInfoCreate_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SchemaManageServer).SchemaInfoCreate(ctx, req.(*SchemaInfo))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _SchemaManage_SchemaInfoMultiCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SchemaInfoMultiCreateReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(SchemaManageServer).SchemaInfoMultiCreate(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: SchemaManage_SchemaInfoMultiCreate_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SchemaManageServer).SchemaInfoMultiCreate(ctx, req.(*SchemaInfoMultiCreateReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _SchemaManage_SchemaInfoMultiDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SchemaInfoMultiDeleteReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(SchemaManageServer).SchemaInfoMultiDelete(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: SchemaManage_SchemaInfoMultiDelete_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SchemaManageServer).SchemaInfoMultiDelete(ctx, req.(*SchemaInfoMultiDeleteReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _SchemaManage_SchemaInfoIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SchemaInfoIndexReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(SchemaManageServer).SchemaInfoIndex(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: SchemaManage_SchemaInfoIndex_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SchemaManageServer).SchemaInfoIndex(ctx, req.(*SchemaInfoIndexReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // SchemaManage_ServiceDesc is the grpc.ServiceDesc for SchemaManage service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -2492,26 +2512,6 @@ var SchemaManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "commonSchemaIndex",
 			Handler:    _SchemaManage_CommonSchemaIndex_Handler,
-		},
-		{
-			MethodName: "schemaInfoUpdate",
-			Handler:    _SchemaManage_SchemaInfoUpdate_Handler,
-		},
-		{
-			MethodName: "schemaInfoCreate",
-			Handler:    _SchemaManage_SchemaInfoCreate_Handler,
-		},
-		{
-			MethodName: "schemaInfoMultiCreate",
-			Handler:    _SchemaManage_SchemaInfoMultiCreate_Handler,
-		},
-		{
-			MethodName: "schemaInfoMultiDelete",
-			Handler:    _SchemaManage_SchemaInfoMultiDelete_Handler,
-		},
-		{
-			MethodName: "schemaInfoIndex",
-			Handler:    _SchemaManage_SchemaInfoIndex_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
