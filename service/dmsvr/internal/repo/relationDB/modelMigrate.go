@@ -52,7 +52,7 @@ func Migrate(c conf.Database) error {
 	}
 
 	{ //版本升级兼容
-		err := db.Migrator().DropTable(&DmGatewayDevice{}, "tenant_code")
+		err := db.Migrator().DropColumn(&DmGatewayDevice{}, "tenant_code")
 		if err != nil {
 			return err
 		}
