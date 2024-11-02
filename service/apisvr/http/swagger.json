@@ -7181,10 +7181,13 @@
         "areaIDs": {
           "type": "array",
           "items": {
-            "type": "integer",
-            "format": "int64"
+            "type": "string"
           },
           "description": "项目区域ids"
+        },
+        "areaIDPath": {
+          "type": "string",
+          "description": "区域路径过滤"
         },
         "isOnline": {
           "type": "integer",

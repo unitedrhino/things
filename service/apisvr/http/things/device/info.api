@@ -229,7 +229,8 @@ type (
         Tags []*Tag `json:"tags,optional"`                // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
         WithProperties []string `json:"withProperties,optional"`   //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表,如果没有匹配的则不会返回
         WithProfiles []string `json:"withProfiles,optional"` //
-        AreaIDs []int64 `json:"areaIDs,optional"`                  //项目区域ids
+        AreaIDs []int64 `json:"areaIDs,string,optional"`                  //项目区域ids
+        AreaIDPath string `json:"areaIDPath,optional"`                  //区域路径过滤
         IsOnline int64 `json:"isOnline,optional,range=[0:2]"`                                         // 在线状态过滤  1离线 2在线
         ProductCategoryID int64 `json:"productCategoryID,optional"`
         WithShared int64 `json:"withShared,optional,range=[0:2]"`                                         // 过滤分享的设备1: 同时获取分享的设备 2:只获取分享的设备
