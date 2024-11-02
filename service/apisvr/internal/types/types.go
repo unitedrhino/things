@@ -347,7 +347,7 @@ type DeviceInfoIndexReq struct {
 	Tags              []*Tag        `json:"tags,optional"`                 // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
 	WithProperties    []string      `json:"withProperties,optional"`       //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表,如果没有匹配的则不会返回
 	WithProfiles      []string      `json:"withProfiles,optional"`         //
-	AreaIDs           []int64       `json:"areaIDs,optional"`              //项目区域ids
+	AreaIDs           []int64       `json:"areaIDs,string,optional"`       //项目区域ids
 	AreaIDPath        string        `json:"areaIDPath,optional"`           //区域路径过滤
 	IsOnline          int64         `json:"isOnline,optional,range=[0:2]"` // 在线状态过滤  1离线 2在线
 	ProductCategoryID int64         `json:"productCategoryID,optional"`
@@ -763,77 +763,6 @@ type DeviceRegisterReq struct {
 type DeviceRegisterResp struct {
 	Len     int64  `json:"len"` //payload加密前信息的长度
 	Payload string `json:"payload"`
-}
-
-type DeviceSchema struct {
-	ProductID         string  `json:"productID"` //产品id 只读
-	DeviceName        string  `json:"deviceName"`
-	Type              int64   `json:"type"`                       //物模型类型 1:property属性 2:event事件 3:action行为
-	Tag               int64   `json:"tag"`                        //物模型标签 1:自定义 2:可选 3:必选  必选不可删除
-	Identifier        string  `json:"identifier"`                 //标识符
-	ExtendConfig      string  `json:"extendConfig,optional"`      //拓展参数
-	Name              *string `json:"name,optional"`              //功能名称
-	Desc              *string `json:"desc,optional"`              //描述
-	Required          int64   `json:"required,optional"`          //是否必须 1:是 2:否
-	Affordance        *string `json:"affordance,optional"`        //各功能类型的详细参数定义
-	IsCanSceneLinkage int64   `json:"isCanSceneLinkage,optional"` //是否可以场景联动
-	FuncGroup         int64   `json:"funcGroup,optional"`         // 功能分类: 1:普通功能 2:系统功能
-	UserPerm          int64   `json:"userPerm,optional"`          //用户权限操作: 1:r(只读) 3:rw(可读可写)
-	IsHistory         int64   `json:"isHistory,optional"`         // 是否存储历史记录
-	Order             int64   `json:"order,optional"`             // 排序
-	ControlMode       int64   `json:"controlMode,optional"`       //控制模式: 1: 可以群控,可以单控  2:只能单控
-}
-
-type DeviceSchemaDeleteReq struct {
-	ProductID  string `json:"productID"` //产品id
-	DeviceName string `json:"deviceName"`
-	Identifier string `json:"identifier"` //标识符
-}
-
-type DeviceSchemaIndexReq struct {
-	Page              *PageInfo `json:"page,optional"` //分页信息,只获取一个则不填
-	ProductID         string    `json:"productID"`     //产品id
-	DeviceName        string    `json:"deviceName"`
-	Type              int64     `json:"type,optional"` //物模型类型 1:property属性 2:event事件 3:action行为
-	Types             []int64   `json:"types,optional"`
-	Tag               int64     `json:"tag,optional"`         //过滤条件: 物模型标签 1:自定义 2:可选 3:必选
-	Identifiers       []string  `json:"identifiers,optional"` //过滤标识符列表
-	Name              string    `json:"name,optional"`
-	IsCanSceneLinkage int64     `json:"isCanSceneLinkage,optional"` //是否可以场景联动
-	FuncGroup         int64     `json:"funcGroup,optional"`         // 功能分类: 1:普通功能 2:系统功能
-	UserPerm          int64     `json:"userPerm,optional"`          //用户权限操作: 1:r(只读) 3:rw(可读可写)
-	PropertyMode      string    `json:"propertyMode,optional"`      //属性类型可用 读写类型: 1:r(只读) 2:rw(可读可写)
-	ControlMode       int64     `json:"controlMode,optional"`       //控制模式: 1: 可以群控,可以单控  2:只能单控
-}
-
-type DeviceSchemaIndexResp struct {
-	List  []*DeviceSchema `json:"list"`  //分页信息,只获取一个则不填
-	Total int64           `json:"total"` //总数(只有分页的时候会返回)
-}
-
-type DeviceSchemaMultiCreateReq struct {
-	ProductID  string          `json:"productID"` //产品id
-	DeviceName string          `json:"deviceName"`
-	List       []*DeviceSchema `json:"list"` //分页信息,只获取一个则不填
-}
-
-type DeviceSchemaMultiDeleteReq struct {
-	ProductID   string   `json:"productID"` //产品id
-	DeviceName  string   `json:"deviceName"`
-	Identifiers []string `json:"identifiers"` //物模型ID列表
-}
-
-type DeviceSchemaTslReadReq struct {
-	ProductID  string `json:"productID"` //产品id
-	DeviceName string `json:"deviceName"`
-}
-
-type DeviceSchemaTslReadResp struct {
-	Tsl string `json:"tsl"` //物模型tsl
-}
-
-type DeviceSchemaUpdateReq struct {
-	*DeviceSchema
 }
 
 type DeviceShareInfo struct {

@@ -207,6 +207,12 @@ func (t *TriggerDevice) IsHit(model *schema.Model, dataID string, param any) boo
 			return false
 		}
 		return t.PropertyIsHit(property, dataID, param)
+	case TriggerDeviceTypeEventReport:
+		e := model.Event[dataIDs[0]]
+		if e == nil {
+			return false
+		}
+		return t.EventIsHit(e, dataID, param)
 	}
 	return false
 }

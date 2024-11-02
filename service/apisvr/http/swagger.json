@@ -7423,8 +7423,7 @@
         "areaIDs": {
           "type": "array",
           "items": {
-            "type": "integer",
-            "format": "int64"
+            "type": "string"
           },
           "description": "项目区域ids"
         },
