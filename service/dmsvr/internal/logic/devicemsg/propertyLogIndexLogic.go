@@ -32,15 +32,6 @@ func NewPropertyLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 
 // 获取设备数据信息
 func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*dm.PropertyLogIndexResp, error) {
-	for _, device := range in.DeviceNames {
-		_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{
-			ProductID:  in.ProductID,
-			DeviceName: device,
-		}, nil)
-		if err != nil {
-			return nil, err
-		}
-	}
 	var (
 		diDatas []*dm.PropertyLogInfo
 		dd      = l.svcCtx.SchemaManaRepo
@@ -49,11 +40,15 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 	if in.Interval != 0 && in.ArgFunc == "" {
 		return nil, errors.Parameter.AddMsg("填写了间隔就必须填写聚合函数")
 	}
-	gd := devices.Core{ProductID: in.ProductID}
+	gd := devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName}
 	if len(in.DeviceNames) == 1 {
 		gd.DeviceName = in.DeviceNames[0]
 	}
-	t, err := l.svcCtx.SchemaRepo.GetData(l.ctx, gd)
+	_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, gd, nil)
+	if err != nil {
+		return nil, err
+	}
+	t, err := l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, gd)
 	if err != nil {
 		return nil, err
 	}
@@ -110,11 +105,11 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 				Page:      in.Page.GetPage(),
 				Size:      in.Page.GetSize(),
 			},
-			ProductID:   in.ProductID,
-			DeviceNames: in.DeviceNames,
-			DataID:      in.DataID,
-			Interval:    in.Interval,
-			ArgFunc:     in.ArgFunc})
+			ProductID:  in.ProductID,
+			DeviceName: gd.DeviceName,
+			DataID:     in.DataID,
+			Interval:   in.Interval,
+			ArgFunc:    in.ArgFunc})
 		if err != nil {
 			l.Errorf("%s.GetPropertyCountByID err=%v", utils.FuncName(), err)
 			return nil, err

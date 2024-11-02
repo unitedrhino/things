@@ -30,7 +30,7 @@ type LightSvrClient struct {
 	ProductM       productmanage.ProductManage
 	ProductCache   dmExport.ProductCacheT
 	DeviceCache    dmExport.DeviceCacheT
-	SchemaCache    dmExport.SchemaCacheT
+	SchemaCache    dmExport.DeviceSchemaCacheT
 	DeviceM        devicemanage.DeviceManage
 	DeviceInteract deviceinteract.DeviceInteract
 	TimedM         timedmanage.TimedManage
@@ -64,7 +64,7 @@ func NewLightProtocol(c conf.EventConf, pi *dm.ProtocolInfo, pc *LightProtocolCo
 	}
 	pm := productmanage.NewProductManage(pc.DmClient)
 	di := devicemanage.NewDeviceManage(pc.DmClient)
-	sc, err := dmExport.NewSchemaInfoCache(pm, e)
+	sc, err := dmExport.NewDeviceSchemaCache(di, e)
 	if err != nil {
 		return nil, err
 	}

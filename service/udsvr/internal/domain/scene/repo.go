@@ -18,7 +18,7 @@ type CheckRepo struct {
 	DeviceCache    dmExport.DeviceCacheT
 	UserShareCache dmExport.UserShareCacheT
 	ProductCache   dmExport.ProductCacheT
-	SchemaCache    dmExport.SchemaCacheT
+	SchemaCache    dmExport.ProductSchemaCacheT
 	ProjectCache   sysExport.ProjectCacheT
 	DeviceMsg      devicemsg.DeviceMsg
 	Common         common.Common
@@ -30,7 +30,7 @@ type ActionRepo struct {
 	Info           *Info
 	UserID         int64
 	DeviceInteract deviceinteract.DeviceInteract
-	SchemaCache    dmExport.SchemaCacheT
+	SchemaCache    dmExport.ProductSchemaCacheT
 
 	DeviceM      devicemanage.DeviceManage
 	DeviceCache  dmExport.DeviceCacheT

@@ -52,7 +52,8 @@ type ServiceContext struct {
 
 	OssClient            *oss.Client
 	TimedM               timedmanage.TimedManage
-	SchemaRepo           *caches.Cache[schema.Model, devices.Core]
+	ProductSchemaRepo    *caches.Cache[schema.Model, devices.Core]
+	DeviceSchemaRepo     *caches.Cache[schema.Model, devices.Core]
 	SchemaManaRepo       msgThing.SchemaDataRepo
 	HubLogRepo           deviceLog.HubRepo
 	StatusRepo           deviceLog.StatusRepo
@@ -109,8 +110,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	serverMsg, err := eventBus.NewFastEvent(c.Event, c.Name, nodeID)
 	logx.Must(err)
 
-	ccSchemaR, err := caches.NewCache(caches.CacheConfig[schema.Model, devices.Core]{
-		KeyType:   eventBus.ServerCacheKeyDmSchema,
+	getProductSchemaModel, err := caches.NewCache(caches.CacheConfig[schema.Model, devices.Core]{
+		KeyType:   eventBus.ServerCacheKeyDmProductSchema,
 		FastEvent: serverMsg,
 		GetData: func(ctx context.Context, key devices.Core) (*schema.Model, error) {
 			db := relationDB.NewProductSchemaRepo(ctx)
@@ -128,7 +129,33 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		ExpireTime: 10 * time.Minute,
 	})
 	logx.Must(err)
-	deviceDataR := schemaDataRepo.NewDeviceDataRepo(c.TSDB, ccSchemaR.GetData, ca)
+	getDeviceSchemaModel, err := caches.NewCache(caches.CacheConfig[schema.Model, devices.Core]{
+		KeyType:   eventBus.ServerCacheKeyDmDeviceSchema,
+		FastEvent: serverMsg,
+		GetData: func(ctx context.Context, key devices.Core) (*schema.Model, error) {
+			db := relationDB.NewDeviceSchemaRepo(ctx)
+			dbSchemas, err := db.FindByFilter(ctx, relationDB.DeviceSchemaFilter{ProductID: key.ProductID}, nil)
+			if err != nil {
+				return nil, err
+			}
+			schemaModel := relationDB.ToDeviceSchemaDo(key.ProductID, dbSchemas)
+			ps, err := getProductSchemaModel.GetData(ctx, key)
+			if err != nil {
+				return nil, err
+			}
+			schemaModel.Aggregation(ps)
+			schemaModel.ValidateWithFmt()
+			return schemaModel, nil
+		},
+		Fmt: func(ctx context.Context, key devices.Core, data *schema.Model) {
+			data.ValidateWithFmt()
+		},
+		ExpireTime: 20 * time.Minute,
+	})
+	logx.Must(err)
+	deviceDataR := schemaDataRepo.NewDeviceDataRepo(c.TSDB, getProductSchemaModel.GetData, getDeviceSchemaModel.GetData, ca)
+	err = deviceDataR.Init(context.Background())
+	logx.Must(err)
 	pd, err := pubDev.NewPubDev(serverMsg)
 	if err != nil {
 		logx.Error("NewPubDev err", err)
@@ -162,33 +189,34 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	areaC, err := sysExport.NewAreaInfoCache(areamanage.NewAreaManage(zrpc.MustNewClient(c.SysRpc.Conf)), serverMsg)
 	logx.Must(err)
 	return &ServiceContext{
-		FastEvent:      serverMsg,
-		TenantCache:    tenantCache,
-		Config:         c,
-		OssClient:      ossClient,
-		TimedM:         timedM,
-		AreaM:          areaM,
-		ProjectM:       projectM,
-		PubApp:         pa,
-		PubDev:         pd,
-		Cache:          ca,
-		UserM:          userM,
-		Common:         Common,
-		DataM:          dataM,
-		UserSubscribe:  ws.NewUserSubscribe(ca, serverMsg),
-		SchemaRepo:     ccSchemaR,
-		SchemaManaRepo: deviceDataR,
-		DeviceStatus:   cache.NewDeviceStatus(ca),
-		GatewayCanBind: cache.NewGatewayCanBind(ca),
-		HubLogRepo:     hubLogR,
-		SDKLogRepo:     sdkLogR,
-		StatusRepo:     statusR,
-		SendRepo:       sendR,
-		WebHook:        webHook,
-		NodeID:         nodeID,
-		Slot:           Slot,
-		ProjectCache:   projectC,
-		AreaCache:      areaC,
+		FastEvent:         serverMsg,
+		TenantCache:       tenantCache,
+		Config:            c,
+		OssClient:         ossClient,
+		TimedM:            timedM,
+		AreaM:             areaM,
+		ProjectM:          projectM,
+		PubApp:            pa,
+		PubDev:            pd,
+		Cache:             ca,
+		UserM:             userM,
+		Common:            Common,
+		DataM:             dataM,
+		UserSubscribe:     ws.NewUserSubscribe(ca, serverMsg),
+		ProductSchemaRepo: getProductSchemaModel,
+		DeviceSchemaRepo:  getDeviceSchemaModel,
+		SchemaManaRepo:    deviceDataR,
+		DeviceStatus:      cache.NewDeviceStatus(ca),
+		GatewayCanBind:    cache.NewGatewayCanBind(ca),
+		HubLogRepo:        hubLogR,
+		SDKLogRepo:        sdkLogR,
+		StatusRepo:        statusR,
+		SendRepo:          sendR,
+		WebHook:           webHook,
+		NodeID:            nodeID,
+		Slot:              Slot,
+		ProjectCache:      projectC,
+		AreaCache:         areaC,
 	}
 }
 

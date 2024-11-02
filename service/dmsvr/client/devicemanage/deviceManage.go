@@ -65,6 +65,8 @@ type (
 	DeviceSchemaIndexResp             = dm.DeviceSchemaIndexResp
 	DeviceSchemaMultiCreateReq        = dm.DeviceSchemaMultiCreateReq
 	DeviceSchemaMultiDeleteReq        = dm.DeviceSchemaMultiDeleteReq
+	DeviceSchemaTslReadReq            = dm.DeviceSchemaTslReadReq
+	DeviceSchemaTslReadResp           = dm.DeviceSchemaTslReadResp
 	DeviceShareInfo                   = dm.DeviceShareInfo
 	DeviceTransferReq                 = dm.DeviceTransferReq
 	DeviceTypeCountReq                = dm.DeviceTypeCountReq
@@ -264,6 +266,7 @@ type (
 		DeviceSchemaMultiDelete(ctx context.Context, in *DeviceSchemaMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error)
 		// 获取设备物模型列表
 		DeviceSchemaIndex(ctx context.Context, in *DeviceSchemaIndexReq, opts ...grpc.CallOption) (*DeviceSchemaIndexResp, error)
+		DeviceSchemaTslRead(ctx context.Context, in *DeviceSchemaTslReadReq, opts ...grpc.CallOption) (*DeviceSchemaTslReadResp, error)
 	}
 
 	defaultDeviceManage struct {
@@ -611,4 +614,13 @@ func (m *defaultDeviceManage) DeviceSchemaIndex(ctx context.Context, in *DeviceS
 // 获取设备物模型列表
 func (d *directDeviceManage) DeviceSchemaIndex(ctx context.Context, in *DeviceSchemaIndexReq, opts ...grpc.CallOption) (*DeviceSchemaIndexResp, error) {
 	return d.svr.DeviceSchemaIndex(ctx, in)
+}
+
+func (m *defaultDeviceManage) DeviceSchemaTslRead(ctx context.Context, in *DeviceSchemaTslReadReq, opts ...grpc.CallOption) (*DeviceSchemaTslReadResp, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceSchemaTslRead(ctx, in, opts...)
+}
+
+func (d *directDeviceManage) DeviceSchemaTslRead(ctx context.Context, in *DeviceSchemaTslReadReq, opts ...grpc.CallOption) (*DeviceSchemaTslReadResp, error) {
+	return d.svr.DeviceSchemaTslRead(ctx, in)
 }

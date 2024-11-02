@@ -36,7 +36,7 @@ func NewPropertyGetReportSendLogic(ctx context.Context, svcCtx *svc.ServiceConte
 }
 func (l *PropertyGetReportSendLogic) initMsg(dev devices.Core) error {
 	var err error
-	l.schema, err = l.svcCtx.SchemaRepo.GetData(l.ctx, dev)
+	l.schema, err = l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, dev)
 	if err != nil {
 		return errors.System.AddDetail(err)
 	}

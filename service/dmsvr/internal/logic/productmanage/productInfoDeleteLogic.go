@@ -59,7 +59,7 @@ func (l *ProductInfoDeleteLogic) ProductInfoDelete(in *dm.ProductInfoDeleteReq) 
 	return &dm.Empty{}, nil
 }
 func (l *ProductInfoDeleteLogic) DropProduct(in *dm.ProductInfoDeleteReq) error {
-	pt, err := l.svcCtx.SchemaRepo.GetData(l.ctx, devices.Core{ProductID: in.ProductID})
+	pt, err := l.svcCtx.ProductSchemaRepo.GetData(l.ctx, devices.Core{ProductID: in.ProductID})
 	if err != nil {
 		return errors.System.AddDetail(err)
 	}
@@ -78,9 +78,9 @@ func (l *ProductInfoDeleteLogic) DropProduct(in *dm.ProductInfoDeleteReq) error 
 		l.Errorf("%s.SchemaManaRepo.DeleteProduct err=%v", utils.FuncName(), utils.Fmt(err))
 		return err
 	}
-	err = l.svcCtx.SchemaRepo.SetData(l.ctx, devices.Core{ProductID: in.ProductID}, nil)
+	err = l.svcCtx.ProductSchemaRepo.SetData(l.ctx, devices.Core{ProductID: in.ProductID}, nil)
 	if err != nil {
-		l.Errorf("%s.SchemaRepo.ClearCache err=%v", utils.FuncName(), utils.Fmt(err))
+		l.Errorf("%s.ProductSchemaRepo.ClearCache err=%v", utils.FuncName(), utils.Fmt(err))
 		return err
 	}
 	err = l.svcCtx.ProductCache.SetData(l.ctx, in.ProductID, nil)

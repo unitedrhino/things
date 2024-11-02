@@ -53,6 +53,7 @@ const (
 	DeviceManage_DeviceSchemaMultiCreate_FullMethodName  = "/dm.DeviceManage/deviceSchemaMultiCreate"
 	DeviceManage_DeviceSchemaMultiDelete_FullMethodName  = "/dm.DeviceManage/deviceSchemaMultiDelete"
 	DeviceManage_DeviceSchemaIndex_FullMethodName        = "/dm.DeviceManage/deviceSchemaIndex"
+	DeviceManage_DeviceSchemaTslRead_FullMethodName      = "/dm.DeviceManage/deviceSchemaTslRead"
 )
 
 // DeviceManageClient is the client API for DeviceManage service.
@@ -109,6 +110,7 @@ type DeviceManageClient interface {
 	DeviceSchemaMultiDelete(ctx context.Context, in *DeviceSchemaMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error)
 	// 获取设备物模型列表
 	DeviceSchemaIndex(ctx context.Context, in *DeviceSchemaIndexReq, opts ...grpc.CallOption) (*DeviceSchemaIndexResp, error)
+	DeviceSchemaTslRead(ctx context.Context, in *DeviceSchemaTslReadReq, opts ...grpc.CallOption) (*DeviceSchemaTslReadResp, error)
 }
 
 type deviceManageClient struct {
@@ -407,6 +409,15 @@ func (c *deviceManageClient) DeviceSchemaIndex(ctx context.Context, in *DeviceSc
 	return out, nil
 }
 
+func (c *deviceManageClient) DeviceSchemaTslRead(ctx context.Context, in *DeviceSchemaTslReadReq, opts ...grpc.CallOption) (*DeviceSchemaTslReadResp, error) {
+	out := new(DeviceSchemaTslReadResp)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceSchemaTslRead_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DeviceManageServer is the server API for DeviceManage service.
 // All implementations must embed UnimplementedDeviceManageServer
 // for forward compatibility
@@ -461,6 +472,7 @@ type DeviceManageServer interface {
 	DeviceSchemaMultiDelete(context.Context, *DeviceSchemaMultiDeleteReq) (*Empty, error)
 	// 获取设备物模型列表
 	DeviceSchemaIndex(context.Context, *DeviceSchemaIndexReq) (*DeviceSchemaIndexResp, error)
+	DeviceSchemaTslRead(context.Context, *DeviceSchemaTslReadReq) (*DeviceSchemaTslReadResp, error)
 	mustEmbedUnimplementedDeviceManageServer()
 }
 
@@ -563,6 +575,9 @@ func (UnimplementedDeviceManageServer) DeviceSchemaMultiDelete(context.Context, 
 }
 func (UnimplementedDeviceManageServer) DeviceSchemaIndex(context.Context, *DeviceSchemaIndexReq) (*DeviceSchemaIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceSchemaIndex not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceSchemaTslRead(context.Context, *DeviceSchemaTslReadReq) (*DeviceSchemaTslReadResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceSchemaTslRead not implemented")
 }
 func (UnimplementedDeviceManageServer) mustEmbedUnimplementedDeviceManageServer() {}
 
@@ -1153,6 +1168,24 @@ func _DeviceManage_DeviceSchemaIndex_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DeviceManage_DeviceSchemaTslRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceSchemaTslReadReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceSchemaTslRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceSchemaTslRead_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceSchemaTslRead(ctx, req.(*DeviceSchemaTslReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DeviceManage_ServiceDesc is the grpc.ServiceDesc for DeviceManage service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1287,6 +1320,10 @@ var DeviceManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "deviceSchemaIndex",
 			Handler:    _DeviceManage_DeviceSchemaIndex_Handler,
+		},
+		{
+			MethodName: "deviceSchemaTslRead",
+			Handler:    _DeviceManage_DeviceSchemaTslRead_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

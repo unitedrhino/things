@@ -127,7 +127,7 @@ func (l *ProductSchemaUpdateLogic) ProductSchemaUpdate(in *dm.ProductSchemaUpdat
 		return nil, err
 	}
 	//清除缓存
-	err = l.svcCtx.SchemaRepo.SetData(l.ctx, devices.Core{ProductID: in.Info.ProductID}, nil)
+	err = l.svcCtx.ProductSchemaRepo.SetData(l.ctx, devices.Core{ProductID: in.Info.ProductID}, nil)
 	if err != nil {
 		return nil, err
 	}

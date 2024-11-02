@@ -35,7 +35,7 @@ func NewActionRespLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Action
 }
 func (l *ActionRespLogic) initMsg(dev devices.Core) error {
 	var err error
-	l.schema, err = l.svcCtx.SchemaRepo.GetData(l.ctx, dev)
+	l.schema, err = l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, dev)
 	if err != nil {
 		return errors.System.AddDetail(err)
 	}

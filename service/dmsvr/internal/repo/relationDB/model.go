@@ -294,7 +294,7 @@ func (m *DmDeviceSchema) TableName() string {
 }
 
 type DmSchemaCore struct {
-	Tag               schema.Tag `gorm:"column:tag;type:smallint;default:1"`                                  // 物模型标签 1:自定义 2:可选 3:必选  必选不可删除
+	Tag               schema.Tag `gorm:"column:tag;type:smallint;default:4"`                                  // 物模型标签 1:自定义 2:可选 3:必选  必选不可删除
 	Type              int64      `gorm:"column:type;index:product_id_type;type:smallint;default:1"`           // 物模型类型 1:property属性 2:event事件 3:action行为
 	Identifier        string     `gorm:"column:identifier;uniqueIndex:identifier;type:varchar(100);NOT NULL"` // 标识符
 	ExtendConfig      string     `gorm:"column:extend_config;type:text"`                                      //拓展参数

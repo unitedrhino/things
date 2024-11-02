@@ -50,7 +50,7 @@ func NewThingLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ThingLogic 
 
 func (l *ThingLogic) initMsg(msg *deviceMsg.PublishMsg) error {
 	var err error
-	l.schema, err = l.svcCtx.SchemaRepo.GetData(l.ctx, devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName})
+	l.schema, err = l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName})
 	if err != nil {
 		return errors.Database.AddDetail(err)
 	}
@@ -138,7 +138,7 @@ func (l *ThingLogic) HandlePackReport(msg *deviceMsg.PublishMsg, req msgThing.Re
 					l.Error(err)
 				}
 			}
-			schema, err := l.svcCtx.SchemaRepo.GetData(l.ctx, devices.Core{ProductID: dev.ProductID, DeviceName: dev.DeviceName})
+			schema, err := l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, devices.Core{ProductID: dev.ProductID, DeviceName: dev.DeviceName})
 			if err != nil {
 				return l.DeviceResp(msg, err, nil), err
 			}

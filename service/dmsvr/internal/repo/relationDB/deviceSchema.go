@@ -2,10 +2,8 @@ package relationDB
 
 import (
 	"context"
-	"fmt"
 	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/stores"
-	"gitee.com/unitedrhino/share/utils"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -102,7 +100,7 @@ func (p DeviceSchemaRepo) FindOneByFilter(ctx context.Context, f DeviceSchemaFil
 }
 
 func (p DeviceSchemaRepo) Update(ctx context.Context, data *DmDeviceSchema) error {
-	err := p.db.WithContext(ctx).Omit("product_id", "identifier").Where("product_id = ? and identifier = ?", data.ProductID, data.Identifier).Save(data).Error
+	err := p.db.WithContext(ctx).Omit("product_id", "device_name", "identifier").Where("product_id = ? and ,device_name=?  and identifier = ?", data.ProductID, data.DeviceName, data.Identifier).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
@@ -122,11 +120,8 @@ func (p DeviceSchemaRepo) FindByFilter(ctx context.Context, f DeviceSchemaFilter
 	var results []*DmDeviceSchema
 	db := p.fmtFilter(ctx, f).Model(&DmDeviceSchema{})
 	db = page.ToGorm(db)
-	newDB := NewProductSchemaRepo(ctx).fmtFilter(ctx, utils.Copy2[ProductSchemaFilter](f))
-	db2 := p.db.Raw("(?) union all (?)", db, newDB.Select(fmt.Sprintf("'%v' as device_name,dm_product_schema.*", f.DeviceName)).Model(&DmProductSchema{}))
-	db2 = page.ToGorm(db2)
 	//var rst = []map[string]any{}
-	err := db2.Scan(&results).Error
+	err := db.Find(&results).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}

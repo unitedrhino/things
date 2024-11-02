@@ -14,6 +14,7 @@ import (
 	thingsdevicemoduleversion "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/module/version"
 	thingsdevicemsg "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/msg"
 	thingsdeviceprofile "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/profile"
+	thingsdeviceschema "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/schema"
 	thingsgroupdevice "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/group/device"
 	thingsgroupinfo "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/group/info"
 	thingsotafirmwaredevice "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/ota/firmware/device"
@@ -383,6 +384,51 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/device/profile"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckTokenWare, serverCtx.InitCtxsWare},
+			[]rest.Route{
+				{
+					// 创建设备物模型
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsdeviceschema.CreateHandler(serverCtx),
+				},
+				{
+					// 获取设备物模型
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsdeviceschema.IndexHandler(serverCtx),
+				},
+				{
+					// 批量创建设备物模型
+					Method:  http.MethodPost,
+					Path:    "/multi-create",
+					Handler: thingsdeviceschema.MultiCreateHandler(serverCtx),
+				},
+				{
+					// 批量创建设备物模型
+					Method:  http.MethodPost,
+					Path:    "/multi-delete",
+					Handler: thingsdeviceschema.MultiDeleteHandler(serverCtx),
+				},
+				{
+					// 获取设备物模型tsl
+					Method:  http.MethodPost,
+					Path:    "/tsl-read",
+					Handler: thingsdeviceschema.TslReadHandler(serverCtx),
+				},
+				{
+					// 更新设备物模型
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsdeviceschema.UpdateHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/device/schema"),
 	)
 
 	server.AddRoutes(

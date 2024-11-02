@@ -187,6 +187,27 @@ func ToSchemaDo(productID string, in []*DmProductSchema) *schema.Model {
 	return &model
 }
 
+func ToDeviceSchemaDo(productID string, in []*DmDeviceSchema) *schema.Model {
+	model := schema.Model{
+		Profile: schema.Profile{ProductID: productID},
+	}
+	if len(in) == 0 {
+		return &model
+	}
+	for _, v := range in {
+		switch schema.AffordanceType(v.Type) {
+		case schema.AffordanceTypeProperty:
+			model.Properties = append(model.Properties, *ToPropertyDo(&v.DmSchemaCore))
+		case schema.AffordanceTypeEvent:
+			model.Events = append(model.Events, *ToEventDo(&v.DmSchemaCore))
+		case schema.AffordanceTypeAction:
+			model.Actions = append(model.Actions, *ToActionDo(&v.DmSchemaCore))
+		}
+	}
+	model.ValidateWithFmt()
+	return &model
+}
+
 func CommonToSchemaDo(in []*DmCommonSchema) *schema.Model {
 	model := schema.Model{}
 	if len(in) == 0 {

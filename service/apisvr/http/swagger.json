@@ -1768,6 +1768,248 @@
         ]
       }
     },
+    "/api/v1/things/device/schema/create": {
+      "post": {
+        "summary": "创建设备物模型",
+        "operationId": "postApiV1ThingsDeviceSchemaCreate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "/*物模型条目*/",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceSchema"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/schema",
+          "thingsDeviceSchema"
+        ]
+      }
+    },
+    "/api/v1/things/device/schema/index": {
+      "post": {
+        "summary": "获取设备物模型",
+        "operationId": "postApiV1ThingsDeviceSchemaIndex",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/DeviceSchemaIndexResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceSchemaIndexReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/schema",
+          "thingsDeviceSchema"
+        ]
+      }
+    },
+    "/api/v1/things/device/schema/multi-create": {
+      "post": {
+        "summary": "批量创建设备物模型",
+        "operationId": "postApiV1ThingsDeviceSchemaMulti-create",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceSchemaMultiCreateReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/schema",
+          "thingsDeviceSchema"
+        ]
+      }
+    },
+    "/api/v1/things/device/schema/multi-delete": {
+      "post": {
+        "summary": "批量创建设备物模型",
+        "operationId": "postApiV1ThingsDeviceSchemaMulti-delete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceSchemaMultiDeleteReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/schema",
+          "thingsDeviceSchema"
+        ]
+      }
+    },
+    "/api/v1/things/device/schema/tsl-read": {
+      "post": {
+        "summary": "获取设备物模型tsl",
+        "operationId": "postApiV1ThingsDeviceSchemaTsl-read",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/DeviceSchemaTslReadResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceSchemaTslReadReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/schema",
+          "thingsDeviceSchema"
+        ]
+      }
+    },
+    "/api/v1/things/device/schema/update": {
+      "post": {
+        "summary": "更新设备物模型",
+        "operationId": "postApiV1ThingsDeviceSchemaUpdate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "/*物模型条目*/",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceSchema"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/schema",
+          "thingsDeviceSchema"
+        ]
+      }
+    },
     "/api/v1/things/device/version/index": {
       "post": {
         "summary": "获取设备模块版本详情",
@@ -7186,6 +7428,10 @@
           },
           "description": "项目区域ids"
         },
+        "areaIDPath": {
+          "type": "string",
+          "description": "区域路径过滤"
+        },
         "isOnline": {
           "type": "integer",
           "format": "int64",
@@ -8815,6 +9061,296 @@
         "len",
         "payload"
       ]
+    },
+    "DeviceSchema": {
+      "type": "object",
+      "properties": {
+        "productID": {
+          "type": "string",
+          "description": "产品id 只读"
+        },
+        "deviceName": {
+          "type": "string"
+        },
+        "type": {
+          "type": "integer",
+          "format": "int64",
+          "description": "物模型类型 1:property属性 2:event事件 3:action行为"
+        },
+        "tag": {
+          "type": "integer",
+          "format": "int64",
+          "description": "物模型标签 1:自定义 2:可选 3:必选  必选不可删除"
+        },
+        "identifier": {
+          "type": "string",
+          "description": "标识符"
+        },
+        "extendConfig": {
+          "type": "string",
+          "description": "拓展参数"
+        },
+        "name": {
+          "type": "string",
+          "description": "功能名称"
+        },
+        "desc": {
+          "type": "string",
+          "description": "描述"
+        },
+        "required": {
+          "type": "integer",
+          "format": "int64",
+          "description": "是否必须 1:是 2:否"
+        },
+        "affordance": {
+          "type": "string",
+          "description": "各功能类型的详细参数定义"
+        },
+        "isCanSceneLinkage": {
+          "type": "integer",
+          "format": "int64",
+          "description": "是否可以场景联动"
+        },
+        "funcGroup": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 功能分类: 1:普通功能 2:系统功能"
+        },
+        "userPerm": {
+          "type": "integer",
+          "format": "int64",
+          "description": "用户权限操作: 1:r(只读) 3:rw(可读可写)"
+        },
+        "isHistory": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 是否存储历史记录"
+        },
+        "order": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 排序"
+        },
+        "controlMode": {
+          "type": "integer",
+          "format": "int64",
+          "description": "控制模式: 1: 可以群控,可以单控  2:只能单控"
+        }
+      },
+      "title": "DeviceSchema",
+      "required": [
+        "productID",
+        "deviceName",
+        "type",
+        "tag",
+        "identifier"
+      ]
+    },
+    "DeviceSchemaDeleteReq": {
+      "type": "object",
+      "properties": {
+        "productID": {
+          "type": "string",
+          "description": "产品id"
+        },
+        "deviceName": {
+          "type": "string"
+        },
+        "identifier": {
+          "type": "string",
+          "description": "标识符"
+        }
+      },
+      "title": "DeviceSchemaDeleteReq",
+      "required": [
+        "productID",
+        "deviceName",
+        "identifier"
+      ]
+    },
+    "DeviceSchemaIndexReq": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "$ref": "#/definitions/PageInfo",
+          "description": "分页信息,只获取一个则不填"
+        },
+        "productID": {
+          "type": "string",
+          "description": "产品id"
+        },
+        "deviceName": {
+          "type": "string"
+        },
+        "type": {
+          "type": "integer",
+          "format": "int64",
+          "description": "物模型类型 1:property属性 2:event事件 3:action行为"
+        },
+        "types": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "tag": {
+          "type": "integer",
+          "format": "int64",
+          "description": "过滤条件: 物模型标签 1:自定义 2:可选 3:必选"
+        },
+        "identifiers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "过滤标识符列表"
+        },
+        "name": {
+          "type": "string"
+        },
+        "isCanSceneLinkage": {
+          "type": "integer",
+          "format": "int64",
+          "description": "是否可以场景联动"
+        },
+        "funcGroup": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 功能分类: 1:普通功能 2:系统功能"
+        },
+        "userPerm": {
+          "type": "integer",
+          "format": "int64",
+          "description": "用户权限操作: 1:r(只读) 3:rw(可读可写)"
+        },
+        "propertyMode": {
+          "type": "string",
+          "description": "属性类型可用 读写类型: 1:r(只读) 2:rw(可读可写)"
+        },
+        "controlMode": {
+          "type": "integer",
+          "format": "int64",
+          "description": "控制模式: 1: 可以群控,可以单控  2:只能单控"
+        }
+      },
+      "title": "DeviceSchemaIndexReq",
+      "required": [
+        "productID",
+        "deviceName"
+      ]
+    },
+    "DeviceSchemaIndexResp": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceSchema"
+          },
+          "description": "分页信息,只获取一个则不填"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64",
+          "description": "总数(只有分页的时候会返回)"
+        }
+      },
+      "title": "DeviceSchemaIndexResp",
+      "required": [
+        "list",
+        "total"
+      ]
+    },
+    "DeviceSchemaMultiCreateReq": {
+      "type": "object",
+      "properties": {
+        "productID": {
+          "type": "string",
+          "description": "产品id"
+        },
+        "deviceName": {
+          "type": "string"
+        },
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceSchema"
+          },
+          "description": "分页信息,只获取一个则不填"
+        }
+      },
+      "title": "DeviceSchemaMultiCreateReq",
+      "required": [
+        "productID",
+        "deviceName",
+        "list"
+      ]
+    },
+    "DeviceSchemaMultiDeleteReq": {
+      "type": "object",
+      "properties": {
+        "productID": {
+          "type": "string",
+          "description": "产品id"
+        },
+        "deviceName": {
+          "type": "string"
+        },
+        "identifiers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "物模型ID列表"
+        }
+      },
+      "title": "DeviceSchemaMultiDeleteReq",
+      "required": [
+        "productID",
+        "deviceName",
+        "identifiers"
+      ]
+    },
+    "DeviceSchemaTslReadReq": {
+      "type": "object",
+      "properties": {
+        "productID": {
+          "type": "string",
+          "description": "产品id"
+        },
+        "deviceName": {
+          "type": "string"
+        }
+      },
+      "title": "DeviceSchemaTslReadReq",
+      "required": [
+        "productID",
+        "deviceName"
+      ]
+    },
+    "DeviceSchemaTslReadResp": {
+      "type": "object",
+      "properties": {
+        "tsl": {
+          "type": "string",
+          "description": "物模型tsl"
+        }
+      },
+      "title": "DeviceSchemaTslReadResp",
+      "required": [
+        "tsl"
+      ]
+    },
+    "DeviceSchemaUpdateReq": {
+      "type": "object",
+      "properties": {
+        "": {
+          "$ref": "#/definitions/DeviceSchema"
+        }
+      },
+      "title": "DeviceSchemaUpdateReq"
     },
     "DeviceShareInfo": {
       "type": "object",

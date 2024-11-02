@@ -570,6 +570,106 @@
       ],
       "authType": "all"
     },
+    "thingsDeviceSchemaAdd": {
+      "name": "新增设备物模型",
+      "code": "thingsDeviceSchemaAdd",
+      "group": "设备管理",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsDeviceSchemaAdd",
+          "method": "POST",
+          "route": "/api/v1/things/device/schema/create",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "add",
+          "desc": "",
+          "authType": "admin"
+        },
+        {
+          "accessCode": "thingsDeviceSchemaAdd",
+          "method": "POST",
+          "route": "/api/v1/things/device/schema/multi-create",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "add",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsDeviceSchemaDelete": {
+      "name": "删除设备物模型",
+      "code": "thingsDeviceSchemaDelete",
+      "group": "设备管理",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsDeviceSchemaDelete",
+          "method": "POST",
+          "route": "/api/v1/things/device/schema/multi-delete",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "delete",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsDeviceSchemaFind": {
+      "name": "查询设备物模型",
+      "code": "thingsDeviceSchemaFind",
+      "group": "设备管理",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsDeviceSchemaFind",
+          "method": "POST",
+          "route": "/api/v1/things/device/schema/index",
+          "name": "获取设备物模型",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceSchemaFind",
+          "method": "POST",
+          "route": "/api/v1/things/device/schema/tsl-read",
+          "name": "获取设备物模型tsl",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        }
+      ],
+      "authType": "all"
+    },
+    "thingsDeviceSchemaModify": {
+      "name": "修改设备物模型",
+      "code": "thingsDeviceSchemaModify",
+      "group": "设备管理",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsDeviceSchemaModify",
+          "method": "POST",
+          "route": "/api/v1/things/device/schema/update",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "admin"
+        }
+      ],
+      "authType": "admin"
+    },
     "thingsOtaDeviceFind": {
       "name": "查询设备",
       "code": "thingsOtaDeviceFind",

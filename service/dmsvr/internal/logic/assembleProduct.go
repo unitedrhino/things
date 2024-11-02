@@ -77,26 +77,7 @@ func ToProductSchemaRpc(info *relationDB.DmProductSchema) *dm.ProductSchemaInfo 
 }
 
 func ToProductSchemaPo(info *dm.ProductSchemaInfo) *relationDB.DmProductSchema {
-	db := &relationDB.DmProductSchema{
-		ProductID: info.ProductID,
-		DmSchemaCore: relationDB.DmSchemaCore{
-			Type:              info.Type,
-			Identifier:        info.Identifier,
-			ExtendConfig:      info.ExtendConfig,
-			Name:              info.Name.GetValue(),
-			Desc:              info.Desc.GetValue(),
-			Required:          info.Required,
-			IsCanSceneLinkage: info.IsCanSceneLinkage,
-			FuncGroup:         info.FuncGroup,
-			ControlMode:       info.ControlMode,
-			UserPerm:          info.UserPerm,
-			IsHistory:         info.IsHistory,
-			Order:             info.Order,
-			Affordance:        info.Affordance.GetValue(),
-			Tag:               info.Tag,
-		},
-	}
-	return db
+	return utils.Copy[relationDB.DmProductSchema](info)
 }
 
 func ToCustomTopicPb(info *productCustom.CustomTopic) *dm.CustomTopic {

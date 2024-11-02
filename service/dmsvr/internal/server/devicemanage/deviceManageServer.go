@@ -200,3 +200,8 @@ func (s *DeviceManageServer) DeviceSchemaIndex(ctx context.Context, in *dm.Devic
 	l := devicemanagelogic.NewDeviceSchemaIndexLogic(ctx, s.svcCtx)
 	return l.DeviceSchemaIndex(in)
 }
+
+func (s *DeviceManageServer) DeviceSchemaTslRead(ctx context.Context, in *dm.DeviceSchemaTslReadReq) (*dm.DeviceSchemaTslReadResp, error) {
+	l := devicemanagelogic.NewDeviceSchemaTslReadLogic(ctx, s.svcCtx)
+	return l.DeviceSchemaTslRead(in)
+}

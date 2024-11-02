@@ -43,7 +43,7 @@ func NewPropertyControlSendLogic(ctx context.Context, svcCtx *svc.ServiceContext
 }
 func (l *PropertyControlSendLogic) initMsg(dev devices.Core) error {
 	var err error
-	l.model, err = l.svcCtx.SchemaRepo.GetData(l.ctx, dev)
+	l.model, err = l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, dev)
 	if err != nil {
 		return errors.System.AddDetail(err)
 	}

@@ -65,6 +65,8 @@ type (
 	DeviceSchemaIndexResp             = dm.DeviceSchemaIndexResp
 	DeviceSchemaMultiCreateReq        = dm.DeviceSchemaMultiCreateReq
 	DeviceSchemaMultiDeleteReq        = dm.DeviceSchemaMultiDeleteReq
+	DeviceSchemaTslReadReq            = dm.DeviceSchemaTslReadReq
+	DeviceSchemaTslReadResp           = dm.DeviceSchemaTslReadResp
 	DeviceShareInfo                   = dm.DeviceShareInfo
 	DeviceTransferReq                 = dm.DeviceTransferReq
 	DeviceTypeCountReq                = dm.DeviceTypeCountReq

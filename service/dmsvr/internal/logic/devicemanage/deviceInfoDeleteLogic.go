@@ -104,7 +104,7 @@ func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*d
 }
 
 func DeleteDeviceTimeData(ctx context.Context, svcCtx *svc.ServiceContext, productID, deviceName string) error {
-	schema, err := svcCtx.SchemaRepo.GetData(ctx, devices.Core{ProductID: productID, DeviceName: deviceName})
+	schema, err := svcCtx.ProductSchemaRepo.GetData(ctx, devices.Core{ProductID: productID, DeviceName: deviceName})
 	if err != nil {
 		logx.WithContext(ctx).Errorf("%s.GetSchemaModel err=%+v", utils.FuncName(), err)
 		return errors.System.AddDetail(err)

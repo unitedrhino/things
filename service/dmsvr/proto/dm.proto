@@ -125,6 +125,7 @@ service DeviceManage {
   rpc deviceSchemaMultiDelete(DeviceSchemaMultiDeleteReq)     returns (Empty);
   //获取设备物模型列表
   rpc deviceSchemaIndex(DeviceSchemaIndexReq)     returns (DeviceSchemaIndexResp);
+  rpc deviceSchemaTslRead(DeviceSchemaTslReadReq)     returns (DeviceSchemaTslReadResp);
 
 }
 
@@ -637,7 +638,8 @@ message PropertyGetReportSendResp{
 /*获取对应日志信息*/
 message PropertyLogIndexReq{
   PageInfo page = 1;//使用了聚合函数及间隔的时候无效
-  repeated string deviceNames = 3; //设备名(不填获取产品下所有设备)
+  string deviceName=2;//设备ID
+  repeated string deviceNames=3;//废弃
   string productID = 4; //产品id (必填)
   string dataID = 5; //获取的具体标识符的数据(必填)
   int64 timeStart = 6;//获取时间的开始(毫秒时间戳)
@@ -681,7 +683,8 @@ message PropertyLogIndexResp{
 message EventLogIndexReq{
   PageInfo page = 1;//使用了聚合函数及间隔的时候无效
   string productID = 2; //产品id (必填)
-  repeated string deviceNames = 3; //设备名(不填获取产品下所有设备)
+  string deviceName = 3; //设备名(不填获取产品下所有设备)
+  repeated string deviceNames = 8; //废弃
   string dataID = 4; //获取的具体标识符的数据(必填)
   int64 timeStart = 5;//获取时间的开始(毫秒时间戳)
   int64 timeEnd = 6;//时间的结束(毫秒时间戳)
@@ -1274,6 +1277,7 @@ message DeviceInfoIndexReq{
   int64 range = 6; //过滤条件:取距离坐标点固定范围内的设备
   Point Position = 7;   //设备定位,默认百度坐标系
   repeated int64 areaIDs = 8;//区域ids
+  string areaIDPath=32; //区域路径过滤
   string deviceAlias = 9; //过滤条件:模糊查询 设备别名
   int64 isOnline = 10; //在线状态过滤  1离线 2在线
   int64  productCategoryID = 11;//产品品类id
@@ -1521,6 +1525,14 @@ message DeviceSchema{
   int64 order =13;//排序
 }
 
+message DeviceSchemaTslReadReq{
+  string   productID = 1; //产品id
+  string deviceName =17;//设备ID 必填
+}
+
+message DeviceSchemaTslReadResp{
+  string   tsl = 1;//物模型tsl
+}
 
 
 message DeviceProfile{

@@ -30,22 +30,22 @@ import (
 )
 
 type SvrClient struct {
-	ProductM           productmanage.ProductManage
-	DeviceInteract     deviceinteract.DeviceInteract
-	DeviceMsg          devicemsg.DeviceMsg
-	DeviceM            devicemanage.DeviceManage
-	DeviceG            devicegroup.DeviceGroup
-	TimedM             timedmanage.TimedManage
-	NotifyM            notifymanage.NotifyManage
-	AreaM              areamanage.AreaManage
-	SysCommon          common.Common
-	ProjectM           projectmanage.ProjectManage
-	DeviceCache        dmExport.DeviceCacheT
-	UserShareCache     dmExport.UserShareCacheT
-	ProductCache dmExport.ProductCacheT
-	SchemaCache  dmExport.SchemaCacheT
-	ProjectCache sysExport.ProjectCacheT
-	Ops                ops.Ops
+	ProductM       productmanage.ProductManage
+	DeviceInteract deviceinteract.DeviceInteract
+	DeviceMsg      devicemsg.DeviceMsg
+	DeviceM        devicemanage.DeviceManage
+	DeviceG        devicegroup.DeviceGroup
+	TimedM         timedmanage.TimedManage
+	NotifyM        notifymanage.NotifyManage
+	AreaM          areamanage.AreaManage
+	SysCommon      common.Common
+	ProjectM       projectmanage.ProjectManage
+	DeviceCache    dmExport.DeviceCacheT
+	UserShareCache dmExport.UserShareCacheT
+	ProductCache   dmExport.ProductCacheT
+	SchemaCache    dmExport.DeviceSchemaCacheT
+	ProjectCache   sysExport.ProjectCacheT
+	Ops            ops.Ops
 }
 
 type ServiceContext struct {
@@ -100,7 +100,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	logx.Must(err)
 	pic, err := dmExport.NewProductInfoCache(productM, fastEvent)
 	logx.Must(err)
-	psc, err := dmExport.NewSchemaInfoCache(productM, fastEvent)
+	psc, err := dmExport.NewDeviceSchemaCache(deviceM, fastEvent)
 	logx.Must(err)
 	ossClient, err := oss.NewOssClient(c.OssConf)
 	if err != nil {
@@ -118,11 +118,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		OssClient: ossClient,
 		NodeID:    nodeID,
 		SvrClient: SvrClient{
-			TimedM:             timedM,
-			AreaM:              areaM,
-			SysCommon:          common.NewCommon(zrpc.MustNewClient(c.SysRpc.Conf)),
-			NotifyM:            notifyM,
-			ProjectM:           projectM,
+			TimedM:         timedM,
+			AreaM:          areaM,
+			SysCommon:      common.NewCommon(zrpc.MustNewClient(c.SysRpc.Conf)),
+			NotifyM:        notifyM,
+			ProjectM:       projectM,
 			ProjectCache:   projectC,
 			ProductM:       productM,
 			Ops:            Ops,

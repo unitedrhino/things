@@ -69,7 +69,7 @@ func (s SchemaRepo) TslImport(ctx context.Context, productID string, schemaInfo 
 	return err
 }
 
-//func (s SchemaRepo) TslRead(ctx context.Context, productID string) (*schema.Model, error) {
+//func (s ProductSchemaRepo) TslRead(ctx context.Context, productID string) (*schema.Model, error) {
 //	temp, ok := s.cache.Get(productID)
 //	if ok {
 //		return temp.(*schema.Model), nil

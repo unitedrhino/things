@@ -47,7 +47,7 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 	if err != nil {
 		return nil, err
 	}
-	temp, err := l.svcCtx.SchemaRepo.GetData(l.ctx, dc)
+	temp, err := l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, dc)
 	if err != nil {
 		return nil, errors.System.AddDetail(err)
 	}
