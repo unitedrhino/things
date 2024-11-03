@@ -11092,6 +11092,12 @@
           "format": "int64",
           "maximum": 3
         },
+        "deviceSchemaMode": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 设备物模型模式:1:关闭,2:设备自动创建3: 设备自动创建及上报无定义自动创建",
+          "maximum": 3
+        },
         "categoryID": {
           "type": "integer",
           "format": "int64",

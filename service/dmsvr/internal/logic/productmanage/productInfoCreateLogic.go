@@ -72,18 +72,17 @@ func (l *ProductInfoCreateLogic) CheckProductID(in *dm.ProductInfo) (bool, error
 */
 func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relationDB.DmProductInfo, error) {
 	pi := &relationDB.DmProductInfo{
-		ProductID:   in.ProductID,   // 产品id
-		ProductName: in.ProductName, // 产品名称
-		Desc:        in.Desc.GetValue(),
-		Status:      in.Status,
-		Secret:      utils.GetRandomBase64(20),
-		TrialTime:   in.TrialTime.GetValue(),
-		SceneMode:   in.SceneMode,
+		ProductID:        in.ProductID,   // 产品id
+		ProductName:      in.ProductName, // 产品名称
+		Desc:             in.Desc.GetValue(),
+		Status:           in.Status,
+		Secret:           utils.GetRandomBase64(20),
+		TrialTime:        in.TrialTime.GetValue(),
+		SceneMode:        in.SceneMode,
+		DeviceSchemaMode: in.DeviceSchemaMode,
 	}
 	if in.AutoRegister != def.Unknown {
 		pi.AutoRegister = in.AutoRegister
-	} else {
-		pi.AutoRegister = def.AutoRegClose
 	}
 	if in.ProtocolCode != "" {
 		pi.ProtocolCode = in.ProtocolCode
@@ -92,28 +91,15 @@ func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relatio
 	}
 	if in.DeviceType != def.Unknown {
 		pi.DeviceType = in.DeviceType
-	} else {
-		pi.DeviceType = def.DeviceTypeDevice
 	}
 	if in.CategoryID != 0 {
 		pi.CategoryID = in.CategoryID
-	} else {
-		pi.CategoryID = def.NotClassified
 	}
 	if in.NetType != def.Unknown {
 		pi.NetType = in.NetType
-	} else {
-		pi.NetType = def.NetOther
-	}
-	if in.DeviceType != def.Unknown {
-		pi.DeviceType = in.DeviceType
-	} else {
-		pi.DeviceType = def.DeviceTypeDevice
 	}
 	if in.AuthMode != def.Unknown {
 		pi.AuthMode = in.AuthMode
-	} else {
-		pi.AuthMode = def.AuthModePwd
 	}
 	if in.Tags == nil {
 		in.Tags = map[string]string{}

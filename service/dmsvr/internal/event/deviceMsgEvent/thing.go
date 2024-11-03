@@ -52,7 +52,7 @@ func (l *ThingLogic) initMsg(msg *deviceMsg.PublishMsg) error {
 	var err error
 	l.schema, err = l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName})
 	if err != nil {
-		return errors.Database.AddDetail(err)
+		return err
 	}
 	err = utils.Unmarshal(msg.Payload, &l.dreq)
 	if err != nil {
@@ -265,7 +265,11 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 	tp, err := req.VerifyReqParam(l.schema, schema.ParamProperty)
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), err
-	} else if len(tp) == 0 {
+	}
+	if len(req.Params) > len(tp) { //存在上报了未定义的属性
+
+	}
+	if len(tp) == 0 {
 		err := errors.Parameter.AddMsgf("查不到物模型:%v", req.Params)
 		return l.DeviceResp(msg, err, nil), err
 	}
