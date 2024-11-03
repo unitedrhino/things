@@ -129,6 +129,24 @@ func (l *OtaEvent) DevicesTimeout(jobInfos []*relationDB.DmOtaFirmwareJob) error
 
 	for _, jobInfo := range jobInfos {
 		firmware := jobInfo.Firmware
+		if jobInfo.Firmware == nil { //任务的固件已经被删除了,需要删除该任务及对应的设备
+			ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
+				err := stores.GetTenantConn(ctx).Transaction(func(tx *gorm.DB) error {
+					err := relationDB.NewOtaFirmwareDeviceRepo(tx).DeleteByFilter(ctx, relationDB.OtaFirmwareDeviceFilter{
+						JobID: jobInfo.ID,
+					})
+					if err != nil {
+						return err
+					}
+					err = relationDB.NewOtaJobRepo(tx).Delete(ctx, jobInfo.ID)
+					return err
+				})
+				if err != nil {
+					logx.WithContext(ctx).Errorf("Device upgrade push err:%+v", err)
+				}
+			})
+			continue
+		}
 		if jobInfo.IsNeedPush != def.True { //只有需要推送的才推送
 			return nil
 		}
