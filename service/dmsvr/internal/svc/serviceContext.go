@@ -134,7 +134,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		FastEvent: serverMsg,
 		GetData: func(ctx context.Context, key devices.Core) (*schema.Model, error) {
 			db := relationDB.NewDeviceSchemaRepo(ctx)
-			dbSchemas, err := db.FindByFilter(ctx, relationDB.DeviceSchemaFilter{ProductID: key.ProductID}, nil)
+			dbSchemas, err := db.FindByFilter(ctx, relationDB.DeviceSchemaFilter{ProductID: key.ProductID, DeviceName: key.DeviceName}, nil)
 			if err != nil {
 				return nil, err
 			}

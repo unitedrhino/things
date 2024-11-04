@@ -140,6 +140,34 @@ func (p DeviceSchemaRepo) MultiInsert(ctx context.Context, data []*DmDeviceSchem
 	return stores.ErrFmt(err)
 }
 
+// 批量插入 LightStrategyDevice 记录
+func (p DeviceSchemaRepo) MultiInsert2(ctx context.Context, productID string, deviceName string, schemaInfo *schema.Model) error {
+	var datas []*DmDeviceSchema
+	for _, item := range schemaInfo.Property {
+		datas = append(datas, &DmDeviceSchema{
+			ProductID:    productID,
+			DeviceName:   deviceName,
+			DmSchemaCore: ToPropertyPo(item),
+		})
+	}
+	for _, item := range schemaInfo.Event {
+		datas = append(datas, &DmDeviceSchema{
+			ProductID:    productID,
+			DeviceName:   deviceName,
+			DmSchemaCore: ToEventPo(item),
+		})
+	}
+	for _, item := range schemaInfo.Action {
+		datas = append(datas, &DmDeviceSchema{
+			ProductID:    productID,
+			DeviceName:   deviceName,
+			DmSchemaCore: ToActionPo(item),
+		})
+	}
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{DoNothing: true}).Model(&DmDeviceSchema{}).CreateInBatches(datas, 100).Error
+	return stores.ErrFmt(err)
+}
+
 func (p DeviceSchemaRepo) MultiUpdate(ctx context.Context, productID string, deviceName string, schemaInfo *schema.Model) error {
 	var datas []*DmDeviceSchema
 	for _, item := range schemaInfo.Property {
