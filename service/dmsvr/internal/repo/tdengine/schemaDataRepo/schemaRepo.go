@@ -1,6 +1,7 @@
 package schemaDataRepo
 
 import (
+	"context"
 	"gitee.com/unitedrhino/share/clients"
 	"gitee.com/unitedrhino/share/conf"
 	schema "gitee.com/unitedrhino/share/domain/schema"
@@ -18,6 +19,11 @@ type DeviceDataRepo struct {
 	getSchemaModel schema.GetSchemaModel
 	SchemaStore
 	kv kv.Store
+}
+
+func (d *DeviceDataRepo) DeleteDeviceProperty(ctx context.Context, productID string, deviceName string, s []schema.Property) error {
+	//TODO implement me
+	panic("implement me")
 }
 
 func NewDeviceDataRepo(dataSource conf.TSDB, getSchemaModel schema.GetSchemaModel, kv kv.Store) *DeviceDataRepo {

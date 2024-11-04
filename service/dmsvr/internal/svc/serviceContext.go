@@ -110,7 +110,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	logx.Must(err)
 
 	ccSchemaR, err := caches.NewCache(caches.CacheConfig[schema.Model, devices.Core]{
-		KeyType:   eventBus.ServerCacheKeyDmSchema,
+		KeyType:   eventBus.ServerCacheKeyDmProductSchema,
 		FastEvent: serverMsg,
 		GetData: func(ctx context.Context, key devices.Core) (*schema.Model, error) {
 			db := relationDB.NewProductSchemaRepo(ctx)

@@ -67,7 +67,7 @@ type SchemaCacheT = *caches.Cache[schema.Model, devices.Core]
 
 func NewSchemaInfoCache(pm productmanage.ProductManage, fastEvent *eventBus.FastEvent) (SchemaCacheT, error) {
 	return caches.NewCache(caches.CacheConfig[schema.Model, devices.Core]{
-		KeyType:   eventBus.ServerCacheKeyDmSchema,
+		KeyType:   eventBus.ServerCacheKeyDmProductSchema,
 		FastEvent: fastEvent,
 		Fmt: func(ctx context.Context, key devices.Core, data *schema.Model) {
 			data.ValidateWithFmt()
