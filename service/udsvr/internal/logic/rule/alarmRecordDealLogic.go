@@ -3,11 +3,9 @@ package rulelogic
 import (
 	"context"
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
-	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/domain/ops"
 	"gitee.com/unitedrhino/share/errors"
-	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/domain/scene"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/repo/relationDB"
 
@@ -57,35 +55,35 @@ func (l *AlarmRecordDealLogic) AlarmRecordDeal(in *ud.AlarmRecordDealReq) (*ud.E
 		if err != nil {
 			return nil, err
 		}
-		if po.DeviceName != "" && po.ProductID != "" {
-			di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: po.ProductID, DeviceName: po.DeviceName})
-			if err != nil {
-				logx.WithContext(l.ctx).Error(err)
-				if err != nil {
-					return nil, err
-				}
-			}
-			total, err := relationDB.NewAlarmRecordRepo(l.ctx).CountByFilter(l.ctx, relationDB.AlarmRecordFilter{
-				ProductID:    po.ProductID,
-				DeviceName:   po.DeviceName,
-				DealStatuses: []int64{scene.AlarmDealStatusWaring, scene.AlarmDealStatusInHand},
-			})
-			if err != nil {
-				l.Error(err)
-				if err != nil {
-					return nil, err
-				}
-			}
-			if total == 0 && di.Status == def.DeviceStatusWarming {
-				_, err := l.svcCtx.DeviceM.DeviceInfoUpdate(l.ctx, &dm.DeviceInfo{ProductID: po.ProductID, DeviceName: po.DeviceName, Status: di.IsOnline + 1})
-				if err != nil {
-					l.Error(err)
-					if err != nil {
-						return nil, err
-					}
-				}
-			}
-		}
+		//if po.DeviceName != "" && po.ProductID != "" {
+		//	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: po.ProductID, DeviceName: po.DeviceName})
+		//	if err != nil {
+		//		logx.WithContext(l.ctx).Error(err)
+		//		if err != nil {
+		//			return nil, err
+		//		}
+		//	}
+		//	total, err := relationDB.NewAlarmRecordRepo(l.ctx).CountByFilter(l.ctx, relationDB.AlarmRecordFilter{
+		//		ProductID:    po.ProductID,
+		//		DeviceName:   po.DeviceName,
+		//		DealStatuses: []int64{scene.AlarmDealStatusWaring, scene.AlarmDealStatusInHand},
+		//	})
+		//	if err != nil {
+		//		l.Error(err)
+		//		if err != nil {
+		//			return nil, err
+		//		}
+		//	}
+		//	if total == 0 && di.Status == def.DeviceStatusWarming {
+		//		_, err := l.svcCtx.DeviceM.DeviceInfoUpdate(l.ctx, &dm.DeviceInfo{ProductID: po.ProductID, DeviceName: po.DeviceName, Status: di.IsOnline + 1})
+		//		if err != nil {
+		//			l.Error(err)
+		//			if err != nil {
+		//				return nil, err
+		//			}
+		//		}
+		//	}
+		//}
 	case HandleSendOrder:
 		owo := sys.OpsWorkOrder{
 			Type:      ops.WorkOrderTypeSceneAlarm,

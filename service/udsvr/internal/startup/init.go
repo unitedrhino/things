@@ -14,7 +14,6 @@ import (
 	"gitee.com/unitedrhino/share/events/topics"
 	"gitee.com/unitedrhino/share/tools"
 	"gitee.com/unitedrhino/share/utils"
-	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/domain/scene"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/event/timerEvent"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/repo/relationDB"
@@ -195,29 +194,29 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 				logx.WithContext(ctx).Error(err)
 				return nil
 			}
-			if ar.DeviceName != "" && ar.ProductID != "" {
-				di, err := svcCtx.DeviceCache.GetData(ctx, devices.Core{ProductID: ar.ProductID, DeviceName: ar.DeviceName})
-				if err != nil {
-					logx.WithContext(ctx).Error(err)
-					return nil
-				}
-				total, err := relationDB.NewAlarmRecordRepo(ctx).CountByFilter(ctx, relationDB.AlarmRecordFilter{
-					ProductID:    ar.ProductID,
-					DeviceName:   ar.DeviceName,
-					DealStatuses: []int64{scene.AlarmDealStatusWaring, scene.AlarmDealStatusInHand},
-				})
-				if err != nil {
-					logx.WithContext(ctx).Error(err)
-					return nil
-				}
-				if total == 0 && di.Status == def.DeviceStatusWarming {
-					_, err := svcCtx.DeviceM.DeviceInfoUpdate(ctx, &dm.DeviceInfo{ProductID: ar.ProductID, DeviceName: ar.DeviceName, Status: di.IsOnline + 1})
-					if err != nil {
-						logx.WithContext(ctx).Error(err)
-						return nil
-					}
-				}
-			}
+			//if ar.DeviceName != "" && ar.ProductID != "" {
+			//	di, err := svcCtx.DeviceCache.GetData(ctx, devices.Core{ProductID: ar.ProductID, DeviceName: ar.DeviceName})
+			//	if err != nil {
+			//		logx.WithContext(ctx).Error(err)
+			//		return nil
+			//	}
+			//	total, err := relationDB.NewAlarmRecordRepo(ctx).CountByFilter(ctx, relationDB.AlarmRecordFilter{
+			//		ProductID:    ar.ProductID,
+			//		DeviceName:   ar.DeviceName,
+			//		DealStatuses: []int64{scene.AlarmDealStatusWaring, scene.AlarmDealStatusInHand},
+			//	})
+			//	if err != nil {
+			//		logx.WithContext(ctx).Error(err)
+			//		return nil
+			//	}
+			//	if total == 0 && di.Status == def.DeviceStatusWarming {
+			//		_, err := svcCtx.DeviceM.DeviceInfoUpdate(ctx, &dm.DeviceInfo{ProductID: ar.ProductID, DeviceName: ar.DeviceName, Status: di.IsOnline + 1})
+			//		if err != nil {
+			//			logx.WithContext(ctx).Error(err)
+			//			return nil
+			//		}
+			//	}
+			//}
 			return nil
 		})
 		logx.Must(err)
