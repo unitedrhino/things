@@ -273,7 +273,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 			return l.DeviceResp(msg, err, nil), err
 		}
 		if pd.DeviceSchemaMode == product.DeviceSchemaModeReportAutoCreate {
-			
+
 		}
 	}
 	if len(tp) == 0 {
@@ -453,6 +453,17 @@ func OtaVersionCheck(ctx context.Context, svcCtx *svc.ServiceContext, msg device
 }
 
 func (l *ThingLogic) HandlePropertyGetSchema(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
+	return l.DeviceResp(msg, errors.OK, l.schema.ToSimple()), nil
+}
+
+func (l *ThingLogic) HandleCreateSchema(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
+	if l.dreq.Schema == nil {
+		return l.DeviceResp(msg, errors.Parameter.AddMsg("需要填写schema"), nil), nil
+	}
+	err = l.dreq.Schema.ValidateWithFmt()
+	if err != nil {
+		return l.DeviceResp(msg, err, nil), nil
+	}
 	return l.DeviceResp(msg, errors.OK, l.schema.ToSimple()), nil
 }
 
