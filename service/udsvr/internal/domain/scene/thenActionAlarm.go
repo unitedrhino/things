@@ -12,7 +12,7 @@ type ActionAlarmMode = string
 
 const (
 	ActionAlarmModeTrigger ActionAlarmMode = "trigger" //触发告警
-	ActionAlarmModeRelieve ActionAlarmMode = "relieve" //接触告警
+	ActionAlarmModeRelieve ActionAlarmMode = "relieve" //解除告警
 )
 
 type AlarmDealStatus = int64

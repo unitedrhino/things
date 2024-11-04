@@ -14,6 +14,7 @@ import (
 	"gitee.com/unitedrhino/share/events/topics"
 	"gitee.com/unitedrhino/share/tools"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/udsvr/internal/domain/alarm"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/domain/scene"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/event/timerEvent"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/repo/relationDB"
@@ -193,6 +194,12 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 			if err != nil {
 				logx.WithContext(ctx).Error(err)
 				return nil
+			}
+			n := utils.Copy[alarm.Notify](ar)
+			n.Mode = scene.ActionAlarmModeRelieve
+			err = svcCtx.FastEvent.Publish(ctx, fmt.Sprintf(eventBus.UdRuleAlarmNotify, scene.ActionAlarmModeRelieve), n)
+			if err != nil {
+				logx.WithContext(ctx).Error(err)
 			}
 			//if ar.DeviceName != "" && ar.ProductID != "" {
 			//	di, err := svcCtx.DeviceCache.GetData(ctx, devices.Core{ProductID: ar.ProductID, DeviceName: ar.DeviceName})
