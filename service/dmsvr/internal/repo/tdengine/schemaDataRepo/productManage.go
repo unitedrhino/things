@@ -52,11 +52,7 @@ func (d *DeviceDataRepo) DeleteProperty(ctx context.Context, p *schema.Property,
 	if p != nil && p.Tag != schema.TagCustom && productID != "" { //产品ID不为空的情况下只能修改自定义的物模型
 		return nil
 	}
-	tag := schema.TagOptional //允许可选的删除不传属性内容
-	if p != nil {
-		tag = p.Tag
-	}
-	sql := fmt.Sprintf("drop stable if exists %s;", d.GetPropertyStableName(tag, productID, "", identifier))
+	sql := fmt.Sprintf("drop stable if exists %s;", d.GetPropertyStableName(p, productID, "", identifier))
 	if _, err := d.t.ExecContext(ctx, sql); err != nil {
 		return errors.Database.AddDetail(err)
 	}
@@ -82,7 +78,7 @@ func (d *DeviceDataRepo) UpdateProperty(
 		} else {
 			//新增
 			sql := fmt.Sprintf("ALTER STABLE %s ADD COLUMN `%s` %s; ",
-				d.GetPropertyStableName(newP.Tag, productID, "", newP.Identifier), newS.Identifier, stores.GetTdType(newS.DataType))
+				d.GetPropertyStableName(newP, productID, "", newP.Identifier), newS.Identifier, stores.GetTdType(newS.DataType))
 			if _, err := d.t.ExecContext(ctx, sql); err != nil {
 				return errors.Database.AddDetail(err)
 			}
@@ -91,7 +87,7 @@ func (d *DeviceDataRepo) UpdateProperty(
 	for _, oldS := range oldP.Define.Spec {
 		//这里是需要删除的字段
 		sql := fmt.Sprintf("ALTER STABLE %s DROP COLUMN `%s`; ",
-			d.GetPropertyStableName(newP.Tag, productID, "", newP.Identifier), oldS.Identifier)
+			d.GetPropertyStableName(newP, productID, "", newP.Identifier), oldS.Identifier)
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
 			return errors.Database.AddDetail(err)
 		}
@@ -123,7 +119,7 @@ func (d *DeviceDataRepo) UpdateProduct(
 	}
 	//处理删除的属性
 	for _, p := range oldT.Property {
-		sql := fmt.Sprintf("drop stable if exists %s;", d.GetPropertyStableName(p.Tag, productID, "", p.Identifier))
+		sql := fmt.Sprintf("drop stable if exists %s;", d.GetPropertyStableName(p, productID, "", p.Identifier))
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
 			logx.WithContext(ctx).Errorf("%s drop table product_id:%v,properties:%v,err:%v",
 				utils.FuncName(), productID, p, err)
@@ -140,7 +136,7 @@ func (d *DeviceDataRepo) createPropertyStable(
 	case schema.DataTypeStruct:
 		sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp, %s)"+
 			" TAGS (`product_id` BINARY(50),`device_name` BINARY(50),`"+PropertyType+"` BINARY(50));",
-			d.GetPropertyStableName(p.Tag, productID, "", p.Identifier), d.GetSpecsCreateColumn(p.Define.Specs))
+			d.GetPropertyStableName(p, productID, "", p.Identifier), d.GetSpecsCreateColumn(p.Define.Specs))
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
 			return errors.Database.AddDetail(err)
 		}
@@ -150,14 +146,14 @@ func (d *DeviceDataRepo) createPropertyStable(
 		case schema.DataTypeStruct:
 			sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp, %s)"+
 				" TAGS (`product_id` BINARY(50),`device_name` BINARY(50),`_num` BIGINT,`"+PropertyType+"` BINARY(50));",
-				d.GetPropertyStableName(p.Tag, productID, "", p.Identifier), d.GetSpecsCreateColumn(arrayInfo.Specs))
+				d.GetPropertyStableName(p, productID, "", p.Identifier), d.GetSpecsCreateColumn(arrayInfo.Specs))
 			if _, err := d.t.ExecContext(ctx, sql); err != nil {
 				return errors.Database.AddDetail(err)
 			}
 		default:
 			sql = fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp,`param` %s)"+
 				" TAGS (`product_id` BINARY(50),`device_name` BINARY(50),`_num` BIGINT,`"+PropertyType+"` BINARY(50));",
-				d.GetPropertyStableName(p.Tag, productID, "", p.Identifier), stores.GetTdType(*arrayInfo))
+				d.GetPropertyStableName(p, productID, "", p.Identifier), stores.GetTdType(*arrayInfo))
 			if _, err := d.t.ExecContext(ctx, sql); err != nil {
 				return errors.Database.AddDetail(err)
 			}
@@ -165,7 +161,7 @@ func (d *DeviceDataRepo) createPropertyStable(
 	default:
 		sql = fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp,`param` %s)"+
 			" TAGS (`product_id` BINARY(50),`device_name` BINARY(50),`"+PropertyType+"` BINARY(50));",
-			d.GetPropertyStableName(p.Tag, productID, "", p.Identifier), stores.GetTdType(p.Define))
+			d.GetPropertyStableName(p, productID, "", p.Identifier), stores.GetTdType(p.Define))
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
 			return errors.Database.AddDetail(err)
 		}

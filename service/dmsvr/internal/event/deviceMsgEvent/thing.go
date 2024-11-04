@@ -19,6 +19,7 @@ import (
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceStatus"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/product"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/shadow"
 	devicemanagelogic "gitee.com/unitedrhino/things/service/dmsvr/internal/logic/devicemanage"
 	otamanagelogic "gitee.com/unitedrhino/things/service/dmsvr/internal/logic/otamanage"
@@ -267,7 +268,13 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 		return l.DeviceResp(msg, err, nil), err
 	}
 	if len(req.Params) > len(tp) { //存在上报了未定义的属性
-
+		pd, err := l.svcCtx.ProductCache.GetData(l.ctx, msg.ProductID)
+		if err != nil {
+			return l.DeviceResp(msg, err, nil), err
+		}
+		if pd.DeviceSchemaMode == product.DeviceSchemaModeReportAutoCreate {
+			
+		}
 	}
 	if len(tp) == 0 {
 		err := errors.Parameter.AddMsgf("查不到物模型:%v", req.Params)

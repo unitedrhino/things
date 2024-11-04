@@ -43,13 +43,13 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 				}
 				sql += fmt.Sprintf(" %s using %s tags('%s','%s',%d,'%s') (`ts`, %s) values (?,%s) ",
 					d.GetPropertyTableName(productID, deviceName, id),
-					d.GetPropertyStableName(p.Tag, productID, deviceName, Identifier), productID, deviceName, num, p.Define.Type,
+					d.GetPropertyStableName(p, productID, deviceName, Identifier), productID, deviceName, num, p.Define.Type,
 					paramIds, paramPlaceholder)
 				args = append([]any{timestamp}, paramValList...)
 			default:
 				sql += fmt.Sprintf(" %s using %s tags('%s','%s',%d,'%s')(`ts`, `param`) values (?,?) ",
 					d.GetPropertyTableName(productID, deviceName, id),
-					d.GetPropertyStableName(p.Tag, productID, deviceName, Identifier),
+					d.GetPropertyStableName(p, productID, deviceName, Identifier),
 					productID, deviceName, num, p.Define.Type)
 				args = append(args, timestamp, vv)
 			}
@@ -84,7 +84,7 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 			}
 			sql = fmt.Sprintf(" %s using %s tags('%s','%s','%s') (`ts`, %s) values (?,%s) ",
 				d.GetPropertyTableName(productID, deviceName, property.Identifier),
-				d.GetPropertyStableName(p.Tag, productID, deviceName, property.Identifier), productID, deviceName, p.Define.Type,
+				d.GetPropertyStableName(p, productID, deviceName, property.Identifier), productID, deviceName, p.Define.Type,
 				paramIds, paramPlaceholder)
 			args = append([]any{timestamp}, paramValList...)
 		default:
@@ -93,7 +93,7 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 			)
 			sql = fmt.Sprintf(" %s using %s tags('%s','%s','%s')(`ts`, `param`) values (?,?) ",
 				d.GetPropertyTableName(productID, deviceName, property.Identifier),
-				d.GetPropertyStableName(p.Tag, productID, deviceName, property.Identifier),
+				d.GetPropertyStableName(p, productID, deviceName, property.Identifier),
 				productID, deviceName, p.Define.Type)
 			args = append(args, timestamp, param)
 		}
@@ -228,7 +228,7 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 		dataID = id
 		sql = sql.Where("`_num`=?", num)
 	}
-	sql = sql.From(d.GetPropertyStableName(p.Tag, filter.ProductID, filter.DeviceName, dataID))
+	sql = sql.From(d.GetPropertyStableName(p, filter.ProductID, filter.DeviceName, dataID))
 	sql = d.fillFilter(sql, filter)
 	sql = filter.Page.FmtSql(sql)
 
@@ -300,7 +300,7 @@ func (d *DeviceDataRepo) GetPropertyCountByID(
 		dataID = id
 		sqlData = sqlData.Where("`_num`=?", num)
 	}
-	sqlData = sqlData.From(d.GetPropertyStableName(p.Tag, filter.ProductID, filter.DeviceName, dataID))
+	sqlData = sqlData.From(d.GetPropertyStableName(p, filter.ProductID, filter.DeviceName, dataID))
 	sqlData = d.fillFilter(sqlData, filter)
 	sqlData = filter.Page.FmtWhere(sqlData)
 	sqlStr, value, err := sqlData.ToSql()
