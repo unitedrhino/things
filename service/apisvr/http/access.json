@@ -480,6 +480,16 @@
         {
           "accessCode": "thingsDeviceMsgFind",
           "method": "POST",
+          "route": "/api/v1/things/device/msg/abnormal-log/index",
+          "name": "获取设备异常日志",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceMsgFind",
+          "method": "POST",
           "route": "/api/v1/things/device/msg/event-log/index",
           "name": "获取事件历史记录",
           "isNeedAuth": 2,

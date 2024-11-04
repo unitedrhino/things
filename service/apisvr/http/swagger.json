@@ -1228,6 +1228,48 @@
         ]
       }
     },
+    "/api/v1/things/device/msg/abnormal-log/index": {
+      "post": {
+        "summary": "获取设备异常日志",
+        "operationId": "postApiV1ThingsDeviceMsgAbnormal-logIndex",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/DeviceMsgAbnormalLogIndexResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceMsgAbnormalLogIndexReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/msg",
+          "thingsDeviceMsg"
+        ]
+      }
+    },
     "/api/v1/things/device/msg/event-log/index": {
       "post": {
         "summary": "获取事件历史记录",
@@ -7961,6 +8003,96 @@
         }
       },
       "title": "DeviceModuleVersionReadReq"
+    },
+    "DeviceMsgAbnormalLogIndexReq": {
+      "type": "object",
+      "properties": {
+        "productID": {
+          "type": "string",
+          "description": "产品id"
+        },
+        "deviceName": {
+          "type": "string",
+          "description": "设备名"
+        },
+        "timeStart": {
+          "type": "string",
+          "description": "获取时间的开始(毫秒时间戳)"
+        },
+        "timeEnd": {
+          "type": "string",
+          "description": "时间的结束(毫秒时间戳)"
+        },
+        "page": {
+          "$ref": "#/definitions/PageInfo",
+          "description": "分页信息"
+        },
+        "type": {
+          "type": "string",
+          "description": "异常类型"
+        },
+        "action": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "触发true 还是解除false"
+        }
+      },
+      "title": "DeviceMsgAbnormalLogIndexReq"
+    },
+    "DeviceMsgAbnormalLogIndexResp": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceMsgAbnormalLogInfo"
+          },
+          "description": "数据"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64",
+          "description": "总数"
+        }
+      },
+      "title": "DeviceMsgAbnormalLogIndexResp",
+      "required": [
+        "list",
+        "total"
+      ]
+    },
+    "DeviceMsgAbnormalLogInfo": {
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "description": "发生时间戳(毫秒时间戳)"
+        },
+        "productID": {
+          "type": "string"
+        },
+        "deviceName": {
+          "type": "string"
+        },
+        "action": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "触发true 还是解除false"
+        },
+        "type": {
+          "type": "string",
+          "description": "异常类型"
+        },
+        "traceID": {
+          "type": "string",
+          "description": "服务器端事务id"
+        },
+        "reason": {
+          "type": "string",
+          "description": "原因"
+        }
+      },
+      "title": "DeviceMsgAbnormalLogInfo"
     },
     "DeviceMsgEventLogIndexReq": {
       "type": "object",

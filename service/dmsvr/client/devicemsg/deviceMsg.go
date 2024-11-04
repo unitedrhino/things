@@ -15,6 +15,9 @@ import (
 )
 
 type (
+	AbnormalLogIndexReq               = dm.AbnormalLogIndexReq
+	AbnormalLogIndexResp              = dm.AbnormalLogIndexResp
+	AbnormalLogInfo                   = dm.AbnormalLogInfo
 	ActionRespReq                     = dm.ActionRespReq
 	ActionSendReq                     = dm.ActionSendReq
 	ActionSendResp                    = dm.ActionSendResp
@@ -220,6 +223,8 @@ type (
 		HubLogIndex(ctx context.Context, in *HubLogIndexReq, opts ...grpc.CallOption) (*HubLogIndexResp, error)
 		SendLogIndex(ctx context.Context, in *SendLogIndexReq, opts ...grpc.CallOption) (*SendLogIndexResp, error)
 		StatusLogIndex(ctx context.Context, in *StatusLogIndexReq, opts ...grpc.CallOption) (*StatusLogIndexResp, error)
+		AbnormalLogIndex(ctx context.Context, in *AbnormalLogIndexReq, opts ...grpc.CallOption) (*AbnormalLogIndexResp, error)
+		AbnormalLogCreate(ctx context.Context, in *AbnormalLogInfo, opts ...grpc.CallOption) (*Empty, error)
 		// 获取设备数据信息
 		PropertyLogLatestIndex(ctx context.Context, in *PropertyLogLatestIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error)
 		// 获取设备数据信息
@@ -293,6 +298,24 @@ func (m *defaultDeviceMsg) StatusLogIndex(ctx context.Context, in *StatusLogInde
 
 func (d *directDeviceMsg) StatusLogIndex(ctx context.Context, in *StatusLogIndexReq, opts ...grpc.CallOption) (*StatusLogIndexResp, error) {
 	return d.svr.StatusLogIndex(ctx, in)
+}
+
+func (m *defaultDeviceMsg) AbnormalLogIndex(ctx context.Context, in *AbnormalLogIndexReq, opts ...grpc.CallOption) (*AbnormalLogIndexResp, error) {
+	client := dm.NewDeviceMsgClient(m.cli.Conn())
+	return client.AbnormalLogIndex(ctx, in, opts...)
+}
+
+func (d *directDeviceMsg) AbnormalLogIndex(ctx context.Context, in *AbnormalLogIndexReq, opts ...grpc.CallOption) (*AbnormalLogIndexResp, error) {
+	return d.svr.AbnormalLogIndex(ctx, in)
+}
+
+func (m *defaultDeviceMsg) AbnormalLogCreate(ctx context.Context, in *AbnormalLogInfo, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewDeviceMsgClient(m.cli.Conn())
+	return client.AbnormalLogCreate(ctx, in, opts...)
+}
+
+func (d *directDeviceMsg) AbnormalLogCreate(ctx context.Context, in *AbnormalLogInfo, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.AbnormalLogCreate(ctx, in)
 }
 
 // 获取设备数据信息

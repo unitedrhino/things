@@ -2,6 +2,7 @@ package svc
 
 import (
 	"context"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tdengine/abnormalLogRepo"
 	"os"
 	"time"
 
@@ -57,6 +58,7 @@ type ServiceContext struct {
 	HubLogRepo           deviceLog.HubRepo
 	StatusRepo           deviceLog.StatusRepo
 	SendRepo             deviceLog.SendRepo
+	AbnormalRepo         deviceLog.AbnormalRepo
 	SDKLogRepo           deviceLog.SDKRepo
 	Cache                kv.Store
 	DeviceStatus         *cache.DeviceStatus
@@ -98,6 +100,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	ca := kv.NewStore(c.CacheRedis)
 
 	hubLogR := hubLogRepo.NewHubLogRepo(c.TSDB)
+	abnormalR := abnormalLogRepo.NewAbnormalLogRepo(c.TSDB)
 	sdkLogR := sdkLogRepo.NewSDKLogRepo(c.TSDB)
 	statusR := statusLogRepo.NewStatusLogRepo(c.TSDB)
 	sendR := sendLogRepo.NewSendLogRepo(c.TSDB)
@@ -182,6 +185,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		GatewayCanBind: cache.NewGatewayCanBind(ca),
 		HubLogRepo:     hubLogR,
 		SDKLogRepo:     sdkLogR,
+		AbnormalRepo:   abnormalR,
 		StatusRepo:     statusR,
 		SendRepo:       sendR,
 		WebHook:        webHook,

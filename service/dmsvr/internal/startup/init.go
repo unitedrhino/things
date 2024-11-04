@@ -61,13 +61,8 @@ func init() {
 const Version = "v1.1.0"
 
 func VersionUpdate(svcCtx *svc.ServiceContext) {
-	//ctx := ctxs.WithRoot(context.Background())
-	//s, err := svcCtx.Common.ServiceInfoRead(ctx, &sys.WithCode{Code: svcCtx.Config.Name})
-	//logx.Must(err)
-	//switch s.Version {
-	//case "":
-	//
-	//}
+	err := svcCtx.AbnormalRepo.InitProduct(context.Background(), "")
+	logx.Must(err)
 }
 
 func InitSubscribe(svcCtx *svc.ServiceContext) {
