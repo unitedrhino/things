@@ -536,7 +536,7 @@ func (l *ThingLogic) HandlePropertyGetSchema(msg *deviceMsg.PublishMsg) (respMsg
 }
 
 func (l *ThingLogic) HandleCreateSchema(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
-	if l.dreq.Schema == "" {
+	if l.dreq.Schema == nil {
 		return l.DeviceResp(msg, errors.Parameter.AddMsg("需要填写schema"), nil), nil
 	}
 	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, msg.ProductID)
@@ -546,15 +546,19 @@ func (l *ThingLogic) HandleCreateSchema(msg *deviceMsg.PublishMsg) (respMsg *dev
 	if pi.DeviceSchemaMode < product.DeviceSchemaModeAutoCreate {
 		return l.DeviceResp(msg, errors.Permissions.AddMsg("产品未开启设备自动创建"), nil), nil
 	}
-	s, err := schema.ValidateWithFmt([]byte(l.dreq.Schema))
+	err = l.dreq.Schema.ValidateWithFmt()
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), nil
 	}
-	err = relationDB.NewDeviceSchemaRepo(l.ctx).MultiInsert2(l.ctx, msg.ProductID, msg.DeviceName, s)
+	err = relationDB.NewDeviceSchemaRepo(l.ctx).MultiInsert2(l.ctx, msg.ProductID, msg.DeviceName, l.dreq.Schema)
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), nil
 	}
-	return l.DeviceResp(msg, errors.OK, l.schema.ToSimple()), nil
+	l.svcCtx.DeviceSchemaRepo.SetData(l.ctx, devices.Core{
+		ProductID:  msg.ProductID,
+		DeviceName: msg.DeviceName,
+	}, nil)
+	return l.DeviceResp(msg, errors.OK, nil), nil
 }
 func (l *ThingLogic) HandleDeleteSchema(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	if len(l.dreq.Identifiers) == 0 {
@@ -575,7 +579,11 @@ func (l *ThingLogic) HandleDeleteSchema(msg *deviceMsg.PublishMsg) (respMsg *dev
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), nil
 	}
-	return l.DeviceResp(msg, errors.OK, l.schema.ToSimple()), nil
+	l.svcCtx.DeviceSchemaRepo.SetData(l.ctx, devices.Core{
+		ProductID:  msg.ProductID,
+		DeviceName: msg.DeviceName,
+	}, nil)
+	return l.DeviceResp(msg, errors.OK, nil), nil
 }
 
 // 设备请求获取 云端记录的最新设备信息
