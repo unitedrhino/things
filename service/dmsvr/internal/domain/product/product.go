@@ -6,5 +6,5 @@ const (
 	DeviceSchemaModeUser                     = 1 //用户自己创建
 	DeviceSchemaModeAutoCreate               = 2 //设备自动创建
 	DeviceSchemaModeReportAutoCreate         = 3 //设备自动创建及上报无定义自动创建
-	DeviceSchemaModeReportAutoCreateUseFloat = 4 //设备自动创建及上报无定义自动创建,数字类型只使用字符串
+	DeviceSchemaModeReportAutoCreateUseFloat = 4 //设备自动创建及上报无定义自动创建,数字类型只使用浮点
 )
