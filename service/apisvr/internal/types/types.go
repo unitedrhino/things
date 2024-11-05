@@ -541,6 +541,31 @@ type DeviceModuleVersionReadReq struct {
 	ModuleCode  int64  `json:"moduleCode,optional"`
 }
 
+type DeviceMsgAbnormalLogIndexReq struct {
+	ProductID  string    `json:"productID,optional"`        //产品id
+	DeviceName string    `json:"deviceName,optional"`       //设备名
+	TimeStart  int64     `json:"timeStart,string,optional"` //获取时间的开始(毫秒时间戳)
+	TimeEnd    int64     `json:"timeEnd,string,optional"`   //时间的结束(毫秒时间戳)
+	Page       *PageInfo `json:"page,optional"`             //分页信息
+	Type       string    `json:"type,optional"`             //异常类型
+	Action     bool      `json:"action,optional"`           //触发true 还是解除false
+}
+
+type DeviceMsgAbnormalLogIndexResp struct {
+	List  []*DeviceMsgAbnormalLogInfo `json:"list"`  //数据
+	Total int64                       `json:"total"` //总数
+}
+
+type DeviceMsgAbnormalLogInfo struct {
+	Timestamp  int64  `json:"timestamp,string,optional"` //发生时间戳(毫秒时间戳)
+	ProductID  string `json:"productID,optional"`        //
+	DeviceName string `json:"deviceName,optional"`       //
+	Action     bool   `json:"action,optional"`           //触发true 还是解除false
+	Type       string `json:"type,optional"`             //异常类型
+	TraceID    string `json:"traceID,optional"`          //服务器端事务id
+	Reason     string `json:"reason,optional"`           //原因
+}
+
 type DeviceMsgEventLogIndexReq struct {
 	DeviceNames []string  `json:"deviceNames,optional"`                //设备名(不填获取产品下所有设备)
 	ProductID   string    `json:"productID,optional"`                  //产品id 获取产品id下的所有设备信息

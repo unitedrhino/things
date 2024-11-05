@@ -23,6 +23,9 @@ service api {
     @doc "获取设备命令日志"
     @handler sendLogIndex
     post /send-log/index (DeviceMsgSendLogIndexReq) returns (DeviceMsgSendLogIndexResp)
+    @doc "获取设备异常日志"
+    @handler abnormalLogIndex
+    post /abnormal-log/index (DeviceMsgAbnormalLogIndexReq) returns (DeviceMsgAbnormalLogIndexResp)
     @doc "获取设备sdk日志"
     @handler sdkLogIndex
     post /sdk-log/index (DeviceMsgSdkLogIndexReq) returns (DeviceMsgSdkIndexResp)
@@ -118,6 +121,29 @@ type (
         User *UserCore `json:"user,optional,omitempty"`
     }
 
+
+    DeviceMsgAbnormalLogIndexReq  {
+        ProductID  string    `json:"productID,optional"`     //产品id
+        DeviceName string    `json:"deviceName,optional"`   //设备名
+        TimeStart  int64     `json:"timeStart,string,optional"`    //获取时间的开始(毫秒时间戳)
+        TimeEnd    int64     `json:"timeEnd,string,optional"`        //时间的结束(毫秒时间戳)
+        Page       *PageInfo `json:"page,optional"`               //分页信息
+        Type     string     `json:"type,optional"` //异常类型
+        Action     bool  `json:"action,optional"` //触发true 还是解除false
+    }
+    DeviceMsgAbnormalLogIndexResp  {
+        List []*DeviceMsgAbnormalLogInfo `json:"list"`//数据
+        Total int64 `json:"total"`//总数
+    }
+    DeviceMsgAbnormalLogInfo  {
+        Timestamp  int64  `json:"timestamp,string,optional"` //发生时间戳(毫秒时间戳)
+        ProductID  string `json:"productID,optional"`     //
+        DeviceName string `json:"deviceName,optional"`   //
+        Action     bool  `json:"action,optional"` //触发true 还是解除false
+        Type     string     `json:"type,optional"` //异常类型
+        TraceID    string `json:"traceID,optional"`         //服务器端事务id
+        Reason string     `json:"reason,optional"` //原因
+    }
 
 
     DeviceMsgStatusLogIndexReq  {

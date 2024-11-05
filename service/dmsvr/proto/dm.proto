@@ -253,6 +253,10 @@ service DeviceMsg {
   rpc hubLogIndex(HubLogIndexReq)   returns (HubLogIndexResp);
   rpc sendLogIndex(SendLogIndexReq) returns(SendLogIndexResp);
   rpc statusLogIndex(StatusLogIndexReq) returns(StatusLogIndexResp);
+
+  rpc abnormalLogIndex(AbnormalLogIndexReq) returns(AbnormalLogIndexResp);
+  rpc abnormalLogCreate(AbnormalLogInfo) returns(Empty);
+
   //获取设备数据信息
   rpc propertyLogLatestIndex(PropertyLogLatestIndexReq)     returns (PropertyLogIndexResp);
   //获取设备数据信息
@@ -800,7 +804,35 @@ message SendLogInfo{
 }
 
 
+/*实时获取对应信息*/
+message AbnormalLogIndexReq{
+  string  productID = 1; //产品id
+  string  deviceName = 2; //设备名
+  int64   timeStart = 3;//获取时间的开始(毫秒时间戳)
+  int64   timeEnd = 4;//时间的结束(毫秒时间戳)
+  PageInfo   page = 5;//分页信息
+  int64 userID = 9;
+  bool action =10;
+  string type =11;//异常类型
+  int64 resultCode = 12;//请求结果状态,200为成功
+}
 
+/*实时获取对应信息*/
+message AbnormalLogIndexResp{
+  int64 total = 1; //总数
+  repeated AbnormalLogInfo list = 2;
+}
+
+/*设备的日志数据*/
+message AbnormalLogInfo{
+  int64 timestamp = 1;//发生时间戳(毫秒时间戳)
+  bool action = 2;//触发1还是解除2
+  string type = 4;//异常类型
+  string productID = 5;//
+  string deviceName = 6;//
+  string Reason = 7;//原因
+  string traceID = 9;//服务器端事务id
+}
 
 /*获取sdk调试日志信息*/
 message SdkLogIndexReq {

@@ -3526,6 +3526,8 @@ const (
 	DeviceMsg_HubLogIndex_FullMethodName            = "/dm.DeviceMsg/hubLogIndex"
 	DeviceMsg_SendLogIndex_FullMethodName           = "/dm.DeviceMsg/sendLogIndex"
 	DeviceMsg_StatusLogIndex_FullMethodName         = "/dm.DeviceMsg/statusLogIndex"
+	DeviceMsg_AbnormalLogIndex_FullMethodName       = "/dm.DeviceMsg/abnormalLogIndex"
+	DeviceMsg_AbnormalLogCreate_FullMethodName      = "/dm.DeviceMsg/abnormalLogCreate"
 	DeviceMsg_PropertyLogLatestIndex_FullMethodName = "/dm.DeviceMsg/propertyLogLatestIndex"
 	DeviceMsg_PropertyLogIndex_FullMethodName       = "/dm.DeviceMsg/propertyLogIndex"
 	DeviceMsg_EventLogIndex_FullMethodName          = "/dm.DeviceMsg/eventLogIndex"
@@ -3543,6 +3545,8 @@ type DeviceMsgClient interface {
 	HubLogIndex(ctx context.Context, in *HubLogIndexReq, opts ...grpc.CallOption) (*HubLogIndexResp, error)
 	SendLogIndex(ctx context.Context, in *SendLogIndexReq, opts ...grpc.CallOption) (*SendLogIndexResp, error)
 	StatusLogIndex(ctx context.Context, in *StatusLogIndexReq, opts ...grpc.CallOption) (*StatusLogIndexResp, error)
+	AbnormalLogIndex(ctx context.Context, in *AbnormalLogIndexReq, opts ...grpc.CallOption) (*AbnormalLogIndexResp, error)
+	AbnormalLogCreate(ctx context.Context, in *AbnormalLogInfo, opts ...grpc.CallOption) (*Empty, error)
 	// 获取设备数据信息
 	PropertyLogLatestIndex(ctx context.Context, in *PropertyLogLatestIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error)
 	// 获取设备数据信息
@@ -3593,6 +3597,24 @@ func (c *deviceMsgClient) SendLogIndex(ctx context.Context, in *SendLogIndexReq,
 func (c *deviceMsgClient) StatusLogIndex(ctx context.Context, in *StatusLogIndexReq, opts ...grpc.CallOption) (*StatusLogIndexResp, error) {
 	out := new(StatusLogIndexResp)
 	err := c.cc.Invoke(ctx, DeviceMsg_StatusLogIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceMsgClient) AbnormalLogIndex(ctx context.Context, in *AbnormalLogIndexReq, opts ...grpc.CallOption) (*AbnormalLogIndexResp, error) {
+	out := new(AbnormalLogIndexResp)
+	err := c.cc.Invoke(ctx, DeviceMsg_AbnormalLogIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceMsgClient) AbnormalLogCreate(ctx context.Context, in *AbnormalLogInfo, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, DeviceMsg_AbnormalLogCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -3654,6 +3676,8 @@ type DeviceMsgServer interface {
 	HubLogIndex(context.Context, *HubLogIndexReq) (*HubLogIndexResp, error)
 	SendLogIndex(context.Context, *SendLogIndexReq) (*SendLogIndexResp, error)
 	StatusLogIndex(context.Context, *StatusLogIndexReq) (*StatusLogIndexResp, error)
+	AbnormalLogIndex(context.Context, *AbnormalLogIndexReq) (*AbnormalLogIndexResp, error)
+	AbnormalLogCreate(context.Context, *AbnormalLogInfo) (*Empty, error)
 	// 获取设备数据信息
 	PropertyLogLatestIndex(context.Context, *PropertyLogLatestIndexReq) (*PropertyLogIndexResp, error)
 	// 获取设备数据信息
@@ -3682,6 +3706,12 @@ func (UnimplementedDeviceMsgServer) SendLogIndex(context.Context, *SendLogIndexR
 }
 func (UnimplementedDeviceMsgServer) StatusLogIndex(context.Context, *StatusLogIndexReq) (*StatusLogIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StatusLogIndex not implemented")
+}
+func (UnimplementedDeviceMsgServer) AbnormalLogIndex(context.Context, *AbnormalLogIndexReq) (*AbnormalLogIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AbnormalLogIndex not implemented")
+}
+func (UnimplementedDeviceMsgServer) AbnormalLogCreate(context.Context, *AbnormalLogInfo) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AbnormalLogCreate not implemented")
 }
 func (UnimplementedDeviceMsgServer) PropertyLogLatestIndex(context.Context, *PropertyLogLatestIndexReq) (*PropertyLogIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PropertyLogLatestIndex not implemented")
@@ -3779,6 +3809,42 @@ func _DeviceMsg_StatusLogIndex_Handler(srv interface{}, ctx context.Context, dec
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceMsgServer).StatusLogIndex(ctx, req.(*StatusLogIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceMsg_AbnormalLogIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AbnormalLogIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceMsgServer).AbnormalLogIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceMsg_AbnormalLogIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceMsgServer).AbnormalLogIndex(ctx, req.(*AbnormalLogIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceMsg_AbnormalLogCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AbnormalLogInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceMsgServer).AbnormalLogCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceMsg_AbnormalLogCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceMsgServer).AbnormalLogCreate(ctx, req.(*AbnormalLogInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3895,6 +3961,14 @@ var DeviceMsg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "statusLogIndex",
 			Handler:    _DeviceMsg_StatusLogIndex_Handler,
+		},
+		{
+			MethodName: "abnormalLogIndex",
+			Handler:    _DeviceMsg_AbnormalLogIndex_Handler,
+		},
+		{
+			MethodName: "abnormalLogCreate",
+			Handler:    _DeviceMsg_AbnormalLogCreate_Handler,
 		},
 		{
 			MethodName: "propertyLogLatestIndex",

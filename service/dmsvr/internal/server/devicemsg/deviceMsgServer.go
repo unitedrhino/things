@@ -45,6 +45,16 @@ func (s *DeviceMsgServer) StatusLogIndex(ctx context.Context, in *dm.StatusLogIn
 	return l.StatusLogIndex(in)
 }
 
+func (s *DeviceMsgServer) AbnormalLogIndex(ctx context.Context, in *dm.AbnormalLogIndexReq) (*dm.AbnormalLogIndexResp, error) {
+	l := devicemsglogic.NewAbnormalLogIndexLogic(ctx, s.svcCtx)
+	return l.AbnormalLogIndex(in)
+}
+
+func (s *DeviceMsgServer) AbnormalLogCreate(ctx context.Context, in *dm.AbnormalLogInfo) (*dm.Empty, error) {
+	l := devicemsglogic.NewAbnormalLogCreateLogic(ctx, s.svcCtx)
+	return l.AbnormalLogCreate(in)
+}
+
 // 获取设备数据信息
 func (s *DeviceMsgServer) PropertyLogLatestIndex(ctx context.Context, in *dm.PropertyLogLatestIndexReq) (*dm.PropertyLogIndexResp, error) {
 	l := devicemsglogic.NewPropertyLogLatestIndexLogic(ctx, s.svcCtx)

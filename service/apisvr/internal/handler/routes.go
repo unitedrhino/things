@@ -295,6 +295,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Middleware{serverCtx.CheckTokenWare, serverCtx.InitCtxsWare},
 			[]rest.Route{
 				{
+					// 获取设备异常日志
+					Method:  http.MethodPost,
+					Path:    "/abnormal-log/index",
+					Handler: thingsdevicemsg.AbnormalLogIndexHandler(serverCtx),
+				},
+				{
 					// 获取事件历史记录
 					Method:  http.MethodPost,
 					Path:    "/event-log/index",

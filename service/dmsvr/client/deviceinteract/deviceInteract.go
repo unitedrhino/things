@@ -15,6 +15,9 @@ import (
 )
 
 type (
+	AbnormalLogIndexReq               = dm.AbnormalLogIndexReq
+	AbnormalLogIndexResp              = dm.AbnormalLogIndexResp
+	AbnormalLogInfo                   = dm.AbnormalLogInfo
 	ActionRespReq                     = dm.ActionRespReq
 	ActionSendReq                     = dm.ActionSendReq
 	ActionSendResp                    = dm.ActionSendResp

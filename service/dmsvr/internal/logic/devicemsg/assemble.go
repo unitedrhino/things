@@ -33,6 +33,18 @@ func ToDataSendLogIndex(log *deviceLog.Send) *dm.SendLogInfo {
 	}
 }
 
+func ToDataAbnormalLogIndex(log *deviceLog.Abnormal) *dm.AbnormalLogInfo {
+	return &dm.AbnormalLogInfo{
+		Timestamp:  log.Timestamp.UnixMilli(),
+		ProductID:  log.ProductID,
+		DeviceName: log.DeviceName,
+		Action:     log.Action,
+		Type:       log.Type,
+		Reason:     log.Reason,
+		TraceID:    log.TraceID,
+	}
+}
+
 func ToDataStatusLogIndex(log *deviceLog.Status) *dm.StatusLogInfo {
 	return &dm.StatusLogInfo{
 		Timestamp:  log.Timestamp.UnixMilli(),
