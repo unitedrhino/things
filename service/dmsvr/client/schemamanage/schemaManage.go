@@ -63,6 +63,13 @@ type (
 	DeviceProfileIndexReq             = dm.DeviceProfileIndexReq
 	DeviceProfileIndexResp            = dm.DeviceProfileIndexResp
 	DeviceProfileReadReq              = dm.DeviceProfileReadReq
+	DeviceSchema                      = dm.DeviceSchema
+	DeviceSchemaIndexReq              = dm.DeviceSchemaIndexReq
+	DeviceSchemaIndexResp             = dm.DeviceSchemaIndexResp
+	DeviceSchemaMultiCreateReq        = dm.DeviceSchemaMultiCreateReq
+	DeviceSchemaMultiDeleteReq        = dm.DeviceSchemaMultiDeleteReq
+	DeviceSchemaTslReadReq            = dm.DeviceSchemaTslReadReq
+	DeviceSchemaTslReadResp           = dm.DeviceSchemaTslReadResp
 	DeviceShareInfo                   = dm.DeviceShareInfo
 	DeviceTransferReq                 = dm.DeviceTransferReq
 	DeviceTypeCountReq                = dm.DeviceTypeCountReq
@@ -181,11 +188,6 @@ type (
 	RemoteConfigPushAllReq            = dm.RemoteConfigPushAllReq
 	RespReadReq                       = dm.RespReadReq
 	RootCheckReq                      = dm.RootCheckReq
-	SchemaInfo                        = dm.SchemaInfo
-	SchemaInfoIndexReq                = dm.SchemaInfoIndexReq
-	SchemaInfoIndexResp               = dm.SchemaInfoIndexResp
-	SchemaInfoMultiCreateReq          = dm.SchemaInfoMultiCreateReq
-	SchemaInfoMultiDeleteReq          = dm.SchemaInfoMultiDeleteReq
 	SdkLogIndexReq                    = dm.SdkLogIndexReq
 	SdkLogIndexResp                   = dm.SdkLogIndexResp
 	SdkLogInfo                        = dm.SdkLogInfo
@@ -226,16 +228,6 @@ type (
 		CommonSchemaDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
 		// 获取产品信息列表
 		CommonSchemaIndex(ctx context.Context, in *CommonSchemaIndexReq, opts ...grpc.CallOption) (*CommonSchemaIndexResp, error)
-		// 更新设备物模型
-		SchemaInfoUpdate(ctx context.Context, in *SchemaInfo, opts ...grpc.CallOption) (*Empty, error)
-		// 新增设备
-		SchemaInfoCreate(ctx context.Context, in *SchemaInfo, opts ...grpc.CallOption) (*Empty, error)
-		// 批量新增物模型,只新增没有的,已有的不处理
-		SchemaInfoMultiCreate(ctx context.Context, in *SchemaInfoMultiCreateReq, opts ...grpc.CallOption) (*Empty, error)
-		// 删除设备物模型
-		SchemaInfoMultiDelete(ctx context.Context, in *SchemaInfoMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error)
-		// 获取设备物模型列表
-		SchemaInfoIndex(ctx context.Context, in *SchemaInfoIndexReq, opts ...grpc.CallOption) (*SchemaInfoIndexResp, error)
 	}
 
 	defaultSchemaManage struct {
@@ -312,59 +304,4 @@ func (m *defaultSchemaManage) CommonSchemaIndex(ctx context.Context, in *CommonS
 // 获取产品信息列表
 func (d *directSchemaManage) CommonSchemaIndex(ctx context.Context, in *CommonSchemaIndexReq, opts ...grpc.CallOption) (*CommonSchemaIndexResp, error) {
 	return d.svr.CommonSchemaIndex(ctx, in)
-}
-
-// 更新设备物模型
-func (m *defaultSchemaManage) SchemaInfoUpdate(ctx context.Context, in *SchemaInfo, opts ...grpc.CallOption) (*Empty, error) {
-	client := dm.NewSchemaManageClient(m.cli.Conn())
-	return client.SchemaInfoUpdate(ctx, in, opts...)
-}
-
-// 更新设备物模型
-func (d *directSchemaManage) SchemaInfoUpdate(ctx context.Context, in *SchemaInfo, opts ...grpc.CallOption) (*Empty, error) {
-	return d.svr.SchemaInfoUpdate(ctx, in)
-}
-
-// 新增设备
-func (m *defaultSchemaManage) SchemaInfoCreate(ctx context.Context, in *SchemaInfo, opts ...grpc.CallOption) (*Empty, error) {
-	client := dm.NewSchemaManageClient(m.cli.Conn())
-	return client.SchemaInfoCreate(ctx, in, opts...)
-}
-
-// 新增设备
-func (d *directSchemaManage) SchemaInfoCreate(ctx context.Context, in *SchemaInfo, opts ...grpc.CallOption) (*Empty, error) {
-	return d.svr.SchemaInfoCreate(ctx, in)
-}
-
-// 批量新增物模型,只新增没有的,已有的不处理
-func (m *defaultSchemaManage) SchemaInfoMultiCreate(ctx context.Context, in *SchemaInfoMultiCreateReq, opts ...grpc.CallOption) (*Empty, error) {
-	client := dm.NewSchemaManageClient(m.cli.Conn())
-	return client.SchemaInfoMultiCreate(ctx, in, opts...)
-}
-
-// 批量新增物模型,只新增没有的,已有的不处理
-func (d *directSchemaManage) SchemaInfoMultiCreate(ctx context.Context, in *SchemaInfoMultiCreateReq, opts ...grpc.CallOption) (*Empty, error) {
-	return d.svr.SchemaInfoMultiCreate(ctx, in)
-}
-
-// 删除设备物模型
-func (m *defaultSchemaManage) SchemaInfoMultiDelete(ctx context.Context, in *SchemaInfoMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
-	client := dm.NewSchemaManageClient(m.cli.Conn())
-	return client.SchemaInfoMultiDelete(ctx, in, opts...)
-}
-
-// 删除设备物模型
-func (d *directSchemaManage) SchemaInfoMultiDelete(ctx context.Context, in *SchemaInfoMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
-	return d.svr.SchemaInfoMultiDelete(ctx, in)
-}
-
-// 获取设备物模型列表
-func (m *defaultSchemaManage) SchemaInfoIndex(ctx context.Context, in *SchemaInfoIndexReq, opts ...grpc.CallOption) (*SchemaInfoIndexResp, error) {
-	client := dm.NewSchemaManageClient(m.cli.Conn())
-	return client.SchemaInfoIndex(ctx, in, opts...)
-}
-
-// 获取设备物模型列表
-func (d *directSchemaManage) SchemaInfoIndex(ctx context.Context, in *SchemaInfoIndexReq, opts ...grpc.CallOption) (*SchemaInfoIndexResp, error) {
-	return d.svr.SchemaInfoIndex(ctx, in)
 }

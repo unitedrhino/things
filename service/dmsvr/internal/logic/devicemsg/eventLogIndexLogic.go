@@ -36,17 +36,15 @@ func (l *EventLogIndexLogic) EventLogIndex(in *dm.EventLogIndexReq) (*dm.EventLo
 		dd      = l.svcCtx.SchemaManaRepo
 		total   int64
 	)
-	if len(in.DeviceNames) == 0 {
-		return &dm.EventLogIndexResp{}, nil
+	if len(in.DeviceNames) > 0 {
+		in.DeviceName = in.DeviceNames[0]
 	}
-	for _, device := range in.DeviceNames {
-		_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{
-			ProductID:  in.ProductID,
-			DeviceName: device,
-		}, nil)
-		if err != nil {
-			return nil, err
-		}
+	_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{
+		ProductID:  in.ProductID,
+		DeviceName: in.DeviceName,
+	}, nil)
+	if err != nil {
+		return nil, err
 	}
 
 	dds, err := dd.GetEventDataByFilter(l.ctx, msgThing.FilterOpt{

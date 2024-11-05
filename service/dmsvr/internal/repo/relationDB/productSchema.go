@@ -177,13 +177,22 @@ func (p ProductSchemaRepo) MultiInsert(ctx context.Context, data []*DmProductSch
 func (p ProductSchemaRepo) MultiUpdate(ctx context.Context, productID string, schemaInfo *schema.Model) error {
 	var datas []*DmProductSchema
 	for _, item := range schemaInfo.Property {
-		datas = append(datas, ToPropertyPo(productID, item))
+		datas = append(datas, &DmProductSchema{
+			ProductID:    productID,
+			DmSchemaCore: ToPropertyPo(item),
+		})
 	}
 	for _, item := range schemaInfo.Event {
-		datas = append(datas, ToEventPo(productID, item))
+		datas = append(datas, &DmProductSchema{
+			ProductID:    productID,
+			DmSchemaCore: ToEventPo(item),
+		})
 	}
 	for _, item := range schemaInfo.Action {
-		datas = append(datas, ToActionPo(productID, item))
+		datas = append(datas, &DmProductSchema{
+			ProductID:    productID,
+			DmSchemaCore: ToActionPo(item),
+		})
 	}
 	err := p.db.Transaction(func(tx *gorm.DB) error {
 		rm := NewProductSchemaRepo(tx)

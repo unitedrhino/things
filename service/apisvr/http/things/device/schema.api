@@ -1,0 +1,139 @@
+info(
+    title: "产品管理模块"
+    desc: "产品管理模块"
+    author: "杨磊"
+    email: "603685348@qq.com"
+    version: "v1"
+)
+
+@server(
+    group: things/device/schema
+    prefix: /api/v1/things/device/schema
+    accessCodePrefix: "thingsDeviceSchema"
+    accessNamePrefix: "设备物模型"
+    accessGroup: "设备管理"
+    middleware:  CheckTokenWare,InitCtxsWare
+)
+    //物联网平台通过定义一种物的描述语言来描述物模型模块和功能，称为TSL（Thing Specification Language）
+service api {
+//    @doc(
+//        summary: "导入设备物模型tsl"
+//        authType: "admin"
+//        isNeedAuth: "true"
+//    )
+//    @handler tslImport
+//    post /tsl-import (ProductSchemaTslImportReq) returns ()
+    @doc "获取设备物模型tsl"
+    @handler tslRead
+    post /tsl-read (DeviceSchemaTslReadReq) returns (DeviceSchemaTslReadResp)
+
+    @doc(
+        summary: "更新设备物模型"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
+    @handler update
+    post /update (DeviceSchema) returns ()
+    @doc(
+        summary: "创建设备物模型"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
+    @handler create
+    post /create (DeviceSchema) returns ()
+    @doc(
+        summary: "批量创建设备物模型"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
+    @handler multiCreate
+    post /multi-create (DeviceSchemaMultiCreateReq) returns ()
+    @doc(
+        summary: "批量创建设备物模型"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
+    @handler multiDelete
+    post /multi-delete (DeviceSchemaMultiDeleteReq) returns ()
+
+    @doc "获取设备物模型"
+    @handler index
+    post /index (DeviceSchemaIndexReq) returns (DeviceSchemaIndexResp)
+}
+
+type (
+    DeviceSchemaTslReadReq  {
+        ProductID string `json:"productID"` //产品id
+        DeviceName string `json:"deviceName"`
+    }
+    DeviceSchemaTslReadResp  {
+        Tsl string `json:"tsl"`                   //物模型tsl
+    }
+)
+
+type (
+    DeviceSchemaUpdateReq  {
+        *DeviceSchema
+    }
+    DeviceSchemaMultiDeleteReq{
+        ProductID string `json:"productID"`         //产品id
+        DeviceName string `json:"deviceName"`
+        Identifiers []string    `json:"identifiers"` //物模型ID列表
+    }
+    DeviceSchemaMultiCreateReq{
+        ProductID string `json:"productID"`         //产品id
+        DeviceName string `json:"deviceName"`
+        List []*DeviceSchema `json:"list"`           //分页信息,只获取一个则不填
+    }
+    DeviceSchemaDeleteReq {
+        ProductID string `json:"productID"`         //产品id
+        DeviceName string `json:"deviceName"`
+        Identifier string `json:"identifier"`                //标识符
+    }
+    DeviceSchemaIndexReq {
+        Page *PageInfo `json:"page,optional"`                              //分页信息,只获取一个则不填
+        ProductID string `json:"productID"`                                //产品id
+        DeviceName string `json:"deviceName"`
+        Type int64 `json:"type,optional"`                                  //物模型类型 1:property属性 2:event事件 3:action行为
+        Types []int64 `json:"types,optional"`
+        Tag int64 `json:"tag,optional"`                                    //过滤条件: 物模型标签 1:自定义 2:可选 3:必选
+        Identifiers []string `json:"identifiers,optional"`                 //过滤标识符列表
+        Name string  `json:"name,optional"`
+        IsCanSceneLinkage int64  `json:"isCanSceneLinkage,optional"` //是否可以场景联动
+        FuncGroup int64 `json:"funcGroup,optional"`// 功能分类: 1:普通功能 2:系统功能
+        UserPerm int64 `json:"userPerm,optional"`//用户权限操作: 1:r(只读) 3:rw(可读可写)
+        PropertyMode string  `json:"propertyMode,optional"`//属性类型可用 读写类型: 1:r(只读) 2:rw(可读可写)
+        ControlMode int64 `json:"controlMode,optional"`//控制模式: 1: 可以群控,可以单控  2:只能单控
+    }
+    DeviceSchemaIndexResp {
+        List []*DeviceSchema `json:"list"`           //分页信息,只获取一个则不填
+        Total int64 `json:"total"`                        //总数(只有分页的时候会返回)
+    }
+)
+
+
+type (
+/*物模型条目*/
+    DeviceSchema  {
+        ProductID string `json:"productID"`                  //产品id 只读
+        DeviceName string `json:"deviceName"`
+        Type int64 `json:"type"`                             //物模型类型 1:property属性 2:event事件 3:action行为
+        Tag int64 `json:"tag"`                               //物模型标签 1:自定义 2:可选 3:必选  必选不可删除
+        Identifier string `json:"identifier"`                //标识符
+        ExtendConfig string    `json:"extendConfig,optional"`//拓展参数
+        Name *string `json:"name,optional"`                           //功能名称
+        Desc *string `json:"desc,optional"`                           //描述
+        Required int64 `json:"required,optional"`                     //是否必须 1:是 2:否
+        Affordance *string `json:"affordance,optional"`                //各功能类型的详细参数定义
+        IsCanSceneLinkage int64  `json:"isCanSceneLinkage,optional"` //是否可以场景联动
+        FuncGroup int64 `json:"funcGroup,optional"`// 功能分类: 1:普通功能 2:系统功能
+        UserPerm int64 `json:"userPerm,optional"`//用户权限操作: 1:r(只读) 3:rw(可读可写)
+        IsHistory int64 `json:"isHistory,optional"`// 是否存储历史记录
+        Order int64 `json:"order,optional"`// 排序
+        ControlMode int64 `json:"controlMode,optional"`//控制模式: 1: 可以群控,可以单控  2:只能单控
+
+        //        Event *SchemaEvent `json:"event,optional"`           //事件参数定义
+//        Property *SchemaProperty `json:"property,optional"`  //属性参数定义
+//        Action *SchemaAction `json:"action,optional"`        //行为参数定义
+    }
+)

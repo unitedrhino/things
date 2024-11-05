@@ -70,7 +70,7 @@ func (l *ProductSchemaTslImportLogic) ProductSchemaTslImport(in *dm.ProductSchem
 			return nil, err
 		}
 	}
-	err = l.svcCtx.SchemaRepo.SetData(l.ctx, devices.Core{ProductID: in.ProductID}, t)
+	err = l.svcCtx.ProductSchemaRepo.SetData(l.ctx, devices.Core{ProductID: in.ProductID}, t)
 	if err != nil {
 		return nil, err
 	}

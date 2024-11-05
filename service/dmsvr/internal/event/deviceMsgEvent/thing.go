@@ -19,12 +19,14 @@ import (
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceStatus"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/product"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/shadow"
 	devicemanagelogic "gitee.com/unitedrhino/things/service/dmsvr/internal/logic/devicemanage"
 	otamanagelogic "gitee.com/unitedrhino/things/service/dmsvr/internal/logic/otamanage"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/cache"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -50,9 +52,9 @@ func NewThingLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ThingLogic 
 
 func (l *ThingLogic) initMsg(msg *deviceMsg.PublishMsg) error {
 	var err error
-	l.schema, err = l.svcCtx.SchemaRepo.GetData(l.ctx, devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName})
+	l.schema, err = l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName})
 	if err != nil {
-		return errors.Database.AddDetail(err)
+		return err
 	}
 	err = utils.Unmarshal(msg.Payload, &l.dreq)
 	if err != nil {
@@ -88,18 +90,10 @@ func (l *ThingLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) 
 
 // 设备属性上报
 func (l *ThingLogic) HandlePackReport(msg *deviceMsg.PublishMsg, req msgThing.Req) (respMsg *deviceMsg.PublishMsg, err error) {
-	pTp, err := msgThing.VerifyProperties(l.schema, req.Properties)
-	if err != nil {
-		return l.DeviceResp(msg, err, nil), err
-	}
-	eTp, err := msgThing.VerifyEvents(l.schema, req.Events)
-	if err != nil {
-		return l.DeviceResp(msg, err, nil), err
-	}
 	err = l.InsertPackReport(msg, l.schema, devices.Core{
 		ProductID:  msg.ProductID,
 		DeviceName: msg.DeviceName,
-	}, pTp, eTp)
+	}, req.Properties, req.Events)
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), err
 	}
@@ -138,22 +132,14 @@ func (l *ThingLogic) HandlePackReport(msg *deviceMsg.PublishMsg, req msgThing.Re
 					l.Error(err)
 				}
 			}
-			schema, err := l.svcCtx.SchemaRepo.GetData(l.ctx, devices.Core{ProductID: dev.ProductID, DeviceName: dev.DeviceName})
-			if err != nil {
-				return l.DeviceResp(msg, err, nil), err
-			}
-			pTp, err := msgThing.VerifyProperties(schema, dev.Properties)
-			if err != nil {
-				return l.DeviceResp(msg, err, nil), err
-			}
-			eTp, err := msgThing.VerifyEvents(schema, dev.Events)
+			schema, err := l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, devices.Core{ProductID: dev.ProductID, DeviceName: dev.DeviceName})
 			if err != nil {
 				return l.DeviceResp(msg, err, nil), err
 			}
 			err = l.InsertPackReport(msg, schema, devices.Core{
 				ProductID:  dev.ProductID,
 				DeviceName: dev.DeviceName,
-			}, pTp, eTp)
+			}, dev.Properties, dev.Events)
 			if err != nil {
 				return l.DeviceResp(msg, err, nil), err
 			}
@@ -162,8 +148,36 @@ func (l *ThingLogic) HandlePackReport(msg *deviceMsg.PublishMsg, req msgThing.Re
 	return l.DeviceResp(msg, errors.OK, nil), nil
 }
 
-func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model, device devices.Core, properties []*msgThing.TimeParam, events []*msgThing.TimeParam) (err error) {
-	for _, tp := range properties {
+func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model, device devices.Core, properties []*deviceMsg.TimeParams, events []*deviceMsg.TimeParams) (err error) {
+	pTp, emptyParam, err := msgThing.VerifyProperties(t, properties)
+	if err != nil {
+		return err
+	}
+	if len(emptyParam) > 0 {
+		pd, err := l.svcCtx.ProductCache.GetData(l.ctx, device.ProductID)
+		if err != nil {
+			return err
+		}
+		if pd.DeviceSchemaMode >= product.DeviceSchemaModeReportAutoCreate {
+			err = l.DeviceSchemaReportAutoCreate(pd.DeviceSchemaMode, device.ProductID, device.DeviceName, emptyParam, nil)
+			if err != nil {
+				return err
+			}
+			t, err = l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, devices.Core{ProductID: device.ProductID, DeviceName: device.DeviceName})
+			if err != nil {
+				return err
+			}
+			pTp, emptyParam, err = msgThing.VerifyProperties(t, properties)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	eTp, err := msgThing.VerifyEvents(t, events)
+	if err != nil {
+		return err
+	}
+	for _, tp := range pTp {
 		timeStamp := time.UnixMilli(tp.Timestamp)
 		if timeStamp.IsZero() {
 			timeStamp = l.dreq.GetTimeStamp(msg.Timestamp)
@@ -224,7 +238,7 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 			return err
 		}
 	}
-	for _, tp := range events {
+	for _, tp := range eTp {
 		dbData := msgThing.EventData{}
 		dbData.Identifier = tp.EventID
 		dbData.Type = tp.Type
@@ -260,12 +274,88 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 	return nil
 }
 
+func (l *ThingLogic) DeviceSchemaReportAutoCreate(mode product.DeviceSchemaMode, productID, deviceName string, params map[string]any, tp map[string]msgThing.Param) (err error) {
+	var needAddProperties []schema.Property
+	for k, v := range params {
+		if tp != nil {
+			if _, ok := tp[k]; ok {
+				continue
+			}
+		}
+		switch vv := v.(type) {
+		case string:
+			needAddProperties = append(needAddProperties, schema.Property{
+				CommonParam: schema.CommonParam{Identifier: k, Tag: schema.TagDevice, Name: k, Desc: "设备上报自动创建"},
+				Mode:        schema.PropertyModeR,
+				Define:      schema.Define{Type: schema.DataTypeString, Min: "0", Max: "999"},
+			})
+		case json.Number:
+			_, err := vv.Int64()
+			if err != nil || mode == product.DeviceSchemaModeReportAutoCreateUseFloat {
+				needAddProperties = append(needAddProperties, schema.Property{
+					CommonParam: schema.CommonParam{Identifier: k, Tag: schema.TagDevice, Name: k, Desc: "设备上报自动创建"},
+					Mode:        schema.PropertyModeR,
+					Define:      schema.Define{Type: schema.DataTypeFloat, Min: cast.ToString(schema.DefineIntMin), Step: "0.001", Max: cast.ToString(schema.DefineIntMax)},
+				})
+			} else {
+				needAddProperties = append(needAddProperties, schema.Property{
+					CommonParam: schema.CommonParam{Identifier: k, Tag: schema.TagDevice, Name: k, Desc: "设备上报自动创建"},
+					Mode:        schema.PropertyModeR,
+					Define:      schema.Define{Type: schema.DataTypeInt, Min: cast.ToString(schema.DefineIntMin), Step: "1", Max: cast.ToString(schema.DefineIntMax)},
+				})
+			}
+		case bool:
+			needAddProperties = append(needAddProperties, schema.Property{
+				CommonParam: schema.CommonParam{Identifier: k, Tag: schema.TagDevice, Name: k, Desc: "设备上报自动创建"},
+				Mode:        schema.PropertyModeR,
+				Define:      schema.Define{Type: schema.DataTypeBool, Mapping: map[string]string{"0": "关", "1": "开"}},
+			})
+		default:
+			return errors.Parameter.AddMsgf("不支持自动创建的类型:%v", v)
+		}
+	}
+	if len(needAddProperties) == 0 {
+		return nil
+	}
+	s := schema.Model{Properties: needAddProperties}
+	err = s.ValidateWithFmt()
+	if err != nil {
+		return err
+	}
+	err = relationDB.NewDeviceSchemaRepo(l.ctx).MultiInsert2(l.ctx, productID, deviceName, &s)
+	if err == nil {
+		l.svcCtx.DeviceSchemaRepo.SetData(l.ctx, devices.Core{ProductID: productID, DeviceName: deviceName}, nil)
+	}
+	return err
+}
+
 // 设备属性上报
 func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThing.Req) (respMsg *deviceMsg.PublishMsg, err error) {
 	tp, err := req.VerifyReqParam(l.schema, schema.ParamProperty)
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), err
-	} else if len(tp) == 0 {
+	}
+	if len(req.Params) > len(tp) { //存在上报了未定义的属性
+		pd, err := l.svcCtx.ProductCache.GetData(l.ctx, msg.ProductID)
+		if err != nil {
+			return l.DeviceResp(msg, err, nil), err
+		}
+		if pd.DeviceSchemaMode >= product.DeviceSchemaModeReportAutoCreate {
+			err = l.DeviceSchemaReportAutoCreate(pd.DeviceSchemaMode, msg.ProductID, msg.DeviceName, req.Params, tp)
+			if err != nil {
+				return l.DeviceResp(msg, err, nil), err
+			}
+			l.schema, err = l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName})
+			if err != nil {
+				return l.DeviceResp(msg, err, nil), err
+			}
+			tp, err = req.VerifyReqParam(l.schema, schema.ParamProperty)
+			if err != nil {
+				return l.DeviceResp(msg, err, nil), err
+			}
+		}
+	}
+	if len(tp) == 0 {
 		err := errors.Parameter.AddMsgf("查不到物模型:%v", req.Params)
 		return l.DeviceResp(msg, err, nil), err
 	}
@@ -445,6 +535,49 @@ func (l *ThingLogic) HandlePropertyGetSchema(msg *deviceMsg.PublishMsg) (respMsg
 	return l.DeviceResp(msg, errors.OK, l.schema.ToSimple()), nil
 }
 
+func (l *ThingLogic) HandleCreateSchema(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
+	if l.dreq.Schema == "" {
+		return l.DeviceResp(msg, errors.Parameter.AddMsg("需要填写schema"), nil), nil
+	}
+	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, msg.ProductID)
+	if err != nil {
+		return l.DeviceResp(msg, err, nil), nil
+	}
+	if pi.DeviceSchemaMode < product.DeviceSchemaModeAutoCreate {
+		return l.DeviceResp(msg, errors.Permissions.AddMsg("产品未开启设备自动创建"), nil), nil
+	}
+	s, err := schema.ValidateWithFmt([]byte(l.dreq.Schema))
+	if err != nil {
+		return l.DeviceResp(msg, err, nil), nil
+	}
+	err = relationDB.NewDeviceSchemaRepo(l.ctx).MultiInsert2(l.ctx, msg.ProductID, msg.DeviceName, s)
+	if err != nil {
+		return l.DeviceResp(msg, err, nil), nil
+	}
+	return l.DeviceResp(msg, errors.OK, l.schema.ToSimple()), nil
+}
+func (l *ThingLogic) HandleDeleteSchema(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
+	if len(l.dreq.Identifiers) == 0 {
+		return l.DeviceResp(msg, errors.Parameter.AddMsg("需要填写identifiers"), nil), nil
+	}
+	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, msg.ProductID)
+	if err != nil {
+		return l.DeviceResp(msg, err, nil), nil
+	}
+	if pi.DeviceSchemaMode < product.DeviceSchemaModeAutoCreate {
+		return l.DeviceResp(msg, errors.Permissions.AddMsg("产品未开启设备自动创建"), nil), nil
+	}
+	_, err = devicemanagelogic.NewDeviceSchemaMultiDeleteLogic(l.ctx, l.svcCtx).DeviceSchemaMultiDelete(&dm.DeviceSchemaMultiDeleteReq{
+		ProductID:   msg.ProductID,
+		DeviceName:  msg.DeviceName,
+		Identifiers: l.dreq.Identifiers,
+	})
+	if err != nil {
+		return l.DeviceResp(msg, err, nil), nil
+	}
+	return l.DeviceResp(msg, errors.OK, l.schema.ToSimple()), nil
+}
+
 // 设备请求获取 云端记录的最新设备信息
 func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	respData := make(map[string]any, len(l.schema.Property))
@@ -541,6 +674,10 @@ func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceM
 		return l.HandlePropertyGetStatus(msg)
 	case deviceMsg.GetSchema:
 		return l.HandlePropertyGetSchema(msg)
+	case deviceMsg.CreateSchema:
+		return l.HandleCreateSchema(msg)
+	case deviceMsg.DeleteSchema:
+		return l.HandleDeleteSchema(msg)
 	case deviceMsg.ControlReply: //设备响应的 “云端下发控制指令” 的处理结果
 		return l.HandleControl(msg)
 	default:

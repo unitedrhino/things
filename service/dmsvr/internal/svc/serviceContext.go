@@ -53,7 +53,8 @@ type ServiceContext struct {
 
 	OssClient            *oss.Client
 	TimedM               timedmanage.TimedManage
-	SchemaRepo           *caches.Cache[schema.Model, devices.Core]
+	ProductSchemaRepo    *caches.Cache[schema.Model, devices.Core]
+	DeviceSchemaRepo     *caches.Cache[schema.Model, devices.Core]
 	SchemaManaRepo       msgThing.SchemaDataRepo
 	HubLogRepo           deviceLog.HubRepo
 	StatusRepo           deviceLog.StatusRepo
@@ -112,7 +113,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	serverMsg, err := eventBus.NewFastEvent(c.Event, c.Name, nodeID)
 	logx.Must(err)
 
-	ccSchemaR, err := caches.NewCache(caches.CacheConfig[schema.Model, devices.Core]{
+	getProductSchemaModel, err := caches.NewCache(caches.CacheConfig[schema.Model, devices.Core]{
 		KeyType:   eventBus.ServerCacheKeyDmProductSchema,
 		FastEvent: serverMsg,
 		GetData: func(ctx context.Context, key devices.Core) (*schema.Model, error) {
@@ -131,7 +132,33 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		ExpireTime: 10 * time.Minute,
 	})
 	logx.Must(err)
-	deviceDataR := schemaDataRepo.NewDeviceDataRepo(c.TSDB, ccSchemaR.GetData, ca)
+	getDeviceSchemaModel, err := caches.NewCache(caches.CacheConfig[schema.Model, devices.Core]{
+		KeyType:   eventBus.ServerCacheKeyDmDeviceSchema,
+		FastEvent: serverMsg,
+		GetData: func(ctx context.Context, key devices.Core) (*schema.Model, error) {
+			db := relationDB.NewDeviceSchemaRepo(ctx)
+			dbSchemas, err := db.FindByFilter(ctx, relationDB.DeviceSchemaFilter{ProductID: key.ProductID, DeviceName: key.DeviceName}, nil)
+			if err != nil {
+				return nil, err
+			}
+			schemaModel := relationDB.ToDeviceSchemaDo(key.ProductID, dbSchemas)
+			ps, err := getProductSchemaModel.GetData(ctx, key)
+			if err != nil {
+				return nil, err
+			}
+			schemaModel.Aggregation(ps)
+			schemaModel.ValidateWithFmt()
+			return schemaModel, nil
+		},
+		Fmt: func(ctx context.Context, key devices.Core, data *schema.Model) {
+			data.ValidateWithFmt()
+		},
+		ExpireTime: 20 * time.Minute,
+	})
+	logx.Must(err)
+	deviceDataR := schemaDataRepo.NewDeviceDataRepo(c.TSDB, getProductSchemaModel.GetData, getDeviceSchemaModel.GetData, ca)
+	err = deviceDataR.Init(context.Background())
+	logx.Must(err)
 	pd, err := pubDev.NewPubDev(serverMsg)
 	if err != nil {
 		logx.Error("NewPubDev err", err)
@@ -179,7 +206,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Common:         Common,
 		DataM:          dataM,
 		UserSubscribe:  ws.NewUserSubscribe(ca, serverMsg),
-		SchemaRepo:     ccSchemaR,
+		ProductSchemaRepo: getProductSchemaModel,
+		DeviceSchemaRepo:  getDeviceSchemaModel,
 		SchemaManaRepo: deviceDataR,
 		DeviceStatus:   cache.NewDeviceStatus(ca),
 		GatewayCanBind: cache.NewGatewayCanBind(ca),

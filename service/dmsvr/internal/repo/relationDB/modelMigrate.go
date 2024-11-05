@@ -5,6 +5,7 @@ import (
 	"gitee.com/unitedrhino/share/conf"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/stores"
+	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
@@ -30,7 +31,7 @@ func Migrate(c conf.Database) error {
 		&DmProtocolInfo{},
 		&DmDeviceInfo{},
 		&DmProductCustom{},
-		&DmSchemaInfo{},
+		&DmDeviceSchema{},
 		&DmProductSchema{},
 		&DmGroupInfo{},
 		&DmGroupDevice{},
@@ -51,21 +52,32 @@ func Migrate(c conf.Database) error {
 		return err
 	}
 
+	err = versionUpdate(db)
+	if err != nil {
+		return err
+	}
+
+	if needInitColumn {
+		return migrateTableColumn()
+	}
+	return err
+}
+
+func versionUpdate(db *gorm.DB) error {
+	m := db.Migrator()
 	{ //版本升级兼容
-		m := db.Migrator()
+
 		if m.HasColumn(&DmGatewayDevice{}, "tenant_code") {
 			err := db.Migrator().DropColumn(&DmGatewayDevice{}, "tenant_code")
 			if err != nil {
 				return err
 			}
 		}
+	}
 
-	}
-	if needInitColumn {
-		return migrateTableColumn()
-	}
-	return err
+	return nil
 }
+
 func migrateTableColumn() error {
 	db := stores.GetCommonConn(context.TODO()).Clauses(clause.OnConflict{DoNothing: true})
 	if err := db.CreateInBatches(&MigrateProtocolInfo, 100).Error; err != nil {

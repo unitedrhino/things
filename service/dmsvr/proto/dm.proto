@@ -115,7 +115,17 @@ service DeviceManage {
   rpc deviceProfileIndex(DeviceProfileIndexReq)returns(DeviceProfileIndexResp);
 
 
-
+  //更新设备物模型
+  rpc deviceSchemaUpdate(DeviceSchema)returns (Empty);
+  //新增设备
+  rpc deviceSchemaCreate(DeviceSchema)     returns (Empty);
+  //批量新增物模型,只新增没有的,已有的不处理
+  rpc deviceSchemaMultiCreate(DeviceSchemaMultiCreateReq)     returns (Empty);
+  //删除设备物模型
+  rpc deviceSchemaMultiDelete(DeviceSchemaMultiDeleteReq)     returns (Empty);
+  //获取设备物模型列表
+  rpc deviceSchemaIndex(DeviceSchemaIndexReq)     returns (DeviceSchemaIndexResp);
+  rpc deviceSchemaTslRead(DeviceSchemaTslReadReq)     returns (DeviceSchemaTslReadResp);
 
 }
 
@@ -187,17 +197,6 @@ service SchemaManage{
   //获取产品信息列表
   rpc commonSchemaIndex(CommonSchemaIndexReq)     returns (CommonSchemaIndexResp);
 
-
-  //更新设备物模型
-  rpc schemaInfoUpdate(SchemaInfo)returns (Empty);
-  //新增设备
-  rpc schemaInfoCreate(SchemaInfo)     returns (Empty);
-  //批量新增物模型,只新增没有的,已有的不处理
-  rpc schemaInfoMultiCreate(SchemaInfoMultiCreateReq)     returns (Empty);
-  //删除设备物模型
-  rpc schemaInfoMultiDelete(SchemaInfoMultiDeleteReq)     returns (Empty);
-  //获取设备物模型列表
-  rpc schemaInfoIndex(SchemaInfoIndexReq)     returns (SchemaInfoIndexResp);
 }
 
 service ProtocolManage {
@@ -643,7 +642,8 @@ message PropertyGetReportSendResp{
 /*获取对应日志信息*/
 message PropertyLogIndexReq{
   PageInfo page = 1;//使用了聚合函数及间隔的时候无效
-  repeated string deviceNames = 3; //设备名(不填获取产品下所有设备)
+  string deviceName=2;//设备ID
+  repeated string deviceNames=3;//废弃
   string productID = 4; //产品id (必填)
   string dataID = 5; //获取的具体标识符的数据(必填)
   int64 timeStart = 6;//获取时间的开始(毫秒时间戳)
@@ -687,7 +687,8 @@ message PropertyLogIndexResp{
 message EventLogIndexReq{
   PageInfo page = 1;//使用了聚合函数及间隔的时候无效
   string productID = 2; //产品id (必填)
-  repeated string deviceNames = 3; //设备名(不填获取产品下所有设备)
+  string deviceName = 3; //设备名(不填获取产品下所有设备)
+  repeated string deviceNames = 8; //废弃
   string dataID = 4; //获取的具体标识符的数据(必填)
   int64 timeStart = 5;//获取时间的开始(毫秒时间戳)
   int64 timeEnd = 6;//时间的结束(毫秒时间戳)
@@ -1212,6 +1213,7 @@ message ProductInfo{
   string  sceneMode =19;//场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
   int64 status =20; //产品状态 1:启用 2:禁用 3:开发中
   map<string,ProductCustomUi> customUi=21;//自定义ui
+  int64 deviceSchemaMode =22;// 设备物模型模式:1:关闭,2:设备自动创建3: 设备自动创建及上报无定义自动创建
 }
 
 message ProductCustomUi{
@@ -1308,7 +1310,7 @@ message DeviceInfoIndexReq{
   int64 range = 6; //过滤条件:取距离坐标点固定范围内的设备
   Point Position = 7;   //设备定位,默认百度坐标系
   repeated int64 areaIDs = 8;//区域ids
-  string areaIDPath =32;
+  string areaIDPath=32; //区域路径过滤
   string deviceAlias = 9; //过滤条件:模糊查询 设备别名
   int64 isOnline = 10; //在线状态过滤  1离线 2在线
   int64  productCategoryID = 11;//产品品类id
@@ -1502,21 +1504,21 @@ message ProductSchemaTslReadResp{
 
 
 
-message SchemaInfoMultiCreateReq{
+message DeviceSchemaMultiCreateReq{
   string productID = 1;
   string deviceName =3;
-  repeated SchemaInfo list = 2;//物模型信息
+  repeated DeviceSchema list = 2;//物模型信息
 }
 
 
 
-message SchemaInfoMultiDeleteReq{
+message DeviceSchemaMultiDeleteReq{
   string productID = 1; //产品id  如果为空返回所有产品的信息
   string deviceName =3;
   repeated string identifiers = 2;           //标识符
 }
 
-message SchemaInfoIndexReq{
+message DeviceSchemaIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填
   string productID = 2; //产品id  必填
   string deviceName = 19;
@@ -1533,12 +1535,12 @@ message SchemaInfoIndexReq{
 
 }
 
-message SchemaInfoIndexResp{
-  repeated SchemaInfo list = 1;
+message DeviceSchemaIndexResp{
+  repeated DeviceSchema list = 1;
   int64  total = 2;//总数(只有分页的时候会返回)
 }
 
-message SchemaInfo{
+message DeviceSchema{
   string productID = 1; //产品id  必填
   string deviceName =17;//设备ID 必填
   int64 type = 2;         //物模型类型 1:property属性 2:event事件 3:action行为
@@ -1556,6 +1558,14 @@ message SchemaInfo{
   int64 order =13;//排序
 }
 
+message DeviceSchemaTslReadReq{
+  string   productID = 1; //产品id
+  string deviceName =17;//设备ID 必填
+}
+
+message DeviceSchemaTslReadResp{
+  string   tsl = 1;//物模型tsl
+}
 
 
 message DeviceProfile{

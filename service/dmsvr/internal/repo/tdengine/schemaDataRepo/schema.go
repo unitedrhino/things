@@ -27,9 +27,27 @@ func (S *SchemaStore) GetSpecsColumnWithArgFunc(s schema.Specs, argFunc string) 
 	return strings.Join(column, ",")
 }
 
-func (S *SchemaStore) GetPropertyStableName(tag schema.Tag, productID, identifier string) string {
-	if tag == schema.TagCustom && productID != "" {
+func (S *SchemaStore) GetPropertyStableName(p *schema.Property, productID, deviceName, identifier string) string {
+	if p.Tag == schema.TagCustom && productID != "" {
 		return fmt.Sprintf("`model_custom_property_%s_%s`", productID, identifier)
+	}
+	if p.Tag == schema.TagDevice {
+		switch p.Define.Type {
+		case schema.DataTypeBool:
+			return S.GetDeviceStableBoolName()
+		case schema.DataTypeInt:
+			return S.GetDeviceStableIntName()
+		case schema.DataTypeString:
+			return S.GetDeviceStableStringName()
+		case schema.DataTypeFloat:
+			return S.GetDeviceStableFloatName()
+		case schema.DataTypeTimestamp:
+			return S.GetDeviceStableTimestampName()
+		case schema.DataTypeEnum:
+			return S.GetDeviceStableEnumName()
+		default:
+			return ""
+		}
 	}
 	return fmt.Sprintf("`model_common_property_%s`", identifier)
 }
@@ -39,6 +57,30 @@ func (S *SchemaStore) GetEventStableName() string {
 
 func (S *SchemaStore) GetPropertyTableName(productID, deviceName, identifier string) string {
 	return fmt.Sprintf("`device_property_%s_%s_%s`", productID, deviceName, identifier)
+}
+
+func (S *SchemaStore) GetDeviceStableBoolName() string {
+	return fmt.Sprintf("`model_device_property_bool`")
+}
+
+func (S *SchemaStore) GetDeviceStableIntName() string {
+	return fmt.Sprintf("`model_device_property_int`")
+}
+
+func (S *SchemaStore) GetDeviceStableEnumName() string {
+	return fmt.Sprintf("`model_device_property_enum`")
+}
+
+func (S *SchemaStore) GetDeviceStableTimestampName() string {
+	return fmt.Sprintf("`model_device_property_timestamp`")
+}
+
+func (S *SchemaStore) GetDeviceStableFloatName() string {
+	return fmt.Sprintf("`model_device_property_float`")
+}
+
+func (S *SchemaStore) GetDeviceStableStringName() string {
+	return fmt.Sprintf("`model_device_property_string`")
 }
 
 func (S *SchemaStore) GetPropertyTableNames(productID, deviceName string, p *schema.Property) (ret []string) {
@@ -81,7 +123,7 @@ func (S *SchemaStore) GetStableNameList(
 	}
 	for _, v := range t.Property {
 		if v.Tag == schema.TagCustom {
-			tables = append(tables, S.GetPropertyStableName(v.Tag, productID, v.Identifier))
+			tables = append(tables, S.GetPropertyStableName(v, productID, "", v.Identifier))
 		}
 	}
 	return
