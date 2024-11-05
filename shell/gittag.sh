@@ -9,8 +9,6 @@ fi
 # 获取第一个参数
 tag="$1"
 git tag $tag
-git push -f  gitee dev:master
-git push -f github dev:master
 git push origin $tag
 git push github $tag
 git push gitee $tag
