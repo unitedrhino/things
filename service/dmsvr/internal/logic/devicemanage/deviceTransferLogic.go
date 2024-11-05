@@ -96,6 +96,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 	}
 	var (
 		ProjectID  stores.ProjectID
+		TenantCode string
 		AreaID     stores.AreaID = def.NotClassified
 		AreaIDPath string        = def.NotClassifiedPath
 		UserID     int64
@@ -138,12 +139,15 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 			AreaIDPath = ai.AreaIDPath
 			changeAreaIDPaths[AreaIDPath] = struct{}{}
 			projectIDSet[ai.ProjectID] = struct{}{}
-
 		}
 		pi, err := l.svcCtx.ProjectCache.GetData(l.ctx, in.ProjectID)
 		if err != nil {
 			return nil, err
 		}
+		if ctxs.IsRoot(l.ctx) != nil && pi.TenantCode != uc.TenantCode {
+			return nil, errors.Permissions.AddMsg("非超管不能转移到其他租户")
+		}
+		TenantCode = pi.TenantCode
 		UserID = pi.AdminUserID
 	default:
 		return nil, errors.Parameter.AddMsgf("transferTo not supprt:%v", in.TransferTo)
@@ -171,7 +175,11 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 				return err
 			}
 		}
-		err = relationDB.NewDeviceInfoRepo(tx).UpdateWithField(ctxs.WithAllProject(l.ctx), relationDB.DeviceFilter{Cores: devs}, map[string]any{
+		ctx := ctxs.WithAllProject(l.ctx)
+		if TenantCode != uc.TenantCode {
+			ctx = ctxs.BindTenantCode(ctx, TenantCode, 0)
+		}
+		err = relationDB.NewDeviceInfoRepo(tx).UpdateWithField(ctx, relationDB.DeviceFilter{Cores: devs}, map[string]any{
 			"project_id":   ProjectID,
 			"user_id":      UserID,
 			"area_id":      AreaID,
