@@ -9347,39 +9347,40 @@ type DeviceInfoIndexReq struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Page              *PageInfo         `protobuf:"bytes,1,opt,name=page,proto3" json:"page,omitempty"`                                                                                         //分页信息 只获取一个则不填
-	ProductID         string            `protobuf:"bytes,2,opt,name=productID,proto3" json:"productID,omitempty"`                                                                               //过滤条件: 产品id
-	ProductIDs        []string          `protobuf:"bytes,23,rep,name=productIDs,proto3" json:"productIDs,omitempty"`                                                                            //过滤条件: 产品id
-	DeviceName        string            `protobuf:"bytes,3,opt,name=deviceName,proto3" json:"deviceName,omitempty"`                                                                             //过滤条件:模糊查询 设备名
-	DeviceNames       []string          `protobuf:"bytes,4,rep,name=deviceNames,proto3" json:"deviceNames,omitempty"`                                                                           //过滤条件:精准查询 设备名
-	Tags              map[string]string `protobuf:"bytes,5,rep,name=tags,proto3" json:"tags,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` //key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
-	Range             int64             `protobuf:"varint,6,opt,name=range,proto3" json:"range,omitempty"`                                                                                      //过滤条件:取距离坐标点固定范围内的设备
-	Position          *Point            `protobuf:"bytes,7,opt,name=Position,proto3" json:"Position,omitempty"`                                                                                 //设备定位,默认百度坐标系
-	AreaIDs           []int64           `protobuf:"varint,8,rep,packed,name=areaIDs,proto3" json:"areaIDs,omitempty"`                                                                           //区域ids
-	AreaIDPath        string            `protobuf:"bytes,32,opt,name=areaIDPath,proto3" json:"areaIDPath,omitempty"`                                                                            //区域路径过滤
-	DeviceAlias       string            `protobuf:"bytes,9,opt,name=deviceAlias,proto3" json:"deviceAlias,omitempty"`                                                                           //过滤条件:模糊查询 设备别名
-	IsOnline          int64             `protobuf:"varint,10,opt,name=isOnline,proto3" json:"isOnline,omitempty"`                                                                               //在线状态过滤  1离线 2在线
-	ProductCategoryID int64             `protobuf:"varint,11,opt,name=productCategoryID,proto3" json:"productCategoryID,omitempty"`                                                             //产品品类id
-	Devices           []*DeviceCore     `protobuf:"bytes,12,rep,name=devices,proto3" json:"devices,omitempty"`
-	WithShared        int64             `protobuf:"varint,13,opt,name=withShared,proto3" json:"withShared,omitempty"`   //过滤分享的设备(这里只获取分享的设备) 1: 同时获取分享的设备 2:只获取分享的设备
-	WithCollect       int64             `protobuf:"varint,24,opt,name=withCollect,proto3" json:"withCollect,omitempty"` //过滤收藏的设备(这里只获取收藏的设备) 1: 同时获取收藏的设备 2:只获取收藏的设备
-	NetType           int64             `protobuf:"varint,25,opt,name=netType,proto3" json:"netType,omitempty"`         //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
-	TenantCode        string            `protobuf:"bytes,14,opt,name=tenantCode,proto3" json:"tenantCode,omitempty"`    //租户过滤
-	Versions          []string          `protobuf:"bytes,15,rep,name=versions,proto3" json:"versions,omitempty"`        //版本列表
-	NotVersion        string            `protobuf:"bytes,39,opt,name=notVersion,proto3" json:"notVersion,omitempty"`    //非版本
-	DeviceType        int64             `protobuf:"varint,16,opt,name=deviceType,proto3" json:"deviceType,omitempty"`   //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
-	DeviceTypes       []int64           `protobuf:"varint,21,rep,packed,name=deviceTypes,proto3" json:"deviceTypes,omitempty"`
-	Gateway           *DeviceCore       `protobuf:"bytes,17,opt,name=gateway,proto3" json:"gateway,omitempty"` //获取网关下子设备列表
-	GroupID           int64             `protobuf:"varint,18,opt,name=groupID,proto3" json:"groupID,omitempty"`
-	NotGroupID        int64             `protobuf:"varint,19,opt,name=notGroupID,proto3" json:"notGroupID,omitempty"`
-	NotAreaID         int64             `protobuf:"varint,29,opt,name=notAreaID,proto3" json:"notAreaID,omitempty"`
-	Distributor       *IDPath           `protobuf:"bytes,20,opt,name=distributor,proto3" json:"distributor,omitempty"` //过滤分销商的数据
-	Status            int64             `protobuf:"varint,22,opt,name=status,proto3" json:"status,omitempty"`
-	RatedPower        *CompareInt64     `protobuf:"bytes,28,opt,name=ratedPower,proto3" json:"ratedPower,omitempty"` // 额定功率:单位w/h
-	HasOwner          int64             `protobuf:"varint,30,opt,name=hasOwner,proto3" json:"hasOwner,omitempty"`    //是否被人拥有
-	UserID            int64             `protobuf:"varint,31,opt,name=userID,proto3" json:"userID,omitempty"`        //用户id查询
-	ExpTime           *CompareInt64     `protobuf:"bytes,38,opt,name=expTime,proto3" json:"expTime,omitempty"`       //到期时间
-	Iccid             string            `protobuf:"bytes,40,opt,name=iccid,proto3" json:"iccid,omitempty"`           //SIM卡卡号
+	Page               *PageInfo         `protobuf:"bytes,1,opt,name=page,proto3" json:"page,omitempty"`                                                                                         //分页信息 只获取一个则不填
+	ProductID          string            `protobuf:"bytes,2,opt,name=productID,proto3" json:"productID,omitempty"`                                                                               //过滤条件: 产品id
+	ProductIDs         []string          `protobuf:"bytes,23,rep,name=productIDs,proto3" json:"productIDs,omitempty"`                                                                            //过滤条件: 产品id
+	DeviceName         string            `protobuf:"bytes,3,opt,name=deviceName,proto3" json:"deviceName,omitempty"`                                                                             //过滤条件:模糊查询 设备名
+	DeviceNames        []string          `protobuf:"bytes,4,rep,name=deviceNames,proto3" json:"deviceNames,omitempty"`                                                                           //过滤条件:精准查询 设备名
+	Tags               map[string]string `protobuf:"bytes,5,rep,name=tags,proto3" json:"tags,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` //key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
+	Range              int64             `protobuf:"varint,6,opt,name=range,proto3" json:"range,omitempty"`                                                                                      //过滤条件:取距离坐标点固定范围内的设备
+	Position           *Point            `protobuf:"bytes,7,opt,name=Position,proto3" json:"Position,omitempty"`                                                                                 //设备定位,默认百度坐标系
+	AreaIDs            []int64           `protobuf:"varint,8,rep,packed,name=areaIDs,proto3" json:"areaIDs,omitempty"`                                                                           //区域ids
+	AreaIDPath         string            `protobuf:"bytes,32,opt,name=areaIDPath,proto3" json:"areaIDPath,omitempty"`                                                                            //区域路径过滤
+	DeviceAlias        string            `protobuf:"bytes,9,opt,name=deviceAlias,proto3" json:"deviceAlias,omitempty"`                                                                           //过滤条件:模糊查询 设备别名
+	IsOnline           int64             `protobuf:"varint,10,opt,name=isOnline,proto3" json:"isOnline,omitempty"`                                                                               //在线状态过滤  1离线 2在线
+	ProductCategoryID  int64             `protobuf:"varint,11,opt,name=productCategoryID,proto3" json:"productCategoryID,omitempty"`                                                             //产品品类id
+	ProductCategoryIDs []int64           `protobuf:"varint,33,rep,packed,name=productCategoryIDs,proto3" json:"productCategoryIDs,omitempty"`                                                    //产品品类id
+	Devices            []*DeviceCore     `protobuf:"bytes,12,rep,name=devices,proto3" json:"devices,omitempty"`
+	WithShared         int64             `protobuf:"varint,13,opt,name=withShared,proto3" json:"withShared,omitempty"`   //过滤分享的设备(这里只获取分享的设备) 1: 同时获取分享的设备 2:只获取分享的设备
+	WithCollect        int64             `protobuf:"varint,24,opt,name=withCollect,proto3" json:"withCollect,omitempty"` //过滤收藏的设备(这里只获取收藏的设备) 1: 同时获取收藏的设备 2:只获取收藏的设备
+	NetType            int64             `protobuf:"varint,25,opt,name=netType,proto3" json:"netType,omitempty"`         //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
+	TenantCode         string            `protobuf:"bytes,14,opt,name=tenantCode,proto3" json:"tenantCode,omitempty"`    //租户过滤
+	Versions           []string          `protobuf:"bytes,15,rep,name=versions,proto3" json:"versions,omitempty"`        //版本列表
+	NotVersion         string            `protobuf:"bytes,39,opt,name=notVersion,proto3" json:"notVersion,omitempty"`    //非版本
+	DeviceType         int64             `protobuf:"varint,16,opt,name=deviceType,proto3" json:"deviceType,omitempty"`   //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
+	DeviceTypes        []int64           `protobuf:"varint,21,rep,packed,name=deviceTypes,proto3" json:"deviceTypes,omitempty"`
+	Gateway            *DeviceCore       `protobuf:"bytes,17,opt,name=gateway,proto3" json:"gateway,omitempty"` //获取网关下子设备列表
+	GroupID            int64             `protobuf:"varint,18,opt,name=groupID,proto3" json:"groupID,omitempty"`
+	NotGroupID         int64             `protobuf:"varint,19,opt,name=notGroupID,proto3" json:"notGroupID,omitempty"`
+	NotAreaID          int64             `protobuf:"varint,29,opt,name=notAreaID,proto3" json:"notAreaID,omitempty"`
+	Distributor        *IDPath           `protobuf:"bytes,20,opt,name=distributor,proto3" json:"distributor,omitempty"` //过滤分销商的数据
+	Status             int64             `protobuf:"varint,22,opt,name=status,proto3" json:"status,omitempty"`
+	RatedPower         *CompareInt64     `protobuf:"bytes,28,opt,name=ratedPower,proto3" json:"ratedPower,omitempty"` // 额定功率:单位w/h
+	HasOwner           int64             `protobuf:"varint,30,opt,name=hasOwner,proto3" json:"hasOwner,omitempty"`    //是否被人拥有
+	UserID             int64             `protobuf:"varint,31,opt,name=userID,proto3" json:"userID,omitempty"`        //用户id查询
+	ExpTime            *CompareInt64     `protobuf:"bytes,38,opt,name=expTime,proto3" json:"expTime,omitempty"`       //到期时间
+	Iccid              string            `protobuf:"bytes,40,opt,name=iccid,proto3" json:"iccid,omitempty"`           //SIM卡卡号
 }
 
 func (x *DeviceInfoIndexReq) Reset() {
@@ -9503,6 +9504,13 @@ func (x *DeviceInfoIndexReq) GetProductCategoryID() int64 {
 		return x.ProductCategoryID
 	}
 	return 0
+}
+
+func (x *DeviceInfoIndexReq) GetProductCategoryIDs() []int64 {
+	if x != nil {
+		return x.ProductCategoryIDs
+	}
+	return nil
 }
 
 func (x *DeviceInfoIndexReq) GetDevices() []*DeviceCore {
@@ -16514,7 +16522,7 @@ var file_proto_dm_proto_rawDesc = []byte{
 	0x49, 0x44, 0x50, 0x61, 0x74, 0x68, 0x52, 0x0b, 0x64, 0x69, 0x73, 0x74, 0x72, 0x69, 0x62, 0x75,
 	0x74, 0x6f, 0x72, 0x12, 0x1e, 0x0a, 0x0a, 0x72, 0x61, 0x74, 0x65, 0x64, 0x50, 0x6f, 0x77, 0x65,
 	0x72, 0x18, 0x1c, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0a, 0x72, 0x61, 0x74, 0x65, 0x64, 0x50, 0x6f,
-	0x77, 0x65, 0x72, 0x22, 0x9c, 0x09, 0x0a, 0x12, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x49, 0x6e,
+	0x77, 0x65, 0x72, 0x22, 0xcc, 0x09, 0x0a, 0x12, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x49, 0x6e,
 	0x66, 0x6f, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x52, 0x65, 0x71, 0x12, 0x20, 0x0a, 0x04, 0x70, 0x61,
 	0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x64, 0x6d, 0x2e, 0x50, 0x61,
 	0x67, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x04, 0x70, 0x61, 0x67, 0x65, 0x12, 0x1c, 0x0a, 0x09,
@@ -16543,7 +16551,10 @@ var file_proto_dm_proto_rawDesc = []byte{
 	0x73, 0x4f, 0x6e, 0x6c, 0x69, 0x6e, 0x65, 0x12, 0x2c, 0x0a, 0x11, 0x70, 0x72, 0x6f, 0x64, 0x75,
 	0x63, 0x74, 0x43, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x49, 0x44, 0x18, 0x0b, 0x20, 0x01,
 	0x28, 0x03, 0x52, 0x11, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x43, 0x61, 0x74, 0x65, 0x67,
-	0x6f, 0x72, 0x79, 0x49, 0x44, 0x12, 0x28, 0x0a, 0x07, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x73,
+	0x6f, 0x72, 0x79, 0x49, 0x44, 0x12, 0x2e, 0x0a, 0x12, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74,
+	0x43, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x49, 0x44, 0x73, 0x18, 0x21, 0x20, 0x03, 0x28,
+	0x03, 0x52, 0x12, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x43, 0x61, 0x74, 0x65, 0x67, 0x6f,
+	0x72, 0x79, 0x49, 0x44, 0x73, 0x12, 0x28, 0x0a, 0x07, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x73,
 	0x18, 0x0c, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x64, 0x6d, 0x2e, 0x44, 0x65, 0x76, 0x69,
 	0x63, 0x65, 0x43, 0x6f, 0x72, 0x65, 0x52, 0x07, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x73, 0x12,
 	0x1e, 0x0a, 0x0a, 0x77, 0x69, 0x74, 0x68, 0x53, 0x68, 0x61, 0x72, 0x65, 0x64, 0x18, 0x0d, 0x20,

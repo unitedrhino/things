@@ -7483,6 +7483,13 @@
           "type": "integer",
           "format": "int64"
         },
+        "productCategoryIDs": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
         "withShared": {
           "type": "integer",
           "format": "int64",

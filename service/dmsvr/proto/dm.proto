@@ -1314,6 +1314,7 @@ message DeviceInfoIndexReq{
   string deviceAlias = 9; //过滤条件:模糊查询 设备别名
   int64 isOnline = 10; //在线状态过滤  1离线 2在线
   int64  productCategoryID = 11;//产品品类id
+  repeated int64  productCategoryIDs = 33;//产品品类id
   repeated DeviceCore devices =12;
   int64 withShared = 13;//过滤分享的设备(这里只获取分享的设备) 1: 同时获取分享的设备 2:只获取分享的设备
   int64 withCollect = 24;//过滤收藏的设备(这里只获取收藏的设备) 1: 同时获取收藏的设备 2:只获取收藏的设备
