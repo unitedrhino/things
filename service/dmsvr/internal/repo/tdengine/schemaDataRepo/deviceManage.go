@@ -91,16 +91,27 @@ func (d *DeviceDataRepo) DeleteDeviceProperty(ctx context.Context, productID str
 			sqls = append(sqls, fmt.Sprintf(" if exists %s ", d.GetPropertyTableName(productID, deviceName, v.Identifier)))
 		}
 	} else { //删除设备的所有表
-		rows, err := d.t.QueryContext(ctx, fmt.Sprintf("SHOW TABLE TAGS FROM %s;", d.GetDeviceStableFloatName()))
-		if err != nil {
+		for _, tbName := range DeviceStables {
+			rows, err := d.t.QueryContext(ctx, fmt.Sprintf("select distinct tbname from  %s where product_id='%s' and device_name='%s';",
+				tbName, productID, deviceName))
+			if err != nil {
+				return err
+			}
+			var datas []map[string]any
+			err = stores.Scan(rows, &datas)
+			if err != nil {
+				return err
+			}
+			for _, v := range datas {
+				sqls = append(sqls, fmt.Sprintf(" if exists `%s` ", v["tbname"]))
+			}
+		}
+	}
+	if len(sqls) > 0 {
+		sql := fmt.Sprintf("DROP TABLE %s", strings.Join(sqls, ","))
+		if _, err := d.t.ExecContext(ctx, sql); err != nil {
 			return err
 		}
-		var datas []map[string]any
-		stores.Scan(rows, &datas)
-	}
-	sql := fmt.Sprintf("DROP TABLE %s", strings.Join(sqls, ","))
-	if _, err := d.t.ExecContext(ctx, sql); err != nil {
-		return err
 	}
 	_, err := d.kv.DelCtx(ctx, d.genRedisPropertyKey(productID, deviceName), d.genRedisPropertyFirstKey(productID, deviceName))
 	return err

@@ -59,6 +59,19 @@ func (S *SchemaStore) GetPropertyTableName(productID, deviceName, identifier str
 	return fmt.Sprintf("`device_property_%s_%s_%s`", productID, deviceName, identifier)
 }
 
+var DeviceStables []string
+
+func init() {
+	s := SchemaStore{}
+	DeviceStables = append(DeviceStables,
+		s.GetDeviceStableBoolName(),
+		s.GetDeviceStableIntName(),
+		s.GetDeviceStableEnumName(),
+		s.GetDeviceStableTimestampName(),
+		s.GetDeviceStableFloatName(),
+		s.GetDeviceStableStringName())
+}
+
 func (S *SchemaStore) GetDeviceStableBoolName() string {
 	return fmt.Sprintf("`model_device_property_bool`")
 }
