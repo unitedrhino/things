@@ -185,6 +185,16 @@ func (l *HalfHourHandle) DeviceAbnormalRecover() error { //设备上下线异常
 		if err != nil {
 			l.Error(err)
 		}
+		for _, v := range recoverDevices {
+			l.svcCtx.AbnormalRepo.Insert(l.ctx, &deviceLog.Abnormal{
+				ProductID:  v.ProductID,
+				DeviceName: v.DeviceName,
+				Action:     false,
+				Type:       "online", //上下线异常
+				Timestamp:  time.Now(),
+				Reason:     "设备异常上下线恢复",
+			})
+		}
 	}
 	return nil
 }
@@ -227,6 +237,16 @@ func (l *HalfHourHandle) DeviceAbnormalSet() error { //设备上下线异常设�
 			map[string]any{"status": def.DeviceStatusAbnormal})
 		if err != nil {
 			l.Error(err)
+		}
+		for _, v := range abnormalDevices {
+			l.svcCtx.AbnormalRepo.Insert(l.ctx, &deviceLog.Abnormal{
+				ProductID:  v.ProductID,
+				DeviceName: v.DeviceName,
+				Action:     true,
+				Type:       "online", //上下线异常
+				Timestamp:  time.Now(),
+				Reason:     "设备异常频繁上下线",
+			})
 		}
 	}
 	return nil
