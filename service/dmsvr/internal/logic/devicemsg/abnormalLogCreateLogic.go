@@ -27,6 +27,9 @@ func NewAbnormalLogCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 }
 
 func (l *AbnormalLogCreateLogic) AbnormalLogCreate(in *dm.AbnormalLogInfo) (*dm.Empty, error) {
+	if in.Timestamp == 0 {
+		in.Timestamp = time.Now().UnixMilli()
+	}
 	err := l.svcCtx.AbnormalRepo.Insert(l.ctx, &deviceLog.Abnormal{
 		ProductID:  in.ProductID,
 		Action:     in.Action,

@@ -7,8 +7,10 @@ import (
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/share/utils"
 	sq "gitee.com/unitedrhino/squirrel"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
+	"time"
 )
 
 func (s *AbnormalLogRepo) fillFilter(sql sq.SelectBuilder, filter deviceLog.AbnormalFilter) sq.SelectBuilder {
@@ -67,6 +69,10 @@ func (s *AbnormalLogRepo) GetDeviceLog(ctx context.Context, filter deviceLog.Abn
 }
 
 func (s *AbnormalLogRepo) Insert(ctx context.Context, data *deviceLog.Abnormal) error {
+	if data.Timestamp.IsZero() {
+		data.Timestamp = time.Now()
+	}
+	data.TraceID = utils.TraceIdFromContext(ctx)
 	sql := fmt.Sprintf("  %s using %s tags('%s','%s')(`ts`, `type`,`reason` ,`action`  ,`trace_id` ) values (?,?,?,?,?) ",
 		s.GetLogTableName(data.ProductID, data.DeviceName), s.GetLogStableName(), data.ProductID, data.DeviceName)
 	s.t.AsyncInsert(sql, data.Timestamp, data.Type, data.Reason, data.Action, data.TraceID)
