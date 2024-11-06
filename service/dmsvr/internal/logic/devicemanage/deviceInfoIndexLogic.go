@@ -74,6 +74,7 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		DeviceTypes:        in.DeviceTypes,
 		GroupID:            in.GroupID,
 		Status:             in.Status,
+		Statuses:           in.Statuses,
 		NotGroupID:         in.NotGroupID,
 		NotAreaID:          in.NotAreaID,
 		UserID:             in.UserID,

@@ -7535,6 +7535,13 @@
           "format": "int64",
           "description": "设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)"
         },
+        "statuses": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
         "withOwner": {
           "type": "boolean",
           "format": "boolean",
