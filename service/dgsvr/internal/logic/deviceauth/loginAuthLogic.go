@@ -5,6 +5,8 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
+	"fmt"
+	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/domain/deviceAuth"
 	"gitee.com/unitedrhino/share/errors"
@@ -81,6 +83,27 @@ func NewLoginAuthLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginAu
 	}
 }
 
+func (l *LoginAuthLogic) subscribe(clientID string, productID, deviceName string, topics ...string) {
+	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
+		var newTopics []string
+		for _, t := range topics {
+			newTopics = append(newTopics, fmt.Sprintf(t, productID, deviceName))
+		}
+		err := l.svcCtx.MqttClient.SetClientMutSub(ctx, clientID, newTopics, 1)
+		if err != nil {
+			logx.WithContext(ctx).Error(err)
+			return
+		}
+	})
+}
+
+var topics = []string{
+	"$thing/down/property/%s/%s",
+	"$thing/down/event/%s/%s",
+	"$thing/down/action/%s/%s",
+	"$ota/down/upgrade/%s/%s",
+}
+
 // 设备登录认证
 func (l *LoginAuthLogic) LoginAuth(in *dg.LoginAuthReq) (*dg.Response, error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
@@ -96,6 +119,7 @@ func (l *LoginAuthLogic) LoginAuth(in *dg.LoginAuthReq) (*dg.Response, error) {
 		return nil, err
 	}
 	if inLg.IsNeedRegister { //如果是需要注册的直接放过
+		l.subscribe(in.ClientID, inLg.ProductID, inLg.DeviceName, "$ext/down/register/%s/%s")
 		return &dg.Response{}, nil
 	}
 	//生成 MQTT 的 username 部分, 格式为 ${clientid};${sdkappid};${connid};${expiry}
@@ -126,5 +150,6 @@ func (l *LoginAuthLogic) LoginAuth(in *dg.LoginAuthReq) (*dg.Response, error) {
 	if err != nil {
 		return nil, err
 	}
+	l.subscribe(in.ClientID, inLg.ProductID, inLg.DeviceName, topics...)
 	return &dg.Response{}, nil
 }
