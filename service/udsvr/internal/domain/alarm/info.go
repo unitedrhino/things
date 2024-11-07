@@ -25,9 +25,11 @@ type InfoFilter struct {
 }
 
 type Notify struct {
-	TriggerType scene.TriggerType     `json:"triggerType,omitempty"` //触发类型(设备触发1,其他2)
-	ProductID   string                `json:"productID,omitempty"`   //触发产品id
-	DeviceName  string                `json:"deviceName,omitempty"`  //触发设备名称
-	SceneID     int64                 `json:"sceneID,omitempty"`     //场景ID
-	Mode        scene.ActionAlarmMode `json:"mode,omitempty"`        //告警模式  trigger: 触发告警  relieve: 解除告警
+	TriggerType    scene.TriggerType       `json:"triggerType,omitempty"`    //触发类型(设备触发1,其他2)
+	TriggerSubType scene.TriggerDeviceType `json:"triggerSubType,omitempty"` //触发子类型
+	TriggerDetail  string                  `json:"triggerDetail,omitempty"`  //触发详情,json字符串
+	ProductID      string                  `json:"productID,omitempty"`      //触发产品id
+	DeviceName     string                  `json:"deviceName,omitempty"`     //触发设备名称
+	SceneID        int64                   `json:"sceneID,omitempty"`        //场景ID
+	Mode           scene.ActionAlarmMode   `json:"mode,omitempty"`           //告警模式  trigger: 触发告警  relieve: 解除告警
 }

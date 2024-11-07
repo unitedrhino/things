@@ -79,6 +79,8 @@ message AlarmRecord{
   int64 alarmID = 2;//告警记录ID
   string alarmName =12;//告警名称
   string triggerType = 3;//触发类型 device:设备触发 timer:定时触发 weather:天气触发
+  string triggerSubType =16;
+  string triggerDetail = 17;//设备触发的会有触发详情json
   string productID = 4;//触发产品id
   string deviceName = 5;//触发设备ID
   string deviceAlias = 15;//设备名称
@@ -90,16 +92,20 @@ message AlarmRecord{
   int64 dealStatus = 11;//告警记录状态（1无告警 2告警中 3已处理 4 无效）
   int64 alarmCount =13; //告警次数
   string desc =14; //描述
+
 }
 
 message AlarmRecordCreateReq{
   string triggerType = 3;//触发类型(设备触发1,其他2)
+  string triggerSubType =10;
+  string triggerDetail = 11;//设备触发的会有触发详情json
   string productID = 4;//触发产品id
   string deviceName = 5;//触发设备名称
   string deviceAlias = 6;//触发设备昵称
   string sceneName = 7;//场景名称
   int64 sceneID = 8;//场景ID
   string mode =9;//告警模式  trigger: 触发告警  relieve: 解除告警
+
 }
 
 message AlarmRecordDealReq{

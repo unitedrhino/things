@@ -87,6 +87,10 @@ func (l *TimerHandle) SceneExec(ctx context.Context, do *scene.Info) {
 				req.DeviceName = in.Scene.DeviceName
 				req.DeviceAlias = in.Scene.DeviceAlias
 			}
+			if in.Scene.TriggerDetail != nil {
+				req.TriggerDetail = utils.MarshalNoErr(in.Scene.TriggerDetail)
+			}
+			req.TriggerSubType = in.Scene.TriggerSubType
 			if req.DeviceName == "" {
 				logx.WithContext(ctx).Infof("定时触发不能触发告警:%v", in)
 				return nil

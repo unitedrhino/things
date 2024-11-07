@@ -98,21 +98,23 @@ func (l *AlarmRecordCreateLogic) AlarmRecordCreate(in *ud.AlarmRecordCreateReq) 
 						return err
 					}
 					po = &relationDB.UdAlarmRecord{
-						TenantCode:  a.TenantCode,
-						ProjectID:   a.ProjectID,
-						AlarmID:     a.AlarmID,
-						AlarmName:   a.AlarmInfo.Name,
-						TriggerType: in.TriggerType,
-						ProductID:   in.ProductID,
-						DeviceName:  in.DeviceName,
-						DeviceAlias: in.DeviceAlias,
-						Level:       a.AlarmInfo.Level,
-						SceneName:   a.SceneInfo.Name,
-						SceneID:     a.SceneID,
-						DealStatus:  scene.AlarmDealStatusWaring,
-						Desc:        fmt.Sprintf("自动化触发告警:%v", in.SceneName),
-						AlarmCount:  1,
-						LastAlarm:   time.Now(),
+						TenantCode:     a.TenantCode,
+						ProjectID:      a.ProjectID,
+						AlarmID:        a.AlarmID,
+						AlarmName:      a.AlarmInfo.Name,
+						TriggerType:    in.TriggerType,
+						TriggerSubType: in.TriggerSubType,
+						TriggerDetail:  in.TriggerDetail,
+						ProductID:      in.ProductID,
+						DeviceName:     in.DeviceName,
+						DeviceAlias:    in.DeviceAlias,
+						Level:          a.AlarmInfo.Level,
+						SceneName:      a.SceneInfo.Name,
+						SceneID:        a.SceneID,
+						DealStatus:     scene.AlarmDealStatusWaring,
+						Desc:           fmt.Sprintf("自动化触发告警:%v", in.SceneName),
+						AlarmCount:     1,
+						LastAlarm:      time.Now(),
 					}
 					err = relationDB.NewAlarmRecordRepo(l.ctx).Insert(l.ctx, po)
 					if err != nil {

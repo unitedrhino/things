@@ -30,29 +30,31 @@ const (
 
 // 多设备的场景联动
 type Info struct {
-	ID          int64       `json:"id"`
-	ProjectID   int64       `json:"projectID,string"`
-	AreaID      int64       `json:"areaID,string"`
-	HeadImg     string      `json:"headImg"`               // 头像
-	FlowPath    []*FlowInfo `json:"flowPath"`              //执行路径
-	DeviceMode  DeviceMode  `json:"deviceMode"`            //设备模式: 1:单设备 2:多设备
-	ProductID   string      `json:"productID,omitempty"`   //产品id
-	DeviceName  string      `json:"deviceName,omitempty"`  //设备名
-	DeviceAlias string      `json:"deviceAlias,omitempty"` //设备别名,只读
-	LastRunTime int64       `json:"lastRunTime"`
-	Tag         string      `json:"tag"`
-	Logo        string      `json:"logo"`
-	Name        string      `json:"name"`
-	Desc        string      `json:"desc"`
-	CreatedTime time.Time   `json:"createdTime"`
-	Type        SceneType   `json:"type"`
-	If          If          `json:"if"`             //多种触发方式
-	When        When        `json:"when"`           //手动触发模式不生效
-	Then        Then        `json:"then"`           //触发后执行的动作
-	Status      def.Bool    `json:"status"`         // 状态（1启用 2禁用）
-	IsCommon    def.Bool    `json:"isCommon"`       // 是否是常用的
-	Body        string      `json:"body,omitempty"` //自定义字段
-	Log         *Log        `json:"-"`
+	ID             int64       `json:"id"`
+	ProjectID      int64       `json:"projectID,string"`
+	AreaID         int64       `json:"areaID,string"`
+	HeadImg        string      `json:"headImg"`               // 头像
+	FlowPath       []*FlowInfo `json:"flowPath"`              //执行路径
+	DeviceMode     DeviceMode  `json:"deviceMode"`            //设备模式: 1:单设备 2:多设备
+	ProductID      string      `json:"productID,omitempty"`   //产品id
+	DeviceName     string      `json:"deviceName,omitempty"`  //设备名
+	DeviceAlias    string      `json:"deviceAlias,omitempty"` //设备别名,只读
+	LastRunTime    int64       `json:"lastRunTime"`
+	Tag            string      `json:"tag"`
+	Logo           string      `json:"logo"`
+	Name           string      `json:"name"`
+	Desc           string      `json:"desc"`
+	CreatedTime    time.Time   `json:"createdTime"`
+	Type           SceneType   `json:"type"`
+	If             If          `json:"if"`             //多种触发方式
+	When           When        `json:"when"`           //手动触发模式不生效
+	Then           Then        `json:"then"`           //触发后执行的动作
+	Status         def.Bool    `json:"status"`         // 状态（1启用 2禁用）
+	IsCommon       def.Bool    `json:"isCommon"`       // 是否是常用的
+	Body           string      `json:"body,omitempty"` //自定义字段
+	Log            *Log        `json:"-"`
+	TriggerSubType TriggerType `json:"-"`
+	TriggerDetail  any         `json:"-"`
 }
 
 func (i *Info) SetAccount(ctx context.Context) context.Context {

@@ -61,6 +61,8 @@ func (l *TimerHandle) SceneThingEventReport(in application.EventReport) error {
 		do.DeviceName = di.DeviceName
 		do.DeviceAlias = di.DeviceAlias.GetValue()
 		do.ProductID = di.ProductID
+		do.TriggerDetail = in
+		do.TriggerSubType = scene.TriggerDeviceTypeEventReport
 		ps, err := l.svcCtx.SchemaCache.GetData(l.ctx, in.Device)
 		if err != nil {
 			l.Error(err)

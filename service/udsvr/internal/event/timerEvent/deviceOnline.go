@@ -64,6 +64,8 @@ func (l *TimerHandle) SceneDeviceOnline(in application.ConnectMsg) error {
 		do.DeviceName = di.DeviceName
 		do.DeviceAlias = di.DeviceAlias.GetValue()
 		do.ProductID = di.ProductID
+		do.TriggerDetail = in
+		do.TriggerSubType = triggerType
 		func() {
 			err := db.UpdateWithField(l.ctx, relationDB.SceneIfTriggerFilter{ID: v.ID}, map[string]any{
 				"device_first_trigger_time": now,
