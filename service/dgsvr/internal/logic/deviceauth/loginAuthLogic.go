@@ -119,7 +119,7 @@ func (l *LoginAuthLogic) LoginAuth(in *dg.LoginAuthReq) (*dg.Response, error) {
 		return nil, err
 	}
 	if inLg.IsNeedRegister { //如果是需要注册的直接放过
-		l.subscribe(in.ClientID, inLg.ProductID, inLg.DeviceName, "$ext/down/register/%s/%s")
+		//l.subscribe(in.ClientID, inLg.ProductID, inLg.DeviceName, "$ext/down/register/%s/%s")
 		return &dg.Response{}, nil
 	}
 	//生成 MQTT 的 username 部分, 格式为 ${clientid};${sdkappid};${connid};${expiry}
@@ -150,6 +150,6 @@ func (l *LoginAuthLogic) LoginAuth(in *dg.LoginAuthReq) (*dg.Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	l.subscribe(in.ClientID, inLg.ProductID, inLg.DeviceName, topics...)
+	//l.subscribe(in.ClientID, inLg.ProductID, inLg.DeviceName, topics...)
 	return &dg.Response{}, nil
 }
