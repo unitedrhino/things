@@ -71,8 +71,7 @@ func (l *TimerHandle) SceneThingEventReport(in application.EventReport) error {
 		if !do.If.Triggers[0].Device.IsHit(ps, in.Identifier, in.Params) {
 			if po.Device.FirstTriggerTime.Valid { //如果处于触发状态,但是现在不触发了,则需要解除触发
 				err := db.UpdateWithField(l.ctx, relationDB.SceneIfTriggerFilter{ID: v.ID}, map[string]any{
-					"device_first_trigger_time": nil,
-					"last_run_time":             nil,
+					"last_run_time": nil,
 				})
 				if err != nil {
 					l.Error(err)
@@ -80,13 +79,12 @@ func (l *TimerHandle) SceneThingEventReport(in application.EventReport) error {
 			}
 			continue
 		}
-		if po.Device.FirstTriggerTime.Valid { //如果已经触发过,则忽略(默认边缘触发)
-			continue
-		}
+		//if po.Device.FirstTriggerTime.Valid { //如果已经触发过,则忽略(默认边缘触发)
+		//	continue
+		//}
 		if v.Device.StateKeep.Type == scene.StateKeepTypeDuration {
 			err := db.UpdateWithField(l.ctx, relationDB.SceneIfTriggerFilter{ID: v.ID}, map[string]any{
-				"device_first_trigger_time": now,
-				"last_run_time":             nil,
+				"last_run_time": nil,
 			})
 			if err != nil {
 				l.Error(err)
@@ -95,8 +93,7 @@ func (l *TimerHandle) SceneThingEventReport(in application.EventReport) error {
 		}
 		func() {
 			err := db.UpdateWithField(l.ctx, relationDB.SceneIfTriggerFilter{ID: v.ID}, map[string]any{
-				"device_first_trigger_time": now,
-				"last_run_time":             now,
+				"last_run_time": now,
 			})
 			if err != nil {
 				l.Error(err)
