@@ -83,7 +83,7 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 		}
 	}
 
-	dpi, err := l.svcCtx.TenantCache.GetData(l.ctx, uc.TenantCode)
+	dpi, err := l.svcCtx.TenantCache.GetData(l.ctx, def.TenantCodeDefault)
 	if err != nil {
 		l.Error(err)
 		return nil, err
