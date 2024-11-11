@@ -7,10 +7,10 @@ go 1.21.4
 
 require (
 	gitee.com/unitedrhino/core v1.0.4
-	gitee.com/unitedrhino/share v1.0.16
+	gitee.com/unitedrhino/share v1.0.19
 	gitee.com/unitedrhino/squirrel v1.20.5
 	github.com/dgraph-io/ristretto v0.1.0
-	github.com/dop251/goja v0.0.0-20230402114112-623f9dda9079
+	github.com/dop251/goja v0.0.0-20231024180952-594410467bc6
 	github.com/eclipse/paho.mqtt.golang v1.4.3
 	github.com/golang/protobuf v1.5.4
 	github.com/hashicorp/go-uuid v1.0.3

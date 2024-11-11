@@ -48,3 +48,10 @@ func GetDeviceMsg[reqType any](ctx context.Context, store kv.Store, msgType stri
 	err = utils.Unmarshal(req.Payload, &ret)
 	return &ret, err
 }
+func DelDeviceMsg[reqType any](ctx context.Context, store kv.Store, msgType string /*请求还是回复*/, handle string, Type string, device devices.Core, MsgToken string) error {
+	_, err := store.DelCtx(ctx, genDeviceMsgKey(msgType, handle, Type, devices.Core{
+		ProductID:  device.ProductID,
+		DeviceName: device.DeviceName,
+	}, MsgToken))
+	return err
+}

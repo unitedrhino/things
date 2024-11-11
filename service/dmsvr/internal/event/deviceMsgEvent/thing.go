@@ -546,11 +546,12 @@ func (l *ThingLogic) HandleCreateSchema(msg *deviceMsg.PublishMsg) (respMsg *dev
 	if pi.DeviceSchemaMode < product.DeviceSchemaModeAutoCreate {
 		return l.DeviceResp(msg, errors.Permissions.AddMsg("产品未开启设备自动创建"), nil), nil
 	}
-	err = l.dreq.Schema.ValidateWithFmt()
+	m := l.dreq.Schema.ToModel()
+	err = m.ValidateWithFmt()
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), nil
 	}
-	err = relationDB.NewDeviceSchemaRepo(l.ctx).MultiInsert2(l.ctx, msg.ProductID, msg.DeviceName, l.dreq.Schema)
+	err = relationDB.NewDeviceSchemaRepo(l.ctx).MultiInsert2(l.ctx, msg.ProductID, msg.DeviceName, m)
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), nil
 	}
@@ -707,6 +708,9 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 	tp, err := l.dreq.VerifyReqParam(l.schema, schema.ParamEvent)
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), err
+	}
+	if dbData.Type == "" {
+		dbData.Type = l.schema.Event[dbData.Identifier].Type
 	}
 
 	dbData.Params, err = msgThing.ToVal(tp)
@@ -866,7 +870,9 @@ func (l *ThingLogic) HandleControl(msg *deviceMsg.PublishMsg) (respMsg *deviceMs
 	if req == nil || err != nil {
 		return nil, err
 	}
-
+	cache.DelDeviceMsg[msgThing.Req](l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, msg.Handle, msg.Type,
+		devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName},
+		resp.MsgToken)
 	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.RespMsg, msg, resp.MsgToken)
 	if err != nil {
 		return nil, err
