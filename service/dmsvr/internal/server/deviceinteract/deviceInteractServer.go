@@ -82,3 +82,9 @@ func (s *DeviceInteractServer) GatewayNotifyBindSend(ctx context.Context, in *dm
 	l := deviceinteractlogic.NewGatewayNotifyBindSendLogic(ctx, s.svcCtx)
 	return l.GatewayNotifyBindSend(in)
 }
+
+// 提供给边缘端进行http访问
+func (s *DeviceInteractServer) EdgeSend(ctx context.Context, in *dm.EdgeSendReq) (*dm.EdgeSendResp, error) {
+	l := deviceinteractlogic.NewEdgeSendLogic(ctx, s.svcCtx)
+	return l.EdgeSend(in)
+}

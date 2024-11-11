@@ -74,6 +74,9 @@ type (
 	DeviceTransferReq                 = dm.DeviceTransferReq
 	DeviceTypeCountReq                = dm.DeviceTypeCountReq
 	DeviceTypeCountResp               = dm.DeviceTypeCountResp
+	EdgeManage                        = dm.EdgeManage
+	EdgeSendReq                       = dm.EdgeSendReq
+	EdgeSendResp                      = dm.EdgeSendResp
 	Empty                             = dm.Empty
 	EventLogIndexReq                  = dm.EventLogIndexReq
 	EventLogIndexResp                 = dm.EventLogIndexResp
@@ -239,6 +242,8 @@ type (
 		GatewayGetFoundSend(ctx context.Context, in *GatewayGetFoundReq, opts ...grpc.CallOption) (*Empty, error)
 		// 通知网关绑定子设备
 		GatewayNotifyBindSend(ctx context.Context, in *GatewayNotifyBindSendReq, opts ...grpc.CallOption) (*Empty, error)
+		// 提供给边缘端进行http访问
+		EdgeSend(ctx context.Context, in *EdgeSendReq, opts ...grpc.CallOption) (*EdgeSendResp, error)
 	}
 
 	defaultDeviceInteract struct {
@@ -372,4 +377,15 @@ func (m *defaultDeviceInteract) GatewayNotifyBindSend(ctx context.Context, in *G
 // 通知网关绑定子设备
 func (d *directDeviceInteract) GatewayNotifyBindSend(ctx context.Context, in *GatewayNotifyBindSendReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.GatewayNotifyBindSend(ctx, in)
+}
+
+// 提供给边缘端进行http访问
+func (m *defaultDeviceInteract) EdgeSend(ctx context.Context, in *EdgeSendReq, opts ...grpc.CallOption) (*EdgeSendResp, error) {
+	client := dm.NewDeviceInteractClient(m.cli.Conn())
+	return client.EdgeSend(ctx, in, opts...)
+}
+
+// 提供给边缘端进行http访问
+func (d *directDeviceInteract) EdgeSend(ctx context.Context, in *EdgeSendReq, opts ...grpc.CallOption) (*EdgeSendResp, error) {
+	return d.svr.EdgeSend(ctx, in)
 }

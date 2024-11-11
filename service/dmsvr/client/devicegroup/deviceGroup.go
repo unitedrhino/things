@@ -74,6 +74,9 @@ type (
 	DeviceTransferReq                 = dm.DeviceTransferReq
 	DeviceTypeCountReq                = dm.DeviceTypeCountReq
 	DeviceTypeCountResp               = dm.DeviceTypeCountResp
+	EdgeManage                        = dm.EdgeManage
+	EdgeSendReq                       = dm.EdgeSendReq
+	EdgeSendResp                      = dm.EdgeSendResp
 	Empty                             = dm.Empty
 	EventLogIndexReq                  = dm.EventLogIndexReq
 	EventLogIndexResp                 = dm.EventLogIndexResp

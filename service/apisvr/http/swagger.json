@@ -258,6 +258,78 @@
         ]
       }
     },
+    "/api/v1/things/device/edge/send/{handle}/{type}/{productID}/{deviceName}": {
+      "post": {
+        "summary": "设备使用http协议用云端交互,需要在http头中带上mqtt的账号密码(basic auth)",
+        "operationId": "postApiV1ThingsDeviceEdgeSend:handle:type:productID:deviceName",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/DeviceInteractEdgeSendResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "handle",
+            "description": "对应 mqtt topic的第一个 thing ota config 等等\r",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "schema": {}
+          },
+          {
+            "name": "type",
+            "description": "操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为\r",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "schema": {}
+          },
+          {
+            "name": "productID",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "schema": {}
+          },
+          {
+            "name": "deviceName",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "schema": {}
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceInteractEdgeSendReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/edge",
+          "thingsDeviceEdge"
+        ]
+      }
+    },
     "/api/v1/things/device/gateway/index": {
       "post": {
         "summary": "获取子设备列表",
@@ -7824,6 +7896,16 @@
         "value",
         "timestamp"
       ]
+    },
+    "DeviceInteractEdgeSendReq": {
+      "type": "object",
+      "properties": {},
+      "title": "DeviceInteractEdgeSendReq"
+    },
+    "DeviceInteractEdgeSendResp": {
+      "type": "object",
+      "properties": {},
+      "title": "DeviceInteractEdgeSendResp"
     },
     "DeviceInteractMultiSendPropertyMsg": {
       "type": "object",

@@ -8,6 +8,7 @@ import (
 
 	thingsdeviceauth "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/auth"
 	thingsdeviceauth5 "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/auth5"
+	thingsdeviceedge "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/edge"
 	thingsdevicegateway "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/gateway"
 	thingsdeviceinfo "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/info"
 	thingsdeviceinteract "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/interact"
@@ -96,6 +97,21 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/device/auth5"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.InitCtxsWare},
+			[]rest.Route{
+				{
+					// 设备使用http协议用云端交互,需要在http头中带上mqtt的账号密码(basic auth)
+					Method:  http.MethodPost,
+					Path:    "/send/:handle/:type/:productID/:deviceName",
+					Handler: thingsdeviceedge.SendHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/device/edge"),
 	)
 
 	server.AddRoutes(

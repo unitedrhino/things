@@ -129,6 +129,11 @@ service DeviceManage {
 
 }
 
+//提供给边缘的进行http访问
+message EdgeManage{
+
+}
+
 //产品管理
 service ProductManage{
   rpc productInit(ProductInitReq)  returns (Empty);
@@ -296,6 +301,8 @@ service DeviceInteract {
   //通知网关绑定子设备
   rpc gatewayNotifyBindSend(GatewayNotifyBindSendReq)returns(Empty);
 
+  //提供给边缘端进行http访问
+  rpc edgeSend(EdgeSendReq)returns(EdgeSendResp);
 }
 
 //新的ota功能实现
@@ -916,7 +923,17 @@ message GatewayGetFoundReq{
   string  deviceName = 2; //设备名
 }
 
+message EdgeSendReq{
+  string handle = 1;//对应 mqtt topic的第一个 thing ota config 等等
+  string type = 2;//操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
+  bytes payload = 3;
+  string productID = 4;
+  string deviceName = 5;
+}
 
+message EdgeSendResp{
+  bytes payload = 3;
+}
 
 message GatewayNotifyBindSendReq{
   DeviceCore gateway =1;

@@ -433,6 +433,16 @@ type DeviceInfoWithProperty struct {
 	Timestamp int64  `json:"timestamp,string"` //发生时间戳
 }
 
+type DeviceInteractEdgeSendReq struct {
+	Handle     string `path:"handle"` //对应 mqtt topic的第一个 thing ota config 等等
+	Type       string `path:"type"`   //操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
+	ProductID  string `path:"productID"`
+	DeviceName string `path:"deviceName"`
+}
+
+type DeviceInteractEdgeSendResp struct {
+}
+
 type DeviceInteractMultiSendPropertyMsg struct {
 	ProductID  string `json:"productID"`  //产品id
 	DeviceName string `json:"deviceName"` //设备名

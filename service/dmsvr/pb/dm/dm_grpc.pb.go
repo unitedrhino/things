@@ -4006,6 +4006,7 @@ const (
 	DeviceInteract_SendMsg_FullMethodName                  = "/dm.DeviceInteract/sendMsg"
 	DeviceInteract_GatewayGetFoundSend_FullMethodName      = "/dm.DeviceInteract/gatewayGetFoundSend"
 	DeviceInteract_GatewayNotifyBindSend_FullMethodName    = "/dm.DeviceInteract/gatewayNotifyBindSend"
+	DeviceInteract_EdgeSend_FullMethodName                 = "/dm.DeviceInteract/edgeSend"
 )
 
 // DeviceInteractClient is the client API for DeviceInteract service.
@@ -4032,6 +4033,8 @@ type DeviceInteractClient interface {
 	GatewayGetFoundSend(ctx context.Context, in *GatewayGetFoundReq, opts ...grpc.CallOption) (*Empty, error)
 	// 通知网关绑定子设备
 	GatewayNotifyBindSend(ctx context.Context, in *GatewayNotifyBindSendReq, opts ...grpc.CallOption) (*Empty, error)
+	// 提供给边缘端进行http访问
+	EdgeSend(ctx context.Context, in *EdgeSendReq, opts ...grpc.CallOption) (*EdgeSendResp, error)
 }
 
 type deviceInteractClient struct {
@@ -4132,6 +4135,15 @@ func (c *deviceInteractClient) GatewayNotifyBindSend(ctx context.Context, in *Ga
 	return out, nil
 }
 
+func (c *deviceInteractClient) EdgeSend(ctx context.Context, in *EdgeSendReq, opts ...grpc.CallOption) (*EdgeSendResp, error) {
+	out := new(EdgeSendResp)
+	err := c.cc.Invoke(ctx, DeviceInteract_EdgeSend_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DeviceInteractServer is the server API for DeviceInteract service.
 // All implementations must embed UnimplementedDeviceInteractServer
 // for forward compatibility
@@ -4156,6 +4168,8 @@ type DeviceInteractServer interface {
 	GatewayGetFoundSend(context.Context, *GatewayGetFoundReq) (*Empty, error)
 	// 通知网关绑定子设备
 	GatewayNotifyBindSend(context.Context, *GatewayNotifyBindSendReq) (*Empty, error)
+	// 提供给边缘端进行http访问
+	EdgeSend(context.Context, *EdgeSendReq) (*EdgeSendResp, error)
 	mustEmbedUnimplementedDeviceInteractServer()
 }
 
@@ -4192,6 +4206,9 @@ func (UnimplementedDeviceInteractServer) GatewayGetFoundSend(context.Context, *G
 }
 func (UnimplementedDeviceInteractServer) GatewayNotifyBindSend(context.Context, *GatewayNotifyBindSendReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GatewayNotifyBindSend not implemented")
+}
+func (UnimplementedDeviceInteractServer) EdgeSend(context.Context, *EdgeSendReq) (*EdgeSendResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EdgeSend not implemented")
 }
 func (UnimplementedDeviceInteractServer) mustEmbedUnimplementedDeviceInteractServer() {}
 
@@ -4386,6 +4403,24 @@ func _DeviceInteract_GatewayNotifyBindSend_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DeviceInteract_EdgeSend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EdgeSendReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceInteractServer).EdgeSend(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceInteract_EdgeSend_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceInteractServer).EdgeSend(ctx, req.(*EdgeSendReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DeviceInteract_ServiceDesc is the grpc.ServiceDesc for DeviceInteract service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -4432,6 +4467,10 @@ var DeviceInteract_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "gatewayNotifyBindSend",
 			Handler:    _DeviceInteract_GatewayNotifyBindSend_Handler,
+		},
+		{
+			MethodName: "edgeSend",
+			Handler:    _DeviceInteract_EdgeSend_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
