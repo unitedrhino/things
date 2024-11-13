@@ -129,11 +129,6 @@ service DeviceManage {
 
 }
 
-//提供给边缘的进行http访问
-message EdgeManage{
-
-}
-
 //产品管理
 service ProductManage{
   rpc productInit(ProductInitReq)  returns (Empty);
@@ -188,7 +183,6 @@ service ProductManage{
   rpc productCategorySchemaMultiDelete(ProductCategorySchemaMultiSaveReq) returns(Empty);
 
 }
-
 
 //公共物模型管理
 service SchemaManage{
@@ -343,7 +337,6 @@ service OtaManage{
   rpc otaModuleInfoIndex(OtaModuleInfoIndexReq)returns(OtaModuleInfoIndexResp);
   rpc otaModuleInfoRead(WithIDCode)returns(OtaModuleInfo);
 }
-
 
 
 service userDevice{
