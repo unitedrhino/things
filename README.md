@@ -1,12 +1,14 @@
-
 # 产品概述
-**联犀** 是一款基于 Go 语言开发的商业级 SaaS 云原生微服务物联网平台，致力于帮助企业快速构建自己的物联网应用，实现数字化转型。  
+[![Go](https://github.com/zeromicro/go-zero/workflows/Go/badge.svg?branch=master)](https://github.com/unitedrhino/things/actions)
+[![Go Report Card](https://goreportcard.com/badge/github.com/zeromicro/go-zero)](https://goreportcard.com/report/github.com/unitedrhino/things)
+[![Go Reference](https://pkg.go.dev/badge/github.com/unitedrhino/things.svg)](https://pkg.go.dev/github.com/unitedrhino/things)
+
+**联犀** 是一款基于 Go 语言开发的商业级 SaaS 云原生微服务物联网平台，致力于帮助企业快速构建自己的物联网应用，实现快速业务落地。  
 [文档](https://doc.unitedrhino.com/)
 ## 技术优势
-- **高性能**：采用 Go 语言和高性能组件（如 emqx, nats, tdengine），结合 gozero 微服务框架，确保服务的稳定性与性能。
-- **云原生可扩展**：一套代码支持 k8s, docker, 微服务及单体模式部署，便于业务架构的灵活切换。
-- **易部署**：一键安装和运行，简化部署流程。
-- **易集成**：支持通过 HTTP, gRPC 或直接集成，同时兼容 MySQL 和 PostgreSQL，实现无缝集成。
+- **快速商用**：提供web,小程序,app,设备sdk及模组,少量开发即可上线。
+- **超强的拓展能力**：一套代码同时支持k8s,docker,可以通过http,grpc,nats及ws快速集成,完善的租户管理,应用管理,少量代码即可快速实现自己的业务
+- **高性能**：使用golang编写,选用高性能组件(emqx,nats,tdengine),极致的性能优化保证极端情况的稳定
 
 <img  src="./doc/assets/SaaS平台.png">  
 
