@@ -77,20 +77,20 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 	if err != nil {
 		return nil, err
 	}
-	for _, v := range in.Devices {
-		err := l.svcCtx.DeviceCache.SetData(l.ctx, devices.Core{
-			ProductID:  v.ProductID,
-			DeviceName: v.DeviceName,
-		}, nil)
-		if err != nil {
-			l.Error(err)
+	ctxs.GoNewCtx(l.ctx, func(ctx2 context.Context) {
+		for _, v := range in.Devices {
+			err := l.svcCtx.DeviceCache.SetData(ctx2, devices.Core{
+				ProductID:  v.ProductID,
+				DeviceName: v.DeviceName,
+			}, nil)
+			if err != nil {
+				l.Error(err)
+			}
 		}
-	}
+	})
 	if len(changeAreaIDPaths) > 0 {
-		ctxs.GoNewCtx(l.ctx, func(ctx2 context.Context) {
-			logic.FillAreaDeviceCount(ctx2, l.svcCtx, utils.SetToSlice(changeAreaIDPaths)...)
-			logic.FillProjectDeviceCount(ctx2, l.svcCtx, utils.SetToSlice(projectIDSet)...)
-		})
+		logic.FillAreaDeviceCount(l.ctx, l.svcCtx, utils.SetToSlice(changeAreaIDPaths)...)
+		logic.FillProjectDeviceCount(l.ctx, l.svcCtx, utils.SetToSlice(projectIDSet)...)
 	}
 	return &dm.Empty{}, err
 }
