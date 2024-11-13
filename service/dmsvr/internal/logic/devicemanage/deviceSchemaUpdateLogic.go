@@ -4,7 +4,6 @@ import (
 	"context"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/devices"
-	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	commonschemalogic "gitee.com/unitedrhino/things/service/dmsvr/internal/logic/schemamanage"
@@ -48,7 +47,7 @@ func (l *DeviceSchemaUpdateLogic) DeviceSchemaUpdate(in *dm.DeviceSchema) (*dm.E
 	}
 	newPo := utils.Copy[relationDB.DmDeviceSchema](in)
 	newPo.ID = po.ID
-	if in.Affordance != nil && po.Tag == schema.TagCustom {
+	if in.Affordance != nil {
 		po.Affordance = newPo.Affordance
 	}
 	if in.Name != nil {
@@ -60,20 +59,20 @@ func (l *DeviceSchemaUpdateLogic) DeviceSchemaUpdate(in *dm.DeviceSchema) (*dm.E
 	if in.Required != 0 {
 		po.Required = newPo.Required
 	}
-	if in.IsCanSceneLinkage != 0 && po.Tag == schema.TagCustom {
+	if in.IsCanSceneLinkage != 0 {
 		po.IsCanSceneLinkage = newPo.IsCanSceneLinkage
 	}
-	if in.FuncGroup != 0 && po.Tag == schema.TagCustom {
+	if in.FuncGroup != 0 {
 		po.FuncGroup = newPo.FuncGroup
 	}
-	if in.ControlMode != 0 && po.Tag == schema.TagCustom {
+	if in.ControlMode != 0 {
 		po.ControlMode = newPo.ControlMode
 	}
-	if in.UserPerm != 0 && po.Tag == schema.TagCustom {
+	if in.UserPerm != 0 {
 		po.UserPerm = newPo.UserPerm
 	}
 
-	if in.IsHistory != 0 && po.Tag == schema.TagCustom {
+	if in.IsHistory != 0 {
 		po.IsHistory = newPo.IsHistory
 	}
 

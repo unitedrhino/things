@@ -100,7 +100,7 @@ func (p DeviceSchemaRepo) FindOneByFilter(ctx context.Context, f DeviceSchemaFil
 }
 
 func (p DeviceSchemaRepo) Update(ctx context.Context, data *DmDeviceSchema) error {
-	err := p.db.WithContext(ctx).Omit("product_id", "device_name", "identifier").Where("product_id = ? and ,device_name=?  and identifier = ?", data.ProductID, data.DeviceName, data.Identifier).Save(data).Error
+	err := p.db.WithContext(ctx).Omit("product_id", "device_name", "identifier").Where("product_id = ? and device_name=?  and identifier = ?", data.ProductID, data.DeviceName, data.Identifier).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
