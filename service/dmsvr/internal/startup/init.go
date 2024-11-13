@@ -35,6 +35,7 @@ import (
 )
 
 func Init(svcCtx *svc.ServiceContext) {
+	logic.Init(svcCtx)
 	VersionUpdate(svcCtx)
 	InitCache(svcCtx)
 	TimerInit(svcCtx)

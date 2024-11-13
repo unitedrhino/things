@@ -24,7 +24,7 @@ func MultiImportHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		var (
 			req      types.DeviceMultiImportReq
-			limitCnt = 1000 //限制表格数据条数
+			limitCnt = 5000 //限制表格数据条数
 		)
 
 		if err := httpx.Parse(r, &req); err != nil {

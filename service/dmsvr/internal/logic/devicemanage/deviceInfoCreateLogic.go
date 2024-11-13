@@ -211,16 +211,16 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 		}
 	}
 
-	err = l.InitDevice(devices.Info{
-		ProductID:  di.ProductID,
-		DeviceName: di.DeviceName,
-		TenantCode: string(di.TenantCode),
-		ProjectID:  int64(di.ProjectID),
-		AreaID:     int64(di.AreaID),
-	})
-	if err != nil {
-		return nil, err
-	}
+	//err = l.InitDevice(devices.Info{
+	//	ProductID:  di.ProductID,
+	//	DeviceName: di.DeviceName,
+	//	TenantCode: string(di.TenantCode),
+	//	ProjectID:  int64(di.ProjectID),
+	//	AreaID:     int64(di.AreaID),
+	//})
+	//if err != nil {
+	//	return nil, err
+	//}
 	err = l.DiDB.Insert(l.ctx, &di)
 	if err != nil {
 		l.Errorf("AddDevice.DeviceInfo.Insert err=%+v", err)
@@ -232,6 +232,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 }
 
 func (l *DeviceInfoCreateLogic) InitDevice(in devices.Info) error {
+	return nil //不再预先创建,设备消息入库的时候自动建表
 	if in.TenantCode == "" {
 		in.TenantCode = ctxs.GetUserCtxNoNil(l.ctx).TenantCode
 	}

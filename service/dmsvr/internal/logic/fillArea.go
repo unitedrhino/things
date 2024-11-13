@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"google.golang.org/protobuf/types/known/wrapperspb"
+	"time"
 )
 
 func FillAreaGroupCount(ctx context.Context, svcCtx *svc.ServiceContext, areaID int64) error {
@@ -34,7 +35,7 @@ func FillAreaGroupCount(ctx context.Context, svcCtx *svc.ServiceContext, areaID 
 	return nil
 }
 
-func FillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, areaIDPaths ...string) error {
+func fillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, areaIDPaths ...string) error {
 	logx.WithContext(ctx).Infof("FillAreaDeviceCount areaIDPaths:%v", areaIDPaths)
 	defer utils.Recover(ctx)
 	ctx = ctxs.WithRoot(ctx)
@@ -68,15 +69,65 @@ func FillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, areaID
 	return nil
 }
 
-func FillProjectDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, projectIDs ...int64) error {
+func FillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, areaIDPaths ...string) error {
+	areaIDPathChan <- areaIDPaths
+	return nil
+}
+
+var projectIDChan chan []int64
+var areaIDPathChan chan []string
+
+func Init(svcCtx *svc.ServiceContext) {
+	projectIDChan = make(chan []int64, 500)
+	areaIDPathChan = make(chan []string, 1000)
+	utils.Go(context.Background(), func() {
+		tick := time.Tick(time.Second)
+		execProjectIDs := make([]int64, 0, 500)
+		execAreaIDPaths := make([]string, 0, 1000)
+
+		for {
+			select {
+			case _ = <-tick:
+				if len(execProjectIDs) > 0 {
+					var newProjectIDs []int64
+					newProjectIDs = append(newProjectIDs, execProjectIDs...)
+					execProjectIDs = execProjectIDs[0:0] //清空切片
+					utils.Go(context.Background(), func() {
+						ctx := ctxs.WithRoot(context.Background())
+						fillProjectDeviceCount(ctx, svcCtx, newProjectIDs...)
+					})
+				}
+				if len(execAreaIDPaths) > 0 {
+					var newAreaIDPaths []string
+					newAreaIDPaths = append(newAreaIDPaths, execAreaIDPaths...)
+					execAreaIDPaths = execAreaIDPaths[0:0] //清空切片
+					utils.Go(context.Background(), func() {
+						ctx := ctxs.WithRoot(context.Background())
+						fillAreaDeviceCount(ctx, svcCtx, newAreaIDPaths...)
+					})
+				}
+			case p := <-projectIDChan:
+				execProjectIDs = append(execProjectIDs, p...)
+			case a := <-areaIDPathChan:
+				execAreaIDPaths = append(execAreaIDPaths, a...)
+			}
+		}
+	})
+}
+func fillProjectDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, projectIDs ...int64) error {
 	logx.WithContext(ctx).Infof("FillProjectDeviceCount projectIDs:%v", projectIDs)
 	defer utils.Recover(ctx)
 	ctx = ctxs.WithRoot(ctx)
 	log := logx.WithContext(ctx)
+	var idMap = map[int64]struct{}{}
 	for _, id := range projectIDs {
 		if id <= def.NotClassified {
 			continue
 		}
+		if _, ok := idMap[id]; ok {
+			continue
+		}
+		idMap[id] = struct{}{}
 		count, err := relationDB.NewDeviceInfoRepo(ctx).CountByFilter(ctx, relationDB.DeviceFilter{ProjectIDs: []int64{id}})
 		if err != nil {
 			log.Error(err)
@@ -88,6 +139,10 @@ func FillProjectDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, pro
 			continue
 		}
 	}
+	return nil
+}
 
+func FillProjectDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, projectIDs ...int64) error {
+	projectIDChan <- projectIDs
 	return nil
 }

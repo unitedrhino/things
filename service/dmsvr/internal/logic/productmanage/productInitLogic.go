@@ -5,7 +5,6 @@ import (
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/utils"
-	devicemanagelogic "gitee.com/unitedrhino/things/service/dmsvr/internal/logic/devicemanage"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"sync"
 
@@ -74,23 +73,23 @@ func (l *ProductInitLogic) initOne(in *relationDB.DmProductInfo) error {
 		}
 	}
 
-	dis, err := relationDB.NewDeviceInfoRepo(l.ctx).FindByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductID}, nil)
-	if err != nil {
-		logx.Error(in, err)
-		return err
-	}
-	dic := devicemanagelogic.NewDeviceInfoCreateLogic(l.ctx, l.svcCtx)
-	for _, di := range dis {
-		err := dic.InitDevice(devices.Info{
-			ProductID:  di.ProductID,
-			DeviceName: di.DeviceName,
-			TenantCode: string(di.TenantCode),
-			ProjectID:  int64(di.ProjectID),
-			AreaID:     int64(di.AreaID),
-		})
-		if err != nil {
-			logx.Error(in, di, err)
-		}
-	}
+	//dis, err := relationDB.NewDeviceInfoRepo(l.ctx).FindByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductID}, nil)
+	//if err != nil {
+	//	logx.Error(in, err)
+	//	return err
+	//}
+	//dic := devicemanagelogic.NewDeviceInfoCreateLogic(l.ctx, l.svcCtx)
+	//for _, di := range dis {
+	//	err := dic.InitDevice(devices.Info{
+	//		ProductID:  di.ProductID,
+	//		DeviceName: di.DeviceName,
+	//		TenantCode: string(di.TenantCode),
+	//		ProjectID:  int64(di.ProjectID),
+	//		AreaID:     int64(di.AreaID),
+	//	})
+	//	if err != nil {
+	//		logx.Error(in, di, err)
+	//	}
+	//}
 	return nil
 }

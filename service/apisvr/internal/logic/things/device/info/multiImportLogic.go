@@ -17,6 +17,7 @@ import (
 	"sort"
 	"strings"
 	"sync"
+	"time"
 )
 
 type MultiImportLogic struct {
@@ -41,7 +42,9 @@ func (l *MultiImportLogic) MultiImport(req *types.DeviceMultiImportReq, rows [][
 		errdata      []*types.DeviceMultiImportRow
 		GatewayMap   map[devices.Core][]*devices.Core
 		gatewayMutex sync.Mutex
+		LimitChan    = make(chan struct{}, 100) //100的并发
 	)
+	var start = time.Now()
 
 	for i, cell := range rows {
 		idx := int64(i) //这里必须是 int64，因为下面 key.(int64) 要推断
@@ -59,8 +62,11 @@ func (l *MultiImportLogic) MultiImport(req *types.DeviceMultiImportReq, rows [][
 			errdata = append(errdata, importRow)
 			continue
 		}
-
+		LimitChan <- struct{}{}
 		egg.Go(func() error {
+			defer func() {
+				<-LimitChan
+			}()
 			_, err := l.svcCtx.DeviceM.DeviceInfoCreate(l.ctx, dmDeviceInfoReq)
 			if err != nil {
 				if errors.Cmp(err, errors.Duplicate) {
@@ -113,6 +119,8 @@ func (l *MultiImportLogic) MultiImport(req *types.DeviceMultiImportReq, rows [][
 			}
 		})
 	}
+	var end = time.Now()
+	l.Infof("handle user %v", end.Sub(start))
 	sm.Range(func(i, value any) bool {
 		idx := i.(int64) //这里必须是 int64，因为下面 key.(int64) 要推断
 		importRow := l.deviceMultiImportRowToDto(idx, rows[idx])
