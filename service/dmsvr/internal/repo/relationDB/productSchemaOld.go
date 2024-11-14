@@ -9,12 +9,12 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-type ProductSchemaRepo struct {
+type ProductSchemaOldRepo struct {
 	db *gorm.DB
 }
 
 type (
-	ProductSchemaFilter struct {
+	ProductSchemaOldFilter struct {
 		ID                int64
 		ProductID         string   //产品id  必填
 		ProductIDs        []string //产品id列表
@@ -33,14 +33,12 @@ type (
 	}
 )
 
-func NewProductSchemaRepo(in any) *ProductSchemaRepo {
-	return &ProductSchemaRepo{db: stores.GetCommonConn(in)}
+func NewProductSchemaOldRepo(in any) *ProductSchemaOldRepo {
+	return &ProductSchemaOldRepo{db: stores.GetCommonConn(in)}
 }
 
-func (p ProductSchemaRepo) fmtFilter(ctx context.Context, f ProductSchemaFilter) *gorm.DB {
+func (p ProductSchemaOldRepo) fmtFilter(ctx context.Context, f ProductSchemaFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
-	db = db.Where("tag !=?", schema.TagDevice)
-
 	if f.IsCanSceneLinkage != 0 {
 		db = db.Where("is_can_scene_linkage = ?", f.IsCanSceneLinkage)
 	}
@@ -89,13 +87,13 @@ func (p ProductSchemaRepo) fmtFilter(ctx context.Context, f ProductSchemaFilter)
 	}
 	return db
 }
-func (p ProductSchemaRepo) Insert(ctx context.Context, data *DmSchemaInfo) error {
+func (p ProductSchemaOldRepo) Insert(ctx context.Context, data *DmProductSchema) error {
 	result := p.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (p ProductSchemaRepo) FindOneByFilter(ctx context.Context, f ProductSchemaFilter) (*DmSchemaInfo, error) {
-	var result DmSchemaInfo
+func (p ProductSchemaOldRepo) FindOneByFilter(ctx context.Context, f ProductSchemaFilter) (*DmProductSchema, error) {
+	var result DmProductSchema
 	db := p.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
@@ -104,19 +102,19 @@ func (p ProductSchemaRepo) FindOneByFilter(ctx context.Context, f ProductSchemaF
 	return &result, nil
 }
 
-func (p ProductSchemaRepo) Update(ctx context.Context, data *DmSchemaInfo) error {
+func (p ProductSchemaOldRepo) Update(ctx context.Context, data *DmProductSchema) error {
 	err := p.db.WithContext(ctx).Omit("product_id", "identifier").Where("product_id = ? and identifier = ?", data.ProductID, data.Identifier).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
-func (p ProductSchemaRepo) UpdateTag(ctx context.Context, productIDs []string, identifiers []string, oldTag, newTag int64) error {
-	err := p.db.WithContext(ctx).Model(&DmSchemaInfo{}).Where(
+func (p ProductSchemaOldRepo) UpdateTag(ctx context.Context, productIDs []string, identifiers []string, oldTag, newTag int64) error {
+	err := p.db.WithContext(ctx).Model(&DmProductSchema{}).Where(
 		"product_id in ? and identifier in ? and tag =?", productIDs, identifiers, oldTag).Update("tag", newTag).Error
 	return stores.ErrFmt(err)
 }
 
-func (p ProductSchemaRepo) UpdateWithCommon(ctx context.Context, common *DmCommonSchema) error {
-	data := DmSchemaInfo{
+func (p ProductSchemaOldRepo) UpdateWithCommon(ctx context.Context, common *DmCommonSchema) error {
+	data := DmProductSchema{
 		DmSchemaCore: DmSchemaCore{
 			//ExtendConfig:      common.ExtendConfig,
 			Name:              common.Name,
@@ -135,15 +133,15 @@ func (p ProductSchemaRepo) UpdateWithCommon(ctx context.Context, common *DmCommo
 	return stores.ErrFmt(err)
 }
 
-func (p ProductSchemaRepo) DeleteByFilter(ctx context.Context, f ProductSchemaFilter) error {
+func (p ProductSchemaOldRepo) DeleteByFilter(ctx context.Context, f ProductSchemaFilter) error {
 	db := p.fmtFilter(ctx, f)
-	err := db.Delete(&DmSchemaInfo{}).Error
+	err := db.Delete(&DmProductSchema{}).Error
 	return stores.ErrFmt(err)
 }
 
-func (p ProductSchemaRepo) FindByFilter(ctx context.Context, f ProductSchemaFilter, page *stores.PageInfo) ([]*DmSchemaInfo, error) {
-	var results []*DmSchemaInfo
-	db := p.fmtFilter(ctx, f).Model(&DmSchemaInfo{})
+func (p ProductSchemaOldRepo) FindByFilter(ctx context.Context, f ProductSchemaFilter, page *stores.PageInfo) ([]*DmProductSchema, error) {
+	var results []*DmProductSchema
+	db := p.fmtFilter(ctx, f).Model(&DmProductSchema{})
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
@@ -151,53 +149,53 @@ func (p ProductSchemaRepo) FindByFilter(ctx context.Context, f ProductSchemaFilt
 	}
 	return results, nil
 }
-func (p ProductSchemaRepo) FindProductIDByFilter(ctx context.Context, f ProductSchemaFilter) ([]string, error) {
-	var results []*DmSchemaInfo
-	db := p.fmtFilter(ctx, f).Model(&DmSchemaInfo{})
+func (p ProductSchemaOldRepo) FindProductIDByFilter(ctx context.Context, f ProductSchemaFilter) ([]string, error) {
+	var results []*DmProductSchema
+	db := p.fmtFilter(ctx, f).Model(&DmProductSchema{})
 	err := db.Select("ProductID").Find(&results).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
-	return utils.ToSliceWithFunc(results, func(in *DmSchemaInfo) string {
+	return utils.ToSliceWithFunc(results, func(in *DmProductSchema) string {
 		return in.ProductID
 	}), nil
 
 }
 
-func (p ProductSchemaRepo) CountByFilter(ctx context.Context, f ProductSchemaFilter) (size int64, err error) {
-	db := p.fmtFilter(ctx, f).Model(&DmSchemaInfo{})
+func (p ProductSchemaOldRepo) CountByFilter(ctx context.Context, f ProductSchemaFilter) (size int64, err error) {
+	db := p.fmtFilter(ctx, f).Model(&DmProductSchema{})
 	err = db.Count(&size).Error
 	return size, stores.ErrFmt(err)
 }
 
 // 批量插入 LightStrategyDevice 记录
-func (p ProductSchemaRepo) MultiInsert(ctx context.Context, data []*DmSchemaInfo) error {
-	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmSchemaInfo{}).Create(data).Error
+func (p ProductSchemaOldRepo) MultiInsert(ctx context.Context, data []*DmProductSchema) error {
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmProductSchema{}).Create(data).Error
 	return stores.ErrFmt(err)
 }
 
-func (p ProductSchemaRepo) MultiUpdate(ctx context.Context, productID string, schemaInfo *schema.Model) error {
-	var datas []*DmSchemaInfo
+func (p ProductSchemaOldRepo) MultiUpdate(ctx context.Context, productID string, schemaInfo *schema.Model) error {
+	var datas []*DmProductSchema
 	for _, item := range schemaInfo.Property {
-		datas = append(datas, &DmSchemaInfo{
+		datas = append(datas, &DmProductSchema{
 			ProductID:    productID,
 			DmSchemaCore: ToPropertyPo(item),
 		})
 	}
 	for _, item := range schemaInfo.Event {
-		datas = append(datas, &DmSchemaInfo{
+		datas = append(datas, &DmProductSchema{
 			ProductID:    productID,
 			DmSchemaCore: ToEventPo(item),
 		})
 	}
 	for _, item := range schemaInfo.Action {
-		datas = append(datas, &DmSchemaInfo{
+		datas = append(datas, &DmProductSchema{
 			ProductID:    productID,
 			DmSchemaCore: ToActionPo(item),
 		})
 	}
 	err := p.db.Transaction(func(tx *gorm.DB) error {
-		rm := NewProductSchemaRepo(tx)
+		rm := NewProductSchemaOldRepo(tx)
 		err := rm.DeleteByFilter(ctx, ProductSchemaFilter{ProductID: productID})
 		if err != nil {
 			return err

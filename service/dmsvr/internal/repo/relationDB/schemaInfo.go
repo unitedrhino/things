@@ -4,16 +4,17 @@ import (
 	"context"
 	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/share/utils"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
-type DeviceSchemaRepo struct {
+type SchemaInfoRepo struct {
 	db *gorm.DB
 }
 
 type (
-	DeviceSchemaFilter struct {
+	SchemaInfoFilter struct {
 		ID                int64
 		ProductID         string //产品id  必填
 		DeviceName        string //设备ID
@@ -32,14 +33,18 @@ type (
 	}
 )
 
-func NewDeviceSchemaRepo(in any) *DeviceSchemaRepo {
-	return &DeviceSchemaRepo{db: stores.GetCommonConn(in)}
+func NewSchemaInfoRepo(in any) *SchemaInfoRepo {
+	return &SchemaInfoRepo{db: stores.GetCommonConn(in)}
 }
 
-func (p DeviceSchemaRepo) fmtFilter(ctx context.Context, f DeviceSchemaFilter) *gorm.DB {
+func (p SchemaInfoRepo) fmtFilter(ctx context.Context, f SchemaInfoFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
-	db = db.Where("product_id=?", f.ProductID)
-	db = db.Where("device_name=?", f.DeviceName)
+	if f.ProductID != "" {
+		db = db.Where("product_id = ?", f.ProductID)
+	}
+	if f.DeviceName != "" {
+		db = db.Where("device_name = ?", f.DeviceName)
+	}
 
 	if f.IsCanSceneLinkage != 0 {
 		db = db.Where("is_can_scene_linkage = ?", f.IsCanSceneLinkage)
@@ -84,13 +89,13 @@ func (p DeviceSchemaRepo) fmtFilter(ctx context.Context, f DeviceSchemaFilter) *
 	}
 	return db
 }
-func (p DeviceSchemaRepo) Insert(ctx context.Context, data *DmDeviceSchema) error {
+func (p SchemaInfoRepo) Insert(ctx context.Context, data *DmSchemaInfo) error {
 	result := p.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
 }
 
-func (p DeviceSchemaRepo) FindOneByFilter(ctx context.Context, f DeviceSchemaFilter) (*DmDeviceSchema, error) {
-	var result DmDeviceSchema
+func (p SchemaInfoRepo) FindOneByFilter(ctx context.Context, f SchemaInfoFilter) (*DmSchemaInfo, error) {
+	var result DmSchemaInfo
 	db := p.fmtFilter(ctx, f)
 	err := db.First(&result).Error
 	if err != nil {
@@ -99,26 +104,26 @@ func (p DeviceSchemaRepo) FindOneByFilter(ctx context.Context, f DeviceSchemaFil
 	return &result, nil
 }
 
-func (p DeviceSchemaRepo) Update(ctx context.Context, data *DmDeviceSchema) error {
+func (p SchemaInfoRepo) Update(ctx context.Context, data *DmSchemaInfo) error {
 	err := p.db.WithContext(ctx).Omit("product_id", "device_name", "identifier").Where("product_id = ? and device_name=?  and identifier = ?", data.ProductID, data.DeviceName, data.Identifier).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
-func (p DeviceSchemaRepo) UpdateTag(ctx context.Context, productIDs []string, identifiers []string, oldTag, newTag int64) error {
-	err := p.db.WithContext(ctx).Model(&DmDeviceSchema{}).Where(
+func (p SchemaInfoRepo) UpdateTag(ctx context.Context, productIDs []string, identifiers []string, oldTag, newTag int64) error {
+	err := p.db.WithContext(ctx).Model(&DmSchemaInfo{}).Where(
 		"product_id in ? and identifier in ? and tag =?", productIDs, identifiers, oldTag).Update("tag", newTag).Error
 	return stores.ErrFmt(err)
 }
 
-func (p DeviceSchemaRepo) DeleteByFilter(ctx context.Context, f DeviceSchemaFilter) error {
+func (p SchemaInfoRepo) DeleteByFilter(ctx context.Context, f SchemaInfoFilter) error {
 	db := p.fmtFilter(ctx, f)
-	err := db.Delete(&DmDeviceSchema{}).Error
+	err := db.Delete(&DmSchemaInfo{}).Error
 	return stores.ErrFmt(err)
 }
 
-func (p DeviceSchemaRepo) FindByFilter(ctx context.Context, f DeviceSchemaFilter, page *stores.PageInfo) ([]*DmDeviceSchema, error) {
-	var results []*DmDeviceSchema
-	db := p.fmtFilter(ctx, f).Model(&DmDeviceSchema{})
+func (p SchemaInfoRepo) FindByFilter(ctx context.Context, f SchemaInfoFilter, page *stores.PageInfo) ([]*DmSchemaInfo, error) {
+	var results []*DmSchemaInfo
+	db := p.fmtFilter(ctx, f).Model(&DmSchemaInfo{})
 	db = page.ToGorm(db)
 	//var rst = []map[string]any{}
 	err := db.Find(&results).Error
@@ -128,75 +133,75 @@ func (p DeviceSchemaRepo) FindByFilter(ctx context.Context, f DeviceSchemaFilter
 	return results, nil
 }
 
-func (p DeviceSchemaRepo) CountByFilter(ctx context.Context, f DeviceSchemaFilter) (size int64, err error) {
-	db := p.fmtFilter(ctx, f).Model(&DmDeviceSchema{})
+func (p SchemaInfoRepo) CountByFilter(ctx context.Context, f SchemaInfoFilter) (size int64, err error) {
+	db := p.fmtFilter(ctx, f).Model(&DmSchemaInfo{})
 	err = db.Count(&size).Error
 	return size, stores.ErrFmt(err)
 }
 
 // 批量插入 LightStrategyDevice 记录
-func (p DeviceSchemaRepo) MultiInsert(ctx context.Context, data []*DmDeviceSchema) error {
-	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmDeviceSchema{}).Create(data).Error
+func (p SchemaInfoRepo) MultiInsert(ctx context.Context, data []*DmSchemaInfo) error {
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmSchemaInfo{}).Create(data).Error
 	return stores.ErrFmt(err)
 }
 
 // 批量插入 LightStrategyDevice 记录
-func (p DeviceSchemaRepo) MultiInsert2(ctx context.Context, productID string, deviceName string, schemaInfo *schema.Model) error {
-	var datas []*DmDeviceSchema
+func (p SchemaInfoRepo) MultiInsert2(ctx context.Context, productID string, deviceName string, schemaInfo *schema.Model) error {
+	var datas []*DmSchemaInfo
 	for _, item := range schemaInfo.Property {
-		datas = append(datas, &DmDeviceSchema{
+		datas = append(datas, &DmSchemaInfo{
 			ProductID:    productID,
-			DeviceName:   deviceName,
+			DeviceName:   utils.AnyToNullString(deviceName),
 			DmSchemaCore: ToPropertyPo(item),
 		})
 	}
 	for _, item := range schemaInfo.Event {
-		datas = append(datas, &DmDeviceSchema{
+		datas = append(datas, &DmSchemaInfo{
 			ProductID:    productID,
-			DeviceName:   deviceName,
+			DeviceName:   utils.AnyToNullString(deviceName),
 			DmSchemaCore: ToEventPo(item),
 		})
 	}
 	for _, item := range schemaInfo.Action {
-		datas = append(datas, &DmDeviceSchema{
+		datas = append(datas, &DmSchemaInfo{
 			ProductID:    productID,
-			DeviceName:   deviceName,
+			DeviceName:   utils.AnyToNullString(deviceName),
 			DmSchemaCore: ToActionPo(item),
 		})
 	}
-	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{DoNothing: true}).Model(&DmDeviceSchema{}).CreateInBatches(datas, 100).Error
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{DoNothing: true}).Model(&DmSchemaInfo{}).CreateInBatches(datas, 100).Error
 	return stores.ErrFmt(err)
 }
 
-func (p DeviceSchemaRepo) MultiUpdate(ctx context.Context, productID string, deviceName string, schemaInfo *schema.Model) error {
-	var datas []*DmDeviceSchema
+func (p SchemaInfoRepo) MultiUpdate(ctx context.Context, productID string, deviceName string, schemaInfo *schema.Model) error {
+	var datas []*DmSchemaInfo
 	for _, item := range schemaInfo.Property {
 		item.Tag = schema.TagDevice
-		datas = append(datas, &DmDeviceSchema{
+		datas = append(datas, &DmSchemaInfo{
 			ProductID:    productID,
-			DeviceName:   deviceName,
+			DeviceName:   utils.AnyToNullString(deviceName),
 			DmSchemaCore: ToPropertyPo(item),
 		})
 	}
 	for _, item := range schemaInfo.Event {
 		item.Tag = schema.TagDevice
-		datas = append(datas, &DmDeviceSchema{
+		datas = append(datas, &DmSchemaInfo{
 			ProductID:    productID,
-			DeviceName:   deviceName,
+			DeviceName:   utils.AnyToNullString(deviceName),
 			DmSchemaCore: ToEventPo(item),
 		})
 	}
 	for _, item := range schemaInfo.Action {
 		item.Tag = schema.TagDevice
-		datas = append(datas, &DmDeviceSchema{
+		datas = append(datas, &DmSchemaInfo{
 			ProductID:    productID,
-			DeviceName:   deviceName,
+			DeviceName:   utils.AnyToNullString(deviceName),
 			DmSchemaCore: ToActionPo(item),
 		})
 	}
 	err := p.db.Transaction(func(tx *gorm.DB) error {
-		rm := NewDeviceSchemaRepo(tx)
-		err := rm.DeleteByFilter(ctx, DeviceSchemaFilter{ProductID: productID})
+		rm := NewSchemaInfoRepo(tx)
+		err := rm.DeleteByFilter(ctx, SchemaInfoFilter{ProductID: productID})
 		if err != nil {
 			return err
 		}

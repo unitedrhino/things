@@ -128,13 +128,13 @@ func (l *ProductCategorySchemaMultiCreateLogic) ProductCategorySchemaMultiCreate
 					return err
 				}
 				findProducts = utils.SliceToSet(ps)
-				var schemas []*relationDB.DmProductSchema
+				var schemas []*relationDB.DmSchemaInfo
 				for _, v := range productIDs {
 					if _, ok := findProducts[v]; ok {
 						continue
 					}
 					//如果没有这个物模型需要新增
-					schemas = append(schemas, &relationDB.DmProductSchema{
+					schemas = append(schemas, &relationDB.DmSchemaInfo{
 						ProductID:    v,
 						DmSchemaCore: identifier.DmSchemaCore,
 					})

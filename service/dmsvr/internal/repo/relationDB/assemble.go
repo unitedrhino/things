@@ -166,7 +166,7 @@ func ToActionDo(in *DmSchemaCore) *schema.Action {
 	return do
 }
 
-func ToSchemaDo(productID string, in []*DmProductSchema) *schema.Model {
+func ToSchemaDo(productID string, in []*DmSchemaInfo) *schema.Model {
 	model := schema.Model{
 		Profile: schema.Profile{ProductID: productID},
 	}

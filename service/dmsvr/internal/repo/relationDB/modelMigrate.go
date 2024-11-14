@@ -3,8 +3,10 @@ package relationDB
 import (
 	"context"
 	"gitee.com/unitedrhino/share/conf"
+	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/share/utils"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -32,7 +34,8 @@ func Migrate(c conf.Database) error {
 		&DmDeviceInfo{},
 		&DmProductCustom{},
 		&DmDeviceSchema{},
-		&DmProductSchema{},
+		//&DmProductSchema{},
+		&DmSchemaInfo{},
 		&DmGroupInfo{},
 		&DmGroupDevice{},
 		&DmCommonSchema{},
@@ -64,11 +67,29 @@ func Migrate(c conf.Database) error {
 }
 
 func versionUpdate(db *gorm.DB) error {
+	ctx := ctxs.WithRoot(context.Background())
 	m := db.Migrator()
 	{ //版本升级兼容
 
 		if m.HasColumn(&DmGatewayDevice{}, "tenant_code") {
 			err := db.Migrator().DropColumn(&DmGatewayDevice{}, "tenant_code")
+			if err != nil {
+				return err
+			}
+		}
+	}
+	if m.HasTable(&DmProductSchema{}) {
+		sit, err := NewSchemaInfoRepo(ctx).CountByFilter(ctx, SchemaInfoFilter{})
+		if err != nil {
+			return err
+		}
+		if sit == 0 {
+			ps, err := NewProductSchemaOldRepo(ctx).FindByFilter(ctx, ProductSchemaFilter{}, nil)
+			if err != nil {
+				return err
+			}
+			sis := utils.CopySlice[DmSchemaInfo](ps)
+			err = NewSchemaInfoRepo(ctx).MultiInsert(ctx, sis)
 			if err != nil {
 				return err
 			}

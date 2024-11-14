@@ -136,11 +136,11 @@ func (p ProductInfoRepo) Insert(ctx context.Context, data *DmProductInfo) error 
 			if len(ids) == 0 {
 				return nil
 			}
-			var schemas []*DmProductSchema
+			var schemas []*DmSchemaInfo
 			for _, v := range ids {
 				v.ID = 0
 				v.Tag = schema.TagRequired
-				schemas = append(schemas, &DmProductSchema{
+				schemas = append(schemas, &DmSchemaInfo{
 					ProductID:    data.ProductID,
 					DmSchemaCore: v.DmSchemaCore,
 				})

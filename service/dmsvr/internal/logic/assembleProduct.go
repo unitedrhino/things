@@ -55,7 +55,7 @@ func ToProductInfo(ctx context.Context, svcCtx *svc.ServiceContext, pi *relation
 	return dpi
 }
 
-func ToProductSchemaRpc(info *relationDB.DmProductSchema) *dm.ProductSchemaInfo {
+func ToProductSchemaRpc(info *relationDB.DmSchemaInfo) *dm.ProductSchemaInfo {
 	db := &dm.ProductSchemaInfo{
 		ProductID:         info.ProductID,
 		Tag:               info.Tag,
@@ -76,8 +76,8 @@ func ToProductSchemaRpc(info *relationDB.DmProductSchema) *dm.ProductSchemaInfo 
 	return db
 }
 
-func ToProductSchemaPo(info *dm.ProductSchemaInfo) *relationDB.DmProductSchema {
-	return utils.Copy[relationDB.DmProductSchema](info)
+func ToProductSchemaPo(info *dm.ProductSchemaInfo) *relationDB.DmSchemaInfo {
+	return utils.Copy[relationDB.DmSchemaInfo](info)
 }
 
 func ToCustomTopicPb(info *productCustom.CustomTopic) *dm.CustomTopic {

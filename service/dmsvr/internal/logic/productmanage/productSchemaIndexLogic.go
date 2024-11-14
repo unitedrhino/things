@@ -32,18 +32,7 @@ func NewProductSchemaIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 // 获取产品信息列表
 func (l *ProductSchemaIndexLogic) ProductSchemaIndex(in *dm.ProductSchemaIndexReq) (*dm.ProductSchemaIndexResp, error) {
 	l.Infof("%s req=%v", utils.FuncName(), utils.Fmt(in))
-	filter := relationDB.ProductSchemaFilter{
-		ProductID:         in.ProductID,
-		Type:              in.Type,
-		Types:             in.Types,
-		Tag:               in.Tag,
-		Identifiers:       in.Identifiers,
-		Name:              in.Name,
-		IsCanSceneLinkage: in.IsCanSceneLinkage,
-		FuncGroup:         in.FuncGroup,
-		UserPerm:          in.UserPerm,
-		PropertyMode:      in.PropertyMode,
-	}
+	filter := utils.Copy2[relationDB.ProductSchemaFilter](in)
 	schemas, err := l.PsDB.FindByFilter(l.ctx, filter, logic.ToPageInfo(in.Page).WithDefaultOrder(stores.OrderBy{
 		Field: "order",
 		Sort:  stores.OrderAsc,

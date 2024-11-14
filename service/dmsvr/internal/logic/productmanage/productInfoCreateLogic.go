@@ -155,7 +155,7 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Empt
 		return nil, err
 	}
 
-	var schemas []*relationDB.DmProductSchema
+	var schemas []*relationDB.DmSchemaInfo
 	if pi.CategoryID != 0 && pi.CategoryID != def.NotClassified { //如果选择了产品品类,需要获取该品类的物模型并绑定
 		var categoryIDs = []int64{def.RootNode}
 		if pi.CategoryID != def.RootNode {
@@ -175,7 +175,7 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Empt
 		}
 		for _, pcs := range pcss {
 			pcs.Tag = schema.TagRequired
-			schemas = append(schemas, &relationDB.DmProductSchema{
+			schemas = append(schemas, &relationDB.DmSchemaInfo{
 				ProductID:    pi.ProductID,
 				DmSchemaCore: pcs.DmSchemaCore,
 			})
