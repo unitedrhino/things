@@ -209,6 +209,9 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 	if data.AutoRegister != 0 {
 		old.AutoRegister = data.AutoRegister
 	}
+	if data.DeviceSchemaMode != 0 {
+		old.DeviceSchemaMode = data.DeviceSchemaMode
+	}
 	return nil
 }
 
