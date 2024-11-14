@@ -37,8 +37,7 @@ func NewProductSchemaRepo(in any) *ProductSchemaRepo {
 	return &ProductSchemaRepo{db: stores.GetCommonConn(in)}
 }
 
-func (p ProductSchemaRepo) fmtFilter(ctx context.Context, f ProductSchemaFilter) *gorm.DB {
-	db := p.db.WithContext(ctx)
+func (p ProductSchemaRepo) filter(db *gorm.DB, f ProductSchemaFilter) *gorm.DB {
 	db = db.Where("tag !=?", schema.TagDevice)
 
 	if f.IsCanSceneLinkage != 0 {
@@ -88,6 +87,11 @@ func (p ProductSchemaRepo) fmtFilter(ctx context.Context, f ProductSchemaFilter)
 		db = db.Where("identifier in ?", f.Identifiers)
 	}
 	return db
+}
+
+func (p ProductSchemaRepo) fmtFilter(ctx context.Context, f ProductSchemaFilter) *gorm.DB {
+	db := p.db.WithContext(ctx)
+	return p.filter(db, f)
 }
 func (p ProductSchemaRepo) Insert(ctx context.Context, data *DmSchemaInfo) error {
 	result := p.db.WithContext(ctx).Create(data)

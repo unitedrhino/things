@@ -842,6 +842,7 @@ type DeviceSchemaIndexReq struct {
 	UserPerm          int64     `json:"userPerm,optional"`          //用户权限操作: 1:r(只读) 3:rw(可读可写)
 	PropertyMode      string    `json:"propertyMode,optional"`      //属性类型可用 读写类型: 1:r(只读) 2:rw(可读可写)
 	ControlMode       int64     `json:"controlMode,optional"`       //控制模式: 1: 可以群控,可以单控  2:只能单控
+	WithProductSchema bool      `json:"withProductSchema,optional"` //同时获取产品物模型
 }
 
 type DeviceSchemaIndexResp struct {
