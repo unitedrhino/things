@@ -106,7 +106,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				{
 					// 设备使用http协议用云端交互,需要在http头中带上mqtt的账号密码(basic auth)
 					Method:  http.MethodPost,
-					Path:    "/send/:handle/:type/:productID/:deviceName",
+					Path:    "/send/:handle/:type",
 					Handler: thingsdeviceedge.SendHandler(serverCtx),
 				},
 			}...,
@@ -419,7 +419,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: thingsdeviceschema.CreateHandler(serverCtx),
 				},
 				{
-					// 获取设备物模型
+					// 获取设备物模型列表
 					Method:  http.MethodPost,
 					Path:    "/index",
 					Handler: thingsdeviceschema.IndexHandler(serverCtx),
@@ -431,7 +431,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: thingsdeviceschema.MultiCreateHandler(serverCtx),
 				},
 				{
-					// 批量创建设备物模型
+					// 批量删除设备物模型
 					Method:  http.MethodPost,
 					Path:    "/multi-delete",
 					Handler: thingsdeviceschema.MultiDeleteHandler(serverCtx),

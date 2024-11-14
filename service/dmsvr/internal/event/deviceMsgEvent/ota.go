@@ -209,7 +209,7 @@ func (l *OtaLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) *d
 	return &deviceMsg.PublishMsg{
 		Handle:       msg.Handle,
 		Type:         msg.Type,
-		Payload:      resp.AddStatus(err).Bytes(),
+		Payload:      resp.AddStatus(err, l.dreq.NeedRetMsg()).Bytes(),
 		ProductID:    msg.ProductID,
 		DeviceName:   msg.DeviceName,
 		ProtocolCode: msg.ProtocolCode,

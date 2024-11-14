@@ -49,14 +49,14 @@ service api {
     @handler multiCreate
     post /multi-create (DeviceSchemaMultiCreateReq) returns ()
     @doc(
-        summary: "批量创建设备物模型"
+        summary: "批量删除设备物模型"
         authType: "admin"
         isNeedAuth: "true"
     )
     @handler multiDelete
     post /multi-delete (DeviceSchemaMultiDeleteReq) returns ()
 
-    @doc "获取设备物模型"
+    @doc "获取设备物模型列表"
     @handler index
     post /index (DeviceSchemaIndexReq) returns (DeviceSchemaIndexResp)
 }

@@ -434,10 +434,11 @@ type DeviceInfoWithProperty struct {
 }
 
 type DeviceInteractEdgeSendReq struct {
-	Handle     string `path:"handle"` //对应 mqtt topic的第一个 thing ota config 等等
-	Type       string `path:"type"`   //操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
-	ProductID  string `path:"productID"`
-	DeviceName string `path:"deviceName"`
+	Handle        string `path:"handle"`                //对应 mqtt topic的第一个 thing ota config 等等
+	Type          string `path:"type"`                  //操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
+	ProductID     string `header:"productID,optional"`  //如果网关类型要操作子设备的topic,需要指定子设备的产品ID和设备ID,如果没有填写则默认是账号里的设备
+	DeviceName    string `header:"deviceName,optional"` //如果网关类型要操作子设备的topic,需要指定子设备的产品ID和设备ID,如果没有填写则默认是账号里的设备
+	Authorization string `header:"authorization"`       //basic auth  账号密码使用mqtt格式生成的账号密码
 }
 
 type DeviceInteractEdgeSendResp struct {

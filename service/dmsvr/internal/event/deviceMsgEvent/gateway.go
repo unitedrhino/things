@@ -12,6 +12,7 @@ import (
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceStatus"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/product"
 	devicemanagelogic "gitee.com/unitedrhino/things/service/dmsvr/internal/logic/devicemanage"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/cache"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
@@ -45,6 +46,30 @@ func (l *GatewayLogic) initMsg(msg *deviceMsg.PublishMsg) (err error) {
 	return nil
 }
 
+func (l *GatewayLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) *deviceMsg.PublishMsg {
+	if !errors.Cmp(err, errors.OK) {
+		l.Errorf("%s.DeviceResp err:%v, msg:%v", utils.FuncName(), err, msg)
+	}
+	resp := &deviceMsg.CommonMsg{
+		Method:   deviceMsg.GetRespMethod(l.dreq.Method),
+		MsgToken: l.dreq.MsgToken,
+		//Timestamp: time.Now().UnixMilli(),
+		Data: data,
+	}
+	if msg.ProtocolCode == "" {
+		msg.ProtocolCode = def.ProtocolCodeUnitedRhino
+	}
+	return &deviceMsg.PublishMsg{
+		Handle:       msg.Handle,
+		Type:         msg.Type,
+		Payload:      resp.AddStatus(err, l.dreq.NeedRetMsg()).Bytes(),
+		Timestamp:    time.Now().UnixMilli(),
+		ProductID:    msg.ProductID,
+		DeviceName:   msg.DeviceName,
+		ProtocolCode: msg.ProtocolCode,
+	}
+}
+
 func (l *GatewayLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Infof("%s req=%+v", utils.FuncName(), msg)
 	err = l.initMsg(msg)
@@ -60,6 +85,8 @@ func (l *GatewayLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Pub
 		resp, err = l.HandleTopo(msg)
 	case msgGateway.TypeStatus:
 		resp, err = l.HandleStatus(msg)
+	case msgGateway.TypeThing:
+		resp, err = l.HandleThing(msg)
 	}
 	respStr, _ := json.Marshal(resp)
 	hub := &deviceLog.Hub{
@@ -101,19 +128,19 @@ func (l *GatewayLogic) HandleRegister(msg *deviceMsg.PublishMsg, resp *msgGatewa
 	})
 	if err != nil {
 		er := errors.Fmt(err)
-		resp.AddStatus(er)
+		resp.AddStatus(er, l.dreq.NeedRetMsg())
 		return resp, er
 	}
 	{ //参数检查
 		if len(pis.List) != len(pds) {
 			er := errors.Parameter.AddMsg("有产品id不正确,请查验")
-			resp.AddStatus(er)
+			resp.AddStatus(er, l.dreq.NeedRetMsg())
 			return resp, er
 		}
 		for _, pi := range pis.List {
 			if pi.AutoRegister != def.AutoRegAuto {
 				er := errors.Parameter.AddMsgf("产品:%s 未打开自动注册", pi.ProductName)
-				resp.AddStatus(er)
+				resp.AddStatus(er, l.dreq.NeedRetMsg())
 				return resp, er
 			}
 		}
@@ -139,7 +166,7 @@ func (l *GatewayLogic) HandleRegister(msg *deviceMsg.PublishMsg, resp *msgGatewa
 					Code:       errors.Fmt(err).GetCode(),
 					Msg:        errors.Fmt(err).GetMsg(),
 				})
-				resp.AddStatus(err)
+				resp.AddStatus(err, l.dreq.NeedRetMsg())
 				continue
 			}
 		}
@@ -149,7 +176,7 @@ func (l *GatewayLogic) HandleRegister(msg *deviceMsg.PublishMsg, resp *msgGatewa
 				DeviceName: v.DeviceName,
 			})
 			if err != nil {
-				resp.AddStatus(err)
+				resp.AddStatus(err, l.dreq.NeedRetMsg())
 				continue
 			}
 		}
@@ -167,11 +194,11 @@ func (l *GatewayLogic) HandleRegister(msg *deviceMsg.PublishMsg, resp *msgGatewa
 				Code:       errors.Fmt(err).GetCode(),
 				Msg:        errors.Fmt(err).GetMsg(),
 			})
-			resp.AddStatus(err)
+			resp.AddStatus(err, l.dreq.NeedRetMsg())
 			continue
 		} else {
 			if err != nil && !errors.Cmp(err, errors.NotFind) {
-				resp.AddStatus(err)
+				resp.AddStatus(err, l.dreq.NeedRetMsg())
 				continue
 			}
 		}
@@ -193,7 +220,7 @@ func (l *GatewayLogic) HandleTopo(msg *deviceMsg.PublishMsg) (respMsg *msgGatewa
 	var resp = msgGateway.Msg{
 		CommonMsg: *deviceMsg.NewRespCommonMsg(l.ctx, l.dreq.Method, l.dreq.MsgToken),
 	}
-	resp.AddStatus(errors.OK)
+	resp.AddStatus(errors.OK, l.dreq.NeedRetMsg())
 	rsp, err := func() (respMsg *msgGateway.Msg, err error) {
 		switch l.dreq.Method {
 		case deviceMsg.Register:
@@ -201,7 +228,7 @@ func (l *GatewayLogic) HandleTopo(msg *deviceMsg.PublishMsg) (respMsg *msgGatewa
 		case deviceMsg.Bind:
 			list, err := ToDmDevicesBind(l.dreq.Payload.Devices)
 			if err != nil {
-				resp.AddStatus(err)
+				resp.AddStatus(err, l.dreq.NeedRetMsg())
 				return &resp, err
 			}
 			_, err = devicemanage.NewDeviceManageServer(l.svcCtx).DeviceGatewayMultiCreate(l.ctx, &dm.DeviceGatewayMultiCreateReq{
@@ -214,7 +241,7 @@ func (l *GatewayLogic) HandleTopo(msg *deviceMsg.PublishMsg) (respMsg *msgGatewa
 				List: list,
 			})
 			if err != nil {
-				resp.AddStatus(err)
+				resp.AddStatus(err, l.dreq.NeedRetMsg())
 				return &resp, err
 			}
 			resp.Payload = &msgGateway.GatewayPayload{Devices: l.dreq.Payload.Devices.GetCore()}
@@ -229,7 +256,7 @@ func (l *GatewayLogic) HandleTopo(msg *deviceMsg.PublishMsg) (respMsg *msgGatewa
 				List:        ToDmDevicesCore(l.dreq.Payload.Devices),
 			})
 			if err != nil {
-				resp.AddStatus(err)
+				resp.AddStatus(err, l.dreq.NeedRetMsg())
 				return &resp, err
 			}
 			resp.Payload = &msgGateway.GatewayPayload{Devices: l.dreq.Payload.Devices.GetCore()}
@@ -241,7 +268,7 @@ func (l *GatewayLogic) HandleTopo(msg *deviceMsg.PublishMsg) (respMsg *msgGatewa
 				DeviceName: msg.DeviceName,
 			}, l.dreq.Payload.Devices.GetDevCore(), devicemanagelogic.CheckDeviceType)
 			if err != nil {
-				resp.AddStatus(err)
+				resp.AddStatus(err, l.dreq.NeedRetMsg())
 				return &resp, err
 			}
 			var ca = cache.GatewayCanBindStu{
@@ -254,7 +281,7 @@ func (l *GatewayLogic) HandleTopo(msg *deviceMsg.PublishMsg) (respMsg *msgGatewa
 			}
 			err = l.svcCtx.GatewayCanBind.Update(l.ctx, &ca)
 			if err != nil {
-				resp.AddStatus(err)
+				resp.AddStatus(err, l.dreq.NeedRetMsg())
 				return &resp, err
 			}
 			return &resp, nil
@@ -265,7 +292,7 @@ func (l *GatewayLogic) HandleTopo(msg *deviceMsg.PublishMsg) (respMsg *msgGatewa
 					DeviceName: msg.DeviceName,
 				}})
 			if err != nil {
-				resp.AddStatus(err)
+				resp.AddStatus(err, l.dreq.NeedRetMsg())
 				return &resp, err
 			}
 			var payload msgGateway.GatewayPayload
@@ -297,6 +324,151 @@ var (
 	}
 )
 
+func (l *GatewayLogic) HandleThing(msg *deviceMsg.PublishMsg) (respMsg *msgGateway.Msg, err error) {
+	l.Infof("%s req=%+v", utils.FuncName(), msg)
+	err = l.initMsg(msg)
+	if err != nil {
+		return nil, err
+	}
+	var resp = &msgGateway.Msg{
+		CommonMsg: *deviceMsg.NewRespCommonMsg(l.ctx, l.dreq.Method, l.dreq.MsgToken),
+	}
+	resp.AddStatus(errors.OK, l.dreq.NeedRetMsg())
+	p := l.dreq.Payload
+	if p != nil && p.ProductID != "" && p.DeviceName != "" && p.DeviceName != msg.DeviceName && p.ProductID != msg.ProductID {
+		gs, err := relationDB.NewGatewayDeviceRepo(l.ctx).CountByFilter(l.ctx,
+			relationDB.GatewayDeviceFilter{SubDevices: []*devices.Core{{ProductID: p.ProductID, DeviceName: p.DeviceName}},
+				Gateway: &devices.Core{
+					ProductID:  msg.ProductID,
+					DeviceName: msg.DeviceName,
+				}})
+		if err != nil {
+			resp.AddStatus(err, l.dreq.NeedRetMsg())
+			return resp, err
+		}
+		if gs == 0 {
+			err := errors.DeviceNotBound
+			resp.AddStatus(err, l.dreq.NeedRetMsg())
+			return resp, err
+		}
+	}
+	switch l.dreq.Method {
+	case deviceMsg.CreateSchema:
+		resp, err = l.HandleCreateSchema(msg, resp)
+	case deviceMsg.DeleteSchema:
+		resp, err = l.HandleDeleteSchema(msg, resp)
+	case deviceMsg.GetSchema:
+		resp, err = l.HandlePropertyGetSchema(msg, resp)
+	}
+	if l.dreq.NoAsk() { //如果不需要回复
+		resp = nil
+	}
+	return resp, err
+}
+
+func (l *GatewayLogic) HandlePropertyGetSchema(msg *deviceMsg.PublishMsg, resp *msgGateway.Msg) (respMsg *msgGateway.Msg, err error) {
+	var (
+		payload msgGateway.GatewayPayload
+	)
+	if l.dreq.Payload == nil || l.dreq.Payload.ProductID == "" { //如果没有传产品,则会返回设备物模型
+		s, err := l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName})
+		if err != nil {
+			resp.AddStatus(err, l.dreq.NeedRetMsg())
+			return resp, err
+		}
+		payload.Schema = s.ToSimple()
+		resp.Payload = &payload
+		return resp, nil
+	}
+	if l.dreq.Payload.DeviceName == "" {
+		s, err := l.svcCtx.ProductSchemaRepo.GetData(l.ctx, devices.Core{ProductID: l.dreq.Payload.ProductID})
+		if err != nil {
+			resp.AddStatus(err, l.dreq.NeedRetMsg())
+			return resp, err
+		}
+		payload.Schema = s.ToSimple()
+		resp.Payload = &payload
+		return resp, nil
+	}
+	s, err := l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, devices.Core{ProductID: l.dreq.Payload.ProductID, DeviceName: l.dreq.Payload.DeviceName})
+	if err != nil {
+		resp.AddStatus(err, l.dreq.NeedRetMsg())
+		return resp, err
+	}
+	payload.Schema = s.ToSimple()
+	resp.Payload = &payload
+	return resp, nil
+}
+
+func (l *GatewayLogic) HandleCreateSchema(msg *deviceMsg.PublishMsg, resp *msgGateway.Msg) (respMsg *msgGateway.Msg, err error) {
+	if l.dreq.Payload == nil || l.dreq.Payload.Schema == nil {
+		er := errors.Parameter.AddMsg("需要填写schema")
+		resp.AddStatus(er, l.dreq.NeedRetMsg())
+		return resp, er
+	}
+	if l.dreq.Payload.ProductID == "" || l.dreq.Payload.DeviceName == "" {
+		l.dreq.Payload.ProductID = msg.ProductID
+		l.dreq.Payload.DeviceName = msg.DeviceName
+	}
+	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, msg.ProductID)
+	if err != nil {
+		resp.AddStatus(err, l.dreq.NeedRetMsg())
+		return resp, err
+	}
+	if pi.DeviceSchemaMode < product.DeviceSchemaModeAutoCreate {
+		er := errors.Permissions.AddMsg("产品未开启设备自动创建")
+		resp.AddStatus(er, l.dreq.NeedRetMsg())
+		return resp, er
+	}
+	m := l.dreq.Payload.Schema.ToModel()
+	err = m.ValidateWithFmt()
+	if err != nil {
+		resp.AddStatus(err, l.dreq.NeedRetMsg())
+		return resp, err
+	}
+	err = relationDB.NewDeviceSchemaRepo(l.ctx).MultiInsert2(l.ctx, msg.ProductID, msg.DeviceName, m)
+	if err != nil {
+		resp.AddStatus(err, l.dreq.NeedRetMsg())
+		return resp, err
+	}
+	l.svcCtx.DeviceSchemaRepo.SetData(l.ctx, devices.Core{
+		ProductID:  msg.ProductID,
+		DeviceName: msg.DeviceName,
+	}, nil)
+	return resp, nil
+}
+func (l *GatewayLogic) HandleDeleteSchema(msg *deviceMsg.PublishMsg, resp *msgGateway.Msg) (respMsg *msgGateway.Msg, err error) {
+	if l.dreq.Payload == nil || len(l.dreq.Payload.Identifiers) == 0 {
+		er := errors.Parameter.AddMsg("需要填写identifiers")
+		resp.AddStatus(er, l.dreq.NeedRetMsg())
+		return resp, er
+	}
+	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, msg.ProductID)
+	if err != nil {
+		resp.AddStatus(err, l.dreq.NeedRetMsg())
+		return resp, err
+	}
+	if pi.DeviceSchemaMode < product.DeviceSchemaModeAutoCreate {
+		er := errors.Permissions.AddMsg("产品未开启设备自动创建")
+		resp.AddStatus(er, l.dreq.NeedRetMsg())
+		return resp, er
+	}
+	_, err = devicemanagelogic.NewDeviceSchemaMultiDeleteLogic(l.ctx, l.svcCtx).DeviceSchemaMultiDelete(&dm.DeviceSchemaMultiDeleteReq{
+		ProductID:   msg.ProductID,
+		DeviceName:  msg.DeviceName,
+		Identifiers: l.dreq.Payload.Identifiers,
+	})
+	if err != nil {
+		resp.AddStatus(err, l.dreq.NeedRetMsg())
+		return resp, err
+	}
+	l.svcCtx.DeviceSchemaRepo.SetData(l.ctx, devices.Core{
+		ProductID:  msg.ProductID,
+		DeviceName: msg.DeviceName,
+	}, nil)
+	return resp, nil
+}
+
 func (l *GatewayLogic) HandleStatus(msg *deviceMsg.PublishMsg) (respMsg *msgGateway.Msg, err error) {
 	l.Debugf("%s", utils.FuncName())
 
@@ -304,10 +476,10 @@ func (l *GatewayLogic) HandleStatus(msg *deviceMsg.PublishMsg) (respMsg *msgGate
 		CommonMsg: *deviceMsg.NewRespCommonMsg(l.ctx, l.dreq.Method, l.dreq.MsgToken),
 		Payload:   l.dreq.Payload,
 	}
-	resp.AddStatus(errors.OK)
+	resp.AddStatus(errors.OK, l.dreq.NeedRetMsg())
 	if !utils.SliceIn(l.dreq.Method, deviceMsg.Offline, deviceMsg.Online) {
 		err = errors.Parameter.AddMsg("method not support")
-		resp.AddStatus(err)
+		resp.AddStatus(err, l.dreq.NeedRetMsg())
 		return &resp, err
 	}
 	var (
@@ -325,12 +497,12 @@ func (l *GatewayLogic) HandleStatus(msg *deviceMsg.PublishMsg) (respMsg *msgGate
 		DeviceName: msg.DeviceName,
 	}})
 	if err != nil {
-		resp.AddStatus(err)
+		resp.AddStatus(err, l.dreq.NeedRetMsg())
 		return &resp, err
 	}
 	if int(gs) != len(l.dreq.Payload.Devices) {
 		err := errors.DeviceNotBound
-		resp.AddStatus(err)
+		resp.AddStatus(err, l.dreq.NeedRetMsg())
 		return &resp, err
 	}
 

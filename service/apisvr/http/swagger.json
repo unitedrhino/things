@@ -258,10 +258,10 @@
         ]
       }
     },
-    "/api/v1/things/device/edge/send/{handle}/{type}/{productID}/{deviceName}": {
+    "/api/v1/things/device/edge/send/{handle}/{type}": {
       "post": {
         "summary": "设备使用http协议用云端交互,需要在http头中带上mqtt的账号密码(basic auth)",
-        "operationId": "postApiV1ThingsDeviceEdgeSend:handle:type:productID:deviceName",
+        "operationId": "postApiV1ThingsDeviceEdgeSend:handle:type",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -303,14 +303,24 @@
           },
           {
             "name": "productID",
-            "in": "path",
-            "required": true,
+            "description": "如果网关类型要操作子设备的topic,需要指定子设备的产品ID和设备ID,如果没有填写则默认是账号里的设备\r",
+            "in": "header",
+            "required": false,
             "type": "string",
             "schema": {}
           },
           {
             "name": "deviceName",
-            "in": "path",
+            "description": "如果网关类型要操作子设备的topic,需要指定子设备的产品ID和设备ID,如果没有填写则默认是账号里的设备\r",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "schema": {}
+          },
+          {
+            "name": "authorization",
+            "description": "basic auth  账号密码使用mqtt格式生成的账号密码\r",
+            "in": "header",
             "required": true,
             "type": "string",
             "schema": {}
@@ -1924,7 +1934,7 @@
     },
     "/api/v1/things/device/schema/index": {
       "post": {
-        "summary": "获取设备物模型",
+        "summary": "获取设备物模型列表",
         "operationId": "postApiV1ThingsDeviceSchemaIndex",
         "responses": {
           "200": {
@@ -2005,7 +2015,7 @@
     },
     "/api/v1/things/device/schema/multi-delete": {
       "post": {
-        "summary": "批量创建设备物模型",
+        "summary": "批量删除设备物模型",
         "operationId": "postApiV1ThingsDeviceSchemaMulti-delete",
         "responses": {
           "200": {

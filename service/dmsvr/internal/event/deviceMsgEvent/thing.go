@@ -26,7 +26,6 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/cache"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
-	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -80,7 +79,7 @@ func (l *ThingLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) 
 	return &deviceMsg.PublishMsg{
 		Handle:       msg.Handle,
 		Type:         msg.Type,
-		Payload:      resp.AddStatus(err).Bytes(),
+		Payload:      resp.AddStatus(err, l.dreq.NeedRetMsg()).Bytes(),
 		Timestamp:    time.Now().UnixMilli(),
 		ProductID:    msg.ProductID,
 		DeviceName:   msg.DeviceName,
@@ -531,62 +530,6 @@ func OtaVersionCheck(ctx context.Context, svcCtx *svc.ServiceContext, msg device
 	return
 }
 
-func (l *ThingLogic) HandlePropertyGetSchema(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
-	return l.DeviceResp(msg, errors.OK, l.schema.ToSimple()), nil
-}
-
-func (l *ThingLogic) HandleCreateSchema(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
-	if l.dreq.Schema == nil {
-		return l.DeviceResp(msg, errors.Parameter.AddMsg("需要填写schema"), nil), nil
-	}
-	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, msg.ProductID)
-	if err != nil {
-		return l.DeviceResp(msg, err, nil), nil
-	}
-	if pi.DeviceSchemaMode < product.DeviceSchemaModeAutoCreate {
-		return l.DeviceResp(msg, errors.Permissions.AddMsg("产品未开启设备自动创建"), nil), nil
-	}
-	m := l.dreq.Schema.ToModel()
-	err = m.ValidateWithFmt()
-	if err != nil {
-		return l.DeviceResp(msg, err, nil), nil
-	}
-	err = relationDB.NewDeviceSchemaRepo(l.ctx).MultiInsert2(l.ctx, msg.ProductID, msg.DeviceName, m)
-	if err != nil {
-		return l.DeviceResp(msg, err, nil), nil
-	}
-	l.svcCtx.DeviceSchemaRepo.SetData(l.ctx, devices.Core{
-		ProductID:  msg.ProductID,
-		DeviceName: msg.DeviceName,
-	}, nil)
-	return l.DeviceResp(msg, errors.OK, nil), nil
-}
-func (l *ThingLogic) HandleDeleteSchema(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
-	if len(l.dreq.Identifiers) == 0 {
-		return l.DeviceResp(msg, errors.Parameter.AddMsg("需要填写identifiers"), nil), nil
-	}
-	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, msg.ProductID)
-	if err != nil {
-		return l.DeviceResp(msg, err, nil), nil
-	}
-	if pi.DeviceSchemaMode < product.DeviceSchemaModeAutoCreate {
-		return l.DeviceResp(msg, errors.Permissions.AddMsg("产品未开启设备自动创建"), nil), nil
-	}
-	_, err = devicemanagelogic.NewDeviceSchemaMultiDeleteLogic(l.ctx, l.svcCtx).DeviceSchemaMultiDelete(&dm.DeviceSchemaMultiDeleteReq{
-		ProductID:   msg.ProductID,
-		DeviceName:  msg.DeviceName,
-		Identifiers: l.dreq.Identifiers,
-	})
-	if err != nil {
-		return l.DeviceResp(msg, err, nil), nil
-	}
-	l.svcCtx.DeviceSchemaRepo.SetData(l.ctx, devices.Core{
-		ProductID:  msg.ProductID,
-		DeviceName: msg.DeviceName,
-	}, nil)
-	return l.DeviceResp(msg, errors.OK, nil), nil
-}
-
 // 设备请求获取 云端记录的最新设备信息
 func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	respData := make(map[string]any, len(l.schema.Property))
@@ -681,12 +624,6 @@ func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceM
 		return l.HandlePropertyReportInfo(msg, l.dreq)
 	case deviceMsg.GetStatus: //设备请求获取 云端记录的最新设备信息
 		return l.HandlePropertyGetStatus(msg)
-	case deviceMsg.GetSchema:
-		return l.HandlePropertyGetSchema(msg)
-	case deviceMsg.CreateSchema:
-		return l.HandleCreateSchema(msg)
-	case deviceMsg.DeleteSchema:
-		return l.HandleDeleteSchema(msg)
 	case deviceMsg.ControlReply: //设备响应的 “云端下发控制指令” 的处理结果
 		return l.HandleControl(msg)
 	default:

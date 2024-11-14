@@ -52,6 +52,10 @@ func (l *SendLogic) Send(r *http.Request, body []byte, req *types.DeviceInteract
 	if req.Handle[0] == '$' {
 		req.Handle = req.Handle[1:]
 	}
+	if req.ProductID == "" || req.DeviceName == "" {
+		req.ProductID = lg.ProductID
+		req.DeviceName = lg.DeviceName
+	}
 	_, err = l.svcCtx.DeviceA.AccessAuth(l.ctx, &dg.AccessAuthReq{
 		Username: u,
 		Topic:    fmt.Sprintf("$%s/up/%s/%s/%s", req.Handle, req.Type, req.ProductID, req.DeviceName),

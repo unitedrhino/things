@@ -264,7 +264,7 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Empty, 
 		msg := deviceMsg.PublishMsg{
 			Handle:     devices.Log,
 			Type:       msgSdkLog.TypeUpdate,
-			Payload:    resp.AddStatus(errors.OK).Bytes(),
+			Payload:    resp.AddStatus(errors.OK, false).Bytes(),
 			Timestamp:  time.Now().UnixMilli(),
 			ProductID:  di.ProductID,
 			DeviceName: di.DeviceName,

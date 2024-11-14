@@ -641,7 +641,7 @@
           "accessCode": "thingsDeviceSchemaFind",
           "method": "POST",
           "route": "/api/v1/things/device/schema/index",
-          "name": "获取设备物模型",
+          "name": "获取设备物模型列表",
           "isNeedAuth": 2,
           "businessType": "find",
           "desc": "",
