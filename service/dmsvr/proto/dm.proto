@@ -1555,6 +1555,7 @@ message DeviceSchemaIndexResp{
 message DeviceSchema{
   string productID = 1; //产品id  必填
   string deviceName =17;//设备ID 必填
+  int64 tag = 3;         //物模型标签 1:自定义 2:可选 3:必选  必选不可删除
   int64 type = 2;         //物模型类型 1:property属性 2:event事件 3:action行为
   string identifier = 4;           //标识符
   google.protobuf.StringValue name = 5;       //功能名称
