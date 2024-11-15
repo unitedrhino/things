@@ -311,6 +311,7 @@ type DeviceInfo struct {
 	NetType            int64                              `json:"netType,optional,range=[0:8],omitempty"` //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
 	NeedConfirmVersion string                             `json:"needConfirmVersion,optional,omitempty"`  //待确认升级的版本
 	UserID             int64                              `json:"userID,string,optional,omitempty"`
+	LastIp             string                             `json:"lastIp,optional,omitempty"` //最后登录的ip地址
 	Desc               *string                            `json:"desc,optional,omitempty"`
 	Distributor        *IDPath                            `json:"distributor,optional,omitempty"`
 	Gateway            *DeviceInfo                        `json:"gateway,optional,omitempty"` //子设备绑定的网关信息,只读

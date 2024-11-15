@@ -167,6 +167,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		Distributor:        utils.Copy[types.IDPath](v.Distributor),
 		Gateway:            InfoToApi(ctx, svcCtx, v.Gateway, DeviceInfoWith{IsOnlyCore: true}),
 		Area:               area,
+		LastIp:             v.LastIp,
 	}
 }
 

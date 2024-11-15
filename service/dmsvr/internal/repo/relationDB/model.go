@@ -60,6 +60,7 @@ type DmDeviceInfo struct {
 	ExpTime            sql.NullTime      `gorm:"column:exp_time"`                                                      // 过期时间,为0不限制
 	NeedConfirmJobID   int64             `gorm:"column:need_confirm_job_id;type:smallint;default:0;"`                  // 需要app确认升级的任务ID,为0是没有
 	NeedConfirmVersion string            `gorm:"column:need_confirm_version;type:varchar(128);default:'';"`            // 待确认升级的版本
+	LastIp             string            `gorm:"column:last_ip;type:varchar(128);default:'';"`                         // 最后登录的ip地址
 	stores.NoDelTime
 	Desc        string                  `gorm:"column:desc;type:varchar(200)"`        // 描述
 	Distributor stores.IDPathWithUpdate `gorm:"embedded;embeddedPrefix:distributor_"` // 代理的id,如果为空,则未参与分销

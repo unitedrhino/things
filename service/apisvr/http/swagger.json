@@ -7355,6 +7355,10 @@
         "userID": {
           "type": "string"
         },
+        "lastIp": {
+          "type": "string",
+          "description": "最后登录的ip地址"
+        },
         "desc": {
           "type": "string"
         },
