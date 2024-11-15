@@ -67,6 +67,7 @@ func Migrate(c conf.Database) error {
 }
 
 func versionUpdate(db *gorm.DB) error {
+	ctx := ctxs.WithRoot(context.Background())
 	m := db.Migrator()
 	{ //版本升级兼容
 
