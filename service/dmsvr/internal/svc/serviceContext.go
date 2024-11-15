@@ -137,7 +137,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		FastEvent: serverMsg,
 		GetData: func(ctx context.Context, key devices.Core) (*schema.Model, error) {
 			db := relationDB.NewDeviceSchemaRepo(ctx)
-			dbSchemas, err := db.FindByFilter(ctx, relationDB.DeviceSchemaFilter{ProductID: key.ProductID, DeviceName: key.DeviceName}, nil)
+			dbSchemas, err := db.FindByFilter(ctx, relationDB.DeviceSchemaFilter{
+				ProductID: key.ProductID, DeviceName: key.DeviceName, WithProductSchema: true}, nil)
 			if err != nil {
 				return nil, err
 			}
@@ -192,35 +193,35 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	areaC, err := sysExport.NewAreaInfoCache(areamanage.NewAreaManage(zrpc.MustNewClient(c.SysRpc.Conf)), serverMsg)
 	logx.Must(err)
 	return &ServiceContext{
-		FastEvent:      serverMsg,
-		TenantCache:    tenantCache,
-		Config:         c,
-		OssClient:      ossClient,
-		TimedM:         timedM,
-		AreaM:          areaM,
-		ProjectM:       projectM,
-		PubApp:         pa,
-		PubDev:         pd,
-		Cache:          ca,
-		UserM:          userM,
-		Common:         Common,
-		DataM:          dataM,
-		UserSubscribe:  ws.NewUserSubscribe(ca, serverMsg),
+		FastEvent:         serverMsg,
+		TenantCache:       tenantCache,
+		Config:            c,
+		OssClient:         ossClient,
+		TimedM:            timedM,
+		AreaM:             areaM,
+		ProjectM:          projectM,
+		PubApp:            pa,
+		PubDev:            pd,
+		Cache:             ca,
+		UserM:             userM,
+		Common:            Common,
+		DataM:             dataM,
+		UserSubscribe:     ws.NewUserSubscribe(ca, serverMsg),
 		ProductSchemaRepo: getProductSchemaModel,
 		DeviceSchemaRepo:  getDeviceSchemaModel,
-		SchemaManaRepo: deviceDataR,
-		DeviceStatus:   cache.NewDeviceStatus(ca),
-		GatewayCanBind: cache.NewGatewayCanBind(ca),
-		HubLogRepo:     hubLogR,
-		SDKLogRepo:     sdkLogR,
-		AbnormalRepo:   abnormalR,
-		StatusRepo:     statusR,
-		SendRepo:       sendR,
-		WebHook:        webHook,
-		NodeID:         nodeID,
-		Slot:           Slot,
-		ProjectCache:   projectC,
-		AreaCache:      areaC,
+		SchemaManaRepo:    deviceDataR,
+		DeviceStatus:      cache.NewDeviceStatus(ca),
+		GatewayCanBind:    cache.NewGatewayCanBind(ca),
+		HubLogRepo:        hubLogR,
+		SDKLogRepo:        sdkLogR,
+		AbnormalRepo:      abnormalR,
+		StatusRepo:        statusR,
+		SendRepo:          sendR,
+		WebHook:           webHook,
+		NodeID:            nodeID,
+		Slot:              Slot,
+		ProjectCache:      projectC,
+		AreaCache:         areaC,
 	}
 }
 
