@@ -88,7 +88,9 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 			old.Status = def.DeviceStatusArrearage
 		}
 	}
-
+	if data.Desc != nil {
+		old.Desc = data.Desc.GetValue()
+	}
 	if data.Tags != nil {
 		old.Tags = data.Tags
 	}

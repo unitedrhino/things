@@ -7397,6 +7397,9 @@
         "userID": {
           "type": "string"
         },
+        "desc": {
+          "type": "string"
+        },
         "distributor": {
           "$ref": "#/definitions/IDPath"
         },
@@ -7628,6 +7631,11 @@
           "type": "boolean",
           "format": "boolean",
           "description": "同时获取拥有人的信息"
+        },
+        "withGateway": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "同时返回子设备绑定的网关信息"
         },
         "hasOwner": {
           "type": "integer",

@@ -56,6 +56,7 @@ func ToDeviceInfo(ctx context.Context, svcCtx *svc.ServiceContext, in *relationD
 		Cert:               in.Cert,
 		Imei:               in.Imei,
 		Mac:                in.Mac,
+		Desc:               utils.ToRpcNullString(in.Desc),
 		Version:            &wrappers.StringValue{Value: in.Version},
 		HardInfo:           in.HardInfo,
 		SoftInfo:           in.SoftInfo,
