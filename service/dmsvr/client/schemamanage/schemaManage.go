@@ -94,6 +94,7 @@ type (
 	GatewayCanBindIndexResp           = dm.GatewayCanBindIndexResp
 	GatewayGetFoundReq                = dm.GatewayGetFoundReq
 	GatewayNotifyBindSendReq          = dm.GatewayNotifyBindSendReq
+	GroupCore                         = dm.GroupCore
 	GroupDeviceIndexReq               = dm.GroupDeviceIndexReq
 	GroupDeviceIndexResp              = dm.GroupDeviceIndexResp
 	GroupDeviceMultiDeleteReq         = dm.GroupDeviceMultiDeleteReq

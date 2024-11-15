@@ -2218,48 +2218,6 @@
         ]
       }
     },
-    "/api/v1/things/group/device/index": {
-      "post": {
-        "summary": "获取分组设备列表",
-        "operationId": "postApiV1ThingsGroupDeviceIndex",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "default": "200",
-                  "title": "返回code"
-                },
-                "msg": {
-                  "type": "string",
-                  "title": "返回的消息"
-                },
-                "data": {
-                  "$ref": "#/definitions/GroupDeviceIndexResp"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/GroupDeviceIndexReq"
-            }
-          }
-        ],
-        "tags": [
-          "things/group/device",
-          "thingsGroupDevice"
-        ]
-      }
-    },
     "/api/v1/things/group/device/multi-create": {
       "post": {
         "summary": "添加分组设备",
@@ -7397,6 +7355,9 @@
         "userID": {
           "type": "string"
         },
+        "desc": {
+          "type": "string"
+        },
         "distributor": {
           "$ref": "#/definitions/IDPath"
         },
@@ -7603,6 +7564,12 @@
         "notGroupID": {
           "type": "string"
         },
+        "parentGroupID": {
+          "type": "string"
+        },
+        "groupName": {
+          "type": "string"
+        },
         "notAreaID": {
           "type": "string"
         },
@@ -7628,6 +7595,11 @@
           "type": "boolean",
           "format": "boolean",
           "description": "同时获取拥有人的信息"
+        },
+        "withGateway": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "同时返回子设备绑定的网关信息"
         },
         "hasOwner": {
           "type": "integer",
@@ -9915,67 +9887,6 @@
       "required": [
         "gateway",
         "subDevices"
-      ]
-    },
-    "GroupDeviceIndexReq": {
-      "type": "object",
-      "properties": {
-        "page": {
-          "$ref": "#/definitions/PageInfo",
-          "description": "分页信息 只获取一个则不填"
-        },
-        "groupID": {
-          "type": "integer",
-          "format": "int64",
-          "description": "分组ID"
-        },
-        "productID": {
-          "type": "string",
-          "description": "产品ID"
-        },
-        "deviceName": {
-          "type": "string",
-          "description": "设备名称"
-        },
-        "withProperties": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表"
-        },
-        "withProfiles": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      },
-      "title": "GroupDeviceIndexReq",
-      "required": [
-        "groupID"
-      ]
-    },
-    "GroupDeviceIndexResp": {
-      "type": "object",
-      "properties": {
-        "list": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/DeviceInfo"
-          },
-          "description": "分组信息"
-        },
-        "total": {
-          "type": "integer",
-          "format": "int64",
-          "description": "总数(只有分页的时候会返回)"
-        }
-      },
-      "title": "GroupDeviceIndexResp",
-      "required": [
-        "list",
-        "total"
       ]
     },
     "GroupDeviceMultiDeleteReq": {

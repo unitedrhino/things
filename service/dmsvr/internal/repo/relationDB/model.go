@@ -61,7 +61,7 @@ type DmDeviceInfo struct {
 	NeedConfirmJobID   int64             `gorm:"column:need_confirm_job_id;type:smallint;default:0;"`                  // 需要app确认升级的任务ID,为0是没有
 	NeedConfirmVersion string            `gorm:"column:need_confirm_version;type:varchar(128);default:'';"`            // 待确认升级的版本
 	stores.NoDelTime
-
+	Desc        string                  `gorm:"column:desc;type:varchar(200)"`        // 描述
 	Distributor stores.IDPathWithUpdate `gorm:"embedded;embeddedPrefix:distributor_"` // 代理的id,如果为空,则未参与分销
 	DeletedTime stores.DeletedTime      `gorm:"column:deleted_time;default:0;uniqueIndex:product_id_deviceName"`
 	ProductInfo *DmProductInfo          `gorm:"foreignKey:ProductID;references:ProductID"` // 添加外键
@@ -156,7 +156,7 @@ type DmProductInfo struct {
 	AutoRegister     int64                 `gorm:"column:auto_register;type:smallint;default:1"`                // 动态注册:1:关闭,2:打开,3:打开并自动创建设备
 	DeviceSchemaMode int64                 `gorm:"column:device_schema_mode;type:smallint;default:1"`           // 设备物模型模式:1:关闭,2:设备自动创建3: 设备自动创建及上报无定义自动创建
 	Secret           string                `gorm:"column:secret;type:varchar(50)"`                              // 动态注册产品秘钥
-	Desc             string                `gorm:"column:description;type:varchar(200)"`                        // 描述
+	Desc             string                `gorm:"column:desc;type:varchar(200)"`                               // 描述
 	TrialTime        int64                 `gorm:"column:trial_time"`                                           //试用时间(单位为天,为0不限制)
 	Status           devices.ProductStatus `gorm:"column:status;type:smallint;default:1"`
 	SceneMode        string                `gorm:"column:scene_mode;type:varchar(20);default:rw"`                        // 场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)

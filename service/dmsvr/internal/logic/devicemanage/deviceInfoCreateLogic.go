@@ -146,6 +146,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 		RatedPower:  in.RatedPower,
 		Distributor: utils.Copy2[stores.IDPathWithUpdate](in.Distributor),
 		UserID:      def.RootNode,
+		Desc:        in.Desc.GetValue(),
 	}
 	if di.Distributor.ID == 0 {
 		di.Distributor.ID = def.RootNode

@@ -311,6 +311,7 @@ type DeviceInfo struct {
 	NetType            int64                              `json:"netType,optional,range=[0:8],omitempty"` //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
 	NeedConfirmVersion string                             `json:"needConfirmVersion,optional,omitempty"`  //待确认升级的版本
 	UserID             int64                              `json:"userID,string,optional,omitempty"`
+	Desc               *string                            `json:"desc,optional,omitempty"`
 	Distributor        *IDPath                            `json:"distributor,optional,omitempty"`
 	Gateway            *DeviceInfo                        `json:"gateway,optional,omitempty"` //子设备绑定的网关信息,只读
 	Area               *AreaInfo                          `json:"area,optional,omitempty"`    //区域信息
@@ -359,12 +360,15 @@ type DeviceInfoIndexReq struct {
 	Gateway            *DeviceCore   `json:"gateway,optional"` //过滤网关
 	GroupID            int64         `json:"groupID,optional,string"`
 	NotGroupID         int64         `json:"notGroupID,optional,string"`
+	ParentGroupID      int64         `json:"parentGroupID,optional,string"`
+	GroupName          string        `json:"groupName,optional"`
 	NotAreaID          int64         `json:"notAreaID,optional,string"`
 	Devices            []*DeviceCore `json:"devices,optional"`
 	Status             int64         `json:"status,optional"` //设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)
 	Statuses           []int64       `json:"statuses,optional"`
-	WithOwner          bool          `json:"withOwner,optional"` //同时获取拥有人的信息
-	HasOwner           int64         `json:"hasOwner,optional"`  //是否被人拥有,1为是 2为否
+	WithOwner          bool          `json:"withOwner,optional"`   //同时获取拥有人的信息
+	WithGateway        bool          `json:"withGateway,optional"` //同时返回子设备绑定的网关信息
+	HasOwner           int64         `json:"hasOwner,optional"`    //是否被人拥有,1为是 2为否
 	UserID             int64         `json:"userID,string,optional"`
 	NetType            int64         `json:"netType,optional,range=[0:8]"` //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
 	WithArea           bool          `json:"withArea,optional"`            //同时返回区域信息
@@ -956,20 +960,6 @@ type GatewayGetFoundReq struct {
 type GatewayNotifyBindSendReq struct {
 	Gateway    *DeviceCore   `json:"gateway"`    //如果是不同的产品,则传这个字段,上面两个参数填了优先使用
 	SubDevices []*DeviceCore `json:"subDevices"` //如果是不同的产品,则传这个字段,上面两个参数填了优先使用
-}
-
-type GroupDeviceIndexReq struct {
-	Page           *PageInfo `json:"page,optional"`           //分页信息 只获取一个则不填
-	GroupID        int64     `json:"groupID"`                 //分组ID
-	ProductID      string    `json:"productID,optional"`      //产品ID
-	DeviceName     string    `json:"deviceName,optional"`     //设备名称
-	WithProperties []string  `json:"withProperties,optional"` //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表
-	WithProfiles   []string  `json:"withProfiles,optional"`   //
-}
-
-type GroupDeviceIndexResp struct {
-	List  []*DeviceInfo `json:"list"`  //分组信息
-	Total int64         `json:"total"` //总数(只有分页的时候会返回)
 }
 
 type GroupDeviceMultiDeleteReq struct {

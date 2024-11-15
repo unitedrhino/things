@@ -3,6 +3,7 @@ package devicemanagelogic
 import (
 	"context"
 	"gitee.com/unitedrhino/share/ctxs"
+	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
@@ -80,6 +81,8 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		UserID:             in.UserID,
 		NetType:            in.NetType,
 		HasOwner:           in.HasOwner,
+		GroupName:          in.GroupName,
+		ParentGroupID:      in.ParentGroupID,
 		Distributor:        utils.Copy[stores.IDPathFilter](in.Distributor),
 	}
 	if in.RatedPower != nil {
@@ -105,10 +108,38 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 	if err != nil {
 		return nil, err
 	}
+	var gateway = map[devices.Core]*dm.DeviceInfo{}
+	if in.WithGateway {
+		var needGetSubDev []*devices.Core
+		for _, v := range di {
+			if !(v.DeviceType == def.DeviceTypeSubset) {
+				continue
+			}
+			needGetSubDev = append(needGetSubDev, &devices.Core{ProductID: v.ProductID, DeviceName: v.DeviceName})
+		}
+		if len(needGetSubDev) > 0 {
+			gds, err := relationDB.NewGatewayDeviceRepo(l.ctx).FindByFilter(l.ctx, relationDB.GatewayDeviceFilter{SubDevices: needGetSubDev}, nil)
+			if err != nil {
+				return nil, err
+			}
+			for _, gd := range gds {
+				ddi, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
+					ProductID:  gd.GatewayProductID,
+					DeviceName: gd.GatewayDeviceName,
+				})
+				if err != nil {
+					continue
+				}
+				gateway[devices.Core{ProductID: gd.ProductID, DeviceName: gd.DeviceName}] = ddi
+			}
+		}
+	}
 
 	info = make([]*dm.DeviceInfo, 0, len(di))
 	for _, v := range di {
-		info = append(info, logic.ToDeviceInfo(l.ctx, l.svcCtx, v))
+		pb := logic.ToDeviceInfo(l.ctx, l.svcCtx, v)
+		pb.Gateway = gateway[devices.Core{ProductID: v.ProductID, DeviceName: v.DeviceName}]
+		info = append(info, pb)
 	}
 
 	return &dm.DeviceInfoIndexResp{List: info, Total: size}, nil

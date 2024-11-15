@@ -114,7 +114,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 			NetType:        v.NetType,
 			ProductImg:     v.ProductImg,
 			Distributor:    utils.Copy[types.IDPath](v.Distributor),
-			Gateway:        InfoToApi(ctx, svcCtx, v.Gateway, DeviceInfoWith{}),
+			Gateway:        InfoToApi(ctx, svcCtx, v.Gateway, DeviceInfoWith{IsOnlyCore: true}),
 			Area:           area,
 		}
 	}
@@ -163,8 +163,9 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		ProductImg:         v.ProductImg,
 		CategoryID:         v.CategoryID,
 		UserID:             v.UserID,
+		Desc:               utils.ToNullString(v.Desc),
 		Distributor:        utils.Copy[types.IDPath](v.Distributor),
-		Gateway:            InfoToApi(ctx, svcCtx, v.Gateway, DeviceInfoWith{}),
+		Gateway:            InfoToApi(ctx, svcCtx, v.Gateway, DeviceInfoWith{IsOnlyCore: true}),
 		Area:               area,
 	}
 }

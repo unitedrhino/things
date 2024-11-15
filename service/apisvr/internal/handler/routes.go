@@ -458,12 +458,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Middleware{serverCtx.CheckTokenWare, serverCtx.InitCtxsWare},
 			[]rest.Route{
 				{
-					// 获取分组设备列表
-					Method:  http.MethodPost,
-					Path:    "/index",
-					Handler: thingsgroupdevice.IndexHandler(serverCtx),
-				},
-				{
 					// 添加分组设备
 					Method:  http.MethodPost,
 					Path:    "/multi-create",
