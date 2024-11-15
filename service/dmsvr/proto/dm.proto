@@ -1555,7 +1555,7 @@ message DeviceSchemaIndexReq{
   int64 userPerm =15;//用户权限操作: 1:r(只读) 3:rw(可读可写)
   string  propertyMode =16;//属性类型可用 读写类型: 1:r(只读) 2:rw(可读可写)
   int64 controlMode = 18;  //控制模式: 1: 可以群控,可以单控  2:只能单控
-
+  bool withProductSchema = 20;//同时获取产品物模型
 }
 
 message DeviceSchemaIndexResp{

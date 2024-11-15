@@ -29,6 +29,7 @@ type (
 		PropertyMode      string
 		ControlMode       int64
 		ProductSceneMode  string
+		WithProductSchema bool
 	}
 )
 
@@ -36,10 +37,16 @@ func NewDeviceSchemaRepo(in any) *DeviceSchemaRepo {
 	return &DeviceSchemaRepo{db: stores.GetCommonConn(in)}
 }
 
-func (p DeviceSchemaRepo) fmtFilter(ctx context.Context, f DeviceSchemaFilter) *gorm.DB {
-	db := p.db.WithContext(ctx)
-	db = db.Where("product_id=?", f.ProductID)
-	db = db.Where("device_name=?", f.DeviceName)
+func (p DeviceSchemaRepo) filter(db *gorm.DB, f DeviceSchemaFilter) *gorm.DB {
+	if !f.WithProductSchema {
+		db = db.Where("product_id=?", f.ProductID)
+		db = db.Where("device_name=?", f.DeviceName)
+		db = db.Where("tag=?", schema.TagDevice)
+	} else {
+		db = db.Where("product_id=? and device_name=? and tag=?", f.ProductID, f.DeviceName, schema.TagDevice).
+			Or("product_id=? and tag !=?", f.ProductID, schema.TagDevice)
+
+	}
 
 	if f.IsCanSceneLinkage != 0 {
 		db = db.Where("is_can_scene_linkage = ?", f.IsCanSceneLinkage)
@@ -84,6 +91,11 @@ func (p DeviceSchemaRepo) fmtFilter(ctx context.Context, f DeviceSchemaFilter) *
 	}
 	return db
 }
+
+func (p DeviceSchemaRepo) fmtFilter(ctx context.Context, f DeviceSchemaFilter) *gorm.DB {
+	db := p.db.WithContext(ctx)
+	return p.filter(db, f)
+}
 func (p DeviceSchemaRepo) Insert(ctx context.Context, data *DmDeviceSchema) error {
 	result := p.db.WithContext(ctx).Create(data)
 	return stores.ErrFmt(result.Error)
@@ -118,7 +130,9 @@ func (p DeviceSchemaRepo) DeleteByFilter(ctx context.Context, f DeviceSchemaFilt
 
 func (p DeviceSchemaRepo) FindByFilter(ctx context.Context, f DeviceSchemaFilter, page *stores.PageInfo) ([]*DmDeviceSchema, error) {
 	var results []*DmDeviceSchema
-	db := p.fmtFilter(ctx, f).Model(&DmDeviceSchema{})
+	var db *gorm.DB
+	db = p.fmtFilter(ctx, f)
+	db = db.Model(&DmDeviceSchema{})
 	db = page.ToGorm(db)
 	//var rst = []map[string]any{}
 	err := db.Find(&results).Error
@@ -171,6 +185,7 @@ func (p DeviceSchemaRepo) MultiInsert2(ctx context.Context, productID string, de
 func (p DeviceSchemaRepo) MultiUpdate(ctx context.Context, productID string, deviceName string, schemaInfo *schema.Model) error {
 	var datas []*DmDeviceSchema
 	for _, item := range schemaInfo.Property {
+		item.Tag = schema.TagDevice
 		datas = append(datas, &DmDeviceSchema{
 			ProductID:    productID,
 			DeviceName:   deviceName,
@@ -178,6 +193,7 @@ func (p DeviceSchemaRepo) MultiUpdate(ctx context.Context, productID string, dev
 		})
 	}
 	for _, item := range schemaInfo.Event {
+		item.Tag = schema.TagDevice
 		datas = append(datas, &DmDeviceSchema{
 			ProductID:    productID,
 			DeviceName:   deviceName,
@@ -185,6 +201,7 @@ func (p DeviceSchemaRepo) MultiUpdate(ctx context.Context, productID string, dev
 		})
 	}
 	for _, item := range schemaInfo.Action {
+		item.Tag = schema.TagDevice
 		datas = append(datas, &DmDeviceSchema{
 			ProductID:    productID,
 			DeviceName:   deviceName,

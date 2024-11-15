@@ -9442,6 +9442,11 @@
           "type": "integer",
           "format": "int64",
           "description": "控制模式: 1: 可以群控,可以单控  2:只能单控"
+        },
+        "withProductSchema": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "同时获取产品物模型"
         }
       },
       "title": "DeviceSchemaIndexReq",
