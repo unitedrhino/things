@@ -81,6 +81,8 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		UserID:             in.UserID,
 		NetType:            in.NetType,
 		HasOwner:           in.HasOwner,
+		GroupName:          in.GroupName,
+		ParentGroupID:      in.ParentGroupID,
 		Distributor:        utils.Copy[stores.IDPathFilter](in.Distributor),
 	}
 	if in.RatedPower != nil {

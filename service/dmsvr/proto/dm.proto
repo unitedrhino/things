@@ -1092,6 +1092,12 @@ message GroupInfo{
 //  DeviceInfoCount deviceInfoCount =11;
 }
 
+message GroupCore{
+  int64 id = 1;
+  int64 parentID = 2;
+  string name = 4;
+}
+
 message GroupInfoCreateReq{
   int64 areaID = 5;//分组可以属于某个区域下
   string name = 1;
@@ -1200,6 +1206,7 @@ message DeviceInfo {
   int64   categoryID = 44;//产品品类
   google.protobuf.StringValue desc=47;
   DeviceInfo Gateway =46;//子设备绑定的网关
+  repeated GroupCore Groups = 48;//设备所在的分组信息
 }
 
 message ProductInfo{
@@ -1330,7 +1337,6 @@ message DeviceInfoIndexReq{
   int64 withShared = 13;//过滤分享的设备(这里只获取分享的设备) 1: 同时获取分享的设备 2:只获取分享的设备
   int64 withCollect = 24;//过滤收藏的设备(这里只获取收藏的设备) 1: 同时获取收藏的设备 2:只获取收藏的设备
   int64   netType = 25;//通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
-
   string tenantCode = 14;//租户过滤
   repeated string versions =15;//版本列表
   string notVersion =39;//非版本
@@ -1339,6 +1345,8 @@ message DeviceInfoIndexReq{
   DeviceCore gateway = 17;//获取网关下子设备列表
   int64 groupID =18;
   int64 notGroupID =19;
+  int64 parentGroupID = 42;
+  string groupName =43;//模糊查询
   int64 notAreaID =29;
   IDPath distributor =20;//过滤分销商的数据
   int64 status =22;
@@ -1349,6 +1357,7 @@ message DeviceInfoIndexReq{
   CompareInt64  expTime =38; //到期时间
   string iccid = 40;//SIM卡卡号
   bool withGateway =41;//同时返回子设备的网关
+  bool withGroups =44;//同时返回所在分组信息
 }
 
 message DeviceInfoIndexResp{

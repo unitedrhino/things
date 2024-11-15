@@ -48,6 +48,8 @@ type (
 		DeviceType         int64
 		DeviceTypes        []int64
 		GroupID            int64
+		ParentGroupID      int64
+		GroupName          string
 		GroupIDs           []int64
 		UserID             int64
 		UserIDs            []int64
@@ -228,22 +230,36 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 		db = db.Where("(product_id, device_name) in (?)",
 			subQuery)
 	}
+	var groupSubQuery = d.db.Model(&DmGroupDevice{}).Select("product_id, device_name")
+	var groupFilter bool
 	if f.GroupID != 0 {
-		subQuery := d.db.Model(&DmGroupDevice{}).Select("product_id, device_name").Where("group_id=?", f.GroupID)
-		db = db.Where("(product_id, device_name) in (?)",
-			subQuery)
+		groupFilter = true
+		groupSubQuery = groupSubQuery.Where("group_id=?", f.GroupID)
 	}
 	if len(f.GroupIDs) > 0 {
-		subQuery := d.db.Model(&DmGroupDevice{}).Select("product_id, device_name").Where("group_id in ?", f.GroupIDs)
-		db = db.Where("(product_id, device_name) in (?)",
-			subQuery)
+		groupFilter = true
+		groupSubQuery = groupSubQuery.Where("group_id in ?", f.GroupIDs)
+	}
+	if f.ParentGroupID != 0 || f.GroupName != "" {
+		groupFilter = true
+		subQuery := d.db.Model(&DmGroupInfo{}).Select("id")
+		if f.ParentGroupID != 0 {
+			subQuery = subQuery.Where("parent_id = ?", f.ParentGroupID)
+		}
+		if f.GroupName != "" {
+			subQuery = subQuery.Where("name like ?", "%"+f.GroupName+"%")
+		}
+		groupSubQuery = groupSubQuery.Where("group_id in (?)", subQuery)
+	}
+	if groupFilter {
+		db = db.Where("(product_id, device_name)  in (?)",
+			groupSubQuery)
 	}
 	if f.NotGroupID != 0 {
 		subQuery := d.db.Model(&DmGroupDevice{}).Select("product_id, device_name").Where("group_id=?", f.NotGroupID)
 		db = db.Where("(product_id, device_name) not in (?)",
 			subQuery)
 	}
-
 	if f.CollectType != 0 && uc.UserID != 0 && ctxs.GetUserCtx(ctx) != nil { //如果要获取收藏的设备
 		subQuery := d.db.Model(&DmUserDeviceCollect{}).Select("product_id, device_name").Where("user_id = ?", uc.UserID)
 		switch f.CollectType {

@@ -360,6 +360,8 @@ type DeviceInfoIndexReq struct {
 	Gateway            *DeviceCore   `json:"gateway,optional"` //过滤网关
 	GroupID            int64         `json:"groupID,optional,string"`
 	NotGroupID         int64         `json:"notGroupID,optional,string"`
+	ParentGroupID      int64         `json:"parentGroupID,optional,string"`
+	GroupName          string        `json:"groupName,optional"`
 	NotAreaID          int64         `json:"notAreaID,optional,string"`
 	Devices            []*DeviceCore `json:"devices,optional"`
 	Status             int64         `json:"status,optional"` //设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)
@@ -957,20 +959,6 @@ type GatewayGetFoundReq struct {
 type GatewayNotifyBindSendReq struct {
 	Gateway    *DeviceCore   `json:"gateway"`    //如果是不同的产品,则传这个字段,上面两个参数填了优先使用
 	SubDevices []*DeviceCore `json:"subDevices"` //如果是不同的产品,则传这个字段,上面两个参数填了优先使用
-}
-
-type GroupDeviceIndexReq struct {
-	Page           *PageInfo `json:"page,optional"`           //分页信息 只获取一个则不填
-	GroupID        int64     `json:"groupID"`                 //分组ID
-	ProductID      string    `json:"productID,optional"`      //产品ID
-	DeviceName     string    `json:"deviceName,optional"`     //设备名称
-	WithProperties []string  `json:"withProperties,optional"` //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表
-	WithProfiles   []string  `json:"withProfiles,optional"`   //
-}
-
-type GroupDeviceIndexResp struct {
-	List  []*DeviceInfo `json:"list"`  //分组信息
-	Total int64         `json:"total"` //总数(只有分页的时候会返回)
 }
 
 type GroupDeviceMultiDeleteReq struct {

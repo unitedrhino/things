@@ -3,6 +3,7 @@ package relationDB
 import (
 	"context"
 	"gitee.com/unitedrhino/share/conf"
+	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/stores"
 	"gorm.io/gorm"
@@ -10,10 +11,10 @@ import (
 )
 
 func Migrate(c conf.Database) error {
-	if c.IsInitTable == false {
+	if c.IsInitTable == true {
 		return nil
 	}
-	db := stores.GetCommonConn(context.TODO())
+	db := stores.GetCommonConn(ctxs.WithRoot(context.Background()))
 	var needInitColumn bool
 	if !db.Migrator().HasTable(&DmProtocolInfo{}) {
 		//需要初始化表
@@ -74,6 +75,10 @@ func versionUpdate(db *gorm.DB) error {
 			}
 		}
 	}
+	{ //分组前几个是特殊ID,不能使用,给他占位了
+		db.Create(&DmGroupInfo{ID: 10})
+		db.Delete(&DmGroupInfo{ID: 10})
+	}
 
 	return nil
 }
@@ -92,6 +97,8 @@ func migrateTableColumn() error {
 	if err := db.Create(&DmProductID{ID: 100}).Error; err != nil {
 		return err
 	}
+	db.Create(&DmGroupInfo{ID: 10}) //分组前几个是特殊ID,不能使用,给他占位了
+	db.Delete(&DmGroupInfo{ID: 10})
 
 	return nil
 }
