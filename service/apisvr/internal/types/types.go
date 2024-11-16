@@ -362,6 +362,7 @@ type DeviceInfoIndexReq struct {
 	GroupID            int64         `json:"groupID,optional,string"`
 	NotGroupID         int64         `json:"notGroupID,optional,string"`
 	ParentGroupID      int64         `json:"parentGroupID,optional,string"`
+	GroupPurpose       string        `json:"groupPurpose,optional"` //设备分组用途 不填默认为default
 	GroupName          string        `json:"groupName,optional"`
 	NotAreaID          int64         `json:"notAreaID,optional,string"`
 	Devices            []*DeviceCore `json:"devices,optional"`
@@ -975,6 +976,7 @@ type GroupDeviceMultiSaveReq struct {
 
 type GroupInfo struct {
 	ID          int64         `json:"id,optional"`                         //分组ID
+	Purpose     string        `json:"purpose,optional"`                    //用途 不填默认为default
 	ParentID    int64         `json:"parentID,optional"`                   //父组ID
 	ProjectID   int64         `json:"projectID,string,optional,omitempty"` //项目ID
 	AreaID      int64         `json:"areaID,string,optional,omitempty"`    //区域ID
@@ -997,6 +999,7 @@ type GroupInfoIndexReq struct {
 	ProductID string    `json:"productID,optional"`     //产品ID
 	Name      string    `json:"name,optional"`          //分组名称
 	Tags      []*Tag    `json:"tags,optional"`          //分组tag
+	Purpose   string    `json:"purpose,optional"`       //用途 不填默认为default
 }
 
 type GroupInfoIndexResp struct {

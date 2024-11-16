@@ -231,8 +231,6 @@ service DeviceGroup {
   rpc groupDeviceMultiCreate(GroupDeviceMultiSaveReq)     returns (Empty);
   //更新分组设备
   rpc groupDeviceMultiUpdate(GroupDeviceMultiSaveReq)     returns (Empty);
-  //获取分组设备信息列表
-  rpc groupDeviceIndex(GroupDeviceIndexReq)     returns (GroupDeviceIndexResp);
   //删除分组设备
   rpc groupDeviceMultiDelete(GroupDeviceMultiDeleteReq)     returns (Empty);
 }
@@ -1075,6 +1073,7 @@ message GatewayCanBindIndexResp{
 }
 
 message GroupInfo{
+  string purpose =15;//用途 不填默认为default
   int64 areaID = 10;//分组可以属于某个区域下
   int64 projectID = 3;
   int64 id = 1;
@@ -1099,6 +1098,7 @@ message GroupCore{
 }
 
 message GroupInfoCreateReq{
+  string purpose =6;//用途 不填默认为default
   int64 areaID = 5;//分组可以属于某个区域下
   string name = 1;
   int64 parentID = 2;
@@ -1112,7 +1112,9 @@ message GroupInfoIndexReq{
   string name = 2;
   int64 parentID = 3;
   map<string, string> tags = 4;
+  string purpose =15;//用途 不填默认为default
 }
+
 message GroupInfoIndexResp{
   repeated GroupInfo list = 1;
   int64 total = 2;
@@ -1136,17 +1138,6 @@ message GroupDeviceMultiSaveReq{
   repeated DeviceCore list = 2;
 }
 
-message GroupDeviceIndexReq{
-  PageInfo page = 1;
-  int64 groupID = 2;
-  string productID = 3;
-  string deviceName = 4;
-}
-
-message GroupDeviceIndexResp{
-  repeated DeviceInfo list = 1;
-  int64 total = 2;
-}
 
 message GroupDeviceMultiDeleteReq{
   int64 groupID = 1;
@@ -1347,6 +1338,7 @@ message DeviceInfoIndexReq{
   int64 groupID =18;
   int64 notGroupID =19;
   int64 parentGroupID = 42;
+  string groupPurpose =45;//设备分组用途 不填默认为default
   string groupName =43;//模糊查询
   int64 notAreaID =29;
   IDPath distributor =20;//过滤分销商的数据

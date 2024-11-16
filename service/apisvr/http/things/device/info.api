@@ -244,6 +244,7 @@ type (
         GroupID int64 `json:"groupID,optional,string"`
         NotGroupID int64 `json:"notGroupID,optional,string"`
         ParentGroupID int64 `json:"parentGroupID,optional,string"`
+        GroupPurpose string `json:"groupPurpose,optional"`//设备分组用途 不填默认为default
         GroupName string `json:"groupName,optional"`
         NotAreaID int64 `json:"notAreaID,optional,string"`
         Devices []*DeviceCore `json:"devices,optional"`

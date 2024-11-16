@@ -33,6 +33,7 @@ func (l *IndexLogic) Index(req *types.GroupInfoIndexReq) (resp *types.GroupInfoI
 		AreaID:   req.AreaID,
 		Name:     req.Name,
 		Tags:     logic.ToTagsMap(req.Tags),
+		Purpose:  req.Purpose,
 	})
 	if err != nil {
 		er := errors.Fmt(err)

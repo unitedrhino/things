@@ -3,6 +3,7 @@ package svc
 import (
 	"context"
 	"encoding/json"
+	"gitee.com/unitedrhino/core/service/syssvr/client/dictmanage"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tdengine/abnormalLogRepo"
 	"os"
 	"time"
@@ -67,6 +68,7 @@ type ServiceContext struct {
 	FastEvent            *eventBus.FastEvent
 	AreaM                areamanage.AreaManage
 	UserM                usermanage.UserManage
+	DictM                dictmanage.DictManage
 	Common               common.Common
 	DataM                datamanage.DataManage
 	ProjectM             projectmanage.ProjectManage
@@ -191,6 +193,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	timedM = timedmanage.NewTimedManage(zrpc.MustNewClient(c.TimedJobRpc.Conf))
 	areaM = areamanage.NewAreaManage(zrpc.MustNewClient(c.SysRpc.Conf))
 	userM := usermanage.NewUserManage(zrpc.MustNewClient(c.SysRpc.Conf))
+	dictM := dictmanage.NewDictManage(zrpc.MustNewClient(c.SysRpc.Conf))
 	dataM := datamanage.NewDataManage(zrpc.MustNewClient(c.SysRpc.Conf))
 	projectM = projectmanage.NewProjectManage(zrpc.MustNewClient(c.SysRpc.Conf))
 	Common = common.NewCommon(zrpc.MustNewClient(c.SysRpc.Conf))
@@ -221,6 +224,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		PubDev:            pd,
 		Cache:             ca,
 		UserM:             userM,
+		DictM:             dictM,
 		Common:            Common,
 		DataM:             dataM,
 		UserSubscribe:     ws.NewUserSubscribe(ca, serverMsg),

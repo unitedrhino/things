@@ -28,6 +28,7 @@ func ToGroupInfoTypes(in *dm.GroupInfo) *types.GroupInfo {
 		Name:        in.Name,
 		CreatedTime: in.CreatedTime,
 		Desc:        in.Desc,
+		Purpose:     in.Purpose,
 		DeviceCount: in.DeviceCount,
 		IsLeaf:      in.IsLeaf,
 		Tags:        logic.ToTagsType(in.Tags),

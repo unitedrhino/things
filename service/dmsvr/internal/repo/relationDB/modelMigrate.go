@@ -12,7 +12,7 @@ import (
 )
 
 func Migrate(c conf.Database) error {
-	if c.IsInitTable == false {
+	if c.IsInitTable == true {
 		return nil
 	}
 	db := stores.GetCommonConn(ctxs.WithRoot(context.Background()))

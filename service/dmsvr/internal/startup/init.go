@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"time"
 
 	"gitee.com/unitedrhino/core/service/timed/timedjobsvr/client/timedmanage"
@@ -41,6 +42,7 @@ func Init(svcCtx *svc.ServiceContext) {
 	TimerInit(svcCtx)
 	InitSubscribe(svcCtx)
 	InitEventBus(svcCtx)
+	DictInit(svcCtx)
 }
 
 func init() {
@@ -458,4 +460,20 @@ func TimerInit(svcCtx *svc.ServiceContext) {
 	if err != nil && !errors.Cmp(errors.Fmt(err), errors.Duplicate) {
 		logx.Must(err)
 	}
+}
+
+// 用到的字典初始化
+func DictInit(svcCtx *svc.ServiceContext) {
+	ctx := ctxs.WithRoot(context.Background())
+	svcCtx.DictM.DictInfoCreate(ctx, &sys.DictInfo{
+		Group: def.DictGroupThing,
+		Name:  "设备分组用途",
+		Code:  "deviceGroupPurpose",
+	})
+	svcCtx.DictM.DictDetailCreate(ctx, &sys.DictDetail{
+		DictCode: "deviceGroupPurpose",
+		Label:    "默认",
+		Value:    "default",
+		Sort:     1,
+	})
 }

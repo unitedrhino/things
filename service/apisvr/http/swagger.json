@@ -7571,6 +7571,10 @@
         "parentGroupID": {
           "type": "string"
         },
+        "groupPurpose": {
+          "type": "string",
+          "description": "设备分组用途 不填默认为default"
+        },
         "groupName": {
           "type": "string"
         },
@@ -9943,6 +9947,10 @@
           "format": "int64",
           "description": "分组ID"
         },
+        "purpose": {
+          "type": "string",
+          "description": "用途 不填默认为default"
+        },
         "parentID": {
           "type": "integer",
           "format": "int64",
@@ -10037,6 +10045,10 @@
             "$ref": "#/definitions/Tag"
           },
           "description": "分组tag"
+        },
+        "purpose": {
+          "type": "string",
+          "description": "用途 不填默认为default"
         }
       },
       "title": "GroupInfoIndexReq"

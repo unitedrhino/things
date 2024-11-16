@@ -41,7 +41,7 @@ func (l *MultiSendPropertyControlLogic) MultiSendPropertyControl(req *types.Devi
 	if req.GroupID != 0 || req.AreaID != 0 {
 		var ds []*dm.DeviceInfo
 		if req.GroupID != 0 {
-			dgRet, err := l.svcCtx.DeviceG.GroupDeviceIndex(l.ctx, &dm.GroupDeviceIndexReq{
+			dgRet, err := l.svcCtx.DeviceM.DeviceInfoIndex(l.ctx, &dm.DeviceInfoIndexReq{
 				GroupID: req.GroupID,
 			})
 			if err != nil {

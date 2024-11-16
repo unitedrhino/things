@@ -2924,7 +2924,6 @@ const (
 	DeviceGroup_GroupInfoDelete_FullMethodName        = "/dm.DeviceGroup/groupInfoDelete"
 	DeviceGroup_GroupDeviceMultiCreate_FullMethodName = "/dm.DeviceGroup/groupDeviceMultiCreate"
 	DeviceGroup_GroupDeviceMultiUpdate_FullMethodName = "/dm.DeviceGroup/groupDeviceMultiUpdate"
-	DeviceGroup_GroupDeviceIndex_FullMethodName       = "/dm.DeviceGroup/groupDeviceIndex"
 	DeviceGroup_GroupDeviceMultiDelete_FullMethodName = "/dm.DeviceGroup/groupDeviceMultiDelete"
 )
 
@@ -2946,8 +2945,6 @@ type DeviceGroupClient interface {
 	GroupDeviceMultiCreate(ctx context.Context, in *GroupDeviceMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
 	// 更新分组设备
 	GroupDeviceMultiUpdate(ctx context.Context, in *GroupDeviceMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
-	// 获取分组设备信息列表
-	GroupDeviceIndex(ctx context.Context, in *GroupDeviceIndexReq, opts ...grpc.CallOption) (*GroupDeviceIndexResp, error)
 	// 删除分组设备
 	GroupDeviceMultiDelete(ctx context.Context, in *GroupDeviceMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error)
 }
@@ -3023,15 +3020,6 @@ func (c *deviceGroupClient) GroupDeviceMultiUpdate(ctx context.Context, in *Grou
 	return out, nil
 }
 
-func (c *deviceGroupClient) GroupDeviceIndex(ctx context.Context, in *GroupDeviceIndexReq, opts ...grpc.CallOption) (*GroupDeviceIndexResp, error) {
-	out := new(GroupDeviceIndexResp)
-	err := c.cc.Invoke(ctx, DeviceGroup_GroupDeviceIndex_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *deviceGroupClient) GroupDeviceMultiDelete(ctx context.Context, in *GroupDeviceMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, DeviceGroup_GroupDeviceMultiDelete_FullMethodName, in, out, opts...)
@@ -3059,8 +3047,6 @@ type DeviceGroupServer interface {
 	GroupDeviceMultiCreate(context.Context, *GroupDeviceMultiSaveReq) (*Empty, error)
 	// 更新分组设备
 	GroupDeviceMultiUpdate(context.Context, *GroupDeviceMultiSaveReq) (*Empty, error)
-	// 获取分组设备信息列表
-	GroupDeviceIndex(context.Context, *GroupDeviceIndexReq) (*GroupDeviceIndexResp, error)
 	// 删除分组设备
 	GroupDeviceMultiDelete(context.Context, *GroupDeviceMultiDeleteReq) (*Empty, error)
 	mustEmbedUnimplementedDeviceGroupServer()
@@ -3090,9 +3076,6 @@ func (UnimplementedDeviceGroupServer) GroupDeviceMultiCreate(context.Context, *G
 }
 func (UnimplementedDeviceGroupServer) GroupDeviceMultiUpdate(context.Context, *GroupDeviceMultiSaveReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupDeviceMultiUpdate not implemented")
-}
-func (UnimplementedDeviceGroupServer) GroupDeviceIndex(context.Context, *GroupDeviceIndexReq) (*GroupDeviceIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GroupDeviceIndex not implemented")
 }
 func (UnimplementedDeviceGroupServer) GroupDeviceMultiDelete(context.Context, *GroupDeviceMultiDeleteReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupDeviceMultiDelete not implemented")
@@ -3236,24 +3219,6 @@ func _DeviceGroup_GroupDeviceMultiUpdate_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DeviceGroup_GroupDeviceIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GroupDeviceIndexReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DeviceGroupServer).GroupDeviceIndex(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DeviceGroup_GroupDeviceIndex_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceGroupServer).GroupDeviceIndex(ctx, req.(*GroupDeviceIndexReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _DeviceGroup_GroupDeviceMultiDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GroupDeviceMultiDeleteReq)
 	if err := dec(in); err != nil {
@@ -3306,10 +3271,6 @@ var DeviceGroup_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "groupDeviceMultiUpdate",
 			Handler:    _DeviceGroup_GroupDeviceMultiUpdate_Handler,
-		},
-		{
-			MethodName: "groupDeviceIndex",
-			Handler:    _DeviceGroup_GroupDeviceIndex_Handler,
 		},
 		{
 			MethodName: "groupDeviceMultiDelete",

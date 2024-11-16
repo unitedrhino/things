@@ -342,6 +342,7 @@ func (m *DmCommonSchema) TableName() string {
 type DmGroupInfo struct {
 	ID         int64             `gorm:"column:id;primary_key;AUTO_INCREMENT;type:bigint"`                               // 分组ID
 	TenantCode stores.TenantCode `gorm:"column:tenant_code;uniqueIndex:tc_ac;default:default;type:VARCHAR(50);NOT NULL"` // 租户编码
+	Purpose    string            `gorm:"column:purpose;uniqueIndex:tc_ac;type:varchar(100);default:'default'"`           //用途 不填默认为default
 	ProjectID  stores.ProjectID  `gorm:"column:project_id;uniqueIndex:tc_ac;type:bigint;default:2;NOT NULL"`             // 项目ID(雪花ID)
 	AreaID     stores.AreaID     `gorm:"column:area_id;uniqueIndex:tc_ac;type:bigint;default:2;NOT NULL"`                // 项目区域ID(雪花ID)
 	ParentID   int64             `gorm:"column:parent_id;type:bigint;default:0;NOT NULL"`                                // 父组ID 0-根组

@@ -36,7 +36,7 @@ func NewGroupInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 发现返回true 没有返回false
 */
 func (l *GroupInfoCreateLogic) CheckGroupInfo(in *dm.GroupInfo) (bool, error) {
-	_, err := l.GiDB.FindOneByFilter(l.ctx, relationDB.GroupInfoFilter{Names: []string{in.Name}})
+	_, err := l.GiDB.FindOneByFilter(l.ctx, relationDB.GroupInfoFilter{Purpose: in.Purpose, Names: []string{in.Name}})
 	if err == nil {
 		return true, nil
 	}
@@ -80,7 +80,7 @@ func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfo) (*dm.WithID, er
 	find, err := l.CheckGroupInfo(in)
 	if err != nil {
 		l.Errorf("%s.CheckGroupInfo in=%v\n", utils.FuncName(), in)
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	} else if find == true {
 		return nil, errors.Duplicate.WithMsgf("组名重复:%s", in.Name).AddDetail("Name:" + in.Name)
 	}
@@ -89,13 +89,14 @@ func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfo) (*dm.WithID, er
 	f, err := l.CheckGroupLevel(in.ParentID, def.DeviceGroupLevel)
 	if err != nil {
 		l.Errorf("%s.CheckGroupLevel in=%v\n", utils.FuncName(), in)
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
 	if f {
 		l.Errorf("%s.CheckGroupInfo msg=group level is over %d \n", utils.FuncName(), def.DeviceGroupLevel)
 		return nil, errors.OutRange.WithMsgf("子分组嵌套不能超过%d层", def.DeviceGroupLevel)
 	}
 	po := relationDB.DmGroupInfo{
+		Purpose:     in.Purpose,
 		ParentID:    in.ParentID,
 		ProductID:   in.ProductID,
 		AreaID:      stores.AreaID(in.AreaID),

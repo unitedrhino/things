@@ -32,6 +32,7 @@ func (l *GroupInfoIndexLogic) GroupInfoIndex(in *dm.GroupInfoIndexReq) (*dm.Grou
 		Name:        in.Name,
 		ParentID:    in.ParentID,
 		Tags:        in.Tags,
+		Purpose:     in.Purpose,
 		WithProduct: true,
 		AreaID:      in.AreaID,
 	}

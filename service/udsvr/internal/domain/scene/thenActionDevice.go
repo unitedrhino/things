@@ -331,7 +331,7 @@ func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 			})
 		}
 	case SelectGroup:
-		ret, err := repo.DeviceG.GroupDeviceIndex(ctx, &dm.GroupDeviceIndexReq{GroupID: a.GroupID})
+		ret, err := repo.DeviceM.DeviceInfoIndex(ctx, &dm.DeviceInfoIndexReq{GroupID: a.GroupID})
 		if err != nil {
 			logx.WithContext(ctx).Errorf("%s.GroupDeviceIndex ActionDevice:%#v err:%v", utils.FuncName(), a, err)
 			return err

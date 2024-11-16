@@ -14,6 +14,7 @@ type GroupInfoFilter struct {
 	AreaID      int64
 	ID          int64
 	Names       []string
+	Purpose     string
 	ParentID    int64
 	IDPath      string
 	Name        string
@@ -30,6 +31,10 @@ func (p GroupInfoRepo) fmtFilter(ctx context.Context, f GroupInfoFilter) *gorm.D
 	if f.WithProduct {
 		db = db.Preload("ProductInfo")
 	}
+	if f.Purpose == "" {
+		f.Purpose = "default"
+	}
+	db = db.Where("purpose = ?", f.Purpose)
 	if f.ID != 0 {
 		db = db.Where("id = ?", f.ID)
 	}

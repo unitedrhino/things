@@ -95,8 +95,6 @@ type (
 	GatewayGetFoundReq                = dm.GatewayGetFoundReq
 	GatewayNotifyBindSendReq          = dm.GatewayNotifyBindSendReq
 	GroupCore                         = dm.GroupCore
-	GroupDeviceIndexReq               = dm.GroupDeviceIndexReq
-	GroupDeviceIndexResp              = dm.GroupDeviceIndexResp
 	GroupDeviceMultiDeleteReq         = dm.GroupDeviceMultiDeleteReq
 	GroupDeviceMultiSaveReq           = dm.GroupDeviceMultiSaveReq
 	GroupInfo                         = dm.GroupInfo
@@ -236,8 +234,6 @@ type (
 		GroupDeviceMultiCreate(ctx context.Context, in *GroupDeviceMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
 		// 更新分组设备
 		GroupDeviceMultiUpdate(ctx context.Context, in *GroupDeviceMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
-		// 获取分组设备信息列表
-		GroupDeviceIndex(ctx context.Context, in *GroupDeviceIndexReq, opts ...grpc.CallOption) (*GroupDeviceIndexResp, error)
 		// 删除分组设备
 		GroupDeviceMultiDelete(ctx context.Context, in *GroupDeviceMultiDeleteReq, opts ...grpc.CallOption) (*Empty, error)
 	}
@@ -340,17 +336,6 @@ func (m *defaultDeviceGroup) GroupDeviceMultiUpdate(ctx context.Context, in *Gro
 // 更新分组设备
 func (d *directDeviceGroup) GroupDeviceMultiUpdate(ctx context.Context, in *GroupDeviceMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.GroupDeviceMultiUpdate(ctx, in)
-}
-
-// 获取分组设备信息列表
-func (m *defaultDeviceGroup) GroupDeviceIndex(ctx context.Context, in *GroupDeviceIndexReq, opts ...grpc.CallOption) (*GroupDeviceIndexResp, error) {
-	client := dm.NewDeviceGroupClient(m.cli.Conn())
-	return client.GroupDeviceIndex(ctx, in, opts...)
-}
-
-// 获取分组设备信息列表
-func (d *directDeviceGroup) GroupDeviceIndex(ctx context.Context, in *GroupDeviceIndexReq, opts ...grpc.CallOption) (*GroupDeviceIndexResp, error) {
-	return d.svr.GroupDeviceIndex(ctx, in)
 }
 
 // 删除分组设备

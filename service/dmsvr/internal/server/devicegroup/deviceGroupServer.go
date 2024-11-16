@@ -65,12 +65,6 @@ func (s *DeviceGroupServer) GroupDeviceMultiUpdate(ctx context.Context, in *dm.G
 	return l.GroupDeviceMultiUpdate(in)
 }
 
-// 获取分组设备信息列表
-func (s *DeviceGroupServer) GroupDeviceIndex(ctx context.Context, in *dm.GroupDeviceIndexReq) (*dm.GroupDeviceIndexResp, error) {
-	l := devicegrouplogic.NewGroupDeviceIndexLogic(ctx, s.svcCtx)
-	return l.GroupDeviceIndex(in)
-}
-
 // 删除分组设备
 func (s *DeviceGroupServer) GroupDeviceMultiDelete(ctx context.Context, in *dm.GroupDeviceMultiDeleteReq) (*dm.Empty, error) {
 	l := devicegrouplogic.NewGroupDeviceMultiDeleteLogic(ctx, s.svcCtx)
