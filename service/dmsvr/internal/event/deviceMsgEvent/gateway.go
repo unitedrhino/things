@@ -377,6 +377,8 @@ func (l *GatewayLogic) HandlePropertyGetSchema(msg *deviceMsg.PublishMsg, resp *
 			return resp, err
 		}
 		payload.Schema = s.ToSimple()
+		payload.ProductID = msg.ProductID
+		payload.DeviceName = msg.DeviceName
 		resp.Payload = &payload
 		return resp, nil
 	}
@@ -387,6 +389,7 @@ func (l *GatewayLogic) HandlePropertyGetSchema(msg *deviceMsg.PublishMsg, resp *
 			return resp, err
 		}
 		payload.Schema = s.ToSimple()
+		payload.ProductID = l.dreq.Payload.ProductID
 		resp.Payload = &payload
 		return resp, nil
 	}
@@ -395,6 +398,8 @@ func (l *GatewayLogic) HandlePropertyGetSchema(msg *deviceMsg.PublishMsg, resp *
 		resp.AddStatus(err, l.dreq.NeedRetMsg())
 		return resp, err
 	}
+	payload.ProductID = l.dreq.Payload.ProductID
+	payload.DeviceName = l.dreq.Payload.DeviceName
 	payload.Schema = s.ToSimple()
 	resp.Payload = &payload
 	return resp, nil
