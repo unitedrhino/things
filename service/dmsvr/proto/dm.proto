@@ -1586,6 +1586,7 @@ message DeviceSchema{
 message DeviceSchemaTslReadReq{
   string   productID = 1; //产品id
   string deviceName =17;//设备ID 必填
+  bool withProductSchema = 20;//同时获取产品物模型
 }
 
 message DeviceSchemaTslReadResp{

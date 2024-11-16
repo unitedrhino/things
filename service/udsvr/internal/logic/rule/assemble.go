@@ -337,14 +337,17 @@ func ToSceneTriggerDeviceDo(ctx context.Context, svcCtx *svc.ServiceContext, in 
 		Body:             in.Body,
 		StateKeep:        utils.Copy[scene.StateKeep](in.StateKeep),
 	}
-	di, err := svcCtx.DeviceCache.GetData(ctx, devices.Core{
-		ProductID:  in.ProductID,
-		DeviceName: in.DeviceName,
-	})
-	if err == nil {
-		ret.ProductName = di.ProductName
-		ret.DeviceAlias = di.DeviceAlias.GetValue()
+	if in.DeviceName != "" {
+		di, err := svcCtx.DeviceCache.GetData(ctx, devices.Core{
+			ProductID:  in.ProductID,
+			DeviceName: in.DeviceName,
+		})
+		if err == nil {
+			ret.ProductName = di.ProductName
+			ret.DeviceAlias = di.DeviceAlias.GetValue()
+		}
 	}
+
 	return
 }
 

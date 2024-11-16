@@ -3,7 +3,6 @@ package productmanagelogic
 import (
 	"context"
 	"gitee.com/unitedrhino/share/ctxs"
-	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
@@ -123,7 +122,7 @@ func (l *ProductSchemaCreateLogic) ProductSchemaCreate(in *dm.ProductSchemaCreat
 		return nil, err
 	}
 	//清除缓存
-	err = l.svcCtx.ProductSchemaRepo.SetData(l.ctx, devices.Core{ProductID: in.Info.ProductID}, nil)
+	err = l.svcCtx.ProductSchemaRepo.SetData(l.ctx, in.Info.ProductID, nil)
 	if err != nil {
 		return nil, err
 	}

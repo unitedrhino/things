@@ -383,7 +383,7 @@ func (l *GatewayLogic) HandlePropertyGetSchema(msg *deviceMsg.PublishMsg, resp *
 		return resp, nil
 	}
 	if l.dreq.Payload.DeviceName == "" {
-		s, err := l.svcCtx.ProductSchemaRepo.GetData(l.ctx, devices.Core{ProductID: l.dreq.Payload.ProductID})
+		s, err := l.svcCtx.ProductSchemaRepo.GetData(l.ctx, l.dreq.Payload.ProductID)
 		if err != nil {
 			resp.AddStatus(err, l.dreq.NeedRetMsg())
 			return resp, err
@@ -415,7 +415,7 @@ func (l *GatewayLogic) HandleCreateSchema(msg *deviceMsg.PublishMsg, resp *msgGa
 		l.dreq.Payload.ProductID = msg.ProductID
 		l.dreq.Payload.DeviceName = msg.DeviceName
 	}
-	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, msg.ProductID)
+	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, l.dreq.Payload.ProductID)
 	if err != nil {
 		resp.AddStatus(err, l.dreq.NeedRetMsg())
 		return resp, err
@@ -431,14 +431,14 @@ func (l *GatewayLogic) HandleCreateSchema(msg *deviceMsg.PublishMsg, resp *msgGa
 		resp.AddStatus(err, l.dreq.NeedRetMsg())
 		return resp, err
 	}
-	err = relationDB.NewDeviceSchemaRepo(l.ctx).MultiInsert2(l.ctx, msg.ProductID, msg.DeviceName, m)
+	err = relationDB.NewDeviceSchemaRepo(l.ctx).MultiInsert2(l.ctx, l.dreq.Payload.ProductID, l.dreq.Payload.DeviceName, m)
 	if err != nil {
 		resp.AddStatus(err, l.dreq.NeedRetMsg())
 		return resp, err
 	}
 	l.svcCtx.DeviceSchemaRepo.SetData(l.ctx, devices.Core{
-		ProductID:  msg.ProductID,
-		DeviceName: msg.DeviceName,
+		ProductID:  l.dreq.Payload.ProductID,
+		DeviceName: l.dreq.Payload.DeviceName,
 	}, nil)
 	return resp, nil
 }

@@ -64,7 +64,11 @@ func NewLightProtocol(c conf.EventConf, pi *dm.ProtocolInfo, pc *LightProtocolCo
 	}
 	pm := productmanage.NewProductManage(pc.DmClient)
 	di := devicemanage.NewDeviceManage(pc.DmClient)
-	sc, err := dmExport.NewDeviceSchemaCache(di, e)
+	ps, err := dmExport.NewProductSchemaCache(pm, e)
+	if err != nil {
+		return nil, err
+	}
+	sc, err := dmExport.NewDeviceSchemaCache(di, ps, e)
 	if err != nil {
 		return nil, err
 	}

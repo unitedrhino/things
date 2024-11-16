@@ -2,6 +2,7 @@ package svc
 
 import (
 	"context"
+	"encoding/json"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tdengine/abnormalLogRepo"
 	"os"
 	"time"
@@ -53,7 +54,7 @@ type ServiceContext struct {
 
 	OssClient            *oss.Client
 	TimedM               timedmanage.TimedManage
-	ProductSchemaRepo    *caches.Cache[schema.Model, devices.Core]
+	ProductSchemaRepo    *caches.Cache[schema.Model, string]
 	DeviceSchemaRepo     *caches.Cache[schema.Model, devices.Core]
 	SchemaManaRepo       msgThing.SchemaDataRepo
 	HubLogRepo           deviceLog.HubRepo
@@ -113,21 +114,22 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	serverMsg, err := eventBus.NewFastEvent(c.Event, c.Name, nodeID)
 	logx.Must(err)
 
-	getProductSchemaModel, err := caches.NewCache(caches.CacheConfig[schema.Model, devices.Core]{
+	getProductSchemaModel, err := caches.NewCache(caches.CacheConfig[schema.Model, string]{
 		KeyType:   eventBus.ServerCacheKeyDmProductSchema,
 		FastEvent: serverMsg,
-		GetData: func(ctx context.Context, key devices.Core) (*schema.Model, error) {
+		GetData: func(ctx context.Context, key string) (*schema.Model, error) {
 			db := relationDB.NewProductSchemaRepo(ctx)
-			dbSchemas, err := db.FindByFilter(ctx, relationDB.ProductSchemaFilter{ProductID: key.ProductID}, nil)
+			dbSchemas, err := db.FindByFilter(ctx, relationDB.ProductSchemaFilter{ProductID: key}, nil)
 			if err != nil {
 				return nil, err
 			}
-			schemaModel := relationDB.ToSchemaDo(key.ProductID, dbSchemas)
+			schemaModel := relationDB.ToSchemaDo(key, dbSchemas)
 			schemaModel.ValidateWithFmt()
 			return schemaModel, nil
 		},
-		Fmt: func(ctx context.Context, key devices.Core, data *schema.Model) {
+		Fmt: func(ctx context.Context, key string, data *schema.Model) *schema.Model {
 			data.ValidateWithFmt()
+			return data
 		},
 		ExpireTime: 10 * time.Minute,
 	})
@@ -138,26 +140,41 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		GetData: func(ctx context.Context, key devices.Core) (*schema.Model, error) {
 			db := relationDB.NewDeviceSchemaRepo(ctx)
 			dbSchemas, err := db.FindByFilter(ctx, relationDB.DeviceSchemaFilter{
-				ProductID: key.ProductID, DeviceName: key.DeviceName, WithProductSchema: true}, nil)
+				ProductID: key.ProductID, DeviceName: key.DeviceName}, nil)
 			if err != nil {
 				return nil, err
 			}
 			schemaModel := relationDB.ToDeviceSchemaDo(key.ProductID, dbSchemas)
-			ps, err := getProductSchemaModel.GetData(ctx, key)
-			if err != nil {
-				return nil, err
-			}
-			schemaModel.Aggregation(ps)
 			schemaModel.ValidateWithFmt()
 			return schemaModel, nil
 		},
-		Fmt: func(ctx context.Context, key devices.Core, data *schema.Model) {
-			data.ValidateWithFmt()
+		Fmt: func(ctx context.Context, key devices.Core, data *schema.Model) *schema.Model {
+			ps, err := getProductSchemaModel.GetData(ctx, key.ProductID)
+			if err != nil {
+				logx.WithContext(ctx).Error(err)
+			}
+			newOne := data.Copy().Aggregation(ps)
+			newOne.ValidateWithFmt()
+			return newOne
 		},
 		ExpireTime: 20 * time.Minute,
 	})
+	getProductSchemaModel.AddNotifySlot(func(ctx context.Context, keyB []byte) {
+		var pKey devices.Core
+		json.Unmarshal(keyB, &pKey)
+		getDeviceSchemaModel.DeleteByFunc(func(key string) bool {
+			ck := devices.Core{}
+			json.Unmarshal([]byte(key), &ck)
+			if ck.ProductID == pKey.ProductID {
+				return true
+			}
+			return false
+		})
+	})
 	logx.Must(err)
-	deviceDataR := schemaDataRepo.NewDeviceDataRepo(c.TSDB, getProductSchemaModel.GetData, getDeviceSchemaModel.GetData, ca)
+	deviceDataR := schemaDataRepo.NewDeviceDataRepo(c.TSDB, func(ctx context.Context, productID devices.Core) (*schema.Model, error) {
+		return getProductSchemaModel.GetData(ctx, productID.ProductID)
+	}, getDeviceSchemaModel.GetData, ca)
 	err = deviceDataR.Init(context.Background())
 	logx.Must(err)
 	pd, err := pubDev.NewPubDev(serverMsg)

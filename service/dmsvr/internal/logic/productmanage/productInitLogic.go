@@ -3,7 +3,6 @@ package productmanagelogic
 import (
 	"context"
 	"gitee.com/unitedrhino/share/ctxs"
-	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"sync"
@@ -62,7 +61,7 @@ func (l *ProductInitLogic) initOne(in *relationDB.DmProductInfo) error {
 		return err
 	}
 	{ //物模型初始化
-		t, err := l.svcCtx.ProductSchemaRepo.GetData(l.ctx, devices.Core{ProductID: in.ProductID})
+		t, err := l.svcCtx.ProductSchemaRepo.GetData(l.ctx, in.ProductID)
 		if err != nil {
 			l.Errorf("%s.SchemaManaRepo.GetSchemaModel failure,err:%v", utils.FuncName(), err)
 			return err

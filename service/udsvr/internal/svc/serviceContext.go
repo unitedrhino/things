@@ -100,7 +100,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	logx.Must(err)
 	pic, err := dmExport.NewProductInfoCache(productM, fastEvent)
 	logx.Must(err)
-	psc, err := dmExport.NewDeviceSchemaCache(deviceM, fastEvent)
+	psc, err := dmExport.NewProductSchemaCache(productM, fastEvent)
+	logx.Must(err)
+	dsc, err := dmExport.NewDeviceSchemaCache(deviceM, psc, fastEvent)
 	logx.Must(err)
 	ossClient, err := oss.NewOssClient(c.OssConf)
 	if err != nil {
@@ -133,7 +135,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			DeviceCache:    dic,
 			ProductCache:   pic,
 			UserShareCache: udc,
-			SchemaCache:    psc,
+			SchemaCache:    dsc,
 		},
 	}
 }

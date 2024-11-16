@@ -2,6 +2,7 @@ package dmExport
 
 import (
 	"context"
+	"encoding/json"
 
 	"gitee.com/unitedrhino/share/caches"
 	"gitee.com/unitedrhino/share/devices"
@@ -63,17 +64,18 @@ func NewUserShareCache(devM userdevice.UserDevice, fastEvent *eventBus.FastEvent
 	})
 }
 
-type ProductSchemaCacheT = *caches.Cache[schema.Model, devices.Core]
+type ProductSchemaCacheT = *caches.Cache[schema.Model, string]
 
 func NewProductSchemaCache(pm productmanage.ProductManage, fastEvent *eventBus.FastEvent) (ProductSchemaCacheT, error) {
-	return caches.NewCache(caches.CacheConfig[schema.Model, devices.Core]{
+	return caches.NewCache(caches.CacheConfig[schema.Model, string]{
 		KeyType:   eventBus.ServerCacheKeyDmProductSchema,
 		FastEvent: fastEvent,
-		Fmt: func(ctx context.Context, key devices.Core, data *schema.Model) {
+		Fmt: func(ctx context.Context, key string, data *schema.Model) *schema.Model {
 			data.ValidateWithFmt()
+			return data
 		},
-		GetData: func(ctx context.Context, key devices.Core) (*schema.Model, error) {
-			info, err := pm.ProductSchemaTslRead(ctx, &dm.ProductSchemaTslReadReq{ProductID: key.ProductID})
+		GetData: func(ctx context.Context, key string) (*schema.Model, error) {
+			info, err := pm.ProductSchemaTslRead(ctx, &dm.ProductSchemaTslReadReq{ProductID: key})
 			if err != nil {
 				return nil, err
 			}
@@ -84,12 +86,15 @@ func NewProductSchemaCache(pm productmanage.ProductManage, fastEvent *eventBus.F
 
 type DeviceSchemaCacheT = *caches.Cache[schema.Model, devices.Core]
 
-func NewDeviceSchemaCache(pm devicemanage.DeviceManage, fastEvent *eventBus.FastEvent) (DeviceSchemaCacheT, error) {
-	return caches.NewCache(caches.CacheConfig[schema.Model, devices.Core]{
+func NewDeviceSchemaCache(pm devicemanage.DeviceManage, pc ProductSchemaCacheT, fastEvent *eventBus.FastEvent) (DeviceSchemaCacheT, error) {
+	ret, err := caches.NewCache(caches.CacheConfig[schema.Model, devices.Core]{
 		KeyType:   eventBus.ServerCacheKeyDmDeviceSchema,
 		FastEvent: fastEvent,
-		Fmt: func(ctx context.Context, key devices.Core, data *schema.Model) {
-			data.ValidateWithFmt()
+		Fmt: func(ctx context.Context, key devices.Core, data *schema.Model) *schema.Model {
+			pd, _ := pc.GetData(ctx, key.ProductID)
+			newOne := data.Copy().Aggregation(pd)
+			newOne.ValidateWithFmt()
+			return newOne
 		},
 		GetData: func(ctx context.Context, key devices.Core) (*schema.Model, error) {
 			info, err := pm.DeviceSchemaTslRead(ctx, &dm.DeviceSchemaTslReadReq{ProductID: key.ProductID, DeviceName: key.DeviceName})
@@ -99,4 +104,21 @@ func NewDeviceSchemaCache(pm devicemanage.DeviceManage, fastEvent *eventBus.Fast
 			return schema.ValidateWithFmt([]byte(info.Tsl))
 		},
 	})
+	if err != nil {
+		return nil, err
+	}
+	pc.AddNotifySlot(func(ctx context.Context, keyB []byte) {
+		var pKey devices.Core
+		json.Unmarshal(keyB, &pKey)
+		productID := string(keyB)
+		ret.DeleteByFunc(func(key string) bool {
+			ck := devices.Core{}
+			json.Unmarshal([]byte(key), &ck)
+			if ck.ProductID == productID {
+				return true
+			}
+			return false
+		})
+	})
+	return ret, nil
 }

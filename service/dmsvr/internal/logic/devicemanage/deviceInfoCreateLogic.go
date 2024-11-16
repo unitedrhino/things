@@ -237,7 +237,7 @@ func (l *DeviceInfoCreateLogic) InitDevice(in devices.Info) error {
 	if in.TenantCode == "" {
 		in.TenantCode = ctxs.GetUserCtxNoNil(l.ctx).TenantCode
 	}
-	pt, err := l.svcCtx.ProductSchemaRepo.GetData(l.ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
+	pt, err := l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
 	if err != nil {
 		return errors.System.AddDetail(err)
 	}

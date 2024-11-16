@@ -158,6 +158,7 @@ func (p DeviceSchemaRepo) MultiInsert(ctx context.Context, data []*DmDeviceSchem
 func (p DeviceSchemaRepo) MultiInsert2(ctx context.Context, productID string, deviceName string, schemaInfo *schema.Model) error {
 	var datas []*DmDeviceSchema
 	for _, item := range schemaInfo.Property {
+		item.Tag = schema.TagDevice
 		datas = append(datas, &DmDeviceSchema{
 			ProductID:    productID,
 			DeviceName:   deviceName,
@@ -165,6 +166,7 @@ func (p DeviceSchemaRepo) MultiInsert2(ctx context.Context, productID string, de
 		})
 	}
 	for _, item := range schemaInfo.Event {
+		item.Tag = schema.TagDevice
 		datas = append(datas, &DmDeviceSchema{
 			ProductID:    productID,
 			DeviceName:   deviceName,
@@ -172,6 +174,7 @@ func (p DeviceSchemaRepo) MultiInsert2(ctx context.Context, productID string, de
 		})
 	}
 	for _, item := range schemaInfo.Action {
+		item.Tag = schema.TagDevice
 		datas = append(datas, &DmDeviceSchema{
 			ProductID:    productID,
 			DeviceName:   deviceName,
