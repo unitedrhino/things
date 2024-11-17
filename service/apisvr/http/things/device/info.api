@@ -230,8 +230,14 @@ type (
     DeviceMultiUpdateImportResp {
         Total int64 `json:"total"`                                 //导入总接口数
         ErrCount int64  `json:"errCount"` //失败数
+        ErrDetail []DeviceMultiUpdateImportError `json:"errDetail"` //失败详情
         IgnoreCount int64  `json:"ignoreCount"` //忽略数
         SuccCount int64  `json:"succCount"` //成功数
+    }
+    DeviceMultiUpdateImportError{
+        Device DeviceCore `json:"device"`
+        Code int64 `json:"code"`
+        Msg string  `json:"msg"`
     }
 
     DeviceInfoIndexReq  {

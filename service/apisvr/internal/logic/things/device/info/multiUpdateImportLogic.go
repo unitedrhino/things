@@ -11,6 +11,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"golang.org/x/sync/errgroup"
 	"strings"
+	"sync"
 	"sync/atomic"
 
 	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
@@ -231,6 +232,19 @@ func (l *MultiUpdateImportLogic) MultiUpdateImport(rows [][]string) (*types.Devi
 	//	}
 	//
 	//}
+	var errDetail = []types.DeviceMultiUpdateImportError{}
+	var mutex sync.Mutex
+	var addErr = func(col updateImport, err error) {
+		errNum.Add(1)
+		mutex.Lock()
+		defer mutex.Unlock()
+		er := errors.Fmt(err)
+		errDetail = append(errDetail, types.DeviceMultiUpdateImportError{
+			Device: types.DeviceCore{ProductID: col.ProductID, DeviceName: col.DeviceName},
+			Code:   er.Code,
+			Msg:    er.GetMsg(),
+		})
+	}
 	for _, c := range cols {
 		col := c
 		egg.Go(func() error {
@@ -241,7 +255,7 @@ func (l *MultiUpdateImportLogic) MultiUpdateImport(rows [][]string) (*types.Devi
 			})
 			if err != nil {
 				l.Errorf("col:%v,err:%v", col, err)
-				errNum.Add(1)
+				addErr(col, err)
 				return nil
 			}
 			var updateOne = &dm.DeviceInfo{ProductID: di.ProductID, DeviceName: di.DeviceName}
@@ -259,7 +273,7 @@ func (l *MultiUpdateImportLogic) MultiUpdateImport(rows [][]string) (*types.Devi
 			_, err = l.svcCtx.DeviceM.DeviceInfoUpdate(l.ctx, updateOne)
 			if err != nil {
 				l.Errorf("col:%v,err:%v", col, err)
-				errNum.Add(1)
+				addErr(col, err)
 				return nil
 			}
 			if col.Gateway.DeviceName != "" && di.DeviceType == def.DeviceTypeSubset {
@@ -274,7 +288,7 @@ func (l *MultiUpdateImportLogic) MultiUpdateImport(rows [][]string) (*types.Devi
 				})
 				if err != nil {
 					l.Errorf("col:%v,err:%v", col, err)
-					errNum.Add(1)
+					addErr(col, err)
 					return nil
 				}
 			}
@@ -289,6 +303,7 @@ func (l *MultiUpdateImportLogic) MultiUpdateImport(rows [][]string) (*types.Devi
 		Total:       int64(len(rows) - 1),
 		ErrCount:    errNum.Load(),
 		IgnoreCount: 0,
+		ErrDetail:   errDetail,
 		SuccCount:   succ.Load(),
 	}, err
 }

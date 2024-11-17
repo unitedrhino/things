@@ -9208,6 +9208,27 @@
         "tips"
       ]
     },
+    "DeviceMultiUpdateImportError": {
+      "type": "object",
+      "properties": {
+        "device": {
+          "$ref": "#/definitions/DeviceCore"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "msg": {
+          "type": "string"
+        }
+      },
+      "title": "DeviceMultiUpdateImportError",
+      "required": [
+        "device",
+        "code",
+        "msg"
+      ]
+    },
     "DeviceMultiUpdateImportReq": {
       "type": "object",
       "properties": {},
@@ -9226,6 +9247,13 @@
           "format": "int64",
           "description": "失败数"
         },
+        "errDetail": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceMultiUpdateImportError"
+          },
+          "description": "失败详情"
+        },
         "ignoreCount": {
           "type": "integer",
           "format": "int64",
@@ -9241,6 +9269,7 @@
       "required": [
         "total",
         "errCount",
+        "errDetail",
         "ignoreCount",
         "succCount"
       ]
