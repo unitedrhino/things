@@ -91,14 +91,23 @@ func getHandle(tt string) func(r *updateImport, value string) error {
 		}
 	case "物模型昵称", "schemaAlias":
 		return func(r *updateImport, value string) error {
+			if value == "" {
+				return nil
+			}
 			if r.SchemaAlias == nil {
 				r.SchemaAlias = make(map[string]string)
 			}
 			kvs := strings.Split(value, ",")
+			if len(kvs) == 0 {
+				kvs = strings.Split(value, "，")
+			}
 			for _, kv := range kvs {
 				k, v, ok := strings.Cut(kv, ":")
 				if !ok {
-					return errors.Parameter.AddMsgf("格式不对:%v,格式为: switch:213,switch2:xfwef", value)
+					k, v, ok = strings.Cut(kv, "：")
+					if !ok {
+						return errors.Parameter.AddMsgf("格式不对:%v,格式为: switch:213,switch2:xfwef", value)
+					}
 				}
 				r.SchemaAlias[k] = v
 			}
