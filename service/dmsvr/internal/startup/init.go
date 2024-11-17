@@ -466,7 +466,7 @@ func TimerInit(svcCtx *svc.ServiceContext) {
 func DictInit(svcCtx *svc.ServiceContext) {
 	ctx := ctxs.WithRoot(context.Background())
 	svcCtx.DictM.DictInfoCreate(ctx, &sys.DictInfo{
-		Group: def.DictGroupThing,
+		Group: def.DictGroupThings,
 		Name:  "设备分组用途",
 		Code:  "deviceGroupPurpose",
 	})

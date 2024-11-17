@@ -2918,6 +2918,7 @@ var ProtocolManage_ServiceDesc = grpc.ServiceDesc{
 
 const (
 	DeviceGroup_GroupInfoCreate_FullMethodName        = "/dm.DeviceGroup/groupInfoCreate"
+	DeviceGroup_GroupInfoMultiCreate_FullMethodName   = "/dm.DeviceGroup/groupInfoMultiCreate"
 	DeviceGroup_GroupInfoIndex_FullMethodName         = "/dm.DeviceGroup/groupInfoIndex"
 	DeviceGroup_GroupInfoRead_FullMethodName          = "/dm.DeviceGroup/groupInfoRead"
 	DeviceGroup_GroupInfoUpdate_FullMethodName        = "/dm.DeviceGroup/groupInfoUpdate"
@@ -2933,6 +2934,7 @@ const (
 type DeviceGroupClient interface {
 	// 创建分组
 	GroupInfoCreate(ctx context.Context, in *GroupInfo, opts ...grpc.CallOption) (*WithID, error)
+	GroupInfoMultiCreate(ctx context.Context, in *GroupInfoMultiCreateReq, opts ...grpc.CallOption) (*Empty, error)
 	// 获取分组信息列表
 	GroupInfoIndex(ctx context.Context, in *GroupInfoIndexReq, opts ...grpc.CallOption) (*GroupInfoIndexResp, error)
 	// 获取分组信息详情
@@ -2960,6 +2962,15 @@ func NewDeviceGroupClient(cc grpc.ClientConnInterface) DeviceGroupClient {
 func (c *deviceGroupClient) GroupInfoCreate(ctx context.Context, in *GroupInfo, opts ...grpc.CallOption) (*WithID, error) {
 	out := new(WithID)
 	err := c.cc.Invoke(ctx, DeviceGroup_GroupInfoCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceGroupClient) GroupInfoMultiCreate(ctx context.Context, in *GroupInfoMultiCreateReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, DeviceGroup_GroupInfoMultiCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -3035,6 +3046,7 @@ func (c *deviceGroupClient) GroupDeviceMultiDelete(ctx context.Context, in *Grou
 type DeviceGroupServer interface {
 	// 创建分组
 	GroupInfoCreate(context.Context, *GroupInfo) (*WithID, error)
+	GroupInfoMultiCreate(context.Context, *GroupInfoMultiCreateReq) (*Empty, error)
 	// 获取分组信息列表
 	GroupInfoIndex(context.Context, *GroupInfoIndexReq) (*GroupInfoIndexResp, error)
 	// 获取分组信息详情
@@ -3058,6 +3070,9 @@ type UnimplementedDeviceGroupServer struct {
 
 func (UnimplementedDeviceGroupServer) GroupInfoCreate(context.Context, *GroupInfo) (*WithID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoCreate not implemented")
+}
+func (UnimplementedDeviceGroupServer) GroupInfoMultiCreate(context.Context, *GroupInfoMultiCreateReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoMultiCreate not implemented")
 }
 func (UnimplementedDeviceGroupServer) GroupInfoIndex(context.Context, *GroupInfoIndexReq) (*GroupInfoIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoIndex not implemented")
@@ -3107,6 +3122,24 @@ func _DeviceGroup_GroupInfoCreate_Handler(srv interface{}, ctx context.Context, 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceGroupServer).GroupInfoCreate(ctx, req.(*GroupInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceGroup_GroupInfoMultiCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupInfoMultiCreateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceGroupServer).GroupInfoMultiCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceGroup_GroupInfoMultiCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceGroupServer).GroupInfoMultiCreate(ctx, req.(*GroupInfoMultiCreateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3247,6 +3280,10 @@ var DeviceGroup_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "groupInfoCreate",
 			Handler:    _DeviceGroup_GroupInfoCreate_Handler,
+		},
+		{
+			MethodName: "groupInfoMultiCreate",
+			Handler:    _DeviceGroup_GroupInfoMultiCreate_Handler,
 		},
 		{
 			MethodName: "groupInfoIndex",

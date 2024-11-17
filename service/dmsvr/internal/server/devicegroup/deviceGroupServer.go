@@ -29,6 +29,11 @@ func (s *DeviceGroupServer) GroupInfoCreate(ctx context.Context, in *dm.GroupInf
 	return l.GroupInfoCreate(in)
 }
 
+func (s *DeviceGroupServer) GroupInfoMultiCreate(ctx context.Context, in *dm.GroupInfoMultiCreateReq) (*dm.Empty, error) {
+	l := devicegrouplogic.NewGroupInfoMultiCreateLogic(ctx, s.svcCtx)
+	return l.GroupInfoMultiCreate(in)
+}
+
 // 获取分组信息列表
 func (s *DeviceGroupServer) GroupInfoIndex(ctx context.Context, in *dm.GroupInfoIndexReq) (*dm.GroupInfoIndexResp, error) {
 	l := devicegrouplogic.NewGroupInfoIndexLogic(ctx, s.svcCtx)

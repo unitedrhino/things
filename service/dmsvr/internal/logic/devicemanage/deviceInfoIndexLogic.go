@@ -108,17 +108,25 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 	if err != nil {
 		return nil, err
 	}
-	var gateway = map[devices.Core]*dm.DeviceInfo{}
+
+	info = make([]*dm.DeviceInfo, 0, len(di))
+	for _, v := range di {
+		pb := logic.ToDeviceInfo(l.ctx, l.svcCtx, v)
+		info = append(info, pb)
+	}
 	if in.WithGateway {
-		var needGetSubDev []*devices.Core
-		for _, v := range di {
+		var needGetSubDev = map[devices.Core]*dm.DeviceInfo{}
+		var needGetSubDevCore []*devices.Core
+		for _, v := range info {
 			if !(v.DeviceType == def.DeviceTypeSubset) {
 				continue
 			}
-			needGetSubDev = append(needGetSubDev, &devices.Core{ProductID: v.ProductID, DeviceName: v.DeviceName})
+			d := devices.Core{ProductID: v.ProductID, DeviceName: v.DeviceName}
+			needGetSubDev[d] = v
+			needGetSubDevCore = append(needGetSubDevCore, &d)
 		}
 		if len(needGetSubDev) > 0 {
-			gds, err := relationDB.NewGatewayDeviceRepo(l.ctx).FindByFilter(l.ctx, relationDB.GatewayDeviceFilter{SubDevices: needGetSubDev}, nil)
+			gds, err := relationDB.NewGatewayDeviceRepo(l.ctx).FindByFilter(l.ctx, relationDB.GatewayDeviceFilter{SubDevices: needGetSubDevCore}, nil)
 			if err != nil {
 				return nil, err
 			}
@@ -130,16 +138,9 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 				if err != nil {
 					continue
 				}
-				gateway[devices.Core{ProductID: gd.ProductID, DeviceName: gd.DeviceName}] = ddi
+				needGetSubDev[devices.Core{ProductID: gd.ProductID, DeviceName: gd.DeviceName}].Gateway = ddi
 			}
 		}
-	}
-
-	info = make([]*dm.DeviceInfo, 0, len(di))
-	for _, v := range di {
-		pb := logic.ToDeviceInfo(l.ctx, l.svcCtx, v)
-		pb.Gateway = gateway[devices.Core{ProductID: v.ProductID, DeviceName: v.DeviceName}]
-		info = append(info, pb)
 	}
 
 	return &dm.DeviceInfoIndexResp{List: info, Total: size}, nil

@@ -8,6 +8,8 @@ import (
 	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/types"
 	"gitee.com/unitedrhino/things/service/dgsvr/pb/dg"
+	"github.com/maypok86/otter"
+	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -26,7 +28,25 @@ func NewAccessLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AccessLogi
 	}
 }
 
+var accessCache otter.Cache[types.DeviceAuth5AccessReq, struct{}]
+
+func init() {
+	cache, err := otter.MustBuilder[types.DeviceAuth5AccessReq, struct{}](10_000).
+		CollectStats().
+		Cost(func(key types.DeviceAuth5AccessReq, value struct{}) uint32 {
+			return 1
+		}).
+		WithTTL(time.Minute * 10).
+		Build()
+	logx.Must(err)
+	accessCache = cache
+}
+
 func (l *AccessLogic) Access(req *types.DeviceAuth5AccessReq) (resp *types.DeviceAuth5AccessResp, err error) {
+	_, ok := accessCache.Get(*req)
+	if ok {
+		return &types.DeviceAuth5AccessResp{Result: "allow"}, nil
+	}
 	access := req.Action
 	//如果是
 	switch req.Action {
@@ -44,6 +64,7 @@ func (l *AccessLogic) Access(req *types.DeviceAuth5AccessReq) (resp *types.Devic
 		Ip:       req.Ip,
 	})
 	if err == nil {
+		accessCache.Set(*req, struct{}{})
 		return &types.DeviceAuth5AccessResp{Result: "allow"}, nil
 	}
 	err = device.ThirdProtoAccessAuth(l.ctx, l.svcCtx, &types.DeviceAuthAccessReq{
@@ -55,5 +76,6 @@ func (l *AccessLogic) Access(req *types.DeviceAuth5AccessReq) (resp *types.Devic
 	if err != nil {
 		return &types.DeviceAuth5AccessResp{Result: "deny"}, nil
 	}
+	accessCache.Set(*req, struct{}{})
 	return &types.DeviceAuth5AccessResp{Result: "allow"}, nil
 }

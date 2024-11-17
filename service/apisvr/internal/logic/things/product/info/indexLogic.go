@@ -44,6 +44,7 @@ func (l *IndexLogic) Index(req *types.ProductInfoIndexReq) (resp *types.ProductI
 		SceneModes:   req.SceneModes,
 		ProjectID:    req.ProjectID,
 		AreaID:       req.AreaID,
+		AreaIDPath:   req.AreaIDPath,
 		CategoryIDs:  req.CategoryIDs,
 	}
 	dmResp, err := l.svcCtx.ProductM.ProductInfoIndex(l.ctx, dmReq)

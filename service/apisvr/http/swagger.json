@@ -6647,6 +6647,10 @@
         "areaID": {
           "type": "string"
         },
+        "areaIDPath": {
+          "type": "string",
+          "description": "过滤区域id路径下有设备的产品"
+        },
         "propertyMode": {
           "type": "string",
           "description": "属性类型可用 读写类型: r(只读) rw(可读可写)"
@@ -11440,6 +11444,10 @@
         "areaID": {
           "type": "string",
           "description": "过滤区域下有设备的产品"
+        },
+        "areaIDPath": {
+          "type": "string",
+          "description": "过滤区域id路径下有设备的产品"
         },
         "categoryIDs": {
           "type": "array",

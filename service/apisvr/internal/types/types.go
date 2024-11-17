@@ -125,6 +125,7 @@ type CommonSchemaIndexReq struct {
 	GroupID                   int64     `json:"groupID,optional"`
 	GroupIDs                  []int64   `json:"groupIDs,optional"`
 	AreaID                    int64     `json:"areaID,optional,string"`
+	AreaIDPath                string    `json:"areaIDPath,optional"`       //过滤区域id路径下有设备的产品
 	PropertyMode              string    `json:"propertyMode,optional"`     //属性类型可用 读写类型: r(只读) rw(可读可写)
 	ControlMode               int64     `json:"controlMode,optional"`      //控制模式: 1: 可以群控,可以单控  2:只能单控
 	ProductSceneMode          string    `json:"productSceneMode,optional"` //产品场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
@@ -1336,6 +1337,7 @@ type ProductInfoIndexReq struct {
 	NetType      int64     `json:"netType,optional,range=[0:8]"`    //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
 	ProjectID    int64     `json:"projectID,string,optional"`       //项目id,只获取项目下有设备的
 	AreaID       int64     `json:"areaID,string,optional"`          //过滤区域下有设备的产品
+	AreaIDPath   string    `json:"areaIDPath,optional"`             //过滤区域id路径下有设备的产品
 	CategoryIDs  []int64   `json:"categoryIDs,optional"`            //产品品类
 }
 

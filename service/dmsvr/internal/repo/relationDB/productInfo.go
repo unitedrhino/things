@@ -31,6 +31,7 @@ type ProductFilter struct {
 	Status       devices.ProductStatus
 	Statuses     []devices.ProductStatus
 	AreaID       int64
+	AreaIDPath   string
 	NetType      int64
 }
 
@@ -48,6 +49,10 @@ func (p ProductInfoRepo) fmtFilter(ctx context.Context, f ProductFilter) *gorm.D
 	}
 	if f.AreaID != 0 {
 		subQuery := p.db.Model(&DmDeviceInfo{}).Distinct("product_id").Select("product_id").Where("area_id=?", f.AreaID)
+		db = db.Where("product_id in (?)", subQuery)
+	}
+	if f.AreaIDPath != "" {
+		subQuery := p.db.Model(&DmDeviceInfo{}).Distinct("product_id").Select("product_id").Where("area_id_path like ?", f.AreaIDPath+"%")
 		db = db.Where("product_id in (?)", subQuery)
 	}
 	if len(f.CategoryIDs) != 0 {

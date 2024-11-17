@@ -101,6 +101,7 @@ type (
 	GroupInfoCreateReq                = dm.GroupInfoCreateReq
 	GroupInfoIndexReq                 = dm.GroupInfoIndexReq
 	GroupInfoIndexResp                = dm.GroupInfoIndexResp
+	GroupInfoMultiCreateReq           = dm.GroupInfoMultiCreateReq
 	GroupInfoUpdateReq                = dm.GroupInfoUpdateReq
 	HubLogIndexReq                    = dm.HubLogIndexReq
 	HubLogIndexResp                   = dm.HubLogIndexResp
@@ -222,6 +223,7 @@ type (
 	DeviceGroup interface {
 		// 创建分组
 		GroupInfoCreate(ctx context.Context, in *GroupInfo, opts ...grpc.CallOption) (*WithID, error)
+		GroupInfoMultiCreate(ctx context.Context, in *GroupInfoMultiCreateReq, opts ...grpc.CallOption) (*Empty, error)
 		// 获取分组信息列表
 		GroupInfoIndex(ctx context.Context, in *GroupInfoIndexReq, opts ...grpc.CallOption) (*GroupInfoIndexResp, error)
 		// 获取分组信息详情
@@ -270,6 +272,15 @@ func (m *defaultDeviceGroup) GroupInfoCreate(ctx context.Context, in *GroupInfo,
 // 创建分组
 func (d *directDeviceGroup) GroupInfoCreate(ctx context.Context, in *GroupInfo, opts ...grpc.CallOption) (*WithID, error) {
 	return d.svr.GroupInfoCreate(ctx, in)
+}
+
+func (m *defaultDeviceGroup) GroupInfoMultiCreate(ctx context.Context, in *GroupInfoMultiCreateReq, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewDeviceGroupClient(m.cli.Conn())
+	return client.GroupInfoMultiCreate(ctx, in, opts...)
+}
+
+func (d *directDeviceGroup) GroupInfoMultiCreate(ctx context.Context, in *GroupInfoMultiCreateReq, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.GroupInfoMultiCreate(ctx, in)
 }
 
 // 获取分组信息列表
