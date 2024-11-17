@@ -7,7 +7,7 @@ go 1.21.4
 
 require (
 	gitee.com/unitedrhino/core v1.0.4
-	gitee.com/unitedrhino/share v1.0.23
+	gitee.com/unitedrhino/share v1.0.24
 	gitee.com/unitedrhino/squirrel v1.20.5
 	github.com/dgraph-io/ristretto v0.1.0
 	github.com/dop251/goja v0.0.0-20231024180952-594410467bc6
@@ -15,6 +15,7 @@ require (
 	github.com/golang/protobuf v1.5.4
 	github.com/hashicorp/go-uuid v1.0.3
 	github.com/hibiken/asynq v0.24.1
+	github.com/maypok86/otter v1.2.0
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/nats-io/nats.go v1.33.1
 	github.com/observerly/dusk v1.16.0
@@ -115,7 +116,6 @@ require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.15 // indirect
-	github.com/maypok86/otter v1.2.0 // indirect
 	github.com/minio/md5-simd v1.1.0 // indirect
 	github.com/minio/minio-go/v7 v7.0.27 // indirect
 	github.com/minio/sha256-simd v1.0.0 // indirect
