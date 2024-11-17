@@ -77,6 +77,16 @@ func (l *CommonSchemaIndexLogic) CommonSchemaIndex(in *dm.CommonSchemaIndexReq) 
 		}
 		in.ProductIDs = append(in.ProductIDs, cols...)
 	}
+	if in.ProjectID != 0 {
+		cols, err := relationDB.NewDeviceInfoRepo(l.ctx).FindProductIDsByFilter(l.ctx, relationDB.DeviceFilter{ProjectIDs: []int64{in.ProjectID}})
+		if err != nil {
+			return nil, err
+		}
+		if len(cols) == 0 {
+			return &dm.CommonSchemaIndexResp{}, nil
+		}
+		in.ProductIDs = append(in.ProductIDs, cols...)
+	}
 
 	if in.GroupID != 0 {
 		cols, err := relationDB.NewDeviceInfoRepo(l.ctx).FindProductIDsByFilter(l.ctx, relationDB.DeviceFilter{GroupID: in.GroupID})

@@ -124,6 +124,7 @@ type CommonSchemaIndexReq struct {
 	UserPerm                  int64     `json:"userPerm,optional"`          //用户权限操作: 1:r(只读) 3:rw(可读可写)
 	GroupID                   int64     `json:"groupID,optional"`
 	GroupIDs                  []int64   `json:"groupIDs,optional"`
+	ProjectID                 int64     `json:"projectID,optional,string"` //过滤项目下共有的物模型
 	AreaID                    int64     `json:"areaID,optional,string"`
 	AreaIDPath                string    `json:"areaIDPath,optional"`       //过滤区域id路径下有设备的产品
 	PropertyMode              string    `json:"propertyMode,optional"`     //属性类型可用 读写类型: r(只读) rw(可读可写)

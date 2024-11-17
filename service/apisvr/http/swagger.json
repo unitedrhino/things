@@ -6644,6 +6644,10 @@
             "format": "int64"
           }
         },
+        "projectID": {
+          "type": "string",
+          "description": "过滤项目下共有的物模型"
+        },
         "areaID": {
           "type": "string"
         },
