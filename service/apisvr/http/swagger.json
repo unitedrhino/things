@@ -7997,6 +7997,10 @@
           "type": "string",
           "description": "项目区域id,传了优先从项目区域中获取设备列表"
         },
+        "areaIDPath": {
+          "type": "string",
+          "description": "根据区域路径控制设备"
+        },
         "groupID": {
           "type": "string",
           "description": "分组ID,传了会从分组下获取设备"

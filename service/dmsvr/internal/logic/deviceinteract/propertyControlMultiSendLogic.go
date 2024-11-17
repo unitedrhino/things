@@ -121,6 +121,19 @@ func (l *PropertyControlMultiSendLogic) MultiSendMultiProductProperty(in *dm.Pro
 			}
 		}
 	}
+	if in.AreaIDPath != "" {
+		dis, err := relationDB.NewDeviceInfoRepo(l.ctx).FindByFilter(l.ctx, relationDB.DeviceFilter{AreaIDPath: in.AreaIDPath}, nil)
+		if err != nil {
+			return nil, err
+		}
+		for _, v := range dis {
+			if productMap[v.ProductID] == nil {
+				productMap[v.ProductID] = map[string]struct{}{v.DeviceName: {}}
+			} else {
+				productMap[v.ProductID][v.DeviceName] = struct{}{}
+			}
+		}
+	}
 	if in.GroupID != 0 {
 		dis, err := relationDB.NewDeviceInfoRepo(l.ctx).FindByFilter(l.ctx, relationDB.DeviceFilter{GroupIDs: []int64{in.GroupID}}, nil)
 		if err != nil {

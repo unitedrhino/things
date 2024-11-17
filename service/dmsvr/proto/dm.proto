@@ -952,6 +952,7 @@ message PropertyControlMultiSendReq{
   string data = 5;//属性数据, JSON格式字符串, 注意字段需要在物模型属性里定义
   bool isAsync = 6;//是否异步操作 异步情况通过获取接口来获取
   int64 areaID =7;//控制一个区域的设备
+  string areaIDPath = 10;//根据区域路径控制设备
   int64 groupID =8;//控制一个组的设备
   int64 syncTimeout =9;//同步超时时间(单位:秒,不填默认3秒)
 }
