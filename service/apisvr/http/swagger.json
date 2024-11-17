@@ -821,6 +821,46 @@
         ]
       }
     },
+    "/api/v1/things/device/info/multi-update-import": {
+      "post": {
+        "summary": "导入批量更新设备",
+        "operationId": "postApiV1ThingsDeviceInfoMulti-update-import",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/DeviceMultiUpdateImportResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "tags": [
+          "things/device/info",
+          "thingsDeviceInfo"
+        ]
+      }
+    },
     "/api/v1/things/device/info/read": {
       "post": {
         "summary": "获取设备详情",
@@ -9166,6 +9206,43 @@
         "position",
         "address",
         "tips"
+      ]
+    },
+    "DeviceMultiUpdateImportReq": {
+      "type": "object",
+      "properties": {},
+      "title": "DeviceMultiUpdateImportReq"
+    },
+    "DeviceMultiUpdateImportResp": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "format": "int64",
+          "description": "导入总接口数"
+        },
+        "errCount": {
+          "type": "integer",
+          "format": "int64",
+          "description": "失败数"
+        },
+        "ignoreCount": {
+          "type": "integer",
+          "format": "int64",
+          "description": "忽略数"
+        },
+        "succCount": {
+          "type": "integer",
+          "format": "int64",
+          "description": "成功数"
+        }
+      },
+      "title": "DeviceMultiUpdateImportResp",
+      "required": [
+        "total",
+        "errCount",
+        "ignoreCount",
+        "succCount"
       ]
     },
     "DeviceProfile": {

@@ -778,6 +778,16 @@ type DeviceMultiImportRow struct {
 	Tips              string `json:"tips"`              //【提示】模板使用提示
 }
 
+type DeviceMultiUpdateImportReq struct {
+}
+
+type DeviceMultiUpdateImportResp struct {
+	Total       int64 `json:"total"`       //导入总接口数
+	ErrCount    int64 `json:"errCount"`    //失败数
+	IgnoreCount int64 `json:"ignoreCount"` //忽略数
+	SuccCount   int64 `json:"succCount"`   //成功数
+}
+
 type DeviceProfile struct {
 	Device DeviceCore `json:"device"`
 	Code   string     `json:"code"`

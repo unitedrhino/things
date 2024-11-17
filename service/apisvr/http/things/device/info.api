@@ -35,6 +35,15 @@ service api {
     @handler multiUpdate
     post /multi-update (DeviceInfoMultiUpdateReq) returns ()
     @doc(
+        summary: "导入批量更新设备"
+        injectFormdataParam: "file"
+        isNeedAuth: "true"
+        authType: "admin"
+    )
+    @handler multiUpdateImport
+    post /multi-update-import (DeviceMultiUpdateImportReq) returns (DeviceMultiUpdateImportResp)
+
+    @doc(
         summary: "删除设备"
         isNeedAuth: "true"
         authType: "admin"
@@ -213,6 +222,16 @@ type (
            Devices []*DeviceCore `json:"devices"`
             AreaID int64 `json:"areaID,string,optional"`
            RatedPower  int64 `json:"ratedPower,optional,omitempty"`
+    }
+    
+    DeviceMultiUpdateImportReq{
+        
+    }
+    DeviceMultiUpdateImportResp {
+        Total int64 `json:"total"`                                 //导入总接口数
+        ErrCount int64  `json:"errCount"` //失败数
+        IgnoreCount int64  `json:"ignoreCount"` //忽略数
+        SuccCount int64  `json:"succCount"` //成功数
     }
 
     DeviceInfoIndexReq  {

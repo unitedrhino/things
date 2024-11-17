@@ -64,6 +64,7 @@ func (l *MultiImportLogic) MultiImport(req *types.DeviceMultiImportReq, rows [][
 		}
 		LimitChan <- struct{}{}
 		egg.Go(func() error {
+			defer utils.Recover(l.ctx)
 			defer func() {
 				<-LimitChan
 			}()

@@ -3,6 +3,7 @@ package svc
 import (
 	"gitee.com/unitedrhino/core/service/apisvr/exportMiddleware"
 	"gitee.com/unitedrhino/core/service/syssvr/client/areamanage"
+	"gitee.com/unitedrhino/core/service/syssvr/client/dictmanage"
 	"gitee.com/unitedrhino/core/service/syssvr/client/log"
 	role "gitee.com/unitedrhino/core/service/syssvr/client/rolemanage"
 	tenant "gitee.com/unitedrhino/core/service/syssvr/client/tenantmanage"
@@ -57,6 +58,7 @@ type SvrClient struct {
 	UserC      sysExport.UserCacheT
 	AreaC      sysExport.AreaCacheT
 	AreaM      areamanage.AreaManage
+	DictM      dictmanage.DictManage
 }
 
 type ServiceContext struct {
@@ -139,7 +141,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			Rule = uddirect.NewRule(c.UdRpc.RunProxy)
 		}
 	}
-
+	dictM := dictmanage.NewDictManage(zrpc.MustNewClient(c.SysRpc.Conf))
 	ur = user.NewUserManage(zrpc.MustNewClient(c.SysRpc.Conf))
 	ro = role.NewRoleManage(zrpc.MustNewClient(c.SysRpc.Conf))
 	lo = log.NewLog(zrpc.MustNewClient(c.SysRpc.Conf))
@@ -171,17 +173,17 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		ProductCache:   pc,
 		DeviceCache:    dc,
 		SvrClient: SvrClient{
-			UserM:     ur,
-			ProtocolM: protocolM,
-			AreaC:     areaC,
-			SchemaM:   schemaM,
-			ProductM:  productM,
-			DeviceM:   deviceM,
-			DeviceA:   deviceA,
-			UserC:     uc,
-			DeviceG:   deviceG,
-			AreaM:     areaM,
-
+			UserM:          ur,
+			ProtocolM:      protocolM,
+			AreaC:          areaC,
+			SchemaM:        schemaM,
+			ProductM:       productM,
+			DeviceM:        deviceM,
+			DeviceA:        deviceA,
+			UserC:          uc,
+			DeviceG:        deviceG,
+			AreaM:          areaM,
+			DictM:          dictM,
 			DeviceMsg:      deviceMsg,
 			DeviceInteract: deviceInteract,
 			RemoteConfig:   remoteConfig,

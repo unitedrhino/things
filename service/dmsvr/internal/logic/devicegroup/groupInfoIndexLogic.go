@@ -30,6 +30,7 @@ func NewGroupInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Gr
 func (l *GroupInfoIndexLogic) GroupInfoIndex(in *dm.GroupInfoIndexReq) (*dm.GroupInfoIndexResp, error) {
 	f := relationDB.GroupInfoFilter{
 		Name:        in.Name,
+		Names:       in.Names,
 		ParentID:    in.ParentID,
 		Tags:        in.Tags,
 		Purpose:     in.Purpose,

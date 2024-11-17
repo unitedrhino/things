@@ -200,6 +200,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: thingsdeviceinfo.MultiUpdateHandler(serverCtx),
 				},
 				{
+					// 导入批量更新设备
+					Method:  http.MethodPost,
+					Path:    "/multi-update-import",
+					Handler: thingsdeviceinfo.MultiUpdateImportHandler(serverCtx),
+				},
+				{
 					// 获取设备详情
 					Method:  http.MethodPost,
 					Path:    "/read",

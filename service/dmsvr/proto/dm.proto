@@ -1116,6 +1116,7 @@ message GroupInfoIndexReq{
   int64 areaID = 5;//分组可以属于某个区域下
   PageInfo page = 1;
   string name = 2;
+  repeated string names =6;
   int64 parentID = 3;
   map<string, string> tags = 4;
   string purpose =15;//用途 不填默认为default
