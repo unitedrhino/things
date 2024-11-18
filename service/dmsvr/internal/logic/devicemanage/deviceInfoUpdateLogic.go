@@ -14,6 +14,7 @@ import (
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
+	otamanagelogic "gitee.com/unitedrhino/things/service/dmsvr/internal/logic/otamanage"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -110,52 +111,86 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 	if data.Mac != "" {
 		old.Mac = data.Mac
 	}
-	if uc.IsAdmin && data.Version != nil && old.Version != data.Version.GetValue() {
-		old.Version = data.Version.GetValue()
-		//如果不一样则需要判断是否是ota升级的,如果是,则需要更新升级状态
-		dfs, err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).FindByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
-			ProductID:   old.ProductID,
-			DeviceNames: []string{old.DeviceName},
-			DestVersion: data.Version.GetValue(),
-			Statues: []int64{msgOta.DeviceStatusConfirm, msgOta.DeviceStatusQueued,
-				msgOta.DeviceStatusNotified, msgOta.DeviceStatusInProgress},
-		}, nil)
-		if err != nil {
-			if !errors.Cmp(err, errors.NotFind) {
-				return err
+	if uc.IsAdmin && data.Version != nil {
+		if old.Version != data.Version.GetValue() {
+			old.Version = data.Version.GetValue()
+			//如果不一样则需要判断是否是ota升级的,如果是,则需要更新升级状态
+			dfs, err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).FindByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
+				ProductID:   old.ProductID,
+				DeviceNames: []string{old.DeviceName},
+				DestVersion: data.Version.GetValue(),
+				Statues: []int64{msgOta.DeviceStatusConfirm, msgOta.DeviceStatusQueued,
+					msgOta.DeviceStatusNotified, msgOta.DeviceStatusInProgress},
+			}, nil)
+			if err != nil {
+				if !errors.Cmp(err, errors.NotFind) {
+					return err
+				}
+			} else {
+				var once sync.Once
+				for _, df := range dfs {
+					if df.DestVersion == data.Version.GetValue() { //版本号一致才是升级成功
+						df.Step = 100
+						df.Status = msgOta.DeviceStatusSuccess
+						df.Detail = "升级成功"
+						err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).Update(l.ctx, df)
+						if err != nil {
+							return err
+						}
+						old.NeedConfirmVersion = ""
+						old.NeedConfirmJobID = 0
+						once.Do(func() {
+							appMsg := application.OtaReport{
+								Device:    devices.Core{ProductID: old.ProductID, DeviceName: old.DeviceName},
+								Timestamp: time.Now().UnixMilli(), Status: df.Status, Detail: df.Detail, Step: df.Step,
+							}
+							err = l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDeviceOtaReport, appMsg, map[string]any{
+								"productID":  old.ProductID,
+								"deviceName": old.DeviceName,
+							}, map[string]any{
+								"projectID": old.ProjectID,
+							}, map[string]any{
+								"projectID": cast.ToString(old.ProjectID),
+								"areaID":    cast.ToString(old.AreaID),
+							})
+						})
+					}
+				}
+
 			}
 		} else {
-			var once sync.Once
-			for _, df := range dfs {
-				if df.DestVersion == data.Version.GetValue() { //版本号一致才是升级成功
-					df.Step = 100
-					df.Status = msgOta.DeviceStatusSuccess
-					df.Detail = "升级成功"
-					err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).Update(l.ctx, df)
-					if err != nil {
-						return err
-					}
-					old.NeedConfirmVersion = ""
-					old.NeedConfirmJobID = 0
-					once.Do(func() {
-						appMsg := application.OtaReport{
-							Device:    devices.Core{ProductID: old.ProductID, DeviceName: old.DeviceName},
-							Timestamp: time.Now().UnixMilli(), Status: df.Status, Detail: df.Detail, Step: df.Step,
-						}
-						err = l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDeviceOtaReport, appMsg, map[string]any{
-							"productID":  old.ProductID,
-							"deviceName": old.DeviceName,
-						}, map[string]any{
-							"projectID": old.ProjectID,
-						}, map[string]any{
-							"projectID": cast.ToString(old.ProjectID),
-							"areaID":    cast.ToString(old.AreaID),
-						})
-					})
+			//检查是否有待升级的任务并推送
+			dfs, err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).FindByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
+				ProductID:    old.ProductID,
+				DeviceNames:  []string{old.DeviceName},
+				DestVersion:  data.Version.GetValue(),
+				WithJob:      true,
+				WithFirmware: true,
+				Statues:      []int64{msgOta.DeviceStatusQueued},
+			}, nil)
+			if err != nil {
+				if !errors.Cmp(err, errors.NotFind) {
+					return err
 				}
 			}
-
+			if len(dfs) > 0 && dfs[0].Job != nil && dfs[0].Firmware != nil {
+				dfs[0].Job.Firmware = dfs[0].Firmware
+				payload, err := otamanagelogic.GenPayload(l.ctx, l.svcCtx, dfs[0].Job)
+				if err != nil {
+					return err
+				}
+				pi, err := l.svcCtx.ProductCache.GetData(l.ctx, dfs[0].Firmware.ProductID)
+				if err != nil {
+					return err
+				}
+				err = otamanagelogic.PushMessageToDevice(l.ctx, l.svcCtx, dfs[0], pi, payload)
+				if err != nil {
+					l.Error(err)
+					return err
+				}
+			}
 		}
+
 	}
 	if data.HardInfo != "" {
 		old.HardInfo = data.HardInfo

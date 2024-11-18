@@ -14,6 +14,7 @@ import (
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"
@@ -364,12 +365,90 @@ func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirm
 
 	return nil
 }
+
+func PushMessageToDevice(ctx context.Context, svcCtx *svc.ServiceContext, device *relationDB.DmOtaFirmwareDevice, pi *dm.ProductInfo, payload []byte) error {
+	reqMsg := deviceMsg.PublishMsg{
+		Handle:       devices.Ota,
+		Type:         msgOta.TypeUpgrade,
+		Payload:      payload,
+		Timestamp:    time.Now().UnixMilli(),
+		ProductID:    device.ProductID,
+		DeviceName:   device.DeviceName,
+		ProtocolCode: pi.ProtocolCode,
+	}
+	err := svcCtx.PubDev.PublishToDev(ctx, &reqMsg)
+	if err != nil {
+		logx.WithContext(ctx).Error(err)
+		return err
+	}
+	device.Status = msgOta.DeviceStatusNotified
+	device.Detail = "主动推送"
+	device.PushTime = sql.NullTime{
+		Time:  time.Now(),
+		Valid: true,
+	}
+	err = relationDB.NewOtaFirmwareDeviceRepo(ctx).Update(ctx, device)
+	if err != nil {
+		logx.WithContext(ctx).Error(err)
+		return err
+	}
+	core := devices.Core{
+		ProductID:  device.ProductID,
+		DeviceName: device.DeviceName,
+	}
+	di, err := svcCtx.DeviceCache.GetData(ctx, core)
+	if err != nil {
+		logx.WithContext(ctx).Error(err)
+		return nil
+	}
+	appMsg := application.OtaReport{
+		Device:    core,
+		Timestamp: time.Now().UnixMilli(),
+		Status:    device.Status,
+		Detail:    device.Detail,
+		Step:      device.Step,
+	}
+	err = svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDeviceOtaReport, appMsg, map[string]any{
+		"productID":  di.ProductID,
+		"deviceName": di.DeviceName,
+	}, map[string]any{
+		"projectID": di.ProjectID,
+	}, map[string]any{
+		"projectID": cast.ToString(di.ProjectID),
+		"areaID":    cast.ToString(di.AreaID),
+	})
+	if err != nil {
+		logx.WithContext(ctx).Error(err)
+		return nil
+	}
+	return nil
+}
+func GenPayload(ctx context.Context, svcCtx *svc.ServiceContext, jobInfo *relationDB.DmOtaFirmwareJob) ([]byte, error) {
+	firmware := jobInfo.Firmware
+	firmwareFiles, err := stores.WithNoDebug(ctx, relationDB.NewOtaFirmwareFileRepo).FindByFilter(ctx, relationDB.OtaFirmwareFileFilter{FirmwareID: jobInfo.FirmwareID}, nil)
+	if err != nil {
+		return nil, err
+	}
+	data, err := GenUpgradeParams(ctx, svcCtx, firmware, firmwareFiles)
+	if err != nil {
+		return nil, err
+	}
+	MsgToken := devices.GenMsgToken(ctx, svcCtx.NodeID)
+	upgradeMsg := deviceMsg.CommonMsg{
+		MsgToken: MsgToken,
+		Method:   msgOta.TypeUpgrade,
+		//Timestamp: time.Now().UnixMilli(),
+		Data: data,
+	}
+	payload, err := json.Marshal(upgradeMsg)
+	return payload, err
+}
+
 func (l *SendMessageToDevicesLogic) PushMessageToDevices(jobInfo *relationDB.DmOtaFirmwareJob) error {
 	firmware := jobInfo.Firmware
 	if jobInfo.IsNeedPush != def.True { //只有需要推送的才推送
 		return nil
 	}
-
 	deviceList, err := stores.WithNoDebug(l.ctx, relationDB.NewOtaFirmwareDeviceRepo).FindByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
 		FirmwareID: jobInfo.FirmwareID,
 		JobID:      jobInfo.ID,
@@ -388,82 +467,25 @@ func (l *SendMessageToDevicesLogic) PushMessageToDevices(jobInfo *relationDB.DmO
 		//没有可升级的设备
 		return nil
 	}
-	firmwareFiles, err := l.OffDB.FindByFilter(l.ctx, relationDB.OtaFirmwareFileFilter{FirmwareID: jobInfo.FirmwareID}, nil)
+	payload, err := GenPayload(l.ctx, l.svcCtx, jobInfo)
 	if err != nil {
 		return err
 	}
-	data, err := GenUpgradeParams(l.ctx, l.svcCtx, firmware, firmwareFiles)
-	if err != nil {
-		return err
-	}
-	MsgToken := devices.GenMsgToken(l.ctx, l.svcCtx.NodeID)
-	upgradeMsg := deviceMsg.CommonMsg{
-		MsgToken: MsgToken,
-		Method:   msgOta.TypeUpgrade,
-		//Timestamp: time.Now().UnixMilli(),
-		Data: data,
-	}
-	payload, _ := json.Marshal(upgradeMsg)
 	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, firmware.ProductID)
 	if err != nil {
 		return err
 	}
 	var pubDevices []devices.Core
 	for _, device := range deviceList {
-		reqMsg := deviceMsg.PublishMsg{
-			Handle:       devices.Ota,
-			Type:         msgOta.TypeUpgrade,
-			Payload:      payload,
-			Timestamp:    time.Now().UnixMilli(),
-			ProductID:    device.ProductID,
-			DeviceName:   device.DeviceName,
-			ProtocolCode: pi.ProtocolCode,
-		}
-		err = l.svcCtx.PubDev.PublishToDev(l.ctx, &reqMsg)
-		if err != nil {
-			l.Error(err)
-			return err
-		}
-		device.Status = msgOta.DeviceStatusNotified
-		device.Detail = "主动推送"
-		device.PushTime = sql.NullTime{
-			Time:  time.Now(),
-			Valid: true,
-		}
-		err = relationDB.NewOtaFirmwareDeviceRepo(l.ctx).Update(l.ctx, device)
-		if err != nil {
-			l.Error(err)
-			return err
-		}
 		core := devices.Core{
 			ProductID:  device.ProductID,
 			DeviceName: device.DeviceName,
 		}
 		pubDevices = append(pubDevices, core)
-		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, core)
+		err = PushMessageToDevice(l.ctx, l.svcCtx, device, pi, payload)
 		if err != nil {
 			l.Error(err)
-			return nil
-		}
-		appMsg := application.OtaReport{
-			Device:    core,
-			Timestamp: time.Now().UnixMilli(),
-			Status:    device.Status,
-			Detail:    device.Detail,
-			Step:      device.Step,
-		}
-		err = l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDeviceOtaReport, appMsg, map[string]any{
-			"productID":  di.ProductID,
-			"deviceName": di.DeviceName,
-		}, map[string]any{
-			"projectID": di.ProjectID,
-		}, map[string]any{
-			"projectID": cast.ToString(di.ProjectID),
-			"areaID":    cast.ToString(di.AreaID),
-		})
-		if err != nil {
-			l.Error(err)
-			return nil
+			continue
 		}
 	}
 	if len(pubDevices) > 0 {
