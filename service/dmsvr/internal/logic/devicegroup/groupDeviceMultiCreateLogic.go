@@ -2,6 +2,7 @@ package devicegrouplogic
 
 import (
 	"context"
+	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
@@ -29,6 +30,7 @@ func NewGroupDeviceMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceCont
 
 // 创建分组设备
 func (l *GroupDeviceMultiCreateLogic) GroupDeviceMultiCreate(in *dm.GroupDeviceMultiSaveReq) (*dm.Empty, error) {
+	l.ctx = ctxs.WithDefaultAllProject(l.ctx)
 	t, err := relationDB.NewDeviceInfoRepo(l.ctx).CountByFilter(l.ctx, relationDB.DeviceFilter{Cores: logic.ToDeviceCores(in.List)})
 	if err != nil {
 		return nil, err

@@ -176,7 +176,8 @@ func (l *MultiUpdateImportLogic) MultiUpdateImport(rows [][]string) (*types.Devi
 
 	}
 	var cols []updateImport
-	var needAddGroup = map[string]map[string]struct{}{}
+	//第一个参数是purpose 第二个参数是deviceName
+	var needAddGroup = map[string]map[string]map[devices.Core]struct{}{}
 	for _, v := range rows[1:] {
 		var col updateImport
 		for i, value := range v {
@@ -192,10 +193,13 @@ func (l *MultiUpdateImportLogic) MultiUpdateImport(rows [][]string) (*types.Devi
 		if col.Group != nil {
 			for _, v := range col.Group {
 				if needAddGroup[v.Purpose] == nil {
-					needAddGroup[v.Purpose] = make(map[string]struct{})
+					needAddGroup[v.Purpose] = make(map[string]map[devices.Core]struct{})
 				}
 				for n := range v.GroupName {
-					needAddGroup[v.Purpose][n] = struct{}{}
+					if needAddGroup[v.Purpose][n] == nil {
+						needAddGroup[v.Purpose][n] = make(map[devices.Core]struct{})
+					}
+					needAddGroup[v.Purpose][n][devices.Core{ProductID: col.ProductID, DeviceName: col.DeviceName}] = struct{}{}
 				}
 
 			}
@@ -205,42 +209,49 @@ func (l *MultiUpdateImportLogic) MultiUpdateImport(rows [][]string) (*types.Devi
 	var egg errgroup.Group
 	egg.SetLimit(100)
 	var succ atomic.Int64
-	//var groupAdd = map[int64]map[devices.Core]struct{}{}
+	var groupAdd = map[int64]map[devices.Core]struct{}{}
 	var errNum atomic.Int64
-	//if len(needAddGroup)>0{
-	//	var gs []*dm.GroupInfo
-	//	for purpose,v:=range needAddGroup {
-	//		for name:=range v{
-	//			gs=append(gs, &dm.GroupInfo{
-	//				Purpose:     purpose,
-	//				Name:        name,
-	//			})
-	//		}
-	//	}
-	//	_,err:=l.svcCtx.DeviceG.GroupInfoMultiCreate(l.ctx,&dm.GroupInfoMultiCreateReq{Groups: gs})
-	//	if err!=nil{
-	//		return nil, err
-	//	}
-	//	for purpose,v:=range needAddGroup {
-	//		gis,err:=l.svcCtx.DeviceG.GroupInfoIndex(l.ctx, &dm.GroupInfoIndexReq{
-	//			Names:     utils.SetToSlice(v),
-	//			Purpose:  purpose,
-	//		})
-	//		if err!=nil{
-	//			return nil, err
-	//		}
-	//		for _,gi:=range gis.List{
-	//			if groupAdd[gi.Id]==nil{
-	//				groupAdd[gi.Id] = make(map[devices.Core]struct{})
-	//			}
-	//			groupAdd[gi.Id][devices.Core{
-	//				ProductID:  col.,
-	//				DeviceName: "",
-	//			}]
-	//		}
-	//	}
-	//
-	//}
+	if len(needAddGroup) > 0 {
+		var gs []*dm.GroupInfo
+		for purpose, v := range needAddGroup {
+			for name := range v {
+				gs = append(gs, &dm.GroupInfo{
+					Purpose: purpose,
+					Name:    name,
+				})
+			}
+		}
+		_, err := l.svcCtx.DeviceG.GroupInfoMultiCreate(l.ctx, &dm.GroupInfoMultiCreateReq{Groups: gs})
+		if err != nil {
+			return nil, err
+		}
+		for purpose, v := range needAddGroup {
+			gis, err := l.svcCtx.DeviceG.GroupInfoIndex(l.ctx, &dm.GroupInfoIndexReq{
+				Names:   utils.SetToSlice(v),
+				Purpose: purpose,
+			})
+			if err != nil {
+				return nil, err
+			}
+			for _, gi := range gis.List {
+				if groupAdd[gi.Id] == nil {
+					groupAdd[gi.Id] = make(map[devices.Core]struct{})
+				}
+				groupAdd[gi.Id] = v[gi.Name]
+			}
+		}
+		for id, devsSet := range groupAdd {
+			devs := utils.SetToSlice(devsSet)
+			_, err := l.svcCtx.DeviceG.GroupDeviceMultiCreate(l.ctx, &dm.GroupDeviceMultiSaveReq{
+				GroupID: id,
+				List:    utils.CopySlice2[dm.DeviceCore](devs),
+			})
+			if err != nil {
+				return nil, err
+			}
+		}
+
+	}
 	var errDetail = []types.DeviceMultiUpdateImportError{}
 	var mutex sync.Mutex
 	var addErr = func(col updateImport, err error) {

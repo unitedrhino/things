@@ -24,6 +24,7 @@ func ToGroupInfoPb(ro *relationDB.DmGroupInfo) *dm.GroupInfo {
 		DeviceCount: ro.DeviceCount,
 		Desc:        ro.Desc,
 		CreatedTime: ro.CreatedTime.Unix(),
+		Purpose:     ro.Purpose,
 		Tags:        ro.Tags,
 		IsLeaf:      ro.IsLeaf,
 	}
