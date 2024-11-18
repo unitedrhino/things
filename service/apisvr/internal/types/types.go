@@ -318,6 +318,7 @@ type DeviceInfo struct {
 	Distributor        *IDPath                            `json:"distributor,optional,omitempty"`
 	Gateway            *DeviceInfo                        `json:"gateway,optional,omitempty"` //子设备绑定的网关信息,只读
 	Area               *AreaInfo                          `json:"area,optional,omitempty"`    //区域信息
+	Groups             []*GroupCore                       `json:"groups,optional,omitempty"`  //所在分组信息
 }
 
 type DeviceInfoBindReq struct {
@@ -378,6 +379,7 @@ type DeviceInfoIndexReq struct {
 	WithArea           bool          `json:"withArea,optional"`            //同时返回区域信息
 	IsOnlyCore         bool          `json:"isOnlyCore,optional"`          //只返回核心信息
 	Iccid              string        `json:"iccid,optional,omitempty"`     //SIM卡卡号
+	WithGroups         []string      `json:"withGroups,optional"`
 }
 
 type DeviceInfoIndexResp struct {
@@ -982,6 +984,13 @@ type GatewayGetFoundReq struct {
 type GatewayNotifyBindSendReq struct {
 	Gateway    *DeviceCore   `json:"gateway"`    //如果是不同的产品,则传这个字段,上面两个参数填了优先使用
 	SubDevices []*DeviceCore `json:"subDevices"` //如果是不同的产品,则传这个字段,上面两个参数填了优先使用
+}
+
+type GroupCore struct {
+	ID       int64  `json:"id"`
+	ParentID int64  `json:"parentID"`
+	Name     string `json:"name"`
+	Purpose  string `json:"purpose"` //用途
 }
 
 type GroupDeviceMultiDeleteReq struct {

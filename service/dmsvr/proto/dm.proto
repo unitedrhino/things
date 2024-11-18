@@ -1121,6 +1121,8 @@ message GroupInfoIndexReq{
   int64 parentID = 3;
   map<string, string> tags = 4;
   string purpose =15;//用途 不填默认为default
+  repeated string purposes =16;//用途
+   DeviceCore hasDevice=17;
 }
 
 message GroupInfoIndexResp{
@@ -1206,7 +1208,6 @@ message DeviceInfo {
   string lastIp = 49;//最后登录的ip,只读
   google.protobuf.StringValue desc=47;
   DeviceInfo Gateway =46;//子设备绑定的网关
-  repeated GroupCore Groups = 48;//设备所在的分组信息
 }
 
 message ProductInfo{
@@ -1359,7 +1360,6 @@ message DeviceInfoIndexReq{
   CompareInt64  expTime =38; //到期时间
   string iccid = 40;//SIM卡卡号
   bool withGateway =41;//同时返回子设备的网关
-  bool withGroups =44;//同时返回所在分组信息
 }
 
 message DeviceInfoIndexResp{

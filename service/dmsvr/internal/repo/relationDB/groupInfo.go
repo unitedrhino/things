@@ -2,6 +2,7 @@ package relationDB
 
 import (
 	"context"
+	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/stores"
 	"gorm.io/gorm"
 )
@@ -15,10 +16,12 @@ type GroupInfoFilter struct {
 	ID          int64
 	Names       []string
 	Purpose     string
+	Purposes    []string
 	ParentID    int64
 	IDPath      string
 	Name        string
 	Tags        map[string]string
+	HasDevices  *devices.Core
 	WithProduct bool
 }
 
@@ -31,10 +34,19 @@ func (p GroupInfoRepo) fmtFilter(ctx context.Context, f GroupInfoFilter) *gorm.D
 	if f.WithProduct {
 		db = db.Preload("ProductInfo")
 	}
-	if f.Purpose == "" {
+	if f.Purpose == "" && len(f.Purposes) == 0 {
 		f.Purpose = "default"
 	}
-	db = db.Where("purpose = ?", f.Purpose)
+	if len(f.Purposes) != 0 {
+		db = db.Where("purpose in ?", f.Purposes)
+	} else {
+		db = db.Where("purpose = ?", f.Purpose)
+	}
+	if f.HasDevices != nil {
+		subQuery := p.db.Model(&DmGroupDevice{}).Select("group_id").Where("product_id=? and device_name=?",
+			f.HasDevices.ProductID, f.HasDevices.DeviceName)
+		db = db.Where("id in (?)", subQuery)
+	}
 	if f.ID != 0 {
 		db = db.Where("id = ?", f.ID)
 	}

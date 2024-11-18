@@ -2,6 +2,8 @@ package devicegrouplogic
 
 import (
 	"context"
+	"gitee.com/unitedrhino/share/devices"
+	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
@@ -34,8 +36,10 @@ func (l *GroupInfoIndexLogic) GroupInfoIndex(in *dm.GroupInfoIndexReq) (*dm.Grou
 		ParentID:    in.ParentID,
 		Tags:        in.Tags,
 		Purpose:     in.Purpose,
+		Purposes:    in.Purposes,
 		WithProduct: true,
 		AreaID:      in.AreaID,
+		HasDevices:  utils.Copy[devices.Core](in.HasDevice),
 	}
 	ros, err := l.GiDB.FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page))
 	if err != nil {

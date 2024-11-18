@@ -15,6 +15,7 @@ import (
 type DeviceInfoWith struct {
 	Properties []string
 	Profiles   []string
+	WithGroups []string
 	Owner      bool
 	Area       bool
 	IsOnlyCore bool
@@ -98,6 +99,18 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		v.FirstBind = 0
 		v.FirstLogin = 0
 	}
+	var groups []*types.GroupCore
+	if w.WithGroups != nil {
+		gs, err := svcCtx.DeviceG.GroupInfoIndex(ctx, &dm.GroupInfoIndexReq{
+			Purposes:  w.WithGroups,
+			HasDevice: &dm.DeviceCore{ProductID: v.ProductID, DeviceName: v.DeviceName},
+		})
+		if err != nil {
+			logx.WithContext(ctx).Errorf("%s.GroupInfoIndex err:%v", utils.FuncName(), err)
+		} else {
+			groups = utils.CopySlice[types.GroupCore](gs.List)
+		}
+	}
 	if w.IsOnlyCore {
 		return &types.DeviceInfo{
 			ID:             v.Id,
@@ -116,6 +129,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 			Distributor:    utils.Copy[types.IDPath](v.Distributor),
 			Gateway:        InfoToApi(ctx, svcCtx, v.Gateway, DeviceInfoWith{IsOnlyCore: true}),
 			Area:           area,
+			Groups:         groups,
 		}
 	}
 	return &types.DeviceInfo{
@@ -168,6 +182,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		Gateway:            InfoToApi(ctx, svcCtx, v.Gateway, DeviceInfoWith{IsOnlyCore: true}),
 		Area:               area,
 		LastIp:             v.LastIp,
+		Groups:             groups,
 	}
 }
 

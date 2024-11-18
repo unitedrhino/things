@@ -156,9 +156,15 @@ type (
         Distributor *IDPath `json:"distributor,optional,omitempty"`
         Gateway *DeviceInfo `json:"gateway,optional,omitempty"`//子设备绑定的网关信息,只读
         Area *AreaInfo `json:"area,optional,omitempty"` //区域信息
+        Groups []*GroupCore `json:"groups,optional,omitempty"`//所在分组信息
     }
 
-
+    GroupCore{
+        ID int64 `json:"id"`
+        ParentID int64  `json:"parentID"`
+        Name string  `json:"name"`
+        Purpose string  `json:"purpose"`//用途
+    }
 
     DeviceInfoWithProperty {
         Value string `json:"value"`                  //获取到的值
@@ -283,6 +289,7 @@ type (
         WithArea bool `json:"withArea,optional"` //同时返回区域信息
         IsOnlyCore bool `json:"isOnlyCore,optional"` //只返回核心信息
         Iccid          string   `json:"iccid,optional,omitempty"`                        //SIM卡卡号
+        WithGroups []string  `json:"withGroups,optional"`
     }
     DeviceInfoIndexResp  {
         List []*DeviceInfo `json:"list"`    //设备信息

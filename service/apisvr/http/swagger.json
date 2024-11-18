@@ -7420,6 +7420,13 @@
         "area": {
           "$ref": "#/definitions/AreaInfo",
           "description": "区域信息"
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GroupCore"
+          },
+          "description": "所在分组信息"
         }
       },
       "title": "DeviceInfo",
@@ -7684,6 +7691,12 @@
         "iccid": {
           "type": "string",
           "description": "SIM卡卡号"
+        },
+        "withGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       },
       "title": "DeviceInfoIndexReq"
@@ -10013,6 +10026,33 @@
       "required": [
         "gateway",
         "subDevices"
+      ]
+    },
+    "GroupCore": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "parentID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "purpose": {
+          "type": "string",
+          "description": "用途"
+        }
+      },
+      "title": "GroupCore",
+      "required": [
+        "id",
+        "parentID",
+        "name",
+        "purpose"
       ]
     },
     "GroupDeviceMultiDeleteReq": {
