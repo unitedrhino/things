@@ -176,8 +176,9 @@ func (l *MultiUpdateImportLogic) MultiUpdateImport(rows [][]string) (*types.Devi
 
 	}
 	var cols []updateImport
-	//第一个参数是purpose 第二个参数是deviceName
+	//第一个参数是purpose 第二个参数是groupName
 	var needAddGroup = map[string]map[string]map[devices.Core]struct{}{}
+	var needDeleteDevice = map[string]map[devices.Core]struct{}{}
 	for _, v := range rows[1:] {
 		var col updateImport
 		for i, value := range v {
@@ -190,7 +191,7 @@ func (l *MultiUpdateImportLogic) MultiUpdateImport(rows [][]string) (*types.Devi
 		if err != nil {
 			return nil, err
 		}
-		if col.Group != nil {
+		if len(col.Group) > 0 {
 			for _, v := range col.Group {
 				if needAddGroup[v.Purpose] == nil {
 					needAddGroup[v.Purpose] = make(map[string]map[devices.Core]struct{})
@@ -201,7 +202,10 @@ func (l *MultiUpdateImportLogic) MultiUpdateImport(rows [][]string) (*types.Devi
 					}
 					needAddGroup[v.Purpose][n][devices.Core{ProductID: col.ProductID, DeviceName: col.DeviceName}] = struct{}{}
 				}
-
+				if needDeleteDevice[v.Purpose] == nil {
+					needDeleteDevice[v.Purpose] = make(map[devices.Core]struct{})
+				}
+				needDeleteDevice[v.Purpose][devices.Core{ProductID: col.ProductID, DeviceName: col.DeviceName}] = struct{}{}
 			}
 		}
 		cols = append(cols, col)
@@ -211,6 +215,18 @@ func (l *MultiUpdateImportLogic) MultiUpdateImport(rows [][]string) (*types.Devi
 	var succ atomic.Int64
 	var groupAdd = map[int64]map[devices.Core]struct{}{}
 	var errNum atomic.Int64
+	if len(needDeleteDevice) > 0 {
+		for p, g := range needDeleteDevice {
+			devs := utils.SetToSlice(g)
+			_, err := l.svcCtx.DeviceG.GroupDeviceMultiDelete(l.ctx, &dm.GroupDeviceMultiDeleteReq{
+				Purpose: p,
+				List:    utils.CopySlice2[dm.DeviceCore](devs),
+			})
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
 	if len(needAddGroup) > 0 {
 		var gs []*dm.GroupInfo
 		for purpose, v := range needAddGroup {
