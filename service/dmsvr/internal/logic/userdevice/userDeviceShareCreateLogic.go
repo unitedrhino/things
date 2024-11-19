@@ -32,6 +32,10 @@ func NewUserDeviceShareCreateLogic(ctx context.Context, svcCtx *svc.ServiceConte
 
 // 分享设备
 func (l *UserDeviceShareCreateLogic) UserDeviceShareCreate(in *dm.UserDeviceShareInfo) (*dm.WithID, error) {
+	uc := ctxs.GetUserCtx(l.ctx)
+	if in.ProjectID != 0 && (uc.IsAdmin || uc.ProjectAuth[in.ProjectID] != nil) {
+		l.ctx = ctxs.WithProjectID(l.ctx, in.ProjectID)
+	}
 	di, err := relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.Device.ProductID, DeviceNames: []string{in.Device.DeviceName}})
 	if err != nil {
 		return nil, err
@@ -40,7 +44,6 @@ func (l *UserDeviceShareCreateLogic) UserDeviceShareCreate(in *dm.UserDeviceShar
 	if err != nil {
 		return nil, err
 	}
-	uc := ctxs.GetUserCtx(l.ctx)
 	if pi.AdminUserID != uc.UserID {
 		pa := uc.ProjectAuth[pi.ProjectID]
 		if pa.AuthType != def.AuthAdmin {
