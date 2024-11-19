@@ -1,0 +1,524 @@
+[
+  {
+    "moduleCode": "systemManage",
+    "id": 240,
+    "name": "系统管理",
+    "parentID": 1,
+    "type": 2,
+    "path": "/system-manage",
+    "component": "@/pages/system-manage/system-configuration/index.vue",
+    "icon": "icon-menu-mokuai",
+    "createTime": 1731750642,
+    "order": 1,
+    "hideInMenu": 2,
+    "isCommon": 2,
+    "body": {
+      "value": "{\"name\":\"系统管理\",\"meta\":{\"title\":\"系统管理\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+    },
+    "children": [
+      {
+        "moduleCode": "systemManage",
+        "id": 281,
+        "name": "用户管理",
+        "parentID": 240,
+        "type": 2,
+        "path": "user-manage",
+        "component": "@/pages/system-manage/user-manage/index.vue",
+        "icon": "icon-menu-yonghufill",
+        "createTime": 1732000518,
+        "order": 1,
+        "hideInMenu": 2,
+        "isCommon": 1,
+        "body": {
+          "value": "{\"name\":\"用户管理\",\"meta\":{\"title\":\"用户管理\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+        }
+      },
+      {
+        "moduleCode": "systemManage",
+        "id": 282,
+        "name": "问题反馈",
+        "parentID": 240,
+        "type": 2,
+        "path": "feedback",
+        "component": "@/pages/system-manage/feedback/index.vue",
+        "icon": "icon-menu-shujushouquan",
+        "createTime": 1732000644,
+        "order": 5,
+        "hideInMenu": 2,
+        "isCommon": 1,
+        "body": {
+          "value": "{\"name\":\"问题反馈\",\"meta\":{\"title\":\"问题反馈\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+        }
+      },
+      {
+        "moduleCode": "systemManage",
+        "id": 280,
+        "name": "角色管理",
+        "parentID": 240,
+        "type": 2,
+        "path": "role-manage",
+        "component": "@/pages/system-manage/role-manage/index.vue",
+        "icon": "icon-menu-jiaoseguanli1",
+        "createTime": 1732000431,
+        "order": 10,
+        "hideInMenu": 2,
+        "isCommon": 1,
+        "body": {
+          "value": "{\"name\":\"角色管理\",\"meta\":{\"title\":\"角色管理\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+        }
+      },
+      {
+        "moduleCode": "systemManage",
+        "id": 241,
+        "name": "项目管理",
+        "parentID": 240,
+        "type": 2,
+        "path": "project-manage",
+        "component": "@/pages/system-manage/project-manage/index.vue",
+        "icon": "icon-menu-yingyong2",
+        "createTime": 1731750727,
+        "order": 20,
+        "hideInMenu": 2,
+        "isCommon": 1,
+        "body": {
+          "value": "{\"name\":\"项目管理\",\"meta\":{\"title\":\"项目管理\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+        }
+      },
+      {
+        "moduleCode": "systemManage",
+        "id": 242,
+        "name": "项目详情",
+        "parentID": 240,
+        "type": 2,
+        "path": "project-detail",
+        "component": "@/pages/system-manage/project-manage/detail/index.vue",
+        "icon": "icon-menu-yingyong1",
+        "createTime": 1731750760,
+        "order": 20,
+        "hideInMenu": 1,
+        "isCommon": 2,
+        "body": {
+          "value": "{\"name\":\"项目详情\",\"meta\":{\"title\":\"项目详情\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":1,\"headerMenu\":true,\"breadcrumb\":true}}"
+        }
+      }
+    ]
+  },
+  {
+    "moduleCode": "systemManage",
+    "id": 164,
+    "name": "通知管理",
+    "parentID": 1,
+    "type": 2,
+    "path": "/system-manage/inform",
+    "component": "@/pages/system-manage/inform/index.vue",
+    "icon": "icon-menu-haoyou",
+    "createTime": 1719370336,
+    "order": 20,
+    "hideInMenu": 2,
+    "isCommon": 2,
+    "body": {
+      "value": "{\"name\":\"通知管理\",\"meta\":{\"title\":\"通知管理\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+    },
+    "children": [
+      {
+        "moduleCode": "systemManage",
+        "id": 168,
+        "name": "消息配置",
+        "parentID": 164,
+        "type": 2,
+        "path": "news-manage",
+        "component": "@/pages/system-manage/inform/news-manage/index.vue",
+        "icon": "icon-menu-jiaoseguanli2",
+        "createTime": 1719470457,
+        "order": 1,
+        "hideInMenu": 2,
+        "isCommon": 2,
+        "body": {
+          "value": "{\"name\":\"消息配置\",\"meta\":{\"title\":\"消息配置\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+        }
+      },
+      {
+        "moduleCode": "systemManage",
+        "id": 210,
+        "name": "通知配置",
+        "parentID": 164,
+        "type": 2,
+        "path": "notice-configuration",
+        "component": "@/pages/tenant-manage/notice-configuration/index.vue",
+        "icon": "icon-menu-jiaoseguanli2",
+        "createTime": 1725285136,
+        "order": 1,
+        "hideInMenu": 2,
+        "isCommon": 2,
+        "body": {
+          "value": "{\"name\":\"通知配置\",\"meta\":{\"title\":\"通知配置\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+        }
+      },
+      {
+        "moduleCode": "systemManage",
+        "id": 167,
+        "name": "通道配置",
+        "parentID": 164,
+        "type": 2,
+        "path": "notice-manage",
+        "component": "@/pages/system-manage/inform/notice-manage/index.vue",
+        "icon": "icon-menu-yingyong1",
+        "createTime": 1719470435,
+        "order": 2,
+        "hideInMenu": 2,
+        "isCommon": 2,
+        "body": {
+          "value": "{\"name\":\"通道配置\",\"meta\":{\"title\":\"通道配置\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+        }
+      },
+      {
+        "moduleCode": "systemManage",
+        "id": 166,
+        "name": "模板配置",
+        "parentID": 164,
+        "type": 2,
+        "path": "template-manage",
+        "component": "@/pages/system-manage/inform/template-manage/index.vue",
+        "icon": "icon-menu-yingyong1",
+        "createTime": 1719470415,
+        "order": 3,
+        "hideInMenu": 2,
+        "isCommon": 2,
+        "body": {
+          "value": "{\"name\":\"模板配置\",\"meta\":{\"title\":\"模板配置\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+        }
+      },
+      {
+        "moduleCode": "systemManage",
+        "id": 165,
+        "name": "站内信",
+        "parentID": 164,
+        "type": 2,
+        "path": "send-manage",
+        "component": "@/pages/system-manage/inform/send-manage/index.vue",
+        "icon": "icon-menu-icon-rizhi",
+        "createTime": 1719470394,
+        "order": 4,
+        "hideInMenu": 2,
+        "isCommon": 1,
+        "body": {
+          "value": "{\"name\":\"站内信\",\"meta\":{\"title\":\"站内信\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+        }
+      }
+    ]
+  },
+  {
+    "moduleCode": "systemManage",
+    "id": 211,
+    "name": "系统配置",
+    "parentID": 1,
+    "type": 2,
+    "path": "/system-manage/system-configuration",
+    "component": "@/pages/system-manage/system-configuration/index.vue",
+    "icon": "icon-menu-jiaoseguanli2",
+    "createTime": 1725285265,
+    "order": 20,
+    "hideInMenu": 2,
+    "isCommon": 2,
+    "body": {
+      "value": "{\"name\":\"系统配置\",\"meta\":{\"title\":\"系统配置\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+    },
+    "children": [
+      {
+        "moduleCode": "systemManage",
+        "id": 212,
+        "name": "系统配置",
+        "parentID": 211,
+        "type": 2,
+        "path": "tenant-configuration",
+        "component": "@/pages/system-manage/system-configuration/tenant-configuration/index.vue",
+        "icon": "icon-menu-yonghujiaose-",
+        "createTime": 1725285356,
+        "order": 1,
+        "hideInMenu": 2,
+        "isCommon": 2,
+        "body": {
+          "value": "{\"name\":\"系统配置\",\"meta\":{\"title\":\"系统配置\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+        }
+      },
+      {
+        "moduleCode": "systemManage",
+        "id": 213,
+        "name": "OEM配置",
+        "parentID": 211,
+        "type": 2,
+        "path": "oem-configuration",
+        "component": "@/pages/system-manage/system-configuration/oem-configuration/index.vue",
+        "icon": "icon-menu-yingyong2",
+        "createTime": 1725285390,
+        "order": 5,
+        "hideInMenu": 2,
+        "isCommon": 1,
+        "body": {
+          "value": "{\"name\":\"OEM配置\",\"meta\":{\"title\":\"OEM配置\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+        }
+      },
+      {
+        "moduleCode": "systemManage",
+        "id": 214,
+        "name": "协议管理",
+        "parentID": 211,
+        "type": 2,
+        "path": "protocol-manage",
+        "component": "@/pages/system-manage/protocol-manage/index.vue",
+        "icon": "icon-menu-wendang",
+        "createTime": 1725285541,
+        "order": 8,
+        "hideInMenu": 2,
+        "isCommon": 1,
+        "body": {
+          "value": "{\"name\":\"协议管理\",\"meta\":{\"title\":\"协议管理\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+        }
+      },
+      {
+        "moduleCode": "systemManage",
+        "id": 231,
+        "name": "应用配置",
+        "parentID": 211,
+        "type": 2,
+        "path": "app-configuration",
+        "component": "@/pages/system-manage/system-configuration/app-configuration/index.vue",
+        "icon": "icon-menu-yingyong1",
+        "createTime": 1728657034,
+        "order": 20,
+        "hideInMenu": 1,
+        "isCommon": 1,
+        "body": {
+          "value": "{\"name\":\"应用配置\",\"meta\":{\"title\":\"应用配置\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":1,\"headerMenu\":true,\"breadcrumb\":true}}"
+        }
+      }
+    ]
+  },
+  {
+    "moduleCode": "systemManage",
+    "id": 218,
+    "name": "平台管理",
+    "parentID": 1,
+    "type": 2,
+    "path": "/system-manage/platform-manage",
+    "component": "@/pages/system-manage/system-configuration/index.vue",
+    "icon": "icon-menu-yonghujiaose-",
+    "createTime": 1725285817,
+    "order": 30,
+    "hideInMenu": 2,
+    "isCommon": 2,
+    "body": {
+      "value": "{\"name\":\"平台管理\",\"meta\":{\"title\":\"平台管理\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+    },
+    "children": [
+      {
+        "moduleCode": "systemManage",
+        "id": 219,
+        "name": "租户管理",
+        "parentID": 218,
+        "type": 2,
+        "path": "tenant-manage",
+        "component": "@/pages/tenant-manage/index/index.vue",
+        "icon": "icon-menu-haoyou",
+        "createTime": 1725286182,
+        "order": 1,
+        "hideInMenu": 2,
+        "isCommon": 2,
+        "body": {
+          "value": "{\"name\":\"租户管理\",\"meta\":{\"title\":\"租户管理\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+        }
+      },
+      {
+        "moduleCode": "systemManage",
+        "id": 220,
+        "name": "应用管理",
+        "parentID": 218,
+        "type": 2,
+        "path": "app-manage",
+        "component": "@/pages/tenant-manage/app-manage/index.vue",
+        "icon": "icon-menu-yingyong1",
+        "createTime": 1725286221,
+        "order": 5,
+        "hideInMenu": 2,
+        "isCommon": 2,
+        "body": {
+          "value": "{\"name\":\"应用管理\",\"meta\":{\"title\":\"应用管理\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+        }
+      },
+      {
+        "moduleCode": "systemManage",
+        "id": 221,
+        "name": "模块管理",
+        "parentID": 218,
+        "type": 2,
+        "path": "module-manage",
+        "component": "@/pages/tenant-manage/module-manage/index.vue",
+        "icon": "icon-menu-mokuai2",
+        "createTime": 1725286253,
+        "order": 10,
+        "hideInMenu": 2,
+        "isCommon": 2,
+        "body": {
+          "value": "{\"name\":\"模块管理\",\"meta\":{\"title\":\"模块管理\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+        }
+      },
+      {
+        "moduleCode": "systemManage",
+        "id": 222,
+        "name": "授权管理",
+        "parentID": 218,
+        "type": 2,
+        "path": "auth-manage",
+        "component": "@/pages/tenant-manage/auth-manage/index.vue",
+        "icon": "icon-menu-shujushouquan",
+        "createTime": 1725286288,
+        "order": 15,
+        "hideInMenu": 2,
+        "isCommon": 2,
+        "body": {
+          "value": "{\"name\":\"授权管理\",\"meta\":{\"title\":\"授权管理\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+        }
+      }
+    ]
+  },
+  {
+    "moduleCode": "systemManage",
+    "id": 223,
+    "name": "系统开发",
+    "parentID": 1,
+    "type": 2,
+    "path": "/system-devops",
+    "component": "@/pages/system-manage/task-manage2/index.vue",
+    "icon": "icon-menu-rizhi1",
+    "createTime": 1725286344,
+    "order": 40,
+    "hideInMenu": 2,
+    "isCommon": 2,
+    "body": {
+      "value": "{\"name\":\"系统开发\",\"meta\":{\"title\":\"系统开发\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+    },
+    "children": [
+      {
+        "moduleCode": "systemManage",
+        "id": 224,
+        "name": "插槽管理",
+        "parentID": 223,
+        "type": 2,
+        "path": "slot-manage",
+        "component": "@/pages/tenant-manage/slot-manage/index.vue",
+        "icon": "icon-menu-mokuai",
+        "createTime": 1725286419,
+        "order": 1,
+        "hideInMenu": 2,
+        "isCommon": 2,
+        "body": {
+          "value": "{\"name\":\"插槽管理\",\"meta\":{\"title\":\"插槽管理\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+        }
+      },
+      {
+        "moduleCode": "systemManage",
+        "id": 233,
+        "name": "字典管理",
+        "parentID": 223,
+        "type": 2,
+        "path": "dict",
+        "component": "@/pages/tenant-manage/dict/index.vue",
+        "icon": "icon-menu-jiaoseguanli2",
+        "createTime": 1729239417,
+        "order": 1,
+        "hideInMenu": 2,
+        "isCommon": 2,
+        "body": {
+          "value": "{\"name\":\"字典管理\",\"meta\":{\"title\":\"字典管理\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+        }
+      },
+      {
+        "moduleCode": "systemManage",
+        "id": 225,
+        "name": "数据分析",
+        "parentID": 223,
+        "type": 2,
+        "path": "staticstics-config",
+        "component": "@/pages/tenant-manage/staticstics-config/index.vue",
+        "icon": "icon-menu-yingyong1",
+        "createTime": 1725286447,
+        "order": 5,
+        "hideInMenu": 2,
+        "isCommon": 2,
+        "body": {
+          "value": "{\"name\":\"数据分析\",\"meta\":{\"title\":\"数据分析\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+        }
+      },
+      {
+        "moduleCode": "systemManage",
+        "id": 227,
+        "name": "任务管理",
+        "parentID": 223,
+        "type": 2,
+        "path": "task-manage",
+        "component": "@/pages/system-manage/task-manage/index.vue",
+        "icon": "icon-menu-yingyong2",
+        "createTime": 1725286593,
+        "order": 20,
+        "hideInMenu": 2,
+        "isCommon": 2,
+        "body": {
+          "value": "{\"name\":\"任务管理\",\"meta\":{\"title\":\"任务管理\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+        }
+      }
+    ]
+  },
+  {
+    "moduleCode": "systemManage",
+    "id": 89,
+    "name": "日志管理",
+    "parentID": 1,
+    "type": 2,
+    "path": "/system-manage/log-manage",
+    "component": "@/pages/system-manage/log-manage/index.vue",
+    "icon": "icon-menu-mokuai",
+    "createTime": 1708961099,
+    "order": 99,
+    "hideInMenu": 2,
+    "isCommon": 2,
+    "body": {
+      "value": "{\"name\":\"日志管理\",\"meta\":{\"title\":\"日志管理\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+    },
+    "children": [
+      {
+        "moduleCode": "systemManage",
+        "id": 90,
+        "name": "登录日志",
+        "parentID": 89,
+        "type": 2,
+        "path": "login-manage",
+        "component": "@/pages/system-manage/log-manage/login-manage/index.vue",
+        "icon": "icon-menu-yingyong",
+        "createTime": 1709046901,
+        "order": 1,
+        "hideInMenu": 2,
+        "isCommon": 1,
+        "body": {
+          "value": "{\"name\":\"登录日志\",\"meta\":{\"title\":\"登录日志\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+        }
+      },
+      {
+        "moduleCode": "systemManage",
+        "id": 91,
+        "name": "操作日志",
+        "parentID": 89,
+        "type": 2,
+        "path": "opt-manage",
+        "component": "@/pages/system-manage/log-manage/opt-manage/index.vue",
+        "icon": "icon-menu-yingyong",
+        "createTime": 1709046928,
+        "order": 1,
+        "hideInMenu": 2,
+        "isCommon": 1,
+        "body": {
+          "value": "{\"name\":\"操作日志\",\"meta\":{\"title\":\"操作日志\",\"requireAuth\":true,\"leftMenu\":true,\"hideInMenu\":2,\"headerMenu\":true,\"breadcrumb\":true}}"
+        }
+      }
+    ]
+  }
+]
