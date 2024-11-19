@@ -39,7 +39,7 @@ func (l *GroupInfoIndexLogic) GroupInfoIndex(in *dm.GroupInfoIndexReq) (*dm.Grou
 		Purposes:    in.Purposes,
 		WithProduct: true,
 		AreaID:      in.AreaID,
-		HasDevices:  utils.Copy[devices.Core](in.HasDevice),
+		HasDevice:   utils.Copy[devices.Core](in.HasDevice),
 	}
 	ros, err := l.GiDB.FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page))
 	if err != nil {

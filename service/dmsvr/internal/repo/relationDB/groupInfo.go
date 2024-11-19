@@ -21,7 +21,8 @@ type GroupInfoFilter struct {
 	IDPath      string
 	Name        string
 	Tags        map[string]string
-	HasDevices  *devices.Core
+	HasDevice   *devices.Core
+	HasDevices  []*devices.Core
 	WithProduct bool
 }
 
@@ -42,9 +43,24 @@ func (p GroupInfoRepo) fmtFilter(ctx context.Context, f GroupInfoFilter) *gorm.D
 	} else {
 		db = db.Where("purpose = ?", f.Purpose)
 	}
-	if f.HasDevices != nil {
+	if f.HasDevice != nil {
 		subQuery := p.db.Model(&DmGroupDevice{}).Select("group_id").Where("product_id=? and device_name=?",
-			f.HasDevices.ProductID, f.HasDevices.DeviceName)
+			f.HasDevice.ProductID, f.HasDevice.DeviceName)
+		db = db.Where("id in (?)", subQuery)
+	}
+	if len(f.HasDevices) != 0 {
+		scope := func(db *gorm.DB) *gorm.DB {
+			for i, d := range f.HasDevices {
+				if i == 0 {
+					db = db.Where("product_id = ? and device_name = ?", d.ProductID, d.DeviceName)
+					continue
+				}
+				db = db.Or("product_id = ? and device_name = ?", d.ProductID, d.DeviceName)
+			}
+			return db
+		}
+		subQuery := p.db.Model(&DmGroupDevice{}).Select("group_id")
+		subQuery = subQuery.Where(scope(subQuery))
 		db = db.Where("id in (?)", subQuery)
 	}
 	if f.ID != 0 {

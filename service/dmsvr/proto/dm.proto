@@ -1151,7 +1151,8 @@ message GroupDeviceMultiSaveReq{
 
 message GroupDeviceMultiDeleteReq{
   int64 groupID = 1;
-  repeated DeviceCore list = 2;
+  string purpose =2;//用途 不填默认为default
+  repeated DeviceCore list = 3;
 }
 
 message Point{
