@@ -1781,7 +1781,7 @@ type UserDeviceShareIndexResp struct {
 
 type UserDeviceShareInfo struct {
 	ID                int64                 `json:"id,optional"`
-	ProjectID         int64                 `json:"projectID,optional"`
+	ProjectID         int64                 `json:"projectID,string,optional"`
 	Device            DeviceCore            `json:"device,optional"`              //设备信息
 	SharedUserID      int64                 `json:"sharedUserID,string,optional"` //分享的对象
 	SharedUserAccount string                `json:"sharedUserAccount,optional"`
