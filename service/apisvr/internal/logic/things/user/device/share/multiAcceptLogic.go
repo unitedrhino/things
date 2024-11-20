@@ -30,7 +30,7 @@ func (l *MultiAcceptLogic) MultiAccept(req *types.UserDeviceShareMultiAcceptInfo
 	uc := ctxs.GetUserCtx(l.ctx)
 	dmreq := dm.UserDeviceShareMultiAcceptReq{
 		ShareToken:        req.ShareToken,
-		SharedUserAccount: uc.UserName,
+		SharedUserAccount: uc.Account,
 		SharedUserID:      uc.UserID,
 		Devices:           ToSharesDevices(req.Devices),
 	}
