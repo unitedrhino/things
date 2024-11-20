@@ -13310,8 +13310,7 @@
           "format": "int64"
         },
         "projectID": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string"
         },
         "device": {
           "$ref": "#/definitions/DeviceCore",
