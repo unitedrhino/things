@@ -38,7 +38,7 @@ func (l *DeviceSchemaTslReadLogic) DeviceSchemaTslRead(in *dm.DeviceSchemaTslRea
 	}
 	db := relationDB.NewDeviceSchemaRepo(l.ctx)
 	dbSchemas, err := db.FindByFilter(l.ctx, relationDB.DeviceSchemaFilter{
-		ProductID: in.ProductID, DeviceName: in.DeviceName, WithProductSchema: true}, nil)
+		ProductID: in.ProductID, DeviceName: in.DeviceName}, nil)
 	if err != nil {
 		return nil, err
 	}
