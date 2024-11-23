@@ -1,6 +1,7 @@
 package scene
 
 import (
+	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/domain/application"
@@ -45,7 +46,7 @@ const (
 	TriggerDeviceTypeEventReport    TriggerDeviceType = "eventReport"
 )
 
-func (t *TriggerDevice) Validate(repo CheckRepo) error {
+func (t *TriggerDevice) Validate(repo CheckRepo, tt *Trigger) error {
 	if t == nil {
 		return nil
 	}
@@ -67,13 +68,31 @@ func (t *TriggerDevice) Validate(repo CheckRepo) error {
 	if !utils.SliceIn(t.Type, TriggerDeviceTypeConnected, TriggerDeviceTypeDisConnected, TriggerDeviceTypePropertyReport, TriggerDeviceTypeEventReport) {
 		return errors.Parameter.AddMsgf("设备触发的触发类型不支持:%s", string(t.Type))
 	}
-	_, err = dmExport.SchemaAccess(repo.Ctx, repo.DeviceCache, repo.UserShareCache, def.AuthRead, devices.Core{
-		ProductID:  t.ProductID,
-		DeviceName: t.DeviceName,
-	}, nil)
-	if err != nil {
-		return err
+	uc := ctxs.GetUserCtx(repo.Ctx)
+	switch t.SelectType {
+	case SelectorDeviceAll:
+		if !uc.IsAdmin {
+			pa, ok := uc.ProjectAuth[uc.ProjectID]
+			if !ok {
+				return errors.Permissions.WithMsg("无项目权限")
+			}
+			if tt.AreaID <= def.NotClassified && pa.AuthType == def.AuthRead {
+				return errors.Permissions.WithMsg("只有项目管理员可以制定全局的规则")
+			}
+			if pa.AuthType == def.AuthRead && pa.Area[tt.AreaID] == 0 {
+				return errors.Permissions.WithMsg("无区域权限")
+			}
+		}
+	default:
+		_, err = dmExport.SchemaAccess(repo.Ctx, repo.DeviceCache, repo.UserShareCache, def.AuthRead, devices.Core{
+			ProductID:  t.ProductID,
+			DeviceName: t.DeviceName,
+		}, nil)
+		if err != nil {
+			return err
+		}
 	}
+
 	switch t.Type {
 	case TriggerDeviceTypeEventReport:
 		if len(t.DataID) == 0 {
@@ -139,18 +158,19 @@ func (t *TriggerDevice) Validate(repo CheckRepo) error {
 	t.ProductName = pi.ProductName
 	return nil
 }
-func (t TriggerDevices) Validate(repo CheckRepo) error {
-	if len(t) == 0 {
-		return nil
-	}
-	for _, v := range t {
-		err := v.Validate(repo)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
+
+//func (t TriggerDevices) Validate(repo CheckRepo) error {
+//	if len(t) == 0 {
+//		return nil
+//	}
+//	for _, v := range t {
+//		err := v.Validate(repo)
+//		if err != nil {
+//			return err
+//		}
+//	}
+//	return nil
+//}
 
 // IsTrigger 判断触发器是否命中
 func (t TriggerDevices) IsTriggerWithConn(device devices.Core, operator TriggerDeviceType) bool {

@@ -32,6 +32,8 @@ type Action struct {
 	Notify *ActionNotify `json:"notify,omitempty"` //消息通知
 	Device *ActionDevice `json:"device,omitempty"`
 	Scene  *ActionScene  `json:"scene,omitempty"`
+	Status Status        `json:"status"` // 状态（1启用 2禁用 3异常）
+	Reason string        `json:"reason"` //异常情况的描述说明
 }
 
 func (a *Action) GetFlowInfo() (ret *FlowInfo) {
@@ -47,12 +49,19 @@ func (a Actions) Validate(repo CheckRepo) error {
 	}
 	//var hasDevice bool
 	for _, v := range a {
-		//if v.Type == ActionExecutorDevice {
-		//	hasDevice = true
-		//}
+		v.Status = StatusNormal
+		v.Reason = ""
+
 		err := v.Validate(repo)
 		if err != nil {
-			return err
+			if !repo.UpdateType {
+				return err
+			}
+			v.Status = StatusAbnormal
+			v.Reason = err.Error()
+			repo.Info.Status = StatusAbnormal
+			repo.Info.Reason = err.Error()
+			return nil
 		}
 	}
 	//if !hasDevice {

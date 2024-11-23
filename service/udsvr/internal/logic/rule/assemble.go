@@ -47,6 +47,7 @@ func ToSceneInfoPo(in *scene.Info) *relationDB.UdSceneInfo {
 		DeviceAlias: in.DeviceAlias,
 		HeadImg:     in.HeadImg,
 		Status:      in.Status,
+		Reason:      in.Reason,
 		IsCommon:    in.IsCommon,
 		UdSceneIf: relationDB.UdSceneIf{
 			Triggers: ToSceneTriggersPo(in, in.If.Triggers),
@@ -79,6 +80,7 @@ func ToSceneTriggerPo(si *scene.Info, in *scene.Trigger) *relationDB.UdSceneIfTr
 		SceneID: si.ID,
 		Type:    in.Type,
 		Status:  si.Status,
+		Reason:  in.Reason,
 		LastRunTime: sql.NullTime{
 			Time:  in.Timer.GenLastRunTime(now),
 			Valid: true,
@@ -164,6 +166,7 @@ func PoToSceneInfoDo(ctx context.Context, svcCtx *svc.ServiceContext, in *relati
 			Actions: ToSceneActionsDo(ctx, svcCtx, in.UdSceneThen.Actions),
 		},
 		Status:   in.Status,
+		Reason:   in.Reason,
 		IsCommon: in.IsCommon,
 	}
 	for i, v := range ret.When.Conditions.Terms {

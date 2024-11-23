@@ -21,7 +21,7 @@ func (l *TimerHandle) DeviceTriggerCheck() error {
 	db := stores.WithNoDebug(l.ctx, relationDB.NewSceneIfTriggerRepo)
 
 	list, err := db.FindByFilter(l.ctx, relationDB.SceneIfTriggerFilter{
-		Status:           def.True,
+		Status:           scene.StatusNormal,
 		Type:             scene.TriggerTypeDevice,
 		FirstTriggerTime: stores.CmpIsNull(false),
 		StateKeepType:    scene.StateKeepTypeDuration,
@@ -58,6 +58,14 @@ func (l *TimerHandle) DeviceTriggerCheck() error {
 
 		ctx := ctxs.BindTenantCode(l.ctx, string(v.SceneInfo.TenantCode), int64(v.SceneInfo.ProjectID))
 		if !do.When.IsHit(ctx, now, rulelogic.NewSceneCheckRepo(l.ctx, l.svcCtx, do)) {
+			if do.Status == scene.StatusAbnormal {
+				p := rulelogic.ToSceneInfoPo(do)
+				p.SoftTime = po.SoftTime
+				err = relationDB.NewSceneInfoRepo(l.ctx).Update(l.ctx, p)
+				if err != nil {
+					return err
+				}
+			}
 			continue
 		}
 		ctxs.GoNewCtx(ctx, func(ctx context.Context) { //执行任务
@@ -76,7 +84,7 @@ func (l *TimerHandle) SceneTimingTenMinutes() error {
 	now := time.Now()
 	db := stores.WithNoDebug(l.ctx, relationDB.NewSceneIfTriggerRepo)
 	list, err := db.FindByFilter(l.ctx, relationDB.SceneIfTriggerFilter{
-		Status: def.True,
+		Status: scene.StatusNormal,
 		Type:   scene.TriggerTypeWeather,
 	}, nil)
 	if err != nil {
@@ -119,6 +127,14 @@ func (l *TimerHandle) SceneTimingTenMinutes() error {
 		ctx := ctxs.BindTenantCode(l.ctx, string(v.SceneInfo.TenantCode), int64(v.SceneInfo.ProjectID))
 
 		if !do.When.IsHit(ctx, now, rulelogic.NewSceneCheckRepo(l.ctx, l.svcCtx, do)) {
+			if do.Status == scene.StatusAbnormal {
+				p := rulelogic.ToSceneInfoPo(do)
+				p.SoftTime = po.SoftTime
+				err = relationDB.NewSceneInfoRepo(l.ctx).Update(l.ctx, p)
+				if err != nil {
+					return err
+				}
+			}
 			continue
 		}
 		ctxs.GoNewCtx(ctx, func(ctx context.Context) { //执行任务
@@ -137,7 +153,7 @@ func (l *TimerHandle) SceneTiming() error {
 	now := time.Now()
 	db := stores.WithNoDebug(l.ctx, relationDB.NewSceneIfTriggerRepo)
 	var triggerF = []relationDB.SceneIfTriggerFilter{
-		{Status: def.True,
+		{Status: scene.StatusNormal,
 			Type:        scene.TriggerTypeTimer,
 			ExecType:    stores.CmpIn(scene.ExecTypeAt, scene.ExecTypeSunSet, scene.ExecTypeSunSet),
 			ExecAt:      stores.CmpLte(utils.TimeToDaySec(now)),                  //小于等于当前时间点(需要执行的)
@@ -145,7 +161,7 @@ func (l *TimerHandle) SceneTiming() error {
 			RepeatType:  scene.RepeatTypeWeek,
 			ExecRepeat:  stores.CmpOr(stores.CmpBinEq(int64(now.Weekday()), 1), stores.CmpEq(0)), //当天需要执行或只需要执行一次的
 		},
-		{Status: def.True,
+		{Status: scene.StatusNormal,
 			Type:        scene.TriggerTypeTimer,
 			ExecType:    stores.CmpIn(scene.ExecTypeAt, scene.ExecTypeSunSet, scene.ExecTypeSunSet),
 			ExecAt:      stores.CmpLte(utils.TimeToDaySec(now)),                  //小于等于当前时间点(需要执行的)
@@ -153,7 +169,7 @@ func (l *TimerHandle) SceneTiming() error {
 			RepeatType:  scene.RepeatTypeMount,
 			ExecRepeat:  stores.CmpOr(stores.CmpBinEq(int64(now.Day()), 1), stores.CmpEq(0)), //当天需要执行或只需要执行一次的
 		},
-		{Status: def.True,
+		{Status: scene.StatusNormal,
 			ExecType:      stores.CmpEq(scene.ExecTypeLoop),
 			Type:          scene.TriggerTypeTimer,
 			ExecLoopStart: stores.CmpLte(utils.TimeToDaySec(now)), //
@@ -162,7 +178,7 @@ func (l *TimerHandle) SceneTiming() error {
 			RepeatType:    scene.RepeatTypeMount,
 			ExecRepeat:    stores.CmpOr(stores.CmpBinEq(int64(now.Day()), 1), stores.CmpEq(0)), //当天需要执行或只需要执行一次的
 		},
-		{Status: def.True,
+		{Status: scene.StatusNormal,
 			ExecType:      stores.CmpEq(scene.ExecTypeLoop),
 			Type:          scene.TriggerTypeTimer,
 			ExecLoopStart: stores.CmpLte(utils.TimeToDaySec(now)), //
@@ -216,6 +232,15 @@ func (l *TimerHandle) SceneTiming() error {
 			}
 			ctx = ctxs.BindTenantCode(ctx, string(v.SceneInfo.TenantCode), 0)
 			if !do.When.IsHit(ctx, now, rulelogic.NewSceneCheckRepo(l.ctx, l.svcCtx, do)) {
+				if do.Status == scene.StatusAbnormal {
+					p := rulelogic.ToSceneInfoPo(do)
+					p.SoftTime = po.SoftTime
+					err = relationDB.NewSceneInfoRepo(l.ctx).Update(l.ctx, p)
+					if err != nil {
+						l.Error(err)
+						return
+					}
+				}
 				return
 			}
 

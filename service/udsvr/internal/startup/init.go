@@ -16,6 +16,7 @@ import (
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/domain/alarm"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/domain/scene"
+	"gitee.com/unitedrhino/things/service/udsvr/internal/event/sceneChangeEvent"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/event/timerEvent"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/svc"
@@ -34,53 +35,23 @@ func Init(svcCtx *svc.ServiceContext) {
 func InitEventBus(svcCtx *svc.ServiceContext) {
 	err := svcCtx.FastEvent.QueueSubscribe(eventBus.SysProjectInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
 		pi := cast.ToInt64(string(body))
-		logx.WithContext(ctx).Infof("SysProjectInfoDelete value:%v err:%v", string(body))
-		if pi == 0 {
-			return nil
-		}
-		ctx = ctxs.WithRoot(ctx)
-		sis, err := relationDB.NewSceneInfoRepo(ctx).FindByFilter(ctx, relationDB.SceneInfoFilter{ProjectID: pi}, nil)
-		if err != nil {
-			logx.WithContext(ctx).Error(err)
-			return err
-		}
-		for _, si := range sis {
-			err := relationDB.NewSceneInfoRepo(ctx).Delete(ctx, si.ID)
-			if err != nil {
-				logx.WithContext(ctx).Error(err)
-			}
-		}
-		return nil
+		logx.WithContext(ctx).Infof("SysProjectInfoDelete value:%v ")
+		return sceneChangeEvent.NewHandle(ctx, svcCtx).SceneProjectDelete(pi)
 	})
 	logx.Must(err)
 
-	funcDeleteDevice := func(ctx context.Context, body []byte) error {
+	err = svcCtx.FastEvent.QueueSubscribe(eventBus.DmDeviceInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
 		var di devices.Core
 		err := json.Unmarshal(body, &di)
 		logx.WithContext(ctx).Infof("DmDeviceInfoDelete value:%v err:%v", string(body), err)
-		ctx = ctxs.WithRoot(ctx)
-		if di.ProductID == "" || di.DeviceName == "" {
-			return nil
-		}
-		sis, err := relationDB.NewSceneInfoRepo(ctx).FindByFilter(ctx, relationDB.SceneInfoFilter{ProductID: di.ProductID, DeviceName: di.DeviceName}, nil)
-		if err != nil {
-			logx.WithContext(ctx).Error(err)
-			return err
-		}
-		for _, si := range sis {
-			err := relationDB.NewSceneInfoRepo(ctx).Delete(ctx, si.ID)
-			if err != nil {
-				logx.WithContext(ctx).Error(err)
-			}
-		}
-		return nil
-	}
-	err = svcCtx.FastEvent.QueueSubscribe(eventBus.DmDeviceInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
-		return funcDeleteDevice(ctx, body)
+		return sceneChangeEvent.NewHandle(ctx, svcCtx).SceneDeviceDelete(di)
 	})
 	logx.Must(err)
 	err = svcCtx.FastEvent.QueueSubscribe(eventBus.DmDeviceInfoUnbind, func(ctx context.Context, t time.Time, body []byte) error {
-		return funcDeleteDevice(ctx, body)
+		var di devices.Core
+		err := json.Unmarshal(body, &di)
+		logx.WithContext(ctx).Infof("DmDeviceInfoDelete value:%v err:%v", string(body), err)
+		return sceneChangeEvent.NewHandle(ctx, svcCtx).SceneDeviceDelete(di)
 	})
 	logx.Must(err)
 

@@ -23,7 +23,7 @@ func (l *TimerHandle) SceneThingPropertyReport(in application.PropertyReport) er
 	}
 	var triggerF = []relationDB.SceneIfTriggerFilter{
 		{
-			Status:            def.True,
+			Status:            scene.StatusNormal,
 			Type:              scene.TriggerTypeDevice,
 			TriggerDeviceType: scene.TriggerDeviceTypePropertyReport,
 			ProjectID:         stores.CmpIn(def.RootNode, di.ProjectID),
@@ -32,7 +32,7 @@ func (l *TimerHandle) SceneThingPropertyReport(in application.PropertyReport) er
 			DataID:            in.Identifier,
 		},
 		{
-			Status:            def.True,
+			Status:            scene.StatusNormal,
 			Type:              scene.TriggerTypeDevice,
 			TriggerDeviceType: scene.TriggerDeviceTypePropertyReport,
 			Device:            &in.Device,
@@ -105,6 +105,14 @@ func (l *TimerHandle) SceneThingPropertyReport(in application.PropertyReport) er
 		ctx := ctxs.BindTenantCode(l.ctx, string(v.SceneInfo.TenantCode), int64(v.SceneInfo.ProjectID))
 
 		if !do.When.IsHit(ctx, now, rulelogic.NewSceneCheckRepo(l.ctx, l.svcCtx, do)) {
+			if do.Status == scene.StatusAbnormal {
+				p := rulelogic.ToSceneInfoPo(do)
+				p.SoftTime = po.SoftTime
+				err = relationDB.NewSceneInfoRepo(l.ctx).Update(l.ctx, p)
+				if err != nil {
+					return err
+				}
+			}
 			continue
 		}
 		ctxs.GoNewCtx(ctx, func(ctx context.Context) { //执行任务

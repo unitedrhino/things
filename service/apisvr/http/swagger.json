@@ -12340,7 +12340,11 @@
         "status": {
           "type": "integer",
           "format": "int64",
-          "description": "状态: 1启用 2禁用"
+          "description": "状态: 状态（1启用 2禁用 3异常）"
+        },
+        "reason": {
+          "type": "string",
+          "description": "异常情况的描述说明"
         },
         "tag": {
           "type": "string",
@@ -12436,7 +12440,11 @@
         "status": {
           "type": "integer",
           "format": "int64",
-          "description": "状态: 1启用 2禁用"
+          "description": "状态: 状态（1启用 2禁用 3异常）"
+        },
+        "reason": {
+          "type": "string",
+          "description": "异常情况的描述说明"
         },
         "tag": {
           "type": "string",
@@ -12547,7 +12555,7 @@
         "status": {
           "type": "integer",
           "format": "int64",
-          "description": "状态: 1启用 2禁用"
+          "description": "状态（1启用 2禁用 3异常）"
         },
         "alarmID": {
           "type": "integer",
@@ -12629,7 +12637,11 @@
         "status": {
           "type": "integer",
           "format": "int64",
-          "description": "状态: 1启用 2禁用"
+          "description": "状态: 状态（1启用 2禁用 3异常）"
+        },
+        "reason": {
+          "type": "string",
+          "description": "异常情况的描述说明"
         },
         "tag": {
           "type": "string",

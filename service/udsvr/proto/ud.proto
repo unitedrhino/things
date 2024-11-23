@@ -137,7 +137,8 @@ message AlarmInfo{
   string name = 2;//告警配置名称
   string desc = 3;//告警配置说明
   int64 level = 4;//告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
-  int64 status = 5;//告警配置状态（1启用 2禁用）
+  int64 status = 5;//告警配置状态（1启用 2禁用 3不可用） 不可用一般为绑定的区域被删除
+  string reason = 11;//不可用原因
   int64 createdTime = 6;//创建时间
   repeated int64 sceneIDs =10;//绑定的场景
   repeated AlarmNotify notifies = 7;
@@ -201,7 +202,8 @@ message SceneInfo{
   string if = 6;//多种触发方式
   string when = 7;//手动触发模式不生效
   string then = 8; //触发后执行的动作
-  int64 status = 9;// 状态（1启用 2禁用）
+  int64 status = 9;// 状态（1启用 2禁用 3异常）
+  string reason = 25;//异常情况的描述说明
   string headImg = 10;
   bool isUpdateHeadImg = 11;//只有这个参数为true的时候才会更新图片,传参为图片的file path
   string logo =23;//logoid

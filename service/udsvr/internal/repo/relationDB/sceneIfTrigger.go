@@ -27,7 +27,8 @@ func NewSceneIfTriggerRepo(in any) *SceneIfTriggerRepo {
 type SceneIfTriggerFilter struct {
 	ID                int64
 	SceneID           int64
-	Status            int64
+	Status            scene.Status
+	Statuses          []scene.Status
 	ExecAt            *stores.Cmp
 	LastRunTime       *stores.Cmp
 	ExecRepeat        *stores.Cmp
@@ -59,6 +60,9 @@ func (p SceneIfTriggerRepo) fmtFilter(ctx context.Context, f SceneIfTriggerFilte
 	db = f.StateKeepValue.Where(db, "device_state_keep_value")
 	if f.Status != 0 {
 		db = db.Where("status = ?", f.Status)
+	}
+	if len(f.Statuses) != 0 {
+		db = db.Where("status in ?", f.Statuses)
 	}
 	if f.ID != 0 {
 		db = db.Where("id = ?", f.ID)

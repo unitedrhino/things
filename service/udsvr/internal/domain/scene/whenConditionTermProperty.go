@@ -2,11 +2,13 @@ package scene
 
 import (
 	"context"
+	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	devicemsg "gitee.com/unitedrhino/things/service/dmsvr/client/devicemsg"
+	"gitee.com/unitedrhino/things/service/dmsvr/dmExport"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
 )
@@ -42,6 +44,13 @@ func (c *TermProperty) Validate(repo CheckRepo) error {
 	if repo.Info.DeviceMode != DeviceModeSingle {
 		c.DeviceAlias = GetDeviceAlias(repo.Ctx, repo.DeviceCache, c.ProductID, c.DeviceName)
 	}
+	_, err := dmExport.SchemaAccess(repo.Ctx, repo.DeviceCache, repo.UserShareCache, def.AuthRead, devices.Core{
+		ProductID:  c.ProductID,
+		DeviceName: c.DeviceName,
+	}, nil)
+	if err != nil {
+		return err
+	}
 	v, err := repo.SchemaCache.GetData(repo.Ctx, devices.Core{ProductID: c.ProductID, DeviceName: c.DeviceName})
 	if err != nil {
 		return err
@@ -65,8 +74,27 @@ func (c *TermProperty) Validate(repo CheckRepo) error {
 	c.ProductName = pi.ProductName
 	return nil
 }
-func (c *TermProperty) IsHit(ctx context.Context, columnType TermColumnType, repo CheckRepo) bool {
-	sm, err := repo.SchemaCache.GetData(ctx, devices.Core{ProductID: c.ProductID, DeviceName: c.DeviceName})
+func (c *TermProperty) IsHit(ctx context.Context, columnType TermColumnType, repo CheckRepo, t *Term) bool {
+	dev := devices.Core{ProductID: c.ProductID, DeviceName: c.DeviceName}
+	di, err := repo.DeviceCache.GetData(ctx, dev)
+	if err != nil {
+		if !errors.Cmp(err, errors.NotFind) {
+			return false
+		}
+		t.Status = StatusAbnormal
+		t.Reason = ReasonDeviceDelete
+		repo.Info.Status = StatusAbnormal
+		repo.Info.Reason = ReasonDeviceDelete
+		return false
+	}
+	if di.ProjectID != repo.Info.ProjectID {
+		t.Status = StatusAbnormal
+		t.Reason = ReasonDeviceDelete
+		repo.Info.Status = StatusAbnormal
+		repo.Info.Reason = ReasonDeviceDelete
+		return false
+	}
+	sm, err := repo.SchemaCache.GetData(ctx, dev)
 	if err != nil {
 		logx.WithContext(ctx).Errorf("%s.GetSchemaModel err:%v", utils.FuncName(), err)
 		return false

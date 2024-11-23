@@ -28,6 +28,22 @@ const (
 	DeviceModeMulti  DeviceMode = "multi"  //多设备
 )
 
+type Status = int64
+
+const (
+	StatusNormal    = 1 //正常
+	StatusForbidden = 2 //禁用
+	StatusAbnormal  = 3 //异常
+)
+
+type Reason = string
+
+const (
+	ReasonDeviceDelete = "设备被删除或解绑"
+	ReasonDeviceMove   = "设备被挪动,无权限"
+	ReasonAreaDelete   = "区域被删除"
+)
+
 // 多设备的场景联动
 type Info struct {
 	ID             int64       `json:"id"`
@@ -49,7 +65,8 @@ type Info struct {
 	If             If          `json:"if"`             //多种触发方式
 	When           When        `json:"when"`           //手动触发模式不生效
 	Then           Then        `json:"then"`           //触发后执行的动作
-	Status         def.Bool    `json:"status"`         // 状态（1启用 2禁用）
+	Status         Status      `json:"status"`         // 状态（1启用 2禁用 3异常）
+	Reason         Reason      `json:"reason"`         //异常情况的描述说明
 	IsCommon       def.Bool    `json:"isCommon"`       // 是否是常用的
 	Body           string      `json:"body,omitempty"` //自定义字段
 	Log            *Log        `json:"-"`
@@ -79,6 +96,10 @@ func (i *Info) SetAccount(ctx context.Context) context.Context {
 }
 
 func (i *Info) Validate(repo CheckRepo) error {
+	if i.Status == StatusAbnormal {
+		i.Status = StatusNormal
+		i.Reason = ""
+	}
 	if !utils.SliceIn(i.Type, SceneTypeAuto, SceneTypeManual) {
 		return errors.Parameter.AddMsg("场景类型不支持的类型:" + string(i.Type))
 	}
@@ -99,16 +120,25 @@ func (i *Info) Validate(repo CheckRepo) error {
 	if err != nil {
 		return err
 	}
+	if i.Status == StatusAbnormal {
+		return nil
+	}
 	err = i.When.Validate(repo)
 	if err != nil {
 		return err
+	}
+	if i.Status == StatusAbnormal {
+		return nil
 	}
 	err = i.Then.Validate(repo)
 	if err != nil {
 		return err
 	}
+	if i.Status == StatusAbnormal {
+		return nil
+	}
 	if i.Status == 0 {
-		i.Status = def.Enable
+		i.Status = StatusNormal
 	}
 	i.FlowPath = i.Then.GetFlowPath()
 	return nil

@@ -24,6 +24,7 @@ type CheckRepo struct {
 	Common         common.Common
 	GetSceneInfo   func(ctx context.Context, sceneID int64) (*Info, error)
 	Info           *Info
+	UpdateType     bool //不报错只更新异常
 }
 
 type ActionRepo struct {

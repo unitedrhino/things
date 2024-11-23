@@ -25,8 +25,9 @@ type UdSceneInfo struct {
 	Desc        string            `gorm:"column:desc;type:varchar(200);NOT NULL"`                                 // 描述
 	Type        scene.SceneType   `gorm:"column:type;type:VARCHAR(25);NOT NULL"`                                  //auto manual
 	LastRunTime sql.NullTime      `gorm:"column:last_run_time;index;default:null"`
-	Status      def.Bool          `gorm:"column:status;type:BIGINT;default:1"` //状态
-	Body        string            `gorm:"column:body;type:VARCHAR(1024)"`      // 自定义数据
+	Status      def.Bool          `gorm:"column:status;type:BIGINT;default:1"`        //状态
+	Reason      string            `gorm:"column:reason;type:VARCHAR(255);default:''"` //异常原因
+	Body        string            `gorm:"column:body;type:VARCHAR(1024)"`             // 自定义数据
 	UdSceneIf   `gorm:"embedded;embeddedPrefix:if_"`
 	UdSceneWhen `gorm:"embedded;embeddedPrefix:when_"`
 	UdSceneThen `gorm:"embedded;embeddedPrefix:then_"`
@@ -48,7 +49,8 @@ type UdSceneIfTrigger struct {
 	ProjectID       stores.ProjectID  `gorm:"column:project_id;type:bigint;default:1;"`         // 项目ID(雪花ID)
 	AreaID          stores.AreaID     `gorm:"column:area_id;type:bigint;default:1;"`            // 项目区域ID(雪花ID)
 	Order           int64             `gorm:"column:order;type:BIGINT;default:1;NOT NULL"`      // 排序序号
-	Status          int64             `gorm:"column:status;type:BIGINT;default:1"`              //状态 同步场景联动的status
+	Status          scene.Status      `gorm:"column:status;type:BIGINT;default:1"`              //状态 同步场景联动的status
+	Reason          string            `gorm:"column:reason;type:VARCHAR(255);default:''"`       //异常原因
 	LastRunTime     sql.NullTime      `gorm:"column:last_run_time;index;default: NULL"`         //最后执行时间
 	LastTriggerTime sql.NullTime      `gorm:"column:last_trigger_time;index;default: NULL"`     //最后触发时间
 

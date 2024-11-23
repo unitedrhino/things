@@ -101,7 +101,7 @@ func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *ud.SceneInfo) (*ud.Empty, err
 	if err != nil {
 		return nil, err
 	}
-	if len(do.If.Triggers) == 0 && do.Type == scene.SceneTypeAuto && do.Status == def.True { //立即执行一次
+	if len(do.If.Triggers) == 0 && do.Type == scene.SceneTypeAuto && do.Status == scene.StatusNormal { //立即执行一次
 		_, err = NewSceneManuallyTriggerLogic(l.ctx, l.svcCtx).SceneManuallyTrigger(&ud.WithID{Id: po.ID})
 		if err != nil {
 			return nil, err

@@ -36,7 +36,7 @@ func NewSceneInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *S
 func (l *SceneInfoCreateLogic) SceneInfoCreate(in *ud.SceneInfo) (*ud.WithID, error) {
 	do := ToSceneInfoDo(in)
 	if do.Status == 0 {
-		do.Status = def.True
+		do.Status = scene.StatusNormal
 	}
 	if do.AreaID == 0 {
 		return nil, errors.Parameter.AddMsg("areaID必填")
@@ -91,7 +91,7 @@ func (l *SceneInfoCreateLogic) SceneInfoCreate(in *ud.SceneInfo) (*ud.WithID, er
 			l.Error(err)
 		}
 	}
-	if len(do.If.Triggers) == 0 && do.Type == scene.SceneTypeAuto && do.Status == def.True { //立即执行一次
+	if len(do.If.Triggers) == 0 && do.Type == scene.SceneTypeAuto && do.Status == scene.StatusNormal { //立即执行一次
 		_, err = NewSceneManuallyTriggerLogic(l.ctx, l.svcCtx).SceneManuallyTrigger(&ud.WithID{Id: po.ID})
 		if err != nil {
 			return nil, err

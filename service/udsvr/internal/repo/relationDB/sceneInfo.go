@@ -33,6 +33,7 @@ type SceneInfoFilter struct {
 	Tag           string
 	IsCommon      def.Bool
 	AreaID        int64
+	AreaIDs       []int64
 	DeviceMode    scene.DeviceMode //设备模式
 	ProductID     string           //产品id
 	DeviceName    string           //设备名
@@ -53,6 +54,9 @@ func (p SceneInfoRepo) fmtFilter(ctx context.Context, f SceneInfoFilter) *gorm.D
 	}
 	if f.AreaID != 0 {
 		db = db.Where("area_id = ?", f.AreaID)
+	}
+	if len(f.AreaIDs) != 0 {
+		db = db.Where("area_id in ?", f.AreaIDs)
 	}
 	if f.DeviceMode != "" {
 		//db = db.Where("device_mode=?", f.DeviceMode)

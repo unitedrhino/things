@@ -25,14 +25,18 @@ func NewSceneActionRepo(in any) *SceneActionRepo {
 
 type SceneActionFilter struct {
 	SceneID          int64
+	Status           scene.Status
+	Statuses         []scene.Status
 	ProductID        string
 	DeviceName       string
+	DeviceAreaID     *stores.Cmp
 	ActionDeviceType scene.ActionDeviceType
 	DeviceSelectType scene.SelectType
 }
 
 func (p SceneActionRepo) fmtFilter(ctx context.Context, f SceneActionFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
+	db = f.DeviceAreaID.Where(db, "device_area_id")
 	if f.SceneID != 0 {
 		db = db.Where("scene_id = ?", f.SceneID)
 	}
@@ -47,6 +51,12 @@ func (p SceneActionRepo) fmtFilter(ctx context.Context, f SceneActionFilter) *go
 	}
 	if f.DeviceSelectType != "" {
 		db = db.Where("device_select_type = ?", f.DeviceSelectType)
+	}
+	if f.Status != 0 {
+		db = db.Where("status = ?", f.Status)
+	}
+	if len(f.Statuses) != 0 {
+		db = db.Where("status in ?", f.Statuses)
 	}
 	return db
 }
@@ -65,7 +75,8 @@ func (p SceneActionRepo) FindOneByFilter(ctx context.Context, f SceneActionFilte
 	}
 	return &result, nil
 }
-func (p SceneActionRepo) FindByFilter(ctx context.Context, f SceneActionFilter, page *stores.PageInfo) ([]*UdSceneThenAction, error) {
+func (p SceneActionRepo) FindByFilter(ctx context.Context, f SceneActionFilter, page *stores.PageInfo) (
+	[]*UdSceneThenAction, error) {
 	var results []*UdSceneThenAction
 	db := p.fmtFilter(ctx, f).Model(&UdSceneThenAction{})
 	db = page.ToGorm(db)
@@ -84,6 +95,12 @@ func (p SceneActionRepo) CountByFilter(ctx context.Context, f SceneActionFilter)
 
 func (p SceneActionRepo) Update(ctx context.Context, data *UdSceneThenAction) error {
 	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
+	return stores.ErrFmt(err)
+}
+
+func (d SceneActionRepo) UpdateWithField(ctx context.Context, f SceneActionFilter, updates map[string]any) error {
+	db := d.fmtFilter(ctx, f)
+	err := db.Model(&UdSceneThenAction{}).Updates(updates).Error
 	return stores.ErrFmt(err)
 }
 

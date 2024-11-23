@@ -1556,7 +1556,8 @@ type SceneInfo struct {
 	ID              int64            `json:"id,optional"`
 	Name            string           `json:"name,optional"`
 	AreaID          int64            `json:"areaID,string,optional"` //项目区域id 只读
-	Status          int64            `json:"status,optional"`        //状态: 1启用 2禁用
+	Status          int64            `json:"status,optional"`        //状态: 状态（1启用 2禁用 3异常）
+	Reason          string           `json:"reason,optional"`        //异常情况的描述说明
 	Tag             string           `json:"tag,optional"`           //标签 admin: 管理员 normal: 普通
 	IsCommon        int64            `json:"isCommon,optional"`      //是否是常用的
 	Type            string           `json:"type,optional"`
@@ -1589,7 +1590,7 @@ type SceneInfoIndexReq struct {
 	AreaID        int64     `json:"areaID,optional,string"`
 	SceneIDs      []int64   `json:"sceneIDs,optional"`      //根据场景ID来过滤
 	Type          string    `json:"type,optional"`          //触发类型 auto manual:手动触发
-	Status        int64     `json:"status,optional"`        //状态: 1启用 2禁用
+	Status        int64     `json:"status,optional"`        //状态（1启用 2禁用 3异常）
 	AlarmID       int64     `json:"alarmID,optional"`       //告警id
 	DeviceMode    string    `json:"deviceMode,optional"`    //设备模式
 	ProductID     string    `json:"productID,optional"`     //产品id

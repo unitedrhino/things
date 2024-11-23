@@ -35,6 +35,8 @@ type Term struct {
 	Property   *TermProperty  `json:"property,omitempty"` //属性类型
 	Weather    *TermWeather   `json:"weather,omitempty"`
 	Time       *TermTime      `json:"time,omitempty"`
+	Status     Status         `json:"status"` // 状态（1启用 2禁用 3异常）
+	Reason     string         `json:"reason"` //异常情况的描述说明
 }
 
 func (t *Conditions) Validate(repo CheckRepo) error {
@@ -45,9 +47,19 @@ func (t *Conditions) Validate(repo CheckRepo) error {
 		return errors.Parameter.AddMsg("填写多个条件需要填写条件类型:" + string(t.Type))
 	}
 	for _, v := range t.Terms {
+		v.Status = StatusNormal
+		v.Reason = ""
+	
 		err := v.Validate(repo)
 		if err != nil {
-			return err
+			if !repo.UpdateType {
+				return err
+			}
+			v.Status = StatusAbnormal
+			v.Reason = err.Error()
+			repo.Info.Status = StatusAbnormal
+			repo.Info.Reason = err.Error()
+			return nil
 		}
 	}
 	return nil
@@ -88,6 +100,9 @@ func (t *Conditions) IsHit(ctx context.Context, repo CheckRepo) bool {
 		if isHit && t.Type == TermConditionTypeOr {
 			return true
 		}
+		if v.Status == StatusAbnormal {
+			return false
+		}
 		//如果没有命中又是or条件,或者命中了但是是and条件,则需要继续判断
 		finalIsHit = isHit //如果是or,每个都返回false那就是false
 	}
@@ -98,7 +113,7 @@ func (t *Term) IsHit(ctx context.Context, repo CheckRepo) bool {
 	var isHit bool
 	switch t.ColumnType {
 	case TermColumnTypeProperty:
-		isHit = t.Property.IsHit(ctx, t.ColumnType, repo)
+		isHit = t.Property.IsHit(ctx, t.ColumnType, repo, t)
 	case TermColumnTypeWeather:
 		isHit = t.Weather.IsHit(ctx, repo)
 	}
