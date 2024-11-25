@@ -188,7 +188,6 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 		}
 		ctx := ctxs.CopyCtx(l.ctx)
 		utils.Go(ctx, func() {
-			startTime := time.Now()
 			for identifier, param := range paramValues {
 				appMsg := application.PropertyReport{
 					Device: device, Timestamp: timeStamp.UnixMilli(),
@@ -226,8 +225,6 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 					logx.WithContext(ctx).Error(err)
 				}
 			}
-			logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).Infof("%s.DeviceThingPropertyReport startTime:%v",
-				utils.FuncName(), startTime)
 		})
 
 		//插入多条设备物模型属性数据
