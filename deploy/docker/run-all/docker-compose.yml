@@ -24,6 +24,16 @@ services:
       - redis
       - emqx
       - core
+    environment:
+      - isInitTable=true
+      - dbType=mysql
+      - dbDSN=root:password@tcp(mariadb:3306)/iThings?charset=utf8mb4&collation=utf8mb4_bin&parseTime=true&loc=Asia%2FShanghai
+    #      - dbType=pgsql #pgsql打开这个配置和下面pgsql的容器注释
+    #      - dbDSN=postgres://postgres:password@localhost:5432/postgres
+      - dbDSN=root:taosdata@http(localhost:6041)/ithings?readBufferSize=5242880
+      - tsDBDriver=taosRestful
+#      - dbDSN=root:taosdata@ws(localhost:6041)/ithings?readBufferSize=5242880 # ws模式,性能更好,但是需要提前初始化数据库
+#      - tsDBDriver=taosWS
     logging:
       options:
         max-size: "50M"
@@ -48,6 +58,13 @@ services:
       - emqx
     volumes:
       - ../conf/core/etc:/unitedrhino/etc
+    environment:
+      - isInitTable=true
+      - dbType=mysql
+      - dbDSN=root:password@tcp(mariadb:3306)/iThings?charset=utf8mb4&collation=utf8mb4_bin&parseTime=true&loc=Asia%2FShanghai
+#      - dbType=pgsql #pgsql打开这个配置和下面pgsql的容器注释
+#      - dbDSN=postgres://postgres:password@localhost:5432/postgres
+
     logging:
       options:
         max-size: "50M"
