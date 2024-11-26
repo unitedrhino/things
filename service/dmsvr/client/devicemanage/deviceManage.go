@@ -63,6 +63,7 @@ type (
 	DeviceProfileIndexReq             = dm.DeviceProfileIndexReq
 	DeviceProfileIndexResp            = dm.DeviceProfileIndexResp
 	DeviceProfileReadReq              = dm.DeviceProfileReadReq
+	DeviceResetReq                    = dm.DeviceResetReq
 	DeviceSchema                      = dm.DeviceSchema
 	DeviceSchemaIndexReq              = dm.DeviceSchemaIndexReq
 	DeviceSchemaIndexResp             = dm.DeviceSchemaIndexResp
@@ -241,6 +242,7 @@ type (
 		DeviceInfoCanBind(ctx context.Context, in *DeviceInfoCanBindReq, opts ...grpc.CallOption) (*Empty, error)
 		DeviceInfoUnbind(ctx context.Context, in *DeviceCore, opts ...grpc.CallOption) (*Empty, error)
 		DeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error)
+		DeviceReset(ctx context.Context, in *DeviceResetReq, opts ...grpc.CallOption) (*Empty, error)
 		DeviceMove(ctx context.Context, in *DeviceMoveReq, opts ...grpc.CallOption) (*Empty, error)
 		DeviceModuleVersionRead(ctx context.Context, in *DeviceModuleVersionReadReq, opts ...grpc.CallOption) (*DeviceModuleVersion, error)
 		DeviceModuleVersionIndex(ctx context.Context, in *DeviceModuleVersionIndexReq, opts ...grpc.CallOption) (*DeviceModuleVersionIndexResp, error)
@@ -426,6 +428,15 @@ func (m *defaultDeviceManage) DeviceTransfer(ctx context.Context, in *DeviceTran
 
 func (d *directDeviceManage) DeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.DeviceTransfer(ctx, in)
+}
+
+func (m *defaultDeviceManage) DeviceReset(ctx context.Context, in *DeviceResetReq, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceReset(ctx, in, opts...)
+}
+
+func (d *directDeviceManage) DeviceReset(ctx context.Context, in *DeviceResetReq, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.DeviceReset(ctx, in)
 }
 
 func (m *defaultDeviceManage) DeviceMove(ctx context.Context, in *DeviceMoveReq, opts ...grpc.CallOption) (*Empty, error) {

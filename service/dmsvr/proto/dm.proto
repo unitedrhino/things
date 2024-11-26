@@ -89,6 +89,7 @@ service DeviceManage {
   rpc deviceInfoCanBind(DeviceInfoCanBindReq)returns(Empty);
   rpc deviceInfoUnbind(DeviceCore)returns(Empty);
   rpc deviceTransfer(DeviceTransferReq)returns(Empty);
+  rpc deviceReset(DeviceResetReq)returns(Empty);//设备重置
   rpc deviceMove(DeviceMoveReq)returns(Empty);//将设备信息迁移到新的设备中
 
   rpc deviceModuleVersionRead(DeviceModuleVersionReadReq)returns (DeviceModuleVersion);
@@ -426,6 +427,14 @@ message DeviceMoveReq{
   DeviceCore old = 1;//需要转移的设备
   DeviceCore new = 2;//转移的对象
   repeated string withTarget=3;//设备配置-profile,schemaAlias:profile
+}
+
+message DeviceResetReq{
+  DeviceCore device = 1;//设备信息
+  bool log = 2;//日志清除
+  bool deviceSchema=3;//设备物模型定义清除
+  bool bind =4;//绑定关系解绑
+  bool info = 5;//设备信息恢复出厂设置,包含过期时间,名称,设备配置等
 }
 
 message DeviceTransferReq{
@@ -923,6 +932,7 @@ message EdgeSendReq{
   string productID = 4;
   string deviceName = 5;
 }
+
 
 message EdgeSendResp{
   bytes payload = 3;

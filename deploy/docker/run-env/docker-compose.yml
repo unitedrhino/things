@@ -71,6 +71,28 @@ services:
       unitedrhino_net:
         ipv4_address: 172.20.0.4
 
+#  postgres: # 服务名称
+#    image: postgis/postgis:17-3.5 # 指定镜像及其版本
+#    container_name: postgres # 指定容器的名称
+#    hostname: postgres
+#    restart: always
+#    environment:
+#      POSTGRES_PASSWORD: password
+#      #POSTGRES_DB: default
+#    ports: # 端口映射
+#      - "5432:5432"
+#    #    volumes: # 数据持久化的配置
+#    #      - data:/var/lib/postgresql/data
+#    #      - log:/var/log/postgresql
+#    logging:
+#      options:
+#        max-size: "10m"
+#        max-file: "3"
+#    networks:
+#      unitedrhino_net:
+#        ipv4_address: 172.20.0.20
+#
+
   redis:
     image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:redis-7-alpine
     container_name: ienv-redis

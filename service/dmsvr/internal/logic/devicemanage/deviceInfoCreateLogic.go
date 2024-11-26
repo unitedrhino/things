@@ -118,7 +118,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 	projectID := stores.ProjectID(uc.ProjectID)
 	areaID := stores.AreaID(def.NotClassified)
 	if projectID <= def.NotClassified { //如果没有传项目,则分配到未分类项目中
-		ti, err := l.svcCtx.TenantCache.GetData(l.ctx, uc.TenantCode)
+		ti, err := l.svcCtx.TenantCache.GetData(l.ctx, def.TenantCodeDefault)
 		if err != nil {
 			return nil, err
 		}
@@ -135,18 +135,19 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 	areaIDPath := ai.AreaIDPath
 
 	di := relationDB.DmDeviceInfo{
-		ProjectID:   projectID,
-		ProductID:   in.ProductID,  // 产品id
-		DeviceName:  in.DeviceName, // 设备名称
-		Position:    logic.ToStorePoint(in.Position),
-		AreaID:      areaID, //设备默认都是未分类
-		AreaIDPath:  stores.AreaIDPath(areaIDPath),
-		Status:      def.DeviceStatusInactive,
-		IsEnable:    def.True,
-		RatedPower:  in.RatedPower,
-		Distributor: utils.Copy2[stores.IDPathWithUpdate](in.Distributor),
-		UserID:      def.RootNode,
-		Desc:        in.Desc.GetValue(),
+		ProjectID:      projectID,
+		ProductID:      in.ProductID,  // 产品id
+		DeviceName:     in.DeviceName, // 设备名称
+		Position:       logic.ToStorePoint(in.Position),
+		AreaID:         areaID, //设备默认都是未分类
+		AreaIDPath:     stores.AreaIDPath(areaIDPath),
+		Status:         def.DeviceStatusInactive,
+		MobileOperator: def.MobileOperatorNone,
+		IsEnable:       def.True,
+		RatedPower:     in.RatedPower,
+		Distributor:    utils.Copy2[stores.IDPathWithUpdate](in.Distributor),
+		UserID:         def.RootNode,
+		Desc:           in.Desc.GetValue(),
 	}
 	if di.Distributor.ID == 0 {
 		di.Distributor.ID = def.RootNode

@@ -34,6 +34,7 @@ const (
 	DeviceManage_DeviceInfoCanBind_FullMethodName        = "/dm.DeviceManage/deviceInfoCanBind"
 	DeviceManage_DeviceInfoUnbind_FullMethodName         = "/dm.DeviceManage/deviceInfoUnbind"
 	DeviceManage_DeviceTransfer_FullMethodName           = "/dm.DeviceManage/deviceTransfer"
+	DeviceManage_DeviceReset_FullMethodName              = "/dm.DeviceManage/deviceReset"
 	DeviceManage_DeviceMove_FullMethodName               = "/dm.DeviceManage/deviceMove"
 	DeviceManage_DeviceModuleVersionRead_FullMethodName  = "/dm.DeviceManage/deviceModuleVersionRead"
 	DeviceManage_DeviceModuleVersionIndex_FullMethodName = "/dm.DeviceManage/deviceModuleVersionIndex"
@@ -80,6 +81,7 @@ type DeviceManageClient interface {
 	DeviceInfoCanBind(ctx context.Context, in *DeviceInfoCanBindReq, opts ...grpc.CallOption) (*Empty, error)
 	DeviceInfoUnbind(ctx context.Context, in *DeviceCore, opts ...grpc.CallOption) (*Empty, error)
 	DeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error)
+	DeviceReset(ctx context.Context, in *DeviceResetReq, opts ...grpc.CallOption) (*Empty, error)
 	DeviceMove(ctx context.Context, in *DeviceMoveReq, opts ...grpc.CallOption) (*Empty, error)
 	DeviceModuleVersionRead(ctx context.Context, in *DeviceModuleVersionReadReq, opts ...grpc.CallOption) (*DeviceModuleVersion, error)
 	DeviceModuleVersionIndex(ctx context.Context, in *DeviceModuleVersionIndexReq, opts ...grpc.CallOption) (*DeviceModuleVersionIndexResp, error)
@@ -232,6 +234,15 @@ func (c *deviceManageClient) DeviceInfoUnbind(ctx context.Context, in *DeviceCor
 func (c *deviceManageClient) DeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, DeviceManage_DeviceTransfer_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceManageClient) DeviceReset(ctx context.Context, in *DeviceResetReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceReset_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -442,6 +453,7 @@ type DeviceManageServer interface {
 	DeviceInfoCanBind(context.Context, *DeviceInfoCanBindReq) (*Empty, error)
 	DeviceInfoUnbind(context.Context, *DeviceCore) (*Empty, error)
 	DeviceTransfer(context.Context, *DeviceTransferReq) (*Empty, error)
+	DeviceReset(context.Context, *DeviceResetReq) (*Empty, error)
 	DeviceMove(context.Context, *DeviceMoveReq) (*Empty, error)
 	DeviceModuleVersionRead(context.Context, *DeviceModuleVersionReadReq) (*DeviceModuleVersion, error)
 	DeviceModuleVersionIndex(context.Context, *DeviceModuleVersionIndexReq) (*DeviceModuleVersionIndexResp, error)
@@ -518,6 +530,9 @@ func (UnimplementedDeviceManageServer) DeviceInfoUnbind(context.Context, *Device
 }
 func (UnimplementedDeviceManageServer) DeviceTransfer(context.Context, *DeviceTransferReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceTransfer not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceReset(context.Context, *DeviceResetReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceReset not implemented")
 }
 func (UnimplementedDeviceManageServer) DeviceMove(context.Context, *DeviceMoveReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceMove not implemented")
@@ -822,6 +837,24 @@ func _DeviceManage_DeviceTransfer_Handler(srv interface{}, ctx context.Context, 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceManageServer).DeviceTransfer(ctx, req.(*DeviceTransferReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceManage_DeviceReset_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceResetReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceReset(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceReset_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceReset(ctx, req.(*DeviceResetReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1244,6 +1277,10 @@ var DeviceManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "deviceTransfer",
 			Handler:    _DeviceManage_DeviceTransfer_Handler,
+		},
+		{
+			MethodName: "deviceReset",
+			Handler:    _DeviceManage_DeviceReset_Handler,
 		},
 		{
 			MethodName: "deviceMove",

@@ -95,6 +95,11 @@ func (s *DeviceManageServer) DeviceTransfer(ctx context.Context, in *dm.DeviceTr
 	return l.DeviceTransfer(in)
 }
 
+func (s *DeviceManageServer) DeviceReset(ctx context.Context, in *dm.DeviceResetReq) (*dm.Empty, error) {
+	l := devicemanagelogic.NewDeviceResetLogic(ctx, s.svcCtx)
+	return l.DeviceReset(in)
+}
+
 func (s *DeviceManageServer) DeviceMove(ctx context.Context, in *dm.DeviceMoveReq) (*dm.Empty, error) {
 	l := devicemanagelogic.NewDeviceMoveLogic(ctx, s.svcCtx)
 	return l.DeviceMove(in)

@@ -63,6 +63,7 @@ type (
 	DeviceProfileIndexReq             = dm.DeviceProfileIndexReq
 	DeviceProfileIndexResp            = dm.DeviceProfileIndexResp
 	DeviceProfileReadReq              = dm.DeviceProfileReadReq
+	DeviceResetReq                    = dm.DeviceResetReq
 	DeviceSchema                      = dm.DeviceSchema
 	DeviceSchemaIndexReq              = dm.DeviceSchemaIndexReq
 	DeviceSchemaIndexResp             = dm.DeviceSchemaIndexResp
