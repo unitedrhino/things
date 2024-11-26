@@ -4,7 +4,6 @@ COPY ./ ./
 RUN go env -w GOPROXY=https://goproxy.cn,direct
 RUN go env -w GOPRIVATE=*.gitee.com,gitee.com/*
 
-RUN go mod download
 RUN cd ./service/apisvr && go mod tidy && go build -tags no_k8s -ldflags="-s -w" .
 
 
