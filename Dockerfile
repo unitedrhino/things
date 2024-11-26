@@ -2,9 +2,10 @@ FROM registry.cn-qingdao.aliyuncs.com/ithings/golang:1.21.13-alpine3.20 as go-bu
 WORKDIR /unitedrhino/
 COPY ./ ./
 RUN go env -w GOPROXY=https://goproxy.cn,direct
-RUN go env -w GOPRIVATE=*.gitee.com,gitee.com/*
-
-RUN cd ./service/apisvr && go mod tidy && go build -tags no_k8s -ldflags="-s -w" .
+ENV GOPRIVATE=*.gitee.com,gitee.com/*
+RUN apk add --no-cache git
+RUN go mod tidy
+RUN cd ./service/apisvr  && go build -tags no_k8s -ldflags="-s -w" .
 
 
 FROM registry.cn-qingdao.aliyuncs.com/ithings/alpine:3.20
