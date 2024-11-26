@@ -3,7 +3,7 @@ WORKDIR /unitedrhino/
 COPY ./ ./
 RUN go env -w GOPROXY=https://goproxy.cn,direct
 ENV GOPRIVATE=*.gitee.com,gitee.com/*
-RUN apk add --no-cache git
+RUN apk add  git
 RUN go mod tidy
 RUN cd ./service/apisvr  && go build -tags no_k8s -ldflags="-s -w" .
 
