@@ -3,6 +3,7 @@ package otamanagelogic
 import (
 	"context"
 	"gitee.com/unitedrhino/share/ctxs"
+	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
@@ -39,7 +40,8 @@ func (l *OtaFirmwareDeviceIndexLogic) OtaFirmwareDeviceIndex(in *dm.OtaFirmwareD
 	pos, err := repo.FindByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
 		FirmwareID: in.FirmwareID,
 		JobID:      in.JobID,
-		DeviceName: in.DeviceName}, logic.ToPageInfo(in.Page))
+		DeviceName: in.DeviceName}, logic.ToPageInfo(in.Page).
+		WithDefaultOrder(stores.OrderBy{Field: "created_time", Sort: stores.OrderDesc}))
 	if err != nil {
 		return nil, err
 	}

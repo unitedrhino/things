@@ -3,6 +3,7 @@ package otamanagelogic
 import (
 	"context"
 	"gitee.com/unitedrhino/share/ctxs"
+	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
@@ -41,7 +42,8 @@ func (l *OtaFirmwareJobIndexLogic) OtaFirmwareJobIndex(in *dm.OtaFirmwareJobInde
 	if err != nil {
 		return nil, err
 	}
-	otaJobList, err := l.OjDB.FindByFilter(l.ctx, jobFilter, logic.ToPageInfo(in.Page))
+	otaJobList, err := l.OjDB.FindByFilter(l.ctx, jobFilter, logic.ToPageInfo(in.Page).
+		WithDefaultOrder(stores.OrderBy{Field: "created_time", Sort: stores.OrderDesc}))
 	if err != nil {
 		l.Errorf("%s.JobInfo.JobInfoRead failure err=%+v", utils.FuncName(), err)
 		return nil, err

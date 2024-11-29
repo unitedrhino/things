@@ -92,6 +92,9 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 	if err != nil {
 		return nil, err
 	}
+	if dmOtaJob.UpgradeType == msgOta.StaticUpgrade && len(devicePos) == 0 {
+		return nil, errors.Parameter.AddMsg("没有符合条件的设备")
+	}
 
 	var deviceNames []string
 	for _, v := range devicePos {

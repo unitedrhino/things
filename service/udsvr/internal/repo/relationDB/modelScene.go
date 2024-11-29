@@ -21,9 +21,9 @@ type UdSceneInfo struct {
 	IsCommon    def.Bool          `gorm:"column:is_common;type:BIGINT;default:2"`                                 //是否是常用的
 	HeadImg     string            `gorm:"column:head_img;type:VARCHAR(256);NOT NULL"`                             // 头像
 	Logo        string            `gorm:"column:logo;type:VARCHAR(25);NOT NULL"`                                  // logo
-	Name        string            `gorm:"column:name;type:varchar(100);NOT NULL"`                                 // 名称
-	Desc        string            `gorm:"column:desc;type:varchar(200);NOT NULL"`                                 // 描述
-	Type        scene.SceneType   `gorm:"column:type;type:VARCHAR(25);NOT NULL"`                                  //auto manual
+	Name        string            `gorm:"column:name;type:varchar(100);"`                                         // 名称
+	Desc        string            `gorm:"column:desc;type:varchar(200);"`                                         // 描述
+	Type        scene.SceneType   `gorm:"column:type;type:VARCHAR(25);"`                                          //auto manual
 	LastRunTime sql.NullTime      `gorm:"column:last_run_time;index;default:null"`
 	Status      def.Bool          `gorm:"column:status;type:BIGINT;default:1"`        //状态
 	Reason      string            `gorm:"column:reason;type:VARCHAR(255);default:''"` //异常原因

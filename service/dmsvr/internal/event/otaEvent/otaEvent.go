@@ -147,9 +147,7 @@ func (l *OtaEvent) DevicesTimeout(jobInfos []*relationDB.DmOtaFirmwareJob) error
 			})
 			continue
 		}
-		if jobInfo.IsNeedPush != def.True { //只有需要推送的才推送
-			return nil
-		}
+
 		expFail = append(expFail, relationDB.OtaFirmwareDeviceFilter{
 			FirmwareID: jobInfo.FirmwareID,
 			JobID:      jobInfo.ID,
@@ -157,6 +155,9 @@ func (l *OtaEvent) DevicesTimeout(jobInfos []*relationDB.DmOtaFirmwareJob) error
 			PushTime:   stores.CmpLte(time.Now().Add(-time.Duration(jobInfo.TimeoutInMinutes) * time.Minute)),
 			Statues:    []int64{msgOta.DeviceStatusNotified, msgOta.DeviceStatusInProgress}, //只处理待推送的设备
 		})
+		if jobInfo.IsNeedPush != def.True { //只有需要推送的才推送
+			return nil
+		}
 
 		if jobInfo.RetryCount > 0 { //处理重试设备
 			f := relationDB.OtaFirmwareDeviceFilter{
