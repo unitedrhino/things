@@ -156,7 +156,7 @@ func (l *OtaEvent) DevicesTimeout(jobInfos []*relationDB.DmOtaFirmwareJob) error
 			Statues:    []int64{msgOta.DeviceStatusNotified, msgOta.DeviceStatusInProgress}, //只处理待推送的设备
 		})
 		if jobInfo.IsNeedPush != def.True { //只有需要推送的才推送
-			return nil
+			continue
 		}
 
 		if jobInfo.RetryCount > 0 { //处理重试设备
