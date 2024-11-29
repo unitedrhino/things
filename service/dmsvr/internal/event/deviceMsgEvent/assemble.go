@@ -39,7 +39,7 @@ func ToDmDevicesBind(devices []*msgGateway.Device) (ret []*dm.DeviceGatewayBindD
 
 func ToDmDevicesInfoReq(diDeviceBasicInfoDo *msgThing.DeviceBasicInfo) (dmDeviceInfoReq *dm.DeviceInfo) {
 	var position *dm.Point
-	if p := diDeviceBasicInfoDo.Position; p != nil {
+	if p := diDeviceBasicInfoDo.Position; p != nil && p.Longitude != 0 && p.Latitude != 0 {
 		gcp := utils.PositionToMars(*p)
 		position = &dm.Point{Longitude: gcp.Longitude, Latitude: gcp.Latitude}
 	}
