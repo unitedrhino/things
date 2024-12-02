@@ -59,7 +59,26 @@ func (p SceneInfoRepo) fmtFilter(ctx context.Context, f SceneInfoFilter) *gorm.D
 		db = db.Where("area_id in ?", f.AreaIDs)
 	}
 	if f.DeviceMode != "" {
-		//db = db.Where("device_mode=?", f.DeviceMode)
+		db = db.Where("device_mode=?", f.DeviceMode)
+	}
+	if f.ProductID != "" && f.DeviceName != "" {
+		db = db.Where("product_id=?", f.ProductID)
+		db = db.Where("device_name=?", f.DeviceName)
+		if f.DeviceMode == scene.DeviceModeMulti {
+			{
+				subQuery := p.db.Model(&UdSceneThenAction{}).Select("scene_id").
+					Where("device_select_type = ? and device_product_id = ? and device_device_name = ?",
+						scene.SelectDeviceFixed, f.ProductID, f.DeviceName).
+					Or("device_select_type = ?  and device_product_id = ?", scene.SelectorDeviceAll, f.ProductID)
+				db = db.Where("id in (?)", subQuery)
+			}
+			{
+				subQuery := p.db.Model(&UdSceneIfTrigger{}).Select("scene_id").
+					Where(fmt.Sprintf("%s = ? and device_product_id = ? and device_device_name = ?", stores.Col("type")),
+						f.ProductID, f.DeviceName)
+				db = db.Where("id in (?)", subQuery)
+			}
+		}
 	}
 	if f.ProductID != "" {
 		db = db.Where("product_id=?", f.ProductID)
