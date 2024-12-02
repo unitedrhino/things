@@ -426,11 +426,9 @@ func (l *ThingLogic) HandlePropertyReportInfo(msg *deviceMsg.PublishMsg, req msg
 		if !ok {
 			return nil, err
 		}
-		if pos["latitude"] != nil && pos["longitude"] != nil {
-			pos["latitude"] = cast.ToFloat64(pos["latitude"])
-			pos["longitude"] = cast.ToFloat64(pos["longitude"])
-			req.Params["position"] = pos
-		}
+		pos["latitude"] = cast.ToFloat64(pos["latitude"])
+		pos["longitude"] = cast.ToFloat64(pos["longitude"])
+		req.Params["position"] = pos
 		err = mapstructure.Decode(req.Params, diDeviceBasicInfoDo)
 		if err != nil {
 			return nil, err
