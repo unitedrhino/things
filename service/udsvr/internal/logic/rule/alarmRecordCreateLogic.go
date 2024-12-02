@@ -71,6 +71,23 @@ func (l *AlarmRecordCreateLogic) AlarmRecordCreate(in *ud.AlarmRecordCreateReq) 
 				})
 				defer func() {
 					if po != nil {
+						var params = map[string]string{
+							"productID":   in.ProductID,
+							"deviceName":  in.DeviceName,
+							"sceneName":   in.SceneName,
+							"deviceAlias": in.DeviceAlias,
+						}
+						if in.DeviceName != "" {
+							di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
+							if err != nil {
+								l.Error(err)
+							}
+							if di != nil {
+								p := utils.ToStringMapString(di)
+								params = p
+								params["sceneName"] = in.SceneName
+							}
+						}
 						for _, notify := range a.AlarmInfo.Notifies {
 							_, err := l.svcCtx.NotifyM.NotifyConfigSend(l.ctx, &sys.NotifyConfigSendReq{
 								UserIDs:    a.AlarmInfo.UserIDs,
@@ -78,12 +95,7 @@ func (l *AlarmRecordCreateLogic) AlarmRecordCreate(in *ud.AlarmRecordCreateReq) 
 								NotifyCode: def.NotifyCodeDeviceAlarm,
 								TemplateID: notify.TemplateID,
 								Type:       notify.Type,
-								Params: map[string]string{
-									"productID":   in.ProductID,
-									"deviceName":  in.DeviceName,
-									"sceneName":   in.SceneName,
-									"deviceAlias": in.DeviceAlias,
-								},
+								Params:     params,
 							})
 							if err != nil {
 								l.Error(err)
