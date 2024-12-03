@@ -24,16 +24,17 @@ const (
 type Actions []*Action
 
 type Action struct {
-	ID     int64         `json:"id"`
-	Order  int64         `json:"order"`
-	Type   ActionType    `json:"type"`             //执行器类型 notify: 通知 delay:延迟  device:设备输出  alarm: 告警
-	Delay  int64         `json:"delay,omitempty"`  //秒数
-	Alarm  *ActionAlarm  `json:"alarm,omitempty"`  //告警
-	Notify *ActionNotify `json:"notify,omitempty"` //消息通知
-	Device *ActionDevice `json:"device,omitempty"`
-	Scene  *ActionScene  `json:"scene,omitempty"`
-	Status Status        `json:"status"` // 状态（1启用 2禁用 3异常）
-	Reason string        `json:"reason"` //异常情况的描述说明
+	ID         int64         `json:"id"`
+	Order      int64         `json:"order"`
+	Type       ActionType    `json:"type"`             //执行器类型 notify: 通知 delay:延迟  device:设备输出  alarm: 告警
+	Delay      int64         `json:"delay,omitempty"`  //秒数
+	Alarm      *ActionAlarm  `json:"alarm,omitempty"`  //告警
+	Notify     *ActionNotify `json:"notify,omitempty"` //消息通知
+	Device     *ActionDevice `json:"device,omitempty"`
+	Scene      *ActionScene  `json:"scene,omitempty"`
+	Status     Status        `json:"status"` // 状态（1启用 2禁用 3异常）
+	IsAbnormal bool          `json:"isAbnormal"`
+	Reason     string        `json:"reason"` //异常情况的描述说明
 }
 
 func (a *Action) GetFlowInfo() (ret *FlowInfo) {
@@ -57,9 +58,9 @@ func (a Actions) Validate(repo CheckRepo) error {
 			if !repo.UpdateType {
 				return err
 			}
-			v.Status = StatusAbnormal
+			v.IsAbnormal = true
 			v.Reason = err.Error()
-			repo.Info.Status = StatusAbnormal
+			repo.Info.IsAbnormal = true
 			repo.Info.Reason = err.Error()
 			return nil
 		}

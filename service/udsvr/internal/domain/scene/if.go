@@ -20,14 +20,14 @@ const (
 
 type Triggers []*Trigger
 type Trigger struct {
-	Type    TriggerType     `json:"type"`
-	Order   int64           `json:"order"`
-	AreaID  int64           `json:"areaID,string"`    //涉及到的区域ID
-	Device  *TriggerDevice  `json:"device,omitempty"` //设备触发
-	Timer   *TriggerTimer   `json:"timer,omitempty"`  //定时触发
-	Weather *TriggerWeather `json:"weather,omitempty"`
-	Status  Status          `json:"status"` // 状态（1启用 2禁用 3异常）
-	Reason  string          `json:"reason"` //异常情况的描述说明
+	Type       TriggerType     `json:"type"`
+	Order      int64           `json:"order"`
+	AreaID     int64           `json:"areaID,string"`    //涉及到的区域ID
+	Device     *TriggerDevice  `json:"device,omitempty"` //设备触发
+	Timer      *TriggerTimer   `json:"timer,omitempty"`  //定时触发
+	Weather    *TriggerWeather `json:"weather,omitempty"`
+	IsAbnormal bool            `json:"isAbnormal,omitempty"` // 是否异常
+	Reason     string          `json:"reason,omitempty"`     //异常情况的描述说明
 }
 
 func (t Triggers) Validate(repo CheckRepo) error {
@@ -35,8 +35,8 @@ func (t Triggers) Validate(repo CheckRepo) error {
 		return nil
 	}
 	for _, v := range t {
-		if v.Status == StatusAbnormal {
-			v.Status = StatusNormal
+		if v.IsAbnormal == true {
+			v.IsAbnormal = false
 			v.Reason = ""
 		}
 		err := v.Validate(repo)
@@ -44,9 +44,9 @@ func (t Triggers) Validate(repo CheckRepo) error {
 			if !repo.UpdateType {
 				return err
 			}
-			v.Status = StatusAbnormal
+			v.IsAbnormal = true
 			v.Reason = err.Error()
-			repo.Info.Status = StatusAbnormal
+			repo.Info.IsAbnormal = true
 			repo.Info.Reason = err.Error()
 			return nil
 		}

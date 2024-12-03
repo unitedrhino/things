@@ -58,14 +58,14 @@ func (l *TimerHandle) DeviceTriggerCheck() error {
 
 		ctx := ctxs.BindTenantCode(l.ctx, string(v.SceneInfo.TenantCode), int64(v.SceneInfo.ProjectID))
 		if !do.When.IsHit(ctx, now, rulelogic.NewSceneCheckRepo(l.ctx, l.svcCtx, do)) {
-			if do.Status == scene.StatusAbnormal {
-				p := rulelogic.ToSceneInfoPo(do)
-				p.SoftTime = po.SoftTime
-				err = relationDB.NewSceneInfoRepo(l.ctx).Update(l.ctx, p)
-				if err != nil {
-					return err
-				}
-			}
+			//if do.Status == scene.StatusAbnormal {
+			//	p := rulelogic.ToSceneInfoPo(do)
+			//	p.SoftTime = po.SoftTime
+			//	err = relationDB.NewSceneInfoRepo(l.ctx).Update(l.ctx, p)
+			//	if err != nil {
+			//		return err
+			//	}
+			//}
 			continue
 		}
 		ctxs.GoNewCtx(ctx, func(ctx context.Context) { //执行任务
@@ -127,14 +127,14 @@ func (l *TimerHandle) SceneTimingTenMinutes() error {
 		ctx := ctxs.BindTenantCode(l.ctx, string(v.SceneInfo.TenantCode), int64(v.SceneInfo.ProjectID))
 
 		if !do.When.IsHit(ctx, now, rulelogic.NewSceneCheckRepo(l.ctx, l.svcCtx, do)) {
-			if do.Status == scene.StatusAbnormal {
-				p := rulelogic.ToSceneInfoPo(do)
-				p.SoftTime = po.SoftTime
-				err = relationDB.NewSceneInfoRepo(l.ctx).Update(l.ctx, p)
-				if err != nil {
-					return err
-				}
-			}
+			//if do.Status == scene.StatusAbnormal {
+			//	p := rulelogic.ToSceneInfoPo(do)
+			//	p.SoftTime = po.SoftTime
+			//	err = relationDB.NewSceneInfoRepo(l.ctx).Update(l.ctx, p)
+			//	if err != nil {
+			//		return err
+			//	}
+			//}
 			continue
 		}
 		ctxs.GoNewCtx(ctx, func(ctx context.Context) { //执行任务
@@ -232,15 +232,15 @@ func (l *TimerHandle) SceneTiming() error {
 			}
 			ctx = ctxs.BindTenantCode(ctx, string(v.SceneInfo.TenantCode), 0)
 			if !do.When.IsHit(ctx, now, rulelogic.NewSceneCheckRepo(l.ctx, l.svcCtx, do)) {
-				if do.Status == scene.StatusAbnormal {
-					p := rulelogic.ToSceneInfoPo(do)
-					p.SoftTime = po.SoftTime
-					err = relationDB.NewSceneInfoRepo(l.ctx).Update(l.ctx, p)
-					if err != nil {
-						l.Error(err)
-						return
-					}
-				}
+				//if do.Status == scene.StatusAbnormal {
+				//	p := rulelogic.ToSceneInfoPo(do)
+				//	p.SoftTime = po.SoftTime
+				//	err = relationDB.NewSceneInfoRepo(l.ctx).Update(l.ctx, p)
+				//	if err != nil {
+				//		l.Error(err)
+				//		return
+				//	}
+				//}
 				return
 			}
 

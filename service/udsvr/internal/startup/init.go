@@ -187,8 +187,8 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 			//		logx.WithContext(ctx).Error(err)
 			//		return nil
 			//	}
-			//	if total == 0 && di.Status == def.DeviceStatusWarming {
-			//		_, err := svcCtx.DeviceM.DeviceInfoUpdate(ctx, &dm.DeviceInfo{ProductID: ar.ProductID, DeviceName: ar.DeviceName, Status: di.IsOnline + 1})
+			//	if total == 0 && di.IsAbnormal == def.DeviceStatusWarming {
+			//		_, err := svcCtx.DeviceM.DeviceInfoUpdate(ctx, &dm.DeviceInfo{ProductID: ar.ProductID, DeviceName: ar.DeviceName, IsAbnormal: di.IsOnline + 1})
 			//		if err != nil {
 			//			logx.WithContext(ctx).Error(err)
 			//			return nil

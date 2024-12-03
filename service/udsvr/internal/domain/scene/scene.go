@@ -33,7 +33,6 @@ type Status = int64
 const (
 	StatusNormal    = 1 //正常
 	StatusForbidden = 2 //禁用
-	StatusAbnormal  = 3 //异常
 )
 
 type Reason = string
@@ -62,13 +61,14 @@ type Info struct {
 	Desc           string      `json:"desc"`
 	CreatedTime    time.Time   `json:"createdTime"`
 	Type           SceneType   `json:"type"`
-	If             If          `json:"if"`             //多种触发方式
-	When           When        `json:"when"`           //手动触发模式不生效
-	Then           Then        `json:"then"`           //触发后执行的动作
-	Status         Status      `json:"status"`         // 状态（1启用 2禁用 3异常）
-	Reason         Reason      `json:"reason"`         //异常情况的描述说明
-	IsCommon       def.Bool    `json:"isCommon"`       // 是否是常用的
-	Body           string      `json:"body,omitempty"` //自定义字段
+	If             If          `json:"if"`                   //多种触发方式
+	When           When        `json:"when"`                 //手动触发模式不生效
+	Then           Then        `json:"then"`                 //触发后执行的动作
+	Status         Status      `json:"status"`               // 状态（1启用 2禁用）
+	IsAbnormal     bool        `json:"isAbnormal,omitempty"` // 是否异常
+	Reason         Reason      `json:"reason"`               //异常情况的描述说明
+	IsCommon       def.Bool    `json:"isCommon"`             // 是否是常用的
+	Body           string      `json:"body,omitempty"`       //自定义字段
 	Log            *Log        `json:"-"`
 	TriggerSubType TriggerType `json:"-"`
 	TriggerDetail  any         `json:"-"`
@@ -97,8 +97,8 @@ func (i *Info) SetAccount(ctx context.Context) context.Context {
 }
 
 func (i *Info) Validate(repo CheckRepo) error {
-	if i.Status == StatusAbnormal {
-		i.Status = StatusNormal
+	if i.IsAbnormal == true {
+		i.IsAbnormal = false
 		i.Reason = ""
 	}
 	if !utils.SliceIn(i.Type, SceneTypeAuto, SceneTypeManual) {
@@ -121,23 +121,23 @@ func (i *Info) Validate(repo CheckRepo) error {
 	if err != nil {
 		return err
 	}
-	if i.Status == StatusAbnormal {
-		return nil
-	}
+	//if i.Status == StatusAbnormal {
+	//	return nil
+	//}
 	err = i.When.Validate(repo)
 	if err != nil {
 		return err
 	}
-	if i.Status == StatusAbnormal {
-		return nil
-	}
+	//if i.Status == StatusAbnormal {
+	//	return nil
+	//}
 	err = i.Then.Validate(repo)
 	if err != nil {
 		return err
 	}
-	if i.Status == StatusAbnormal {
-		return nil
-	}
+	//if i.Status == StatusAbnormal {
+	//	return nil
+	//}
 	if i.Status == 0 {
 		i.Status = StatusNormal
 	}

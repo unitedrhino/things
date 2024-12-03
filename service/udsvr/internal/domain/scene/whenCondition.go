@@ -36,6 +36,7 @@ type Term struct {
 	Weather    *TermWeather   `json:"weather,omitempty"`
 	Time       *TermTime      `json:"time,omitempty"`
 	Status     Status         `json:"status"` // 状态（1启用 2禁用 3异常）
+	IsAbnormal bool           `json:"isAbnormal"`
 	Reason     string         `json:"reason"` //异常情况的描述说明
 }
 
@@ -49,15 +50,15 @@ func (t *Conditions) Validate(repo CheckRepo) error {
 	for _, v := range t.Terms {
 		v.Status = StatusNormal
 		v.Reason = ""
-	
+
 		err := v.Validate(repo)
 		if err != nil {
 			if !repo.UpdateType {
 				return err
 			}
-			v.Status = StatusAbnormal
+			v.IsAbnormal = true
 			v.Reason = err.Error()
-			repo.Info.Status = StatusAbnormal
+			repo.Info.IsAbnormal = true
 			repo.Info.Reason = err.Error()
 			return nil
 		}
@@ -100,9 +101,9 @@ func (t *Conditions) IsHit(ctx context.Context, repo CheckRepo) bool {
 		if isHit && t.Type == TermConditionTypeOr {
 			return true
 		}
-		if v.Status == StatusAbnormal {
-			return false
-		}
+		//if v.Status == StatusAbnormal {
+		//	return false
+		//}
 		//如果没有命中又是or条件,或者命中了但是是and条件,则需要继续判断
 		finalIsHit = isHit //如果是or,每个都返回false那就是false
 	}

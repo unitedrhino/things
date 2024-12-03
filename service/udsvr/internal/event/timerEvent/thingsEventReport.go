@@ -102,14 +102,14 @@ func (l *TimerHandle) SceneThingEventReport(in application.EventReport) error {
 		ctx := ctxs.BindTenantCode(l.ctx, string(v.SceneInfo.TenantCode), int64(v.SceneInfo.ProjectID))
 
 		if !do.When.IsHit(ctx, now, rulelogic.NewSceneCheckRepo(l.ctx, l.svcCtx, do)) {
-			if do.Status == scene.StatusAbnormal {
-				p := rulelogic.ToSceneInfoPo(do)
-				p.SoftTime = po.SoftTime
-				err = relationDB.NewSceneInfoRepo(l.ctx).Update(l.ctx, p)
-				if err != nil {
-					return err
-				}
-			}
+			//if do.Status == scene.StatusAbnormal {
+			//	p := rulelogic.ToSceneInfoPo(do)
+			//	p.SoftTime = po.SoftTime
+			//	err = relationDB.NewSceneInfoRepo(l.ctx).Update(l.ctx, p)
+			//	if err != nil {
+			//		return err
+			//	}
+			//}
 			continue
 		}
 		ctxs.GoNewCtx(ctx, func(ctx context.Context) { //执行任务

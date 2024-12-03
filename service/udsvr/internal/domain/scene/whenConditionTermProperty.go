@@ -81,16 +81,16 @@ func (c *TermProperty) IsHit(ctx context.Context, columnType TermColumnType, rep
 		if !errors.Cmp(err, errors.NotFind) {
 			return false
 		}
-		t.Status = StatusAbnormal
+		t.IsAbnormal = true
 		t.Reason = ReasonDeviceDelete
-		repo.Info.Status = StatusAbnormal
+		repo.Info.IsAbnormal = true
 		repo.Info.Reason = ReasonDeviceDelete
 		return false
 	}
 	if di.ProjectID != repo.Info.ProjectID {
-		t.Status = StatusAbnormal
+		t.IsAbnormal = true
 		t.Reason = ReasonDeviceDelete
-		repo.Info.Status = StatusAbnormal
+		repo.Info.IsAbnormal = true
 		repo.Info.Reason = ReasonDeviceDelete
 		return false
 	}

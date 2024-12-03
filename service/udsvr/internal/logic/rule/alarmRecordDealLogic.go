@@ -84,8 +84,8 @@ func (l *AlarmRecordDealLogic) AlarmRecordDeal(in *ud.AlarmRecordDealReq) (*ud.E
 		//			return nil, err
 		//		}
 		//	}
-		//	if total == 0 && di.Status == def.DeviceStatusWarming {
-		//		_, err := l.svcCtx.DeviceM.DeviceInfoUpdate(l.ctx, &dm.DeviceInfo{ProductID: po.ProductID, DeviceName: po.DeviceName, Status: di.IsOnline + 1})
+		//	if total == 0 && di.IsAbnormal == def.DeviceStatusWarming {
+		//		_, err := l.svcCtx.DeviceM.DeviceInfoUpdate(l.ctx, &dm.DeviceInfo{ProductID: po.ProductID, DeviceName: po.DeviceName, IsAbnormal: di.IsOnline + 1})
 		//		if err != nil {
 		//			l.Error(err)
 		//			if err != nil {
