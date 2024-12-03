@@ -12578,6 +12578,11 @@
           "type": "string",
           "description": "设备名"
         },
+        "deviceFilterMode": {
+          "type": "integer",
+          "format": "int64",
+          "description": "设备过滤模式: 1,过滤触发或执行(默认) 2,过滤触发 3,过滤执行"
+        },
         "hasActionType": {
           "type": "string",
           "description": "过滤有某个执行类型"

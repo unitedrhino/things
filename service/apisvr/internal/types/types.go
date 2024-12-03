@@ -1585,20 +1585,21 @@ type SceneInfoCreateReq struct {
 }
 
 type SceneInfoIndexReq struct {
-	Page          *PageInfo `json:"page,optional"` //分页信息 只获取一个则不填
-	Name          string    `json:"name,optional"` //场景名模糊查询
-	Tag           string    `json:"tag,optional"`  //标签 admin: 管理员 normal: 普通
-	AreaID        int64     `json:"areaID,optional,string"`
-	SceneIDs      []int64   `json:"sceneIDs,optional"`      //根据场景ID来过滤
-	Type          string    `json:"type,optional"`          //触发类型 auto manual:手动触发
-	Status        int64     `json:"status,optional"`        //状态（1启用 2禁用 3异常）
-	AlarmID       int64     `json:"alarmID,optional"`       //告警id
-	DeviceMode    string    `json:"deviceMode,optional"`    //设备模式
-	ProductID     string    `json:"productID,optional"`     //产品id
-	DeviceName    string    `json:"deviceName,optional"`    //设备名
-	HasActionType string    `json:"hasActionType,optional"` //过滤有某个执行类型
-	IsCommon      int64     `json:"isCommon,optional"`      //是否是常用的
-	IsOnlyCore    int64     `json:"isOnlyCore,optional"`    //不返回if,when和then
+	Page             *PageInfo `json:"page,optional"` //分页信息 只获取一个则不填
+	Name             string    `json:"name,optional"` //场景名模糊查询
+	Tag              string    `json:"tag,optional"`  //标签 admin: 管理员 normal: 普通
+	AreaID           int64     `json:"areaID,optional,string"`
+	SceneIDs         []int64   `json:"sceneIDs,optional"`         //根据场景ID来过滤
+	Type             string    `json:"type,optional"`             //触发类型 auto manual:手动触发
+	Status           int64     `json:"status,optional"`           //状态（1启用 2禁用 3异常）
+	AlarmID          int64     `json:"alarmID,optional"`          //告警id
+	DeviceMode       string    `json:"deviceMode,optional"`       //设备模式
+	ProductID        string    `json:"productID,optional"`        //产品id
+	DeviceName       string    `json:"deviceName,optional"`       //设备名
+	DeviceFilterMode int64     `json:"deviceFilterMode,optional"` //设备过滤模式: 1,过滤触发或执行(默认) 2,过滤触发 3,过滤执行
+	HasActionType    string    `json:"hasActionType,optional"`    //过滤有某个执行类型
+	IsCommon         int64     `json:"isCommon,optional"`         //是否是常用的
+	IsOnlyCore       int64     `json:"isOnlyCore,optional"`       //不返回if,when和then
 }
 
 type SceneInfoIndexResp struct {

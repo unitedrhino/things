@@ -53,7 +53,7 @@ func (l *SceneInfoIndexLogic) SceneInfoIndex(in *ud.SceneInfoIndexReq) (*ud.Scen
 		}
 	}
 	f := relationDB.SceneInfoFilter{AreaID: in.AreaID, IsCommon: in.IsCommon, Tag: in.Tag, Status: in.Status, Name: in.Name, DeviceMode: in.DeviceMode,
-		Type: in.Type, HasActionType: in.HasActionType, IDs: in.SceneIDs, ProductID: in.ProductID, DeviceName: in.DeviceName}
+		Type: in.Type, HasActionType: in.HasActionType, IDs: in.SceneIDs, ProductID: in.ProductID, DeviceName: in.DeviceName, DeviceFilterMode: in.DeviceFilterMode}
 	list, err := relationDB.NewSceneInfoRepo(l.ctx).FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page).WithDefaultOrder(stores.OrderBy{
 		Field: "createdTime",
 		Sort:  stores.OrderDesc,

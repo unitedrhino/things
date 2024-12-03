@@ -26,18 +26,20 @@ func NewSceneInfoRepo(in any) *SceneInfoRepo {
 }
 
 type SceneInfoFilter struct {
-	Name          string `json:"name"`
-	IDs           []int64
-	Status        int64
-	Type          string
-	Tag           string
-	IsCommon      def.Bool
-	AreaID        int64
-	AreaIDs       []int64
-	DeviceMode    scene.DeviceMode //设备模式
-	ProductID     string           //产品id
-	DeviceName    string           //设备名
-	HasActionType string           //过滤有某个执行类型
+	Name             string `json:"name"`
+	IDs              []int64
+	Status           int64
+	Type             string
+	Tag              string
+	IsCommon         def.Bool
+	AreaID           int64
+	AreaIDs          []int64
+	DeviceMode       scene.DeviceMode //设备模式
+	ProductID        string           //产品id
+	DeviceName       string           //设备名
+	DeviceFilterMode int64            //设备过滤模式: 1,过滤触发或执行(默认) 2,过滤触发 3,过滤执行
+
+	HasActionType string //过滤有某个执行类型
 	ProjectID     int64
 }
 
@@ -65,14 +67,14 @@ func (p SceneInfoRepo) fmtFilter(ctx context.Context, f SceneInfoFilter) *gorm.D
 		db = db.Where("product_id=?", f.ProductID)
 		db = db.Where("device_name=?", f.DeviceName)
 		if f.DeviceMode == scene.DeviceModeMulti {
-			{
+			if f.DeviceFilterMode != 2 {
 				subQuery := p.db.Model(&UdSceneThenAction{}).Select("scene_id").
 					Where("device_select_type = ? and device_product_id = ? and device_device_name = ?",
 						scene.SelectDeviceFixed, f.ProductID, f.DeviceName).
 					Or("device_select_type = ?  and device_product_id = ?", scene.SelectorDeviceAll, f.ProductID)
 				db = db.Where("id in (?)", subQuery)
 			}
-			{
+			if f.DeviceFilterMode != 3 {
 				subQuery := p.db.Model(&UdSceneIfTrigger{}).Select("scene_id").
 					Where(fmt.Sprintf("%s = ? and device_product_id = ? and device_device_name = ?", stores.Col("type")),
 						scene.TriggerTypeDevice, f.ProductID, f.DeviceName)
