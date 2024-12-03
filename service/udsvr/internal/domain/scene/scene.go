@@ -84,13 +84,14 @@ func (i *Info) SetAccount(ctx context.Context) context.Context {
 	}
 	if len(i.If.Triggers) == 0 {
 		uc.Account = "系统控制"
-	}
-	trigger := i.If.Triggers[0]
-	switch trigger.Type {
-	case TriggerTypeDevice:
-		uc.Account = "设备触发控制"
-	case TriggerTypeTimer:
-		uc.Account = "定时控制"
+	} else {
+		trigger := i.If.Triggers[0]
+		switch trigger.Type {
+		case TriggerTypeDevice:
+			uc.Account = "设备触发控制"
+		case TriggerTypeTimer:
+			uc.Account = "定时控制"
+		}
 	}
 	return ctxs.SetUserCtx(ctx, uc)
 }
