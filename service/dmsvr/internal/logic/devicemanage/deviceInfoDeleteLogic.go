@@ -50,7 +50,7 @@ func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*d
 		return nil, errors.System.AddDetail(err)
 	}
 	//删除时序数据库中的表数据
-	err = DeleteDeviceTimeData(l.ctx, l.svcCtx, in.ProductID, in.DeviceName)
+	err = DeleteDeviceTimeData(l.ctx, l.svcCtx, in.ProductID, in.DeviceName, DeleteModeAll)
 	if err != nil {
 		return nil, err
 	}
@@ -107,22 +107,34 @@ func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*d
 	return &dm.Empty{}, nil
 }
 
-func DeleteDeviceTimeData(ctx context.Context, svcCtx *svc.ServiceContext, productID, deviceName string) error {
+type DeleteMode int64
+
+const (
+	DeleteModeAll   DeleteMode = iota
+	DeleteModeThing            //只删除物模型信息
+)
+
+func DeleteDeviceTimeData(ctx context.Context, svcCtx *svc.ServiceContext, productID, deviceName string, mode DeleteMode) error {
 	schema, err := svcCtx.DeviceSchemaRepo.GetData(ctx, devices.Core{ProductID: productID, DeviceName: deviceName})
 	if err != nil {
 		logx.WithContext(ctx).Errorf("%s.GetSchemaModel err=%+v", utils.FuncName(), err)
 		return errors.System.AddDetail(err)
+	}
+
+	err = svcCtx.SchemaManaRepo.DeleteDevice(ctx, schema, productID, deviceName)
+	if err != nil {
+		logx.WithContext(ctx).Errorf("%s.SchemaManaRepo.DeleteDevice err=%v", utils.FuncName(), err)
+		return err
+	}
+	if mode == DeleteModeThing {
+		return nil
 	}
 	err = svcCtx.HubLogRepo.DeleteDevice(ctx, productID, deviceName)
 	if err != nil {
 		logx.WithContext(ctx).Errorf("%s.HubLogRepo.DeleteDevice err=%v", utils.FuncName(), err)
 		return err
 	}
-	err = svcCtx.SchemaManaRepo.DeleteDevice(ctx, schema, productID, deviceName)
-	if err != nil {
-		logx.WithContext(ctx).Errorf("%s.SchemaManaRepo.DeleteDevice err=%v", utils.FuncName(), err)
-		return err
-	}
+
 	err = svcCtx.SDKLogRepo.DeleteDevice(ctx, productID, deviceName)
 	if err != nil {
 		logx.WithContext(ctx).Errorf("%s.SDKLogRepo.DeleteDevice err=%v", utils.FuncName(), err)

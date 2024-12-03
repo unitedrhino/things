@@ -149,8 +149,8 @@ func (l *DeviceMoveLogic) DeviceMove(in *dm.DeviceMoveReq) (*dm.Empty, error) {
 		ProductID:  newDev.ProductID,
 		DeviceName: newDev.DeviceName,
 	}, nil)
-	err = DeleteDeviceTimeData(l.ctx, l.svcCtx, oldDev.ProductID, oldDev.DeviceName)
-	err = DeleteDeviceTimeData(l.ctx, l.svcCtx, newDev.ProductID, newDev.DeviceName)
+	err = DeleteDeviceTimeData(l.ctx, l.svcCtx, oldDev.ProductID, oldDev.DeviceName, DeleteModeAll)
+	err = DeleteDeviceTimeData(l.ctx, l.svcCtx, newDev.ProductID, newDev.DeviceName, DeleteModeAll)
 	err = l.svcCtx.FastEvent.Publish(l.ctx, eventBus.DmDeviceInfoUnbind, &devices.Core{ProductID: oldDev.ProductID, DeviceName: oldDev.DeviceName})
 	if err != nil {
 		l.Error(err)

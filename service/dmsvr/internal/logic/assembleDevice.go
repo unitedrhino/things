@@ -70,6 +70,7 @@ func ToDeviceInfo(ctx context.Context, svcCtx *svc.ServiceContext, in *relationD
 		IsEnable:           in.IsEnable,
 		FirstLogin:         utils.GetNullTime(in.FirstLogin),
 		FirstBind:          utils.GetNullTime(in.FirstBind),
+		LastBind:           utils.GetNullTime(in.LastBind),
 		LastLogin:          utils.GetNullTime(in.LastLogin),
 		ExpTime:            utils.TimeToNullInt(in.ExpTime),
 		LogLevel:           in.LogLevel,

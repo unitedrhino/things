@@ -3,6 +3,7 @@ package devicemsglogic
 import (
 	"context"
 	"encoding/json"
+	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/domain/deviceMsg/msgThing"
@@ -65,13 +66,24 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 			return nil, errors.Parameter.AddMsg("标识符未找到")
 		}
 	}
+	page := def.PageInfo2{
+		TimeStart: in.TimeStart,
+		TimeEnd:   in.TimeEnd,
+		Page:      in.Page.GetPage(),
+		Size:      in.Page.GetSize(),
+	}
+	uc := ctxs.GetUserCtxNoNil(l.ctx)
+	if !uc.IsAdmin {
+		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, gd)
+		if err != nil {
+			return nil, err
+		}
+		if di.LastBind*1000 > page.TimeStart {
+			page.TimeStart = di.LastBind * 1000
+		}
+	}
 	dds, err := dd.GetPropertyDataByID(l.ctx, p, msgThing.FilterOpt{
-		Page: def.PageInfo2{
-			TimeStart: in.TimeStart,
-			TimeEnd:   in.TimeEnd,
-			Page:      in.Page.GetPage(),
-			Size:      in.Page.GetSize(),
-		},
+		Page:        page,
 		ProductID:   in.ProductID,
 		DeviceNames: in.DeviceNames,
 		Order:       in.Order,

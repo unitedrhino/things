@@ -2,6 +2,7 @@ package devicemsglogic
 
 import (
 	"context"
+	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
@@ -42,12 +43,26 @@ func (l *SdkLogIndexLogic) SdkLogIndex(in *dm.SdkLogIndexReq) (*dm.SdkLogIndexRe
 		DeviceName: in.DeviceName,
 		LogLevel:   int(in.LogLevel),
 	}
-	logs, err := l.svcCtx.SDKLogRepo.GetDeviceSDKLog(l.ctx, filter, def.PageInfo2{
+	page := def.PageInfo2{
 		TimeStart: in.TimeStart,
 		TimeEnd:   in.TimeEnd,
 		Page:      in.Page.GetPage(),
 		Size:      in.Page.GetSize(),
-	})
+	}
+	uc := ctxs.GetUserCtxNoNil(l.ctx)
+	if !uc.IsAdmin {
+		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
+			ProductID:  in.ProductID,
+			DeviceName: in.DeviceName,
+		})
+		if err != nil {
+			return nil, err
+		}
+		if di.LastBind*1000 > page.TimeStart {
+			page.TimeStart = di.LastBind * 1000
+		}
+	}
+	logs, err := l.svcCtx.SDKLogRepo.GetDeviceSDKLog(l.ctx, filter, page)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}

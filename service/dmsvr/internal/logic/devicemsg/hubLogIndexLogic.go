@@ -2,6 +2,7 @@ package devicemsglogic
 
 import (
 	"context"
+	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/errors"
@@ -49,6 +50,19 @@ func (l *HubLogIndexLogic) HubLogIndex(in *dm.HubLogIndexReq) (*dm.HubLogIndexRe
 		TimeEnd:   in.TimeEnd,
 		Page:      in.Page.GetPage(),
 		Size:      in.Page.GetSize(),
+	}
+	uc := ctxs.GetUserCtxNoNil(l.ctx)
+	if !uc.IsAdmin {
+		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
+			ProductID:  in.ProductID,
+			DeviceName: in.DeviceName,
+		})
+		if err != nil {
+			return nil, err
+		}
+		if di.LastBind*1000 > page.TimeStart {
+			page.TimeStart = di.LastBind * 1000
+		}
 	}
 	total, err := l.svcCtx.HubLogRepo.GetCountLog(l.ctx, filter, page)
 	if err != nil {

@@ -116,6 +116,7 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 	if !di.FirstBind.Valid { //没有绑定过需要绑定
 		di.FirstBind = sql.NullTime{Time: time.Now(), Valid: true}
 	}
+	di.LastBind = sql.NullTime{Time: time.Now(), Valid: true}
 	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, di.ProductID)
 	if err != nil && !errors.Cmp(err, errors.NotFind) {
 		l.Error(err)

@@ -13,6 +13,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gorm.io/gorm"
+	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -154,7 +155,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 	}
 	if in.IsCleanData == def.True {
 		for _, di := range dis {
-			err := DeleteDeviceTimeData(l.ctx, l.svcCtx, di.ProductID, di.DeviceName)
+			err := DeleteDeviceTimeData(l.ctx, l.svcCtx, di.ProductID, di.DeviceName, DeleteModeThing)
 			if err != nil {
 				return nil, err
 			}
@@ -179,12 +180,17 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 		if TenantCode != uc.TenantCode {
 			ctx = ctxs.BindTenantCode(ctx, TenantCode, 0)
 		}
-		err = relationDB.NewDeviceInfoRepo(tx).UpdateWithField(ctx, relationDB.DeviceFilter{Cores: devs}, map[string]any{
+		var param = map[string]any{
 			"project_id":   ProjectID,
 			"user_id":      UserID,
 			"area_id":      AreaID,
 			"area_id_path": AreaIDPath,
-		})
+			"last_bind":    time.Now(),
+		}
+		if in.IsCleanData == def.True {
+			param["last_bind"] = time.Now()
+		}
+		err = relationDB.NewDeviceInfoRepo(tx).UpdateWithField(ctx, relationDB.DeviceFilter{Cores: devs}, param)
 		if err != nil {
 			return err
 		}

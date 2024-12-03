@@ -7336,6 +7336,10 @@
         "firstBind": {
           "type": "string"
         },
+        "lastBind": {
+          "type": "string",
+          "description": "最后绑定时间 只读"
+        },
         "lastLogin": {
           "type": "string",
           "description": "最后上线时间 只读"
