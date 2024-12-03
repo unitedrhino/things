@@ -308,13 +308,27 @@ func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 			ProductID:  a.ProductID,
 			DeviceName: a.DeviceName,
 		})
+	case SelectArea:
+		var areaIDs []int64
+		areaIDs = []int64{a.AreaID}
+		ret, err := repo.DeviceM.DeviceInfoIndex(ctx, &devicemanage.DeviceInfoIndexReq{
+			AreaIDs:   areaIDs,
+			ProductID: a.ProductID,
+		})
+		if err != nil {
+			logx.WithContext(ctx).Errorf("%s.DeviceInfoIndex ActionDevice:%#v err:%v", utils.FuncName(), a, err)
+			return err
+		}
+		for _, v := range ret.List {
+			deviceList = append(deviceList, devices.Core{
+				ProductID:  v.ProductID,
+				DeviceName: v.DeviceName,
+			})
+		}
 	case SelectorDeviceAll:
 		var areaIDs []int64
 		if repo.Info.AreaID > def.RootNode {
 			areaIDs = []int64{repo.Info.AreaID}
-		}
-		if a.AreaID > def.RootNode {
-			areaIDs = []int64{a.AreaID}
 		}
 		ret, err := repo.DeviceM.DeviceInfoIndex(ctx, &devicemanage.DeviceInfoIndexReq{
 			AreaIDs:   areaIDs,
