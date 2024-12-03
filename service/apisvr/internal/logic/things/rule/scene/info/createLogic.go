@@ -25,8 +25,8 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 	}
 }
 
-func (l *CreateLogic) Create(req *types.SceneInfoCreateReq) (*types.CommonResp, error) {
-	rst, err := l.svcCtx.Rule.SceneInfoCreate(l.ctx, ToScenePb(&req.SceneInfo))
+func (l *CreateLogic) Create(req *types.SceneInfo) (*types.CommonResp, error) {
+	rst, err := l.svcCtx.Rule.SceneInfoCreate(l.ctx, ToScenePb(req))
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.SceneInfoCreate req=%v err=%v", utils.FuncName(), req, er)

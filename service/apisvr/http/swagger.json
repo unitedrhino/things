@@ -5158,7 +5158,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/SceneInfoCreateReq"
+              "$ref": "#/definitions/SceneInfo"
             }
           }
         ],
@@ -5359,7 +5359,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/SceneInfoUpdateReq"
+              "$ref": "#/definitions/SceneInfo"
             }
           }
         ],
@@ -12732,8 +12732,7 @@
           "description": "场景名称"
         },
         "areaID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "区域id"
         },
         "createdTime": {

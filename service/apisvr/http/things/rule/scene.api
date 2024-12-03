@@ -17,10 +17,10 @@ info(
 service api {
     @doc "新增场景"
     @handler create
-    post /create (SceneInfoCreateReq) returns (WithID)
+    post /create (SceneInfo) returns (WithID)
     @doc "更新场景"
     @handler update
-    post /update (SceneInfoUpdateReq) returns ()
+    post /update (SceneInfo) returns ()
     @doc "删除场景"
     @handler delete
     post /delete (WithID) returns ()
@@ -132,7 +132,7 @@ type (
     SceneLog  {
         SceneID     int64             `json:"sceneID,omitempty"`         //场景id
         SceneName     string             `json:"sceneName,omitempty"`         //场景名称
-        AreaID      int64             `json:"areaID,omitempty"`           //区域id
+        AreaID      int64             `json:"areaID,string,omitempty"`           //区域id
         CreatedTime int64             `json:"createdTime,omitempty"` //创建时间 秒级时间戳 只读
         Status      int64             `json:"status,omitempty"`           // 状态（1成功 2失败）
         Type        string            `json:"type,omitempty"`                //"manual":手动触发场景  "auto":自动化

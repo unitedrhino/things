@@ -1611,13 +1611,13 @@ type SceneInfoUpdateReq struct {
 }
 
 type SceneLog struct {
-	SceneID     int64             `json:"sceneID,omitempty"`     //场景id
-	SceneName   string            `json:"sceneName,omitempty"`   //场景名称
-	AreaID      int64             `json:"areaID,omitempty"`      //区域id
-	CreatedTime int64             `json:"createdTime,omitempty"` //创建时间 秒级时间戳 只读
-	Status      int64             `json:"status,omitempty"`      // 状态（1成功 2失败）
-	Type        string            `json:"type,omitempty"`        //"manual":手动触发场景  "auto":自动化
-	Trigger     *SceneLogTrigger  `json:"trigger,omitempty"`     //触发
+	SceneID     int64             `json:"sceneID,omitempty"`       //场景id
+	SceneName   string            `json:"sceneName,omitempty"`     //场景名称
+	AreaID      int64             `json:"areaID,string,omitempty"` //区域id
+	CreatedTime int64             `json:"createdTime,omitempty"`   //创建时间 秒级时间戳 只读
+	Status      int64             `json:"status,omitempty"`        // 状态（1成功 2失败）
+	Type        string            `json:"type,omitempty"`          //"manual":手动触发场景  "auto":自动化
+	Trigger     *SceneLogTrigger  `json:"trigger,omitempty"`       //触发
 	Actions     []*SceneLogAction `json:"actions,omitempty"`
 }
 
