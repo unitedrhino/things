@@ -3,17 +3,12 @@ package logic
 import (
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/udsvr/pb/ud"
 )
 
 func ToPageInfo(info *ud.PageInfo) *stores.PageInfo {
-	if info == nil {
-		return nil
-	}
-	return &stores.PageInfo{
-		Page: info.GetPage(),
-		Size: info.GetSize(),
-	}
+	return utils.Copy[stores.PageInfo](info)
 }
 
 func ToTimeRange(timeRange *ud.TimeRange) *def.TimeRange {
