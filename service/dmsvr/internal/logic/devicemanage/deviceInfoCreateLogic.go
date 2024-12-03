@@ -114,19 +114,18 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 	} else if pi == nil {
 		return nil, errors.Parameter.AddDetail("not find product id:" + cast.ToString(in.ProductID))
 	}
-	uc := ctxs.GetUserCtxNoNil(l.ctx)
-	projectID := stores.ProjectID(uc.ProjectID)
+	//projectID := stores.ProjectID(uc.ProjectID)
 	areaID := stores.AreaID(def.NotClassified)
-	if projectID <= def.NotClassified { //如果没有传项目,则分配到未分类项目中
-		ti, err := l.svcCtx.TenantCache.GetData(l.ctx, def.TenantCodeDefault)
-		if err != nil {
-			return nil, err
-		}
-		projectID = stores.ProjectID(ti.DefaultProjectID)
-		if ti.DefaultAreaID != 0 {
-			areaID = stores.AreaID(ti.DefaultAreaID)
-		}
+	//if projectID <= def.NotClassified { //如果没有传项目,则分配到未分类项目中
+	ti, err := l.svcCtx.TenantCache.GetData(l.ctx, def.TenantCodeDefault)
+	if err != nil {
+		return nil, err
 	}
+	projectID := stores.ProjectID(ti.DefaultProjectID)
+	if ti.DefaultAreaID != 0 {
+		areaID = stores.AreaID(ti.DefaultAreaID)
+	}
+	//}
 
 	ai, err := l.svcCtx.AreaCache.GetData(l.ctx, int64(areaID))
 	if err != nil {
