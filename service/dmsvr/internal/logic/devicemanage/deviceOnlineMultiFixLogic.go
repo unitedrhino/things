@@ -113,10 +113,6 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 			return
 		}
 		if status == def.ConnectedStatus {
-			if di.IsOnline == def.True {
-				log.Infof("already online:%#v", msg)
-				return
-			}
 			var updates = map[string]any{"is_online": def.True, "last_login": msg.Timestamp, "status": def.DeviceStatusOnline, "last_ip": msg.Address}
 			if di.FirstLogin == 0 {
 				updates["first_login"] = msg.Timestamp
