@@ -77,7 +77,11 @@ func (p SceneInfoRepo) fmtFilter(ctx context.Context, f SceneInfoFilter) *gorm.D
 				subQuery := p.db.Model(&UdSceneIfTrigger{}).Select("scene_id").
 					Where(fmt.Sprintf("%s = ? and device_product_id = ? and device_device_name = ?", stores.Col("type")),
 						scene.TriggerTypeDevice, f.ProductID, f.DeviceName)
-				db = db.Or("id in (?)", subQuery)
+				if f.DeviceFilterMode != 2 {
+					db = db.Or("id in (?)", subQuery)
+				} else {
+					db = db.Where("id in (?)", subQuery)
+				}
 			}
 		} else {
 			db = db.Where("product_id=?", f.ProductID)
