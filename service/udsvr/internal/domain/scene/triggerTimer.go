@@ -16,7 +16,7 @@ type TriggerTimer struct {
 	ExecLoopEnd   int64      `json:"execLoopEnd,omitempty"`
 	ExecLoop      int64      `json:"execLoop,omitempty"` //循环时间间隔
 	RepeatType    RepeatType `json:"repeatType,omitempty"`
-	ExecRepeat    string     `json:"execRepeat,omitempty"` //二进制周一到周日 11111111 或二进制月一到月末
+	ExecRepeat    string     `json:"execRepeat,omitempty"` //如果不传或者传0则只执行一次, 二进制周一到周日 11111111 或二进制月一到月末
 }
 
 type TriggerTimers []*TriggerTimer
@@ -29,7 +29,7 @@ func (t *TriggerTimer) Validate(repo CheckRepo) error {
 		t.ExecType = ExecTypeAt
 	}
 	if t.RepeatType == "" {
-		t.RepeatType = RepeatTypeWeek
+		t.RepeatType = RepeatTypeAllDay
 	}
 	switch t.ExecType {
 	case ExecTypeLoop:

@@ -50,8 +50,9 @@ type DateRange struct {
 type RepeatType = string
 
 const (
-	RepeatTypeWeek  RepeatType = "week"  //按周重复(默认)
-	RepeatTypeMount RepeatType = "mount" //按月重复
+	RepeatTypeWeek   RepeatType = "week"   //按周重复(默认)
+	RepeatTypeMount  RepeatType = "mount"  //按月重复
+	RepeatTypeAllDay RepeatType = "allDay" //每天重复
 )
 
 var RepeatTypeLen = map[string]int{

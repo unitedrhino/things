@@ -170,6 +170,13 @@ func (l *TimerHandle) SceneTiming() error {
 			ExecRepeat:  stores.CmpOr(stores.CmpBinEq(int64(now.Day()), 1), stores.CmpEq(0)), //当天需要执行或只需要执行一次的
 		},
 		{Status: scene.StatusNormal,
+			Type:        scene.TriggerTypeTimer,
+			ExecType:    stores.CmpIn(scene.ExecTypeAt, scene.ExecTypeSunSet, scene.ExecTypeSunSet),
+			ExecAt:      stores.CmpLte(utils.TimeToDaySec(now)),                  //小于等于当前时间点(需要执行的)
+			LastRunTime: stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)), //当天未执行的
+			RepeatType:  scene.RepeatTypeAllDay,
+		},
+		{Status: scene.StatusNormal,
 			ExecType:      stores.CmpEq(scene.ExecTypeLoop),
 			Type:          scene.TriggerTypeTimer,
 			ExecLoopStart: stores.CmpLte(utils.TimeToDaySec(now)), //
@@ -186,6 +193,14 @@ func (l *TimerHandle) SceneTiming() error {
 			LastRunTime:   stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)),
 			RepeatType:    scene.RepeatTypeWeek,
 			ExecRepeat:    stores.CmpOr(stores.CmpBinEq(int64(now.Weekday()), 1), stores.CmpEq(0)), //当天需要执行或只需要执行一次的
+		},
+		{Status: scene.StatusNormal,
+			ExecType:      stores.CmpEq(scene.ExecTypeLoop),
+			Type:          scene.TriggerTypeTimer,
+			ExecLoopStart: stores.CmpLte(utils.TimeToDaySec(now)), //
+			ExecLoopEnd:   stores.CmpGte(utils.TimeToDaySec(now)),
+			LastRunTime:   stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)),
+			RepeatType:    scene.RepeatTypeAllDay,
 		},
 	}
 	list, err := db.FindByFilters(l.ctx, triggerF, nil)
@@ -296,7 +311,7 @@ func (l *TimerHandle) SceneTiming() error {
 						po.Timer.ExecAt += po.Timer.ExecAdd
 					}()
 				}
-				if po.Timer.ExecRepeat == 0 { //不重复执行的只执行一次
+				if po.Timer.ExecRepeat == 0 && po.Timer.RepeatType != scene.RepeatTypeAllDay { //不重复执行的只执行一次
 					po.Status = def.False
 				}
 				err = relationDB.NewSceneIfTriggerRepo(ctx).Update(ctx, po)
