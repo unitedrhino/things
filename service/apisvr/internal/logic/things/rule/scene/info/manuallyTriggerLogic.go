@@ -27,7 +27,7 @@ func NewManuallyTriggerLogic(ctx context.Context, svcCtx *svc.ServiceContext) *M
 }
 
 func (l *ManuallyTriggerLogic) ManuallyTrigger(req *types.WithID) error {
-	_, err := l.svcCtx.Rule.SceneManuallyTrigger(l.ctx, &ud.WithID{Id: req.ID})
+	_, err := l.svcCtx.Rule.SceneManuallyTrigger(l.ctx, &ud.SceneManuallyTriggerReq{SceneID: req.ID})
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.SceneManuallyTrigger req=%v err=%v", utils.FuncName(), req, er)

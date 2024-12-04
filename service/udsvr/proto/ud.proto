@@ -38,7 +38,7 @@ service rule {
   rpc sceneInfoDelete(WithID) returns(Empty);
   rpc sceneInfoIndex(SceneInfoIndexReq) returns(SceneInfoIndexResp);
   rpc sceneInfoRead(WithID) returns(SceneInfo);
-  rpc sceneManuallyTrigger(WithID) returns (Empty);//手动触发场景
+  rpc sceneManuallyTrigger(SceneManuallyTriggerReq) returns (Empty);//手动触发场景
   rpc sceneLogIndex(SceneLogIndexReq) returns(SceneLogIndexResp);
 
 
@@ -218,6 +218,10 @@ message SceneInfo{
   int64 isCommon =24;//是否是常用的
 }
 
+message SceneManuallyTriggerReq{
+  int64 sceneID = 1;//场景id
+  string triggerType =2;//触发方式,空为手动触发
+}
 
 message SceneLogIndexReq{
   PageInfo page       = 1;  // 分页信息 只获取一个则不填

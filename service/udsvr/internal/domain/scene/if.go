@@ -16,6 +16,10 @@ const (
 	TriggerTypeDevice  TriggerType = "device"
 	TriggerTypeTimer   TriggerType = "timer"
 	TriggerTypeWeather TriggerType = "weather"
+
+	TriggerTypeManual TriggerType = "manual" //手动触发
+	TriggerTypeScene  TriggerType = "scene"  //场景触发
+
 )
 
 type Triggers []*Trigger

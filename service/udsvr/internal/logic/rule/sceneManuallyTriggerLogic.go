@@ -30,9 +30,10 @@ func NewSceneManuallyTriggerLogic(ctx context.Context, svcCtx *svc.ServiceContex
 	}
 }
 
-func (l *SceneManuallyTriggerLogic) SceneManuallyTrigger(in *ud.WithID) (*ud.Empty, error) {
+func (l *SceneManuallyTriggerLogic) SceneManuallyTrigger(in *ud.SceneManuallyTriggerReq) (*ud.Empty, error) {
+	l.Info(in)
 	l.ctx = ctxs.WithDefaultAllProject(l.ctx)
-	si, err := relationDB.NewSceneInfoRepo(l.ctx).FindOne(l.ctx, in.Id)
+	si, err := relationDB.NewSceneInfoRepo(l.ctx).FindOne(l.ctx, in.SceneID)
 	if err != nil {
 		return nil, err
 	}
@@ -63,8 +64,17 @@ func (l *SceneManuallyTriggerLogic) SceneManuallyTrigger(in *ud.WithID) (*ud.Emp
 				return nil
 			},
 			SaveLog: func(ctx context.Context, log *scene.Log) error {
+				if log.Trigger == nil {
+					if in.TriggerType == "" {
+						in.TriggerType = scene.TriggerTypeManual
+					}
+					log.Trigger = &scene.LogTrigger{
+						Type: in.TriggerType,
+						Time: time.Now(),
+					}
+				}
 				po := utils.Copy[relationDB.UdSceneLog](log)
-				err := stores.WithNoDebug(l.ctx, relationDB.NewSceneLogRepo).Insert(ctx, po)
+				err := relationDB.NewSceneLogRepo(l.ctx).Insert(ctx, po)
 				return err
 			},
 		})

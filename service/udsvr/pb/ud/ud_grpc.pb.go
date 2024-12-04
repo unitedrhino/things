@@ -49,7 +49,7 @@ type RuleClient interface {
 	SceneInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
 	SceneInfoIndex(ctx context.Context, in *SceneInfoIndexReq, opts ...grpc.CallOption) (*SceneInfoIndexResp, error)
 	SceneInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*SceneInfo, error)
-	SceneManuallyTrigger(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
+	SceneManuallyTrigger(ctx context.Context, in *SceneManuallyTriggerReq, opts ...grpc.CallOption) (*Empty, error)
 	SceneLogIndex(ctx context.Context, in *SceneLogIndexReq, opts ...grpc.CallOption) (*SceneLogIndexResp, error)
 	AlarmInfoCreate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*WithID, error)
 	AlarmInfoUpdate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*Empty, error)
@@ -119,7 +119,7 @@ func (c *ruleClient) SceneInfoRead(ctx context.Context, in *WithID, opts ...grpc
 	return out, nil
 }
 
-func (c *ruleClient) SceneManuallyTrigger(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+func (c *ruleClient) SceneManuallyTrigger(ctx context.Context, in *SceneManuallyTriggerReq, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, Rule_SceneManuallyTrigger_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -246,7 +246,7 @@ type RuleServer interface {
 	SceneInfoDelete(context.Context, *WithID) (*Empty, error)
 	SceneInfoIndex(context.Context, *SceneInfoIndexReq) (*SceneInfoIndexResp, error)
 	SceneInfoRead(context.Context, *WithID) (*SceneInfo, error)
-	SceneManuallyTrigger(context.Context, *WithID) (*Empty, error)
+	SceneManuallyTrigger(context.Context, *SceneManuallyTriggerReq) (*Empty, error)
 	SceneLogIndex(context.Context, *SceneLogIndexReq) (*SceneLogIndexResp, error)
 	AlarmInfoCreate(context.Context, *AlarmInfo) (*WithID, error)
 	AlarmInfoUpdate(context.Context, *AlarmInfo) (*Empty, error)
@@ -283,7 +283,7 @@ func (UnimplementedRuleServer) SceneInfoIndex(context.Context, *SceneInfoIndexRe
 func (UnimplementedRuleServer) SceneInfoRead(context.Context, *WithID) (*SceneInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SceneInfoRead not implemented")
 }
-func (UnimplementedRuleServer) SceneManuallyTrigger(context.Context, *WithID) (*Empty, error) {
+func (UnimplementedRuleServer) SceneManuallyTrigger(context.Context, *SceneManuallyTriggerReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SceneManuallyTrigger not implemented")
 }
 func (UnimplementedRuleServer) SceneLogIndex(context.Context, *SceneLogIndexReq) (*SceneLogIndexResp, error) {
@@ -426,7 +426,7 @@ func _Rule_SceneInfoRead_Handler(srv interface{}, ctx context.Context, dec func(
 }
 
 func _Rule_SceneManuallyTrigger_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(WithID)
+	in := new(SceneManuallyTriggerReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -438,7 +438,7 @@ func _Rule_SceneManuallyTrigger_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: Rule_SceneManuallyTrigger_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RuleServer).SceneManuallyTrigger(ctx, req.(*WithID))
+		return srv.(RuleServer).SceneManuallyTrigger(ctx, req.(*SceneManuallyTriggerReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }

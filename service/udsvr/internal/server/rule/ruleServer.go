@@ -49,7 +49,7 @@ func (s *RuleServer) SceneInfoRead(ctx context.Context, in *ud.WithID) (*ud.Scen
 	return l.SceneInfoRead(in)
 }
 
-func (s *RuleServer) SceneManuallyTrigger(ctx context.Context, in *ud.WithID) (*ud.Empty, error) {
+func (s *RuleServer) SceneManuallyTrigger(ctx context.Context, in *ud.SceneManuallyTriggerReq) (*ud.Empty, error) {
 	l := rulelogic.NewSceneManuallyTriggerLogic(ctx, s.svcCtx)
 	return l.SceneManuallyTrigger(in)
 }

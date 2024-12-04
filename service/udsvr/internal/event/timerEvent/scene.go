@@ -67,7 +67,8 @@ func (l *TimerHandle) SceneExec(ctx context.Context, do *scene.Info) {
 					map[string]any{"status": status})
 				return err
 			}
-			_, err := rulelogic.NewSceneManuallyTriggerLogic(ctx, l.svcCtx).SceneManuallyTrigger(&ud.WithID{Id: sceneID})
+			_, err := rulelogic.NewSceneManuallyTriggerLogic(ctx, l.svcCtx).
+				SceneManuallyTrigger(&ud.SceneManuallyTriggerReq{SceneID: sceneID, TriggerType: scene.TriggerTypeScene})
 			return err
 		},
 		AlarmExec: func(ctx context.Context, in scene.AlarmSerial) error {
@@ -105,7 +106,7 @@ func (l *TimerHandle) SceneExec(ctx context.Context, do *scene.Info) {
 		},
 		SaveLog: func(ctx context.Context, log *scene.Log) error {
 			po := utils.Copy[relationDB.UdSceneLog](log)
-			err := stores.WithNoDebug(ctx, relationDB.NewSceneLogRepo).Insert(ctx, po)
+			err := relationDB.NewSceneLogRepo(ctx).Insert(ctx, po)
 			return err
 		},
 	})

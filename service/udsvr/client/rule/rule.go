@@ -46,6 +46,7 @@ type (
 	SceneLogIndexResp         = ud.SceneLogIndexResp
 	SceneLogTrigger           = ud.SceneLogTrigger
 	SceneLogTriggerDevice     = ud.SceneLogTriggerDevice
+	SceneManuallyTriggerReq   = ud.SceneManuallyTriggerReq
 	TimeRange                 = ud.TimeRange
 	WithID                    = ud.WithID
 
@@ -56,7 +57,7 @@ type (
 		SceneInfoDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
 		SceneInfoIndex(ctx context.Context, in *SceneInfoIndexReq, opts ...grpc.CallOption) (*SceneInfoIndexResp, error)
 		SceneInfoRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*SceneInfo, error)
-		SceneManuallyTrigger(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
+		SceneManuallyTrigger(ctx context.Context, in *SceneManuallyTriggerReq, opts ...grpc.CallOption) (*Empty, error)
 		SceneLogIndex(ctx context.Context, in *SceneLogIndexReq, opts ...grpc.CallOption) (*SceneLogIndexResp, error)
 		AlarmInfoCreate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*WithID, error)
 		AlarmInfoUpdate(ctx context.Context, in *AlarmInfo, opts ...grpc.CallOption) (*Empty, error)
@@ -143,12 +144,12 @@ func (d *directRule) SceneInfoRead(ctx context.Context, in *WithID, opts ...grpc
 	return d.svr.SceneInfoRead(ctx, in)
 }
 
-func (m *defaultRule) SceneManuallyTrigger(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+func (m *defaultRule) SceneManuallyTrigger(ctx context.Context, in *SceneManuallyTriggerReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := ud.NewRuleClient(m.cli.Conn())
 	return client.SceneManuallyTrigger(ctx, in, opts...)
 }
 
-func (d *directRule) SceneManuallyTrigger(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+func (d *directRule) SceneManuallyTrigger(ctx context.Context, in *SceneManuallyTriggerReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.SceneManuallyTrigger(ctx, in)
 }
 
