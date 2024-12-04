@@ -68,11 +68,11 @@ func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *ud.SceneInfo) (*ud.Empty, err
 	if in.Logo != "" {
 		old.Logo = in.Logo
 	}
-	if in.If != "" {
+	if in.If != "" && old.Type == scene.SceneTypeAuto {
 		old.UdSceneIf = newPo.UdSceneIf
 		doUpdate = true
 	}
-	if in.When != "" {
+	if in.When != "" && old.Type == scene.SceneTypeAuto {
 		old.UdSceneWhen = newPo.UdSceneWhen
 		doUpdate = true
 	}

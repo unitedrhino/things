@@ -20,10 +20,8 @@ func ToSceneInfoDo(in *ud.SceneInfo) *scene.Info {
 		return nil
 	}
 	do := utils.Copy[scene.Info](in)
-	if do.Type == scene.SceneTypeAuto {
-		do.If = utils.UnmarshalNoErr[scene.If](in.If)
-		do.When = utils.UnmarshalNoErr[scene.When](in.When)
-	}
+	do.If = utils.UnmarshalNoErr[scene.If](in.If)
+	do.When = utils.UnmarshalNoErr[scene.When](in.When)
 	do.Then = utils.UnmarshalNoErr[scene.Then](in.Then)
 	return do
 }

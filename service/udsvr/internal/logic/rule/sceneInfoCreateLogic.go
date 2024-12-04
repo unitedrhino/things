@@ -74,7 +74,12 @@ func (l *SceneInfoCreateLogic) SceneInfoCreate(in *ud.SceneInfo) (*ud.WithID, er
 	if err != nil {
 		return nil, err
 	}
+	if do.Type != scene.SceneTypeAuto {
+		do.If.Triggers = nil
+		do.When = scene.When{}
+	}
 	po := ToSceneInfoPo(do)
+
 	err = relationDB.NewSceneInfoRepo(l.ctx).Insert(l.ctx, po)
 	if err != nil {
 		return nil, err
