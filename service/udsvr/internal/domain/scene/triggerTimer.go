@@ -9,14 +9,16 @@ import (
 
 // TriggerTimer 定时器类型
 type TriggerTimer struct {
-	ExecType      ExecType   `json:"execType"`                //执行方式
-	ExecAdd       int64      `json:"execAdd,omitempty"`       //如果是日出日落模式,则为日出日落前后的秒数
-	ExecAt        int64      `json:"execAt,omitempty"`        //执行的时间点 从0点加起来的秒数 如 1点就是 1*60*60
-	ExecLoopStart int64      `json:"execLoopStart,omitempty"` //循环执行起始时间配置
-	ExecLoopEnd   int64      `json:"execLoopEnd,omitempty"`
-	ExecLoop      int64      `json:"execLoop,omitempty"` //循环时间间隔
-	RepeatType    RepeatType `json:"repeatType,omitempty"`
-	ExecRepeat    string     `json:"execRepeat,omitempty"` //如果不传或者传0则只执行一次, 二进制周一到周日 11111111 或二进制月一到月末
+	ExecType            ExecType   `json:"execType"`                //执行方式
+	ExecAdd             int64      `json:"execAdd,omitempty"`       //如果是日出日落模式,则为日出日落前后的秒数
+	ExecAt              int64      `json:"execAt,omitempty"`        //执行的时间点 从0点加起来的秒数 如 1点就是 1*60*60
+	ExecLoopStart       int64      `json:"execLoopStart,omitempty"` //循环执行起始时间配置
+	ExecLoopEnd         int64      `json:"execLoopEnd,omitempty"`
+	ExecLoop            int64      `json:"execLoop,omitempty"` //循环时间间隔
+	RepeatType          RepeatType `json:"repeatType,omitempty"`
+	ExecRepeat          string     `json:"execRepeat,omitempty"`      //如果不传或者传0则只执行一次, 二进制周一到周日 11111111 或二进制月一到月末
+	ExecRepeatStartDate string     `json:"execRepeatStart,omitempty"` //开始日期 2006-01-02
+	ExecRepeatEndDate   string     `json:"execRepeatEnd,omitempty"`   //结束日期 2006-01-02
 }
 
 type TriggerTimers []*TriggerTimer
@@ -81,6 +83,18 @@ func (t *TriggerTimer) Validate(repo CheckRepo) error {
 	case RepeatTypeMount:
 		if repeat > 0b1111111111111111111111111111111 {
 			return errors.Parameter.AddMsg("时间重复模式只能在0 31个二进制为高位")
+		}
+	case RepeatTypeCustomRange:
+		start := utils.FmtNilDateStr(t.ExecRepeatStartDate)
+		if start == nil {
+			return errors.Parameter.AddMsg("日期范围开始时间的格式为:2006-01-02")
+		}
+		end := utils.FmtNilDateStr(t.ExecRepeatEndDate)
+		if end == nil {
+			return errors.Parameter.AddMsg("日期范围结束时间的格式为:2006-01-02")
+		}
+		if t.ExecRepeatStartDate != t.ExecRepeatEndDate && start.After(*end) {
+			return errors.Parameter.AddMsg("日期结束时间需要在开始时间之后")
 		}
 	}
 	return nil

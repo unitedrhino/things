@@ -25,26 +25,28 @@ func NewSceneIfTriggerRepo(in any) *SceneIfTriggerRepo {
 }
 
 type SceneIfTriggerFilter struct {
-	ID                int64
-	SceneID           int64
-	Status            scene.Status
-	Statuses          []scene.Status
-	ExecAt            *stores.Cmp
-	LastRunTime       *stores.Cmp
-	ExecRepeat        *stores.Cmp
-	RepeatType        scene.RepeatType
-	ExecLoopStart     *stores.Cmp
-	ExecLoopEnd       *stores.Cmp
-	ExecType          *stores.Cmp
-	Type              string
-	ProjectID         *stores.Cmp
-	AreaID            *stores.Cmp
-	Device            *devices.Core
-	DataID            string
-	TriggerDeviceType scene.TriggerDeviceType
-	FirstTriggerTime  *stores.Cmp
-	StateKeepType     scene.StateKeepType
-	StateKeepValue    *stores.Cmp
+	ID                  int64
+	SceneID             int64
+	Status              scene.Status
+	Statuses            []scene.Status
+	ExecAt              *stores.Cmp
+	LastRunTime         *stores.Cmp
+	ExecRepeat          *stores.Cmp
+	RepeatType          *stores.Cmp
+	ExecLoopStart       *stores.Cmp
+	ExecLoopEnd         *stores.Cmp
+	ExecType            *stores.Cmp
+	ExecRepeatStartDate *stores.Cmp
+	ExecRepeatEndDate   *stores.Cmp
+	Type                string
+	ProjectID           *stores.Cmp
+	AreaID              *stores.Cmp
+	Device              *devices.Core
+	DataID              string
+	TriggerDeviceType   scene.TriggerDeviceType
+	FirstTriggerTime    *stores.Cmp
+	StateKeepType       scene.StateKeepType
+	StateKeepValue      *stores.Cmp
 }
 
 func (p SceneIfTriggerRepo) fmtFilter(ctx context.Context, f SceneIfTriggerFilter) *gorm.DB {
@@ -56,8 +58,11 @@ func (p SceneIfTriggerRepo) fmtFilter(ctx context.Context, f SceneIfTriggerFilte
 	db = f.ExecRepeat.Where(db, "timer_exec_repeat")
 	db = f.ExecLoopStart.Where(db, "timer_exec_loop_start")
 	db = f.ExecLoopEnd.Where(db, "timer_exec_loop_end")
+	db = f.ExecRepeatStartDate.Where(db, "exec_repeat_start_date")
+	db = f.ExecRepeatEndDate.Where(db, "exec_repeat_end_date")
 	db = f.FirstTriggerTime.Where(db, "device_first_trigger_time")
 	db = f.StateKeepValue.Where(db, "device_state_keep_value")
+	db = f.RepeatType.Where(db, "timer_repeat_type")
 	if f.Status != 0 {
 		db = db.Where("status = ?", f.Status)
 	}
@@ -68,9 +73,6 @@ func (p SceneIfTriggerRepo) fmtFilter(ctx context.Context, f SceneIfTriggerFilte
 		db = db.Where("id = ?", f.ID)
 	}
 	db = f.ExecType.Where(db, "timer_exec_type")
-	if f.RepeatType != "" {
-		db = db.Where("timer_repeat_type = ?", f.RepeatType)
-	}
 	if f.Type != "" {
 		db = db.Where("type = ?", f.Type)
 	}

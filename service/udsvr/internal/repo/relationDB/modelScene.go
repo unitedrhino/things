@@ -43,21 +43,20 @@ type UdSceneIf struct {
 }
 
 type UdSceneIfTrigger struct {
-	ID              int64             `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"` // id编号
-	Type            scene.TriggerType `gorm:"column:type;type:VARCHAR(25);NOT NULL"`            //触发类型 device: 设备触发 timer: 定时触发
-	SceneID         int64             `gorm:"column:scene_id;index;type:bigint"`                // 场景id编号
-	ProjectID       stores.ProjectID  `gorm:"column:project_id;type:bigint;default:1;"`         // 项目ID(雪花ID)
-	AreaID          stores.AreaID     `gorm:"column:area_id;type:bigint;default:1;"`            // 项目区域ID(雪花ID)
-	Order           int64             `gorm:"column:order;type:BIGINT;default:1;NOT NULL"`      // 排序序号
-	Status          scene.Status      `gorm:"column:status;type:BIGINT;default:1"`              //状态 同步场景联动的status
-	Reason          string            `gorm:"column:reason;type:VARCHAR(255);default:''"`       //异常原因
-	LastRunTime     sql.NullTime      `gorm:"column:last_run_time;index;default: NULL"`         //最后执行时间
-	LastTriggerTime sql.NullTime      `gorm:"column:last_trigger_time;index;default: NULL"`     //最后触发时间
-
-	Device    UdSceneTriggerDevice  `gorm:"embedded;embeddedPrefix:device_"`
-	Timer     UdSceneTriggerTimer   `gorm:"embedded;embeddedPrefix:timer_"`
-	Weather   UdSceneTriggerWeather `gorm:"embedded;embeddedPrefix:weather_"`
-	SceneInfo *UdSceneInfo          `gorm:"foreignKey:ID;references:SceneID"`
+	ID              int64                 `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"` // id编号
+	Type            scene.TriggerType     `gorm:"column:type;type:VARCHAR(25);NOT NULL"`            //触发类型 device: 设备触发 timer: 定时触发
+	SceneID         int64                 `gorm:"column:scene_id;index;type:bigint"`                // 场景id编号
+	ProjectID       stores.ProjectID      `gorm:"column:project_id;type:bigint;default:1;"`         // 项目ID(雪花ID)
+	AreaID          stores.AreaID         `gorm:"column:area_id;type:bigint;default:1;"`            // 项目区域ID(雪花ID)
+	Order           int64                 `gorm:"column:order;type:BIGINT;default:1;NOT NULL"`      // 排序序号
+	Status          scene.Status          `gorm:"column:status;type:BIGINT;default:1"`              //状态 同步场景联动的status
+	Reason          string                `gorm:"column:reason;type:VARCHAR(255);default:''"`       //异常原因
+	LastRunTime     sql.NullTime          `gorm:"column:last_run_time;index;default: NULL"`         //最后执行时间
+	LastTriggerTime sql.NullTime          `gorm:"column:last_trigger_time;index;default: NULL"`     //最后触发时间
+	Device          UdSceneTriggerDevice  `gorm:"embedded;embeddedPrefix:device_"`
+	Timer           UdSceneTriggerTimer   `gorm:"embedded;embeddedPrefix:timer_"`
+	Weather         UdSceneTriggerWeather `gorm:"embedded;embeddedPrefix:weather_"`
+	SceneInfo       *UdSceneInfo          `gorm:"foreignKey:ID;references:SceneID"`
 	stores.SoftTime
 }
 
@@ -66,14 +65,16 @@ func (m *UdSceneIfTrigger) TableName() string {
 }
 
 type UdSceneTriggerTimer struct {
-	ExecType      scene.ExecType   `gorm:"column:exec_type;type:VARCHAR(25);"`  //执行方式
-	ExecAdd       int64            `gorm:"column:exec_add;type:bigint;"`        //如果是日出日落模式,则为日出日落前后的秒数
-	ExecAt        int64            `gorm:"column:exec_at;type:bigint;"`         //执行时间 从0点加起来的秒数 如 1点就是 1*60*60
-	ExecRepeat    int64            `gorm:"column:exec_repeat;type:bigint;"`     //重复 二进制周日到周六 11111111 这个参数只有定时触发才有
-	ExecLoopStart int64            `gorm:"column:exec_loop_start;type:bigint;"` //循环执行起始时间配置
-	ExecLoopEnd   int64            `gorm:"column:exec_loop_end;type:bigint;"`
-	ExecLoop      int64            `gorm:"column:exec_loop;type:bigint;"`
-	RepeatType    scene.RepeatType `gorm:"column:repeat_type;type:VARCHAR(25);"`
+	ExecType            scene.ExecType   `gorm:"column:exec_type;type:VARCHAR(25);"`  //执行方式
+	ExecAdd             int64            `gorm:"column:exec_add;type:bigint;"`        //如果是日出日落模式,则为日出日落前后的秒数
+	ExecAt              int64            `gorm:"column:exec_at;type:bigint;"`         //执行时间 从0点加起来的秒数 如 1点就是 1*60*60
+	ExecRepeat          int64            `gorm:"column:exec_repeat;type:bigint;"`     //重复 二进制周日到周六 11111111 这个参数只有定时触发才有
+	ExecLoopStart       int64            `gorm:"column:exec_loop_start;type:bigint;"` //循环执行起始时间配置
+	ExecLoopEnd         int64            `gorm:"column:exec_loop_end;type:bigint;"`
+	ExecLoop            int64            `gorm:"column:exec_loop;type:bigint;"`
+	ExecRepeatStartDate sql.NullTime     `gorm:"column:exec_repeat_start_date;index;default: NULL"` //开始日期 2006-01-02
+	ExecRepeatEndDate   sql.NullTime     `gorm:"column:exec_repeat_end_date;index;default: NULL"`   //结束日期 2006-01-02
+	RepeatType          scene.RepeatType `gorm:"column:repeat_type;type:VARCHAR(25);"`
 }
 
 type UdSceneTriggerWeather struct {

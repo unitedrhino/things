@@ -96,15 +96,31 @@ func ToSceneTriggerTimerPo(si *scene.Info, in *scene.TriggerTimer) (ret relation
 	if in == nil {
 		return relationDB.UdSceneTriggerTimer{}
 	}
+	var startDate sql.NullTime
+	var endDate sql.NullTime
+	if in.ExecRepeatStartDate != "" && in.RepeatType == scene.RepeatTypeCustomRange {
+		startDate = sql.NullTime{
+			Valid: true,
+			Time:  utils.FmtDateStr(in.ExecRepeatStartDate),
+		}
+	}
+	if in.ExecRepeatEndDate != "" && in.RepeatType == scene.RepeatTypeCustomRange {
+		endDate = sql.NullTime{
+			Valid: true,
+			Time:  utils.FmtDateStr(in.ExecRepeatEndDate),
+		}
+	}
 	return relationDB.UdSceneTriggerTimer{
-		ExecAt:        in.ExecAt,
-		ExecAdd:       in.ExecAdd,
-		ExecRepeat:    utils.BStrToInt64(in.ExecRepeat),
-		ExecType:      in.ExecType,
-		ExecLoopStart: in.ExecLoopStart,
-		ExecLoopEnd:   in.ExecLoopEnd,
-		ExecLoop:      in.ExecLoop,
-		RepeatType:    in.RepeatType,
+		ExecAt:              in.ExecAt,
+		ExecAdd:             in.ExecAdd,
+		ExecRepeat:          utils.BStrToInt64(in.ExecRepeat),
+		ExecRepeatEndDate:   endDate,
+		ExecRepeatStartDate: startDate,
+		ExecType:            in.ExecType,
+		ExecLoopStart:       in.ExecLoopStart,
+		ExecLoopEnd:         in.ExecLoopEnd,
+		ExecLoop:            in.ExecLoop,
+		RepeatType:          in.RepeatType,
 	}
 }
 
@@ -307,15 +323,26 @@ func ToSceneTriggerDo(ctx context.Context, svcCtx *svc.ServiceContext, in *relat
 }
 
 func ToSceneTriggerTimerDo(in relationDB.UdSceneTriggerTimer) (ret *scene.TriggerTimer) {
+	var startDate string
+	var endDate string
+	if in.ExecRepeatStartDate.Valid && in.RepeatType == scene.RepeatTypeCustomRange {
+		startDate = utils.ToDateStr(in.ExecRepeatStartDate.Time)
+	}
+	if in.ExecRepeatEndDate.Valid && in.RepeatType == scene.RepeatTypeCustomRange {
+		endDate = utils.ToDateStr(in.ExecRepeatEndDate.Time)
+	}
+
 	return &scene.TriggerTimer{
-		ExecAt:        in.ExecAt,
-		ExecAdd:       in.ExecAdd,
-		ExecRepeat:    utils.Int64ToBStr(in.ExecRepeat, scene.RepeatTypeLen[in.RepeatType]),
-		ExecType:      in.ExecType,
-		ExecLoopStart: in.ExecLoopStart,
-		ExecLoopEnd:   in.ExecLoopEnd,
-		ExecLoop:      in.ExecLoop,
-		RepeatType:    in.RepeatType,
+		ExecAt:              in.ExecAt,
+		ExecAdd:             in.ExecAdd,
+		ExecRepeat:          utils.Int64ToBStr(in.ExecRepeat, scene.RepeatTypeLen[in.RepeatType]),
+		ExecType:            in.ExecType,
+		ExecLoopStart:       in.ExecLoopStart,
+		ExecLoopEnd:         in.ExecLoopEnd,
+		ExecLoop:            in.ExecLoop,
+		ExecRepeatStartDate: startDate,
+		ExecRepeatEndDate:   endDate,
+		RepeatType:          in.RepeatType,
 	}
 }
 

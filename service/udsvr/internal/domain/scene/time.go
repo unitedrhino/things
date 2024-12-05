@@ -50,9 +50,14 @@ type DateRange struct {
 type RepeatType = string
 
 const (
-	RepeatTypeWeek   RepeatType = "week"   //按周重复(默认)
-	RepeatTypeMount  RepeatType = "mount"  //按月重复
-	RepeatTypeAllDay RepeatType = "allDay" //每天重复
+	RepeatTypeOnce         RepeatType    = "once"        //只执行一次(默认)
+	RepeatTypeWeek         RepeatType    = "week"        //按周重复(默认)
+	RepeatTypeMount        RepeatType    = "mount"       //按月重复
+	RepeatTypeAllDay       RepeatType    = "allDay"      //每天重复
+	RepeatTypeCustomRange  RepeatType    = "customRange" //自定义范围
+	RepeatRangeTypeWorkDay DateRangeType = "workday"     //工作日
+	RepeatRangeTypeWeekend DateRangeType = "weekend"     //周末
+	RepeatRangeTypeHoliday DateRangeType = "holiday"     //节假日
 )
 
 var RepeatTypeLen = map[string]int{
@@ -112,6 +117,9 @@ func (t *DateRange) Validate() error {
 		end := utils.FmtNilDateStr(t.EndDate)
 		if end == nil {
 			return errors.Parameter.AddMsg("日期范围结束时间的格式为:2006-01-02")
+		}
+		if t.StartDate != t.EndDate && start.After(*end) {
+			return errors.Parameter.AddMsg("日期结束时间需要在开始时间之后")
 		}
 	}
 	repeat := cast.ToInt64(t.Repeat)

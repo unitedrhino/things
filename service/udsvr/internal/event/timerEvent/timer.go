@@ -6,6 +6,7 @@ import (
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/share/tools"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/domain/scene"
 	rulelogic "gitee.com/unitedrhino/things/service/udsvr/internal/logic/rule"
@@ -158,50 +159,104 @@ func (l *TimerHandle) SceneTiming() error {
 			ExecType:    stores.CmpIn(scene.ExecTypeAt, scene.ExecTypeSunSet, scene.ExecTypeSunSet),
 			ExecAt:      stores.CmpLte(utils.TimeToDaySec(now)),                  //小于等于当前时间点(需要执行的)
 			LastRunTime: stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)), //当天未执行的
-			RepeatType:  scene.RepeatTypeWeek,
+			RepeatType:  stores.CmpEq(scene.RepeatTypeWeek),
 			ExecRepeat:  stores.CmpOr(stores.CmpBinEq(int64(now.Weekday()), 1), stores.CmpEq(0)), //当天需要执行或只需要执行一次的
 		},
 		{Status: scene.StatusNormal,
-			Type:        scene.TriggerTypeTimer,
-			ExecType:    stores.CmpIn(scene.ExecTypeAt, scene.ExecTypeSunSet, scene.ExecTypeSunSet),
-			ExecAt:      stores.CmpLte(utils.TimeToDaySec(now)),                  //小于等于当前时间点(需要执行的)
-			LastRunTime: stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)), //当天未执行的
-			RepeatType:  scene.RepeatTypeMount,
-			ExecRepeat:  stores.CmpOr(stores.CmpBinEq(int64(now.Day()), 1), stores.CmpEq(0)), //当天需要执行或只需要执行一次的
-		},
-		{Status: scene.StatusNormal,
-			Type:        scene.TriggerTypeTimer,
-			ExecType:    stores.CmpIn(scene.ExecTypeAt, scene.ExecTypeSunSet, scene.ExecTypeSunSet),
-			ExecAt:      stores.CmpLte(utils.TimeToDaySec(now)),                  //小于等于当前时间点(需要执行的)
-			LastRunTime: stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)), //当天未执行的
-			RepeatType:  scene.RepeatTypeAllDay,
-		},
-		{Status: scene.StatusNormal,
 			ExecType:      stores.CmpEq(scene.ExecTypeLoop),
 			Type:          scene.TriggerTypeTimer,
 			ExecLoopStart: stores.CmpLte(utils.TimeToDaySec(now)), //
 			ExecLoopEnd:   stores.CmpGte(utils.TimeToDaySec(now)),
 			LastRunTime:   stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)),
-			RepeatType:    scene.RepeatTypeMount,
-			ExecRepeat:    stores.CmpOr(stores.CmpBinEq(int64(now.Day()), 1), stores.CmpEq(0)), //当天需要执行或只需要执行一次的
-		},
-		{Status: scene.StatusNormal,
-			ExecType:      stores.CmpEq(scene.ExecTypeLoop),
-			Type:          scene.TriggerTypeTimer,
-			ExecLoopStart: stores.CmpLte(utils.TimeToDaySec(now)), //
-			ExecLoopEnd:   stores.CmpGte(utils.TimeToDaySec(now)),
-			LastRunTime:   stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)),
-			RepeatType:    scene.RepeatTypeWeek,
+			RepeatType:    stores.CmpEq(scene.RepeatTypeWeek),
 			ExecRepeat:    stores.CmpOr(stores.CmpBinEq(int64(now.Weekday()), 1), stores.CmpEq(0)), //当天需要执行或只需要执行一次的
 		},
 		{Status: scene.StatusNormal,
+			Type:        scene.TriggerTypeTimer,
+			ExecType:    stores.CmpIn(scene.ExecTypeAt, scene.ExecTypeSunSet, scene.ExecTypeSunSet),
+			ExecAt:      stores.CmpLte(utils.TimeToDaySec(now)),                  //小于等于当前时间点(需要执行的)
+			LastRunTime: stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)), //当天未执行的
+			RepeatType:  stores.CmpEq(scene.RepeatTypeMount),
+			ExecRepeat:  stores.CmpOr(stores.CmpBinEq(int64(now.Day()), 1), stores.CmpEq(0)), //当天需要执行或只需要执行一次的
+		},
+		{Status: scene.StatusNormal,
 			ExecType:      stores.CmpEq(scene.ExecTypeLoop),
 			Type:          scene.TriggerTypeTimer,
 			ExecLoopStart: stores.CmpLte(utils.TimeToDaySec(now)), //
 			ExecLoopEnd:   stores.CmpGte(utils.TimeToDaySec(now)),
 			LastRunTime:   stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)),
-			RepeatType:    scene.RepeatTypeAllDay,
+			RepeatType:    stores.CmpEq(scene.RepeatTypeMount),
+			ExecRepeat:    stores.CmpOr(stores.CmpBinEq(int64(now.Day()), 1), stores.CmpEq(0)), //当天需要执行或只需要执行一次的
 		},
+		{Status: scene.StatusNormal,
+			Type:        scene.TriggerTypeTimer,
+			ExecType:    stores.CmpIn(scene.ExecTypeAt, scene.ExecTypeSunSet, scene.ExecTypeSunSet),
+			ExecAt:      stores.CmpLte(utils.TimeToDaySec(now)),                  //小于等于当前时间点(需要执行的)
+			LastRunTime: stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)), //当天未执行的
+			RepeatType:  stores.CmpIn(scene.RepeatTypeAllDay, scene.RepeatTypeOnce),
+		},
+		{Status: scene.StatusNormal,
+			ExecType:      stores.CmpEq(scene.ExecTypeLoop),
+			Type:          scene.TriggerTypeTimer,
+			ExecLoopStart: stores.CmpLte(utils.TimeToDaySec(now)), //
+			ExecLoopEnd:   stores.CmpGte(utils.TimeToDaySec(now)),
+			LastRunTime:   stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)),
+			RepeatType:    stores.CmpIn(scene.RepeatTypeAllDay, scene.RepeatTypeOnce),
+		},
+		{Status: scene.StatusNormal,
+			Type:                scene.TriggerTypeTimer,
+			ExecType:            stores.CmpIn(scene.ExecTypeAt, scene.ExecTypeSunSet, scene.ExecTypeSunSet),
+			ExecAt:              stores.CmpLte(utils.TimeToDaySec(now)),                  //小于等于当前时间点(需要执行的)
+			LastRunTime:         stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)), //当天未执行的
+			RepeatType:          stores.CmpEq(scene.RepeatTypeCustomRange),
+			ExecRepeatStartDate: stores.CmpAnd(stores.CmpLte(now), stores.CmpIsNull(false)),
+			ExecRepeatEndDate:   stores.CmpAnd(stores.CmpGte(now), stores.CmpIsNull(false)),
+		},
+		{Status: scene.StatusNormal,
+			ExecType:            stores.CmpEq(scene.ExecTypeLoop),
+			Type:                scene.TriggerTypeTimer,
+			ExecLoopStart:       stores.CmpLte(utils.TimeToDaySec(now)), //
+			ExecLoopEnd:         stores.CmpGte(utils.TimeToDaySec(now)),
+			LastRunTime:         stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)),
+			RepeatType:          stores.CmpEq(scene.RepeatTypeCustomRange),
+			ExecRepeatStartDate: stores.CmpAnd(stores.CmpLte(now), stores.CmpIsNull(false)),
+			ExecRepeatEndDate:   stores.CmpAnd(stores.CmpGte(now), stores.CmpIsNull(false)),
+		},
+	}
+	var repeatType string
+	h, err := tools.GetHoliday(l.ctx, now)
+	if err != nil {
+		l.Error(err)
+		if now.Weekday() == time.Sunday || now.Weekday() == time.Saturday {
+			repeatType = scene.RepeatRangeTypeWeekend
+		} else {
+			repeatType = scene.RepeatRangeTypeWorkDay
+		}
+	} else {
+		switch h.Holiday {
+		case tools.HolidayWorkDay:
+			repeatType = scene.RepeatRangeTypeWorkDay
+		case tools.HolidayFestival:
+			repeatType = scene.RepeatRangeTypeHoliday
+		case tools.HolidayWeekend:
+			repeatType = scene.RepeatRangeTypeWeekend
+		}
+	}
+	if repeatType != "" {
+		triggerF = append(triggerF, relationDB.SceneIfTriggerFilter{Status: scene.StatusNormal,
+			ExecType:      stores.CmpEq(scene.ExecTypeLoop),
+			Type:          scene.TriggerTypeTimer,
+			ExecLoopStart: stores.CmpLte(utils.TimeToDaySec(now)), //
+			ExecLoopEnd:   stores.CmpGte(utils.TimeToDaySec(now)),
+			LastRunTime:   stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)),
+			RepeatType:    stores.CmpEq(scene.RepeatTypeAllDay),
+		}, relationDB.SceneIfTriggerFilter{Status: scene.StatusNormal,
+			Type:        scene.TriggerTypeTimer,
+			ExecType:    stores.CmpIn(scene.ExecTypeAt, scene.ExecTypeSunSet, scene.ExecTypeSunSet),
+			ExecAt:      stores.CmpLte(utils.TimeToDaySec(now)),                  //小于等于当前时间点(需要执行的)
+			LastRunTime: stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)), //当天未执行的
+			RepeatType:  stores.CmpEq(scene.RepeatTypeAllDay),
+		})
 	}
 	list, err := db.FindByFilters(l.ctx, triggerF, nil)
 	if err != nil {
@@ -311,7 +366,7 @@ func (l *TimerHandle) SceneTiming() error {
 						po.Timer.ExecAt += po.Timer.ExecAdd
 					}()
 				}
-				if po.Timer.ExecRepeat == 0 && po.Timer.RepeatType != scene.RepeatTypeAllDay { //不重复执行的只执行一次
+				if po.Timer.RepeatType == scene.RepeatTypeOnce { //不重复执行的只执行一次
 					po.Status = def.False
 				}
 				err = relationDB.NewSceneIfTriggerRepo(ctx).Update(ctx, po)
