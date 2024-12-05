@@ -12886,6 +12886,10 @@
           "format": "int64",
           "description": "场景id"
         },
+        "sceneName": {
+          "type": "string",
+          "description": "场景名称"
+        },
         "status": {
           "type": "integer",
           "format": "int64",

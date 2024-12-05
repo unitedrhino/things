@@ -1655,10 +1655,11 @@ type SceneLogActionDeviceValue struct {
 }
 
 type SceneLogIndexReq struct {
-	Page      *PageInfo  `json:"page,optional"`              // 分页信息 只获取一个则不填
-	SceneID   int64      `json:"sceneID,optional,omitempty"` //场景id
-	Status    int64      `json:"status,optional,omitempty"`  // 状态（1成功 2失败）
-	TimeRange *TimeRange `json:"timeRange,optional"`         // 时间范围
+	Page      *PageInfo  `json:"page,optional"`                // 分页信息 只获取一个则不填
+	SceneID   int64      `json:"sceneID,optional,omitempty"`   //场景id
+	SceneName string     `json:"sceneName,optional,omitempty"` //场景名称
+	Status    int64      `json:"status,optional,omitempty"`    // 状态（1成功 2失败）
+	TimeRange *TimeRange `json:"timeRange,optional"`           // 时间范围
 }
 
 type SceneLogIndexResp struct {

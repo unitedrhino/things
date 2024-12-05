@@ -28,7 +28,7 @@ func NewSceneLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Sce
 }
 
 func (l *SceneLogIndexLogic) SceneLogIndex(in *ud.SceneLogIndexReq) (*ud.SceneLogIndexResp, error) {
-	f := relationDB.SceneLogFilter{SceneID: in.SceneID, Status: in.Status, WithSceneInfo: true,
+	f := relationDB.SceneLogFilter{SceneID: in.SceneID, SceneName: in.SceneName, Status: in.Status, WithSceneInfo: true,
 		Time: logic.ToTimeRange(in.TimeRange)}
 	pos, err := relationDB.NewSceneLogRepo(l.ctx).FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page).
 		WithDefaultOrder(stores.OrderBy{

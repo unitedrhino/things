@@ -226,6 +226,7 @@ message SceneManuallyTriggerReq{
 message SceneLogIndexReq{
   PageInfo page       = 1;  // 分页信息 只获取一个则不填
   int64 sceneID = 2;//场景id
+  string sceneName =5;//场景名称
   TimeRange timeRange = 3;       // 时间范围
   int64 status = 4;// 状态（1成功 2失败）
 }

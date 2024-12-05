@@ -27,6 +27,7 @@ type SceneLogFilter struct {
 	Time          *def.TimeRange
 	Status        int64
 	SceneID       int64
+	SceneName     string
 	WithSceneInfo bool
 }
 
@@ -35,6 +36,10 @@ func (p SceneLogRepo) fmtFilter(ctx context.Context, f SceneLogFilter) *gorm.DB 
 	db = f.Time.ToGorm(db, "created_time")
 	if f.SceneID != 0 {
 		db = db.Where("scene_id=?", f.SceneID)
+	}
+	if f.SceneName != "" {
+		subQuery := p.db.Model(&UdSceneInfo{}).Select("id").Where("name like ?", "%"+f.SceneName+"%")
+		db = db.Where("scene_id in (?)", subQuery)
 	}
 	if f.Status != 0 {
 		db = db.Where("status=?", f.Status)
