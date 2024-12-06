@@ -72,8 +72,8 @@ type UdSceneTriggerTimer struct {
 	ExecLoopStart       int64            `gorm:"column:exec_loop_start;type:bigint;"` //循环执行起始时间配置
 	ExecLoopEnd         int64            `gorm:"column:exec_loop_end;type:bigint;"`
 	ExecLoop            int64            `gorm:"column:exec_loop;type:bigint;"`
-	ExecRepeatStartDate sql.NullTime     `gorm:"column:exec_repeat_start_date;index;default: NULL"` //开始日期 2006-01-02
-	ExecRepeatEndDate   sql.NullTime     `gorm:"column:exec_repeat_end_date;index;default: NULL"`   //结束日期 2006-01-02
+	ExecRepeatStartDate sql.NullTime     `gorm:"column:exec_repeat_start_date;index;default:NULL"` //开始日期 2006-01-02
+	ExecRepeatEndDate   sql.NullTime     `gorm:"column:exec_repeat_end_date;index;default:NULL"`   //结束日期 2006-01-02
 	RepeatType          scene.RepeatType `gorm:"column:repeat_type;type:VARCHAR(25);"`
 }
 
