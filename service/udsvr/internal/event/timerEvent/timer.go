@@ -223,39 +223,42 @@ func (l *TimerHandle) SceneTiming() error {
 			ExecRepeatEndDate:   stores.CmpAnd(stores.CmpGte(now), stores.CmpIsNull(false)),
 		},
 	}
-	var repeatType string
+	var repeatType []string
 	h, err := tools.GetHoliday(l.ctx, now)
-	if err != nil {
+	if err != nil { //避免接口不可用
 		l.Error(err)
 		if now.Weekday() == time.Sunday || now.Weekday() == time.Saturday {
-			repeatType = scene.RepeatRangeTypeWeekend
+			repeatType = []string{scene.RepeatRangeTypeHoliday, scene.RepeatRangeTypeWeekend}
 		} else {
-			repeatType = scene.RepeatRangeTypeWorkDay
+			repeatType = []string{scene.RepeatRangeTypeWorkDay}
 		}
 	} else {
 		switch h.Holiday {
 		case tools.HolidayWorkDay:
-			repeatType = scene.RepeatRangeTypeWorkDay
+			repeatType = []string{scene.RepeatRangeTypeWorkDay}
 		case tools.HolidayFestival:
-			repeatType = scene.RepeatRangeTypeHoliday
+			repeatType = []string{scene.RepeatRangeTypeHoliday}
 		case tools.HolidayWeekend:
-			repeatType = scene.RepeatRangeTypeWeekend
+			repeatType = []string{scene.RepeatRangeTypeHoliday, scene.RepeatRangeTypeWeekend}
+		}
+		if now.Weekday() == time.Sunday || now.Weekday() == time.Saturday { //如果是调休还选了周末也需要触发
+			repeatType = append(repeatType, scene.RepeatRangeTypeWeekend)
 		}
 	}
-	if repeatType != "" {
+	if len(repeatType) != 0 {
 		triggerF = append(triggerF, relationDB.SceneIfTriggerFilter{Status: scene.StatusNormal,
 			ExecType:      stores.CmpEq(scene.ExecTypeLoop),
 			Type:          scene.TriggerTypeTimer,
 			ExecLoopStart: stores.CmpLte(utils.TimeToDaySec(now)), //
 			ExecLoopEnd:   stores.CmpGte(utils.TimeToDaySec(now)),
 			LastRunTime:   stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)),
-			RepeatType:    stores.CmpEq(scene.RepeatTypeAllDay),
+			RepeatType:    stores.CmpIn(repeatType...),
 		}, relationDB.SceneIfTriggerFilter{Status: scene.StatusNormal,
 			Type:        scene.TriggerTypeTimer,
 			ExecType:    stores.CmpIn(scene.ExecTypeAt, scene.ExecTypeSunSet, scene.ExecTypeSunSet),
 			ExecAt:      stores.CmpLte(utils.TimeToDaySec(now)),                  //小于等于当前时间点(需要执行的)
 			LastRunTime: stores.CmpOr(stores.CmpLt(now), stores.CmpIsNull(true)), //当天未执行的
-			RepeatType:  stores.CmpEq(scene.RepeatTypeAllDay),
+			RepeatType:  stores.CmpIn(repeatType...),
 		})
 	}
 	list, err := db.FindByFilters(l.ctx, triggerF, nil)

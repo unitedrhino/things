@@ -146,14 +146,18 @@ func (d *DateRange) IsHit(ctx context.Context, t time.Time, repo CheckRepo) bool
 		return true
 	case DateRangeTypeWorkDay, DateRangeTypeHoliday:
 		h, err := tools.GetHoliday(ctx, t)
-		if err != nil {
+		if err != nil { //避免接口不可用
 			logx.WithContext(ctx).Error(err)
-			return false
+			if t.Weekday() == time.Sunday || t.Weekday() == time.Saturday {
+				return d.Type == DateRangeTypeHoliday
+			} else {
+				return d.Type == DateRangeTypeWorkDay
+			}
 		}
 		if d.Type == DateRangeTypeWorkDay {
 			return h.Holiday == tools.HolidayWorkDay
 		} else {
-			return h.Holiday == tools.HolidayFestival
+			return h.Holiday == tools.HolidayFestival || h.Holiday == tools.HolidayWeekend
 		}
 	case DateRangeTypeWeekend:
 		weekday := time.Now().Weekday()
