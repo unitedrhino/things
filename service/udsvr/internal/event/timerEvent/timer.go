@@ -314,6 +314,7 @@ func (l *TimerHandle) SceneTiming() error {
 				//		return
 				//	}
 				//}
+				l.Infof("scene trigger do:%v,when not hit", utils.Fmt(do))
 				return
 			}
 
