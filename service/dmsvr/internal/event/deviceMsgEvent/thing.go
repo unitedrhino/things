@@ -250,17 +250,21 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 		if err != nil {
 			return err
 		}
-		err = l.svcCtx.PubApp.DeviceThingEventReport(l.ctx, application.EventReport{
-			Device:     devices.Core{ProductID: device.ProductID, DeviceName: device.DeviceName},
+		appMsg := application.EventReport{
+			Device:     device,
 			Timestamp:  dbData.TimeStamp.UnixMilli(),
 			Identifier: dbData.Identifier,
 			Params:     paramValues,
 			Type:       dbData.Type,
-		})
+		}
+		err = l.svcCtx.PubApp.DeviceThingEventReport(l.ctx, appMsg)
 		if err != nil {
 			l.Errorf("%s.DeviceThingEventReport  err:%v", utils.FuncName(), err)
 		}
-
+		err = l.svcCtx.WebHook.Publish(l.svcCtx.WithDeviceTenant(l.ctx, device), sysExport.CodeDmDeviceEventReport, appMsg)
+		if err != nil {
+			l.Error(err)
+		}
 		err = l.repo.InsertEventData(l.ctx, device.ProductID, device.DeviceName, &dbData)
 		if err != nil {
 			l.Errorf("%s.InsertEventData err=%+v", utils.FuncName(), err)
@@ -656,17 +660,21 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), err
 	}
-	err = l.svcCtx.PubApp.DeviceThingEventReport(l.ctx, application.EventReport{
+	appMsg := application.EventReport{
 		Device:     devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName},
 		Timestamp:  dbData.TimeStamp.UnixMilli(),
 		Identifier: dbData.Identifier,
 		Params:     paramValues,
 		Type:       dbData.Type,
-	})
+	}
+	err = l.svcCtx.PubApp.DeviceThingEventReport(l.ctx, appMsg)
 	if err != nil {
 		l.Errorf("%s.DeviceThingEventReport  err:%v", utils.FuncName(), err)
 	}
-
+	err = l.svcCtx.WebHook.Publish(l.svcCtx.WithDeviceTenant(l.ctx, appMsg.Device), sysExport.CodeDmDeviceEventReport, appMsg)
+	if err != nil {
+		l.Error(err)
+	}
 	err = l.repo.InsertEventData(l.ctx, msg.ProductID, msg.DeviceName, &dbData)
 	if err != nil {
 		l.Errorf("%s.InsertEventData err=%+v", utils.FuncName(), err)
