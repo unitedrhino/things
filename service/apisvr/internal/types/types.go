@@ -274,29 +274,29 @@ type DeviceInfo struct {
 	ProductID          string                             `json:"productID"`                 //产品id 只读
 	ProjectID          int64                              `json:"projectID,string,optional"` //项目id 只读
 	ProductName        string                             `json:"productName,optional,omitempty"`
-	DeviceType         int64                              `json:"deviceType,optional,omitempty"`                 //设备类型:1:设备,2:网关,3:子设备
-	ProductImg         string                             `json:"productImg,optional,omitempty"`                 //产品图片
-	AreaID             int64                              `json:"areaID,string,optional,omitempty"`              //项目区域id 只读
-	DeviceName         string                             `json:"deviceName"`                                    //设备名称 读写
-	DeviceAlias        *string                            `json:"deviceAlias,optional"`                          //设备别名 读写
-	Secret             string                             `json:"secret,optional,omitempty"`                     //设备秘钥 只读
-	Cert               string                             `json:"cert,optional,omitempty"`                       // 设备证书  只读
-	Imei               string                             `json:"imei,optional,omitempty"`                       // IMEI号信息 只读
-	Mac                string                             `json:"mac,optional,omitempty"`                        // MAC号信息 只读
-	CategoryID         int64                              `json:"categoryID,optional,omitempty"`                 //产品品类
-	Version            *string                            `json:"version,optional,omitempty"`                    // 固件版本  读写
-	HardInfo           string                             `json:"hardInfo,optional,omitempty"`                   // 模组硬件型号 只读
-	SoftInfo           string                             `json:"softInfo,optional,omitempty"`                   // 模组软件版本 只读
-	MobileOperator     int64                              `json:"mobileOperator,optional,range=[0:4],omitempty"` //移动运营商:1)移动 2)联通 3)电信 4)广电
-	Phone              *string                            `json:"phone,optional,omitempty"`                      //手机号
-	Iccid              *string                            `json:"iccid,optional,omitempty"`                      //SIM卡卡号
-	Position           *Point                             `json:"position,optional,omitempty"`                   //设备定位,默认百度坐标系
-	Address            *string                            `json:"address,optional,omitempty"`                    //所在地址
-	Adcode             *string                            `json:"adcode,optional,omitempty"`                     //地区编码
-	Tags               []*Tag                             `json:"tags,optional,omitempty"`                       // 设备tag
-	SchemaAlias        map[string]string                  `json:"schemaAlias,optional,omitempty"`                //设备物模型别名,如果是结构体类型则key为xxx.xxx
-	IsOnline           int64                              `json:"isOnline,optional,range=[0:2],omitempty"`       // 在线状态  1离线 2在线 只读
-	FirstLogin         int64                              `json:"firstLogin,optional,string,omitempty"`          //激活时间 只读
+	DeviceType         int64                              `json:"deviceType,optional,omitempty"`                  //设备类型:1:设备,2:网关,3:子设备
+	ProductImg         string                             `json:"productImg,optional,omitempty"`                  //产品图片
+	AreaID             int64                              `json:"areaID,string,optional,omitempty"`               //项目区域id 只读
+	DeviceName         string                             `json:"deviceName"`                                     //设备名称 读写
+	DeviceAlias        *string                            `json:"deviceAlias,optional"`                           //设备别名 读写
+	Secret             string                             `json:"secret,optional,omitempty"`                      //设备秘钥 只读
+	Cert               string                             `json:"cert,optional,omitempty"`                        // 设备证书  只读
+	Imei               string                             `json:"imei,optional,omitempty"`                        // IMEI号信息 只读
+	Mac                string                             `json:"mac,optional,omitempty"`                         // MAC号信息 只读
+	CategoryID         int64                              `json:"categoryID,optional,omitempty"`                  //产品品类
+	Version            *string                            `json:"version,optional,omitempty"`                     // 固件版本  读写
+	HardInfo           string                             `json:"hardInfo,optional,omitempty"`                    // 模组硬件型号 只读
+	SoftInfo           string                             `json:"softInfo,optional,omitempty"`                    // 模组软件版本 只读
+	MobileOperator     int64                              `json:"mobileOperator,optional,range=[0:10],omitempty"` //移动运营商:1)移动 2)联通 3)电信 4)广电
+	Phone              *string                            `json:"phone,optional,omitempty"`                       //手机号
+	Iccid              *string                            `json:"iccid,optional,omitempty"`                       //SIM卡卡号
+	Position           *Point                             `json:"position,optional,omitempty"`                    //设备定位,默认百度坐标系
+	Address            *string                            `json:"address,optional,omitempty"`                     //所在地址
+	Adcode             *string                            `json:"adcode,optional,omitempty"`                      //地区编码
+	Tags               []*Tag                             `json:"tags,optional,omitempty"`                        // 设备tag
+	SchemaAlias        map[string]string                  `json:"schemaAlias,optional,omitempty"`                 //设备物模型别名,如果是结构体类型则key为xxx.xxx
+	IsOnline           int64                              `json:"isOnline,optional,range=[0:2],omitempty"`        // 在线状态  1离线 2在线 只读
+	FirstLogin         int64                              `json:"firstLogin,optional,string,omitempty"`           //激活时间 只读
 	FirstBind          int64                              `json:"firstBind,optional,string,omitempty"`
 	LastBind           int64                              `json:"lastBind,optional,string,omitempty"`      //最后绑定时间 只读
 	LastLogin          int64                              `json:"lastLogin,optional,string,omitempty"`     //最后上线时间 只读

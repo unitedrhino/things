@@ -125,7 +125,7 @@ type (
         Version *string `json:"version,optional,omitempty"`                                         // 固件版本  读写
         HardInfo string `json:"hardInfo,optional,omitempty"`                                        // 模组硬件型号 只读
         SoftInfo string `json:"softInfo,optional,omitempty"`                                        // 模组软件版本 只读
-        MobileOperator int64    `json:"mobileOperator,optional,range=[0:4],omitempty"`                       //移动运营商:1)移动 2)联通 3)电信 4)广电
+        MobileOperator int64    `json:"mobileOperator,optional,range=[0:10],omitempty"`                       //移动运营商:1)移动 2)联通 3)电信 4)广电
         Phone          *string   `json:"phone,optional,omitempty"`                        //手机号
         Iccid          *string   `json:"iccid,optional,omitempty"`                        //SIM卡卡号
         Position *Point `json:"position,optional,omitempty"`                                        //设备定位,默认百度坐标系

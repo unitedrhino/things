@@ -7290,7 +7290,7 @@
           "type": "integer",
           "format": "int64",
           "description": "移动运营商:1)移动 2)联通 3)电信 4)广电",
-          "maximum": 4
+          "maximum": 10
         },
         "phone": {
           "type": "string",
