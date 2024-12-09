@@ -3,6 +3,7 @@ package devicemsglogic
 import (
 	"context"
 	"encoding/json"
+	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/domain/deviceMsg/msgThing"
@@ -11,6 +12,7 @@ import (
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"sync"
+	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -60,6 +62,15 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 	total = len(dataMap)
 	wait := sync.WaitGroup{}
 	mutex := sync.Mutex{}
+	var lastBind int64
+	uc := ctxs.GetUserCtxNoNil(l.ctx)
+	if !uc.IsAdmin {
+		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, dc)
+		if err != nil {
+			return nil, err
+		}
+		lastBind = di.LastBind
+	}
 	for k, v := range dataMap {
 		property := v
 		dataID := k
@@ -77,13 +88,17 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 					return
 				}
 				var diData dm.PropertyLogInfo
+				if data != nil && lastBind != 0 {
+					if data.TimeStamp.Before(time.Unix(lastBind, 0)) {
+						data = nil
+					}
+				}
 				if data == nil {
 					v, err := property.Define.GetDefaultValue()
 					if err != nil {
 						l.Errorf("%s.GetDefaultValue err=%v", utils.FuncName(), utils.Fmt(err))
 						return
 					}
-
 					diData = dm.PropertyLogInfo{
 						Timestamp: 0,
 						DataID:    dataID,
@@ -101,7 +116,6 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 						payload, _ = json.Marshal(data.Param)
 					}
 					diData.Value = string(payload)
-
 				}
 				mutex.Lock()
 				defer mutex.Unlock()
