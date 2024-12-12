@@ -83,14 +83,15 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 		}
 	}
 	dds, err := dd.GetPropertyDataByID(l.ctx, p, msgThing.FilterOpt{
-		Page:        page,
-		ProductID:   in.ProductID,
-		DeviceNames: in.DeviceNames,
-		Order:       in.Order,
-		DataID:      in.DataID,
-		Fill:        in.Fill,
-		Interval:    in.Interval,
-		ArgFunc:     in.ArgFunc})
+		Page:       page,
+		ProductID:  in.ProductID,
+		DeviceName: gd.DeviceName,
+		//DeviceNames: in.DeviceNames,
+		Order:    in.Order,
+		DataID:   in.DataID,
+		Fill:     in.Fill,
+		Interval: in.Interval,
+		ArgFunc:  in.ArgFunc})
 	if err != nil {
 		l.Errorf("%s.GetPropertyDataByID err=%v", utils.FuncName(), err)
 		return nil, err

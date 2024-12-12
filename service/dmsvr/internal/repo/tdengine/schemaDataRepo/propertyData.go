@@ -290,6 +290,9 @@ func (d *DeviceDataRepo) fillFilter(
 	if len(filter.DeviceNames) != 0 {
 		sql = sql.Where(fmt.Sprintf("device_name= (%v)", stores.ArrayToSql(filter.DeviceNames)))
 	}
+	if filter.DeviceName != "" {
+		sql = sql.Where("device_name=?", filter.DeviceName)
+	}
 	return sql
 }
 
