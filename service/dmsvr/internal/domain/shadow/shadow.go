@@ -16,6 +16,7 @@ const (
 	ControlOnlyCloud        = 3 //只修改云端的值,不记录日志
 	ControlOnlyCloudWithLog = 4 //只修改云端的值并记录操作日志
 	ControlNoLog            = 5 //只实时下发,不在线报错,且不记录日志
+	ControlOnlyCloudLatest  = 6 //只修改云端最新的值,不记录日志
 )
 
 const (

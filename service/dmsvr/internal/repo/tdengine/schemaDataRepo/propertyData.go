@@ -177,7 +177,8 @@ func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schem
 
 }
 
-func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Model, productID string, deviceName string, params map[string]msgThing.Param, timestamp time.Time, optional msgThing.Optional) error {
+func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Model, productID string, deviceName string,
+	params map[string]msgThing.Param, timestamp time.Time, optional msgThing.Optional) error {
 	var startTime = time.Now()
 	defer func() {
 		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).
@@ -193,7 +194,9 @@ func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Mod
 				"DeviceDataRepo.InsertPropertiesData.InsertPropertyData identifier:%v param:%v err:%v",
 				identifier, param, err)
 		}
-		d.t.AsyncInsert(sql1, args1...)
+		if !optional.OnlyCache {
+			d.t.AsyncInsert(sql1, args1...)
+		}
 	}
 	return nil
 }

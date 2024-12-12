@@ -118,7 +118,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 			})
 		}
 	}()
-	if utils.SliceIn(in.ShadowControl, shadow.ControlOnlyCloud, shadow.ControlOnlyCloudWithLog) {
+	if utils.SliceIn(in.ShadowControl, shadow.ControlOnlyCloud, shadow.ControlOnlyCloudLatest, shadow.ControlOnlyCloudWithLog) {
 		for k, v := range req.Params {
 			appMsg := application.PropertyReport{
 				Device: dev, Timestamp: time.Now().UnixMilli(),
@@ -143,9 +143,10 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 			})
 		}
 	}
-	if in.ShadowControl == shadow.ControlOnlyCloud {
+	if in.ShadowControl == shadow.ControlOnlyCloud || in.ShadowControl == shadow.ControlOnlyCloudLatest {
 		//插入多条设备物模型属性数据
-		err = l.svcCtx.SchemaManaRepo.InsertPropertiesData(l.ctx, l.model, in.ProductID, in.DeviceName, params, time.Now(), msgThing.Optional{})
+		err = l.svcCtx.SchemaManaRepo.InsertPropertiesData(l.ctx, l.model, in.ProductID, in.DeviceName, params, time.Now(),
+			msgThing.Optional{OnlyCache: in.ShadowControl == shadow.ControlOnlyCloudLatest})
 		if err != nil {
 			l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
 			return nil, err
