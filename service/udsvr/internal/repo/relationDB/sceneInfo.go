@@ -68,7 +68,7 @@ func (p SceneInfoRepo) fmtFilter(ctx context.Context, f SceneInfoFilter) *gorm.D
 
 		if f.DeviceMode == scene.DeviceModeMulti {
 			if f.DeviceFilterMode != 2 {
-				subQuery0 := p.db.Model(&UdSceneInfo{}).Select("scene_id").
+				subQuery0 := p.db.Model(&UdSceneInfo{}).Select("id").
 					Where("device_mode =? and area_id=?", f.DeviceMode, f.DeviceAreaID)
 				subQuery := p.db.Model(&UdSceneThenAction{}).Select("scene_id").
 					Where("device_select_type = ? and device_product_id = ? and device_device_name = ?",
