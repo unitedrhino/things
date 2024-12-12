@@ -37,7 +37,8 @@ type SceneInfoFilter struct {
 	DeviceMode       scene.DeviceMode //设备模式
 	ProductID        string           //产品id
 	DeviceName       string           //设备名
-	DeviceFilterMode int64            //设备过滤模式: 1,过滤触发或执行(默认) 2,过滤触发 3,过滤执行
+	DeviceAreaID     int64
+	DeviceFilterMode int64 //设备过滤模式: 1,过滤触发或执行(默认) 2,过滤触发 3,过滤执行
 
 	HasActionType string //过滤有某个执行类型
 	ProjectID     int64
@@ -67,10 +68,14 @@ func (p SceneInfoRepo) fmtFilter(ctx context.Context, f SceneInfoFilter) *gorm.D
 
 		if f.DeviceMode == scene.DeviceModeMulti {
 			if f.DeviceFilterMode != 2 {
+				subQuery0 := p.db.Model(&UdSceneInfo{}).Select("scene_id").
+					Where("device_mode =? and area_id=?", f.DeviceMode, f.HasActionType)
 				subQuery := p.db.Model(&UdSceneThenAction{}).Select("scene_id").
 					Where("device_select_type = ? and device_product_id = ? and device_device_name = ?",
-						scene.SelectDeviceFixed, f.ProductID, f.DeviceName).
-					Or("device_select_type = ?  and device_product_id = ?", scene.SelectorDeviceAll, f.ProductID)
+						scene.SelectDeviceFixed, f.ProductID, f.DeviceName)
+				subQuery = subQuery.Or("device_select_type = ?  and device_product_id = ? and (scene_id in (?) or device_area_id=?)",
+					subQuery0, f.DeviceAreaID, scene.SelectorDeviceAll, f.ProductID)
+
 				db = db.Where("id in (?)", subQuery)
 			}
 			if f.DeviceFilterMode != 3 {

@@ -5,8 +5,10 @@ import (
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/devices"
+	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/service/dmsvr/dmExport"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/repo/relationDB"
 
@@ -31,7 +33,21 @@ func NewSceneInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Sc
 }
 
 func (l *SceneInfoIndexLogic) SceneInfoIndex(in *ud.SceneInfoIndexReq) (*ud.SceneInfoIndexResp, error) {
+	var di *dm.DeviceInfo
+	var err error
+	if in.ProductID != "" && in.DeviceName != "" {
+		di, err = l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
+			ProductID:  in.ProductID,
+			DeviceName: in.DeviceName,
+		})
+		if err != nil {
+			return nil, err
+		}
+	}
 	if in.Tag == "deviceTiming" { //单设备定时
+		if di == nil {
+			return &ud.SceneInfoIndexResp{}, errors.Parameter.AddMsg("请填写设备")
+		}
 		uc := ctxs.GetUserCtx(l.ctx)
 		err := dmExport.AccessPerm(l.ctx, l.svcCtx.DeviceCache, l.svcCtx.UserShareCache, def.AuthRead, devices.Core{
 			ProductID:  in.ProductID,
@@ -40,13 +56,7 @@ func (l *SceneInfoIndexLogic) SceneInfoIndex(in *ud.SceneInfoIndexReq) (*ud.Scen
 		if err != nil {
 			return nil, err
 		}
-		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
-			ProductID:  in.ProductID,
-			DeviceName: in.DeviceName,
-		})
-		if err != nil {
-			return nil, err
-		}
+
 		if uc.ProjectID != di.ProjectID {
 			uc.ProjectID = di.ProjectID
 			uc.IsAdmin = true
@@ -54,6 +64,9 @@ func (l *SceneInfoIndexLogic) SceneInfoIndex(in *ud.SceneInfoIndexReq) (*ud.Scen
 	}
 	f := relationDB.SceneInfoFilter{AreaID: in.AreaID, IsCommon: in.IsCommon, Tag: in.Tag, Status: in.Status, Name: in.Name, DeviceMode: in.DeviceMode,
 		Type: in.Type, HasActionType: in.HasActionType, IDs: in.SceneIDs, ProductID: in.ProductID, DeviceName: in.DeviceName, DeviceFilterMode: in.DeviceFilterMode}
+	if di != nil {
+		f.DeviceAreaID = di.AreaID
+	}
 	list, err := relationDB.NewSceneInfoRepo(l.ctx).FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page).WithDefaultOrder(stores.OrderBy{
 		Field: "createdTime",
 		Sort:  stores.OrderDesc,
