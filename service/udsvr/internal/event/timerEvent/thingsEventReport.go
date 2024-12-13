@@ -56,6 +56,9 @@ func (l *TimerHandle) SceneThingEventReport(in application.EventReport) error {
 			relationDB.NewSceneIfTriggerRepo(l.ctx).Delete(l.ctx, po.ID)
 			continue
 		}
+		if po.SceneInfo.Status != def.True {
+			continue
+		}
 		po.SceneInfo.Triggers = append(po.SceneInfo.Triggers, po)
 		do := rulelogic.PoToSceneInfoDo(l.ctx, l.svcCtx, po.SceneInfo)
 		do.DeviceName = di.DeviceName

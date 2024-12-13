@@ -42,6 +42,9 @@ func (l *TimerHandle) DeviceTriggerCheck() error {
 			}
 			continue
 		}
+		if po.SceneInfo.Status != def.True {
+			continue
+		}
 		if v.Device.FirstTriggerTime.Time.Add(time.Duration(v.Device.StateKeep.Value) * time.Second).After(now) {
 			//没有到保持时间,忽略
 			continue
@@ -96,6 +99,9 @@ func (l *TimerHandle) SceneTimingTenMinutes() error {
 		if po.SceneInfo == nil {
 			logx.WithContext(l.ctx).Errorf("trigger weather not bind scene, trigger:%v", utils.Fmt(po))
 			relationDB.NewSceneIfTriggerRepo(l.ctx).Delete(l.ctx, po.ID)
+			continue
+		}
+		if po.SceneInfo.Status != def.True {
 			continue
 		}
 		po.SceneInfo.Triggers = append(po.SceneInfo.Triggers, po)
@@ -273,6 +279,9 @@ func (l *TimerHandle) SceneTiming() error {
 		if v.SceneInfo == nil {
 			db.Delete(l.ctx, v.ID)
 			l.Error(v)
+			continue
+		}
+		if v.SceneInfo.Status != def.True {
 			continue
 		}
 		var po = v
