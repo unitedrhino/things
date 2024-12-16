@@ -44,6 +44,11 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 		return nil, errors.Permissions.AddMsg("无权限")
 	}
 	diDB := relationDB.NewDeviceInfoRepo(l.ctx)
+	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, in.Device.ProductID)
+	if err != nil {
+		l.Error(err)
+		return nil, err
+	}
 	di, err := diDB.FindOneByFilter(ctxs.WithRoot(l.ctx), relationDB.DeviceFilter{
 		ProductID:   in.Device.ProductID,
 		DeviceNames: []string{in.Device.DeviceName},
@@ -60,11 +65,7 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 			if !errors.Cmp(err, errors.NotFind) {
 				return nil, err
 			}
-			pi, err := l.svcCtx.ProductCache.GetData(l.ctx, in.Device.ProductID)
-			if err != nil {
-				l.Error(err)
-				return nil, err
-			}
+
 			if !(pi.NetType == def.NetBle && pi.AutoRegister == def.AutoRegAuto) {
 				return nil, errors.NotFind
 			}
@@ -90,7 +91,7 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 	}
 	//di.ProjectID=1  di.AreaID=2   dpi.ProjectID=0
 	if !((di.TenantCode == def.TenantCodeDefault && di.ProjectID < 3) || int64(di.ProjectID) == uc.ProjectID ||
-		int64(di.ProjectID) == dpi.DefaultProjectID) { //如果在其他租户下 则已经被绑定 或 在本租户下,但是不在一个项目下也不允许绑定
+		int64(di.ProjectID) == dpi.DefaultProjectID) && !(pi.IsCanCoverBindDevice == def.True) { //如果在其他租户下 则已经被绑定 或 在本租户下,但是不在一个项目下也不允许绑定
 		//只有归属于default租户和自己租户的才可以
 		l.Infof("DeviceCantBound di:%v uc:%v", utils.Fmt(di), utils.Fmt(uc))
 		return nil, errors.DeviceCantBound.WithMsg("设备已被其他用户绑定。如需解绑，请按照相关流程操作。")
@@ -117,18 +118,18 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 		di.FirstBind = sql.NullTime{Time: time.Now(), Valid: true}
 	}
 	di.LastBind = sql.NullTime{Time: time.Now(), Valid: true}
-	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, di.ProductID)
+	pc, err := l.svcCtx.ProductCache.GetData(l.ctx, di.ProductID)
 	if err != nil && !errors.Cmp(err, errors.NotFind) {
 		l.Error(err)
 		return nil, err
 	}
-	if pi.TrialTime.GetValue() != 0 && !di.ExpTime.Valid {
+	if pc.TrialTime.GetValue() != 0 && !di.ExpTime.Valid {
 		di.ExpTime = sql.NullTime{
-			Time:  time.Now().Add(time.Hour * 24 * time.Duration(pi.TrialTime.GetValue())),
+			Time:  time.Now().Add(time.Hour * 24 * time.Duration(pc.TrialTime.GetValue())),
 			Valid: true,
 		}
 	}
-	if pi.NetType == def.NetBle { //蓝牙绑定了就是上线
+	if pc.NetType == def.NetBle { //蓝牙绑定了就是上线
 		di.IsOnline = def.True
 		di.Status = def.DeviceStatusOnline
 	}

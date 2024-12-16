@@ -212,6 +212,9 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 	if data.DeviceSchemaMode != 0 {
 		old.DeviceSchemaMode = data.DeviceSchemaMode
 	}
+	if data.IsCanCoverBindDevice != 0 {
+		old.IsCanCoverBindDevice = data.IsCanCoverBindDevice
+	}
 	return nil
 }
 
