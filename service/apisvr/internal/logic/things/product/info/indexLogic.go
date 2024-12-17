@@ -41,6 +41,7 @@ func (l *IndexLogic) Index(req *types.ProductInfoIndexReq) (resp *types.ProductI
 		SceneMode:    req.SceneMode,
 		Statuses:     req.Statuses,
 		Status:       req.Status,
+		NetType:      req.NetType,
 		SceneModes:   req.SceneModes,
 		ProjectID:    req.ProjectID,
 		AreaID:       req.AreaID,
