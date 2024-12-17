@@ -573,7 +573,7 @@ type DeviceMsgAbnormalLogIndexReq struct {
 	TimeEnd    int64     `json:"timeEnd,string,optional"`   //时间的结束(毫秒时间戳)
 	Page       *PageInfo `json:"page,optional"`             //分页信息
 	Type       string    `json:"type,optional"`             //异常类型
-	Action     bool      `json:"action,optional"`           //触发true 还是解除false
+	Action     int64     `json:"action,optional"`           //触发1 还是解除2
 }
 
 type DeviceMsgAbnormalLogIndexResp struct {
@@ -585,7 +585,7 @@ type DeviceMsgAbnormalLogInfo struct {
 	Timestamp  int64  `json:"timestamp,string,optional"` //发生时间戳(毫秒时间戳)
 	ProductID  string `json:"productID,optional"`        //
 	DeviceName string `json:"deviceName,optional"`       //
-	Action     bool   `json:"action,optional"`           //触发true 还是解除false
+	Action     int64  `json:"action,optional"`           //触发1 还是解除2
 	Type       string `json:"type,optional"`             //异常类型
 	TraceID    string `json:"traceID,optional"`          //服务器端事务id
 	Reason     string `json:"reason,optional"`           //原因

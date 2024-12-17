@@ -11,7 +11,7 @@ type (
 	Abnormal struct {
 		ProductID  string    `json:"productID,omitempty"`  // 产品id
 		DeviceName string    `json:"deviceName,omitempty"` // 设备名称
-		Action     bool      `json:"action,omitempty"`     //触发1还是解除2
+		Action     int64     `json:"action,omitempty"`     //触发1还是解除2
 		Type       string    `json:"type,omitempty"`       // 异常类型
 		Timestamp  time.Time `json:"timestamp"`            // 操作时间
 		TraceID    string    `json:"traceID,omitempty"`    // 服务器端事务id
@@ -20,7 +20,7 @@ type (
 	AbnormalFilter struct {
 		ProductID  string // 产品id
 		DeviceName string // 设备名称
-		Action     bool
+		Action     int64
 		Type       string `json:"type,omitempty"` // 异常类型
 		Reason     string
 	}

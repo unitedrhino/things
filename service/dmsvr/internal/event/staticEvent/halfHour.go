@@ -189,7 +189,7 @@ func (l *HalfHourHandle) DeviceAbnormalRecover() error { //设备上下线异常
 			l.svcCtx.AbnormalRepo.Insert(l.ctx, &deviceLog.Abnormal{
 				ProductID:  v.ProductID,
 				DeviceName: v.DeviceName,
-				Action:     false,
+				Action:     def.False,
 				Type:       "online", //上下线异常
 				Timestamp:  time.Now(),
 				Reason:     "设备异常上下线恢复",
@@ -242,7 +242,7 @@ func (l *HalfHourHandle) DeviceAbnormalSet() error { //设备上下线异常设�
 			l.svcCtx.AbnormalRepo.Insert(l.ctx, &deviceLog.Abnormal{
 				ProductID:  v.ProductID,
 				DeviceName: v.DeviceName,
-				Action:     true,
+				Action:     def.True,
 				Type:       "online", //上下线异常
 				Timestamp:  time.Now(),
 				Reason:     "设备异常频繁上下线",

@@ -821,7 +821,7 @@ message AbnormalLogIndexReq{
   int64   timeEnd = 4;//时间的结束(毫秒时间戳)
   PageInfo   page = 5;//分页信息
   int64 userID = 9;
-  bool action =10;
+  int64 action =10;
   string type =11;//异常类型
   int64 resultCode = 12;//请求结果状态,200为成功
 }
@@ -835,7 +835,7 @@ message AbnormalLogIndexResp{
 /*设备的日志数据*/
 message AbnormalLogInfo{
   int64 timestamp = 1;//发生时间戳(毫秒时间戳)
-  bool action = 2;//触发1还是解除2
+  int64 action = 2;//触发1还是解除2
   string type = 4;//异常类型
   string productID = 5;//
   string deviceName = 6;//

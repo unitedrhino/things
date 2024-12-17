@@ -20,6 +20,15 @@ func (s *AbnormalLogRepo) fillFilter(sql sq.SelectBuilder, filter deviceLog.Abno
 	if len(filter.DeviceName) != 0 {
 		sql = sql.Where("`device_name`=?", filter.DeviceName)
 	}
+	if filter.Action != 0 {
+		sql = sql.Where("`action`=?", def.ToBool(filter.Action))
+	}
+	if filter.Type != "" {
+		sql = sql.Where("`type`=?", filter.Type)
+	}
+	if filter.Reason != "" {
+		sql = sql.Where("`reason`=?", filter.Reason)
+	}
 	return sql
 }
 
@@ -32,9 +41,6 @@ func (s *AbnormalLogRepo) GetCountLog(ctx context.Context, filter deviceLog.Abno
 		return 0, err
 	}
 	row := s.t.QueryRowContext(ctx, sqlStr, value...)
-	if err != nil {
-		return 0, err
-	}
 	var (
 		total int64
 	)
@@ -75,6 +81,6 @@ func (s *AbnormalLogRepo) Insert(ctx context.Context, data *deviceLog.Abnormal) 
 	data.TraceID = utils.TraceIdFromContext(ctx)
 	sql := fmt.Sprintf("  %s using %s tags('%s','%s')(`ts`, `type`,`reason` ,`action`  ,`trace_id` ) values (?,?,?,?,?) ",
 		s.GetLogTableName(data.ProductID, data.DeviceName), s.GetLogStableName(), data.ProductID, data.DeviceName)
-	s.t.AsyncInsert(sql, data.Timestamp, data.Type, data.Reason, data.Action, data.TraceID)
+	s.t.AsyncInsert(sql, data.Timestamp, data.Type, data.Reason, def.ToBool(data.Action), data.TraceID)
 	return nil
 }

@@ -8429,9 +8429,9 @@
           "description": "异常类型"
         },
         "action": {
-          "type": "boolean",
-          "format": "boolean",
-          "description": "触发true 还是解除false"
+          "type": "integer",
+          "format": "int64",
+          "description": "触发1 还是解除2"
         }
       },
       "title": "DeviceMsgAbnormalLogIndexReq"
@@ -8472,9 +8472,9 @@
           "type": "string"
         },
         "action": {
-          "type": "boolean",
-          "format": "boolean",
-          "description": "触发true 还是解除false"
+          "type": "integer",
+          "format": "int64",
+          "description": "触发1 还是解除2"
         },
         "type": {
           "type": "string",
