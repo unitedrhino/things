@@ -112,7 +112,7 @@ type (
         ProductID string `json:"productID"`                                               //产品id 只读
         ProjectID int64 `json:"projectID,string,optional"`                                               //项目id 只读
         ProductName string `json:"productName,optional,omitempty"`
-        DeviceType int64    `json:"deviceType,optional,omitempty"`//设备类型:1:设备,2:网关,3:子设备
+        DeviceType int64    `json:"deviceType,optional,omitempty"`//设备类型:1:直连设备,2:网关,3:子设备,4:监控设备
         ProductImg string `json:"productImg,optional,omitempty"`                        //产品图片
         AreaID int64 `json:"areaID,string,optional,omitempty"`                                                     //项目区域id 只读
         DeviceName string `json:"deviceName"`                                             //设备名称 读写

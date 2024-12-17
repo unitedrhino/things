@@ -63,7 +63,7 @@ type (
         ProductImg string `json:"productImg,optional"`                        //产品图片
         IsUpdateProductImg bool `json:"isUpdateProductImg,omitempty,optional"` //只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
         AuthMode int64 `json:"authMode,optional,range=[0:2]"`                                         //认证方式:1:账密认证,2:秘钥认证
-        DeviceType int64 `json:"deviceType,optional,range=[0:3]"`
+        DeviceType int64 `json:"deviceType,optional,range=[0:4]"`//设备类型:1:直连设备,2:网关,3:子设备,4:监控设备
         DeviceSchemaMode int64 `json:"deviceSchemaMode,optional,range=[0:4]"`// 设备物模型模式:1:手动创建,2:设备自动创建 3: 设备自动创建及上报无定义自动创建 4: 设备自动创建及上报无定义自动创建(数字类型只使用浮点)
         CategoryID int64 `json:"categoryID,optional"`                                     //产品品类
         NetType int64 `json:"netType,optional,range=[0:8]"`                                           //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网

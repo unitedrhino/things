@@ -7235,7 +7235,7 @@
         "deviceType": {
           "type": "integer",
           "format": "int64",
-          "description": "设备类型:1:设备,2:网关,3:子设备"
+          "description": "设备类型:1:直连设备,2:网关,3:子设备,4:监控设备"
         },
         "productImg": {
           "type": "string",
@@ -11422,7 +11422,8 @@
         "deviceType": {
           "type": "integer",
           "format": "int64",
-          "maximum": 3
+          "description": "设备类型:1:直连设备,2:网关,3:子设备,4:监控设备",
+          "maximum": 4
         },
         "deviceSchemaMode": {
           "type": "integer",
