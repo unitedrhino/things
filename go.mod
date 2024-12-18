@@ -7,7 +7,7 @@ go 1.21.4
 
 require (
 	gitee.com/unitedrhino/core v1.1.3
-	gitee.com/unitedrhino/share v1.1.9
+	gitee.com/unitedrhino/share v1.1.12
 	gitee.com/unitedrhino/squirrel v1.20.5
 	github.com/dgraph-io/ristretto v0.1.0
 	github.com/dop251/goja v0.0.0-20231024180952-594410467bc6
@@ -130,6 +130,7 @@ require (
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/nicksnyder/go-i18n/v2 v2.4.0 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
+	github.com/open-dingtalk/dingtalk-stream-sdk-go v0.9.0 // indirect
 	github.com/openzipkin/zipkin-go v0.4.3 // indirect
 	github.com/parnurzeal/gorequest v0.3.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.2 // indirect

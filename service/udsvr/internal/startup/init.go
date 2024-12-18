@@ -33,9 +33,9 @@ func Init(svcCtx *svc.ServiceContext) {
 }
 
 func InitEventBus(svcCtx *svc.ServiceContext) {
-	err := svcCtx.FastEvent.QueueSubscribe(eventBus.SysProjectInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
+	err := svcCtx.FastEvent.QueueSubscribe(eventBus.CoreProjectInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
 		pi := cast.ToInt64(string(body))
-		logx.WithContext(ctx).Infof("SysProjectInfoDelete value:%v ")
+		logx.WithContext(ctx).Infof("CoreProjectInfoDelete value:%v ")
 		return sceneChangeEvent.NewHandle(ctx, svcCtx).SceneProjectDelete(pi)
 	})
 	logx.Must(err)
@@ -148,9 +148,9 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 	logx.Must(err)
 
 	{
-		err = svcCtx.FastEvent.QueueSubscribe(eventBus.SysCoreOpsWorkOrderFinish, func(ctx context.Context, t time.Time, body []byte) error {
+		err = svcCtx.FastEvent.QueueSubscribe(eventBus.CoreOpsWorkOrderFinish, func(ctx context.Context, t time.Time, body []byte) error {
 			pi := cast.ToInt64(string(body))
-			logx.WithContext(ctx).Infof("SysCoreOpsWorkOrderFinish value:%v err:%v", string(body), err)
+			logx.WithContext(ctx).Infof("CoreOpsWorkOrderFinish value:%v err:%v", string(body), err)
 			if pi == 0 {
 				return nil
 			}

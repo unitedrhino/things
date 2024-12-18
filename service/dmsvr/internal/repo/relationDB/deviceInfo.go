@@ -27,6 +27,7 @@ type (
 		DeviceName         string
 		DeviceNames        []string
 		Tags               map[string]string
+		TagsLike           map[string]string
 		LastLoginTime      *def.TimeRange
 		IsOnline           int64
 		Status             def.DeviceStatus
@@ -164,6 +165,11 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 		for k, v := range f.Tags {
 			db = db.Where("JSON_CONTAINS(tags, JSON_OBJECT(?,?))",
 				k, v)
+		}
+	}
+	if f.TagsLike != nil {
+		for k, v := range f.TagsLike {
+			db = db.Where(fmt.Sprintf("JSON_SEARCH(tags, 'all', '%s', NULL, '$.\"%s\"') IS NOT NULL", "%"+v+"%", k))
 		}
 	}
 	if f.LastLoginTime != nil {

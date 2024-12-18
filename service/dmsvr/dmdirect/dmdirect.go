@@ -6,6 +6,8 @@ import (
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/config"
 	devicegroup "gitee.com/unitedrhino/things/service/dmsvr/internal/server/devicegroup"
+	userdevice "gitee.com/unitedrhino/things/service/dmsvr/internal/server/userdevice"
+
 	deviceinteract "gitee.com/unitedrhino/things/service/dmsvr/internal/server/deviceinteract"
 	devicemanage "gitee.com/unitedrhino/things/service/dmsvr/internal/server/devicemanage"
 	devicemsg "gitee.com/unitedrhino/things/service/dmsvr/internal/server/devicemsg"
@@ -60,7 +62,7 @@ func Run(svcCtx *svc.ServiceContext) {
 		dm.RegisterDeviceInteractServer(grpcServer, deviceinteract.NewDeviceInteractServer(svcCtx))
 		dm.RegisterDeviceMsgServer(grpcServer, devicemsg.NewDeviceMsgServer(svcCtx))
 		dm.RegisterOtaManageServer(grpcServer, otamanage.NewOtaManageServer(svcCtx))
-
+		dm.RegisterUserDeviceServer(grpcServer, userdevice.NewUserDeviceServer(svcCtx))
 		//if c.Mode == service.DevMode || c.Mode == service.TestMode {
 		reflection.Register(grpcServer)
 		//}

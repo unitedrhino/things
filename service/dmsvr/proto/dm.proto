@@ -1340,6 +1340,7 @@ message DeviceInfoIndexReq{
   string deviceName = 3;//过滤条件:模糊查询 设备名
   repeated string deviceNames = 4;//过滤条件:精准查询 设备名
   map<string, string> tags = 5;//key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
+  map<string, string> tagsLike = 46;//key tag过滤查询,模糊查询 为tag的名,value为tag对应的值
   int64 range = 6; //过滤条件:取距离坐标点固定范围内的设备
   Point Position = 7;   //设备定位,默认百度坐标系
   repeated int64 areaIDs = 8;//区域ids

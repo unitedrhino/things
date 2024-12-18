@@ -316,9 +316,9 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		return nil
 	})
 	logx.Must(err)
-	err = svcCtx.FastEvent.QueueSubscribe(eventBus.SysProjectInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
+	err = svcCtx.FastEvent.QueueSubscribe(eventBus.CoreProjectInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
 		pi := cast.ToInt64(string(body))
-		logx.WithContext(ctx).Infof("SysProjectInfoDelete value:%v err:%v", string(body), err)
+		logx.WithContext(ctx).Infof("CoreProjectInfoDelete value:%v err:%v", string(body), err)
 		if pi == 0 {
 			return nil
 		}
@@ -340,13 +340,13 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		return nil
 	})
 	logx.Must(err)
-	err = svcCtx.FastEvent.QueueSubscribe(eventBus.SysAreaInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
+	err = svcCtx.FastEvent.QueueSubscribe(eventBus.CoreAreaInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
 		var value application.IDs
 		err := json.Unmarshal(body, &value)
 		if err != nil {
 			return err
 		}
-		logx.WithContext(ctx).Infof("SysAreaInfoDelete value:%v err:%v", utils.Fmt(value), err)
+		logx.WithContext(ctx).Infof("CoreAreaInfoDelete value:%v err:%v", utils.Fmt(value), err)
 		if len(value.IDs) == 0 {
 			return nil
 		}
