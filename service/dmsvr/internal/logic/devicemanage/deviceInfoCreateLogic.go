@@ -2,6 +2,7 @@ package devicemanagelogic
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
@@ -17,6 +18,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.uber.org/atomic"
 	"regexp"
+	"time"
 )
 
 type DeviceInfoCreateLogic struct {
@@ -209,6 +211,13 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 		}
 		if in.IsOnline != 0 {
 			di.IsOnline = in.IsOnline
+			di.Status = di.IsOnline + 1
+			if di.IsOnline == def.True {
+				di.FirstLogin = sql.NullTime{
+					Time:  time.Now(),
+					Valid: true,
+				}
+			}
 		}
 	}
 

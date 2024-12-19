@@ -165,11 +165,11 @@ func (l *MultiUpdateImportLogic) MultiUpdateImport(rows [][]string) (*types.Devi
 		if f == nil {
 			d := dictMap[tt]
 			if d == "" {
-				return nil, errors.Parameter.AddMsgf("不支持的列名:%v", t)
+				continue
 			}
 			f = getHandle(d)
 			if f == nil {
-				return nil, errors.Parameter.AddMsgf("不支持的列名:%v", t)
+				continue
 			}
 		}
 		handle[i] = f
@@ -182,10 +182,16 @@ func (l *MultiUpdateImportLogic) MultiUpdateImport(rows [][]string) (*types.Devi
 	for _, v := range rows[1:] {
 		var col updateImport
 		for i, value := range v {
+			if i >= len(handle) || handle[i] == nil {
+				continue
+			}
 			err := handle[i](&col, value)
 			if err != nil {
-				return nil, err
+				continue
 			}
+		}
+		if col.ProductID == "" && col.DeviceName == "" {
+			continue
 		}
 		err = col.Validate()
 		if err != nil {
