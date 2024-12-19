@@ -282,7 +282,7 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 
 		switch f.SharedType {
 		case def.SelectTypeOnly: //直接过滤这几个设备
-			db = db.WithContext(ctxs.WithAllProject(ctx)).Where("(product_id, device_name)  in (?)",
+			db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where("(product_id, device_name)  in (?)",
 				subQuery)
 		case def.SelectTypeAll: //同时获取普通设备
 			pids, err := stores.GetProjectAuthIDs(ctx)
