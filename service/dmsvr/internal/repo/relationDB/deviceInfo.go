@@ -291,7 +291,17 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 				return db
 			}
 			if len(pids) != 0 {
-				db = db.WithContext(ctxs.WithAllProject(ctx)).Where("project_id in ? or (product_id, device_name)  in (?)", pids, subQuery)
+				or := d.db
+				or = or.Or("(product_id, device_name)  in (?)", subQuery)
+				areaIDs, er1 := stores.GetAreaAuthIDs(ctx)
+				areaIDPaths, er2 := stores.GetAreaAuthIDPaths(ctx)
+				if (er1 == nil || er2 == nil) && (areaIDPaths != nil || areaIDs != nil) {
+					or = or.Or("(area_id in ? or area_id_path in ?) and project_id in ?", areaIDs, areaIDPaths, pids)
+				}
+				db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where(or)
+			} else {
+				db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where("(product_id, device_name)  in (?)",
+					subQuery)
 			}
 		}
 	}
