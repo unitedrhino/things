@@ -290,7 +290,7 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 				db.AddError(err)
 				return db
 			}
-			if len(pids) != 0 {
+			if pids != nil {
 				or := d.db
 				or = or.Or("(product_id, device_name)  in (?)", subQuery)
 				areaIDs, er1 := stores.GetAreaAuthIDs(ctx)
@@ -299,7 +299,7 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 					or = or.Or("(area_id in ? or area_id_path in ?) and project_id in ?", areaIDs, areaIDPaths, pids)
 				}
 				db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where(or)
-			} else {
+			} else if !uc.IsAdmin {
 				db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where("(product_id, device_name)  in (?)",
 					subQuery)
 			}
