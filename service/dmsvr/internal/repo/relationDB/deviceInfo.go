@@ -293,6 +293,9 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 					or := d.db
 					or = or.Or("(product_id, device_name)  in (?)", subQuery)
 					pa := uc.ProjectAuth[uc.ProjectID]
+					if pa == nil && uc.IsAdmin {
+						pa = &ctxs.ProjectAuth{AuthType: def.AuthAdmin}
+					}
 					if pa == nil {
 						db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where("(product_id, device_name)  in (?)",
 							subQuery)
