@@ -285,23 +285,32 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 			db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where("(product_id, device_name)  in (?)",
 				subQuery)
 		case def.SelectTypeAll: //同时获取普通设备
-			pids, err := stores.GetProjectAuthIDs(ctx)
-			if err != nil {
-				db.AddError(err)
-				return db
-			}
-			if pids != nil {
-				or := d.db
-				or = or.Or("(product_id, device_name)  in (?)", subQuery)
-				areaIDs, er1 := stores.GetAreaAuthIDs(ctx)
-				areaIDPaths, er2 := stores.GetAreaAuthIDPaths(ctx)
-				if (er1 == nil || er2 == nil) && (areaIDPaths != nil || areaIDs != nil) {
-					or = or.Or("(area_id in ? or area_id_path in ?) and project_id in ?", areaIDs, areaIDPaths, pids)
+			if !(uc.IsAdmin && uc.ProjectID <= def.NotClassified) {
+				if uc.ProjectID <= def.NotClassified { //如果不是管理员又没有传项目ID,则只获取分享的设备
+					db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where("(product_id, device_name)  in (?)",
+						subQuery)
+				} else { //如果传了项目ID,则判断项目的权限
+					or := d.db
+					or = or.Or("(product_id, device_name)  in (?)", subQuery)
+					pa := uc.ProjectAuth[uc.ProjectID]
+					if pa == nil {
+						db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where("(product_id, device_name)  in (?)",
+							subQuery)
+					} else {
+						if pa.AuthType < def.AuthRead {
+							or = or.Or("project_id = ?", uc.ProjectID)
+							db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where(or)
+						} else { //如果是读权限,还需要过滤区域
+							areaIDs, er1 := stores.GetAreaAuthIDs(ctx)
+							areaIDPaths, er2 := stores.GetAreaAuthIDPaths(ctx)
+							if (er1 == nil || er2 == nil) && (areaIDPaths != nil || areaIDs != nil) {
+								or = or.Or("(area_id in ? or area_id_path in ?) and project_id = ?", areaIDs, areaIDPaths, uc.ProjectID)
+							}
+							db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where(or)
+						}
+					}
+
 				}
-				db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where(or)
-			} else if !uc.IsAdmin {
-				db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where("(product_id, device_name)  in (?)",
-					subQuery)
 			}
 		}
 	}
