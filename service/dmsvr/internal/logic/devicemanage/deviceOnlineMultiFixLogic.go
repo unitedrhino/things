@@ -107,6 +107,7 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 			ProductID:  ld.ProductID,
 			DeviceName: ld.DeviceName,
 		}
+		var needPush bool
 		di, err := svcCtx.DeviceCache.GetData(ctx, dev)
 		if err != nil {
 			log.Error(err)
@@ -126,7 +127,9 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 			if err != nil {
 				log.Error(err)
 			}
-
+			if di.IsOnline != def.True {
+				needPush = true
+			}
 			err = svcCtx.PubApp.DeviceStatusConnected(ctx, appMsg)
 			if err != nil {
 				log.Errorf("%s.pubApp productID:%v deviceName:%v err:%v",
@@ -148,10 +151,8 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 					}
 				}
 				OffLineDevices = append(OffLineDevices, &dev)
-				err = svcCtx.PubApp.DeviceStatusDisConnected(ctx, appMsg)
-				if err != nil {
-					log.Errorf("%s.pubApp productID:%v deviceName:%v err:%v",
-						utils.FuncName(), ld.ProductID, ld.DeviceName, err)
+				if di.IsOnline == def.True {
+					needPush = true
 				}
 				protocol.DeleteDeviceActivity(ctx, dev)
 			}
@@ -166,18 +167,26 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 			log.Errorf("%s.HubLogRepo.insert productID:%v deviceName:%v err:%v",
 				utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 		}
-		err = svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDeviceConn, appMsg, map[string]any{
-			"productID":  ld.ProductID,
-			"deviceName": ld.DeviceName,
-		}, map[string]any{
-			"projectID": di.ProjectID,
-		}, map[string]any{
-			"projectID": cast.ToString(di.ProjectID),
-			"areaID":    cast.ToString(di.AreaID),
-		})
-		if err != nil {
-			log.Error(err)
+		if needPush {
+			err = svcCtx.PubApp.DeviceStatusDisConnected(ctx, appMsg)
+			if err != nil {
+				log.Errorf("%s.pubApp productID:%v deviceName:%v err:%v",
+					utils.FuncName(), ld.ProductID, ld.DeviceName, err)
+			}
+			err = svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDeviceConn, appMsg, map[string]any{
+				"productID":  ld.ProductID,
+				"deviceName": ld.DeviceName,
+			}, map[string]any{
+				"projectID": di.ProjectID,
+			}, map[string]any{
+				"projectID": cast.ToString(di.ProjectID),
+				"areaID":    cast.ToString(di.AreaID),
+			})
+			if err != nil {
+				log.Error(err)
+			}
 		}
+
 	}
 	for _, msg := range insertList {
 		handleMsg(msg)
