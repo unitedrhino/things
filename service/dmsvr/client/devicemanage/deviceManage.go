@@ -40,6 +40,7 @@ type (
 	DeviceGatewayMultiCreateReq       = dm.DeviceGatewayMultiCreateReq
 	DeviceGatewayMultiSaveReq         = dm.DeviceGatewayMultiSaveReq
 	DeviceGatewaySign                 = dm.DeviceGatewaySign
+	DeviceGroupMultiSaveReq           = dm.DeviceGroupMultiSaveReq
 	DeviceInfo                        = dm.DeviceInfo
 	DeviceInfoBindReq                 = dm.DeviceInfoBindReq
 	DeviceInfoCanBindReq              = dm.DeviceInfoCanBindReq
@@ -274,6 +275,12 @@ type (
 		// 获取设备物模型列表
 		DeviceSchemaIndex(ctx context.Context, in *DeviceSchemaIndexReq, opts ...grpc.CallOption) (*DeviceSchemaIndexResp, error)
 		DeviceSchemaTslRead(ctx context.Context, in *DeviceSchemaTslReadReq, opts ...grpc.CallOption) (*DeviceSchemaTslReadResp, error)
+		// 将设备加到多个分组中
+		DeviceGroupMultiCreate(ctx context.Context, in *DeviceGroupMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
+		// 更新设备所在分组
+		DeviceGroupMultiUpdate(ctx context.Context, in *DeviceGroupMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
+		// 删除设备所在分组
+		DeviceGroupMultiDelete(ctx context.Context, in *DeviceGroupMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
 	}
 
 	defaultDeviceManage struct {
@@ -639,4 +646,37 @@ func (m *defaultDeviceManage) DeviceSchemaTslRead(ctx context.Context, in *Devic
 
 func (d *directDeviceManage) DeviceSchemaTslRead(ctx context.Context, in *DeviceSchemaTslReadReq, opts ...grpc.CallOption) (*DeviceSchemaTslReadResp, error) {
 	return d.svr.DeviceSchemaTslRead(ctx, in)
+}
+
+// 将设备加到多个分组中
+func (m *defaultDeviceManage) DeviceGroupMultiCreate(ctx context.Context, in *DeviceGroupMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceGroupMultiCreate(ctx, in, opts...)
+}
+
+// 将设备加到多个分组中
+func (d *directDeviceManage) DeviceGroupMultiCreate(ctx context.Context, in *DeviceGroupMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.DeviceGroupMultiCreate(ctx, in)
+}
+
+// 更新设备所在分组
+func (m *defaultDeviceManage) DeviceGroupMultiUpdate(ctx context.Context, in *DeviceGroupMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceGroupMultiUpdate(ctx, in, opts...)
+}
+
+// 更新设备所在分组
+func (d *directDeviceManage) DeviceGroupMultiUpdate(ctx context.Context, in *DeviceGroupMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.DeviceGroupMultiUpdate(ctx, in)
+}
+
+// 删除设备所在分组
+func (m *defaultDeviceManage) DeviceGroupMultiDelete(ctx context.Context, in *DeviceGroupMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceGroupMultiDelete(ctx, in, opts...)
+}
+
+// 删除设备所在分组
+func (d *directDeviceManage) DeviceGroupMultiDelete(ctx context.Context, in *DeviceGroupMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.DeviceGroupMultiDelete(ctx, in)
 }

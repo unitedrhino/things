@@ -128,6 +128,13 @@ service DeviceManage {
   rpc deviceSchemaIndex(DeviceSchemaIndexReq)     returns (DeviceSchemaIndexResp);
   rpc deviceSchemaTslRead(DeviceSchemaTslReadReq)     returns (DeviceSchemaTslReadResp);
 
+
+  //将设备加到多个分组中
+  rpc deviceGroupMultiCreate(DeviceGroupMultiSaveReq)     returns (Empty);
+  //更新设备所在分组
+  rpc deviceGroupMultiUpdate(DeviceGroupMultiSaveReq)     returns (Empty);
+  //删除设备所在分组
+  rpc deviceGroupMultiDelete(DeviceGroupMultiSaveReq)     returns (Empty);
 }
 
 //产品管理
@@ -1609,6 +1616,16 @@ message DeviceSchemaTslReadReq{
 message DeviceSchemaTslReadResp{
   string   tsl = 1;//物模型tsl
 }
+
+
+message DeviceGroupMultiSaveReq{
+  string   productID = 1; //产品id
+  string deviceName =2;//设备ID 必填
+  repeated int64 groupIDs = 3;
+  string purpose =4;
+}
+
+
 
 
 message DeviceProfile{

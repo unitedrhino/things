@@ -70,6 +70,16 @@
         {
           "accessCode": "thingsDeviceGroupAdd",
           "method": "POST",
+          "route": "/api/v1/things/device/group/multi-create",
+          "name": "将设备加到多个分组中",
+          "isNeedAuth": 2,
+          "businessType": "add",
+          "desc": "",
+          "authType": "all"
+        },
+        {
+          "accessCode": "thingsDeviceGroupAdd",
+          "method": "POST",
           "route": "/api/v1/things/group/info/create",
           "name": "创建分组",
           "isNeedAuth": 2,
@@ -87,6 +97,16 @@
       "isNeedAuth": 2,
       "desc": "",
       "apis": [
+        {
+          "accessCode": "thingsDeviceGroupDelete",
+          "method": "POST",
+          "route": "/api/v1/things/device/group/multi-delete",
+          "name": "删除设备所在分组",
+          "isNeedAuth": 2,
+          "businessType": "delete",
+          "desc": "",
+          "authType": "all"
+        },
         {
           "accessCode": "thingsDeviceGroupDelete",
           "method": "POST",
@@ -137,6 +157,16 @@
       "isNeedAuth": 2,
       "desc": "",
       "apis": [
+        {
+          "accessCode": "thingsDeviceGroupModify",
+          "method": "POST",
+          "route": "/api/v1/things/device/group/multi-update",
+          "name": "更新设备所在分组",
+          "isNeedAuth": 2,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "all"
+        },
         {
           "accessCode": "thingsDeviceGroupModify",
           "method": "POST",

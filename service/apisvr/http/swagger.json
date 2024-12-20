@@ -460,6 +460,123 @@
         ]
       }
     },
+    "/api/v1/things/device/group/multi-create": {
+      "post": {
+        "summary": "将设备加到多个分组中",
+        "operationId": "postApiV1ThingsDeviceGroupMulti-create",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceGroupMultiSaveReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/group",
+          "thingsDeviceGroup"
+        ]
+      }
+    },
+    "/api/v1/things/device/group/multi-delete": {
+      "post": {
+        "summary": "删除设备所在分组",
+        "operationId": "postApiV1ThingsDeviceGroupMulti-delete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceGroupMultiSaveReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/group",
+          "thingsDeviceGroup"
+        ]
+      }
+    },
+    "/api/v1/things/device/group/multi-update": {
+      "post": {
+        "summary": "更新设备所在分组",
+        "operationId": "postApiV1ThingsDeviceGroupMulti-update",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceGroupMultiSaveReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/group",
+          "thingsDeviceGroup"
+        ]
+      }
+    },
     "/api/v1/things/device/info/bind": {
       "post": {
         "summary": "绑定",
@@ -7209,6 +7326,35 @@
       "required": [
         "gateWayProductID",
         "gateWaydeviceName"
+      ]
+    },
+    "DeviceGroupMultiSaveReq": {
+      "type": "object",
+      "properties": {
+        "productID": {
+          "type": "string",
+          "description": "产品id"
+        },
+        "deviceName": {
+          "type": "string",
+          "description": "设备名称"
+        },
+        "purpose": {
+          "type": "string",
+          "description": "用途 不填默认为default"
+        },
+        "groupIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "DeviceGroupMultiSaveReq",
+      "required": [
+        "productID",
+        "deviceName",
+        "groupIDs"
       ]
     },
     "DeviceInfo": {

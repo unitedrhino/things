@@ -268,6 +268,13 @@ type DeviceGateWayMultiDeleteReq struct {
 	List              []*DeviceCore `json:"list,optional"`     //分组tag
 }
 
+type DeviceGroupMultiSaveReq struct {
+	ProductID  string  `json:"productID"`        //产品id
+	DeviceName string  `json:"deviceName"`       //设备名称
+	Purpose    string  `json:"purpose,optional"` //用途 不填默认为default
+	GroupIDs   []int64 `json:"groupIDs,string"`
+}
+
 type DeviceInfo struct {
 	ID                 int64                              `json:"id,optional,omitempty"`
 	TenantCode         string                             `json:"tenantCode,optional,omitempty"`

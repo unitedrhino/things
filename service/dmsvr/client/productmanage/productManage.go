@@ -40,6 +40,7 @@ type (
 	DeviceGatewayMultiCreateReq       = dm.DeviceGatewayMultiCreateReq
 	DeviceGatewayMultiSaveReq         = dm.DeviceGatewayMultiSaveReq
 	DeviceGatewaySign                 = dm.DeviceGatewaySign
+	DeviceGroupMultiSaveReq           = dm.DeviceGroupMultiSaveReq
 	DeviceInfo                        = dm.DeviceInfo
 	DeviceInfoBindReq                 = dm.DeviceInfoBindReq
 	DeviceInfoCanBindReq              = dm.DeviceInfoCanBindReq

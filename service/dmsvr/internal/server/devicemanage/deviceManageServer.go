@@ -210,3 +210,21 @@ func (s *DeviceManageServer) DeviceSchemaTslRead(ctx context.Context, in *dm.Dev
 	l := devicemanagelogic.NewDeviceSchemaTslReadLogic(ctx, s.svcCtx)
 	return l.DeviceSchemaTslRead(in)
 }
+
+// 将设备加到多个分组中
+func (s *DeviceManageServer) DeviceGroupMultiCreate(ctx context.Context, in *dm.DeviceGroupMultiSaveReq) (*dm.Empty, error) {
+	l := devicemanagelogic.NewDeviceGroupMultiCreateLogic(ctx, s.svcCtx)
+	return l.DeviceGroupMultiCreate(in)
+}
+
+// 更新设备所在分组
+func (s *DeviceManageServer) DeviceGroupMultiUpdate(ctx context.Context, in *dm.DeviceGroupMultiSaveReq) (*dm.Empty, error) {
+	l := devicemanagelogic.NewDeviceGroupMultiUpdateLogic(ctx, s.svcCtx)
+	return l.DeviceGroupMultiUpdate(in)
+}
+
+// 删除设备所在分组
+func (s *DeviceManageServer) DeviceGroupMultiDelete(ctx context.Context, in *dm.DeviceGroupMultiSaveReq) (*dm.Empty, error) {
+	l := devicemanagelogic.NewDeviceGroupMultiDeleteLogic(ctx, s.svcCtx)
+	return l.DeviceGroupMultiDelete(in)
+}

@@ -55,6 +55,9 @@ const (
 	DeviceManage_DeviceSchemaMultiDelete_FullMethodName  = "/dm.DeviceManage/deviceSchemaMultiDelete"
 	DeviceManage_DeviceSchemaIndex_FullMethodName        = "/dm.DeviceManage/deviceSchemaIndex"
 	DeviceManage_DeviceSchemaTslRead_FullMethodName      = "/dm.DeviceManage/deviceSchemaTslRead"
+	DeviceManage_DeviceGroupMultiCreate_FullMethodName   = "/dm.DeviceManage/deviceGroupMultiCreate"
+	DeviceManage_DeviceGroupMultiUpdate_FullMethodName   = "/dm.DeviceManage/deviceGroupMultiUpdate"
+	DeviceManage_DeviceGroupMultiDelete_FullMethodName   = "/dm.DeviceManage/deviceGroupMultiDelete"
 )
 
 // DeviceManageClient is the client API for DeviceManage service.
@@ -113,6 +116,12 @@ type DeviceManageClient interface {
 	// 获取设备物模型列表
 	DeviceSchemaIndex(ctx context.Context, in *DeviceSchemaIndexReq, opts ...grpc.CallOption) (*DeviceSchemaIndexResp, error)
 	DeviceSchemaTslRead(ctx context.Context, in *DeviceSchemaTslReadReq, opts ...grpc.CallOption) (*DeviceSchemaTslReadResp, error)
+	// 将设备加到多个分组中
+	DeviceGroupMultiCreate(ctx context.Context, in *DeviceGroupMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
+	// 更新设备所在分组
+	DeviceGroupMultiUpdate(ctx context.Context, in *DeviceGroupMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
+	// 删除设备所在分组
+	DeviceGroupMultiDelete(ctx context.Context, in *DeviceGroupMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type deviceManageClient struct {
@@ -429,6 +438,33 @@ func (c *deviceManageClient) DeviceSchemaTslRead(ctx context.Context, in *Device
 	return out, nil
 }
 
+func (c *deviceManageClient) DeviceGroupMultiCreate(ctx context.Context, in *DeviceGroupMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceGroupMultiCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceManageClient) DeviceGroupMultiUpdate(ctx context.Context, in *DeviceGroupMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceGroupMultiUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceManageClient) DeviceGroupMultiDelete(ctx context.Context, in *DeviceGroupMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceGroupMultiDelete_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DeviceManageServer is the server API for DeviceManage service.
 // All implementations must embed UnimplementedDeviceManageServer
 // for forward compatibility
@@ -485,6 +521,12 @@ type DeviceManageServer interface {
 	// 获取设备物模型列表
 	DeviceSchemaIndex(context.Context, *DeviceSchemaIndexReq) (*DeviceSchemaIndexResp, error)
 	DeviceSchemaTslRead(context.Context, *DeviceSchemaTslReadReq) (*DeviceSchemaTslReadResp, error)
+	// 将设备加到多个分组中
+	DeviceGroupMultiCreate(context.Context, *DeviceGroupMultiSaveReq) (*Empty, error)
+	// 更新设备所在分组
+	DeviceGroupMultiUpdate(context.Context, *DeviceGroupMultiSaveReq) (*Empty, error)
+	// 删除设备所在分组
+	DeviceGroupMultiDelete(context.Context, *DeviceGroupMultiSaveReq) (*Empty, error)
 	mustEmbedUnimplementedDeviceManageServer()
 }
 
@@ -593,6 +635,15 @@ func (UnimplementedDeviceManageServer) DeviceSchemaIndex(context.Context, *Devic
 }
 func (UnimplementedDeviceManageServer) DeviceSchemaTslRead(context.Context, *DeviceSchemaTslReadReq) (*DeviceSchemaTslReadResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceSchemaTslRead not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceGroupMultiCreate(context.Context, *DeviceGroupMultiSaveReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceGroupMultiCreate not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceGroupMultiUpdate(context.Context, *DeviceGroupMultiSaveReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceGroupMultiUpdate not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceGroupMultiDelete(context.Context, *DeviceGroupMultiSaveReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceGroupMultiDelete not implemented")
 }
 func (UnimplementedDeviceManageServer) mustEmbedUnimplementedDeviceManageServer() {}
 
@@ -1219,6 +1270,60 @@ func _DeviceManage_DeviceSchemaTslRead_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DeviceManage_DeviceGroupMultiCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceGroupMultiSaveReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceGroupMultiCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceGroupMultiCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceGroupMultiCreate(ctx, req.(*DeviceGroupMultiSaveReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceManage_DeviceGroupMultiUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceGroupMultiSaveReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceGroupMultiUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceGroupMultiUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceGroupMultiUpdate(ctx, req.(*DeviceGroupMultiSaveReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceManage_DeviceGroupMultiDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceGroupMultiSaveReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceGroupMultiDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceGroupMultiDelete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceGroupMultiDelete(ctx, req.(*DeviceGroupMultiSaveReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DeviceManage_ServiceDesc is the grpc.ServiceDesc for DeviceManage service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1361,6 +1466,18 @@ var DeviceManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "deviceSchemaTslRead",
 			Handler:    _DeviceManage_DeviceSchemaTslRead_Handler,
+		},
+		{
+			MethodName: "deviceGroupMultiCreate",
+			Handler:    _DeviceManage_DeviceGroupMultiCreate_Handler,
+		},
+		{
+			MethodName: "deviceGroupMultiUpdate",
+			Handler:    _DeviceManage_DeviceGroupMultiUpdate_Handler,
+		},
+		{
+			MethodName: "deviceGroupMultiDelete",
+			Handler:    _DeviceManage_DeviceGroupMultiDelete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

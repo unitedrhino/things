@@ -10,6 +10,7 @@ import (
 	thingsdeviceauth5 "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/auth5"
 	thingsdeviceedge "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/edge"
 	thingsdevicegateway "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/gateway"
+	thingsdevicegroup "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/group"
 	thingsdeviceinfo "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/info"
 	thingsdeviceinteract "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/interact"
 	thingsdevicemoduleversion "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/module/version"
@@ -139,6 +140,33 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/device/gateway"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckTokenWare, serverCtx.InitCtxsWare},
+			[]rest.Route{
+				{
+					// 将设备加到多个分组中
+					Method:  http.MethodPost,
+					Path:    "/multi-create",
+					Handler: thingsdevicegroup.MultiCreateHandler(serverCtx),
+				},
+				{
+					// 删除设备所在分组
+					Method:  http.MethodPost,
+					Path:    "/multi-delete",
+					Handler: thingsdevicegroup.MultiDeleteHandler(serverCtx),
+				},
+				{
+					// 更新设备所在分组
+					Method:  http.MethodPost,
+					Path:    "/multi-update",
+					Handler: thingsdevicegroup.MultiUpdateHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/device/group"),
 	)
 
 	server.AddRoutes(

@@ -1,0 +1,37 @@
+info(
+    title: "数据交互(待定)"
+    desc: "数据交互(待定)"
+    author: "杨磊"
+    email: "603685348@qq.com"
+    version: "v1"
+)
+@server(
+    group: things/device/group
+    prefix: /api/v1/things/device/group
+    middleware:  CheckTokenWare,InitCtxsWare
+    accessCodePrefix: "thingsDeviceGroup"
+    accessNamePrefix: "设备信息"
+    accessGroup: "设备管理"
+)
+service api {
+    @doc "将设备加到多个分组中"
+    @handler multiCreate
+    post /multi-create (DeviceGroupMultiSaveReq) returns ()
+
+    @doc "更新设备所在分组"
+    @handler multiUpdate
+    post /multi-update (DeviceGroupMultiSaveReq) returns ()
+
+    @doc "删除设备所在分组"
+    @handler multiDelete
+    post /multi-delete (DeviceGroupMultiSaveReq) returns ()
+
+}
+type (
+    DeviceGroupMultiSaveReq{
+        ProductID string `json:"productID"`                                               //产品id
+        DeviceName string `json:"deviceName"`                                             //设备名称
+        Purpose string `json:"purpose,optional"`//用途 不填默认为default
+        GroupIDs []int64 `json:"groupIDs,string"`
+    }
+)
