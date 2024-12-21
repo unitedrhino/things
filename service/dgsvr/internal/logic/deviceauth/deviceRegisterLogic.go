@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
@@ -31,7 +32,7 @@ type DeviceRegisterPayload struct {
 
 func NewDeviceRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeviceRegisterLogic {
 	return &DeviceRegisterLogic{
-		ctx:    ctx,
+		ctx:    ctxs.WithRoot(ctx),
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
