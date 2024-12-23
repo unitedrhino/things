@@ -44,7 +44,7 @@ func (l *UserDeviceShareCreateLogic) UserDeviceShareCreate(in *dm.UserDeviceShar
 	if err != nil {
 		return nil, err
 	}
-	if pi.AdminUserID != uc.UserID {
+	if pi.AdminUserID != uc.UserID && !uc.IsAdmin {
 		pa := uc.ProjectAuth[pi.ProjectID]
 		if pa.AuthType != def.AuthAdmin {
 			if pa.Area == nil || pa.Area[int64(di.AreaID)] != def.AuthAdmin {
