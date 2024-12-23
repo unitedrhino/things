@@ -285,7 +285,7 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 			db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where("(product_id, device_name)  in (?)",
 				subQuery)
 		case def.SelectTypeAll: //同时获取普通设备
-			if !(uc.IsAdmin && uc.ProjectID <= def.NotClassified) {
+			if !(uc.IsAdmin && (uc.ProjectID <= def.NotClassified || uc.AllProject)) {
 				if uc.ProjectID <= def.NotClassified { //如果不是管理员又没有传项目ID,则只获取分享的设备
 					db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where("(product_id, device_name)  in (?)",
 						subQuery)
@@ -300,7 +300,7 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 						db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where("(product_id, device_name)  in (?)",
 							subQuery)
 					} else {
-						if pa.AuthType < def.AuthRead {
+						if pa.AuthType < def.AuthRead || uc.AllArea {
 							or = or.Or("project_id = ?", uc.ProjectID)
 							db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where(or)
 						} else { //如果是读权限,还需要过滤区域
