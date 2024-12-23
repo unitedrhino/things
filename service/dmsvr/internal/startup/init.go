@@ -313,6 +313,10 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 				logx.WithContext(ctx).Errorf("DeviceInfoUnbind dev:%v err:%v", utils.Fmt(v), err)
 			}
 		}
+		err = relationDB.NewUserDeviceShareRepo(ctx).DeleteByFilter(ctx, relationDB.UserDeviceShareFilter{SharedUserIDs: value.IDs})
+		if err != nil {
+			logx.WithContext(ctx).Errorf("NewUserDeviceShareRepo.DeleteByFilter err:%v", err)
+		}
 		return nil
 	})
 	logx.Must(err)
