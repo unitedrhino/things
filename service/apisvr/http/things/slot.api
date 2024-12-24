@@ -9,7 +9,7 @@ info(
 @server (
 	group: things/slot/area
 	prefix: /api/v1/things/slot/area
-	middleware:  CheckTokenWare
+	middleware:  CheckTokenWare,InitCtxsWare
 )
 service api {
 	@doc "插槽区域创建"
@@ -23,7 +23,7 @@ service api {
 @server (
 	group: things/slot/user
 	prefix: /api/v1/things/slot/user
-	middleware:  CheckTokenWare
+	middleware:  CheckTokenWare,InitCtxsWare
 )
 service api {
 	@doc "插槽用户订阅"
