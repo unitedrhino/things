@@ -480,4 +480,15 @@ func DictInit(svcCtx *svc.ServiceContext) {
 		Value:    "default",
 		Sort:     1,
 	})
+	svcCtx.DictM.DictInfoCreate(ctx, &sys.DictInfo{
+		Group: def.DictGroupThings,
+		Name:  "设备异常类型",
+		Code:  "deviceAbnormal",
+	})
+	svcCtx.DictM.DictDetailCreate(ctx, &sys.DictDetail{
+		DictCode: "deviceAbnormal",
+		Label:    "上下线异常",
+		Value:    "online",
+		Sort:     1,
+	})
 }
