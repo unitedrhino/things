@@ -286,39 +286,83 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 				subQuery)
 		case def.SelectTypeAll: //同时获取普通设备
 			if !(uc.IsAdmin && (uc.ProjectID <= def.NotClassified || uc.AllProject)) {
-				if uc.ProjectID <= def.NotClassified { //如果不是管理员又没有传项目ID,则只获取分享的设备
-					db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where("(product_id, device_name)  in (?)",
-						subQuery)
-				} else { //如果传了项目ID,则判断项目的权限
-					or := d.db
-					or = or.Or("(product_id, device_name)  in (?)", subQuery)
-					pa := uc.ProjectAuth[uc.ProjectID]
-					if pa == nil && uc.IsAdmin {
-						pa = &ctxs.ProjectAuth{AuthType: def.AuthAdmin}
-					}
-					if pa == nil {
-						db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where("(product_id, device_name)  in (?)",
-							subQuery)
-					} else {
-						if pa.AuthType < def.AuthRead || uc.AllArea {
-							or = or.Or("project_id = ?", uc.ProjectID)
-							db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where(or)
-						} else { //如果是读权限,还需要过滤区域
-							areaIDs, er1 := stores.GetAreaAuthIDs(ctx)
-							areaIDPaths, er2 := stores.GetAreaAuthIDPaths(ctx)
-							if (er1 == nil || er2 == nil) && (areaIDPaths != nil || areaIDs != nil) {
-								or = or.Or("(area_id in ? or area_id_path in ?) and project_id = ?", areaIDs, areaIDPaths, uc.ProjectID)
-							}
-							db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where(or)
-						}
-					}
+				d := shareAll(ctx, d.db, uc)
+				db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where(d)
+				//if uc.ProjectID <= def.NotClassified { //如果不是管理员又没有传项目ID,则只获取分享的设备
+				//	db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where("(product_id, device_name)  in (?)",
+				//		subQuery)
+				//} else { //如果传了项目ID,则判断项目的权限
+				//	or := d.db
+				//	or = or.Or("(product_id, device_name)  in (?)", subQuery)
+				//	pa := uc.ProjectAuth[uc.ProjectID]
+				//	if pa == nil && uc.IsAdmin {
+				//		pa = &ctxs.ProjectAuth{AuthType: def.AuthAdmin}
+				//	}
+				//	if pa == nil {
+				//		db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where("(product_id, device_name)  in (?)",
+				//			subQuery)
+				//	} else {
+				//		if pa.AuthType < def.AuthRead || uc.AllArea {
+				//			or = or.Or("project_id = ?", uc.ProjectID)
+				//			db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where(or)
+				//		} else { //如果是读权限,还需要过滤区域
+				//			areaIDs, er1 := stores.GetAreaAuthIDs(ctx)
+				//			areaIDPaths, er2 := stores.GetAreaAuthIDPaths(ctx)
+				//			if (er1 == nil || er2 == nil) && (areaIDPaths != nil || areaIDs != nil) {
+				//				or = or.Or("(area_id in ? or area_id_path in ?) and project_id = ?", areaIDs, areaIDPaths, uc.ProjectID)
+				//			}
+				//			db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where(or)
+				//		}
+				//	}
 
-				}
+				//}
 			}
 		}
 	}
 
 	return db
+}
+
+func shareAll(ctx context.Context, db *gorm.DB, uc *ctxs.UserCtx) *gorm.DB {
+	subQuery := db.Model(&DmUserDeviceShare{}).Select("product_id, device_name").Where("shared_user_id = ?", uc.UserID)
+	var pas = uc.ProjectAuth
+	if uc.ProjectID > def.NotClassified {
+		pas = map[int64]*ctxs.ProjectAuth{uc.ProjectID: uc.ProjectAuth[uc.ProjectID]}
+	}
+	pas[563] = &ctxs.ProjectAuth{
+		Area: map[int64]def.AuthType{
+			2342:   def.AuthAdmin,
+			234234: def.AuthRead,
+		},
+		//AreaPath: map[string]def.AuthType{
+		//	"1231": def.AuthAdmin,
+		//	"214":  def.AuthRead,
+		//},
+		AuthType: def.AuthRead,
+	}
+	or := db
+	or = or.Or("(product_id, device_name)  in (?)", subQuery)
+	for pid, pa := range pas {
+		if pa == nil && uc.IsAdmin {
+			pa = &ctxs.ProjectAuth{AuthType: def.AuthAdmin}
+		}
+		if pa == nil {
+			db = db.Where("(product_id, device_name)  in (?)",
+				subQuery)
+			return db
+		} else {
+			if pa.AuthType < def.AuthRead || uc.AllArea {
+				or = or.Or("project_id = ?", pid)
+			} else { //如果是读权限,还需要过滤区域
+				areaIDs := utils.SetToSlice(pa.Area)
+				areaIDPaths := utils.SetToSlice(pa.AreaPath)
+				if areaIDPaths != nil || areaIDs != nil {
+					or = or.Or("(area_id in ? or area_id_path in ?) and project_id = ?", areaIDs, areaIDPaths, pid)
+				}
+			}
+		}
+	}
+	return or
 }
 
 func (d DeviceInfoRepo) FindOneByFilter(ctx context.Context, f DeviceFilter) (*DmDeviceInfo, error) {

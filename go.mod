@@ -21,7 +21,7 @@ require (
 	github.com/observerly/dusk v1.16.0
 	github.com/spf13/cast v1.7.0
 	github.com/zeromicro/go-zero v1.7.2
-	go.uber.org/atomic v1.10.0
+	go.uber.org/atomic v1.11.0
 	golang.org/x/exp v0.0.0-20240222234643-814bf88cf225
 	golang.org/x/sync v0.9.0
 	google.golang.org/grpc v1.65.0
@@ -149,7 +149,7 @@ require (
 	github.com/samber/lo v1.47.0 // indirect
 	github.com/silenceper/wechat/v2 v2.1.5 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
-	github.com/smarty/assertions v1.15.0 // indirect
+	github.com/smarty/assertions v1.16.0 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/suifengtec/gocoord v0.0.0-20210116135606-a0cd8c71c959 // indirect
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.985 // indirect
@@ -180,7 +180,7 @@ require (
 	go.opentelemetry.io/proto/otlp v1.3.1 // indirect
 	go.uber.org/automaxprocs v1.6.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	go.uber.org/zap v1.26.0 // indirect
+	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/crypto v0.29.0 // indirect
 	golang.org/x/net v0.31.0 // indirect
 	golang.org/x/oauth2 v0.21.0 // indirect
@@ -203,7 +203,7 @@ require (
 	k8s.io/kube-openapi v0.0.0-20231010175941-2dd684a91f00 // indirect
 	k8s.io/utils v0.0.0-20240711033017-18e509b52bc8 // indirect
 	modernc.org/libc v1.22.3 // indirect
-	modernc.org/mathutil v1.5.0 // indirect
+	modernc.org/mathutil v1.6.0 // indirect
 	modernc.org/memory v1.5.0 // indirect
 	modernc.org/sqlite v1.21.1 // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
