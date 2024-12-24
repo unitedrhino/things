@@ -27,7 +27,11 @@ func FillAreaGroupCount(ctx context.Context, svcCtx *svc.ServiceContext, areaID 
 		log.Error(err)
 		return err
 	}
-	_, err = svcCtx.AreaM.AreaInfoUpdate(ctx, &sys.AreaInfo{AreaID: areaID, GroupCount: &wrapperspb.Int64Value{Value: count}})
+	area, err := svcCtx.AreaCache.GetData(ctx, areaID)
+	if err != nil {
+		log.Error(err)
+	}
+	_, err = svcCtx.AreaM.AreaInfoUpdate(ctx, &sys.AreaInfo{ProjectID: area.ProjectID, AreaID: areaID, GroupCount: &wrapperspb.Int64Value{Value: count}})
 	if err != nil {
 		log.Error(err)
 		return err
@@ -58,7 +62,11 @@ func fillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, areaID
 				log.Error(err)
 				continue
 			}
-			_, err = svcCtx.AreaM.AreaInfoUpdate(ctx, &sys.AreaInfo{AreaID: id, DeviceCount: &wrapperspb.Int64Value{Value: count}})
+			area, err := svcCtx.AreaCache.GetData(ctx, id)
+			if err != nil {
+				log.Error(err)
+			}
+			_, err = svcCtx.AreaM.AreaInfoUpdate(ctx, &sys.AreaInfo{ProjectID: area.ProjectID, AreaID: id, DeviceCount: &wrapperspb.Int64Value{Value: count}})
 			if err != nil {
 				log.Error(err)
 				continue
@@ -84,7 +92,6 @@ func Init(svcCtx *svc.ServiceContext) {
 		tick := time.Tick(time.Second)
 		execProjectIDs := make([]int64, 0, 500)
 		execAreaIDPaths := make([]string, 0, 1000)
-
 		for {
 			select {
 			case _ = <-tick:
