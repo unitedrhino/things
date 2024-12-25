@@ -224,6 +224,7 @@ type (
         WithProfiles []string `json:"withProfiles,optional"` //
         WithOwner bool  `json:"withOwner,optional"`//同时获取拥有人的信息
         WithGateway bool  `json:"withGateway,optional"`//同时返回子设备绑定的网关信息
+        WithArea bool `json:"withArea,optional"` //同时返回区域信息
     }
     DeviceInfoMultiUpdateReq  {
            Devices []*DeviceCore `json:"devices"`

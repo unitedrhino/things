@@ -7961,6 +7961,11 @@
           "type": "boolean",
           "format": "boolean",
           "description": "同时返回子设备绑定的网关信息"
+        },
+        "withArea": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "同时返回区域信息"
         }
       },
       "title": "DeviceInfoReadReq",
