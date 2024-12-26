@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"gitee.com/unitedrhino/core/service/syssvr/client/dictmanage"
-	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tdengine/abnormalLogRepo"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine/abnormalLogRepo"
 	"os"
 	"time"
 
@@ -26,9 +26,9 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/event/publish/pubApp"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/event/publish/pubDev"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
-	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tdengine/schemaDataRepo"
-	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tdengine/sendLogRepo"
-	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tdengine/statusLogRepo"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine/schemaDataRepo"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine/sendLogRepo"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine/statusLogRepo"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -42,8 +42,8 @@ import (
 	"gitee.com/unitedrhino/share/oss"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/config"
-	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tdengine/hubLogRepo"
-	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tdengine/sdkLogRepo"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine/hubLogRepo"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine/sdkLogRepo"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

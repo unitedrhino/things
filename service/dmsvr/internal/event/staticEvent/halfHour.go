@@ -2,19 +2,15 @@ package staticEvent
 
 import (
 	"context"
-	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
-	"gitee.com/unitedrhino/things/sdk/service/protocol"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
-	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 	"sync"
-	"sync/atomic"
 	"time"
 )
 
@@ -34,7 +30,7 @@ func NewHalfHourHandle(ctx context.Context, svcCtx *svc.ServiceContext) *HalfHou
 
 func (l *HalfHourHandle) Handle() error { //产品品类设备数量统计
 	w := sync.WaitGroup{}
-	w.Add(6)
+	w.Add(5)
 	utils.Go(l.ctx, func() {
 		defer w.Done()
 		err := l.ProductCategoryStatic()
@@ -42,22 +38,10 @@ func (l *HalfHourHandle) Handle() error { //产品品类设备数量统计
 			l.Error(err)
 		}
 	})
-	//utils.Go(l.ctx, func() {
-	//	err := l.AreaDeviceStatic()
-	//	if err != nil {
-	//		l.Error(err)
-	//	}
-	//})
+
 	utils.Go(l.ctx, func() {
 		defer w.Done()
 		err := l.DeviceExp()
-		if err != nil {
-			l.Error(err)
-		}
-	})
-	utils.Go(l.ctx, func() {
-		defer w.Done()
-		err := l.DeviceOnlineFix()
 		if err != nil {
 			l.Error(err)
 		}
@@ -84,49 +68,6 @@ func (l *HalfHourHandle) Handle() error { //产品品类设备数量统计
 		}
 	})
 	w.Wait()
-	return nil
-}
-func (l *HalfHourHandle) AreaDeviceStatic() error { //区域下的设备数量统计
-	ret, err := l.svcCtx.AreaM.AreaInfoIndex(l.ctx, &sys.AreaInfoIndexReq{})
-	if err != nil {
-		return err
-	}
-	var areaPaths []string
-	for _, v := range ret.List {
-		areaPaths = append(areaPaths, v.AreaIDPath)
-	}
-	err = logic.FillAreaDeviceCount(l.ctx, l.svcCtx, areaPaths...)
-	return err
-}
-
-var count atomic.Int64
-
-func (l *HalfHourHandle) DeviceOnlineFix() error { //设备在线修复
-	nc := count.Add(1)
-	if nc/2 == 1 { //1小时处理一次
-		return nil
-	}
-	devs, err := relationDB.NewDeviceInfoRepo(l.ctx).FindCoreByFilter(l.ctx, relationDB.DeviceFilter{IsOnline: def.True}, nil)
-	if err != nil {
-		return err
-	}
-	devMap, err := protocol.GetActivityDevices(l.ctx)
-	if err != nil {
-		l.Error(err)
-		return err
-	}
-	var needOnline []devices.Core
-	for _, d := range devs {
-		if _, ok := devMap[d]; ok {
-			continue
-		}
-		//如果线上没有,但是这里有,需要进行处理
-		needOnline = append(needOnline, d)
-	}
-	if len(needOnline) > 0 {
-		l.Infof("DeviceOnlineFix.UpdatesDeviceActivity devs:%v", utils.Fmt(needOnline))
-		protocol.UpdatesDeviceActivity(l.ctx, needOnline)
-	}
 	return nil
 }
 

@@ -7,7 +7,7 @@ go 1.21.4
 
 require (
 	gitee.com/unitedrhino/core v1.1.3
-	gitee.com/unitedrhino/share v1.1.14
+	gitee.com/unitedrhino/share v1.2.0
 	gitee.com/unitedrhino/squirrel v1.20.5
 	github.com/dgraph-io/ristretto v0.1.0
 	github.com/dop251/goja v0.0.0-20231024180952-594410467bc6
@@ -149,7 +149,6 @@ require (
 	github.com/samber/lo v1.47.0 // indirect
 	github.com/silenceper/wechat/v2 v2.1.5 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
-	github.com/smarty/assertions v1.16.0 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/suifengtec/gocoord v0.0.0-20210116135606-a0cd8c71c959 // indirect
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.985 // indirect
