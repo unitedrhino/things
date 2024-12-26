@@ -97,7 +97,8 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 	}
 	var (
 		ProjectID  stores.ProjectID
-		TenantCode string
+		pi         *sys.ProjectInfo
+		err        error
 		AreaID     stores.AreaID = def.NotClassified
 		AreaIDPath string        = def.NotClassifiedPath
 		UserID     int64
@@ -125,6 +126,10 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 			return nil, errors.NotFind.AddMsg("用户未找到")
 		}
 		ProjectID = stores.ProjectID(dp.List[0].ProjectID)
+		pi, err = l.svcCtx.ProjectCache.GetData(l.ctx, in.ProjectID)
+		if err != nil {
+			return nil, err
+		}
 		UserID = in.UserID
 	case DeviceTransferToProject:
 		ProjectID = stores.ProjectID(in.ProjectID)
@@ -141,14 +146,13 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 			changeAreaIDPaths[AreaIDPath] = struct{}{}
 			projectIDSet[ai.ProjectID] = struct{}{}
 		}
-		pi, err := l.svcCtx.ProjectCache.GetData(l.ctx, in.ProjectID)
+		pi, err = l.svcCtx.ProjectCache.GetData(l.ctx, in.ProjectID)
 		if err != nil {
 			return nil, err
 		}
 		if ctxs.IsRoot(l.ctx) != nil && pi.TenantCode != uc.TenantCode {
 			return nil, errors.Permissions.AddMsg("非超管不能转移到其他租户")
 		}
-		TenantCode = pi.TenantCode
 		UserID = pi.AdminUserID
 	default:
 		return nil, errors.Parameter.AddMsgf("transferTo not supprt:%v", in.TransferTo)
@@ -162,7 +166,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 		}
 	}
 	var devs = utils.CopySlice[devices.Core](dis)
-	err := stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
 		err := relationDB.NewUserDeviceShareRepo(tx).DeleteByFilter(l.ctx, relationDB.UserDeviceShareFilter{
 			Devices: devs,
 		})
@@ -177,15 +181,16 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 			}
 		}
 		ctx := ctxs.WithAllProject(l.ctx)
-		if TenantCode != uc.TenantCode {
-			ctx = ctxs.BindTenantCode(ctx, TenantCode, 0)
-		}
 		var param = map[string]any{
 			"project_id":   ProjectID,
 			"user_id":      UserID,
 			"area_id":      AreaID,
 			"area_id_path": AreaIDPath,
 			"last_bind":    time.Now(),
+		}
+		if pi.TenantCode != uc.TenantCode {
+			ctx = ctxs.BindTenantCode(ctx, pi.TenantCode, 0)
+			param["tenant_code"] = pi.TenantCode
 		}
 		if in.IsCleanData == def.True {
 			param["last_bind"] = time.Now()
