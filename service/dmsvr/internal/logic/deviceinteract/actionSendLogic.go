@@ -102,6 +102,7 @@ func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (ret *dm.ActionSendRe
 			contentStr, _ := json.Marshal(params)
 			_ = l.svcCtx.SendRepo.Insert(ctx, &deviceLog.Send{
 				ProductID:  in.ProductID,
+				Account:    uc.Account,
 				Action:     "actionSend",
 				Timestamp:  time.Now(), // 操作时间
 				DeviceName: in.DeviceName,
