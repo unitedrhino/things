@@ -12,6 +12,9 @@ import (
 )
 
 func (s *SendLogRepo) fillFilter(sql sq.SelectBuilder, filter deviceLog.SendFilter) sq.SelectBuilder {
+	if filter.UserID != 0 {
+		sql.Where("`user_id`=?", filter.UserID)
+	}
 	if len(filter.ProductID) != 0 {
 		sql = sql.Where("`product_id`=?", filter.ProductID)
 	}
