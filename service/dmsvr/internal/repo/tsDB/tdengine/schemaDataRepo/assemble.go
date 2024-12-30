@@ -32,7 +32,6 @@ func ToPropertyData(id string, p *schema.Property, db map[string]any) *msgThing.
 	case string(schema.DataTypeStruct):
 		data := msgThing.PropertyData{
 			Identifier: id,
-			DeviceName: cast.ToString(db["device_name"]),
 			Param:      nil,
 			TimeStamp:  cast.ToTime(db["ts"]),
 		}
