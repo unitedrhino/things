@@ -41,8 +41,8 @@ func (l *SceneInfoUpdateLogic) SceneInfoUpdate(in *ud.SceneInfo) (*ud.Empty, err
 	if old.Tag == "deviceTiming" { //单设备定时
 		uc := ctxs.GetUserCtx(l.ctx)
 		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
-			ProductID:  in.ProductID,
-			DeviceName: in.DeviceName,
+			ProductID:  old.ProductID,
+			DeviceName: old.DeviceName,
 		})
 		if err != nil {
 			return nil, err
