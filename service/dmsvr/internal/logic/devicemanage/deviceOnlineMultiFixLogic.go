@@ -2,6 +2,7 @@ package devicemanagelogic
 
 import (
 	"context"
+	"gitee.com/unitedrhino/core/service/syssvr/sysExport"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/devices"
@@ -172,6 +173,15 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 			if err != nil {
 				log.Errorf("%s.pubApp productID:%v deviceName:%v err:%v",
 					utils.FuncName(), ld.ProductID, ld.DeviceName, err)
+			}
+			err = svcCtx.WebHook.Publish(svcCtx.WithDeviceTenant(ctx, dev), func() string {
+				if status == def.ConnectedStatus {
+					return sysExport.CodeDmDeviceConn
+				}
+				return sysExport.CodeDmDeviceDisConn
+			}(), appMsg)
+			if err != nil {
+				log.Error(err)
 			}
 			err = svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDeviceConn, appMsg, map[string]any{
 				"productID":  ld.ProductID,

@@ -8866,6 +8866,10 @@
     "DeviceMsgPropertyLogIndexReq": {
       "type": "object",
       "properties": {
+        "deviceName": {
+          "type": "string",
+          "description": "设备名(不填获取产品下所有设备)"
+        },
         "deviceNames": {
           "type": "array",
           "items": {
@@ -8896,15 +8900,15 @@
         "interval": {
           "type": "integer",
           "format": "int64",
-          "description": "分页信息"
+          "description": "间隔(单位毫秒) 如果这个值不为零值 则时间的开始和结束必须有效及聚合函数不应该为空"
         },
         "argFunc": {
           "type": "string",
-          "description": "分页信息"
+          "description": "聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考:https:docs.taosdata.com/taos-sql/function"
         },
         "fill": {
           "type": "string",
-          "description": "填充模式 参考:https:docs.taosdata.com/taos-sql/distinguished/"
+          "description": "指定窗口区间数据缺失的情况下的填充模式 参考:https:docs.taosdata.com/taos-sql/distinguished/"
         },
         "order": {
           "type": "integer",
