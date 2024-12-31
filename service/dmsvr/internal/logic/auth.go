@@ -39,6 +39,18 @@ func Auth(ctx context.Context, svcCtx *svc.ServiceContext, in devices.Core) (dev
 	}
 	return devices.AuthAll, nil
 }
+func DevicesSchemaAccess(ctx context.Context, svcCtx *svc.ServiceContext, authType def.AuthType, productID string, deviceNames []string, param map[string]any) (outParam map[string]any, err error) {
+	uc := ctxs.GetUserCtx(ctx)
+	if uc != nil && !uc.IsAdmin {
+		for _, deviceName := range deviceNames {
+			outParam, err = SchemaAccess(ctx, svcCtx, authType, devices.Core{productID, deviceName}, param)
+			if err != nil {
+				return
+			}
+		}
+	}
+	return
+}
 
 func SchemaAccess(ctx context.Context, svcCtx *svc.ServiceContext, authType def.AuthType, dev devices.Core, param map[string]any) (outParam map[string]any, err error) {
 	uc := ctxs.GetUserCtx(ctx)

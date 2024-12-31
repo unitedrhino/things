@@ -66,7 +66,7 @@ func (d *DeviceDataRepo) createPropertyTable(
 			for i := 0; i < cast.ToInt(v.Define.Max); i++ {
 				sql := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s USING %s  TAGS('%s','%s',%d,'%s');",
 					d.GetPropertyTableName(productID, deviceName, GetArrayID(v.Identifier, i)),
-					d.GetPropertyStableName(v, productID, deviceName, v.Identifier), productID, deviceName, i, v.Define.ArrayInfo.Type)
+					d.GetPropertyStableName(v, productID, v.Identifier), productID, deviceName, i, v.Define.ArrayInfo.Type)
 				if _, err := d.t.ExecContext(ctx, sql); err != nil {
 					return err
 				}
@@ -74,7 +74,7 @@ func (d *DeviceDataRepo) createPropertyTable(
 		} else {
 			sql := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s USING %s  TAGS('%s','%s','%s');",
 				d.GetPropertyTableName(productID, deviceName, v.Identifier),
-				d.GetPropertyStableName(v, productID, deviceName, v.Identifier), productID, deviceName, v.Define.Type)
+				d.GetPropertyStableName(v, productID, v.Identifier), productID, deviceName, v.Define.Type)
 			if _, err := d.t.ExecContext(ctx, sql); err != nil {
 				return err
 			}

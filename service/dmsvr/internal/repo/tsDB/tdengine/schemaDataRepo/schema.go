@@ -27,7 +27,7 @@ func (S *SchemaStore) GetSpecsColumnWithArgFunc(s schema.Specs, argFunc string) 
 	return strings.Join(column, ",")
 }
 
-func (S *SchemaStore) GetPropertyStableName(p *schema.Property, productID, deviceName, identifier string) string {
+func (S *SchemaStore) GetPropertyStableName(p *schema.Property, productID, identifier string) string {
 	if p.Tag == schema.TagCustom && productID != "" {
 		return fmt.Sprintf("`model_custom_property_%s_%s`", productID, identifier)
 	}
@@ -136,7 +136,7 @@ func (S *SchemaStore) GetStableNameList(
 	}
 	for _, v := range t.Property {
 		if v.Tag == schema.TagCustom {
-			tables = append(tables, S.GetPropertyStableName(v, productID, "", v.Identifier))
+			tables = append(tables, S.GetPropertyStableName(v, productID, v.Identifier))
 		}
 	}
 	return

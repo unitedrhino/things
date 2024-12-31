@@ -10,10 +10,8 @@ import (
 	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
-	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
-	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
-
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -37,24 +35,31 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 		diDatas []*dm.PropertyLogInfo
 		dd      = l.svcCtx.SchemaManaRepo
 		total   int64
+		t       *schema.Model
+		err     error
 	)
 	if in.Interval != 0 && in.ArgFunc == "" {
 		return nil, errors.Parameter.AddMsg("填写了间隔就必须填写聚合函数")
 	}
-	gd := devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName}
-	if len(in.DeviceNames) == 1 {
-		gd.DeviceName = in.DeviceNames[0]
+	if len(in.DeviceNames) == 0 {
+		if in.DeviceName == "" {
+			return nil, errors.Parameter.AddMsg("需要填写设备")
+		}
+		in.DeviceNames = append(in.DeviceNames, in.DeviceName)
 	}
-	if gd.DeviceName == "" {
+	if len(in.DeviceNames) == 0 {
 		return nil, errors.Parameter.AddMsg("需要填写设备")
 	}
-	_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, gd, nil)
-	if err != nil {
-		return nil, err
-	}
-	t, err := l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, gd)
-	if err != nil {
-		return nil, err
+	if len(in.DeviceNames) == 1 {
+		t, err = l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceNames[0]})
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		t, err = l.svcCtx.ProductSchemaRepo.GetData(l.ctx, in.ProductID)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	p, ok := t.Property[in.DataID]
@@ -77,18 +82,24 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 	}
 	uc := ctxs.GetUserCtxNoNil(l.ctx)
 	if !uc.IsAdmin {
-		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, gd)
-		if err != nil {
-			return nil, err
+		var lastBind int64
+		for _, d := range in.DeviceNames {
+			di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: in.ProductID, DeviceName: d})
+			if err != nil {
+				return nil, err
+			}
+			if di.LastBind > lastBind {
+				lastBind = di.LastBind
+			}
 		}
-		if di.LastBind*1000 > page.TimeStart {
-			page.TimeStart = di.LastBind * 1000
+		if lastBind*1000 > page.TimeStart {
+			page.TimeStart = lastBind * 1000
 		}
 	}
 	dds, err := dd.GetPropertyDataByID(l.ctx, p, msgThing.FilterOpt{
-		Page:       page,
-		ProductID:  in.ProductID,
-		DeviceName: gd.DeviceName,
+		Page:        page,
+		ProductID:   in.ProductID,
+		DeviceNames: in.DeviceNames,
 		//DeviceNames: in.DeviceNames,
 		Order:    in.Order,
 		DataID:   in.DataID,
@@ -121,11 +132,11 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 				Page:      in.Page.GetPage(),
 				Size:      in.Page.GetSize(),
 			},
-			ProductID:  in.ProductID,
-			DeviceName: gd.DeviceName,
-			DataID:     in.DataID,
-			Interval:   in.Interval,
-			ArgFunc:    in.ArgFunc})
+			ProductID:   in.ProductID,
+			DataID:      in.DataID,
+			DeviceNames: in.DeviceNames,
+			Interval:    in.Interval,
+			ArgFunc:     in.ArgFunc})
 		if err != nil {
 			l.Errorf("%s.GetPropertyCountByID err=%v", utils.FuncName(), err)
 			return nil, err
