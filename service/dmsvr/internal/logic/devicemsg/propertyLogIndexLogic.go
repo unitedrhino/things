@@ -45,6 +45,9 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 	if len(in.DeviceNames) == 1 {
 		gd.DeviceName = in.DeviceNames[0]
 	}
+	if gd.DeviceName == "" {
+		return nil, errors.Parameter.AddMsg("需要填写设备")
+	}
 	_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, gd, nil)
 	if err != nil {
 		return nil, err

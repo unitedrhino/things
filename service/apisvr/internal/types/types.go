@@ -655,10 +655,10 @@ type DeviceMsgPropertyIndexResp struct {
 }
 
 type DeviceMsgPropertyLogIndexReq struct {
-	DeviceName  string    `json:"deviceName,omitempty"`                //设备名(不填获取产品下所有设备)
-	DeviceNames []string  `json:"deviceNames,omitempty"`               //设备名(不填获取产品下所有设备)
+	DeviceName  string    `json:"deviceName,optional,omitempty"`       //设备名(不填获取产品下所有设备)
+	DeviceNames []string  `json:"deviceNames,optional,omitempty"`      //设备名(不填获取产品下所有设备)
 	ProductID   string    `json:"productID,omitempty"`                 //产品id 获取产品id下的所有设备信息
-	DataID      string    `json:"dataID,optional,omitempty"`           //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值
+	DataID      string    `json:"dataID,omitempty"`                    //获取的具体标识符的数据
 	TimeStart   int64     `json:"timeStart,string,optional,omitempty"` //获取时间的开始
 	TimeEnd     int64     `json:"timeEnd,string,optional,omitempty"`   //时间的结束
 	Page        *PageInfo `json:"page,optional"`                       //分页信息

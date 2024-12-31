@@ -8883,7 +8883,7 @@
         },
         "dataID": {
           "type": "string",
-          "description": "获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值"
+          "description": "获取的具体标识符的数据"
         },
         "timeStart": {
           "type": "string",
