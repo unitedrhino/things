@@ -12,6 +12,7 @@ import (
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -122,6 +123,10 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 			payload, _ = json.Marshal(devData.Param)
 		}
 		diData.Value = string(payload)
+		v, err := p.Define.FmtValue(string(payload))
+		if err == nil {
+			diData.Value = cast.ToString(v)
+		}
 		diDatas = append(diDatas, &diData)
 	}
 	if in.ArgFunc == "" && in.Interval == 0 {
