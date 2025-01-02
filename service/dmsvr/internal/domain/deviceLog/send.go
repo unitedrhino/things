@@ -9,16 +9,16 @@ import (
 
 type (
 	Send struct {
-		UserID     int64     `json:"userID"`
-		ProductID  string    `json:"productID,omitempty"`  // 产品id
-		DeviceName string    `json:"deviceName,omitempty"` // 设备名称
-		Action     string    `json:"action,omitempty"`     // 操作类型 propertySend:属性控制 actionSend:操作控制 propertyGetReportSend:获取最新属性请求
-		DataID     string    `json:"dataID"`
-		Timestamp  time.Time `json:"timestamp"`         // 操作时间
-		TraceID    string    `json:"traceID,omitempty"` // 服务器端事务id
-		Account    string    `json:"account"`
-		Content    string    `json:"content"`              //操作的内容
-		ResultCode int64     `json:"resultCode,omitempty"` // 请求结果状态,200为成功
+		UserID     int64     `gorm:"column:user_id;type:BIGINT;NOT NULL" json:"userID"`
+		ProductID  string    `gorm:"column:product_id;type:varchar(100);NOT NULL" json:"productID,omitempty"`   // 产品id
+		DeviceName string    `gorm:"column:device_name;type:varchar(100);NOT NULL" json:"deviceName,omitempty"` // 设备名称
+		Action     string    `gorm:"column:action;type:varchar(100);NOT NULL" json:"action,omitempty"`          // 操作类型 propertySend:属性控制 actionSend:操作控制 propertyGetReportSend:获取最新属性请求
+		DataID     string    `gorm:"column:data_id;type:varchar(100);NOT NULL" json:"dataID"`
+		Timestamp  time.Time `gorm:"column:ts;NOT NULL;" json:"timestamp"`                                // 操作时间
+		TraceID    string    `gorm:"column:trace_id;type:varchar(100);NOT NULL" json:"traceID,omitempty"` // 服务器端事务id
+		Account    string    `gorm:"column:account;type:varchar(100);NOT NULL" json:"account"`
+		Content    string    `gorm:"column:content;type:varchar(100);NOT NULL" json:"content"`               //操作的内容
+		ResultCode int64     `gorm:"column:result_code;type:BIGINT;default:200" json:"resultCode,omitempty"` // 请求结果状态
 	}
 	SendFilter struct {
 		TenantCode string

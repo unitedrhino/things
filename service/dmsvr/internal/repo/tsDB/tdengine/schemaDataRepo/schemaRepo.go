@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"gitee.com/unitedrhino/share/clients"
 	"gitee.com/unitedrhino/share/conf"
+	"gitee.com/unitedrhino/share/domain/deviceMsg/msgThing"
 	schema "gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
@@ -25,7 +26,7 @@ type DeviceDataRepo struct {
 	kv kv.Store
 }
 
-func NewDeviceDataRepo(dataSource conf.TSDB, getProductSchemaModel schema.GetSchemaModel, getDeviceSchemaModel schema.GetSchemaModel, kv kv.Store) *DeviceDataRepo {
+func NewDeviceDataRepo(dataSource conf.TSDB, getProductSchemaModel schema.GetSchemaModel, getDeviceSchemaModel schema.GetSchemaModel, kv kv.Store) msgThing.SchemaDataRepo {
 	td, err := clients.NewTDengine(dataSource)
 	if err != nil {
 		logx.Error("NewTDengine err", err)

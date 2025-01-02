@@ -1,13 +1,15 @@
 module gitee.com/unitedrhino/things
 
-go 1.21.4
+go 1.22.0
+
+toolchain go1.23.3
 
 //gitee.com/unitedrhino/core => ../core
 //gitee.com/unitedrhino/share => ../share
 
 require (
 	gitee.com/unitedrhino/core v1.2.1
-	gitee.com/unitedrhino/share v1.2.1
+	gitee.com/unitedrhino/share v1.2.2
 	gitee.com/unitedrhino/squirrel v1.20.5
 	github.com/dgraph-io/ristretto v0.1.0
 	github.com/dop251/goja v0.0.0-20231024180952-594410467bc6
@@ -22,8 +24,8 @@ require (
 	github.com/spf13/cast v1.7.0
 	github.com/zeromicro/go-zero v1.7.2
 	go.uber.org/atomic v1.11.0
-	golang.org/x/exp v0.0.0-20240222234643-814bf88cf225
-	golang.org/x/sync v0.9.0
+	golang.org/x/exp v0.0.0-20241204233417-43b7b7cde48d
+	golang.org/x/sync v0.10.0
 	google.golang.org/grpc v1.65.0
 	google.golang.org/protobuf v1.35.2
 	gorm.io/gorm v1.25.12
@@ -179,12 +181,12 @@ require (
 	go.uber.org/automaxprocs v1.6.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
-	golang.org/x/crypto v0.29.0 // indirect
-	golang.org/x/net v0.31.0 // indirect
+	golang.org/x/crypto v0.31.0 // indirect
+	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/oauth2 v0.21.0 // indirect
-	golang.org/x/sys v0.27.0 // indirect
-	golang.org/x/term v0.26.0 // indirect
-	golang.org/x/text v0.20.0 // indirect
+	golang.org/x/sys v0.28.0 // indirect
+	golang.org/x/term v0.27.0 // indirect
+	golang.org/x/text v0.21.0 // indirect
 	golang.org/x/time v0.8.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20240711142825-46eb208f015d // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240711142825-46eb208f015d // indirect

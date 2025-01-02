@@ -9,13 +9,13 @@ import (
 
 type (
 	Abnormal struct {
-		ProductID  string    `json:"productID,omitempty"`  // 产品id
-		DeviceName string    `json:"deviceName,omitempty"` // 设备名称
-		Action     int64     `json:"action,omitempty"`     //触发1还是解除2
-		Type       string    `json:"type,omitempty"`       // 异常类型
-		Timestamp  time.Time `json:"timestamp"`            // 操作时间
-		TraceID    string    `json:"traceID,omitempty"`    // 服务器端事务id
-		Reason     string    `json:"reason,omitempty"`     //原因
+		ProductID  string    `gorm:"column:product_id;type:varchar(100);NOT NULL" json:"productID,omitempty"`   // 产品id
+		DeviceName string    `gorm:"column:device_name;type:varchar(100);NOT NULL" json:"deviceName,omitempty"` // 设备名称
+		Action     def.Bool  `gorm:"column:user_id;type:BIGINT;default:1" json:"action,omitempty"`              //触发1还是解除2
+		Type       string    `gorm:"column:type;type:varchar(100);NOT NULL" json:"type,omitempty"`              // 异常类型
+		Timestamp  time.Time `gorm:"column:ts;NOT NULL;" json:"timestamp"`                                      // 操作时间
+		TraceID    string    `gorm:"column:trace_id;type:varchar(100);NOT NULL" json:"traceID,omitempty"`       // 服务器端事务id
+		Reason     string    `gorm:"column:reason;type:varchar(100);NOT NULL" json:"reason,omitempty"`          //原因
 	}
 	AbnormalFilter struct {
 		ProductID  string // 产品id

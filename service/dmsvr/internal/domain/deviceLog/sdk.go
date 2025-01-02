@@ -10,11 +10,11 @@ import (
 
 type (
 	SDK struct {
-		ProductID  string    `json:"productID"`  // 产品id
-		DeviceName string    `json:"deviceName"` // 设备名称
-		Content    string    `json:"content"`    // 具体信息
-		Timestamp  time.Time `json:"timestamp"`  // 操作时间
-		LogLevel   int64     `json:"logLevel"`
+		ProductID  string    `gorm:"column:product_id;type:varchar(100);NOT NULL" json:"productID,omitempty"`   // 产品id
+		DeviceName string    `gorm:"column:device_name;type:varchar(100);NOT NULL" json:"deviceName,omitempty"` // 设备名称
+		Content    string    `gorm:"column:content;type:varchar(256);NOT NULL" json:"content,omitempty"`        // 具体信息
+		Timestamp  time.Time `gorm:"column:ts;NOT NULL;" json:"timestamp"`                                      // 操作时间
+		LogLevel   int64     `gorm:"column:log_level;type:BIGINT;default:1" json:"logLevel"`
 	}
 	SDKFilter struct {
 		ProductID  string // 产品id
