@@ -1046,6 +1046,12 @@ type GroupInfoIndexResp struct {
 	Total int64        `json:"total"` //总数(只有分页的时候会返回)
 }
 
+type GroupInfoReadReq struct {
+	ID           int64  `json:"id"`               // id
+	Purpose      string `json:"purpose,optional"` //用途 不填默认为default
+	WithChildren bool   `json:"withChildren,optional"`
+}
+
 type IDPath struct {
 	ID     int64  `json:"id,optional"`
 	IDPath string `json:"idPath,optional"`

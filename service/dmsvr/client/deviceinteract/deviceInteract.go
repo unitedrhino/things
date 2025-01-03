@@ -104,6 +104,7 @@ type (
 	GroupInfoIndexReq                 = dm.GroupInfoIndexReq
 	GroupInfoIndexResp                = dm.GroupInfoIndexResp
 	GroupInfoMultiCreateReq           = dm.GroupInfoMultiCreateReq
+	GroupInfoReadReq                  = dm.GroupInfoReadReq
 	GroupInfoUpdateReq                = dm.GroupInfoUpdateReq
 	HubLogIndexReq                    = dm.HubLogIndexReq
 	HubLogIndexResp                   = dm.HubLogIndexResp

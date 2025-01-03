@@ -3,6 +3,7 @@ package devicegrouplogic
 import (
 	"context"
 	"gitee.com/unitedrhino/share/def"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceGroup"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
@@ -28,7 +29,7 @@ func NewGroupInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Gro
 }
 
 // 获取分组信息详情
-func (l *GroupInfoReadLogic) GroupInfoRead(in *dm.WithIDChildren) (*dm.GroupInfo, error) {
+func (l *GroupInfoReadLogic) GroupInfoRead(in *dm.GroupInfoReadReq) (*dm.GroupInfo, error) {
 	var (
 		po  *relationDB.DmGroupInfo
 		err error
@@ -39,13 +40,23 @@ func (l *GroupInfoReadLogic) GroupInfoRead(in *dm.WithIDChildren) (*dm.GroupInfo
 			ID:   def.RootNode,
 			Name: "根节点",
 		}
+		if in.Purpose == "" {
+			in.Purpose = deviceGroup.DictDefault
+		}
+		//ret, err := l.svcCtx.DictM.DictDetailRead(l.ctx, &sys.DictDetailReadReq{
+		//	DictCode: deviceGroup.DictCode,
+		//	Value:    in.Purpose,
+		//})
+		//if err == nil {
+		//	po.Name = ret.Value
+		//}
 	case def.NotClassified:
 		po = &relationDB.DmGroupInfo{
 			ID:   def.NotClassified,
 			Name: "自定义",
 		}
 	default:
-		po, err = l.GiDB.FindOne(l.ctx, in.Id)
+		po, err = l.GiDB.FindOneByFilter(l.ctx, relationDB.GroupInfoFilter{Purpose: in.Purpose, ID: in.Id, WithProduct: true})
 		if err != nil {
 			return nil, err
 		}
@@ -54,7 +65,7 @@ func (l *GroupInfoReadLogic) GroupInfoRead(in *dm.WithIDChildren) (*dm.GroupInfo
 		return ToGroupInfoPb(po), nil
 	}
 	children, err := l.GiDB.FindByFilter(l.ctx,
-		relationDB.GroupInfoFilter{IDPath: po.IDPath}, nil)
+		relationDB.GroupInfoFilter{Purpose: in.Purpose, IDPath: po.IDPath, WithProduct: true}, nil)
 	if err != nil {
 		return nil, err
 	}

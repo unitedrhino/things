@@ -27,7 +27,7 @@ service api {
 
     @doc "获取分组详情信息"
     @handler read
-    post /read (WithIDChildren) returns (GroupInfo)
+    post /read (GroupInfoReadReq) returns (GroupInfo)
 
     @doc "更新分组信息"
     @handler update
@@ -77,7 +77,11 @@ type (
         Children []*GroupInfo `json:"children,optional,omitempty"`
     }
 
-
+    GroupInfoReadReq{
+        ID int64 `json:"id"`         // id
+        Purpose string `json:"purpose,optional"`//用途 不填默认为default
+        WithChildren bool `json:"withChildren,optional"`
+    }
     GroupInfoIndexReq  {
         Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
         AreaID int64 `json:"areaID,string,optional"`                    //区域ID

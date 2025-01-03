@@ -2647,7 +2647,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/WithIDChildren"
+              "$ref": "#/definitions/GroupInfoReadReq"
             }
           }
         ],
@@ -10390,6 +10390,28 @@
       "required": [
         "list",
         "total"
+      ]
+    },
+    "GroupInfoReadReq": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "description": " id"
+        },
+        "purpose": {
+          "type": "string",
+          "description": "用途 不填默认为default"
+        },
+        "withChildren": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      },
+      "title": "GroupInfoReadReq",
+      "required": [
+        "id"
       ]
     },
     "IDPath": {

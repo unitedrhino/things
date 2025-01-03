@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceGroup"
 	"time"
 
 	"gitee.com/unitedrhino/core/service/timed/timedjobsvr/client/timedmanage"
@@ -489,12 +490,12 @@ func DictInit(svcCtx *svc.ServiceContext) {
 	svcCtx.DictM.DictInfoCreate(ctx, &sys.DictInfo{
 		Group: def.DictGroupThings,
 		Name:  "设备分组用途",
-		Code:  "deviceGroupPurpose",
+		Code:  deviceGroup.DictCode,
 	})
 	svcCtx.DictM.DictDetailCreate(ctx, &sys.DictDetail{
-		DictCode: "deviceGroupPurpose",
+		DictCode: deviceGroup.DictCode,
 		Label:    "默认",
-		Value:    "default",
+		Value:    deviceGroup.DictDefault,
 		Sort:     1,
 	})
 	svcCtx.DictM.DictInfoCreate(ctx, &sys.DictInfo{

@@ -26,8 +26,8 @@ func NewReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogic {
 	}
 }
 
-func (l *ReadLogic) Read(req *types.WithIDChildren) (resp *types.GroupInfo, err error) {
-	dgResp, err := l.svcCtx.DeviceG.GroupInfoRead(l.ctx, &dm.WithIDChildren{Id: req.ID, WithChildren: req.WithChildren})
+func (l *ReadLogic) Read(req *types.GroupInfoReadReq) (resp *types.GroupInfo, err error) {
+	dgResp, err := l.svcCtx.DeviceG.GroupInfoRead(l.ctx, &dm.GroupInfoReadReq{Id: req.ID, WithChildren: req.WithChildren, Purpose: req.Purpose})
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.GetDeviceInfo req=%v err=%+v", utils.FuncName(), req, er)

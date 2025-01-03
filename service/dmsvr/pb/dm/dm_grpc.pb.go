@@ -3092,7 +3092,7 @@ type DeviceGroupClient interface {
 	// 获取分组信息列表
 	GroupInfoIndex(ctx context.Context, in *GroupInfoIndexReq, opts ...grpc.CallOption) (*GroupInfoIndexResp, error)
 	// 获取分组信息详情
-	GroupInfoRead(ctx context.Context, in *WithIDChildren, opts ...grpc.CallOption) (*GroupInfo, error)
+	GroupInfoRead(ctx context.Context, in *GroupInfoReadReq, opts ...grpc.CallOption) (*GroupInfo, error)
 	// 更新分组
 	GroupInfoUpdate(ctx context.Context, in *GroupInfo, opts ...grpc.CallOption) (*Empty, error)
 	// 删除分组
@@ -3140,7 +3140,7 @@ func (c *deviceGroupClient) GroupInfoIndex(ctx context.Context, in *GroupInfoInd
 	return out, nil
 }
 
-func (c *deviceGroupClient) GroupInfoRead(ctx context.Context, in *WithIDChildren, opts ...grpc.CallOption) (*GroupInfo, error) {
+func (c *deviceGroupClient) GroupInfoRead(ctx context.Context, in *GroupInfoReadReq, opts ...grpc.CallOption) (*GroupInfo, error) {
 	out := new(GroupInfo)
 	err := c.cc.Invoke(ctx, DeviceGroup_GroupInfoRead_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -3204,7 +3204,7 @@ type DeviceGroupServer interface {
 	// 获取分组信息列表
 	GroupInfoIndex(context.Context, *GroupInfoIndexReq) (*GroupInfoIndexResp, error)
 	// 获取分组信息详情
-	GroupInfoRead(context.Context, *WithIDChildren) (*GroupInfo, error)
+	GroupInfoRead(context.Context, *GroupInfoReadReq) (*GroupInfo, error)
 	// 更新分组
 	GroupInfoUpdate(context.Context, *GroupInfo) (*Empty, error)
 	// 删除分组
@@ -3231,7 +3231,7 @@ func (UnimplementedDeviceGroupServer) GroupInfoMultiCreate(context.Context, *Gro
 func (UnimplementedDeviceGroupServer) GroupInfoIndex(context.Context, *GroupInfoIndexReq) (*GroupInfoIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoIndex not implemented")
 }
-func (UnimplementedDeviceGroupServer) GroupInfoRead(context.Context, *WithIDChildren) (*GroupInfo, error) {
+func (UnimplementedDeviceGroupServer) GroupInfoRead(context.Context, *GroupInfoReadReq) (*GroupInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupInfoRead not implemented")
 }
 func (UnimplementedDeviceGroupServer) GroupInfoUpdate(context.Context, *GroupInfo) (*Empty, error) {
@@ -3317,7 +3317,7 @@ func _DeviceGroup_GroupInfoIndex_Handler(srv interface{}, ctx context.Context, d
 }
 
 func _DeviceGroup_GroupInfoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(WithIDChildren)
+	in := new(GroupInfoReadReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -3329,7 +3329,7 @@ func _DeviceGroup_GroupInfoRead_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: DeviceGroup_GroupInfoRead_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceGroupServer).GroupInfoRead(ctx, req.(*WithIDChildren))
+		return srv.(DeviceGroupServer).GroupInfoRead(ctx, req.(*GroupInfoReadReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
