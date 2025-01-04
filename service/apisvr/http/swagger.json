@@ -8900,7 +8900,11 @@
         "interval": {
           "type": "integer",
           "format": "int64",
-          "description": "间隔(单位毫秒) 如果这个值不为零值 则时间的开始和结束必须有效及聚合函数不应该为空"
+          "description": "间隔 如果这个值不为零值 则时间的开始和结束必须有效及聚合函数不应该为空"
+        },
+        "intervalUnit": {
+          "type": "string",
+          "description": "间隔单位 a (毫秒,默认), d (天), h (小时), m (分钟), n (月), s (秒), u (微秒), w (周), y (年)  则时间的开始和结束必须有效及聚合函数不应该为空"
         },
         "argFunc": {
           "type": "string",
@@ -8908,7 +8912,7 @@
         },
         "fill": {
           "type": "string",
-          "description": "指定窗口区间数据缺失的情况下的填充模式 参考:https:docs.taosdata.com/taos-sql/distinguished/"
+          "description": "指定窗口区间数据缺失的情况下的填充模式 参考:https:docs.taosdata.com/reference/taos-sql/distinguished/#fill-%E5%AD%90%E5%8F%A5"
         },
         "order": {
           "type": "integer",

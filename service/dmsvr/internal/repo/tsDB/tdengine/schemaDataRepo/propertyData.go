@@ -264,7 +264,11 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 		sql = sq.Select("FIRST(`ts`) AS ts", fmt.Sprintf("%s(`param`) as param", filter.ArgFunc))
 	}
 	if filter.Interval != 0 {
-		sql = sql.Interval("?a", filter.Interval)
+		var unit = filter.IntervalUnit
+		if unit == "" {
+			unit = "a"
+		}
+		sql = sql.Interval("?"+string(unit), filter.Interval)
 	}
 	if len(filter.Fill) > 0 {
 		sql = sql.Fill(filter.Fill)

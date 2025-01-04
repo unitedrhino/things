@@ -102,16 +102,23 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 		ProductID:   in.ProductID,
 		DeviceNames: in.DeviceNames,
 		//DeviceNames: in.DeviceNames,
-		Order:    in.Order,
-		DataID:   in.DataID,
-		Fill:     in.Fill,
-		Interval: in.Interval,
-		ArgFunc:  in.ArgFunc})
+		Order:        in.Order,
+		DataID:       in.DataID,
+		Fill:         in.Fill,
+		Interval:     in.Interval,
+		IntervalUnit: def.TimeUnit(in.IntervalUnit),
+		ArgFunc:      in.ArgFunc})
 	if err != nil {
 		l.Errorf("%s.GetPropertyDataByID err=%v", utils.FuncName(), err)
 		return nil, err
 	}
 	for _, devData := range dds {
+		if devData.TimeStamp.IsZero() {
+			continue
+		}
+		if in.Interval != 0 { //如果走了聚合函数,则需要将时间戳取整
+			devData.TimeStamp = devData.TimeStamp.Truncate(def.TimeUnit(in.IntervalUnit).ToDuration(in.Interval))
+		}
 		diData := dm.PropertyLogInfo{
 			Timestamp: devData.TimeStamp.UnixMilli(),
 			DataID:    devData.Identifier,
@@ -137,11 +144,12 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 				Page:      in.Page.GetPage(),
 				Size:      in.Page.GetSize(),
 			},
-			ProductID:   in.ProductID,
-			DataID:      in.DataID,
-			DeviceNames: in.DeviceNames,
-			Interval:    in.Interval,
-			ArgFunc:     in.ArgFunc})
+			ProductID:    in.ProductID,
+			DataID:       in.DataID,
+			DeviceNames:  in.DeviceNames,
+			Interval:     in.Interval,
+			IntervalUnit: def.TimeUnit(in.IntervalUnit),
+			ArgFunc:      in.ArgFunc})
 		if err != nil {
 			l.Errorf("%s.GetPropertyCountByID err=%v", utils.FuncName(), err)
 			return nil, err

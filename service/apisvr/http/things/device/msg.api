@@ -197,9 +197,10 @@ type (
         TimeStart int64 `json:"timeStart,string,optional,omitempty"`          //获取时间的开始
         TimeEnd int64 `json:"timeEnd,string,optional,omitempty"`              //时间的结束
         Page *PageInfo `json:"page,optional"`           //分页信息
-        Interval int64 `json:"interval,optional"`           //间隔(单位毫秒) 如果这个值不为零值 则时间的开始和结束必须有效及聚合函数不应该为空
+        Interval int64 `json:"interval,optional"`           //间隔 如果这个值不为零值 则时间的开始和结束必须有效及聚合函数不应该为空
+        IntervalUnit string `json:"intervalUnit,optional"`           //间隔单位 a (毫秒,默认), d (天), h (小时), m (分钟), n (月), s (秒), u (微秒), w (周), y (年)  则时间的开始和结束必须有效及聚合函数不应该为空
         ArgFunc string `json:"argFunc,optional"`           //聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考:https://docs.taosdata.com/taos-sql/function
-        Fill string `json:"fill,optional"`          //指定窗口区间数据缺失的情况下的填充模式 参考:https://docs.taosdata.com/taos-sql/distinguished/
+        Fill string `json:"fill,optional"`          //指定窗口区间数据缺失的情况下的填充模式 参考:https://docs.taosdata.com/reference/taos-sql/distinguished/#fill-%E5%AD%90%E5%8F%A5
         Order int64 `json:"order,optional"`    //时间排序 0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)
     }
 
