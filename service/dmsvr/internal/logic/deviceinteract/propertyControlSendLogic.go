@@ -119,6 +119,24 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 		}
 	}()
 	if utils.SliceIn(in.ShadowControl, shadow.ControlOnlyCloud, shadow.ControlOnlyCloudLatest, shadow.ControlOnlyCloudWithLog) {
+		{
+			appMsg := application.PropertyReportV2{
+				Device: dev, Timestamp: time.Now().UnixMilli(), Params: req.Params,
+			}
+			//应用事件通知-设备物模型属性上报通知 ↓↓↓
+			err := l.svcCtx.PubApp.DeviceThingPropertyReportV2(l.ctx, appMsg)
+			if err != nil {
+				logx.WithContext(l.ctx).Errorf("%s.DeviceThingPropertyReport  params:%v,err:%v", utils.FuncName(), req.Params, err)
+			}
+			err = l.svcCtx.WebHook.Publish(l.svcCtx.WithDeviceTenant(l.ctx, dev), sysExport.CodeDmDevicePropertyReport, appMsg)
+			if err != nil {
+				l.Error(err)
+			}
+			err = l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDevicePropertyReport, appMsg, map[string]any{
+				"productID":  dev.ProductID,
+				"deviceName": dev.DeviceName,
+			})
+		}
 		for k, v := range req.Params {
 			appMsg := application.PropertyReport{
 				Device: dev, Timestamp: time.Now().UnixMilli(),

@@ -188,6 +188,38 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 		}
 		ctx := ctxs.CopyCtx(l.ctx)
 		utils.Go(ctx, func() {
+			appMsg := application.PropertyReportV2{
+				Device: device, Timestamp: timeStamp.UnixMilli(), Params: paramValues,
+			}
+			//应用事件通知-设备物模型属性上报通知 ↓↓↓
+			err := l.svcCtx.PubApp.DeviceThingPropertyReportV2(ctx, appMsg)
+			if err != nil {
+				logx.WithContext(ctx).Errorf("%s.DeviceThingPropertyReport  params:%v,err:%v", utils.FuncName(), paramValues, err)
+			}
+			err = l.svcCtx.WebHook.Publish(l.svcCtx.WithDeviceTenant(ctx, device), sysExport.CodeDmDevicePropertyReportV2, appMsg)
+			if err != nil {
+				l.Error(err)
+			}
+			di, err := l.svcCtx.DeviceCache.GetData(l.ctx, device)
+			if err != nil {
+				l.Error(err)
+			}
+			if di != nil {
+				err = l.svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDevicePropertyReport2, appMsg, map[string]any{
+					"productID":  device.ProductID,
+					"deviceName": device.DeviceName,
+				}, map[string]any{
+					"projectID": di.ProjectID,
+				}, map[string]any{
+					"projectID": cast.ToString(di.ProjectID),
+					"areaID":    cast.ToString(di.AreaID),
+				})
+			}
+			if err != nil {
+				logx.WithContext(ctx).Error(err)
+			}
+		})
+		utils.Go(ctx, func() {
 			for identifier, param := range paramValues {
 				appMsg := application.PropertyReport{
 					Device: device, Timestamp: timeStamp.UnixMilli(),
@@ -406,6 +438,36 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 					"areaID":    cast.ToString(di.AreaID),
 				})
 			}
+		}
+		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).Infof("%s.DeviceThingPropertyReport startTime:%v",
+			utils.FuncName(), startTime)
+	})
+	utils.Go(ctx, func() {
+		startTime := time.Now()
+		appMsg := application.PropertyReportV2{Device: device, Timestamp: timeStamp.UnixMilli(), Params: paramValues}
+		//应用事件通知-设备物模型属性上报通知 ↓↓↓
+		err := l.svcCtx.PubApp.DeviceThingPropertyReportV2(ctx, appMsg)
+		if err != nil {
+			logx.WithContext(ctx).Errorf("%s.DeviceThingPropertyReport  params:%v,err:%v", utils.FuncName(), paramValues, err)
+		}
+		err = l.svcCtx.WebHook.Publish(l.svcCtx.WithDeviceTenant(l.ctx, device), sysExport.CodeDmDevicePropertyReportV2, appMsg)
+		if err != nil {
+			l.Error(err)
+		}
+		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, device)
+		if err != nil {
+			l.Error(err)
+		}
+		if di != nil {
+			err = l.svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDevicePropertyReport, appMsg, map[string]any{
+				"productID":  device.ProductID,
+				"deviceName": device.DeviceName,
+			}, map[string]any{
+				"projectID": di.ProjectID,
+			}, map[string]any{
+				"projectID": cast.ToString(di.ProjectID),
+				"areaID":    cast.ToString(di.AreaID),
+			})
 		}
 		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).Infof("%s.DeviceThingPropertyReport startTime:%v",
 			utils.FuncName(), startTime)
