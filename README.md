@@ -54,8 +54,8 @@
 3. 高性能消息队列：[nats](https://docs.nats.io/)
 4. 关系型数据库：[mysql (推荐使用 MariaDB 或 MySQL 5.7)](https://mariadb.com/) 或 pgsql，未来将支持更多数据库
 5. 微服务注册中心（单体可不使用）：etcd
-6. 云原生轻量级对象存储：[minio](https://min.io/)
-7. 开源、高性能、云原生时序数据处理平台：[tdengine](https://www.taosdata.com/)
+6. 云原生轻量级对象存储(也可以使用阿里云oss)：[minio](https://min.io/)
+7. 开源、高性能、云原生时序数据处理平台(可选)：[tdengine](https://www.taosdata.com/)
 8. 大规模可弹性伸缩的云原生分布式物联网 MQTT 消息服务器：[emqx](https://docs.emqx.com/zh/emqx/latest/)
 
 ### 前端

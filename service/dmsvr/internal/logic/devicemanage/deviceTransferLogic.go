@@ -189,7 +189,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 			"last_bind":    time.Now(),
 		}
 		if pi.TenantCode != uc.TenantCode {
-			ctx = ctxs.BindTenantCode(ctx, pi.TenantCode, 0)
+			ctx = ctxs.WithRoot(l.ctx)
 			param["tenant_code"] = pi.TenantCode
 		}
 		if in.IsCleanData == def.True {
