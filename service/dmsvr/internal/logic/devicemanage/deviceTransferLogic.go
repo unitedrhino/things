@@ -59,7 +59,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 	var changeAreaIDPaths = map[string]struct{}{}
 	var projectIDSet = map[int64]struct{}{}
 	if in.Device != nil && in.Device.ProductID != "" {
-		di, err := diDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{
+		di, err := diDB.FindOneByFilter(ctxs.WithDefaultRoot(l.ctx), relationDB.DeviceFilter{
 			ProductID:   in.Device.ProductID,
 			DeviceNames: []string{in.Device.DeviceName},
 		})
