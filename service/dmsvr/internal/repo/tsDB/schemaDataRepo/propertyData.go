@@ -38,12 +38,9 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 					if !ok {
 						return errors.Parameter.AddMsg("结构体类型传参错误")
 					}
-					var vvv = map[string]any{}
-					for k, v := range vv {
-						vvv[k], err = v.ToVal()
-						if err != nil {
-							return err
-						}
+					vvv, err := msgThing.ToVal(vv)
+					if err != nil {
+						return err
 					}
 					ars[schema.GenArray(Identifier, num)] = vvv
 				}
@@ -62,12 +59,9 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 				if !ok {
 					return errors.Parameter.AddMsg("结构体类型传参错误")
 				}
-				var vvv = map[string]any{}
-				for k, v := range vv {
-					vvv[k], err = v.ToVal()
-					if err != nil {
-						return err
-					}
+				vvv, err := msgThing.ToVal(vv)
+				if err != nil {
+					return err
 				}
 				ars[property.Identifier] = vvv
 				d.asyncPropertyStructArray.AsyncInsert(&PropertyStructArray{
@@ -129,12 +123,9 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 				if !ok {
 					return errors.Parameter.AddMsg("结构体类型传参错误")
 				}
-				var vvv = map[string]any{}
-				for k, v := range vv {
-					vvv[k], err = v.ToVal()
-					if err != nil {
-						return err
-					}
+				vvv, err := msgThing.ToVal(vv)
+				if err != nil {
+					return err
 				}
 				ars[property.Identifier] = vvv
 			}
@@ -153,12 +144,9 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 			if !ok {
 				return errors.Parameter.AddMsg("结构体类型传参错误")
 			}
-			var vvv = map[string]any{}
-			for k, v := range vv {
-				vvv[k], err = v.ToVal()
-				if err != nil {
-					return err
-				}
+			vvv, err := msgThing.ToVal(vv)
+			if err != nil {
+				return err
 			}
 			ars[property.Identifier] = vvv
 			d.asyncPropertyStruct.AsyncInsert(&PropertyStruct{

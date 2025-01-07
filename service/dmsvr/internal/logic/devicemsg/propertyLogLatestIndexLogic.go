@@ -76,52 +76,50 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 		dataID := k
 		wait.Add(1)
 		utils.Go(l.ctx, func() {
-			func() {
-				defer wait.Done()
-				data, err := dd.GetLatestPropertyDataByID(l.ctx, property, msgThing.LatestFilter{
-					ProductID:  in.ProductID,
-					DeviceName: in.DeviceName,
-					DataID:     dataID,
-				})
+			defer wait.Done()
+			data, err := dd.GetLatestPropertyDataByID(l.ctx, property, msgThing.LatestFilter{
+				ProductID:  in.ProductID,
+				DeviceName: in.DeviceName,
+				DataID:     dataID,
+			})
+			if err != nil {
+				l.Errorf("%s.GetLatestPropertyDataByID err=%v", utils.FuncName(), utils.Fmt(err))
+				return
+			}
+			var diData dm.PropertyLogInfo
+			if data != nil && lastBind != 0 {
+				if data.TimeStamp.Before(time.Unix(lastBind, 0)) {
+					data = nil
+				}
+			}
+			if data == nil {
+				v, err := property.Define.GetDefaultValue()
 				if err != nil {
-					l.Errorf("%s.GetLatestPropertyDataByID err=%v", utils.FuncName(), utils.Fmt(err))
+					l.Errorf("%s.GetDefaultValue err=%v", utils.FuncName(), utils.Fmt(err))
 					return
 				}
-				var diData dm.PropertyLogInfo
-				if data != nil && lastBind != 0 {
-					if data.TimeStamp.Before(time.Unix(lastBind, 0)) {
-						data = nil
-					}
+				diData = dm.PropertyLogInfo{
+					Timestamp: 0,
+					DataID:    dataID,
+					Value:     utils.ToString(v),
 				}
-				if data == nil {
-					v, err := property.Define.GetDefaultValue()
-					if err != nil {
-						l.Errorf("%s.GetDefaultValue err=%v", utils.FuncName(), utils.Fmt(err))
-						return
-					}
-					diData = dm.PropertyLogInfo{
-						Timestamp: 0,
-						DataID:    dataID,
-						Value:     utils.ToString(v),
-					}
+			} else {
+				diData = dm.PropertyLogInfo{
+					Timestamp: data.TimeStamp.UnixMilli(),
+					DataID:    data.Identifier,
+				}
+				var payload []byte
+				if param, ok := data.Param.(string); ok {
+					payload = []byte(param)
 				} else {
-					diData = dm.PropertyLogInfo{
-						Timestamp: data.TimeStamp.UnixMilli(),
-						DataID:    data.Identifier,
-					}
-					var payload []byte
-					if param, ok := data.Param.(string); ok {
-						payload = []byte(param)
-					} else {
-						payload, _ = json.Marshal(data.Param)
-					}
-					diData.Value = string(payload)
+					payload, _ = json.Marshal(data.Param)
 				}
-				mutex.Lock()
-				defer mutex.Unlock()
-				diDatas = append(diDatas, &diData)
-				l.Debugf("%s.get data=%+v", utils.FuncName(), diData)
-			}()
+				diData.Value = string(payload)
+			}
+			mutex.Lock()
+			defer mutex.Unlock()
+			diDatas = append(diDatas, &diData)
+			l.Debugf("%s.get data=%+v", utils.FuncName(), diData)
 		})
 	}
 	wait.Wait()
