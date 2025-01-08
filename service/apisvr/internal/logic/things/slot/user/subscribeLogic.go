@@ -33,7 +33,7 @@ func (l *SubscribeLogic) Subscribe(req *types.SlotUserSubscribeReq) error {
 	l.Infof("userSubscribeSlot:%v", utils.Fmt(req))
 	switch req.Code {
 	case def.UserSubscribeDeviceConn:
-	case def.UserSubscribeDevicePropertyReport:
+	case def.UserSubscribeDevicePropertyReport, def.UserSubscribeDevicePropertyReport2:
 	case def.UserSubscribeDeviceActionReport:
 	case def.UserSubscribeDeviceOtaReport:
 	default:

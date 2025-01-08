@@ -90,3 +90,8 @@ Event:
   Nats:
     Url: nats://127.0.0.1:4222
     Consumer: things-apisvr
+Telemetry:
+  Name: thingsvr
+  Endpoint: http://localhost:14268/api/traces
+  Sampler: 1.0
+  Batcher: jaeger
