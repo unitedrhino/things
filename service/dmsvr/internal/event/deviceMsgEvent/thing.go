@@ -459,7 +459,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 			l.Error(err)
 		}
 		if di != nil {
-			err = l.svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDevicePropertyReport, appMsg, map[string]any{
+			err = l.svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDevicePropertyReport2, appMsg, map[string]any{
 				"productID":  device.ProductID,
 				"deviceName": device.DeviceName,
 			}, map[string]any{
