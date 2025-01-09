@@ -25,7 +25,7 @@ import (
 	"time"
 )
 
-type LightSvrClient struct {
+type CoreSvrClient struct {
 	ProtocolM      protocolmanage.ProtocolManage
 	ProductM       productmanage.ProductManage
 	ProductCache   dmExport.ProductCacheT
@@ -44,7 +44,7 @@ type CoreProtocol struct {
 	ProductIDMap          map[string]string //key 是外部的产品ID,value是内部的产品ID
 	UnitedRhinoProductIDs []string          //iThings 的产品ID列表
 	ProductIDMapMutex     sync.RWMutex
-	LightSvrClient
+	CoreSvrClient
 	ThirdProductIDFieldName devices.ProtocolKey
 	taskCreateOnce          sync.Once
 }
@@ -89,7 +89,7 @@ func NewCoreProtocol(c conf.EventConf, pi *dm.ProtocolInfo, pc *CoreProtocolConf
 		FastEvent:  e,
 		Pi:         pi,
 		ServerName: pc.ServerName,
-		LightSvrClient: LightSvrClient{
+		CoreSvrClient: CoreSvrClient{
 			ProtocolM:      protocolmanage.NewProtocolManage(pc.DmClient),
 			ProductM:       pm,
 			SchemaCache:    sc,
@@ -196,7 +196,7 @@ func (p *CoreProtocol) RegisterTimerHandler(f func(ctx context.Context, t time.T
 		_, err := p.TimedM.TaskInfoCreate(ctx, &timedmanage.TaskInfo{
 			GroupCode: def.TimedUnitedRhinoQueueGroupCode,                            //组编码
 			Type:      1,                                                             //任务类型 1 定时任务 2 延时任务
-			Name:      fmt.Sprintf("自定义协议-%s-定时任务-数据同步", p.Pi.Name),                  // 任务名称
+			Name:      fmt.Sprintf("自定义协议-%s-定时任务-数据同步", p.Pi.Name),     // 任务名称
 			Code:      p.genCode(),                                                   //任务编码
 			Params:    fmt.Sprintf(`{"topic":"%s","payload":""}`, p.genTimerTopic()), // 任务参数,延时任务如果没有传任务参数会拿数据库的参数来执行
 			CronExpr:  "@every 10m",                                                  // cron执行表达式
