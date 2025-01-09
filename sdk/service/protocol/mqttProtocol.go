@@ -27,13 +27,13 @@ type DevHandle func(ctx context.Context, topic string, payload []byte) error
 type ConnHandle func(ctx context.Context, info devices.DevConn) (devices.DevConn, error)
 
 type MqttProtocol struct {
-	*LightProtocol
+	*CoreProtocol
 	MqttClient   *clients.MqttClient
 	DevSubHandle map[string]DevHandle
 	ConnHandle   ConnHandle
 }
 
-func NewMqttProtocol(c conf.EventConf, pi *dm.ProtocolInfo, pc *LightProtocolConf, mqttc conf.DevLinkConf) (*MqttProtocol, error) {
+func NewMqttProtocol(c conf.EventConf, pi *dm.ProtocolInfo, pc *CoreProtocolConf, mqttc conf.DevLinkConf) (*MqttProtocol, error) {
 	if mqttc.Mqtt == nil {
 		return nil, errors.Parameter.AddMsg("DevLinkConf need")
 	}
@@ -41,11 +41,11 @@ func NewMqttProtocol(c conf.EventConf, pi *dm.ProtocolInfo, pc *LightProtocolCon
 	if err != nil {
 		return nil, err
 	}
-	lightProto, err := NewLightProtocol(c, pi, pc)
+	lightProto, err := NewCoreProtocol(c, pi, pc)
 	if err != nil {
 		return nil, err
 	}
-	return &MqttProtocol{LightProtocol: lightProto, MqttClient: mc, DevSubHandle: make(map[string]DevHandle)}, nil
+	return &MqttProtocol{CoreProtocol: lightProto, MqttClient: mc, DevSubHandle: make(map[string]DevHandle)}, nil
 }
 
 func (m *MqttProtocol) SubscribeDevMsg(topic string, handle DevHandle) error {
@@ -75,7 +75,7 @@ func (m *MqttProtocol) Start() error {
 			logx.Errorf("%s.mqttSetOnConnectHandler.subscribes err:%v", utils.FuncName(), err)
 		}
 	})
-	return m.LightProtocol.Start()
+	return m.CoreProtocol.Start()
 }
 
 func (m *MqttProtocol) subscribes(cli mqtt.Client) error {

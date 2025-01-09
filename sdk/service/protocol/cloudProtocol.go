@@ -38,7 +38,7 @@ type CloudProtocol[pConf ConfImp] struct {
 	ConfMapMutex sync.RWMutex
 	SyncDevices  SyncDevicesFunc[pConf]
 	InitFunc     func(conf pConf) (close func(), err error)
-	*LightProtocol
+	*CoreProtocol
 }
 
 type ConfInfo[pConf ConfImp] struct {
@@ -54,7 +54,7 @@ type CloudProtocolConf[pConf ConfImp] struct {
 }
 
 func NewCloudProtocol[pConf ConfImp](c conf.EventConf, pi *dm.ProtocolInfo, pc *CloudProtocolConf[pConf]) (*CloudProtocol[pConf], error) {
-	lp, err := NewLightProtocol(c, pi, &LightProtocolConf{
+	lp, err := NewCoreProtocol(c, pi, &CoreProtocolConf{
 		ServerName: pc.ServerName,
 		DmClient:   pc.DmClient,
 		TimedM:     pc.TimedM,
@@ -64,14 +64,14 @@ func NewCloudProtocol[pConf ConfImp](c conf.EventConf, pi *dm.ProtocolInfo, pc *
 		return nil, err
 	}
 	return &CloudProtocol[pConf]{
-		LightProtocol: lp,
-		ConfMap:       map[string]ConfInfo[pConf]{},
+		CoreProtocol: lp,
+		ConfMap:      map[string]ConfInfo[pConf]{},
 	}, nil
 }
 
 func (p *CloudProtocol[pConf]) Start() error {
 	ctx := context.Background()
-	err := p.LightProtocol.Start()
+	err := p.CoreProtocol.Start()
 	if err != nil {
 		return err
 	}

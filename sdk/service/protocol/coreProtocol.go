@@ -37,7 +37,7 @@ type LightSvrClient struct {
 	TimerHandles   []func(ctx context.Context, t time.Time) error
 }
 
-type LightProtocol struct {
+type CoreProtocol struct {
 	FastEvent             *eventBus.FastEvent
 	Pi                    *dm.ProtocolInfo
 	ServerName            string
@@ -49,7 +49,7 @@ type LightProtocol struct {
 	taskCreateOnce          sync.Once
 }
 
-type LightProtocolConf struct {
+type CoreProtocolConf struct {
 	ServerName string
 	DmClient   zrpc.Client
 	TimedM     zrpc.Client
@@ -57,7 +57,7 @@ type LightProtocolConf struct {
 	Port       int64
 }
 
-func NewLightProtocol(c conf.EventConf, pi *dm.ProtocolInfo, pc *LightProtocolConf) (*LightProtocol, error) {
+func NewCoreProtocol(c conf.EventConf, pi *dm.ProtocolInfo, pc *CoreProtocolConf) (*CoreProtocol, error) {
 	e, err := eventBus.NewFastEvent(c, pc.ServerName, pc.NodeID)
 	if err != nil {
 		return nil, err
@@ -85,7 +85,7 @@ func NewLightProtocol(c conf.EventConf, pi *dm.ProtocolInfo, pc *LightProtocolCo
 	if pc.TimedM != nil {
 		timedM = timedmanage.NewTimedManage(pc.TimedM)
 	}
-	return &LightProtocol{
+	return &CoreProtocol{
 		FastEvent:  e,
 		Pi:         pi,
 		ServerName: pc.ServerName,
@@ -102,7 +102,7 @@ func NewLightProtocol(c conf.EventConf, pi *dm.ProtocolInfo, pc *LightProtocolCo
 	}, nil
 }
 
-func (p *LightProtocol) Start() error {
+func (p *CoreProtocol) Start() error {
 	ctx := ctxs.WithRoot(context.Background())
 	_, err := p.ProtocolM.ProtocolInfoCreate(ctx, p.Pi) //初始化协议
 	if err != nil && !errors.Cmp(errors.Fmt(err), errors.Duplicate) {
@@ -134,7 +134,7 @@ func (p *LightProtocol) Start() error {
 	return nil
 }
 
-func (p *LightProtocol) RunTimerHandles() {
+func (p *CoreProtocol) RunTimerHandles() {
 	for _, f := range p.TimerHandles {
 		err := f(ctxs.WithRoot(context.Background()), time.Now())
 		if err != nil {
@@ -143,7 +143,7 @@ func (p *LightProtocol) RunTimerHandles() {
 	}
 }
 
-func (p *LightProtocol) RegisterDeviceMsgDownHandler(
+func (p *CoreProtocol) RegisterDeviceMsgDownHandler(
 	handle func(ctx context.Context, info *devices.InnerPublish) error) error {
 	err := p.FastEvent.QueueSubscribe(fmt.Sprintf(topics.DeviceDownAll, p.Pi.Code),
 		func(ctx context.Context, t time.Time, body []byte) error {
@@ -161,7 +161,7 @@ func (p *LightProtocol) RegisterDeviceMsgDownHandler(
 	return err
 }
 
-func (p *LightProtocol) DevPubMsg(ctx context.Context, publishMsg *devices.DevPublish) error {
+func (p *CoreProtocol) DevPubMsg(ctx context.Context, publishMsg *devices.DevPublish) error {
 	publishMsg.ProtocolCode = p.Pi.Code
 	UpdateDeviceActivity(ctx, devices.Core{
 		ProductID:  publishMsg.ProductID,
@@ -178,16 +178,16 @@ func (p *LightProtocol) DevPubMsg(ctx context.Context, publishMsg *devices.DevPu
 	return nil
 }
 
-func (p *LightProtocol) genCode() string {
+func (p *CoreProtocol) genCode() string {
 	return fmt.Sprintf("protocol-%s-timer", p.Pi.Code)
 }
 
-func (p *LightProtocol) genTimerTopic() string {
+func (p *CoreProtocol) genTimerTopic() string {
 	return fmt.Sprintf("server.things.%s.protocol.timer", p.ServerName)
 }
 
 // 定时同步设备信息,产品信息 如果不需要可以不注册
-func (p *LightProtocol) RegisterTimerHandler(f func(ctx context.Context, t time.Time) error) error {
+func (p *CoreProtocol) RegisterTimerHandler(f func(ctx context.Context, t time.Time) error) error {
 	if p.TimedM == nil {
 		return errors.Panic.AddMsg("timed not init")
 	}
@@ -217,7 +217,7 @@ func (p *LightProtocol) RegisterTimerHandler(f func(ctx context.Context, t time.
 	})
 	return err
 }
-func (p *LightProtocol) RegisterProductIDSync() error {
+func (p *CoreProtocol) RegisterProductIDSync() error {
 	p.ThirdProductIDFieldName = devices.ProtocolKeyProductID
 	err := p.RegisterTimerHandler(func(ctx context.Context, t time.Time) error {
 		pis, err := p.ProductM.ProductInfoIndex(ctx, &dm.ProductInfoIndexReq{
@@ -244,13 +244,13 @@ func (p *LightProtocol) RegisterProductIDSync() error {
 }
 
 // 通过外部的产品iD查询联犀的产品iD
-func (p *LightProtocol) GetProductID(productID string) string {
+func (p *CoreProtocol) GetProductID(productID string) string {
 	p.ProductIDMapMutex.RLock()
 	defer p.ProductIDMapMutex.RUnlock()
 	return p.ProductIDMap[productID]
 }
 
-func (p *LightProtocol) GetUnitedRhinoProductIDs() []string {
+func (p *CoreProtocol) GetUnitedRhinoProductIDs() []string {
 	p.ProductIDMapMutex.RLock()
 	defer p.ProductIDMapMutex.RUnlock()
 	return p.UnitedRhinoProductIDs
