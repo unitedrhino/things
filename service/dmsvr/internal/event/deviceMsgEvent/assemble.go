@@ -47,6 +47,7 @@ func ToDmDevicesInfoReq(diDeviceBasicInfoDo *msgThing.DeviceBasicInfo) (dmDevice
 	return &dm.DeviceInfo{
 		ProductID:      diDeviceBasicInfoDo.ProductID,
 		DeviceName:     diDeviceBasicInfoDo.DeviceName,
+		DeviceAlias:    utils.ToRpcNullString(diDeviceBasicInfoDo.DeviceAlias),
 		Imei:           diDeviceBasicInfoDo.Imei,
 		Mac:            diDeviceBasicInfoDo.Mac,
 		Version:        utils.ToRpcNullString(diDeviceBasicInfoDo.Version),

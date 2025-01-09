@@ -153,8 +153,9 @@ func (l *GatewayLogic) HandleRegister(msg *deviceMsg.PublishMsg, resp *msgGatewa
 		if err != nil {
 			if errors.Cmp(err, errors.NotFind) {
 				_, err = devicemanage.NewDeviceManageServer(l.svcCtx).DeviceInfoCreate(l.ctx, &dm.DeviceInfo{
-					ProductID:  v.ProductID,
-					DeviceName: v.DeviceName,
+					ProductID:   v.ProductID,
+					DeviceName:  v.DeviceName,
+					DeviceAlias: utils.ToRpcNullString(v.DeviceAlias),
 				})
 			}
 			if err != nil {
