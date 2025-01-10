@@ -1,0 +1,51 @@
+Name: ud.rpc
+ListenOn: 0.0.0.0:7769
+Log:
+  Encoding: plain
+  #Mode: file
+Database:
+  DBType: mysql
+  DSN: root:password@tcp(tdengine:3306)/iThings?charset=utf8mb4&collation=utf8mb4_bin&parseTime=true&loc=Asia%2FShanghai
+#  DBType: pgsql
+#  DSN: pgsql:host=localhost;port=5432;dbname=ithings;user=postgres;password=password
+CacheRedis:
+  - Host: redis:6379
+    Pass:
+    Type: node
+Event:
+  Nats:
+    Url: nats://nats:4222
+DmRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000
+TimedJobRpc:
+  Enable: true
+  Mode: grpc
+  Conf:
+    Timeout: 1000000
+    Etcd:
+      Hosts:
+        - etcd:2379
+      Key: timedjob.rpc
+SysRpc:
+  Enable: true
+  Mode: grpc
+  Conf:
+    Timeout: 1000000
+    Etcd:
+      Hosts:
+        - etcd:2379
+      Key: sys.rpc
+OssConf:
+  OssType: minio
+  PublicBucketName: ithings-public
+  PrivateBucketName: ithings-private
+  TemporaryBucketName: ithings-temporary
+  AccessKeyID: root
+  AccessKeySecret: password
+  Location: minio:9000
+  ConnectTimeout: 6000
+  ReadWriteTimeout: 60000
+  UseSSL: false

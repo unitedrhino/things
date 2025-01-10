@@ -3,6 +3,7 @@ WORKDIR /unitedrhino/
 COPY ./ ./
 RUN go env -w GOPROXY=https://goproxy.cn,direct
 ENV GOPRIVATE=*.gitee.com,gitee.com/*
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
 RUN apk add  git
 RUN go mod tidy
 RUN cd ./service/apisvr  && go build -tags no_k8s -ldflags="-s -w" .
@@ -15,6 +16,6 @@ RUN apk add tzdata
 
 WORKDIR /unitedrhino/
 COPY --from=go-builder /unitedrhino/service/apisvr/apisvr ./apisvr
-#COPY --from=go-builder /unitedrhino/deploy/conf/things/etc/ ./etc
+COPY --from=go-builder /unitedrhino/service/apisvr/etc ./etc
 
 ENTRYPOINT ["./apisvr"]

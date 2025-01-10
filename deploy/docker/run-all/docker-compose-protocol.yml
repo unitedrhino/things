@@ -1,0 +1,70 @@
+version: '3.2'
+# Network
+networks:
+  unitedrhino_net:
+
+services:
+  protocol-aliyun-cloud:
+    image: registry.cn-qingdao.aliyuncs.com/unitedrhino/protocol-aliyun-cloud:latest
+    container_name: protocol-aliyun-cloud
+    hostname: protocol-aliyun-cloud
+    environment:
+      - confSuffix=${confSuffix}
+    restart: always
+    logging:
+      options:
+        max-size: "50M"
+        max-file: "10"
+      driver: json-file
+    networks:
+      - unitedrhino_net
+  protocol-aliyun-mqtt:
+    image: registry.cn-qingdao.aliyuncs.com/unitedrhino/protocol-aliyun-mqtt:latest
+    container_name: protocol-aliyun-mqtt
+    hostname: protocol-aliyun-mqtt
+    restart: always
+    ports:
+      - "9108:9108"
+    environment:
+      - devOpenApiApiKey=${devOpenApiApiKey} #emq的秘钥配置,参考: https://doc.unitedrhino.com/pages/24d647/#%E8%AE%BE%E5%A4%87%E5%9C%A8%E7%BA%BF%E7%8A%B6%E6%80%81%E6%A0%A1%E5%87%86-%E5%8F%AF%E9%80%89
+      - devOpenApiSecretKey=${devOpenApiSecretKey} #如上
+      - confSuffix=${confSuffix}
+    logging:
+      options:
+        max-size: "50M"
+        max-file: "10"
+      driver: json-file
+    networks:
+      - unitedrhino_net
+  protocol-tencent-cloud:
+    image: registry.cn-qingdao.aliyuncs.com/unitedrhino/protocol-tencent-cloud:latest
+    container_name: protocol-tencent-cloud
+    hostname: protocol-tencent-cloud
+    environment:
+      - confSuffix=${confSuffix}
+    restart: always
+    logging:
+      options:
+        max-size: "50M"
+        max-file: "10"
+      driver: json-file
+    networks:
+      - unitedrhino_net
+  protocol-wumei-mqtt:
+    image: registry.cn-qingdao.aliyuncs.com/unitedrhino/protocol-wumei-mqtt:latest
+    container_name: protocol-wumei-mqtt
+    hostname: protocol-wumei-mqtt
+    restart: always
+    ports:
+      - "9104:9104"
+    environment:
+      - devOpenApiApiKey=${devOpenApiApiKey} #emq的秘钥配置,参考: https://doc.unitedrhino.com/pages/24d647/#%E8%AE%BE%E5%A4%87%E5%9C%A8%E7%BA%BF%E7%8A%B6%E6%80%81%E6%A0%A1%E5%87%86-%E5%8F%AF%E9%80%89
+      - devOpenApiSecretKey=${devOpenApiSecretKey} #如上
+      - confSuffix=${confSuffix}
+    logging:
+      options:
+        max-size: "50M"
+        max-file: "10"
+      driver: json-file
+    networks:
+      - unitedrhino_net

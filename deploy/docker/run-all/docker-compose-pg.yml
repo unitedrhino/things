@@ -24,13 +24,15 @@ services:
       - emqx
       - core
     environment:
-      - isInitTable=true
-#      - dbType=mysql
-#      - dbDSN=root:password@tcp(mariadb:3306)/iThings?charset=utf8mb4&collation=utf8mb4_bin&parseTime=true&loc=Asia%2FShanghai
+      - confSuffix=${confSuffix}
+      - devOpenApiApiKey=${devOpenApiApiKey} #emq的秘钥配置,参考: https://doc.unitedrhino.com/pages/24d647/#%E8%AE%BE%E5%A4%87%E5%9C%A8%E7%BA%BF%E7%8A%B6%E6%80%81%E6%A0%A1%E5%87%86-%E5%8F%AF%E9%80%89
+      - devOpenApiSecretKey=${devOpenApiSecretKey} #如上
+      - OssCustomHost=${OssCustomHost} #ota升级给设备的路径,需要外网可以访问,替换ip即可
+      - isInitTable=${isInitTable}
       - dbType=pgsql #pgsql打开这个配置和下面pgsql的容器注释
       - dbDSN=postgres://postgres:password@postgres:5432/postgres
-      - tsDBDSN=root:taosdata@http(tdengine:6041)/ithings?readBufferSize=5242880
-      - tsDBDriver=taosRestful
+      - tsDBDSN=${tsDBDSN}
+      - tsDBDriver=${tsDBDriver}
 #      - tsDBDSN=root:taosdata@ws(tdengine:6041)/ithings?readBufferSize=5242880 # ws模式,性能更好,但是需要提前初始化数据库
 #      - tsDBDriver=taosWS
     logging:
@@ -57,7 +59,8 @@ services:
     volumes:
       - ../conf/core/etc:/unitedrhino/etc
     environment:
-      - isInitTable=true
+      - confSuffix=${confSuffix}
+      - isInitTable=${isInitTable}
 #      - dbType=mysql
 #      - dbDSN=root:password@tcp(mariadb:3306)/iThings?charset=utf8mb4&collation=utf8mb4_bin&parseTime=true&loc=Asia%2FShanghai
       - dbType=pgsql #pgsql打开这个配置和下面pgsql的容器注释
