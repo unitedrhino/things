@@ -111,9 +111,9 @@ func migrateTableColumn() error {
 	if err := db.CreateInBatches(&MigrateProductCategory, 100).Error; err != nil {
 		return err
 	}
-	if err := db.CreateInBatches(&MigrateManufacturerInfo, 100).Error; err != nil {
-		return err
-	}
+	//if err := db.CreateInBatches(&MigrateManufacturerInfo, 100).Error; err != nil {
+	//	return err
+	//}
 	if err := db.Create(&DmProductID{ID: 100}).Error; err != nil {
 		return err
 	}
@@ -124,7 +124,7 @@ func migrateTableColumn() error {
 }
 
 var (
-	MigrateProtocolInfo    = []DmProtocolInfo{{ID: 3, Name: "iThings标准协议", Code: "iThings", TransProtocol: "mqtt", EtcdKey: "dg.rpc"}}
+	MigrateProtocolInfo    = []DmProtocolInfo{{ID: 3, Name: "联犀标准协议", Code: "iThings", TransProtocol: "mqtt", EtcdKey: "dg.rpc"}}
 	MigrateProductCategory = []DmProductCategory{
 		{ID: 3, Name: "照明设备", ParentID: def.RootNode, IDPath: "3-"},
 		{ID: 4, Name: "空调设备", ParentID: def.RootNode, IDPath: "4-"},
