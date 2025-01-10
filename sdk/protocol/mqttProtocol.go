@@ -244,6 +244,5 @@ func (m *MqttProtocol) subscribeWithFunc(cli mqtt.Client, topic string, handle f
 					"SubscribeDevicePublish topic:%v message:%v err:%v",
 					message.Topic(), string(message.Payload()), err)
 			}()
-
 		})
 }

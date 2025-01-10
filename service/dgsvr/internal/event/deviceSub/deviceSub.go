@@ -10,7 +10,7 @@ import (
 	"gitee.com/unitedrhino/share/domain/deviceMsg/msgExt"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
-	"gitee.com/unitedrhino/things/sdk/service/protocol"
+	"gitee.com/unitedrhino/things/sdk/protocol"
 	"gitee.com/unitedrhino/things/service/dgsvr/internal/domain/custom"
 	"gitee.com/unitedrhino/things/service/dgsvr/internal/event/innerSub"
 	deviceauthlogic "gitee.com/unitedrhino/things/service/dgsvr/internal/logic/deviceauth"

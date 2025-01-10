@@ -9,7 +9,7 @@ import (
 	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/events/topics"
 	"gitee.com/unitedrhino/share/utils"
-	"gitee.com/unitedrhino/things/sdk/service/protocol"
+	"gitee.com/unitedrhino/things/sdk/protocol"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

@@ -9,7 +9,7 @@ import (
 	"gitee.com/unitedrhino/share/domain/application"
 	"gitee.com/unitedrhino/share/domain/deviceAuth"
 	"gitee.com/unitedrhino/share/utils"
-	"gitee.com/unitedrhino/things/sdk/service/protocol"
+	"gitee.com/unitedrhino/things/sdk/protocol"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceStatus"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"

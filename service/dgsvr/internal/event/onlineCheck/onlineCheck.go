@@ -8,7 +8,7 @@ import (
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/utils"
-	"gitee.com/unitedrhino/things/sdk/service/protocol"
+	"gitee.com/unitedrhino/things/sdk/protocol"
 	"gitee.com/unitedrhino/things/service/dgsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
