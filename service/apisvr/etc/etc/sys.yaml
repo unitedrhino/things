@@ -1,0 +1,73 @@
+#系统管理模块配置-syssvr
+Name: sys.rpc
+ListenOn: 0.0.0.0:9180
+CpuThreshold: 0
+Etcd:
+  Hosts:
+    - localhost:2379
+  Key: sys.rpc
+Log:
+  Encoding: plain
+  #Mode: file
+Database:
+  DBType: mysql
+  DSN: root:password@tcp(localhost:3306)/iThings?charset=utf8mb4&collation=utf8mb4_bin&parseTime=true&loc=Asia%2FShanghai
+#  DBType: pgsql
+#  DSN: postgres://postgres:password@localhost:5432/postgres
+CacheRedis:
+  - Host: localhost:6379
+    Pass:
+    Type: node
+UserToken:
+  AccessSecret: ad879037-c7a4-4063-9236-6bfc35d54b7d
+  AccessExpire: 36000000 #有效期为一小时
+WexinMiniprogram:
+  Open: true
+  AppID: wx0a8aabe3ca57d4af
+  AppSecret: f77f42b81e055ae8be41211cb0389b7d
+UserOpt:
+  NeedUserName: true
+  NeedPassWord: true
+  PassLevel: 2
+OssConf:
+  OssType: minio
+  PublicBucketName: ithings-public
+  PrivateBucketName: ithings-private
+  TemporaryBucketName: ithings-temporary
+  AccessKeyID: root
+  AccessKeySecret: password
+  Location: localhost:9000
+  ConnectTimeout: 6000
+  ReadWriteTimeout: 60000
+  UseSSL: false
+Map:
+  Mode: gaode
+  AccessKey: baf440efe599a5cf45d1da812f59f48f
+  AccessSecret: 0d055d5aed204f9f53895652ec53b322
+WrongPasswordCounter:
+  Captcha: 4 # 连续输错密码次数上限，需要输验证码
+  Account:
+    - triggerTimes: 8  # 触发次数 默认 8
+      statistics: 5    # 统计时间 默认 5 单位：分钟
+      forbiddenTime: 2 # 冻结时长 默认 2 单位：分钟
+  Ip:
+    - triggerTimes: 8  # 触发次数 默认 8
+      statistics: 5    # 统计时间 默认 5 单位：分钟
+      forbiddenTime: 2 # 冻结时长 默认 2 单位：分钟
+TimedJobRpc:
+  Enable: true
+  Mode: direct
+  RunProxy: true
+  Conf:
+    Timeout: 1000000
+Sms:
+  Enable: true
+  Mode: ali
+  Tencent:
+    AccessKeyID:
+    AccessKeySecret:
+    AppID:
+    AppKey:
+  Ali:
+    AccessKeyID:
+    AccessKeySecret:
