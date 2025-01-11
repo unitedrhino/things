@@ -227,6 +227,17 @@ func (l *HalfHourHandle) DeviceMsgCount() error { //产品品类设备数量统�
 			Date: end,
 		})
 	}
+	{
+		t, err := relationDB.NewDeviceInfoRepo(l.ctx).CountByFilter(l.ctx, relationDB.DeviceFilter{IsOnline: def.True})
+		if err != nil {
+			l.Error(err)
+		}
+		countData = append(countData, &relationDB.DmDeviceMsgCount{
+			Type: deviceLog.MsgTypeOnline,
+			Num:  t,
+			Date: end,
+		})
+	}
 	err := relationDB.NewDeviceMsgCountRepo(l.ctx).MultiInsert(l.ctx, countData)
 	if err != nil {
 		l.Error(err)

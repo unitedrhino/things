@@ -11,6 +11,7 @@ type MsgType = string
 const (
 	MsgTypeSend    = "send" //控制下发
 	MsgTypePublish = "publish"
+	MsgTypeOnline  = "online" //在线统计
 )
 
 type ManageRepo interface {
