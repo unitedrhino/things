@@ -87,8 +87,7 @@ func (p GroupInfoRepo) fmtFilter(ctx context.Context, f GroupInfoFilter) *gorm.D
 	}
 	if f.Tags != nil {
 		for k, v := range f.Tags {
-			db = db.Where("JSON_CONTAINS(`tags`, JSON_OBJECT(?,?))",
-				k, v)
+			db = stores.CmpJsonObjEq(k, v).Where(db, "tags")
 		}
 	}
 	return db

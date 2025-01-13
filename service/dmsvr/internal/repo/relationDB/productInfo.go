@@ -91,14 +91,12 @@ func (p ProductInfoRepo) fmtFilter(ctx context.Context, f ProductFilter) *gorm.D
 	}
 	if f.ProtocolConf != nil {
 		for k, v := range f.ProtocolConf {
-			db = db.Where("JSON_CONTAINS(protocol_conf, JSON_OBJECT(?,?))",
-				k, v)
+			db = stores.CmpJsonObjEq(k, v).Where(db, "protocol_conf")
 		}
 	}
 	if f.Tags != nil {
 		for k, v := range f.Tags {
-			db = db.Where("JSON_CONTAINS(tags, JSON_OBJECT(?,?))",
-				k, v)
+			db = stores.CmpJsonObjEq(k, v).Where(db, "tags")
 		}
 	}
 	if f.NetType != 0 {

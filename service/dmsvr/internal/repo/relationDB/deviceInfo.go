@@ -163,13 +163,12 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	}
 	if f.Tags != nil {
 		for k, v := range f.Tags {
-			db = db.Where("JSON_CONTAINS(tags, JSON_OBJECT(?,?))",
-				k, v)
+			db = stores.CmpJsonObjEq(k, v).Where(db, "tags")
 		}
 	}
 	if f.TagsLike != nil {
 		for k, v := range f.TagsLike {
-			db = db.Where(fmt.Sprintf("JSON_SEARCH(tags, 'all', '%s', NULL, '$.\"%s\"') IS NOT NULL", "%"+v+"%", k))
+			db = stores.CmpJsonObjLike(k, v).Where(db, "tags")
 		}
 	}
 	if f.LastLoginTime != nil {

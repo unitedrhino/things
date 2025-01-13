@@ -46,8 +46,7 @@ func (p CommonSchemaRepo) fmtFilter(ctx context.Context, f CommonSchemaFilter) *
 		db = db.Where("user_auth = ?", f.UserPerm)
 	}
 	if f.PropertyMode != "" {
-		db = db.Where("JSON_CONTAINS(affordance, JSON_OBJECT('mode',?))",
-			f.PropertyMode)
+		db = stores.CmpJsonObjEq("mode", f.PropertyMode).Where(db, "affordance")
 	}
 	if f.Name != "" {
 		db = db.Where("name like ?", "%"+f.Name+"%")

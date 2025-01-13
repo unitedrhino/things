@@ -59,8 +59,7 @@ func (p ProductSchemaRepo) filter(db *gorm.DB, f ProductSchemaFilter) *gorm.DB {
 		db = db.Where("control_mode=?", f.ControlMode)
 	}
 	if f.PropertyMode != "" {
-		db = db.Where("JSON_CONTAINS(affordance, JSON_OBJECT('mode',?))",
-			f.PropertyMode)
+		db = stores.CmpJsonObjEq("mode", f.PropertyMode).Where(db, "affordance")
 	}
 	if len(f.ProductIDs) != 0 {
 		db = db.Where("product_id in ?", f.ProductIDs)

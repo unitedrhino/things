@@ -65,8 +65,7 @@ func (p SchemaInfoRepo) fmtFilter(ctx context.Context, f SchemaInfoFilter) *gorm
 		db = db.Where("control_mode=?", f.ControlMode)
 	}
 	if f.PropertyMode != "" {
-		db = db.Where("JSON_CONTAINS(affordance, JSON_OBJECT('mode',?))",
-			f.PropertyMode)
+		db = stores.CmpJsonObjEq("mode", f.PropertyMode).Where(db, "affordance")
 	}
 
 	if f.ProductSceneMode != "" {
