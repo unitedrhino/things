@@ -1,14 +1,12 @@
 package apidirect
 
 import (
-	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/config"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/handler"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/startup"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
 	"github.com/zeromicro/go-zero/rest"
-	"net/http"
 )
 
 type (
@@ -35,10 +33,7 @@ func runApi(apiCtx ApiCtx) ApiCtx {
 	ctx := svc.NewServiceContext(c)
 	apiCtx.SvcCtx = ctx
 	if server == nil {
-		server = rest.MustNewServer(c.RestConf, rest.WithCustomCors(func(header http.Header) {
-			header.Set("Access-Control-Allow-Headers", ctxs.HttpAllowHeader)
-			header.Set("Access-Control-Allow-Origin", "*")
-		}, nil, "*"))
+		server = rest.MustNewServer(c.RestConf)
 		apiCtx.Server = server
 	}
 	handler.RegisterHandlers(server, ctx)
