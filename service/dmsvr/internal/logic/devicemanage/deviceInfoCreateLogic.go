@@ -8,6 +8,7 @@ import (
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/share/eventBus"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
@@ -238,6 +239,10 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 	}
 	logic.FillAreaDeviceCount(l.ctx, l.svcCtx, areaIDPath)
 	logic.FillProjectDeviceCount(l.ctx, l.svcCtx, int64(di.ProjectID))
+	err = l.svcCtx.FastEvent.Publish(l.ctx, eventBus.DmDeviceInfoCreate, &devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
+	if err != nil {
+		l.Error(err)
+	}
 	return &dm.Empty{}, nil
 }
 

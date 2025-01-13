@@ -50,7 +50,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 	err = svcCtx.FastEvent.QueueSubscribe(eventBus.DmDeviceInfoUnbind, func(ctx context.Context, t time.Time, body []byte) error {
 		var di devices.Core
 		err := json.Unmarshal(body, &di)
-		logx.WithContext(ctx).Infof("DmDeviceInfoDelete value:%v err:%v", string(body), err)
+		logx.WithContext(ctx).Infof("DmDeviceInfoUnbind value:%v err:%v", string(body), err)
 		return sceneChangeEvent.NewHandle(ctx, svcCtx).SceneDeviceDelete(di)
 	})
 	logx.Must(err)
@@ -209,7 +209,7 @@ func TimerInit(svcCtx *svc.ServiceContext) {
 		_, err := svcCtx.TimedM.TaskInfoCreate(ctx, &timedmanage.TaskInfo{
 			GroupCode: def.TimedUnitedRhinoQueueGroupCode,                               //组编码
 			Type:      1,                                                                //任务类型 1 定时任务 2 延时任务
-			Name:      "iThings规则引擎定时任务",                                                // 任务名称
+			Name:      "iThings规则引擎定时任务",                                        // 任务名称
 			Code:      "iThingsRuleTimer",                                               //任务编码
 			Params:    fmt.Sprintf(`{"topic":"%s","payload":""}`, eventBus.UdRuleTimer), // 任务参数,延时任务如果没有传任务参数会拿数据库的参数来执行
 			CronExpr:  "@every 1s",                                                      // cron执行表达式
@@ -224,7 +224,7 @@ func TimerInit(svcCtx *svc.ServiceContext) {
 		_, err := svcCtx.TimedM.TaskInfoCreate(ctx, &timedmanage.TaskInfo{
 			GroupCode: def.TimedUnitedRhinoQueueGroupCode,                                         //组编码
 			Type:      1,                                                                          //任务类型 1 定时任务 2 延时任务
-			Name:      "iThings规则引擎定时任务10分钟",                                                      // 任务名称
+			Name:      "iThings规则引擎定时任务10分钟",                                            // 任务名称
 			Code:      "UdRuleTimerTenMinutes",                                                    //任务编码
 			Params:    fmt.Sprintf(`{"topic":"%s","payload":""}`, eventBus.UdRuleTimerTenMinutes), // 任务参数,延时任务如果没有传任务参数会拿数据库的参数来执行
 			CronExpr:  "@every 10m",                                                               // cron执行表达式

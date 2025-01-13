@@ -55,7 +55,7 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 	if err != nil {
 		return nil, err
 	}
-	_, err = FilterCanBindSubDevices(l.ctx, l.svcCtx, &devices.Core{
+	devs, err := FilterCanBindSubDevices(l.ctx, l.svcCtx, &devices.Core{
 		ProductID:  in.Gateway.ProductID,
 		DeviceName: in.Gateway.DeviceName,
 	}, utils.ToSliceWithFunc(in.List, func(in *dm.DeviceGatewayBindDevice) *devices.Core {
@@ -66,6 +66,9 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 	}), CheckDeviceExist|CheckDeviceType|CheckDeviceStrict)
 	if err != nil {
 		return nil, err
+	}
+	if len(devs) == 0 {
+		return &dm.Empty{}, nil
 	}
 	if in.IsAuthSign { //秘钥检查
 		for _, device := range in.List {
@@ -86,18 +89,16 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 			}
 		}
 	}
-
-	devicesDos := logic.BindToDeviceCoreDos(in.List)
 	err = l.GdDB.MultiInsert(l.ctx, &devices.Core{
 		ProductID:  in.Gateway.ProductID,
 		DeviceName: in.Gateway.DeviceName,
-	}, devicesDos)
+	}, devs)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
 	_, err = NewDeviceTransferLogic(ctxs.WithRoot(l.ctx), l.svcCtx).DeviceTransfer(&dm.DeviceTransferReq{
 		TransferTo: DeviceTransferToProject,
-		Devices:    utils.CopySlice[dm.DeviceCore](devicesDos),
+		Devices:    utils.CopySlice[dm.DeviceCore](devs),
 		AreaID:     gd.AreaID,
 		ProjectID:  gd.ProjectID,
 	})
@@ -109,7 +110,7 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 	}
 	req := &msgGateway.Msg{
 		CommonMsg: *deviceMsg.NewRespCommonMsg(l.ctx, deviceMsg.Change, devices.GenMsgToken(l.ctx, l.svcCtx.NodeID)).AddStatus(errors.OK, false),
-		Payload:   logic.ToGatewayPayload(def.GatewayBind, devicesDos),
+		Payload:   logic.ToGatewayPayload(def.GatewayBind, devs),
 	}
 	respBytes, _ := json.Marshal(req)
 	msg := deviceMsg.PublishMsg{
@@ -201,6 +202,9 @@ func FilterCanBindSubDevices(ctx context.Context, svcCtx *svc.ServiceContext, ga
 				}
 				continue
 			}
+		}
+		if c.GatewayProductID == gateway.ProductID && c.GatewayDeviceName == gateway.DeviceName { //如果已经绑定了就忽略
+			continue
 		}
 		//未绑定或就是该网关绑定的
 		ret = append(ret, subDevice)
