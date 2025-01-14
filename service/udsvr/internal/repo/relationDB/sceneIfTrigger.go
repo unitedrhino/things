@@ -90,12 +90,15 @@ func (p SceneIfTriggerRepo) fmtFilter(ctx context.Context, f SceneIfTriggerFilte
 	if len(f.DeviceSelectTypes) != 0 {
 		db = db.Where("device_select_type in ?", f.DeviceSelectTypes)
 	}
+	if f.TriggerDeviceType != "" {
+		db = db.Where("device_type = ?", f.TriggerDeviceType)
+	}
 	if f.Device != nil {
-		db = db.Where("device_select_type=? and device_type=? and device_product_id=? and device_device_name=? ",
-			scene.SelectDeviceFixed, f.TriggerDeviceType, f.Device.ProductID, f.Device.DeviceName)
-		if f.DataID != "" {
-			db = db.Where(" device_data_id=?", f.DataID)
-		}
+		db = db.Where("device_select_type=? and  device_product_id=? and device_device_name=? ",
+			scene.SelectDeviceFixed, f.Device.ProductID, f.Device.DeviceName)
+	}
+	if f.DataID != "" {
+		db = db.Where(" device_data_id=? ", f.DataID)
 	}
 	return db
 }
