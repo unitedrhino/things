@@ -75,14 +75,23 @@ func (t *Term) Validate(repo CheckRepo) error {
 	}
 	switch t.ColumnType {
 	case TermColumnTypeProperty:
+		if t.Property == nil {
+			return errors.Parameter.AddMsg("需要填写条件属性详情")
+		}
 		if err := t.Property.Validate(repo); err != nil {
 			return err
 		}
 	case TermColumnTypeWeather:
+		if t.Weather == nil {
+			return errors.Parameter.AddMsg("需要填写条件天气详情")
+		}
 		if err := t.Weather.Validate(repo); err != nil {
 			return err
 		}
 	case TermColumnTypeTime:
+		if t.Time == nil {
+			return errors.Parameter.AddMsg("需要填写条件时间详情")
+		}
 		if err := t.Time.Validate(repo); err != nil {
 			return err
 		}

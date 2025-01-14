@@ -184,7 +184,7 @@ func PoToSceneInfoDo(ctx context.Context, svcCtx *svc.ServiceContext, in *relati
 		IsCommon: in.IsCommon,
 	}
 	for i, v := range ret.When.Conditions.Terms {
-		if v.ColumnType != scene.TermColumnTypeProperty {
+		if v.ColumnType != scene.TermColumnTypeProperty || v.Property == nil {
 			continue
 		}
 		p := v.Property

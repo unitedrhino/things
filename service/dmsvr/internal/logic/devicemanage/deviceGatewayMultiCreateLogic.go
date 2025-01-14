@@ -203,7 +203,7 @@ func FilterCanBindSubDevices(ctx context.Context, svcCtx *svc.ServiceContext, ga
 				continue
 			}
 		}
-		if c.GatewayProductID == gateway.ProductID && c.GatewayDeviceName == gateway.DeviceName { //如果已经绑定了就忽略
+		if c != nil && c.GatewayProductID == gateway.ProductID && c.GatewayDeviceName == gateway.DeviceName { //如果已经绑定了就忽略
 			continue
 		}
 		//未绑定或就是该网关绑定的
