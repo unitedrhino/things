@@ -34,6 +34,9 @@ func (c *TermWeather) Validate(repo CheckRepo) error {
 }
 
 func (c *TermWeather) IsHit(ctx context.Context, repo CheckRepo) bool {
+	if c == nil {
+		return false
+	}
 	weather, err := repo.Common.WeatherRead(ctx, &sys.WeatherReadReq{ProjectID: repo.Info.ProjectID})
 	if err != nil {
 		logx.WithContext(repo.Ctx).Error(err)

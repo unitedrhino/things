@@ -75,6 +75,9 @@ func (c *TermProperty) Validate(repo CheckRepo) error {
 	return nil
 }
 func (c *TermProperty) IsHit(ctx context.Context, columnType TermColumnType, repo CheckRepo, t *Term) bool {
+	if c == nil {
+		return false
+	}
 	dev := devices.Core{ProductID: c.ProductID, DeviceName: c.DeviceName}
 	di, err := repo.DeviceCache.GetData(ctx, dev)
 	if err != nil {
