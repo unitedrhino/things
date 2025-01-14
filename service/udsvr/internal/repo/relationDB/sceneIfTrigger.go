@@ -43,7 +43,9 @@ type SceneIfTriggerFilter struct {
 	AreaID              *stores.Cmp
 	Device              *devices.Core
 	DataID              string
+	DeviceSelectTypes   []scene.SelectType
 	TriggerDeviceType   scene.TriggerDeviceType
+	DeviceProductID     string
 	FirstTriggerTime    *stores.Cmp
 	StateKeepType       scene.StateKeepType
 	StateKeepValue      *stores.Cmp
@@ -82,17 +84,17 @@ func (p SceneIfTriggerRepo) fmtFilter(ctx context.Context, f SceneIfTriggerFilte
 	if f.SceneID != 0 {
 		db = db.Where("scene_id = ?", f.SceneID)
 	}
+	if f.DeviceProductID != "" {
+		db = db.Where("device_product_id = ?", f.DeviceProductID)
+	}
+	if len(f.DeviceSelectTypes) != 0 {
+		db = db.Where("device_select_type in ?", f.DeviceSelectTypes)
+	}
 	if f.Device != nil {
+		db = db.Where("device_select_type=? and device_type=? and device_product_id=? and device_device_name=? ",
+			scene.SelectDeviceFixed, f.TriggerDeviceType, f.Device.ProductID, f.Device.DeviceName)
 		if f.DataID != "" {
-			db = db.Where("device_select_type=? and device_product_id=? and device_device_name=? and device_data_id=?",
-				scene.SelectDeviceFixed, f.Device.ProductID, f.Device.DeviceName, f.DataID).
-				Or("device_select_type=? and device_product_id=? and device_data_id=?", scene.SelectorDeviceAll,
-					f.Device.ProductID, f.DataID)
-		} else if f.TriggerDeviceType != "" {
-			db = db.Where("device_select_type=? and device_type=? and device_product_id=? and device_device_name=? ",
-				scene.SelectDeviceFixed, f.TriggerDeviceType, f.Device.ProductID, f.Device.DeviceName).
-				Or("device_select_type=? and device_type=?  and device_product_id=? ", scene.SelectorDeviceAll, f.TriggerDeviceType,
-					f.Device.ProductID)
+			db = db.Where(" device_data_id=?", f.DataID)
 		}
 	}
 	return db

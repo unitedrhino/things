@@ -28,7 +28,8 @@ func (l *TimerHandle) SceneThingEventReport(in application.EventReport) error {
 			TriggerDeviceType: scene.TriggerDeviceTypeEventReport,
 			ProjectID:         stores.CmpIn(def.RootNode, di.ProjectID),
 			AreaID:            stores.CmpIn(def.RootNode, di.AreaID),
-			Device:            &in.Device,
+			DeviceProductID:   di.ProductID,
+			DeviceSelectTypes: []string{scene.SelectorDeviceAll},
 			DataID:            in.Identifier,
 		},
 		{

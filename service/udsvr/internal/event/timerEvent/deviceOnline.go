@@ -33,7 +33,8 @@ func (l *TimerHandle) SceneDeviceOnline(in application.ConnectMsg) error {
 			ProjectID:         stores.CmpIn(def.RootNode, di.ProjectID),
 			AreaID:            stores.CmpIn(def.RootNode, di.AreaID),
 			TriggerDeviceType: triggerType,
-			Device:            &in.Device,
+			DeviceSelectTypes: []string{scene.SelectorDeviceAll},
+			DeviceProductID:   di.ProductID,
 		},
 		{
 			Status:            scene.StatusNormal,

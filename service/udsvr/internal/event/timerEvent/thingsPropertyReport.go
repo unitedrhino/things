@@ -28,7 +28,8 @@ func (l *TimerHandle) SceneThingPropertyReport(in application.PropertyReport) er
 			TriggerDeviceType: scene.TriggerDeviceTypePropertyReport,
 			ProjectID:         stores.CmpIn(def.RootNode, di.ProjectID),
 			AreaID:            stores.CmpIn(def.RootNode, di.AreaID),
-			Device:            &in.Device,
+			DeviceProductID:   di.ProductID,
+			DeviceSelectTypes: []string{scene.SelectorDeviceAll},
 			DataID:            in.Identifier,
 		},
 		{
