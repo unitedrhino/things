@@ -46,6 +46,8 @@ func (l *ProductCategorySchemaMultiCreateLogic) ProductCategorySchemaMultiCreate
 				return nil, err
 			}
 			idPath = pc.IDPath
+		} else { //root节点要处理所有产品
+			productCategoryIDs = []int64{}
 		}
 		pcs, err := pcDB.FindByFilter(l.ctx, relationDB.ProductCategoryFilter{IDPath: idPath}, nil)
 		if err != nil {

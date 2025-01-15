@@ -44,6 +44,8 @@ func (l *ProductCategorySchemaMultiDeleteLogic) ProductCategorySchemaMultiDelete
 				return nil, err
 			}
 			productCategoryIDs = append(productCategoryIDs, utils.GetIDPath(pc.IDPath)...)
+		} else { //root节点要处理所有产品
+			productCategoryIDs = []int64{}
 		}
 		ps, err := relationDB.NewProductInfoRepo(l.ctx).FindByFilter(l.ctx, relationDB.ProductFilter{CategoryIDs: productCategoryIDs}, nil)
 		if err != nil {
