@@ -43,8 +43,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.8
+      - unitedrhino_net
   core:
     image: registry.cn-qingdao.aliyuncs.com/unitedrhino/core:latest
     container_name: core
@@ -52,6 +51,7 @@ services:
     restart: always
     ports:
       - "7777:7777"
+      - "17777:17777"
     depends_on:
       - tdengine
       - nats-server
@@ -71,8 +71,8 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.22
+      - unitedrhino_net
+
   nats-server:
     image: nats:latest
     container_name: nats
@@ -89,8 +89,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.2
+      - unitedrhino_net
 
   etcd:
     image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:bitnami-etcd-3.5
@@ -113,8 +112,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.3
+      - unitedrhino_net
 
   mariadb:
     image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:mariadb-10.7
@@ -134,28 +132,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.4
-#  postgres: # 服务名称
-#    image: postgis/postgis:17-3.5 # 指定镜像及其版本
-#    container_name: postgres # 指定容器的名称
-#    hostname: postgres
-#    restart: always
-#    environment:
-#      POSTGRES_PASSWORD: password
-#      #POSTGRES_DB: default
-#    ports: # 端口映射
-#      - "5432:5432"
-#    #    volumes: # 数据持久化的配置
-#    #      - data:/var/lib/postgresql/data
-#    #      - log:/var/log/postgresql
-#    logging:
-#      options:
-#        max-size: "10m"
-#        max-file: "3"
-#    networks:
-#      unitedrhino_net:
-#        ipv4_address: 172.20.0.20
+      - unitedrhino_net
 
   redis:
     image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:redis-7-alpine
@@ -170,8 +147,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.5
+      - unitedrhino_net
 
   tdengine:
     image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:tdengine-tdengine-3.0.4.2
@@ -190,8 +166,8 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.6
+      - unitedrhino_net
+
   emqx:
     image: emqx/emqx:5.4.0
     container_name: emqx
@@ -215,8 +191,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.7
+      - unitedrhino_net
 
   minio:
     image: minio/minio:latest
@@ -239,31 +214,6 @@ services:
 #      - /docker/minio/data:/data               #映射当前目录下的data目录至容器内/data目录
 #      - /docker/minio/config:/root/.minio/     #映射配置目录
     networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.10
+      - unitedrhino_net
+
 #
-#  zlmediakit:
-#    image: registry.cn-shenzhen.aliyuncs.com/airgens/zlmediakit:v1
-#    container_name: zlmediakit
-#    hostname: zlmediakit
-#    restart: always
-#    ports:
-#      - "8088:80"
-#      - "1935:1935"
-#      - "8554:554"
-#      - "10000:10000"
-#      - "10000:10000/udp"
-#      - "8000:8000/udp"
-#      - "30000-30500:30000-30500"
-#      - "30000-30500:30000-30500/udp"
-#    volumes:
-#      - ../conf/zlmediakit/config:/opt/media/conf
-#      - ../conf/zlmediakit/record:/opt/media/record
-#    logging:
-#      options:
-#        max-size: "50M" # 最大文件上传限制
-#        max-file: "10"
-#      driver: json-file
-#    networks:
-#      unitedrhino_net:
-#        ipv4_address: 172.20.0.11

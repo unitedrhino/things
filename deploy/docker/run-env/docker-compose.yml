@@ -71,28 +71,6 @@ services:
       unitedrhino_net:
         ipv4_address: 172.20.0.4
 
-#  postgres: # 服务名称
-#    image: postgis/postgis:17-3.5 # 指定镜像及其版本
-#    container_name: postgres # 指定容器的名称
-#    hostname: postgres
-#    restart: always
-#    environment:
-#      POSTGRES_PASSWORD: password
-#      #POSTGRES_DB: default
-#    ports: # 端口映射
-#      - "5432:5432"
-#    #    volumes: # 数据持久化的配置
-#    #      - data:/var/lib/postgresql/data
-#    #      - log:/var/log/postgresql
-#    logging:
-#      options:
-#        max-size: "10m"
-#        max-file: "3"
-#    networks:
-#      unitedrhino_net:
-#        ipv4_address: 172.20.0.20
-#
-
   redis:
     image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:redis-7-alpine
     container_name: ienv-redis
@@ -176,57 +154,6 @@ services:
     networks:
       unitedrhino_net:
         ipv4_address: 172.20.0.10
-
-  jaeger:
-    image: jaegertracing/jaeger:latest
-    hostname: jaeger
-    container_name: ienv-jaeger
-    ports:
-      - "5775:5775/udp"
-      - "6831:6831/udp"
-      - "6832:6832/udp"
-      - "5778:5778"
-      - "16686:16686"
-      - "14268:14268"
-      - "9411:9411"
-    restart: always
-    logging:
-      options:
-        max-size: "50M" # 最大文件上传限制
-        max-file: "10"
-      driver: json-file
-    networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.12
-
-#  prometheus:
-#    image: prom/prometheus:latest
-#    container_name: prometheus
-#    restart: always
-#    volumes:
-#      - /etc/localtime:/etc/localtime:ro
-#      - ../conf/prometheus/:/etc/prometheus/
-#    networks:
-#      - unitedrhino_net
-#    ports:
-#      - "9690:9090"
-
-#  alertmanager:
-#    image: prom/alertmanager:v0.25.0
-#    container_name: alertmanager
-#    restart: always
-#    volumes:
-#      - /etc/localtime:/etc/localtime:ro
-#      - ./alertmanager/:/etc/alertmanager/
-#    command:
-#      - '--config.file=/etc/alertmanager/config.yml'
-#      - '--storage.path=/alertmanager'
-#    networks:
-#      - monitoring
-#    expose:
-#      - '9093'
-#    ports:
-#      - 9093:9093
 
   init-db:
     image: alpine:3.20

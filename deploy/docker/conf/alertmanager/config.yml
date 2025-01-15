@@ -1,0 +1,20 @@
+route:
+  group_by: ['example']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 1m
+  receiver: 'ops1'
+  routes:
+    - match:
+        severity: page
+      receiver: 'ops1'
+receivers:
+  - name: 'ops1'
+    webhook_configs:
+      - url: 'http://core:7777/api/v1/system/common/debug' #告警web.hook地址，告警信息会post到该地址，需要编写服务接收该告警数据
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning' #目标告警状态
+    equal: ['alertname', 'dev', 'instance']

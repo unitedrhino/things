@@ -1,0 +1,69 @@
+version: '3.2'
+# Network
+networks:
+  unitedrhino_net:
+
+services:
+  jaeger:
+    image: jaegertracing/jaeger:latest
+    hostname: jaeger
+    container_name: jaeger
+    ports:
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      - "5778:5778"
+      - "16686:16686"
+      - "14268:14268"
+      - "9411:9411"
+    restart: always
+    logging:
+      options:
+        max-size: "50M" # 最大文件上传限制
+        max-file: "10"
+      driver: json-file
+    networks:
+      - unitedrhino_net
+
+  prometheus:
+    image: registry.cn-qingdao.aliyuncs.com/unitedrhino/prometheus:latest
+    hostname: prometheus
+    container_name: prometheus
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ../conf/prometheus/:/etc/prometheus/
+    networks:
+      - unitedrhino_net
+    ports:
+      - "9690:9090"
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    hostname: grafana
+    user: root
+    environment:
+      # 时区上海 - Time zone Shanghai (Change if needed)
+      TZ: Asia/Shanghai
+    restart: always
+    volumes:
+      - ../conf/grafana:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - unitedrhino_net
+  alertmanager:
+    image: registry.cn-qingdao.aliyuncs.com/unitedrhino/alertmanager:latest
+    container_name: alertmanager
+    hostname: alertmanager
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ../conf/alertmanager/:/etc/alertmanager/
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+#      - '--storage.path=/alertmanager'
+    networks:
+      - unitedrhino_net
+    ports:
+      - 9093:9093

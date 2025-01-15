@@ -24,13 +24,13 @@ scrape_configs:
     scrape_interval: 15s
     static_configs:
       - targets: ['alertmanager:9093']
-  - job_name: 'lx'
+  - job_name: '联犀'
     scrape_interval: 15s
     static_configs:
-      - targets: ['172.25.160.1:17777']
+      - targets: ['things:17777']
         labels:
           instance: core服务
-      - targets: [ 'thingsvr:8080' ]
+      - targets: [ 'core:17788' ]
         labels:
           instance: 物联网服务
 

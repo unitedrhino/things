@@ -40,6 +40,12 @@ AuthWhite:
       Password: iThings
     - UserName: paliMqttsvr
       Password: iThings
+  IpRange:
+    - 127.0.0.1
+    - 172.18.0.1
+    - 172.20.0.1
+    - 192.168.1.1
+    - 172.20.0.0/16
 OssConf:
   OssType: minio
   PublicBucketName: ithings-public
