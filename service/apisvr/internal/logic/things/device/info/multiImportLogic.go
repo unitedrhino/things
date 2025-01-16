@@ -143,16 +143,18 @@ func (l *MultiImportLogic) MultiImport(req *types.DeviceMultiImportReq, rows [][
 
 func (l *MultiImportLogic) deviceMultiImportRowToDto(idx int64, cell []string) *types.DeviceMultiImportRow {
 	return &types.DeviceMultiImportRow{
-		Row:         idx,
-		ProductID:   strings.TrimSpace(utils.SliceIndex(cell, 0, "")),
-		DeviceName:  strings.TrimSpace(utils.SliceIndex(cell, 1, "")),
-		DeviceAlias: strings.TrimSpace(utils.SliceIndex(cell, 2, "")),
-		Secret:      strings.TrimSpace(utils.SliceIndex(cell, 3, "")),
-		LogLevel:    strings.TrimSpace(utils.SliceIndex(cell, 4, "")),
-		Tags:        strings.TrimSpace(utils.SliceIndex(cell, 5, "")),
-		Position:    strings.TrimSpace(utils.SliceIndex(cell, 6, "")),
-		Address:     strings.TrimSpace(utils.SliceIndex(cell, 7, "")),
-		Tips:        strings.TrimSpace(utils.SliceIndex(cell, 8, "")),
+		Row:               idx,
+		ProductID:         strings.TrimSpace(utils.SliceIndex(cell, 0, "")),
+		DeviceName:        strings.TrimSpace(utils.SliceIndex(cell, 1, "")),
+		DeviceAlias:       strings.TrimSpace(utils.SliceIndex(cell, 2, "")),
+		Secret:            strings.TrimSpace(utils.SliceIndex(cell, 3, "")),
+		GatewayProductID:  strings.TrimSpace(utils.SliceIndex(cell, 4, "")),
+		GatewayDeviceName: strings.TrimSpace(utils.SliceIndex(cell, 5, "")),
+		LogLevel:          strings.TrimSpace(utils.SliceIndex(cell, 6, "")),
+		Tags:              strings.TrimSpace(utils.SliceIndex(cell, 7, "")),
+		Position:          strings.TrimSpace(utils.SliceIndex(cell, 8, "")),
+		Address:           strings.TrimSpace(utils.SliceIndex(cell, 9, "")),
+		Tips:              strings.TrimSpace(utils.SliceIndex(cell, 10, "")),
 	}
 }
 
