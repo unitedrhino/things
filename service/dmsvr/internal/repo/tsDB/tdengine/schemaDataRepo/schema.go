@@ -28,10 +28,10 @@ func (S *SchemaStore) GetSpecsColumnWithArgFunc(s schema.Specs, argFunc string) 
 }
 
 func (S *SchemaStore) GetPropertyStableName(p *schema.Property, productID, identifier string) string {
-	if p.Tag == schema.TagCustom && productID != "" {
+	if p != nil && p.Tag == schema.TagCustom && productID != "" {
 		return fmt.Sprintf("`model_custom_property_%s_%s`", productID, identifier)
 	}
-	if p.Tag == schema.TagDevice {
+	if p != nil && p.Tag == schema.TagDevice {
 		switch p.Define.Type {
 		case schema.DataTypeBool:
 			return S.GetDeviceStableBoolName()
