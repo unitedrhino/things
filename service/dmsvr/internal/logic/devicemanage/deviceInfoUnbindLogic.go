@@ -103,6 +103,13 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceCore) (*dm.Empty, 
 				DeviceName: di.DeviceName,
 			},
 		}})
+		if err != nil {
+			return err
+		}
+		err = l.svcCtx.AbnormalRepo.UpdateDevice(l.ctx, []*devices.Core{
+			{ProductID: di.ProductID, DeviceName: di.DeviceName}}, devices.Affiliation{
+			TenantCode: string(di.TenantCode), ProjectID: int64(di.ProjectID),
+			AreaID: int64(di.AreaID), AreaIDPath: string(di.AreaIDPath)})
 		return err
 	})
 	if err != nil {

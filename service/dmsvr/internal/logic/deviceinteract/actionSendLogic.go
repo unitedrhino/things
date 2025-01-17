@@ -12,6 +12,7 @@ import (
 	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/events/topics"
+	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
@@ -100,7 +101,16 @@ func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (ret *dm.ActionSendRe
 			content["req"] = params
 			content["userID"] = uc.UserID
 			contentStr, _ := json.Marshal(params)
+			di, err := l.svcCtx.DeviceCache.GetData(ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
+			if err != nil {
+				l.Error(err)
+				return
+			}
 			_ = l.svcCtx.SendRepo.Insert(ctx, &deviceLog.Send{
+				TenantCode: stores.TenantCode(di.TenantCode),
+				ProjectID:  stores.ProjectID(di.ProjectID),
+				AreaID:     stores.AreaID(di.AreaID),
+				AreaIDPath: stores.AreaIDPath(di.AreaIDPath),
 				ProductID:  in.ProductID,
 				Account:    uc.Account,
 				Action:     "actionSend",

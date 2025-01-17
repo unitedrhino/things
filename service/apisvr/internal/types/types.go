@@ -575,13 +575,18 @@ type DeviceModuleVersionReadReq struct {
 }
 
 type DeviceMsgAbnormalLogIndexReq struct {
-	ProductID  string    `json:"productID,optional"`        //产品id
-	DeviceName string    `json:"deviceName,optional"`       //设备名
-	TimeStart  int64     `json:"timeStart,string,optional"` //获取时间的开始(毫秒时间戳)
-	TimeEnd    int64     `json:"timeEnd,string,optional"`   //时间的结束(毫秒时间戳)
-	Page       *PageInfo `json:"page,optional"`             //分页信息
-	Type       string    `json:"type,optional"`             //异常类型
-	Action     int64     `json:"action,optional"`           //触发1 还是解除2
+	ProductCategoryID int64     `json:"productCategoryID,optional"`    //只有管理员有权限
+	ProjectID         int64     `json:"projectID,optional,omitempty"`  //只有管理员有权限
+	AreaID            int64     `json:"areaID,optional,omitempty"`     //只有管理员有权限
+	AreaIDPath        string    `json:"areaIDPath,optional,omitempty"` //只有管理员有权限
+	AreaIDs           []int64   `json:"areaIDs,optional,omitempty"`    //只有管理员有权限
+	ProductID         string    `json:"productID,optional"`            //产品id
+	DeviceName        string    `json:"deviceName,optional"`           //设备名
+	TimeStart         int64     `json:"timeStart,string,optional"`     //获取时间的开始(毫秒时间戳)
+	TimeEnd           int64     `json:"timeEnd,string,optional"`       //时间的结束(毫秒时间戳)
+	Page              *PageInfo `json:"page,optional"`                 //分页信息
+	Type              string    `json:"type,optional"`                 //异常类型
+	Action            int64     `json:"action,optional"`               //触发1 还是解除2
 }
 
 type DeviceMsgAbnormalLogIndexResp struct {
@@ -702,15 +707,20 @@ type DeviceMsgSdkLogIndexReq struct {
 }
 
 type DeviceMsgSendLogIndexReq struct {
-	ProductID  string    `json:"productID,optional"`        //产品id
-	DeviceName string    `json:"deviceName,optional"`       //设备名
-	TimeStart  int64     `json:"timeStart,string,optional"` //获取时间的开始(毫秒时间戳)
-	TimeEnd    int64     `json:"timeEnd,string,optional"`   //时间的结束(毫秒时间戳)
-	Page       *PageInfo `json:"page,optional"`             //分页信息
-	UserID     int64     `json:"userID,string,optional"`
-	Actions    []string  `json:"actions,optional"`
-	ResultCode int64     `json:"resultCode,optional"` //请求结果状态,200为成功
-	WithUser   bool      `json:"withUser,optional"`   //同时返回用户信息
+	ProductCategoryID int64     `json:"productCategoryID,optional"`    //只有管理员有权限
+	ProjectID         int64     `json:"projectID,optional,omitempty"`  //只有管理员有权限
+	AreaID            int64     `json:"areaID,optional,omitempty"`     //只有管理员有权限
+	AreaIDPath        string    `json:"areaIDPath,optional,omitempty"` //只有管理员有权限
+	AreaIDs           []int64   `json:"areaIDs,optional,omitempty"`    //只有管理员有权限
+	ProductID         string    `json:"productID,optional"`            //产品id
+	DeviceName        string    `json:"deviceName,optional"`           //设备名
+	TimeStart         int64     `json:"timeStart,string,optional"`     //获取时间的开始(毫秒时间戳)
+	TimeEnd           int64     `json:"timeEnd,string,optional"`       //时间的结束(毫秒时间戳)
+	Page              *PageInfo `json:"page,optional"`                 //分页信息
+	UserID            int64     `json:"userID,string,optional"`
+	Actions           []string  `json:"actions,optional"`
+	ResultCode        int64     `json:"resultCode,optional"` //请求结果状态,200为成功
+	WithUser          bool      `json:"withUser,optional"`   //同时返回用户信息
 }
 
 type DeviceMsgSendLogIndexResp struct {

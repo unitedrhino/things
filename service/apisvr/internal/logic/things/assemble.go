@@ -40,7 +40,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 	if w.Owner && v.UserID > 0 {
 		ui, err := svcCtx.UserC.GetData(ctx, v.UserID)
 		if err != nil {
-			logx.WithContext(ctx).Error(err)
+			logx.WithContext(ctx).Error(v.UserID, err)
 		} else {
 			owner = utils.Copy[types.UserCore](ui)
 		}

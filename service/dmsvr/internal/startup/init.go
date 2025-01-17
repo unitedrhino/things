@@ -67,6 +67,9 @@ const Version = "v1.1.0"
 func VersionUpdate(svcCtx *svc.ServiceContext) {
 	err := svcCtx.AbnormalRepo.InitProduct(context.Background(), "")
 	logx.Must(err)
+	svcCtx.AbnormalRepo.VersionUpdate(context.Background(), "")
+	svcCtx.SendRepo.VersionUpdate(context.Background(), "")
+
 }
 
 func InitSubscribe(svcCtx *svc.ServiceContext) {

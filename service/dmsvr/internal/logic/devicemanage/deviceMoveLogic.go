@@ -136,6 +136,16 @@ func (l *DeviceMoveLogic) DeviceMove(in *dm.DeviceMoveReq) (*dm.Empty, error) {
 				}
 			}
 		}
+		{
+			err := l.svcCtx.AbnormalRepo.UpdateDevices(l.ctx, []*devices.Info{
+				{ProductID: oldDev.ProductID, DeviceName: oldDev.DeviceName, TenantCode: string(oldDev.TenantCode),
+					ProjectID: int64(oldDev.ProjectID), AreaID: int64(oldDev.AreaID), AreaIDPath: string(oldDev.AreaIDPath)},
+				{ProductID: newDev.ProductID, DeviceName: newDev.DeviceName, TenantCode: string(newDev.TenantCode),
+					ProjectID: int64(newDev.ProjectID), AreaID: int64(newDev.AreaID), AreaIDPath: string(newDev.AreaIDPath)}})
+			if err != nil {
+				return err
+			}
+		}
 		return nil
 	})
 	if err != nil {

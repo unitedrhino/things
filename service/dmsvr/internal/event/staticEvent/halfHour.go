@@ -99,7 +99,7 @@ func (l *HalfHourHandle) DeviceAbnormalRecover() error { //设备上下线异常
 		return err
 	}
 	var recoverDevices []*devices.Core
-
+	var recoverDeviceDetail []*relationDB.DmDeviceInfo
 	for _, d := range dis {
 		count, err := l.svcCtx.StatusRepo.GetCountLog(l.ctx, deviceLog.StatusFilter{
 			ProductID:  d.ProductID,
@@ -113,12 +113,13 @@ func (l *HalfHourHandle) DeviceAbnormalRecover() error { //设备上下线异常
 		if count > 5 { //如果前一个小时还超过5次的登入登出,则保持异常状态
 			continue
 		}
+		recoverDeviceDetail = append(recoverDeviceDetail, d)
 		recoverDevices = append(recoverDevices, &devices.Core{
 			ProductID:  d.ProductID,
 			DeviceName: d.DeviceName,
 		})
 	}
-	if len(recoverDevices) > 0 {
+	if len(recoverDeviceDetail) > 0 {
 		l.Infof("recoverDevices:%v", utils.Fmt(recoverDevices))
 		err := relationDB.NewDeviceInfoRepo(l.ctx).UpdateWithField(l.ctx,
 			relationDB.DeviceFilter{Cores: recoverDevices},
@@ -126,8 +127,12 @@ func (l *HalfHourHandle) DeviceAbnormalRecover() error { //设备上下线异常
 		if err != nil {
 			l.Error(err)
 		}
-		for _, v := range recoverDevices {
+		for _, v := range recoverDeviceDetail {
 			l.svcCtx.AbnormalRepo.Insert(l.ctx, &deviceLog.Abnormal{
+				TenantCode: v.TenantCode,
+				ProjectID:  v.ProjectID,
+				AreaID:     v.AreaID,
+				AreaIDPath: v.AreaIDPath,
 				ProductID:  v.ProductID,
 				DeviceName: v.DeviceName,
 				Action:     def.False,
@@ -152,6 +157,7 @@ func (l *HalfHourHandle) DeviceAbnormalSet() error { //设备上下线异常设�
 		return err
 	}
 	var abnormalDevices []*devices.Core
+	var abnormalDeviceDetail []*relationDB.DmDeviceInfo
 	for _, d := range dis {
 		count, err := l.svcCtx.StatusRepo.GetCountLog(l.ctx, deviceLog.StatusFilter{
 			ProductID:  d.ProductID,
@@ -166,12 +172,13 @@ func (l *HalfHourHandle) DeviceAbnormalSet() error { //设备上下线异常设�
 			continue
 		}
 		//如果一个小时内上下线次数大于10次,则判断为异常设备
+		abnormalDeviceDetail = append(abnormalDeviceDetail, d)
 		abnormalDevices = append(abnormalDevices, &devices.Core{
 			ProductID:  d.ProductID,
 			DeviceName: d.DeviceName,
 		})
 	}
-	if len(abnormalDevices) > 0 {
+	if len(abnormalDeviceDetail) > 0 {
 		l.Infof("abnormalDevices:%v", utils.Fmt(abnormalDevices))
 		err := relationDB.NewDeviceInfoRepo(l.ctx).UpdateWithField(l.ctx,
 			relationDB.DeviceFilter{Cores: abnormalDevices, Statuses: []int64{def.DeviceStatusOnline, def.DeviceStatusOffline}},
@@ -179,8 +186,12 @@ func (l *HalfHourHandle) DeviceAbnormalSet() error { //设备上下线异常设�
 		if err != nil {
 			l.Error(err)
 		}
-		for _, v := range abnormalDevices {
+		for _, v := range abnormalDeviceDetail {
 			l.svcCtx.AbnormalRepo.Insert(l.ctx, &deviceLog.Abnormal{
+				TenantCode: v.TenantCode,
+				ProjectID:  v.ProjectID,
+				AreaID:     v.AreaID,
+				AreaIDPath: v.AreaIDPath,
 				ProductID:  v.ProductID,
 				DeviceName: v.DeviceName,
 				Action:     def.True,

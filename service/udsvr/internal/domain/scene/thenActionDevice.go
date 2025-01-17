@@ -162,16 +162,15 @@ func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 		deviceList  []devices.Core
 	)
 	ctx = repo.Info.SetAccount(ctx)
-
+	s, err := repo.SchemaCache.GetData(ctx, devices.Core{ProductID: a.ProductID, DeviceName: a.DeviceName})
+	if err != nil {
+		logx.WithContext(ctx).Error(err)
+	}
 	toData := func() string {
 		if a.DataID != "" {
-			v, err := repo.SchemaCache.GetData(ctx, devices.Core{ProductID: a.ProductID, DeviceName: a.DeviceName})
-			if err != nil {
-				logx.WithContext(ctx).Error(err)
-			}
 			dataIDs := strings.Split(a.DataID, ".")
-			if v != nil {
-				p := v.Property[dataIDs[0]]
+			if s != nil {
+				p := s.Property[dataIDs[0]]
 				if p != nil && (p.Define.Type == schema.DataTypeStruct ||
 					(p.Define.Type == schema.DataTypeArray && p.Define.ArrayInfo.Type == schema.DataTypeStruct)) {
 					//如果是结构体类型需要先解析出来
@@ -202,14 +201,14 @@ func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 		values = append(values, &LogActionDeviceValue{
 			DataID:   a.DataID,
 			DataName: a.DataName,
-			Value:    a.Value,
+			Value:    s.Property[a.DataID].Define.GetValueDesc(a.Value),
 		})
 	} else {
 		for _, val := range a.Values {
 			values = append(values, &LogActionDeviceValue{
 				DataID:   val.DataID,
 				DataName: val.DataName,
-				Value:    val.Value,
+				Value:    s.Property[val.DataID].Define.GetValueDesc(val.Value),
 			})
 		}
 	}

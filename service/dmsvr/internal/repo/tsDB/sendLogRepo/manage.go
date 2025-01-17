@@ -27,3 +27,14 @@ func (s *SendLogRepo) InitDevice(ctx context.Context, device devices.Info) error
 	//_, err := s.t.ExecContext(ctx, sql, device.ProductID, device.DeviceName)
 	return nil
 }
+
+func (s *SendLogRepo) UpdateDevice(ctx context.Context, devices []*devices.Core, affiliation devices.Affiliation) error {
+	return nil
+}
+func (s *SendLogRepo) UpdateDevices(ctx context.Context, devices []*devices.Info) error {
+	return nil
+}
+
+func (s *SendLogRepo) VersionUpdate(ctx context.Context, version string) error {
+	return nil
+}

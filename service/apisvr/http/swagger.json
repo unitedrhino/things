@@ -8555,6 +8555,33 @@
     "DeviceMsgAbnormalLogIndexReq": {
       "type": "object",
       "properties": {
+        "productCategoryID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "只有管理员有权限"
+        },
+        "projectID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "只有管理员有权限"
+        },
+        "areaID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "只有管理员有权限"
+        },
+        "areaIDPath": {
+          "type": "string",
+          "description": "只有管理员有权限"
+        },
+        "areaIDs": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": "只有管理员有权限"
+        },
         "productID": {
           "type": "string",
           "description": "产品id"
@@ -9045,6 +9072,33 @@
     "DeviceMsgSendLogIndexReq": {
       "type": "object",
       "properties": {
+        "productCategoryID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "只有管理员有权限"
+        },
+        "projectID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "只有管理员有权限"
+        },
+        "areaID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "只有管理员有权限"
+        },
+        "areaIDPath": {
+          "type": "string",
+          "description": "只有管理员有权限"
+        },
+        "areaIDs": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": "只有管理员有权限"
+        },
         "productID": {
           "type": "string",
           "description": "产品id"

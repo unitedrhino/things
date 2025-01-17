@@ -46,6 +46,8 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 	var areaIDPath string
 	var projectIDSet = map[int64]struct{}{}
 	var changeAreaIDPaths = map[string]struct{}{}
+	var tagUpdateDevices []devices.Core
+	var deviceAffiliation devices.Affiliation
 	var devs = logic.ToDeviceCores(in.Devices)
 	if in.AreaID != 0 {
 		columns = append(columns, "area_id", "area_id_path")
@@ -55,6 +57,11 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 		}
 		areaIDPath = ai.AreaIDPath
 		changeAreaIDPaths[areaIDPath] = struct{}{}
+		deviceAffiliation = devices.Affiliation{
+			ProjectID:  ai.ProjectID,
+			AreaID:     ai.AreaID,
+			AreaIDPath: ai.AreaIDPath,
+		}
 		for _, dev := range devs {
 			val, err := l.svcCtx.DeviceCache.GetData(l.ctx, *dev)
 			if err != nil {
@@ -91,6 +98,9 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 	if len(changeAreaIDPaths) > 0 {
 		logic.FillAreaDeviceCount(l.ctx, l.svcCtx, utils.SetToSlice(changeAreaIDPaths)...)
 		logic.FillProjectDeviceCount(l.ctx, l.svcCtx, utils.SetToSlice(projectIDSet)...)
+	}
+	if len(tagUpdateDevices) > 0 {
+		l.svcCtx.AbnormalRepo.UpdateDevice(l.ctx, devs, deviceAffiliation)
 	}
 	return &dm.Empty{}, err
 }

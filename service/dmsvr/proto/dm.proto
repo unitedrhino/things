@@ -790,6 +790,11 @@ message StatusLogInfo{
 
 /*实时获取对应信息*/
 message SendLogIndexReq{
+  int64 projectID =13;//只有管理员有权限
+  int64 areaID =14;//只有管理员有权限
+  string areaIDPath =15;//只有管理员有权限
+ repeated int64 areaIDs =16;//只有管理员有权限
+  int64  productCategoryID = 11;//产品品类id
   string  productID = 1; //产品id
   string  deviceName = 2; //设备名
   int64   timeStart = 3;//获取时间的开始(毫秒时间戳)
@@ -823,6 +828,11 @@ message SendLogInfo{
 
 /*实时获取对应信息*/
 message AbnormalLogIndexReq{
+  int64 projectID =13;//只有管理员有权限
+  int64 areaID =14;//只有管理员有权限
+  string areaIDPath =15;//只有管理员有权限
+  repeated int64 areaIDs =16;//只有管理员有权限
+  int64  productCategoryID = 17;//产品品类id
   string  productID = 1; //产品id
   string  deviceName = 2; //设备名
   int64   timeStart = 3;//获取时间的开始(毫秒时间戳)

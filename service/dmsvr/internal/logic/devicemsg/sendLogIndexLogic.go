@@ -8,6 +8,7 @@ import (
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -30,19 +31,41 @@ func NewSendLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Send
 }
 
 func (l *SendLogIndexLogic) SendLogIndex(in *dm.SendLogIndexReq) (*dm.SendLogIndexResp, error) {
-	_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{
-		ProductID:  in.ProductID,
-		DeviceName: in.DeviceName,
-	}, nil)
-	if err != nil {
-		return nil, err
-	}
 	filter := deviceLog.SendFilter{
 		UserID:     in.UserID,
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 		Actions:    in.Actions,
 		ResultCode: in.ResultCode,
+	}
+	if in.ProductID != "" && in.DeviceName != "" {
+		_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{
+			ProductID:  in.ProductID,
+			DeviceName: in.DeviceName,
+		}, nil)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		uc := ctxs.GetUserCtxNoNil(l.ctx)
+		if uc.IsAdmin != true {
+			return nil, errors.Parameter.AddMsg("请填写产品和设备")
+		}
+		if ctxs.IsRoot(l.ctx) != nil {
+			filter.TenantCode = uc.TenantCode
+		}
+		if uc.ProjectID != 0 {
+			filter.ProjectID = uc.ProjectID
+		}
+		if in.ProductCategoryID != 0 {
+			pis, err := relationDB.NewProductInfoRepo(l.ctx).FindByFilter(l.ctx, relationDB.ProductFilter{CategoryIDs: []int64{in.ProductCategoryID}}, nil)
+			if err != nil {
+				return &dm.SendLogIndexResp{}, err
+			}
+			for _, pi := range pis {
+				filter.ProductIDs = append(filter.ProductIDs, pi.ProductID)
+			}
+		}
 	}
 	page := def.PageInfo2{
 		TimeStart: in.TimeStart,

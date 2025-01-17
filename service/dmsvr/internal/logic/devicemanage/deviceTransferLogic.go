@@ -166,6 +166,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 		}
 	}
 	var devs = utils.CopySlice[devices.Core](dis)
+
 	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
 		err := relationDB.NewUserDeviceShareRepo(tx).DeleteByFilter(l.ctx, relationDB.UserDeviceShareFilter{
 			Devices: devs,
@@ -188,9 +189,11 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 			"area_id_path": AreaIDPath,
 			"last_bind":    time.Now(),
 		}
+		var tc string
 		if pi.TenantCode != uc.TenantCode {
 			ctx = ctxs.WithRoot(l.ctx)
 			param["tenant_code"] = pi.TenantCode
+			tc = pi.TenantCode
 		}
 		if in.IsCleanData == def.True {
 			param["last_bind"] = time.Now()
@@ -199,6 +202,12 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 		if err != nil {
 			return err
 		}
+		l.svcCtx.AbnormalRepo.UpdateDevice(l.ctx, devs, devices.Affiliation{
+			TenantCode: tc,
+			ProjectID:  int64(ProjectID),
+			AreaID:     int64(AreaID),
+			AreaIDPath: AreaIDPath,
+		})
 		return nil
 	})
 	if err != nil {

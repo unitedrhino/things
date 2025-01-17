@@ -2,6 +2,8 @@ package devicemsglogic
 
 import (
 	"context"
+	"gitee.com/unitedrhino/share/devices"
+	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"time"
@@ -30,7 +32,12 @@ func (l *AbnormalLogCreateLogic) AbnormalLogCreate(in *dm.AbnormalLogInfo) (*dm.
 	if in.Timestamp == 0 {
 		in.Timestamp = time.Now().UnixMilli()
 	}
-	err := l.svcCtx.AbnormalRepo.Insert(l.ctx, &deviceLog.Abnormal{
+	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
+	err = l.svcCtx.AbnormalRepo.Insert(l.ctx, &deviceLog.Abnormal{
+		TenantCode: stores.TenantCode(di.TenantCode),
+		ProjectID:  stores.ProjectID(di.ProjectID),
+		AreaID:     stores.AreaID(di.AreaID),
+		AreaIDPath: stores.AreaIDPath(di.AreaIDPath),
 		ProductID:  in.ProductID,
 		Action:     in.Action,
 		Timestamp:  time.UnixMilli(in.Timestamp), // 操作时间

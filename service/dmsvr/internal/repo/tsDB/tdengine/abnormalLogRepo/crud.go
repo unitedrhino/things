@@ -17,8 +17,26 @@ func (s *AbnormalLogRepo) fillFilter(sql sq.SelectBuilder, filter deviceLog.Abno
 	if len(filter.ProductID) != 0 {
 		sql = sql.Where("`product_id`=?", filter.ProductID)
 	}
+	if len(filter.ProductIDs) != 0 {
+		sql = sql.Where(fmt.Sprintf("`product_id` in (%v)", stores.ArrayToSql(filter.ProductIDs)))
+	}
 	if len(filter.DeviceName) != 0 {
 		sql = sql.Where("`device_name`=?", filter.DeviceName)
+	}
+	if filter.TenantCode != "" {
+		sql = sql.Where("`tenant_code`=?", filter.TenantCode)
+	}
+	if filter.ProjectID != 0 {
+		sql = sql.Where("`project_id`=?", filter.ProjectID)
+	}
+	if filter.AreaID != 0 {
+		sql = sql.Where("`area_id`=?", filter.AreaID)
+	}
+	if filter.AreaIDPath != "" {
+		sql = sql.Where("`area_id_path` like ?", filter.AreaIDPath+"%")
+	}
+	if len(filter.AreaIDs) != 0 {
+		sql = sql.Where(fmt.Sprintf("`area_id` in (%v)", stores.ArrayToSql(filter.AreaIDs)))
 	}
 	if filter.Action != 0 {
 		sql = sql.Where("`action`=?", def.ToBool(filter.Action))
@@ -79,8 +97,9 @@ func (s *AbnormalLogRepo) Insert(ctx context.Context, data *deviceLog.Abnormal) 
 		data.Timestamp = time.Now()
 	}
 	data.TraceID = utils.TraceIdFromContext(ctx)
-	sql := fmt.Sprintf("  %s using %s tags('%s','%s')(`ts`, `type`,`reason` ,`action`  ,`trace_id` ) values (?,?,?,?,?) ",
-		s.GetLogTableName(data.ProductID, data.DeviceName), s.GetLogStableName(), data.ProductID, data.DeviceName)
+	sql := fmt.Sprintf("  %s using %s tags('%s','%s','%s',%d,%d,'%s')(`ts`, `type`,`reason` ,`action`  ,`trace_id` ) values (?,?,?,?,?) ",
+		s.GetLogTableName(data.ProductID, data.DeviceName), s.GetLogStableName(), data.ProductID, data.DeviceName, data.TenantCode, data.ProjectID,
+		data.AreaID, data.AreaIDPath)
 	s.t.AsyncInsert(sql, data.Timestamp, data.Type, data.Reason, def.ToBool(data.Action), data.TraceID)
 	return nil
 }

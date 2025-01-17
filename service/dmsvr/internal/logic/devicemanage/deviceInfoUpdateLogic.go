@@ -45,6 +45,7 @@ func NewDeviceInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 
 func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, data *dm.DeviceInfo) error {
 	uc := ctxs.GetUserCtx(l.ctx)
+	var isUpdateTag bool
 	if data.AreaID != 0 && data.AreaID != int64(old.AreaID) {
 		old.AreaID = stores.AreaID(data.AreaID)
 		ai, err := l.svcCtx.AreaCache.GetData(l.ctx, data.AreaID)
@@ -56,6 +57,7 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 			logic.FillAreaDeviceCount(l.ctx, l.svcCtx, ai.AreaIDPath, string(old.AreaIDPath))
 		})
 		old.AreaIDPath = stores.AreaIDPath(ai.AreaIDPath)
+		isUpdateTag = true
 	}
 	if data.ProjectID != 0 && data.ProjectID != int64(old.ProjectID) {
 		ctxs.GoNewCtx(l.ctx, func(ctx2 context.Context) {
@@ -63,6 +65,7 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 			logic.FillProjectDeviceCount(ctx2, l.svcCtx, data.ProjectID, int64(old.ProjectID))
 		})
 		old.ProjectID = stores.ProjectID(data.ProjectID)
+		isUpdateTag = true
 	}
 
 	if uc.IsAdmin && data.ExpTime != nil {
@@ -250,6 +253,15 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 	}
 	if data.Phone != nil {
 		old.Phone = utils.AnyToNullString(data.Phone)
+	}
+
+	if isUpdateTag {
+		err := l.svcCtx.AbnormalRepo.UpdateDevice(l.ctx, []*devices.Core{
+			{ProductID: old.ProductID, DeviceName: old.DeviceName}},
+			devices.Affiliation{ProjectID: int64(old.ProjectID), AreaID: int64(old.AreaID), AreaIDPath: string(old.AreaIDPath)})
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

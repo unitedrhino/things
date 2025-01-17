@@ -93,6 +93,11 @@ type (
 
 
     DeviceMsgSendLogIndexReq  {
+        ProductCategoryID int64 `json:"productCategoryID,optional"`//只有管理员有权限
+        ProjectID  int64     `json:"projectID,optional,omitempty"`    //只有管理员有权限
+        AreaID     int64     `json:"areaID,optional,omitempty"`          //只有管理员有权限
+        AreaIDPath string    `json:"areaIDPath,optional,omitempty"`   //只有管理员有权限
+        AreaIDs    []int64   `json:"areaIDs,optional,omitempty"` //只有管理员有权限
         ProductID  string    `json:"productID,optional"`     //产品id
         DeviceName string    `json:"deviceName,optional"`   //设备名
         TimeStart  int64     `json:"timeStart,string,optional"`    //获取时间的开始(毫秒时间戳)
@@ -123,6 +128,11 @@ type (
 
 
     DeviceMsgAbnormalLogIndexReq  {
+        ProductCategoryID int64 `json:"productCategoryID,optional"`//只有管理员有权限
+        ProjectID  int64     `json:"projectID,optional,omitempty"`    //只有管理员有权限
+        AreaID     int64     `json:"areaID,optional,omitempty"`          //只有管理员有权限
+        AreaIDPath string    `json:"areaIDPath,optional,omitempty"`   //只有管理员有权限
+        AreaIDs    []int64   `json:"areaIDs,optional,omitempty"` //只有管理员有权限
         ProductID  string    `json:"productID,optional"`     //产品id
         DeviceName string    `json:"deviceName,optional"`   //设备名
         TimeStart  int64     `json:"timeStart,string,optional"`    //获取时间的开始(毫秒时间戳)

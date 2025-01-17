@@ -60,13 +60,16 @@ func (l *DeviceResetLogic) DeviceReset(in *dm.DeviceResetReq) (*dm.Empty, error)
 		}
 	}
 	var updateMap = make(map[string]interface{})
+	areaID := stores.AreaID(def.NotClassified)
+	var projectID stores.ProjectID
+	var areaIDPath string
 	if in.Bind {
-		areaID := stores.AreaID(def.NotClassified)
+		areaID = stores.AreaID(def.NotClassified)
 		ti, err := l.svcCtx.TenantCache.GetData(l.ctx, def.TenantCodeDefault)
 		if err != nil {
 			return nil, err
 		}
-		projectID := stores.ProjectID(ti.DefaultProjectID)
+		projectID = stores.ProjectID(ti.DefaultProjectID)
 		if ti.DefaultAreaID != 0 {
 			areaID = stores.AreaID(ti.DefaultAreaID)
 		}
@@ -75,7 +78,7 @@ func (l *DeviceResetLogic) DeviceReset(in *dm.DeviceResetReq) (*dm.Empty, error)
 		if err != nil {
 			return nil, err
 		}
-		areaIDPath := ai.AreaIDPath
+		areaIDPath = ai.AreaIDPath
 		updateMap["project_id"] = projectID
 		updateMap["area_id"] = areaID
 		updateMap["area_id_path"] = areaIDPath
@@ -140,6 +143,14 @@ func (l *DeviceResetLogic) DeviceReset(in *dm.DeviceResetReq) (*dm.Empty, error)
 		}
 		if in.DeviceSchema {
 			err = relationDB.NewDeviceSchemaRepo(tx).DeleteByFilter(l.ctx, relationDB.DeviceSchemaFilter{ProductID: di.ProductID, DeviceName: di.DeviceName})
+			if err != nil {
+				return err
+			}
+		}
+		if in.Bind {
+			err := l.svcCtx.AbnormalRepo.UpdateDevices(l.ctx, []*devices.Info{
+				{ProductID: di.ProductID, DeviceName: di.DeviceName,
+					ProjectID: int64(projectID), AreaID: int64(areaID), AreaIDPath: areaIDPath}})
 			if err != nil {
 				return err
 			}
