@@ -290,7 +290,9 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 		err error
 		db  = d.db.WithContext(ctx).Model(getModel(p.Define))
 	)
-
+	if filter.PartitionBy != "" {
+		db = db.Group(filter.PartitionBy)
+	}
 	if filter.ArgFunc == "" {
 		if filter.Order != stores.OrderAsc {
 			db = db.Order("ts desc")

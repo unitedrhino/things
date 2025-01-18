@@ -11,6 +11,7 @@ import (
 	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/share/utils"
 	sq "gitee.com/unitedrhino/squirrel"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
@@ -272,6 +273,9 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 	}
 	if len(filter.Fill) > 0 {
 		sql = sql.Fill(filter.Fill)
+	}
+	if filter.PartitionBy != "" {
+		sql = sql.GroupBy(utils.CamelCaseToUdnderscore(filter.PartitionBy))
 	}
 	return sql, nil
 }

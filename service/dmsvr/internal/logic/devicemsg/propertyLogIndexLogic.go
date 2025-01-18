@@ -98,15 +98,15 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 		}
 	}
 	dds, err := dd.GetPropertyDataByID(l.ctx, p, msgThing.FilterOpt{
-		Page:        page,
-		ProductID:   in.ProductID,
-		DeviceNames: in.DeviceNames,
-		//DeviceNames: in.DeviceNames,
+		Page:         page,
+		ProductID:    in.ProductID,
+		DeviceNames:  in.DeviceNames,
 		Order:        in.Order,
 		DataID:       in.DataID,
 		Fill:         in.Fill,
 		Interval:     in.Interval,
 		IntervalUnit: def.TimeUnit(in.IntervalUnit),
+		PartitionBy:  in.PartitionBy,
 		ArgFunc:      in.ArgFunc})
 	if err != nil {
 		l.Errorf("%s.GetPropertyDataByID err=%v", utils.FuncName(), err)
@@ -120,8 +120,9 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 			devData.TimeStamp = devData.TimeStamp.Truncate(def.TimeUnit(in.IntervalUnit).ToDuration(in.Interval))
 		}
 		diData := dm.PropertyLogInfo{
-			Timestamp: devData.TimeStamp.UnixMilli(),
-			DataID:    devData.Identifier,
+			DeviceName: devData.Identifier,
+			Timestamp:  devData.TimeStamp.UnixMilli(),
+			DataID:     devData.Identifier,
 		}
 		var payload []byte
 		if param, ok := devData.Param.(string); ok {

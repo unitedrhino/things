@@ -8902,7 +8902,7 @@
           "items": {
             "type": "string"
           },
-          "description": "设备名(不填获取产品下所有设备)"
+          "description": "设备名(不填获取产品下所有设备,只有管理员有权限)"
         },
         "productID": {
           "type": "string",
@@ -8945,6 +8945,10 @@
           "type": "integer",
           "format": "int64",
           "description": "时间排序 0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)"
+        },
+        "partitionBy": {
+          "type": "string",
+          "description": "切分数据,可以填写deviceName"
         }
       },
       "title": "DeviceMsgPropertyLogIndexReq"
@@ -8955,6 +8959,10 @@
         "timestamp": {
           "type": "string",
           "description": "发生时间戳"
+        },
+        "deviceName": {
+          "type": "string",
+          "description": "设备名称"
         },
         "dataID": {
           "type": "string",
@@ -8968,6 +8976,7 @@
       "title": "DeviceMsgPropertyLogInfo",
       "required": [
         "timestamp",
+        "deviceName",
         "dataID"
       ]
     },

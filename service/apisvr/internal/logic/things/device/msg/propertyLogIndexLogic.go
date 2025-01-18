@@ -39,6 +39,7 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(req *types.DeviceMsgPropertyLog
 		ArgFunc:      req.ArgFunc,
 		Fill:         req.Fill,
 		Order:        req.Order,
+		PartitionBy:  req.PartitionBy,
 		Page:         logic.ToDmPageRpc(req.Page),
 	})
 	if err != nil {
@@ -49,9 +50,10 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(req *types.DeviceMsgPropertyLog
 	info := make([]*types.DeviceMsgPropertyLogInfo, 0, len(dmResp.List))
 	for _, v := range dmResp.List {
 		info = append(info, &types.DeviceMsgPropertyLogInfo{
-			Timestamp: v.Timestamp,
-			DataID:    v.DataID,
-			Value:     v.Value,
+			DeviceName: v.DeviceName,
+			Timestamp:  v.Timestamp,
+			DataID:     v.DataID,
+			Value:      v.Value,
 		})
 	}
 	return &types.DeviceMsgPropertyIndexResp{

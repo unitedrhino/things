@@ -3,6 +3,7 @@ package deviceinteractlogic
 import (
 	"context"
 	"encoding/json"
+	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/domain/deviceMsg"
@@ -10,8 +11,10 @@ import (
 	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/cache"
+	"strings"
 	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
@@ -91,8 +94,25 @@ func (l *PropertyGetReportSendLogic) PropertyGetReportSend(in *dm.PropertyGetRep
 	if err != nil {
 		return nil, err
 	}
-
-	resp, err := l.svcCtx.PubDev.ReqToDeviceSync(l.ctx, &reqMsg, 0, func(payload []byte) bool {
+	var resp []byte
+	var params []byte
+	defer func() {
+		uc := ctxs.GetUserCtxNoNil(l.ctx)
+		account := uc.Account
+		_ = l.svcCtx.SendRepo.Insert(l.ctx, &deviceLog.Send{
+			ProductID:  in.ProductID,
+			Action:     "propertyGetReportSend",
+			Timestamp:  time.Now(), // 操作时间
+			DataID:     strings.Join(in.DataIDs, ","),
+			DeviceName: in.DeviceName,
+			TraceID:    utils.TraceIdFromContext(l.ctx),
+			UserID:     uc.UserID,
+			Account:    account,
+			Content:    string(params),
+			ResultCode: errors.Fmt(err).GetCode(),
+		})
+	}()
+	resp, err = l.svcCtx.PubDev.ReqToDeviceSync(l.ctx, &reqMsg, 0, func(payload []byte) bool {
 		var dresp msgThing.Resp
 		err = utils.Unmarshal(payload, &dresp)
 		if err != nil { //如果是没法解析的说明不是需要的包,直接跳过即可
@@ -112,10 +132,10 @@ func (l *PropertyGetReportSendLogic) PropertyGetReportSend(in *dm.PropertyGetRep
 	if err != nil {
 		return nil, err
 	}
-	var params []byte
-	if len(dresp.Params) > 0 {
-		params, _ = json.Marshal(dresp.Params)
+	if dresp.Data != nil {
+		params, _ = json.Marshal(dresp.Data)
 	}
+
 	return &dm.PropertyGetReportSendResp{
 		MsgToken:  dresp.MsgToken,
 		Msg:       dresp.Msg,

@@ -661,7 +661,7 @@ type DeviceMsgPropertyIndexResp struct {
 
 type DeviceMsgPropertyLogIndexReq struct {
 	DeviceName   string    `json:"deviceName,optional,omitempty"`       //设备名(不填获取产品下所有设备)
-	DeviceNames  []string  `json:"deviceNames,optional,omitempty"`      //设备名(不填获取产品下所有设备)
+	DeviceNames  []string  `json:"deviceNames,optional,omitempty"`      //设备名(不填获取产品下所有设备,只有管理员有权限)
 	ProductID    string    `json:"productID,omitempty"`                 //产品id 获取产品id下的所有设备信息
 	DataID       string    `json:"dataID,omitempty"`                    //获取的具体标识符的数据
 	TimeStart    int64     `json:"timeStart,string,optional,omitempty"` //获取时间的开始
@@ -672,12 +672,14 @@ type DeviceMsgPropertyLogIndexReq struct {
 	ArgFunc      string    `json:"argFunc,optional"`                    //聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考:https://docs.taosdata.com/taos-sql/function
 	Fill         string    `json:"fill,optional"`                       //指定窗口区间数据缺失的情况下的填充模式 参考:https://docs.taosdata.com/reference/taos-sql/distinguished/#fill-%E5%AD%90%E5%8F%A5
 	Order        int64     `json:"order,optional"`                      //时间排序 0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)
+	PartitionBy  string    `json:"partitionBy,optional"`                //切分数据,可以填写deviceName
 }
 
 type DeviceMsgPropertyLogInfo struct {
-	Timestamp int64  `json:"timestamp,string"` //发生时间戳
-	DataID    string `json:"dataID"`           //获取的具体属性值
-	Value     string `json:"value,omitempty"`  //获取到的值
+	Timestamp  int64  `json:"timestamp,string"` //发生时间戳
+	DeviceName string `json:"deviceName"`       //设备名称
+	DataID     string `json:"dataID"`           //获取的具体属性值
+	Value      string `json:"value,omitempty"`  //获取到的值
 }
 
 type DeviceMsgPropertyLogLatestIndexReq struct {
