@@ -39,6 +39,12 @@ func (s *SendLogRepo) fillFilter(sql sq.SelectBuilder, filter deviceLog.SendFilt
 	if len(filter.AreaIDs) != 0 {
 		sql = sql.Where(fmt.Sprintf("`area_id` in (%v)", stores.ArrayToSql(filter.AreaIDs)))
 	}
+	if len(filter.Actions) != 0 {
+		sql = sql.Where(fmt.Sprintf("`action` in (%v)", stores.ArrayToSql(filter.Actions)))
+	}
+	if filter.ResultCode != 0 {
+		sql = sql.Where("`result_code`=?", filter.ResultCode)
+	}
 	return sql
 }
 

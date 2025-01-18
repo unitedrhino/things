@@ -18,6 +18,9 @@ func (s *SendLogRepo) fillFilter(ctx context.Context, db *stores.DB, filter devi
 	if len(filter.DeviceName) != 0 {
 		db = db.Where("device_name=?", filter.DeviceName)
 	}
+	if len(filter.Actions) != 0 {
+		db = db.Where("action in ?", filter.Actions)
+	}
 	return db
 }
 
