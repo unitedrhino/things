@@ -126,7 +126,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 			return nil, errors.NotFind.AddMsg("用户未找到")
 		}
 		ProjectID = stores.ProjectID(dp.List[0].ProjectID)
-		pi, err = l.svcCtx.ProjectCache.GetData(l.ctx, in.ProjectID)
+		pi, err = l.svcCtx.ProjectCache.GetData(l.ctx, dp.List[0].ProjectID)
 		if err != nil {
 			return nil, err
 		}
