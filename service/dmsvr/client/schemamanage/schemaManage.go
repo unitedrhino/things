@@ -171,6 +171,9 @@ type (
 	PropertyControlSendMsg            = dm.PropertyControlSendMsg
 	PropertyControlSendReq            = dm.PropertyControlSendReq
 	PropertyControlSendResp           = dm.PropertyControlSendResp
+	PropertyGetReportMultiSendReq     = dm.PropertyGetReportMultiSendReq
+	PropertyGetReportMultiSendResp    = dm.PropertyGetReportMultiSendResp
+	PropertyGetReportSendMsg          = dm.PropertyGetReportSendMsg
 	PropertyGetReportSendReq          = dm.PropertyGetReportSendReq
 	PropertyGetReportSendResp         = dm.PropertyGetReportSendResp
 	PropertyLogIndexReq               = dm.PropertyLogIndexReq

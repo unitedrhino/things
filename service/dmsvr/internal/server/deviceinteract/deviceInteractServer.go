@@ -47,6 +47,12 @@ func (s *DeviceInteractServer) PropertyGetReportSend(ctx context.Context, in *dm
 	return l.PropertyGetReportSend(in)
 }
 
+// 请求设备获取设备最新属性
+func (s *DeviceInteractServer) PropertyGetReportMultiSend(ctx context.Context, in *dm.PropertyGetReportMultiSendReq) (*dm.PropertyGetReportMultiSendResp, error) {
+	l := deviceinteractlogic.NewPropertyGetReportMultiSendLogic(ctx, s.svcCtx)
+	return l.PropertyGetReportMultiSend(in)
+}
+
 // 调用设备属性
 func (s *DeviceInteractServer) PropertyControlSend(ctx context.Context, in *dm.PropertyControlSendReq) (*dm.PropertyControlSendResp, error) {
 	l := deviceinteractlogic.NewPropertyControlSendLogic(ctx, s.svcCtx)

@@ -536,6 +536,17 @@
         {
           "accessCode": "thingsDeviceInteractModify",
           "method": "POST",
+          "route": "/api/v1/things/device/interact/property-get-report-multi-send",
+          "name": "",
+          "isNeedAuth": 2,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "all",
+          "recordLogMode": 0
+        },
+        {
+          "accessCode": "thingsDeviceInteractModify",
+          "method": "POST",
           "route": "/api/v1/things/device/interact/property-get-report-send",
           "name": "",
           "isNeedAuth": 2,

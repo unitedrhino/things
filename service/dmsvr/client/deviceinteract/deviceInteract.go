@@ -171,6 +171,9 @@ type (
 	PropertyControlSendMsg            = dm.PropertyControlSendMsg
 	PropertyControlSendReq            = dm.PropertyControlSendReq
 	PropertyControlSendResp           = dm.PropertyControlSendResp
+	PropertyGetReportMultiSendReq     = dm.PropertyGetReportMultiSendReq
+	PropertyGetReportMultiSendResp    = dm.PropertyGetReportMultiSendResp
+	PropertyGetReportSendMsg          = dm.PropertyGetReportSendMsg
 	PropertyGetReportSendReq          = dm.PropertyGetReportSendReq
 	PropertyGetReportSendResp         = dm.PropertyGetReportSendResp
 	PropertyLogIndexReq               = dm.PropertyLogIndexReq
@@ -232,6 +235,8 @@ type (
 		ActionResp(ctx context.Context, in *ActionRespReq, opts ...grpc.CallOption) (*Empty, error)
 		// 请求设备获取设备最新属性
 		PropertyGetReportSend(ctx context.Context, in *PropertyGetReportSendReq, opts ...grpc.CallOption) (*PropertyGetReportSendResp, error)
+		// 请求设备获取设备最新属性
+		PropertyGetReportMultiSend(ctx context.Context, in *PropertyGetReportMultiSendReq, opts ...grpc.CallOption) (*PropertyGetReportMultiSendResp, error)
 		// 调用设备属性
 		PropertyControlSend(ctx context.Context, in *PropertyControlSendReq, opts ...grpc.CallOption) (*PropertyControlSendResp, error)
 		// 批量调用设备属性
@@ -313,6 +318,17 @@ func (m *defaultDeviceInteract) PropertyGetReportSend(ctx context.Context, in *P
 // 请求设备获取设备最新属性
 func (d *directDeviceInteract) PropertyGetReportSend(ctx context.Context, in *PropertyGetReportSendReq, opts ...grpc.CallOption) (*PropertyGetReportSendResp, error) {
 	return d.svr.PropertyGetReportSend(ctx, in)
+}
+
+// 请求设备获取设备最新属性
+func (m *defaultDeviceInteract) PropertyGetReportMultiSend(ctx context.Context, in *PropertyGetReportMultiSendReq, opts ...grpc.CallOption) (*PropertyGetReportMultiSendResp, error) {
+	client := dm.NewDeviceInteractClient(m.cli.Conn())
+	return client.PropertyGetReportMultiSend(ctx, in, opts...)
+}
+
+// 请求设备获取设备最新属性
+func (d *directDeviceInteract) PropertyGetReportMultiSend(ctx context.Context, in *PropertyGetReportMultiSendReq, opts ...grpc.CallOption) (*PropertyGetReportMultiSendResp, error) {
+	return d.svr.PropertyGetReportMultiSend(ctx, in)
 }
 
 // 调用设备属性

@@ -309,6 +309,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: thingsdeviceinteract.PropertyControlSendHandler(serverCtx),
 				},
 				{
+					// 批量请求设备获取设备最新属性
+					Method:  http.MethodPost,
+					Path:    "/property-get-report-multi-send",
+					Handler: thingsdeviceinteract.PropertyGetReportMultiSendHandler(serverCtx),
+				},
+				{
 					// 请求设备获取设备最新属性
 					Method:  http.MethodPost,
 					Path:    "/property-get-report-send",

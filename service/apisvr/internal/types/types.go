@@ -490,6 +490,32 @@ type DeviceInteractMultiSendPropertyResp struct {
 	List []*DeviceInteractMultiSendPropertyMsg `json:"list"` //批量设备返回结果列表
 }
 
+type DeviceInteractPropertyGetReportMultiSendReq struct {
+	DataIDs     []string      `json:"dataIDs,optional"`        //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条
+	ProductID   string        `json:"productID,optional"`      //产品id
+	DeviceNames []string      `json:"deviceNames,optional"`    //设备名
+	Devices     []*DeviceCore `json:"devices,optional"`        //如果是不同的产品,则传这个字段,上面两个参数填了优先使用
+	AreaID      int64         `json:"areaID,string,optional"`  //控制一个区域的设备
+	AreaIDPath  string        `json:"areaIDPath,optional"`     //根据区域路径控制设备
+	GroupID     int64         `json:"groupID,string,optional"` //控制一个组的设备
+}
+
+type DeviceInteractPropertyGetReportMultiSendResp struct {
+	List []*DeviceInteractPropertyGetReportSendMsg `json:"list"` //批量设备返回结果列表
+}
+
+type DeviceInteractPropertyGetReportSendMsg struct {
+	Code       int64  `json:"code"`       //设备返回状态码
+	Msg        string `json:"msg"`        //返回状态
+	MsgToken   string `json:"msgToken"`   //调用id
+	Timestamp  int64  `json:"timestamp"`  //上报时间戳(毫秒时间戳)
+	Params     string `json:"params"`     //获取到的值
+	ProductID  string `json:"productID"`  //产品id
+	DeviceName string `json:"deviceName"` //设备名
+	SysCode    int64  `json:"sysCode"`    //系统错误码
+	SysMsg     string `json:"sysMsg"`     //系统错误信息
+}
+
 type DeviceInteractPropertyGetReportSendReq struct {
 	ProductID  string   `json:"productID"`        //产品id (必填)
 	DeviceName string   `json:"deviceName"`       //设备名(必填)

@@ -1425,6 +1425,48 @@
         ]
       }
     },
+    "/api/v1/things/device/interact/property-get-report-multi-send": {
+      "post": {
+        "summary": "批量请求设备获取设备最新属性",
+        "operationId": "postApiV1ThingsDeviceInteractProperty-get-report-multi-send",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/DeviceInteractPropertyGetReportMultiSendResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceInteractPropertyGetReportMultiSendReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/interact",
+          "thingsDeviceInteract"
+        ]
+      }
+    },
     "/api/v1/things/device/interact/property-get-report-send": {
       "post": {
         "summary": "请求设备获取设备最新属性",
@@ -8230,6 +8272,121 @@
       "title": "DeviceInteractMultiSendPropertyResp",
       "required": [
         "list"
+      ]
+    },
+    "DeviceInteractPropertyGetReportMultiSendReq": {
+      "type": "object",
+      "properties": {
+        "dataIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条"
+        },
+        "productID": {
+          "type": "string",
+          "description": "产品id"
+        },
+        "deviceNames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "设备名"
+        },
+        "devices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceCore"
+          },
+          "description": "如果是不同的产品,则传这个字段,上面两个参数填了优先使用"
+        },
+        "areaID": {
+          "type": "string",
+          "description": "控制一个区域的设备"
+        },
+        "areaIDPath": {
+          "type": "string",
+          "description": "根据区域路径控制设备"
+        },
+        "groupID": {
+          "type": "string",
+          "description": "控制一个组的设备"
+        }
+      },
+      "title": "DeviceInteractPropertyGetReportMultiSendReq"
+    },
+    "DeviceInteractPropertyGetReportMultiSendResp": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceInteractPropertyGetReportSendMsg"
+          },
+          "description": "批量设备返回结果列表"
+        }
+      },
+      "title": "DeviceInteractPropertyGetReportMultiSendResp",
+      "required": [
+        "list"
+      ]
+    },
+    "DeviceInteractPropertyGetReportSendMsg": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int64",
+          "description": "设备返回状态码"
+        },
+        "msg": {
+          "type": "string",
+          "description": "返回状态"
+        },
+        "msgToken": {
+          "type": "string",
+          "description": "调用id"
+        },
+        "timestamp": {
+          "type": "integer",
+          "format": "int64",
+          "description": "上报时间戳(毫秒时间戳)"
+        },
+        "params": {
+          "type": "string",
+          "description": "获取到的值"
+        },
+        "productID": {
+          "type": "string",
+          "description": "产品id"
+        },
+        "deviceName": {
+          "type": "string",
+          "description": "设备名"
+        },
+        "sysCode": {
+          "type": "integer",
+          "format": "int64",
+          "description": "系统错误码"
+        },
+        "sysMsg": {
+          "type": "string",
+          "description": "系统错误信息"
+        }
+      },
+      "title": "DeviceInteractPropertyGetReportSendMsg",
+      "required": [
+        "code",
+        "msg",
+        "msgToken",
+        "timestamp",
+        "params",
+        "productID",
+        "deviceName",
+        "sysCode",
+        "sysMsg"
       ]
     },
     "DeviceInteractPropertyGetReportSendReq": {

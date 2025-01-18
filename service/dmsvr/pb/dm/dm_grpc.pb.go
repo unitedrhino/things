@@ -4148,17 +4148,18 @@ var DeviceMsg_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	DeviceInteract_ActionSend_FullMethodName               = "/dm.DeviceInteract/actionSend"
-	DeviceInteract_ActionRead_FullMethodName               = "/dm.DeviceInteract/actionRead"
-	DeviceInteract_ActionResp_FullMethodName               = "/dm.DeviceInteract/actionResp"
-	DeviceInteract_PropertyGetReportSend_FullMethodName    = "/dm.DeviceInteract/propertyGetReportSend"
-	DeviceInteract_PropertyControlSend_FullMethodName      = "/dm.DeviceInteract/propertyControlSend"
-	DeviceInteract_PropertyControlMultiSend_FullMethodName = "/dm.DeviceInteract/propertyControlMultiSend"
-	DeviceInteract_PropertyControlRead_FullMethodName      = "/dm.DeviceInteract/propertyControlRead"
-	DeviceInteract_SendMsg_FullMethodName                  = "/dm.DeviceInteract/sendMsg"
-	DeviceInteract_GatewayGetFoundSend_FullMethodName      = "/dm.DeviceInteract/gatewayGetFoundSend"
-	DeviceInteract_GatewayNotifyBindSend_FullMethodName    = "/dm.DeviceInteract/gatewayNotifyBindSend"
-	DeviceInteract_EdgeSend_FullMethodName                 = "/dm.DeviceInteract/edgeSend"
+	DeviceInteract_ActionSend_FullMethodName                 = "/dm.DeviceInteract/actionSend"
+	DeviceInteract_ActionRead_FullMethodName                 = "/dm.DeviceInteract/actionRead"
+	DeviceInteract_ActionResp_FullMethodName                 = "/dm.DeviceInteract/actionResp"
+	DeviceInteract_PropertyGetReportSend_FullMethodName      = "/dm.DeviceInteract/propertyGetReportSend"
+	DeviceInteract_PropertyGetReportMultiSend_FullMethodName = "/dm.DeviceInteract/propertyGetReportMultiSend"
+	DeviceInteract_PropertyControlSend_FullMethodName        = "/dm.DeviceInteract/propertyControlSend"
+	DeviceInteract_PropertyControlMultiSend_FullMethodName   = "/dm.DeviceInteract/propertyControlMultiSend"
+	DeviceInteract_PropertyControlRead_FullMethodName        = "/dm.DeviceInteract/propertyControlRead"
+	DeviceInteract_SendMsg_FullMethodName                    = "/dm.DeviceInteract/sendMsg"
+	DeviceInteract_GatewayGetFoundSend_FullMethodName        = "/dm.DeviceInteract/gatewayGetFoundSend"
+	DeviceInteract_GatewayNotifyBindSend_FullMethodName      = "/dm.DeviceInteract/gatewayNotifyBindSend"
+	DeviceInteract_EdgeSend_FullMethodName                   = "/dm.DeviceInteract/edgeSend"
 )
 
 // DeviceInteractClient is the client API for DeviceInteract service.
@@ -4173,6 +4174,8 @@ type DeviceInteractClient interface {
 	ActionResp(ctx context.Context, in *ActionRespReq, opts ...grpc.CallOption) (*Empty, error)
 	// 请求设备获取设备最新属性
 	PropertyGetReportSend(ctx context.Context, in *PropertyGetReportSendReq, opts ...grpc.CallOption) (*PropertyGetReportSendResp, error)
+	// 请求设备获取设备最新属性
+	PropertyGetReportMultiSend(ctx context.Context, in *PropertyGetReportMultiSendReq, opts ...grpc.CallOption) (*PropertyGetReportMultiSendResp, error)
 	// 调用设备属性
 	PropertyControlSend(ctx context.Context, in *PropertyControlSendReq, opts ...grpc.CallOption) (*PropertyControlSendResp, error)
 	// 批量调用设备属性
@@ -4227,6 +4230,15 @@ func (c *deviceInteractClient) ActionResp(ctx context.Context, in *ActionRespReq
 func (c *deviceInteractClient) PropertyGetReportSend(ctx context.Context, in *PropertyGetReportSendReq, opts ...grpc.CallOption) (*PropertyGetReportSendResp, error) {
 	out := new(PropertyGetReportSendResp)
 	err := c.cc.Invoke(ctx, DeviceInteract_PropertyGetReportSend_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceInteractClient) PropertyGetReportMultiSend(ctx context.Context, in *PropertyGetReportMultiSendReq, opts ...grpc.CallOption) (*PropertyGetReportMultiSendResp, error) {
+	out := new(PropertyGetReportMultiSendResp)
+	err := c.cc.Invoke(ctx, DeviceInteract_PropertyGetReportMultiSend_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -4308,6 +4320,8 @@ type DeviceInteractServer interface {
 	ActionResp(context.Context, *ActionRespReq) (*Empty, error)
 	// 请求设备获取设备最新属性
 	PropertyGetReportSend(context.Context, *PropertyGetReportSendReq) (*PropertyGetReportSendResp, error)
+	// 请求设备获取设备最新属性
+	PropertyGetReportMultiSend(context.Context, *PropertyGetReportMultiSendReq) (*PropertyGetReportMultiSendResp, error)
 	// 调用设备属性
 	PropertyControlSend(context.Context, *PropertyControlSendReq) (*PropertyControlSendResp, error)
 	// 批量调用设备属性
@@ -4340,6 +4354,9 @@ func (UnimplementedDeviceInteractServer) ActionResp(context.Context, *ActionResp
 }
 func (UnimplementedDeviceInteractServer) PropertyGetReportSend(context.Context, *PropertyGetReportSendReq) (*PropertyGetReportSendResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PropertyGetReportSend not implemented")
+}
+func (UnimplementedDeviceInteractServer) PropertyGetReportMultiSend(context.Context, *PropertyGetReportMultiSendReq) (*PropertyGetReportMultiSendResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PropertyGetReportMultiSend not implemented")
 }
 func (UnimplementedDeviceInteractServer) PropertyControlSend(context.Context, *PropertyControlSendReq) (*PropertyControlSendResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PropertyControlSend not implemented")
@@ -4443,6 +4460,24 @@ func _DeviceInteract_PropertyGetReportSend_Handler(srv interface{}, ctx context.
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceInteractServer).PropertyGetReportSend(ctx, req.(*PropertyGetReportSendReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceInteract_PropertyGetReportMultiSend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PropertyGetReportMultiSendReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceInteractServer).PropertyGetReportMultiSend(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceInteract_PropertyGetReportMultiSend_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceInteractServer).PropertyGetReportMultiSend(ctx, req.(*PropertyGetReportMultiSendReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -4595,6 +4630,10 @@ var DeviceInteract_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "propertyGetReportSend",
 			Handler:    _DeviceInteract_PropertyGetReportSend_Handler,
+		},
+		{
+			MethodName: "propertyGetReportMultiSend",
+			Handler:    _DeviceInteract_PropertyGetReportMultiSend_Handler,
 		},
 		{
 			MethodName: "propertyControlSend",
