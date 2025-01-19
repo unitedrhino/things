@@ -31,6 +31,7 @@ func ToPropertyData(id string, p *schema.Property, db map[string]any) *msgThing.
 	switch propertyType {
 	case string(schema.DataTypeStruct):
 		data := msgThing.PropertyData{
+			DeviceName: cast.ToString(db["device_name"]),
 			Identifier: id,
 			Param:      nil,
 			TimeStamp:  cast.ToTime(db["ts"]),
@@ -49,6 +50,7 @@ func ToPropertyData(id string, p *schema.Property, db map[string]any) *msgThing.
 		case schema.DataTypeStruct:
 			data := msgThing.PropertyData{
 				Identifier: id,
+				DeviceName: cast.ToString(db["device_name"]),
 				TimeStamp:  cast.ToTime(db["ts"]),
 			}
 			delete(db, "ts")
@@ -63,6 +65,7 @@ func ToPropertyData(id string, p *schema.Property, db map[string]any) *msgThing.
 		default:
 			data := msgThing.PropertyData{
 				Identifier: id,
+				DeviceName: cast.ToString(db["device_name"]),
 				Param:      cast.ToString(utils.BoolToInt(db["param"])),
 				TimeStamp:  cast.ToTime(db["ts"]),
 			}
@@ -71,6 +74,7 @@ func ToPropertyData(id string, p *schema.Property, db map[string]any) *msgThing.
 	default:
 		data := msgThing.PropertyData{
 			Identifier: id,
+			DeviceName: cast.ToString(db["device_name"]),
 			Param:      cast.ToString(utils.BoolToInt(db["param"])),
 			TimeStamp:  cast.ToTime(db["ts"]),
 		}

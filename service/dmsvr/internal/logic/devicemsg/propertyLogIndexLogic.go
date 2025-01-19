@@ -120,7 +120,7 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 			devData.TimeStamp = devData.TimeStamp.Truncate(def.TimeUnit(in.IntervalUnit).ToDuration(in.Interval))
 		}
 		diData := dm.PropertyLogInfo{
-			DeviceName: devData.Identifier,
+			DeviceName: devData.DeviceName,
 			Timestamp:  devData.TimeStamp.UnixMilli(),
 			DataID:     devData.Identifier,
 		}
