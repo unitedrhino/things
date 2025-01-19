@@ -12,6 +12,7 @@ import (
 	"gitee.com/unitedrhino/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/shadow"
@@ -178,8 +179,17 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 			if account == "" && uc.UserID <= def.RootNode {
 				account = "系统控制"
 			}
+			di, err := l.svcCtx.DeviceCache.GetData(ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
+			if err != nil {
+				l.Error(err)
+				return
+			}
 			for dataID, content := range param {
 				_ = l.svcCtx.SendRepo.Insert(ctx, &deviceLog.Send{
+					TenantCode: stores.TenantCode(di.TenantCode),
+					ProjectID:  stores.ProjectID(di.ProjectID),
+					AreaID:     stores.AreaID(di.AreaID),
+					AreaIDPath: stores.AreaIDPath(di.AreaIDPath),
 					ProductID:  in.ProductID,
 					Action:     "propertyControlSend",
 					Timestamp:  time.Now(), // 操作时间

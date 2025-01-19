@@ -10,6 +10,7 @@ import (
 	"gitee.com/unitedrhino/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
@@ -99,7 +100,19 @@ func (l *PropertyGetReportSendLogic) PropertyGetReportSend(in *dm.PropertyGetRep
 	defer func() {
 		uc := ctxs.GetUserCtxNoNil(l.ctx)
 		account := uc.Account
-		_ = l.svcCtx.SendRepo.Insert(l.ctx, &deviceLog.Send{
+		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
+			ProductID:  in.ProductID,
+			DeviceName: in.DeviceName,
+		})
+		if err != nil {
+			l.Error(err)
+			return
+		}
+		do := deviceLog.Send{
+			TenantCode: stores.TenantCode(di.TenantCode),
+			ProjectID:  stores.ProjectID(di.ProjectID),
+			AreaID:     stores.AreaID(di.AreaID),
+			AreaIDPath: stores.AreaIDPath(di.AreaIDPath),
 			ProductID:  in.ProductID,
 			Action:     "propertyGetReportSend",
 			Timestamp:  time.Now(), // 操作时间
@@ -110,7 +123,9 @@ func (l *PropertyGetReportSendLogic) PropertyGetReportSend(in *dm.PropertyGetRep
 			Account:    account,
 			Content:    string(params),
 			ResultCode: errors.Fmt(err).GetCode(),
-		})
+		}
+
+		_ = l.svcCtx.SendRepo.Insert(l.ctx, &do)
 	}()
 	resp, err = l.svcCtx.PubDev.ReqToDeviceSync(l.ctx, &reqMsg, 0, func(payload []byte) bool {
 		var dresp msgThing.Resp
