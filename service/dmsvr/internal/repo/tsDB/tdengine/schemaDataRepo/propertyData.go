@@ -283,8 +283,16 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 func (d *DeviceDataRepo) fillFilter(
 	sql sq.SelectBuilder, filter msgThing.FilterOpt) sq.SelectBuilder {
 	if len(filter.DeviceNames) != 0 {
-		sql = sql.Where(fmt.Sprintf("device_name in (%v)", stores.ArrayToSql(filter.DeviceNames)))
+		sql = sql.Where(fmt.Sprintf("`device_name` in (%v)", stores.ArrayToSql(filter.DeviceNames)))
 	}
+
+	if len(filter.ProductIDs) != 0 {
+		sql = sql.Where(fmt.Sprintf("`product_id` in (%v)", stores.ArrayToSql(filter.ProductIDs)))
+
+	} else if filter.ProductID != "" {
+		sql = sql.Where("`product_id` = ?", filter.ProductID)
+	}
+
 	//if filter.DeviceName != "" {
 	//	sql = sql.Where("device_name=?", filter.DeviceName)
 	//}

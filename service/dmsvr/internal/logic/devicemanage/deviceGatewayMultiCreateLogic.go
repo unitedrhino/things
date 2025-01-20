@@ -140,7 +140,7 @@ const (
 
 func FilterCanBindSubDevices(ctx context.Context, svcCtx *svc.ServiceContext, gateway *devices.Core, subDevices []*devices.Core, checkDevice CheckDevice) (ret []*devices.Core, err error) {
 	{ //检查是否是网关类型
-		pi, err := relationDB.NewProductInfoRepo(ctx).FindOneByFilter(ctx, relationDB.ProductFilter{ProductIDs: []string{gateway.ProductID}})
+		pi, err := svcCtx.ProductCache.GetData(ctx, gateway.ProductID)
 		if err != nil {
 			if errors.Cmp(err, errors.NotFind) {
 				return nil, errors.Parameter.AddDetail("not find GatewayProductID id:" + cast.ToString(gateway.ProductID))
@@ -176,7 +176,7 @@ func FilterCanBindSubDevices(ctx context.Context, svcCtx *svc.ServiceContext, ga
 		}
 	}
 	for _, subDevice := range subDevices { //检查是否有子设备绑定了其他网关
-		if checkDevice&CheckDeviceExist == CheckDeviceExist { //检查设备是否都是子设备类型
+		if checkDevice&CheckDeviceExist == CheckDeviceExist { //检查设备是否都存在
 			_, err := svcCtx.DeviceCache.GetData(ctx, *subDevice)
 			if err != nil {
 				if checkDevice&CheckDeviceStrict == CheckDeviceStrict {

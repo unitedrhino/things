@@ -202,7 +202,8 @@ type (
     DeviceMsgPropertyLogIndexReq  {
         DeviceName string `json:"deviceName,optional,omitempty"`                       //设备名(不填获取产品下所有设备)
         DeviceNames []string `json:"deviceNames,optional,omitempty"`                       //设备名(不填获取产品下所有设备,只有管理员有权限)
-        ProductID string `json:"productID,omitempty"`                         //产品id 获取产品id下的所有设备信息
+        ProductID string `json:"productID,omitempty,optional"`                         //产品id 获取产品id下的所有设备信息
+        ProductCategoryID int64  `json:"productCategoryID,optional"`//产品品类id,通用物模型有效
         DataID string `json:"dataID,omitempty"`                      //获取的具体标识符的数据
         TimeStart int64 `json:"timeStart,string,optional,omitempty"`          //获取时间的开始
         TimeEnd int64 `json:"timeEnd,string,optional,omitempty"`              //时间的结束

@@ -707,6 +707,7 @@ message PropertyLogIndexReq{
   string fill = 10; //填充模式 参考:https://docs.taosdata.com/reference/taos-sql/distinguished/#fill-%E5%AD%90%E5%8F%A5
   int64 order = 11; //时间排序 0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)
   string partitionBy =13;//切分数据,可以填写deviceName
+  int64  productCategoryID = 14;//产品品类id,通用物模型有效
 }
 
 /*获取对应日志信息*/
@@ -833,6 +834,7 @@ message SendLogIndexReq{
   int64 userID = 9;
   repeated string actions =10;
   int64 resultCode = 12;//请求结果状态,200为成功
+
 }
 
 /*实时获取对应信息*/

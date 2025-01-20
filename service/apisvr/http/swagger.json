@@ -9065,6 +9065,11 @@
           "type": "string",
           "description": "产品id 获取产品id下的所有设备信息"
         },
+        "productCategoryID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "产品品类id,通用物模型有效"
+        },
         "dataID": {
           "type": "string",
           "description": "获取的具体标识符的数据"

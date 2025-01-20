@@ -10,6 +10,7 @@ import (
 	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"github.com/spf13/cast"
@@ -33,11 +34,12 @@ func NewPropertyLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 // 获取设备数据信息
 func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*dm.PropertyLogIndexResp, error) {
 	var (
-		diDatas []*dm.PropertyLogInfo
-		dd      = l.svcCtx.SchemaManaRepo
-		total   int64
-		t       *schema.Model
-		err     error
+		diDatas    []*dm.PropertyLogInfo
+		dd         = l.svcCtx.SchemaManaRepo
+		productIDs []string
+		total      int64
+		t          *schema.Model
+		err        error
 	)
 	if in.Interval != 0 && in.ArgFunc == "" {
 		return nil, errors.Parameter.AddMsg("填写了间隔就必须填写聚合函数")
@@ -51,12 +53,28 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 	if len(in.DeviceNames) == 0 {
 		return nil, errors.Parameter.AddMsg("需要填写设备")
 	}
-	if len(in.DeviceNames) == 1 {
+	if len(in.DeviceNames) == 1 && in.ProductCategoryID == 0 {
 		t, err = l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceNames[0]})
 		if err != nil {
 			return nil, err
 		}
 	} else {
+		if in.ProductID == "" && in.ProductCategoryID == 0 {
+			return nil, errors.Parameter.AddMsg("请填写产品ID或品类ID")
+		}
+		if in.ProductID == "" {
+			pis, err := relationDB.NewProductInfoRepo(l.ctx).FindByFilter(l.ctx, relationDB.ProductFilter{CategoryIDs: []int64{in.ProductCategoryID}}, nil)
+			if err != nil {
+				return nil, err
+			}
+			if len(pis) == 0 {
+				return nil, errors.NotFind.AddMsg("未找到产品")
+			}
+			for _, p := range pis {
+				productIDs = append(productIDs, p.ProductID)
+			}
+			in.ProductID = pis[0].ProductID
+		}
 		t, err = l.svcCtx.ProductSchemaRepo.GetData(l.ctx, in.ProductID)
 		if err != nil {
 			return nil, err
@@ -100,6 +118,7 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 	dds, err := dd.GetPropertyDataByID(l.ctx, p, msgThing.FilterOpt{
 		Page:         page,
 		ProductID:    in.ProductID,
+		ProductIDs:   productIDs,
 		DeviceNames:  in.DeviceNames,
 		Order:        in.Order,
 		DataID:       in.DataID,
