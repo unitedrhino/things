@@ -6,7 +6,6 @@ import (
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
-	"gitee.com/unitedrhino/things/service/apisvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 
 	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
@@ -30,16 +29,7 @@ func NewSendLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Send
 }
 
 func (l *SendLogIndexLogic) SendLogIndex(req *types.DeviceMsgSendLogIndexReq) (resp *types.DeviceMsgSendLogIndexResp, err error) {
-	dmResp, err := l.svcCtx.DeviceMsg.SendLogIndex(l.ctx, &dm.SendLogIndexReq{
-		DeviceName: req.DeviceName,
-		ProductID:  req.ProductID,
-		TimeStart:  req.TimeStart,
-		TimeEnd:    req.TimeEnd,
-		Page:       logic.ToDmPageRpc(req.Page),
-		UserID:     req.UserID,
-		Actions:    req.Actions,
-		ResultCode: req.ResultCode,
-	})
+	dmResp, err := l.svcCtx.DeviceMsg.SendLogIndex(l.ctx, utils.Copy[dm.SendLogIndexReq](req))
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.HubLogIndex req=%v err=%+v", utils.FuncName(), req, er)
