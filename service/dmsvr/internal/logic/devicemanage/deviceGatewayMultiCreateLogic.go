@@ -63,7 +63,7 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 			ProductID:  in.ProductID,
 			DeviceName: in.DeviceName,
 		}
-	}), CheckDeviceExist|CheckDeviceType|CheckDeviceStrict)
+	}), CheckDeviceExist|CheckDeviceType)
 	if err != nil {
 		return nil, err
 	}
@@ -190,7 +190,7 @@ func FilterCanBindSubDevices(ctx context.Context, svcCtx *svc.ServiceContext, ga
 				ProductID:  subDevice.ProductID,
 				DeviceName: subDevice.DeviceName,
 			}})
-		if err == nil && !(c.GatewayProductID == gateway.ProductID && c.GatewayDeviceName == gateway.DeviceName) { //绑定了其他设备
+		if err == nil { //绑定了其他设备
 			if checkDevice&CheckDeviceStrict == CheckDeviceStrict {
 				return nil, err
 			}
