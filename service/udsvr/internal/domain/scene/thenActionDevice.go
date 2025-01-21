@@ -198,17 +198,19 @@ func (a *ActionDevice) Execute(ctx context.Context, repo ActionRepo) error {
 	}
 	var values []*LogActionDeviceValue
 	if a.DataID != "" {
+		dataIDs := strings.Split(a.DataID, ".")
 		values = append(values, &LogActionDeviceValue{
 			DataID:   a.DataID,
 			DataName: a.DataName,
-			Value:    s.Property[a.DataID].Define.GetValueDesc(a.Value),
+			Value:    s.Property[dataIDs[0]].Define.GetValueDesc(a.Value),
 		})
 	} else {
 		for _, val := range a.Values {
+			dataIDs := strings.Split(val.DataID, ".")
 			values = append(values, &LogActionDeviceValue{
 				DataID:   val.DataID,
 				DataName: val.DataName,
-				Value:    s.Property[val.DataID].Define.GetValueDesc(val.Value),
+				Value:    s.Property[dataIDs[0]].Define.GetValueDesc(val.Value),
 			})
 		}
 	}
