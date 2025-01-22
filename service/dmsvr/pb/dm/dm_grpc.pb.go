@@ -82,7 +82,7 @@ type DeviceManageClient interface {
 	DeviceInfoBind(ctx context.Context, in *DeviceInfoBindReq, opts ...grpc.CallOption) (*Empty, error)
 	DeviceInfoMultiBind(ctx context.Context, in *DeviceInfoMultiBindReq, opts ...grpc.CallOption) (*DeviceInfoMultiBindResp, error)
 	DeviceInfoCanBind(ctx context.Context, in *DeviceInfoCanBindReq, opts ...grpc.CallOption) (*Empty, error)
-	DeviceInfoUnbind(ctx context.Context, in *DeviceCore, opts ...grpc.CallOption) (*Empty, error)
+	DeviceInfoUnbind(ctx context.Context, in *DeviceInfoUnbindReq, opts ...grpc.CallOption) (*Empty, error)
 	DeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error)
 	DeviceReset(ctx context.Context, in *DeviceResetReq, opts ...grpc.CallOption) (*Empty, error)
 	DeviceMove(ctx context.Context, in *DeviceMoveReq, opts ...grpc.CallOption) (*Empty, error)
@@ -231,7 +231,7 @@ func (c *deviceManageClient) DeviceInfoCanBind(ctx context.Context, in *DeviceIn
 	return out, nil
 }
 
-func (c *deviceManageClient) DeviceInfoUnbind(ctx context.Context, in *DeviceCore, opts ...grpc.CallOption) (*Empty, error) {
+func (c *deviceManageClient) DeviceInfoUnbind(ctx context.Context, in *DeviceInfoUnbindReq, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, DeviceManage_DeviceInfoUnbind_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -487,7 +487,7 @@ type DeviceManageServer interface {
 	DeviceInfoBind(context.Context, *DeviceInfoBindReq) (*Empty, error)
 	DeviceInfoMultiBind(context.Context, *DeviceInfoMultiBindReq) (*DeviceInfoMultiBindResp, error)
 	DeviceInfoCanBind(context.Context, *DeviceInfoCanBindReq) (*Empty, error)
-	DeviceInfoUnbind(context.Context, *DeviceCore) (*Empty, error)
+	DeviceInfoUnbind(context.Context, *DeviceInfoUnbindReq) (*Empty, error)
 	DeviceTransfer(context.Context, *DeviceTransferReq) (*Empty, error)
 	DeviceReset(context.Context, *DeviceResetReq) (*Empty, error)
 	DeviceMove(context.Context, *DeviceMoveReq) (*Empty, error)
@@ -567,7 +567,7 @@ func (UnimplementedDeviceManageServer) DeviceInfoMultiBind(context.Context, *Dev
 func (UnimplementedDeviceManageServer) DeviceInfoCanBind(context.Context, *DeviceInfoCanBindReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoCanBind not implemented")
 }
-func (UnimplementedDeviceManageServer) DeviceInfoUnbind(context.Context, *DeviceCore) (*Empty, error) {
+func (UnimplementedDeviceManageServer) DeviceInfoUnbind(context.Context, *DeviceInfoUnbindReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoUnbind not implemented")
 }
 func (UnimplementedDeviceManageServer) DeviceTransfer(context.Context, *DeviceTransferReq) (*Empty, error) {
@@ -857,7 +857,7 @@ func _DeviceManage_DeviceInfoCanBind_Handler(srv interface{}, ctx context.Contex
 }
 
 func _DeviceManage_DeviceInfoUnbind_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeviceCore)
+	in := new(DeviceInfoUnbindReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -869,7 +869,7 @@ func _DeviceManage_DeviceInfoUnbind_Handler(srv interface{}, ctx context.Context
 		FullMethod: DeviceManage_DeviceInfoUnbind_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceManageServer).DeviceInfoUnbind(ctx, req.(*DeviceCore))
+		return srv.(DeviceManageServer).DeviceInfoUnbind(ctx, req.(*DeviceInfoUnbindReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }

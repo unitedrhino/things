@@ -145,26 +145,26 @@ func (m *DmDeviceProfile) TableName() string {
 
 // 产品信息表
 type DmProductInfo struct {
-	ID                   int64                 `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	ProductID            string                `gorm:"column:product_id;type:varchar(100);uniqueIndex:pd;NOT NULL"` // 产品id
-	ProductName          string                `gorm:"column:product_name;type:varchar(100);NOT NULL"`              // 产品名称
-	ProductImg           string                `gorm:"column:product_img;type:varchar(200)"`                        // 产品图片
-	ProductType          int64                 `gorm:"column:product_type;type:smallint;default:1"`                 // 产品状态:1:开发中,2:审核中,3:已发布
-	AuthMode             int64                 `gorm:"column:auth_mode;type:smallint;default:1"`                    // 认证方式:1:账密认证,2:秘钥认证
-	DeviceType           int64                 `gorm:"column:device_type;index;type:smallint;default:1"`            // 设备类型:1:设备,2:网关,3:子设备
-	CategoryID           int64                 `gorm:"column:category_id;type:integer;default:2"`                   // 产品品类 2:未分类
-	NetType              int64                 `gorm:"column:net_type;type:smallint;default:1"`                     // 通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
-	ProtocolCode         string                `gorm:"column:protocol_code;type:varchar(100);default:iThings"`      // 协议code,默认iThings  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
-	AutoRegister         int64                 `gorm:"column:auto_register;type:smallint;default:1"`                // 动态注册:1:关闭,2:打开,3:打开并自动创建设备
-	DeviceSchemaMode     int64                 `gorm:"column:device_schema_mode;type:smallint;default:1"`           // 设备物模型模式:1:关闭,2:设备自动创建3: 设备自动创建及上报无定义自动创建
-	IsCanCoverBindDevice int64                 `gorm:"column:is_can_cover_bind_device;type:smallint;default:2"`     // 是否可以覆盖绑定设备,默认为2
-	Secret               string                `gorm:"column:secret;type:varchar(50)"`                              // 动态注册产品秘钥
-	Desc                 string                `gorm:"column:desc;type:varchar(200)"`                               // 描述
-	TrialTime            int64                 `gorm:"column:trial_time"`                                           //试用时间(单位为天,为0不限制)
-	Status               devices.ProductStatus `gorm:"column:status;type:smallint;default:1"`
-	SceneMode            string                `gorm:"column:scene_mode;type:varchar(20);default:rw"`                        // 场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
-	Tags                 map[string]string     `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"`          // 产品标签
-	ProtocolConf         map[string]string     `gorm:"column:protocol_conf;type:json;serializer:json;NOT NULL;default:'{}'"` // 自定义协议配置
+	ID               int64                 `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	ProductID        string                `gorm:"column:product_id;type:varchar(100);uniqueIndex:pd;NOT NULL"` // 产品id
+	ProductName      string                `gorm:"column:product_name;type:varchar(100);NOT NULL"`              // 产品名称
+	ProductImg       string                `gorm:"column:product_img;type:varchar(200)"`                        // 产品图片
+	ProductType      int64                 `gorm:"column:product_type;type:smallint;default:1"`                 // 产品状态:1:开发中,2:审核中,3:已发布
+	AuthMode         int64                 `gorm:"column:auth_mode;type:smallint;default:1"`                    // 认证方式:1:账密认证,2:秘钥认证
+	DeviceType       int64                 `gorm:"column:device_type;index;type:smallint;default:1"`            // 设备类型:1:设备,2:网关,3:子设备
+	CategoryID       int64                 `gorm:"column:category_id;type:integer;default:2"`                   // 产品品类 2:未分类
+	NetType          int64                 `gorm:"column:net_type;type:smallint;default:1"`                     // 通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
+	ProtocolCode     string                `gorm:"column:protocol_code;type:varchar(100);default:iThings"`      // 协议code,默认iThings  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
+	AutoRegister     int64                 `gorm:"column:auto_register;type:smallint;default:1"`                // 动态注册:1:关闭,2:打开,3:打开并自动创建设备
+	DeviceSchemaMode int64                 `gorm:"column:device_schema_mode;type:smallint;default:1"`           // 设备物模型模式:1:关闭,2:设备自动创建3: 设备自动创建及上报无定义自动创建
+	BindLevel        int64                 `gorm:"column:bind_level;type:smallint;default:1"`                   // 绑定级别: 1:强绑定(默认,只有用户解绑之后才能绑定) 2:中绑定(可以通过token强制绑定设备) 3:弱绑定(app可以内部解绑被绑定的设备)
+	Secret           string                `gorm:"column:secret;type:varchar(50)"`                              // 动态注册产品秘钥
+	Desc             string                `gorm:"column:desc;type:varchar(200)"`                               // 描述
+	TrialTime        int64                 `gorm:"column:trial_time"`                                           //试用时间(单位为天,为0不限制)
+	Status           devices.ProductStatus `gorm:"column:status;type:smallint;default:1"`
+	SceneMode        string                `gorm:"column:scene_mode;type:varchar(20);default:rw"`                        // 场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
+	Tags             map[string]string     `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"`          // 产品标签
+	ProtocolConf     map[string]string     `gorm:"column:protocol_conf;type:json;serializer:json;NOT NULL;default:'{}'"` // 自定义协议配置
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:pd"`
 	Category    *DmProductCategory `gorm:"foreignKey:ID;references:CategoryID"` // 添加外键
@@ -324,6 +324,7 @@ type DmSchemaCore struct {
 	ControlMode       int64      `gorm:"column:control_mode;type:smallint;default:1"`                         //控制模式: 1: 可以群控,可以单控  2:只能单控
 	UserPerm          int64      `gorm:"column:user_auth;type:smallint;default:3"`                            //用户权限操作: 1:r(只读) 3:rw(可读可写)
 	IsHistory         int64      `gorm:"column:is_history;type:smallint;default:1"`                           // 是否存储历史记录
+	IsPassword        int64      `gorm:"column:is_password;type:smallint;default:2"`                          //是否是密码类型
 	Affordance        string     `gorm:"column:affordance;type:json;NOT NULL"`                                // 各类型的自定义功能定义
 	Order             int64      `gorm:"column:order;type:BIGINT;default:1;NOT NULL"`                         // 左侧table排序序号
 }

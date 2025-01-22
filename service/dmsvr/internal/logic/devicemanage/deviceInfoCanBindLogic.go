@@ -55,12 +55,12 @@ func (l *DeviceInfoCanBindLogic) DeviceInfoCanBind(in *dm.DeviceInfoCanBindReq) 
 	if err != nil {
 		return nil, err
 	}
-	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, in.Device.ProductID)
-	if err != nil {
-		l.Error(err)
-		return nil, err
-	}
-	if !((di.TenantCode == def.TenantCodeDefault && di.ProjectID < 3) || int64(di.ProjectID) == uc.ProjectID || di.ProjectID == dpi.DefaultProjectID) && !(pi.IsCanCoverBindDevice == def.True) { //如果在其他租户下 则已经被绑定 或 在本租户下,但是不在一个项目下也不允许绑定
+	//pi, err := l.svcCtx.ProductCache.GetData(l.ctx, in.Device.ProductID)
+	//if err != nil {
+	//	l.Error(err)
+	//	return nil, err
+	//}
+	if !((di.TenantCode == def.TenantCodeDefault && di.ProjectID < 3) || int64(di.ProjectID) == uc.ProjectID || di.ProjectID == dpi.DefaultProjectID) { //如果在其他租户下 则已经被绑定 或 在本租户下,但是不在一个项目下也不允许绑定
 		//只有归属于default租户和自己租户的才可以
 		return nil, errors.DeviceCantBound.WithMsg("设备已被其他用户绑定。如需解绑，请按照相关流程操作。")
 	}

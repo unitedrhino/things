@@ -87,7 +87,7 @@ service DeviceManage {
   rpc deviceInfoBind(DeviceInfoBindReq)returns(Empty);
   rpc deviceInfoMultiBind(DeviceInfoMultiBindReq)returns(DeviceInfoMultiBindResp);//批量绑定
   rpc deviceInfoCanBind(DeviceInfoCanBindReq)returns(Empty);
-  rpc deviceInfoUnbind(DeviceCore)returns(Empty);
+  rpc deviceInfoUnbind(DeviceInfoUnbindReq)returns(Empty);
   rpc deviceTransfer(DeviceTransferReq)returns(Empty);
   rpc deviceReset(DeviceResetReq)returns(Empty);//设备重置
   rpc deviceMove(DeviceMoveReq)returns(Empty);//将设备信息迁移到新的设备中
@@ -1302,7 +1302,7 @@ message ProductInfo{
   int64 status =20; //产品状态 1:启用 2:禁用 3:开发中
   map<string,ProductCustomUi> customUi=21;//自定义ui
   int64 deviceSchemaMode =22;// 设备物模型模式:1:关闭,2:设备自动创建3: 设备自动创建及上报无定义自动创建
-  int64 isCanCoverBindDevice = 23;//是否可以覆盖绑定设备,默认为2
+  int64 bindLevel = 23;//绑定级别: 1:强绑定(默认,只有用户解绑之后才能绑定) 2:中绑定(可以通过token强制绑定设备) 3:弱绑定(app可以内部解绑被绑定的设备)
 }
 
 message ProductCustomUi{
@@ -1514,6 +1514,7 @@ message CommonSchemaInfo{
   int64 funcGroup =14; // 功能分类: 1:普通功能 2:系统功能
   int64 userPerm =15;//用户权限操作: 1:r(只读) 3:rw(可读可写)
   int64 isHistory = 10;// 是否存储历史记录
+  int64 isPassword = 17;// 是否是密码类型,密码类型需要加掩码
   google.protobuf.StringValue affordance = 11;//各功能类型的详细参数定义
   string extendConfig = 12; //拓展参数
   int64 order =13;//排序
@@ -1578,6 +1579,7 @@ message ProductSchemaInfo{
   int64 userPerm =15;//用户权限操作: 1:r(只读) 3:rw(可读可写)
   int64 controlMode = 16;  //控制模式: 1: 可以群控,可以单控  2:只能单控
   int64 isHistory = 10;// 是否存储历史记录
+  int64 isPassword = 17;// 是否是密码类型,密码类型需要加掩码
   google.protobuf.StringValue affordance = 11;//各功能类型的详细参数定义
   string extendConfig = 12; //拓展参数
   int64 order =13;//排序
@@ -1652,6 +1654,7 @@ message DeviceSchema{
   int64 userPerm =15;//用户权限操作: 1:r(只读) 3:rw(可读可写)
   int64 controlMode = 16;  //控制模式: 1: 可以群控,可以单控  2:只能单控
   int64 isHistory = 10;// 是否存储历史记录
+  int64 isPassword = 18;// 是否是密码类型,密码类型需要加掩码
   google.protobuf.StringValue affordance = 11;//各功能类型的详细参数定义
   string extendConfig = 12; //拓展参数
   int64 order =13;//排序
@@ -1705,10 +1708,33 @@ message DeviceInfoMultiBindResp{
  repeated DeviceError errs =1;
 }
 
+message DeviceInfoUnbindReq{
+  string   productID = 1; //产品id
+  string  deviceName = 2; //设备名称
+  /*
+  中绑定,强制解绑参数
+  对参数（deviceName、nonce、productID、timestamp）按字典序升序排序。
+  将以上参数，按参数名称 = 参数值 & 参数名称 = 参数值拼接成字符串, 如："deviceName=xxx&nonce=2125656451&productID=xxx&timestamp=1687525491"。
+  使用 HMAC-sha1 算法对上一步中获得的字符串进行计算，密钥取secretType   取设备的物模型密码类型的属性。
+  将生成的结果使用 Base64 进行编码，即可获得最终的签名串放入 signature。
+  */
+  string secretType =3;//采用秘钥的类型
+  string signature =4;//签名
+  int64 timestamp = 5;//秒时间戳
+  string signType=6;//hmacsha256 hmacsha1 hmacmd5(默认)
+  int64 nonce = 7;//随机数
+}
+
 message DeviceInfoBindReq{
   DeviceCore device =1;
   int64 areaID =2;
-  string protocolCode =3;//如果是iThings协议则不需要填写
+  /*
+  对参数（deviceName、nonce、productID、timestamp）按字典序升序排序。
+  将以上参数，按参数名称 = 参数值 & 参数名称 = 参数值拼接成字符串, 如："deviceName=xxx&nonce=2125656451&productID=xxx&timestamp=1687525491"。
+  使用 HMAC-sha1 算法对上一步中获得的字符串进行计算，密钥取secretType   默认取 deviceSecret,productSecret,如果是其他值则取设备的物模型。
+  将生成的结果使用 Base64 进行编码，即可获得最终的签名串放入 signature。
+  */
+  map<string,string> expand =3; //拓展, secretType: 采用秘钥的类型 signature:签名  timestamp:秒时间戳
 }
 
 message DeviceProfileIndexReq{

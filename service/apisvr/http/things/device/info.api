@@ -96,7 +96,13 @@ service api {
         businessType: "modify"
     )
     @handler unbind
-    post /unbind (DeviceCore) returns ()
+    post /unbind (DeviceInfoUnbindReq) returns ()
+    @doc(
+        summary: "转移设备到新设备上"
+        businessType: "modify"
+    )
+    @handler move
+    post /move (DeviceMoveReq) returns ()
     @doc(
         summary: "转让设备"
         businessType: "modify"
@@ -181,7 +187,11 @@ type (
         AreaID int64 `json:"areaID,string,optional"`//转移到项目时指定区域ID
         IsCleanData int64 `json:"isCleanData"`//是否清除数据:1是 2否
     }
-
+    DeviceMoveReq{
+        Old *DeviceCore `json:"old"`//需要转移的设备
+        New *DeviceCore `json:"new"`//转移的对象
+        withTarget []string `json:"withTarget,optional"`//设备配置-profile,schemaAlias:profile
+    }
     DeviceInfoCanBindReq{
         Device DeviceCore `json:"device"`
     }
@@ -192,10 +202,25 @@ type (
     DeviceInfoMultiBindResp{
         Errs []*DeviceError `json:"errs"`
     }
+    DeviceInfoUnbindReq{
+        ProductID string `json:"productID"`                                               //产品id 只读
+        DeviceName string `json:"deviceName"`                                             //设备名称 读写
+    /*
+中绑定,强制解绑参数
+对参数（deviceName、nonce、productID、timestamp）按字典序升序排序。
+将以上参数，按参数名称 = 参数值 & 参数名称 = 参数值拼接成字符串, 如："deviceName=xxx&nonce=2125656451&productID=xxx&timestamp=1687525491"。
+使用 HMAC-sha1 算法对上一步中获得的字符串进行计算，密钥取secretType   取设备的物模型密码类型的属性。
+将生成的结果使用 Base64 进行编码，即可获得最终的签名串放入 signature。
+*/
+        SecretType string `json:"secretType,optional"` //采用秘钥的类型
+        Signature string `json:"signature,optional"` //签名
+        Timestamp int64 `json:"timestamp,optional"` //秒时间戳
+        SignType string `json:"signType,optional"` //hmacsha256 hmacsha1 hmacmd5(默认)
+        Nonce int64 `json:"nonce,optional"` //随机数
+    }
     DeviceInfoBindReq{
         Device DeviceCore `json:"device"`
         AreaID int64  `json:"areaID,optional,string"`
-        ProtocolCode   string  `json:"protocolCode,optional"`
     }
     DeviceInfoSaveReq  {
         ProductID string `json:"productID"`                                              //产品id 只读
@@ -211,7 +236,6 @@ type (
         MobileOperator int64    `json:"mobileOperator,optional,range=[0:4]"`                       //移动运营商:1)移动 2)联通 3)电信 4)广电
         AreaID int64 `json:"areaID,string,optional"`      //项目区域id 只读（1: root节点 2: 未分类节点 其他:子节点）
         SchemaAlias    map[string]string       `json:"schemaAlias,optional"` //设备物模型别名,如果是结构体类型则key为xxx.xxx
-
     }
     DeviceInfoDeleteReq  {
         ProductID string `json:"productID"`                                              //产品id 只读

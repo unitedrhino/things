@@ -2,6 +2,7 @@ package info
 
 import (
 	"context"
+	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 
 	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
@@ -24,8 +25,8 @@ func NewUnbindLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UnbindLogi
 	}
 }
 
-func (l *UnbindLogic) Unbind(req *types.DeviceCore) error {
-	_, err := l.svcCtx.DeviceM.DeviceInfoUnbind(l.ctx, &dm.DeviceCore{DeviceName: req.DeviceName, ProductID: req.ProductID})
+func (l *UnbindLogic) Unbind(req *types.DeviceInfoUnbindReq) error {
+	_, err := l.svcCtx.DeviceM.DeviceInfoUnbind(l.ctx, utils.Copy[dm.DeviceInfoUnbindReq](req))
 
 	return err
 }

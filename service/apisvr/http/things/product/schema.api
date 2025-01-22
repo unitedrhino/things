@@ -125,6 +125,7 @@ type (
         FuncGroup int64 `json:"funcGroup,optional"`// 功能分类: 1:普通功能 2:系统功能
         UserPerm int64 `json:"userPerm,optional"`//用户权限操作: 1:r(只读) 3:rw(可读可写)
         IsHistory int64 `json:"isHistory,optional"`// 是否存储历史记录
+        IsPassword int64 `json:"isPassword,optional"` //是否是密码类型,密码类型需要加掩码
         Order int64 `json:"order,optional"`// 排序
         ControlMode int64 `json:"controlMode,optional"`//控制模式: 1: 可以群控,可以单控  2:只能单控
 

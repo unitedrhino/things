@@ -53,6 +53,7 @@ type (
 	DeviceInfoMultiBindResp           = dm.DeviceInfoMultiBindResp
 	DeviceInfoMultiUpdateReq          = dm.DeviceInfoMultiUpdateReq
 	DeviceInfoReadReq                 = dm.DeviceInfoReadReq
+	DeviceInfoUnbindReq               = dm.DeviceInfoUnbindReq
 	DeviceModuleVersion               = dm.DeviceModuleVersion
 	DeviceModuleVersionIndexReq       = dm.DeviceModuleVersionIndexReq
 	DeviceModuleVersionIndexResp      = dm.DeviceModuleVersionIndexResp

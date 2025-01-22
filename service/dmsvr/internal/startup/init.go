@@ -308,7 +308,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		ctx = ctxs.WithRoot(ctx)
 		dis, err := relationDB.NewDeviceInfoRepo(ctx).FindByFilter(ctx, relationDB.DeviceFilter{UserIDs: value.IDs}, nil)
 		for _, v := range dis {
-			_, err := devicemanagelogic.NewDeviceInfoUnbindLogic(ctx, svcCtx).DeviceInfoUnbind(&dm.DeviceCore{
+			_, err := devicemanagelogic.NewDeviceInfoUnbindLogic(ctx, svcCtx).DeviceInfoUnbind(&dm.DeviceInfoUnbindReq{
 				ProductID:  v.ProductID,
 				DeviceName: v.DeviceName,
 			})
@@ -336,7 +336,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 			return err
 		}
 		for _, v := range dis {
-			_, err := devicemanagelogic.NewDeviceInfoUnbindLogic(ctx, svcCtx).DeviceInfoUnbind(&dm.DeviceCore{
+			_, err := devicemanagelogic.NewDeviceInfoUnbindLogic(ctx, svcCtx).DeviceInfoUnbind(&dm.DeviceInfoUnbindReq{
 				ProductID:  v.ProductID,
 				DeviceName: v.DeviceName,
 			})

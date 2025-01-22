@@ -97,6 +97,12 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 	if data.Tags != nil {
 		old.Tags = data.Tags
 	}
+	if data.DeviceType != 0 {
+		old.DeviceType = data.DeviceType
+	}
+	if data.BindLevel != 0 {
+		old.BindLevel = data.BindLevel
+	}
 	if data.ProductName != "" {
 		old.ProductName = data.ProductName
 	}
@@ -211,9 +217,6 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 	}
 	if data.DeviceSchemaMode != 0 {
 		old.DeviceSchemaMode = data.DeviceSchemaMode
-	}
-	if data.IsCanCoverBindDevice != 0 {
-		old.IsCanCoverBindDevice = data.IsCanCoverBindDevice
 	}
 	return nil
 }

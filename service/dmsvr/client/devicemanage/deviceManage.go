@@ -53,6 +53,7 @@ type (
 	DeviceInfoMultiBindResp           = dm.DeviceInfoMultiBindResp
 	DeviceInfoMultiUpdateReq          = dm.DeviceInfoMultiUpdateReq
 	DeviceInfoReadReq                 = dm.DeviceInfoReadReq
+	DeviceInfoUnbindReq               = dm.DeviceInfoUnbindReq
 	DeviceModuleVersion               = dm.DeviceModuleVersion
 	DeviceModuleVersionIndexReq       = dm.DeviceModuleVersionIndexReq
 	DeviceModuleVersionIndexResp      = dm.DeviceModuleVersionIndexResp
@@ -245,7 +246,7 @@ type (
 		DeviceInfoBind(ctx context.Context, in *DeviceInfoBindReq, opts ...grpc.CallOption) (*Empty, error)
 		DeviceInfoMultiBind(ctx context.Context, in *DeviceInfoMultiBindReq, opts ...grpc.CallOption) (*DeviceInfoMultiBindResp, error)
 		DeviceInfoCanBind(ctx context.Context, in *DeviceInfoCanBindReq, opts ...grpc.CallOption) (*Empty, error)
-		DeviceInfoUnbind(ctx context.Context, in *DeviceCore, opts ...grpc.CallOption) (*Empty, error)
+		DeviceInfoUnbind(ctx context.Context, in *DeviceInfoUnbindReq, opts ...grpc.CallOption) (*Empty, error)
 		DeviceTransfer(ctx context.Context, in *DeviceTransferReq, opts ...grpc.CallOption) (*Empty, error)
 		DeviceReset(ctx context.Context, in *DeviceResetReq, opts ...grpc.CallOption) (*Empty, error)
 		DeviceMove(ctx context.Context, in *DeviceMoveReq, opts ...grpc.CallOption) (*Empty, error)
@@ -423,12 +424,12 @@ func (d *directDeviceManage) DeviceInfoCanBind(ctx context.Context, in *DeviceIn
 	return d.svr.DeviceInfoCanBind(ctx, in)
 }
 
-func (m *defaultDeviceManage) DeviceInfoUnbind(ctx context.Context, in *DeviceCore, opts ...grpc.CallOption) (*Empty, error) {
+func (m *defaultDeviceManage) DeviceInfoUnbind(ctx context.Context, in *DeviceInfoUnbindReq, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewDeviceManageClient(m.cli.Conn())
 	return client.DeviceInfoUnbind(ctx, in, opts...)
 }
 
-func (d *directDeviceManage) DeviceInfoUnbind(ctx context.Context, in *DeviceCore, opts ...grpc.CallOption) (*Empty, error) {
+func (d *directDeviceManage) DeviceInfoUnbind(ctx context.Context, in *DeviceInfoUnbindReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.DeviceInfoUnbind(ctx, in)
 }
 

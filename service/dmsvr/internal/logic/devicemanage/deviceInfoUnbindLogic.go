@@ -2,6 +2,8 @@ package devicemanagelogic
 
 import (
 	"context"
+	"encoding/base64"
+	"fmt"
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
@@ -9,6 +11,9 @@ import (
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/eventBus"
 	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/product"
+	devicemsglogic "gitee.com/unitedrhino/things/service/dmsvr/internal/logic/devicemsg"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gorm.io/gorm"
 	"time"
@@ -33,7 +38,7 @@ func NewDeviceInfoUnbindLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 	}
 }
 
-func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceCore) (*dm.Empty, error) {
+func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceInfoUnbindReq) (*dm.Empty, error) {
 	diDB := relationDB.NewDeviceInfoRepo(l.ctx)
 	di, err := diDB.FindOneByFilter(ctxs.WithRoot(l.ctx), relationDB.DeviceFilter{
 		ProductID:   in.ProductID,
@@ -53,7 +58,34 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceCore) (*dm.Empty, 
 	}
 	//如果是超管有全部权限
 	if !uc.IsAdmin && (di.TenantCode != di.TenantCode || adminUserID != uc.UserID || int64(di.ProjectID) != uc.ProjectID) {
-		return nil, errors.Permissions
+		pc, err := l.svcCtx.ProductCache.GetData(l.ctx, di.ProductID)
+		if err != nil {
+			return nil, err
+		}
+		switch pc.BindLevel {
+		case product.BindLeveWeak3: //弱绑定谁都可以解绑
+		case product.BindLeveMiddle2:
+			if in.Signature == "" {
+				return nil, errors.Permissions
+			}
+			var secert string
+			ret, err := devicemsglogic.NewPropertyLogLatestIndexLogic(l.ctx, l.svcCtx).PropertyLogLatestIndex(&dm.PropertyLogLatestIndexReq{
+				ProductID:  di.ProductID,
+				DeviceName: di.DeviceName,
+				DataIDs:    []string{in.SecretType},
+			})
+			if err != nil {
+				return nil, err
+			}
+			secert = ret.List[0].Value
+			sig := getSignature(in.SignType, secert, fmt.Sprintf("deviceName=%s&nonce=%d&productID=%s&timestamp=%d", in.DeviceName, in.Nonce, in.ProductID, in.Timestamp))
+			if sig != in.Signature {
+				return nil, errors.Parameter.AddMsg("无效签名")
+			}
+		default:
+			return nil, errors.Permissions
+		}
+
 	}
 	//dpi, err := l.svcCtx.TenantCache.GetData(l.ctx, def.TenantCodeDefault)
 	//if err != nil {
@@ -135,7 +167,7 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceCore) (*dm.Empty, 
 				return
 			}
 			for _, sub := range subs {
-				_, err := NewDeviceInfoUnbindLogic(ctx, l.svcCtx).DeviceInfoUnbind(&dm.DeviceCore{
+				_, err := NewDeviceInfoUnbindLogic(ctx, l.svcCtx).DeviceInfoUnbind(&dm.DeviceInfoUnbindReq{
 					ProductID:  sub.ProductID,
 					DeviceName: sub.DeviceName,
 				})
@@ -147,4 +179,13 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceCore) (*dm.Empty, 
 		})
 	}
 	return &dm.Empty{}, err
+}
+
+// 计算签名: 使用 HMAC-sha1 算法对目标串 dest 进行加密，密钥为 secret,将生成的结果进行 Base64 编码
+func getSignature(sigType string, secret string, dest string) string {
+	if secret == "" || dest == "" {
+		return ""
+	}
+
+	return base64.StdEncoding.EncodeToString([]byte(utils.Hmac(sigType, dest, []byte(secret))))
 }

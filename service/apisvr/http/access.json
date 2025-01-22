@@ -330,6 +330,17 @@
         {
           "accessCode": "thingsDeviceInfoModify",
           "method": "POST",
+          "route": "/api/v1/things/device/info/move",
+          "name": "",
+          "isNeedAuth": 2,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "all",
+          "recordLogMode": 0
+        },
+        {
+          "accessCode": "thingsDeviceInfoModify",
+          "method": "POST",
           "route": "/api/v1/things/device/info/multi-bind",
           "name": "",
           "isNeedAuth": 2,

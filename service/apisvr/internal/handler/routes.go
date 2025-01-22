@@ -210,6 +210,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: thingsdeviceinfo.IndexHandler(serverCtx),
 				},
 				{
+					// 转移设备到新设备上
+					Method:  http.MethodPost,
+					Path:    "/move",
+					Handler: thingsdeviceinfo.MoveHandler(serverCtx),
+				},
+				{
 					// 批量绑定
 					Method:  http.MethodPost,
 					Path:    "/multi-bind",

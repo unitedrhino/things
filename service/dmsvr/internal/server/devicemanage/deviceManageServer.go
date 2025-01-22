@@ -85,7 +85,7 @@ func (s *DeviceManageServer) DeviceInfoCanBind(ctx context.Context, in *dm.Devic
 	return l.DeviceInfoCanBind(in)
 }
 
-func (s *DeviceManageServer) DeviceInfoUnbind(ctx context.Context, in *dm.DeviceCore) (*dm.Empty, error) {
+func (s *DeviceManageServer) DeviceInfoUnbind(ctx context.Context, in *dm.DeviceInfoUnbindReq) (*dm.Empty, error) {
 	l := devicemanagelogic.NewDeviceInfoUnbindLogic(ctx, s.svcCtx)
 	return l.DeviceInfoUnbind(in)
 }

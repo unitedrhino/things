@@ -91,6 +91,16 @@ func (m GatewayDeviceRepo) DeleteDevAll(ctx context.Context, dev devices.Core) e
 	return stores.ErrFmt(err)
 }
 
+func (d GatewayDeviceRepo) Update(ctx context.Context, data *DmGatewayDevice) error {
+	err := d.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
+	return stores.ErrFmt(err)
+}
+func (d GatewayDeviceRepo) UpdateWithField(ctx context.Context, f GatewayDeviceFilter, updates map[string]any) error {
+	db := d.fmtFilter(ctx, f)
+	err := db.Model(&DmGatewayDevice{}).Updates(updates).Error
+	return stores.ErrFmt(err)
+}
+
 // 批量插入 LightStrategyDevice 记录
 func (m GatewayDeviceRepo) MultiDelete(ctx context.Context, gateway *devices.Core, subDevice []*devices.Core) error {
 	if len(subDevice) < 1 {

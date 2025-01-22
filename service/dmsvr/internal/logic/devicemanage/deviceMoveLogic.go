@@ -72,7 +72,10 @@ func (l *DeviceMoveLogic) DeviceMove(in *dm.DeviceMoveReq) (*dm.Empty, error) {
 	} else {
 		newDev.Status = newDev.IsOnline + 1
 	}
-
+	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, newDev.ProductID)
+	if err != nil {
+		return nil, err
+	}
 	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
 		diDB := relationDB.NewDeviceInfoRepo(tx)
 		var updateProfile bool
@@ -134,6 +137,29 @@ func (l *DeviceMoveLogic) DeviceMove(in *dm.DeviceMoveReq) (*dm.Empty, error) {
 				if err != nil {
 					return err
 				}
+			}
+		}
+		if pi.DeviceType == def.DeviceTypeSubset { //如果是子设备需要将网关也切换过去
+			gdDB := relationDB.NewGatewayDeviceRepo(tx)
+			err = gdDB.DeleteDevAll(l.ctx, devices.Core{ProductID: newDev.ProductID, DeviceName: newDev.DeviceName})
+			if err != nil {
+				return err
+			}
+			err = gdDB.UpdateWithField(l.ctx, relationDB.GatewayDeviceFilter{SubDevice: &devices.Core{ProductID: oldDev.ProductID, DeviceName: oldDev.DeviceName}}, map[string]any{"product_id": newDev.ProductID, "device_name": newDev.DeviceName})
+			if err != nil {
+				return err
+			}
+		}
+		if pi.DeviceType == def.DeviceTypeGateway {
+			gdDB := relationDB.NewGatewayDeviceRepo(tx)
+			err = gdDB.DeleteDevAll(l.ctx, devices.Core{ProductID: newDev.ProductID, DeviceName: newDev.DeviceName})
+			if err != nil {
+				return err
+			}
+			err = gdDB.UpdateWithField(l.ctx, relationDB.GatewayDeviceFilter{Gateway: &devices.Core{ProductID: oldDev.ProductID, DeviceName: oldDev.DeviceName}},
+				map[string]any{"gateway_product_id": newDev.ProductID, "gateway_device_name": newDev.DeviceName})
+			if err != nil {
+				return err
 			}
 		}
 		{

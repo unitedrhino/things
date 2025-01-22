@@ -817,6 +817,45 @@
         ]
       }
     },
+    "/api/v1/things/device/info/move": {
+      "post": {
+        "summary": "转移设备到新设备上",
+        "operationId": "postApiV1ThingsDeviceInfoMove",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceMoveReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/info",
+          "thingsDeviceInfo"
+        ]
+      }
+    },
     "/api/v1/things/device/info/multi-bind": {
       "post": {
         "summary": "批量绑定",
@@ -1088,7 +1127,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/DeviceCore"
+              "$ref": "#/definitions/DeviceInfoUnbindReq"
             }
           }
         ],
@@ -6950,6 +6989,11 @@
           "format": "int64",
           "description": " 是否存储历史记录"
         },
+        "isPassword": {
+          "type": "integer",
+          "format": "int64",
+          "description": "是否是密码类型,密码类型需要加掩码"
+        },
         "order": {
           "type": "integer",
           "format": "int64",
@@ -7635,9 +7679,6 @@
         },
         "areaID": {
           "type": "string"
-        },
-        "protocolCode": {
-          "type": "string"
         }
       },
       "title": "DeviceInfoBindReq",
@@ -8125,6 +8166,46 @@
       "required": [
         "transferTo",
         "isCleanData"
+      ]
+    },
+    "DeviceInfoUnbindReq": {
+      "type": "object",
+      "properties": {
+        "productID": {
+          "type": "string",
+          "description": "产品id 只读"
+        },
+        "deviceName": {
+          "type": "string",
+          "description": "设备名称 读写"
+        },
+        "secretType": {
+          "type": "string",
+          "description": "采用秘钥的类型"
+        },
+        "signature": {
+          "type": "string",
+          "description": "签名"
+        },
+        "timestamp": {
+          "type": "integer",
+          "format": "int64",
+          "description": "秒时间戳"
+        },
+        "signType": {
+          "type": "string",
+          "description": "hmacsha256 hmacsha1 hmacmd5(默认)"
+        },
+        "nonce": {
+          "type": "integer",
+          "format": "int64",
+          "description": "随机数"
+        }
+      },
+      "title": "DeviceInfoUnbindReq",
+      "required": [
+        "productID",
+        "deviceName"
       ]
     },
     "DeviceInfoWithProperty": {
@@ -8708,6 +8789,31 @@
         }
       },
       "title": "DeviceModuleVersionReadReq"
+    },
+    "DeviceMoveReq": {
+      "type": "object",
+      "properties": {
+        "old": {
+          "$ref": "#/definitions/DeviceCore",
+          "description": "需要转移的设备"
+        },
+        "new": {
+          "$ref": "#/definitions/DeviceCore",
+          "description": "转移的对象"
+        },
+        "withTarget": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "设备配置-profile,schemaAlias:profile"
+        }
+      },
+      "title": "DeviceMoveReq",
+      "required": [
+        "old",
+        "new"
+      ]
     },
     "DeviceMsgAbnormalLogIndexReq": {
       "type": "object",
@@ -9862,6 +9968,11 @@
           "type": "integer",
           "format": "int64",
           "description": " 是否存储历史记录"
+        },
+        "isPassword": {
+          "type": "integer",
+          "format": "int64",
+          "description": "是否是密码类型,密码类型需要加掩码"
         },
         "order": {
           "type": "integer",
@@ -11886,10 +11997,10 @@
           "format": "int64",
           "description": "产品状态 1:启用 2:禁用 3:开发中"
         },
-        "isCanCoverBindDevice": {
+        "bindLevel": {
           "type": "integer",
           "format": "int64",
-          "description": "是否可以覆盖绑定设备,默认为2"
+          "description": "绑定级别: 1:强绑定(默认,只有用户解绑之后才能绑定) 2:中绑定(可以通过token强制解绑设备) 3:弱绑定(app可以内部解绑被绑定的设备)"
         },
         "protocolConf": {
           "type": "array",
@@ -12396,6 +12507,11 @@
           "type": "integer",
           "format": "int64",
           "description": " 是否存储历史记录"
+        },
+        "isPassword": {
+          "type": "integer",
+          "format": "int64",
+          "description": "是否是密码类型,密码类型需要加掩码"
         },
         "order": {
           "type": "integer",

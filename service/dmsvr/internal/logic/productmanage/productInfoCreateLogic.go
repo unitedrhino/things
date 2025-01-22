@@ -72,15 +72,15 @@ func (l *ProductInfoCreateLogic) CheckProductID(in *dm.ProductInfo) (bool, error
 */
 func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relationDB.DmProductInfo, error) {
 	pi := &relationDB.DmProductInfo{
-		ProductID:            in.ProductID,   // 产品id
-		ProductName:          in.ProductName, // 产品名称
-		Desc:                 in.Desc.GetValue(),
-		Status:               in.Status,
-		Secret:               utils.GetRandomBase64(20),
-		TrialTime:            in.TrialTime.GetValue(),
-		SceneMode:            in.SceneMode,
-		DeviceSchemaMode:     in.DeviceSchemaMode,
-		IsCanCoverBindDevice: in.IsCanCoverBindDevice,
+		ProductID:        in.ProductID,   // 产品id
+		ProductName:      in.ProductName, // 产品名称
+		Desc:             in.Desc.GetValue(),
+		Status:           in.Status,
+		Secret:           utils.GetRandomBase64(20),
+		TrialTime:        in.TrialTime.GetValue(),
+		SceneMode:        in.SceneMode,
+		DeviceSchemaMode: in.DeviceSchemaMode,
+		BindLevel:        in.BindLevel,
 	}
 	if in.AutoRegister != def.Unknown {
 		pi.AutoRegister = in.AutoRegister
