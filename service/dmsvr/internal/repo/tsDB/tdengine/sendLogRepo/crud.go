@@ -15,6 +15,12 @@ func (s *SendLogRepo) fillFilter(sql sq.SelectBuilder, filter deviceLog.SendFilt
 	if filter.UserID != 0 {
 		sql = sql.Where("`user_id`=?", filter.UserID)
 	}
+	if filter.DataID != "" {
+		sql = sql.Where("`data_id`=?", filter.DataID)
+	}
+	if len(filter.DataIDs) != 0 {
+		sql = sql.Where(fmt.Sprintf("`data_id` in (%v)", stores.ArrayToSql(filter.DataIDs)))
+	}
 	if len(filter.ProductID) != 0 {
 		sql = sql.Where("`product_id`=?", filter.ProductID)
 	}

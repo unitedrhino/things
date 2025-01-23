@@ -37,6 +37,8 @@ type (
 		ProductID  string   // 产品id
 		DeviceName string   // 设备名称
 		Actions    []string //过滤操作类型  propertySend:属性控制 actionSend:操作控制 propertyGetReportSend:获取最新属性请求
+		DataIDs    []string
+		DataID     string
 		ResultCode int64
 	}
 

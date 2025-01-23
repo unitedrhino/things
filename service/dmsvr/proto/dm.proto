@@ -834,7 +834,8 @@ message SendLogIndexReq{
   int64 userID = 9;
   repeated string actions =10;
   int64 resultCode = 12;//请求结果状态,200为成功
-
+  string dataID = 8;//identify
+  repeated string dataIDs =7;
 }
 
 /*实时获取对应信息*/

@@ -106,6 +106,8 @@ type (
         UserID     int64     `json:"userID,string,optional"`
         Actions    []string  `json:"actions,optional"`
         ResultCode int64     `json:"resultCode,optional"` //请求结果状态,200为成功
+        DataID string  `json:"dataID,optional"` //模糊查询
+        DataIDs []string `json:"dataIDs,optional"` //精确查询
         WithUser bool  `json:"withUser,optional"`  //同时返回用户信息
     }
     DeviceMsgSendLogIndexResp  {

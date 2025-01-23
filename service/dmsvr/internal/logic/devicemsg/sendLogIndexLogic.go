@@ -37,6 +37,8 @@ func (l *SendLogIndexLogic) SendLogIndex(in *dm.SendLogIndexReq) (*dm.SendLogInd
 		DeviceName: in.DeviceName,
 		Actions:    in.Actions,
 		ResultCode: in.ResultCode,
+		DataIDs:    in.DataIDs,
+		DataID:     in.DataID,
 	}
 	if in.ProductID != "" && in.DeviceName != "" {
 		_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{

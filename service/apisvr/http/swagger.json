@@ -9410,6 +9410,17 @@
           "format": "int64",
           "description": "请求结果状态,200为成功"
         },
+        "dataID": {
+          "type": "string",
+          "description": "模糊查询"
+        },
+        "dataIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "精确查询"
+        },
         "withUser": {
           "type": "boolean",
           "format": "boolean",
