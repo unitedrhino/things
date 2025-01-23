@@ -7,9 +7,11 @@ import (
 	"gitee.com/unitedrhino/core/service/timed/timedjobsvr/client/timedmanage"
 	"gitee.com/unitedrhino/share/clients"
 	"gitee.com/unitedrhino/share/def"
+	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/eventBus"
 	"gitee.com/unitedrhino/share/events"
+	"gitee.com/unitedrhino/share/events/topics"
 	"gitee.com/unitedrhino/things/service/dgsvr/internal/event/deviceSub"
 	"gitee.com/unitedrhino/things/service/dgsvr/internal/event/innerSub"
 	"gitee.com/unitedrhino/things/service/dgsvr/internal/event/onlineCheck"
@@ -64,8 +66,19 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		return svcCtx.Script.ClearCache(ctx, info.ProductID)
 	})
 	logx.Must(err)
+
 	err = svcCtx.FastEvent.QueueSubscribe(eventBus.DgOnlineTimer, func(ctx context.Context, t time.Time, body []byte) error {
 		return onlineCheck.NewOnlineCheckEvent(svcCtx, ctx).Check()
+	})
+	logx.Must(err)
+
+	err = svcCtx.FastEvent.QueueSubscribe(fmt.Sprintf(topics.DeviceDownStatusConnected, def.ProtocolCodeUnitedRhino), func(ctx context.Context, t time.Time, body []byte) error {
+		info := devices.WithGateway{}
+		err := json.Unmarshal(body, &info)
+		if err != nil {
+			return err
+		}
+		return innerSub.NewInnerSubServer(svcCtx, ctx).OnlineFix(&info)
 	})
 	logx.Must(err)
 	err = svcCtx.FastEvent.Start()

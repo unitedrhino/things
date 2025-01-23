@@ -79,3 +79,22 @@ func (s *InnerSubServer) GatewayHandle(info *devices.InnerPublish) error {
 	}
 	return err
 }
+
+// 网关子设备在线状态修复
+func (s *InnerSubServer) OnlineFix(in *devices.WithGateway) error {
+	if in.Gateway == nil {
+		return nil
+	}
+	var topics []string
+
+	topics = append(topics,
+		fmt.Sprintf("$thing/down/property/%s/%s", in.Dev.ProductID, in.Dev.DeviceName),
+		fmt.Sprintf("$thing/down/event/%s/%s", in.Dev.ProductID, in.Dev.DeviceName),
+		fmt.Sprintf("$thing/down/action/%s/%s", in.Dev.ProductID, in.Dev.DeviceName),
+		fmt.Sprintf("$ota/down/upgrade/%s/%s", in.Dev.ProductID, in.Dev.DeviceName))
+
+	clientID := fmt.Sprintf("%s&%s", in.Gateway.ProductID, in.Gateway.DeviceName)
+	err := s.svcCtx.MqttClient.SetClientMutSub(s.ctx, clientID, topics, 1)
+
+	return err
+}

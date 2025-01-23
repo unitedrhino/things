@@ -4,8 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"gitee.com/unitedrhino/core/service/syssvr/sysExport"
 	"gitee.com/unitedrhino/core/service/timed/timedjobsvr/client/timedmanage"
+	"gitee.com/unitedrhino/share/caches"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/devices"
@@ -16,6 +18,7 @@ import (
 	"gitee.com/unitedrhino/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/share/events/topics"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceStatus"
@@ -26,6 +29,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/cache"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -37,6 +41,7 @@ type ThingLogic struct {
 	svcCtx *svc.ServiceContext
 	logx.Logger
 	schema *schema.Model
+	di     *dm.DeviceInfo
 	dreq   msgThing.Req
 	repo   msgThing.SchemaDataRepo
 }
@@ -58,6 +63,10 @@ func (l *ThingLogic) initMsg(msg *deviceMsg.PublishMsg) error {
 	err = utils.Unmarshal(msg.Payload, &l.dreq)
 	if err != nil {
 		return errors.Parameter.AddDetailf("payload unmarshal payload:%v err:%v", string(msg.Payload), err)
+	}
+	l.di, err = l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName})
+	if err != nil {
+		return err
 	}
 	l.repo = l.svcCtx.SchemaManaRepo
 	return nil
@@ -102,6 +111,10 @@ func (l *ThingLogic) HandlePackReport(msg *deviceMsg.PublishMsg, req msgThing.Re
 				ProductID:  dev.ProductID,
 				DeviceName: dev.DeviceName,
 			}
+			di, err := l.svcCtx.DeviceCache.GetData(l.ctx, d)
+			if err != nil {
+				return l.DeviceResp(msg, err, nil), err
+			}
 			c, err := relationDB.NewGatewayDeviceRepo(l.ctx).CountByFilter(l.ctx, relationDB.GatewayDeviceFilter{
 				SubDevice: &d,
 				Gateway: &devices.Core{
@@ -116,21 +129,8 @@ func (l *ThingLogic) HandlePackReport(msg *deviceMsg.PublishMsg, req msgThing.Re
 				err = errors.DeviceNotBound
 				return l.DeviceResp(msg, err, nil), err
 			}
-			di, err := l.svcCtx.DeviceCache.GetData(l.ctx, d)
-			if err != nil {
-				return l.DeviceResp(msg, err, nil), err
-			}
-			if di.IsOnline == def.False {
-				err := devicemanagelogic.HandleOnlineFix(l.ctx, l.svcCtx, &deviceStatus.ConnectMsg{
-					ClientID:  deviceAuth.GenClientID(di.ProductID, di.DeviceName),
-					Timestamp: l.dreq.GetTimeStamp(msg.Timestamp),
-					Action:    devices.ActionConnected,
-					Reason:    "gateway_report_fix",
-				})
-				if err != nil {
-					l.Error(err)
-				}
-			}
+
+			l.OnlineFix(msg, di, l.di)
 			schema, err := l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, devices.Core{ProductID: dev.ProductID, DeviceName: dev.DeviceName})
 			if err != nil {
 				return l.DeviceResp(msg, err, nil), err
@@ -513,18 +513,6 @@ func (l *ThingLogic) HandlePropertyReportInfo(msg *deviceMsg.PublishMsg, req msg
 			utils.FuncName(), dmDeviceInfoReq.ProductID, dmDeviceInfoReq.DeviceName, err)
 		return l.DeviceResp(msg, errors.Database.AddDetail(err), nil), err
 	}
-	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, dev)
-	if err == nil && di.IsOnline == def.False {
-		err := devicemanagelogic.HandleOnlineFix(l.ctx, l.svcCtx, &deviceStatus.ConnectMsg{
-			ClientID:  deviceAuth.GenClientID(di.ProductID, di.DeviceName),
-			Timestamp: l.dreq.GetTimeStamp(msg.Timestamp),
-			Action:    devices.ActionConnected,
-			Reason:    "baseReportFix",
-		})
-		if err != nil {
-			l.Error(err)
-		}
-	}
 	return l.DeviceResp(msg, errors.OK, nil), nil
 }
 
@@ -897,7 +885,7 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 	if err != nil {
 		return nil, err
 	}
-
+	l.OnlineFix(msg, l.di, nil)
 	var action = devices.Thing
 	respMsg, err = func() (respMsg *deviceMsg.PublishMsg, err error) {
 		action = msg.Type
@@ -935,4 +923,63 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 	})
 
 	return
+}
+
+const waitTime = 5
+
+// 将上报了消息但是设备在线状态不正确的设备推送给
+func (l *ThingLogic) OnlineFix(msg *deviceMsg.PublishMsg, di *dm.DeviceInfo, gw *dm.DeviceInfo) {
+	if di.IsOnline == def.True {
+		return
+	}
+	ok, err := caches.GetStore().SetnxExCtx(l.ctx, fmt.Sprintf("device:online:fix:%s:%s", di.ProductID, di.DeviceName),
+		time.Now().Format("2006-01-02 15:04:05.999"), waitTime+2)
+	if err != nil {
+		return
+	}
+	if !ok { //没抢到锁
+		return
+	}
+	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
+		time.Sleep(time.Second * waitTime) //避免突然的上下线波动
+		dev := devices.Core{ProductID: di.ProductID, DeviceName: di.DeviceName}
+		di, err := l.svcCtx.DeviceCache.GetData(ctx, dev)
+		if err != nil {
+			l.Error(err)
+			return
+		}
+		if di.IsOnline == def.True {
+			return
+		}
+		if di.DeviceType != def.DeviceTypeSubset { //如果不是子设备类型则直接修复即可
+			err := devicemanagelogic.HandleOnlineFix(l.ctx, l.svcCtx, &deviceStatus.ConnectMsg{
+				ClientID:  deviceAuth.GenClientID(di.ProductID, di.DeviceName),
+				Timestamp: l.dreq.GetTimeStamp(msg.Timestamp),
+				Action:    devices.ActionConnected,
+				Reason:    "report_fix",
+			})
+			if err != nil {
+				l.Error(err)
+			}
+			return
+		}
+		var inDev = devices.WithGateway{
+			Dev: dev,
+		}
+		if gw == nil && di.DeviceType == def.DeviceTypeSubset { //如果是子设备类型,需要把网关参数补全,传给协议组件
+			gww, err := relationDB.NewGatewayDeviceRepo(ctx).FindOneByFilter(ctx, relationDB.GatewayDeviceFilter{SubDevice: &dev})
+			if err != nil {
+				l.Error(err)
+				return
+			}
+			inDev.Gateway = &devices.Core{ProductID: gww.ProductID, DeviceName: gww.DeviceName}
+		} else if gw != nil {
+			inDev.Gateway = &devices.Core{ProductID: gw.ProductID, DeviceName: gw.DeviceName}
+		}
+		if msg.ProtocolCode == "" {
+			msg.ProtocolCode = def.ProtocolCodeUnitedRhino
+		}
+		l.svcCtx.FastEvent.Publish(ctx, fmt.Sprintf(topics.DeviceDownStatusConnected, msg.ProtocolCode), inDev)
+	})
+
 }
