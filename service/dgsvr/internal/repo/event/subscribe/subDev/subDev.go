@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"gitee.com/unitedrhino/share/conf"
-	"gitee.com/unitedrhino/share/devices"
+	"gitee.com/unitedrhino/things/share/devices"
 )
 
 type (

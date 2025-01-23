@@ -2,14 +2,15 @@ package devicemanagelogic
 
 import (
 	"context"
+	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
-	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/things/share/devices"
 	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
@@ -80,7 +81,7 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 		columns = append(columns, "rated_power")
 	}
 	err := relationDB.NewDeviceInfoRepo(l.ctx).MultiUpdate(l.ctx, devs,
-		&relationDB.DmDeviceInfo{RatedPower: in.RatedPower, AreaID: stores.AreaID(in.AreaID), AreaIDPath: stores.AreaIDPath(areaIDPath), Distributor: utils.Copy2[stores.IDPathWithUpdate](in.Distributor)}, columns...)
+		&relationDB.DmDeviceInfo{RatedPower: in.RatedPower, AreaID: dataType.AreaID(in.AreaID), AreaIDPath: dataType.AreaIDPath(areaIDPath), Distributor: utils.Copy2[stores.IDPathWithUpdate](in.Distributor)}, columns...)
 	if err != nil {
 		return nil, err
 	}

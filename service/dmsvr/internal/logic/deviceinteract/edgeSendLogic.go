@@ -3,9 +3,9 @@ package deviceinteractlogic
 import (
 	"context"
 	"gitee.com/unitedrhino/share/def"
-	"gitee.com/unitedrhino/share/devices"
-	"gitee.com/unitedrhino/share/domain/deviceMsg"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/event/deviceMsgEvent"
+	"gitee.com/unitedrhino/things/share/devices"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"

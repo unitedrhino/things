@@ -2,10 +2,10 @@ package devicemsglogic
 
 import (
 	"context"
-	"gitee.com/unitedrhino/share/devices"
-	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
+	"gitee.com/unitedrhino/things/share/devices"
 	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
@@ -34,10 +34,10 @@ func (l *AbnormalLogCreateLogic) AbnormalLogCreate(in *dm.AbnormalLogInfo) (*dm.
 	}
 	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
 	err = l.svcCtx.AbnormalRepo.Insert(l.ctx, &deviceLog.Abnormal{
-		TenantCode: stores.TenantCode(di.TenantCode),
-		ProjectID:  stores.ProjectID(di.ProjectID),
-		AreaID:     stores.AreaID(di.AreaID),
-		AreaIDPath: stores.AreaIDPath(di.AreaIDPath),
+		TenantCode: dataType.TenantCode(di.TenantCode),
+		ProjectID:  dataType.ProjectID(di.ProjectID),
+		AreaID:     dataType.AreaID(di.AreaID),
+		AreaIDPath: dataType.AreaIDPath(di.AreaIDPath),
 		ProductID:  in.ProductID,
 		Action:     in.Action,
 		Timestamp:  time.UnixMilli(in.Timestamp), // 操作时间

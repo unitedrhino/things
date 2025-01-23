@@ -3,8 +3,8 @@ package abnormalLogRepo
 import (
 	"context"
 	"fmt"
-	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine"
+	"gitee.com/unitedrhino/things/share/devices"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

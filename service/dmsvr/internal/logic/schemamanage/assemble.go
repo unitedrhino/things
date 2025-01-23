@@ -1,10 +1,10 @@
 package schemamanagelogic
 
 import (
-	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/share/domain/schema"
 )
 
 func ToCommonSchemaRpc(info *relationDB.DmCommonSchema) *dm.CommonSchemaInfo {

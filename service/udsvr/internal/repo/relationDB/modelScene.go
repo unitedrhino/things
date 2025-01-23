@@ -2,32 +2,33 @@ package relationDB
 
 import (
 	"database/sql"
+	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/domain/scene"
 )
 
 type UdSceneInfo struct {
-	ID          int64             `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`                       // id编号
-	TenantCode  stores.TenantCode `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`                           // 租户编码
-	ProjectID   stores.ProjectID  `gorm:"column:project_id;type:bigint;default:0;NOT NULL"`                       // 项目ID(雪花ID)
-	AreaID      stores.AreaID     `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"` // 项目区域ID(雪花ID)
-	FlowPath    []*scene.FlowInfo `gorm:"column:flow_path;type:json;serializer:json;"`                            //执行路径
-	DeviceMode  scene.DeviceMode  `gorm:"column:device_mode;type:VARCHAR(50);default:'single'"`                   //设备模式
-	ProductID   string            `gorm:"column:product_id;index;type:VARCHAR(25);default:''"`                    //产品id
-	DeviceName  string            `gorm:"column:device_name;type:VARCHAR(255);default:''"`                        //设备名
-	DeviceAlias string            `gorm:"column:device_alias;type:VARCHAR(255);default:''"`                       //设备别名
-	Tag         string            `gorm:"column:tag;type:VARCHAR(128);NOT NULL;default:normal"`                   //标签 admin: 管理员 normal: 普通
-	IsCommon    def.Bool          `gorm:"column:is_common;type:BIGINT;default:2"`                                 //是否是常用的
-	HeadImg     string            `gorm:"column:head_img;type:VARCHAR(256);NOT NULL"`                             // 头像
-	Logo        string            `gorm:"column:logo;type:VARCHAR(25);NOT NULL"`                                  // logo
-	Name        string            `gorm:"column:name;type:varchar(100);"`                                         // 名称
-	Desc        string            `gorm:"column:desc;type:varchar(200);"`                                         // 描述
-	Type        scene.SceneType   `gorm:"column:type;type:VARCHAR(25);"`                                          //auto manual
-	LastRunTime sql.NullTime      `gorm:"column:last_run_time;index;default:null"`
-	Status      def.Bool          `gorm:"column:status;type:BIGINT;default:1"`        //状态
-	Reason      string            `gorm:"column:reason;type:VARCHAR(255);default:''"` //异常原因
-	Body        string            `gorm:"column:body;type:VARCHAR(1024)"`             // 自定义数据
+	ID          int64               `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`                       // id编号
+	TenantCode  dataType.TenantCode `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`                           // 租户编码
+	ProjectID   dataType.ProjectID  `gorm:"column:project_id;type:bigint;default:0;NOT NULL"`                       // 项目ID(雪花ID)
+	AreaID      dataType.AreaID     `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"` // 项目区域ID(雪花ID)
+	FlowPath    []*scene.FlowInfo   `gorm:"column:flow_path;type:json;serializer:json;"`                            //执行路径
+	DeviceMode  scene.DeviceMode    `gorm:"column:device_mode;type:VARCHAR(50);default:'single'"`                   //设备模式
+	ProductID   string              `gorm:"column:product_id;index;type:VARCHAR(25);default:''"`                    //产品id
+	DeviceName  string              `gorm:"column:device_name;type:VARCHAR(255);default:''"`                        //设备名
+	DeviceAlias string              `gorm:"column:device_alias;type:VARCHAR(255);default:''"`                       //设备别名
+	Tag         string              `gorm:"column:tag;type:VARCHAR(128);NOT NULL;default:normal"`                   //标签 admin: 管理员 normal: 普通
+	IsCommon    def.Bool            `gorm:"column:is_common;type:BIGINT;default:2"`                                 //是否是常用的
+	HeadImg     string              `gorm:"column:head_img;type:VARCHAR(256);NOT NULL"`                             // 头像
+	Logo        string              `gorm:"column:logo;type:VARCHAR(25);NOT NULL"`                                  // logo
+	Name        string              `gorm:"column:name;type:varchar(100);"`                                         // 名称
+	Desc        string              `gorm:"column:desc;type:varchar(200);"`                                         // 描述
+	Type        scene.SceneType     `gorm:"column:type;type:VARCHAR(25);"`                                          //auto manual
+	LastRunTime sql.NullTime        `gorm:"column:last_run_time;index;default:null"`
+	Status      def.Bool            `gorm:"column:status;type:BIGINT;default:1"`        //状态
+	Reason      string              `gorm:"column:reason;type:VARCHAR(255);default:''"` //异常原因
+	Body        string              `gorm:"column:body;type:VARCHAR(1024)"`             // 自定义数据
 	UdSceneIf   `gorm:"embedded;embeddedPrefix:if_"`
 	UdSceneWhen `gorm:"embedded;embeddedPrefix:when_"`
 	UdSceneThen `gorm:"embedded;embeddedPrefix:then_"`
@@ -46,8 +47,8 @@ type UdSceneIfTrigger struct {
 	ID              int64                 `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"` // id编号
 	Type            scene.TriggerType     `gorm:"column:type;type:VARCHAR(25);NOT NULL"`            //触发类型 device: 设备触发 timer: 定时触发
 	SceneID         int64                 `gorm:"column:scene_id;index;type:bigint"`                // 场景id编号
-	ProjectID       stores.ProjectID      `gorm:"column:project_id;type:bigint;default:1;"`         // 项目ID(雪花ID)
-	AreaID          stores.AreaID         `gorm:"column:area_id;type:bigint;default:1;"`            // 项目区域ID(雪花ID)
+	ProjectID       dataType.ProjectID    `gorm:"column:project_id;type:bigint;default:1;"`         // 项目ID(雪花ID)
+	AreaID          dataType.AreaID       `gorm:"column:area_id;type:bigint;default:1;"`            // 项目区域ID(雪花ID)
 	Order           int64                 `gorm:"column:order;type:BIGINT;default:1;NOT NULL"`      // 排序序号
 	Status          scene.Status          `gorm:"column:status;type:BIGINT;default:1"`              //状态 同步场景联动的status
 	Reason          string                `gorm:"column:reason;type:VARCHAR(255);default:''"`       //异常原因
@@ -121,7 +122,7 @@ type UdSceneThen struct {
 
 type UdSceneThenAction struct {
 	ID         int64               `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"` // id编号
-	TenantCode stores.TenantCode   `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`     // 租户编码
+	TenantCode dataType.TenantCode `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`     // 租户编码
 	SceneID    int64               `gorm:"column:scene_id;index;type:bigint"`                // 场景id编号
 	Order      int64               `gorm:"column:order;type:BIGINT;default:1;NOT NULL"`      // 排序序号
 	Type       scene.ActionType    `gorm:"column:type;type:VARCHAR(25);NOT NULL"`
@@ -164,16 +165,16 @@ type UdSceneActionScene struct {
 }
 
 type UdSceneLog struct {
-	ID         int64              `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`    // id编号
-	TenantCode stores.TenantCode  `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`        // 租户编码
-	ProjectID  stores.ProjectID   `gorm:"column:project_id;type:bigint;default:0;NOT NULL"`    // 项目ID(雪花ID)
-	AreaID     stores.AreaID      `gorm:"column:area_id;index;type:bigint;default:0;NOT NULL"` // 项目区域ID(雪花ID)
-	SceneID    int64              `gorm:"column:scene_id;index;type:bigint;NOT NULL"`          // 项目区域ID(雪花ID)
-	Type       scene.SceneType    `gorm:"column:type;type:VARCHAR(25);NOT NULL"`               //auto manual
-	Trigger    *scene.LogTrigger  `gorm:"column:trigger;type:json;serializer:json"`
-	Actions    []*scene.LogAction `gorm:"column:actions;type:json;serializer:json"`
-	Status     def.Bool           `gorm:"column:status;type:BIGINT;default:1"` //状态
-	SceneInfo  *UdSceneInfo       `gorm:"foreignKey:ID;references:SceneID"`
+	ID         int64               `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`    // id编号
+	TenantCode dataType.TenantCode `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`        // 租户编码
+	ProjectID  dataType.ProjectID  `gorm:"column:project_id;type:bigint;default:0;NOT NULL"`    // 项目ID(雪花ID)
+	AreaID     dataType.AreaID     `gorm:"column:area_id;index;type:bigint;default:0;NOT NULL"` // 项目区域ID(雪花ID)
+	SceneID    int64               `gorm:"column:scene_id;index;type:bigint;NOT NULL"`          // 项目区域ID(雪花ID)
+	Type       scene.SceneType     `gorm:"column:type;type:VARCHAR(25);NOT NULL"`               //auto manual
+	Trigger    *scene.LogTrigger   `gorm:"column:trigger;type:json;serializer:json"`
+	Actions    []*scene.LogAction  `gorm:"column:actions;type:json;serializer:json"`
+	Status     def.Bool            `gorm:"column:status;type:BIGINT;default:1"` //状态
+	SceneInfo  *UdSceneInfo        `gorm:"foreignKey:ID;references:SceneID"`
 	stores.OnlyTime
 }
 

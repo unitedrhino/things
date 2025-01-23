@@ -3,10 +3,10 @@ package schemaDataRepo
 import (
 	"context"
 	"fmt"
-	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/errors"
-	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine"
+	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -78,7 +78,7 @@ func (d *DeviceDataRepo) UpdateProperty(
 		} else {
 			//新增
 			sql := fmt.Sprintf("ALTER STABLE %s ADD COLUMN `%s` %s; ",
-				d.GetPropertyStableName(newP, productID, newP.Identifier), newS.Identifier, stores.GetTdType(newS.DataType))
+				d.GetPropertyStableName(newP, productID, newP.Identifier), newS.Identifier, tdengine.GetTdType(newS.DataType))
 			if _, err := d.t.ExecContext(ctx, sql); err != nil {
 				return errors.Database.AddDetail(err)
 			}
@@ -153,7 +153,7 @@ func (d *DeviceDataRepo) createPropertyStable(
 		default:
 			sql = fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp,`param` %s)"+
 				" TAGS (`product_id` BINARY(50),`device_name` BINARY(50),`_num` BIGINT,`"+PropertyType+"` BINARY(50));",
-				d.GetPropertyStableName(p, productID, p.Identifier), stores.GetTdType(*arrayInfo))
+				d.GetPropertyStableName(p, productID, p.Identifier), tdengine.GetTdType(*arrayInfo))
 			if _, err := d.t.ExecContext(ctx, sql); err != nil {
 				return errors.Database.AddDetail(err)
 			}
@@ -161,7 +161,7 @@ func (d *DeviceDataRepo) createPropertyStable(
 	default:
 		sql = fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp,`param` %s)"+
 			" TAGS (`product_id` BINARY(50),`device_name` BINARY(50),`"+PropertyType+"` BINARY(50));",
-			d.GetPropertyStableName(p, productID, p.Identifier), stores.GetTdType(p.Define))
+			d.GetPropertyStableName(p, productID, p.Identifier), tdengine.GetTdType(p.Define))
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
 			return errors.Database.AddDetail(err)
 		}

@@ -3,9 +3,9 @@ package scene
 import (
 	"context"
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
-	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

@@ -4,10 +4,10 @@ import (
 	"context"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
-	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/userShared"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
+	"gitee.com/unitedrhino/things/share/devices"
 )
 
 func Auth(ctx context.Context, svcCtx *svc.ServiceContext, dev devices.Core, param map[string]any) (outParam map[string]any, err error) {

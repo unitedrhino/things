@@ -3,8 +3,8 @@ package sendLogRepo
 import (
 	"context"
 	"fmt"
-	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine"
+	"gitee.com/unitedrhino/things/share/devices"
 )
 
 func (s *SendLogRepo) InitProduct(ctx context.Context, productID string) (err error) {

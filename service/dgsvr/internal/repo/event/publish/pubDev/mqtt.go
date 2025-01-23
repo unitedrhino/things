@@ -2,8 +2,8 @@ package pubDev
 
 import (
 	"context"
-	"gitee.com/unitedrhino/share/clients"
 	"gitee.com/unitedrhino/share/conf"
+	"gitee.com/unitedrhino/things/share/clients"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

@@ -2,8 +2,8 @@ package relationDB
 
 import (
 	"context"
-	"gitee.com/unitedrhino/share/domain/deviceMsg/msgOta"
 	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgOta"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"time"

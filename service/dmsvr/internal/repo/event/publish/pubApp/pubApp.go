@@ -3,8 +3,8 @@ package pubApp
 import (
 	"context"
 	"gitee.com/unitedrhino/share/conf"
-	"gitee.com/unitedrhino/share/domain/application"
 	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/things/share/domain/application"
 )
 
 type (

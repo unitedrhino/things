@@ -3,13 +3,9 @@ package devicemanagelogic
 import (
 	"context"
 	"database/sql"
+	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
-	"gitee.com/unitedrhino/share/devices"
-	"gitee.com/unitedrhino/share/domain/application"
-	"gitee.com/unitedrhino/share/domain/deviceMsg"
-	"gitee.com/unitedrhino/share/domain/deviceMsg/msgOta"
-	"gitee.com/unitedrhino/share/domain/deviceMsg/msgSdkLog"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
@@ -18,6 +14,11 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/share/devices"
+	"gitee.com/unitedrhino/things/share/domain/application"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgOta"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgSdkLog"
 	"github.com/spf13/cast"
 	"sync"
 	"time"
@@ -47,7 +48,7 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 	uc := ctxs.GetUserCtx(l.ctx)
 	var isUpdateTag bool
 	if data.AreaID != 0 && data.AreaID != int64(old.AreaID) {
-		old.AreaID = stores.AreaID(data.AreaID)
+		old.AreaID = dataType.AreaID(data.AreaID)
 		ai, err := l.svcCtx.AreaCache.GetData(l.ctx, data.AreaID)
 		if err != nil {
 			return err
@@ -56,7 +57,7 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 			time.Sleep(2 * time.Second)
 			logic.FillAreaDeviceCount(l.ctx, l.svcCtx, ai.AreaIDPath, string(old.AreaIDPath))
 		})
-		old.AreaIDPath = stores.AreaIDPath(ai.AreaIDPath)
+		old.AreaIDPath = dataType.AreaIDPath(ai.AreaIDPath)
 		isUpdateTag = true
 	}
 	if data.ProjectID != 0 && data.ProjectID != int64(old.ProjectID) {
@@ -64,7 +65,7 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 			time.Sleep(2 * time.Second)
 			logic.FillProjectDeviceCount(ctx2, l.svcCtx, data.ProjectID, int64(old.ProjectID))
 		})
-		old.ProjectID = stores.ProjectID(data.ProjectID)
+		old.ProjectID = dataType.ProjectID(data.ProjectID)
 		isUpdateTag = true
 	}
 

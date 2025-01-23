@@ -4,15 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"gitee.com/unitedrhino/core/service/syssvr/sysExport"
+	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
-	"gitee.com/unitedrhino/share/devices"
-	"gitee.com/unitedrhino/share/domain/application"
-	"gitee.com/unitedrhino/share/domain/deviceMsg"
-	"gitee.com/unitedrhino/share/domain/deviceMsg/msgThing"
-	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/errors"
-	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/shadow"
@@ -20,6 +15,11 @@ import (
 	devicemanagelogic "gitee.com/unitedrhino/things/service/dmsvr/internal/logic/devicemanage"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/cache"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/things/share/devices"
+	"gitee.com/unitedrhino/things/share/domain/application"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
+	"gitee.com/unitedrhino/things/share/domain/schema"
 	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
@@ -186,10 +186,10 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 			}
 			for dataID, content := range param {
 				_ = l.svcCtx.SendRepo.Insert(ctx, &deviceLog.Send{
-					TenantCode: stores.TenantCode(di.TenantCode),
-					ProjectID:  stores.ProjectID(di.ProjectID),
-					AreaID:     stores.AreaID(di.AreaID),
-					AreaIDPath: stores.AreaIDPath(di.AreaIDPath),
+					TenantCode: dataType.TenantCode(di.TenantCode),
+					ProjectID:  dataType.ProjectID(di.ProjectID),
+					AreaID:     dataType.AreaID(di.AreaID),
+					AreaIDPath: dataType.AreaIDPath(di.AreaIDPath),
 					ProductID:  in.ProductID,
 					Action:     "propertyControlSend",
 					Timestamp:  time.Now(), // 操作时间

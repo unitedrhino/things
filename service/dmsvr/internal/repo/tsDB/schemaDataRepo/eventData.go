@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"gitee.com/unitedrhino/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 )
 
 func (d *DeviceDataRepo) InsertEventData(ctx context.Context, productID string,

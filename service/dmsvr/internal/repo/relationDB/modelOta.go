@@ -2,8 +2,8 @@ package relationDB
 
 import (
 	"database/sql"
-	"gitee.com/unitedrhino/share/domain/deviceMsg/msgOta"
 	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgOta"
 )
 
 //// 升级任务表

@@ -3,12 +3,13 @@ package devicemanagelogic
 import (
 	"context"
 	"fmt"
+	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
-	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/things/share/devices"
 	"gorm.io/gorm"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
@@ -60,18 +61,18 @@ func (l *DeviceResetLogic) DeviceReset(in *dm.DeviceResetReq) (*dm.Empty, error)
 		}
 	}
 	var updateMap = make(map[string]interface{})
-	areaID := stores.AreaID(def.NotClassified)
-	var projectID stores.ProjectID
+	areaID := dataType.AreaID(def.NotClassified)
+	var projectID dataType.ProjectID
 	var areaIDPath string
 	if in.Bind {
-		areaID = stores.AreaID(def.NotClassified)
+		areaID = dataType.AreaID(def.NotClassified)
 		ti, err := l.svcCtx.TenantCache.GetData(l.ctx, def.TenantCodeDefault)
 		if err != nil {
 			return nil, err
 		}
-		projectID = stores.ProjectID(ti.DefaultProjectID)
+		projectID = dataType.ProjectID(ti.DefaultProjectID)
 		if ti.DefaultAreaID != 0 {
-			areaID = stores.AreaID(ti.DefaultAreaID)
+			areaID = dataType.AreaID(ti.DefaultAreaID)
 		}
 
 		ai, err := l.svcCtx.AreaCache.GetData(l.ctx, int64(areaID))

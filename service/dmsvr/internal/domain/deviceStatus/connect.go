@@ -4,7 +4,7 @@ package deviceStatus
 import (
 	"context"
 	"encoding/json"
-	"gitee.com/unitedrhino/share/devices"
+	"gitee.com/unitedrhino/things/share/devices"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )

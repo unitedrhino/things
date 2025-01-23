@@ -2,7 +2,7 @@ package schemaDataRepo
 
 import (
 	"fmt"
-	"gitee.com/unitedrhino/share/domain/schema"
+	"gitee.com/unitedrhino/things/share/domain/schema"
 )
 
 var TableNames []string

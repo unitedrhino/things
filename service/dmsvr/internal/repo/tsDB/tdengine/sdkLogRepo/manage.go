@@ -3,8 +3,8 @@ package sdkLogRepo
 import (
 	"context"
 	"fmt"
-	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/share/devices"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

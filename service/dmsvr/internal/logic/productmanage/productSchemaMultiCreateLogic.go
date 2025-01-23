@@ -3,9 +3,9 @@ package productmanagelogic
 import (
 	"context"
 	"gitee.com/unitedrhino/share/ctxs"
-	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/share/domain/schema"
 	"golang.org/x/sync/errgroup"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"

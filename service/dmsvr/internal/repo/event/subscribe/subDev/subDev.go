@@ -3,9 +3,9 @@ package subDev
 import (
 	"context"
 	"gitee.com/unitedrhino/share/conf"
-	"gitee.com/unitedrhino/share/domain/deviceMsg"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceStatus"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 )
 
 type (

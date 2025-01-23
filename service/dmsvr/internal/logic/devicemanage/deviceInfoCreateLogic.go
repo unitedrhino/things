@@ -4,9 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
-	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/eventBus"
 	"gitee.com/unitedrhino/share/stores"
@@ -15,6 +15,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/share/devices"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.uber.org/atomic"
@@ -118,15 +119,15 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 		return nil, errors.Parameter.AddDetail("not find product id:" + cast.ToString(in.ProductID))
 	}
 	//projectID := stores.ProjectID(uc.ProjectID)
-	areaID := stores.AreaID(def.NotClassified)
+	areaID := dataType.AreaID(def.NotClassified)
 	//if projectID <= def.NotClassified { //如果没有传项目,则分配到未分类项目中
 	ti, err := l.svcCtx.TenantCache.GetData(l.ctx, def.TenantCodeDefault)
 	if err != nil {
 		return nil, err
 	}
-	projectID := stores.ProjectID(ti.DefaultProjectID)
+	projectID := dataType.ProjectID(ti.DefaultProjectID)
 	if ti.DefaultAreaID != 0 {
-		areaID = stores.AreaID(ti.DefaultAreaID)
+		areaID = dataType.AreaID(ti.DefaultAreaID)
 	}
 	//}
 
@@ -142,7 +143,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 		DeviceName:     in.DeviceName, // 设备名称
 		Position:       logic.ToStorePoint(in.Position),
 		AreaID:         areaID, //设备默认都是未分类
-		AreaIDPath:     stores.AreaIDPath(areaIDPath),
+		AreaIDPath:     dataType.AreaIDPath(areaIDPath),
 		Status:         def.DeviceStatusInactive,
 		MobileOperator: def.MobileOperatorNone,
 		IsEnable:       def.True,

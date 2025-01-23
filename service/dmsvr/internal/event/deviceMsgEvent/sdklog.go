@@ -2,16 +2,16 @@ package deviceMsgEvent
 
 import (
 	"context"
-	"gitee.com/unitedrhino/share/domain/deviceMsg/msgSdkLog"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	devicemanage "gitee.com/unitedrhino/things/service/dmsvr/internal/server/devicemanage"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgSdkLog"
 	"time"
 
-	"gitee.com/unitedrhino/share/domain/deviceMsg"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

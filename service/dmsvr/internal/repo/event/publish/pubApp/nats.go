@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"gitee.com/unitedrhino/share/clients"
 	"gitee.com/unitedrhino/share/conf"
-	"gitee.com/unitedrhino/share/domain/application"
 	"gitee.com/unitedrhino/share/events"
 	"gitee.com/unitedrhino/share/events/topics"
+	"gitee.com/unitedrhino/things/share/domain/application"
 	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"
 )

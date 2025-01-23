@@ -2,6 +2,7 @@ package devicegrouplogic
 
 import (
 	"context"
+	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
@@ -99,7 +100,7 @@ func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfo) (*dm.WithID, er
 		Purpose:     in.Purpose,
 		ParentID:    in.ParentID,
 		ProductID:   in.ProductID,
-		AreaID:      stores.AreaID(in.AreaID),
+		AreaID:      dataType.AreaID(in.AreaID),
 		Name:        in.Name,
 		Desc:        in.Desc,
 		Tags:        in.Tags,

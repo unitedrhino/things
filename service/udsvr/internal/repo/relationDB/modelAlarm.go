@@ -1,6 +1,7 @@
 package relationDB
 
 import (
+	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/domain/scene"
@@ -9,17 +10,17 @@ import (
 
 // 告警配置信息表
 type UdAlarmInfo struct {
-	ID         int64             `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
-	TenantCode stores.TenantCode `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`     // 租户编码
-	ProjectID  stores.ProjectID  `gorm:"column:project_id;type:bigint;default:0;NOT NULL"` // 项目ID(雪花ID)
-	Name       string            `gorm:"column:name;type:VARCHAR(100);NOT NULL"`
-	Desc       string            `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`
-	Level      int64             `gorm:"column:level;type:SMALLINT;default:1"`                   // 告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
-	Status     int64             `gorm:"column:status;type:SMALLINT;default:1"`                  // 状态 1:启用,2:禁用
-	Notifies   []*UdAlarmNotify  `gorm:"column:notifies;type:json;serializer:json;default:'[]'"` // 短信通知模版编码
-	UserIDs    []int64           `gorm:"column:user_ids;type:json;serializer:json;default:'[]'"` //指定用户ID
-	Accounts   []string          `gorm:"column:accounts;type:json;serializer:json;default:'[]'"` //账号
-	Scenes     []*UdAlarmScene   `gorm:"foreignKey:AlarmID;references:ID"`
+	ID         int64               `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
+	TenantCode dataType.TenantCode `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`     // 租户编码
+	ProjectID  dataType.ProjectID  `gorm:"column:project_id;type:bigint;default:0;NOT NULL"` // 项目ID(雪花ID)
+	Name       string              `gorm:"column:name;type:VARCHAR(100);NOT NULL"`
+	Desc       string              `gorm:"column:desc;type:VARCHAR(100);NOT NULL"`
+	Level      int64               `gorm:"column:level;type:SMALLINT;default:1"`                   // 告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
+	Status     int64               `gorm:"column:status;type:SMALLINT;default:1"`                  // 状态 1:启用,2:禁用
+	Notifies   []*UdAlarmNotify    `gorm:"column:notifies;type:json;serializer:json;default:'[]'"` // 短信通知模版编码
+	UserIDs    []int64             `gorm:"column:user_ids;type:json;serializer:json;default:'[]'"` //指定用户ID
+	Accounts   []string            `gorm:"column:accounts;type:json;serializer:json;default:'[]'"` //账号
+	Scenes     []*UdAlarmScene     `gorm:"foreignKey:AlarmID;references:ID"`
 	stores.Time
 }
 
@@ -39,13 +40,13 @@ func (m *UdAlarmInfo) TableName() string {
 
 // 告警配置与场景关联表
 type UdAlarmScene struct {
-	ID         int64             `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
-	TenantCode stores.TenantCode `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`     // 租户编码
-	ProjectID  stores.ProjectID  `gorm:"column:project_id;type:bigint;default:0;NOT NULL"` // 项目ID(雪花ID)
-	AlarmID    int64             `gorm:"column:alarm_id;uniqueIndex:ai_si;type:BIGINT;NOT NULL"`
-	SceneID    int64             `gorm:"column:scene_id;uniqueIndex:ai_si;type:BIGINT;NOT NULL"`
-	SceneInfo  *UdSceneInfo      `gorm:"foreignKey:ID;references:SceneID"`
-	AlarmInfo  *UdAlarmInfo      `gorm:"foreignKey:ID;references:AlarmID"`
+	ID         int64               `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
+	TenantCode dataType.TenantCode `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`     // 租户编码
+	ProjectID  dataType.ProjectID  `gorm:"column:project_id;type:bigint;default:0;NOT NULL"` // 项目ID(雪花ID)
+	AlarmID    int64               `gorm:"column:alarm_id;uniqueIndex:ai_si;type:BIGINT;NOT NULL"`
+	SceneID    int64               `gorm:"column:scene_id;uniqueIndex:ai_si;type:BIGINT;NOT NULL"`
+	SceneInfo  *UdSceneInfo        `gorm:"foreignKey:ID;references:SceneID"`
+	AlarmInfo  *UdAlarmInfo        `gorm:"foreignKey:ID;references:AlarmID"`
 	stores.Time
 }
 
@@ -56,8 +57,8 @@ func (m *UdAlarmScene) TableName() string {
 // 告警记录表 一个告警
 type UdAlarmRecord struct {
 	ID             int64                   `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
-	TenantCode     stores.TenantCode       `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`       // 租户编码
-	ProjectID      stores.ProjectID        `gorm:"column:project_id;type:bigint;default:0;NOT NULL"`   // 项目ID(雪花ID)
+	TenantCode     dataType.TenantCode     `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`       // 租户编码
+	ProjectID      dataType.ProjectID      `gorm:"column:project_id;type:bigint;default:0;NOT NULL"`   // 项目ID(雪花ID)
 	AlarmID        int64                   `gorm:"column:alarm_id;type:BIGINT;NOT NULL"`               //告警记录ID
 	AlarmName      string                  `gorm:"column:alarm_name;type:VARCHAR(100);NOT NULL"`       //告警名称
 	TriggerType    scene.TriggerType       `gorm:"column:trigger_type;type:VARCHAR(100);NOT NULL"`     //触发类型(设备触发1,其他2)

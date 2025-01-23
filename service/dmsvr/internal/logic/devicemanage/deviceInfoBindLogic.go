@@ -3,14 +3,14 @@ package devicemanagelogic
 import (
 	"context"
 	"database/sql"
+	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
-	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/errors"
-	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/things/share/devices"
 	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
@@ -100,19 +100,19 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 		int64(di.ProjectID) == uc.ProjectID { //如果已经绑定到自己名下
 		return &dm.Empty{}, err
 	}
-	di.TenantCode = stores.TenantCode(uc.TenantCode)
-	di.ProjectID = stores.ProjectID(uc.ProjectID)
+	di.TenantCode = dataType.TenantCode(uc.TenantCode)
+	di.ProjectID = dataType.ProjectID(uc.ProjectID)
 	di.UserID = projectI.AdminUserID
 	if in.AreaID == 0 {
 		in.AreaID = def.NotClassified
 	}
-	di.AreaID = stores.AreaID(in.AreaID)
+	di.AreaID = dataType.AreaID(in.AreaID)
 	ai, err := l.svcCtx.AreaCache.GetData(l.ctx, in.AreaID)
 	if err != nil {
 		return nil, err
 	}
 	oldAreaIDPath := di.AreaIDPath
-	di.AreaIDPath = stores.AreaIDPath(ai.AreaIDPath)
+	di.AreaIDPath = dataType.AreaIDPath(ai.AreaIDPath)
 
 	if !di.FirstBind.Valid { //没有绑定过需要绑定
 		di.FirstBind = sql.NullTime{Time: time.Now(), Valid: true}

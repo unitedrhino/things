@@ -2,8 +2,8 @@ package sdkLogRepo
 
 import (
 	"context"
-	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/things/share/devices"
 )
 
 func (d SDKLogRepo) InitProduct(ctx context.Context, productID string) error {

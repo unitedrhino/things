@@ -5,9 +5,9 @@ import (
 	"encoding/base64"
 	"fmt"
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
+	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
-	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/eventBus"
 	"gitee.com/unitedrhino/share/stores"
@@ -15,6 +15,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/product"
 	devicemsglogic "gitee.com/unitedrhino/things/service/dmsvr/internal/logic/devicemsg"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/things/share/devices"
 	"gorm.io/gorm"
 	"time"
 
@@ -94,7 +95,7 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceInfoUnbindReq) (*d
 	di.TenantCode = def.TenantCodeDefault
 	di.ProjectID = def.NotClassified
 	di.UserID = def.RootNode
-	di.AreaID = stores.AreaID(def.NotClassified)
+	di.AreaID = dataType.AreaID(def.NotClassified)
 	di.AreaIDPath = def.NotClassifiedPath
 	if di.FirstBind.Valid && di.FirstBind.Time.After(time.Now().AddDate(0, 0, -1)) { //绑定一天内的不算绑定时间
 		pc, err := l.svcCtx.ProductCache.GetData(l.ctx, di.ProductID)

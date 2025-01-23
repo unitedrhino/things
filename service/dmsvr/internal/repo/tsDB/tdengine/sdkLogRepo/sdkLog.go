@@ -1,16 +1,16 @@
 package sdkLogRepo
 
 import (
+	"fmt"
 	"gitee.com/unitedrhino/share/clients"
 	"gitee.com/unitedrhino/share/conf"
-	"gitee.com/unitedrhino/share/stores"
 	"github.com/zeromicro/go-zero/core/logx"
 	"os"
 )
 
 type SDKLogRepo struct {
 	t *clients.Td
-	stores.SDKLogStore
+	SDKLogStore
 }
 
 func NewSDKLogRepo(dataSource conf.TSDB) *SDKLogRepo {
@@ -20,4 +20,15 @@ func NewSDKLogRepo(dataSource conf.TSDB) *SDKLogRepo {
 		os.Exit(-1)
 	}
 	return &SDKLogRepo{t: td}
+}
+
+type SDKLogStore struct {
+}
+
+func (s *SDKLogStore) GetSDKLogStableName() string {
+	return fmt.Sprintf("`model_common_sdklog`")
+}
+
+func (s *SDKLogStore) GetSDKLogTableName(productID, deviceName string) string {
+	return fmt.Sprintf("`device_sdklog_%s_%s`", productID, deviceName)
 }

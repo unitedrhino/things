@@ -3,7 +3,6 @@ package svc
 import (
 	"context"
 	"gitee.com/unitedrhino/core/service/timed/timedjobsvr/client/timedmanage"
-	"gitee.com/unitedrhino/share/clients"
 	"gitee.com/unitedrhino/share/conf"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/eventBus"
@@ -18,6 +17,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/dmExport"
 	"gitee.com/unitedrhino/things/service/dmsvr/dmdirect"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/share/clients"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/zrpc"
 )

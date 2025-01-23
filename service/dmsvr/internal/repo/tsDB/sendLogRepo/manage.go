@@ -2,8 +2,8 @@ package sendLogRepo
 
 import (
 	"context"
-	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/things/share/devices"
 )
 
 func (s *SendLogRepo) InitProduct(ctx context.Context, productID string) (err error) {

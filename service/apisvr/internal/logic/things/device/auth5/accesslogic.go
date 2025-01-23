@@ -3,11 +3,11 @@ package auth5
 import (
 	"context"
 	"gitee.com/unitedrhino/share/ctxs"
-	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/logic/things/device"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/types"
 	"gitee.com/unitedrhino/things/service/dgsvr/pb/dg"
+	"gitee.com/unitedrhino/things/share/devices"
 	"github.com/maypok86/otter"
 	"time"
 

@@ -3,7 +3,7 @@ package deviceLog
 import (
 	"context"
 	"gitee.com/unitedrhino/share/def"
-	"gitee.com/unitedrhino/share/domain/application"
+	"gitee.com/unitedrhino/things/share/domain/application"
 	"time"
 )
 

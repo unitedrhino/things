@@ -3,11 +3,11 @@ package devicemanagelogic
 import (
 	"context"
 	"gitee.com/unitedrhino/share/ctxs"
-	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	commonschemalogic "gitee.com/unitedrhino/things/service/dmsvr/internal/logic/schemamanage"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/things/share/devices"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"

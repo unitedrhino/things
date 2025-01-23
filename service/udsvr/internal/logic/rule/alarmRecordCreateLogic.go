@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"gitee.com/unitedrhino/share/def"
-	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/eventBus"
 	"gitee.com/unitedrhino/share/utils"
@@ -13,6 +12,7 @@ import (
 	"gitee.com/unitedrhino/things/service/udsvr/internal/domain/alarm"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/domain/scene"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/things/share/devices"
 	"time"
 
 	"gitee.com/unitedrhino/things/service/udsvr/internal/svc"

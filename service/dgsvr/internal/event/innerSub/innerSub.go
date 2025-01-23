@@ -3,13 +3,13 @@ package innerSub
 import (
 	"context"
 	"fmt"
-	"gitee.com/unitedrhino/share/devices"
-	"gitee.com/unitedrhino/share/domain/deviceMsg"
-	"gitee.com/unitedrhino/share/domain/deviceMsg/msgGateway"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dgsvr/internal/domain/custom"
 	"gitee.com/unitedrhino/things/service/dgsvr/internal/svc"
+	"gitee.com/unitedrhino/things/share/devices"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgGateway"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

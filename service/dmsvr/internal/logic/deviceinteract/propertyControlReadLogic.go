@@ -3,12 +3,12 @@ package deviceinteractlogic
 import (
 	"context"
 	"gitee.com/unitedrhino/share/def"
-	"gitee.com/unitedrhino/share/devices"
-	"gitee.com/unitedrhino/share/domain/deviceMsg"
-	"gitee.com/unitedrhino/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/cache"
+	"gitee.com/unitedrhino/things/share/devices"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"

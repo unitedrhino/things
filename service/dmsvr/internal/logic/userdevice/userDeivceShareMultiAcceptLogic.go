@@ -3,9 +3,9 @@ package userdevicelogic
 import (
 	"context"
 	"fmt"
+	"gitee.com/unitedrhino/core/share/dataType"
 
 	"gitee.com/unitedrhino/share/ctxs"
-	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/userShared"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
@@ -52,7 +52,7 @@ func (l *UserDeivceShareMultiAcceptLogic) UserDeivceShareMultiAccept(in *dm.User
 		}
 		po := relationDB.DmUserDeviceShare{
 			ProjectID:         multiDevices.ProjectID,
-			TenantCode:        stores.TenantCode(tenantCode),
+			TenantCode:        dataType.TenantCode(tenantCode),
 			SharedUserID:      in.SharedUserID,
 			SharedUserAccount: in.SharedUserAccount,
 			ProductID:         v.ProductID,

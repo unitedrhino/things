@@ -5,14 +5,14 @@ import (
 	"encoding/json"
 
 	"gitee.com/unitedrhino/share/caches"
-	"gitee.com/unitedrhino/share/devices"
-	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/eventBus"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/devicemanage"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/productmanage"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/userdevice"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/userShared"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/share/devices"
+	"gitee.com/unitedrhino/things/share/domain/schema"
 )
 
 type ProductCacheT = *caches.Cache[dm.ProductInfo, string]

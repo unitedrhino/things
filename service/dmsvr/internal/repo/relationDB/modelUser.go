@@ -2,17 +2,18 @@ package relationDB
 
 import (
 	"database/sql"
+	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/stores"
 )
 
 type DmUserDeviceCollect struct {
-	ID         int64             `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	TenantCode stores.TenantCode `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"`                              // 租户编码
-	ProjectID  stores.ProjectID  `gorm:"column:project_id;type:bigint;default:0;NOT NULL"`                                // 项目ID(雪花ID)
-	UserID     int64             `gorm:"column:user_id;type:BIGINT;uniqueIndex:product_id_deviceName;NOT NULL"`           // 问题提出的用户
-	ProductID  string            `gorm:"column:product_id;type:varchar(100);uniqueIndex:product_id_deviceName;NOT NULL"`  // 产品id
-	DeviceName string            `gorm:"column:device_name;uniqueIndex:product_id_deviceName;type:varchar(100);NOT NULL"` // 设备名称
+	ID         int64               `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	TenantCode dataType.TenantCode `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"`                              // 租户编码
+	ProjectID  dataType.ProjectID  `gorm:"column:project_id;type:bigint;default:0;NOT NULL"`                                // 项目ID(雪花ID)
+	UserID     int64               `gorm:"column:user_id;type:BIGINT;uniqueIndex:product_id_deviceName;NOT NULL"`           // 问题提出的用户
+	ProductID  string              `gorm:"column:product_id;type:varchar(100);uniqueIndex:product_id_deviceName;NOT NULL"`  // 产品id
+	DeviceName string              `gorm:"column:device_name;uniqueIndex:product_id_deviceName;type:varchar(100);NOT NULL"` // 设备名称
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:product_id_deviceName"`
 }
@@ -27,10 +28,10 @@ const (
 )
 
 type DmUserDeviceShare struct {
-	ID                int64             `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	TenantCode        stores.TenantCode `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"`                           // 租户编码
-	SharedUserID      int64             `gorm:"column:shared_user_id;type:BIGINT;uniqueIndex:product_id_deviceName;NOT NULL"` // 分享对象的用户ID
-	SharedUserAccount string            `gorm:"column:shared_user_account;type:VARCHAR(100);"`                                // 分享对象的用户账号
+	ID                int64               `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	TenantCode        dataType.TenantCode `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"`                           // 租户编码
+	SharedUserID      int64               `gorm:"column:shared_user_id;type:BIGINT;uniqueIndex:product_id_deviceName;NOT NULL"` // 分享对象的用户ID
+	SharedUserAccount string              `gorm:"column:shared_user_account;type:VARCHAR(100);"`                                // 分享对象的用户账号
 
 	ProjectID  int64                 `gorm:"column:project_id;type:bigint;default:0;NOT NULL"`                                // 分享的设备所属的项目
 	ProductID  string                `gorm:"column:product_id;type:varchar(100);uniqueIndex:product_id_deviceName;NOT NULL"`  // 产品id

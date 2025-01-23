@@ -3,8 +3,8 @@ package subInner
 import (
 	"context"
 	"gitee.com/unitedrhino/share/conf"
-	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/things/share/devices"
 )
 
 type (

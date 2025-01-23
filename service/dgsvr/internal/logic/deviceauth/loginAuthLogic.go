@@ -7,12 +7,12 @@ import (
 	"crypto/x509"
 	"fmt"
 	"gitee.com/unitedrhino/share/ctxs"
-	"gitee.com/unitedrhino/share/devices"
-	"gitee.com/unitedrhino/share/domain/deviceAuth"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dgsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dgsvr/pb/dg"
+	"gitee.com/unitedrhino/things/share/devices"
+	"gitee.com/unitedrhino/things/share/domain/deviceAuth"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

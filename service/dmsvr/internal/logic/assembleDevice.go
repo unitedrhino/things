@@ -3,13 +3,13 @@ package logic
 import (
 	"context"
 	"gitee.com/unitedrhino/share/def"
-	"gitee.com/unitedrhino/share/devices"
-	"gitee.com/unitedrhino/share/domain/deviceMsg/msgGateway"
 	"gitee.com/unitedrhino/share/events"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/share/devices"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgGateway"
 	"github.com/golang/protobuf/ptypes/wrappers"
 )
 

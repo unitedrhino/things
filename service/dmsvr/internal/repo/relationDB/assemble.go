@@ -3,9 +3,9 @@ package relationDB
 import (
 	"encoding/json"
 	"gitee.com/unitedrhino/share/def"
-	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/shadow"
+	"gitee.com/unitedrhino/things/share/domain/schema"
 )
 
 func ToPropertyPo(in *schema.Property) DmSchemaCore {

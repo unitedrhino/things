@@ -3,10 +3,10 @@ package cache
 import (
 	"context"
 	"fmt"
-	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/productCustom"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/things/share/devices"
 	"github.com/dgraph-io/ristretto"
 	"github.com/dop251/goja"
 	"sync"

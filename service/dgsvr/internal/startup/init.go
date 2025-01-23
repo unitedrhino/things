@@ -5,9 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"gitee.com/unitedrhino/core/service/timed/timedjobsvr/client/timedmanage"
-	"gitee.com/unitedrhino/share/clients"
 	"gitee.com/unitedrhino/share/def"
-	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/eventBus"
 	"gitee.com/unitedrhino/share/events"
@@ -20,6 +18,8 @@ import (
 	"gitee.com/unitedrhino/things/service/dgsvr/internal/repo/event/subscribe/subDev"
 	"gitee.com/unitedrhino/things/service/dgsvr/internal/repo/event/subscribe/subInner"
 	"gitee.com/unitedrhino/things/service/dgsvr/internal/svc"
+	"gitee.com/unitedrhino/things/share/clients"
+	"gitee.com/unitedrhino/things/share/devices"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )

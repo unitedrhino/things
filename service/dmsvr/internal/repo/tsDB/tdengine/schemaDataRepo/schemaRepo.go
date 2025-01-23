@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"gitee.com/unitedrhino/share/clients"
 	"gitee.com/unitedrhino/share/conf"
-	"gitee.com/unitedrhino/share/domain/deviceMsg/msgThing"
-	schema "gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/errors"
-	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
+	schema "gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 	"os"
@@ -49,7 +49,7 @@ func (d *DeviceDataRepo) Init(ctx context.Context) error {
 	genDeviceStable := func(tb string, def schema.Define) error {
 		sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp,`param` %s)"+
 			" TAGS (`product_id` BINARY(50),`device_name` BINARY(50),`"+PropertyType+"` BINARY(50));",
-			tb, stores.GetTdType(def))
+			tb, tdengine.GetTdType(def))
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
 			return errors.Database.AddDetail(err)
 		}

@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"gitee.com/unitedrhino/share/devices"
-	"gitee.com/unitedrhino/share/domain/deviceMsg"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/share/devices"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 )
 

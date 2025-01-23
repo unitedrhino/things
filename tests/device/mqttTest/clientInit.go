@@ -3,8 +3,8 @@ package mqttTest
 import (
 	"crypto/tls"
 	"fmt"
-	"gitee.com/unitedrhino/share/domain/deviceAuth"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/share/domain/deviceAuth"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/zeromicro/go-zero/core/logx"
 	"net/url"

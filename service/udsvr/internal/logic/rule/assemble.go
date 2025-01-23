@@ -3,14 +3,14 @@ package rulelogic
 import (
 	"context"
 	"database/sql"
-	"gitee.com/unitedrhino/share/devices"
+	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/oss/common"
-	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/domain/scene"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/udsvr/pb/ud"
+	"gitee.com/unitedrhino/things/share/devices"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
@@ -30,8 +30,8 @@ func ToSceneInfoPo(in *scene.Info) *relationDB.UdSceneInfo {
 	return &relationDB.UdSceneInfo{
 		ID:        in.ID,
 		Type:      in.Type,
-		ProjectID: stores.ProjectID(in.ProjectID),
-		AreaID:    stores.AreaID(in.AreaID),
+		ProjectID: dataType.ProjectID(in.ProjectID),
+		AreaID:    dataType.AreaID(in.AreaID),
 		//AreaIDs: in.AreaIDs,
 		FlowPath:    in.FlowPath,
 		Name:        in.Name,
@@ -84,8 +84,8 @@ func ToSceneTriggerPo(si *scene.Info, in *scene.Trigger) *relationDB.UdSceneIfTr
 			Valid: true,
 		},
 		Order:     in.Order,
-		ProjectID: stores.ProjectID(si.ProjectID),
-		AreaID:    stores.AreaID(si.AreaID),
+		ProjectID: dataType.ProjectID(si.ProjectID),
+		AreaID:    dataType.AreaID(si.AreaID),
 		Device:    ToSceneTriggerDevicePo(in.Device),
 		Timer:     ToSceneTriggerTimerPo(si, in.Timer),
 		Weather:   utils.Copy2[relationDB.UdSceneTriggerWeather](in.Weather),

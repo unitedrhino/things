@@ -3,11 +3,11 @@ package subDev
 import (
 	"context"
 	"encoding/json"
-	"gitee.com/unitedrhino/share/clients"
 	"gitee.com/unitedrhino/share/conf"
 	"gitee.com/unitedrhino/share/ctxs"
-	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/share/clients"
+	"gitee.com/unitedrhino/things/share/devices"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/timex"

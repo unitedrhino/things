@@ -3,10 +3,10 @@ package schemaDataRepo
 import (
 	"context"
 	"gitee.com/unitedrhino/share/conf"
-	"gitee.com/unitedrhino/share/domain/deviceMsg/msgThing"
-	schema "gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine/schemaDataRepo"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
+	schema "gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 )
 

@@ -12,9 +12,6 @@ import (
 	"gitee.com/unitedrhino/share/caches"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
-	"gitee.com/unitedrhino/share/devices"
-	"gitee.com/unitedrhino/share/domain/application"
-	"gitee.com/unitedrhino/share/domain/deviceMsg"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/eventBus"
 	"gitee.com/unitedrhino/share/events/topics"
@@ -32,6 +29,8 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/share/devices"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -299,7 +298,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 	}
 
 	err := svcCtx.FastEvent.QueueSubscribe(eventBus.CoreUserDelete, func(ctx context.Context, t time.Time, body []byte) error {
-		var value application.IDs
+		var value def.IDs
 		err := json.Unmarshal(body, &value)
 		if err != nil {
 			return err
@@ -348,7 +347,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 	})
 	logx.Must(err)
 	err = svcCtx.FastEvent.QueueSubscribe(eventBus.CoreAreaInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
-		var value application.IDs
+		var value def.IDs
 		err := json.Unmarshal(body, &value)
 		if err != nil {
 			return err

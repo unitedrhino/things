@@ -2,9 +2,9 @@ package schemaDataRepo
 
 import (
 	"encoding/json"
-	"gitee.com/unitedrhino/share/domain/deviceMsg/msgThing"
-	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
+	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/spf13/cast"
 )
 

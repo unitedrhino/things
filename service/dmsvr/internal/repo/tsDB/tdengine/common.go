@@ -4,7 +4,8 @@ import (
 	"context"
 	"fmt"
 	"gitee.com/unitedrhino/share/clients"
-	"gitee.com/unitedrhino/share/devices"
+	"gitee.com/unitedrhino/things/share/devices"
+	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
 )
@@ -62,4 +63,27 @@ func AlterTags(ctx context.Context, t *clients.Td, tags []Tag) error {
 
 	}
 	return nil
+}
+
+func GetTdType(define schema.Define) string {
+	switch define.Type {
+	case schema.DataTypeBool:
+		return "BOOL"
+	case schema.DataTypeInt:
+		return "BIGINT"
+	case schema.DataTypeString:
+		return "BINARY(5000)"
+	case schema.DataTypeStruct:
+		return "BINARY(5000)"
+	case schema.DataTypeFloat:
+		return "DOUBLE"
+	case schema.DataTypeTimestamp:
+		return "TIMESTAMP"
+	case schema.DataTypeArray:
+		return "BINARY(5000)"
+	case schema.DataTypeEnum:
+		return "SMALLINT"
+	default: //走到这里说明前面没有进行校验需要检查是否是前面有问题
+		panic(fmt.Sprintf("%v not support", define.Type))
+	}
 }

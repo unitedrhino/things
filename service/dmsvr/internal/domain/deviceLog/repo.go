@@ -3,7 +3,7 @@ package deviceLog
 
 import (
 	"context"
-	"gitee.com/unitedrhino/share/devices"
+	"gitee.com/unitedrhino/things/share/devices"
 )
 
 type MsgType = string

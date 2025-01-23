@@ -1,9 +1,9 @@
 package scene
 
 import (
-	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/spf13/cast"
 	"golang.org/x/exp/constraints"
 	"strings"

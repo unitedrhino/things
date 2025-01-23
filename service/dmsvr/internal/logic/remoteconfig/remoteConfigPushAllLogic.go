@@ -3,15 +3,15 @@ package remoteconfiglogic
 import (
 	"context"
 	"encoding/json"
-	"gitee.com/unitedrhino/share/devices"
-	"gitee.com/unitedrhino/share/domain/deviceMsg"
-	"gitee.com/unitedrhino/share/domain/deviceMsg/msgRemoteConfig"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	devicemanage "gitee.com/unitedrhino/things/service/dmsvr/internal/server/devicemanage"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/share/devices"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgRemoteConfig"
 	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"

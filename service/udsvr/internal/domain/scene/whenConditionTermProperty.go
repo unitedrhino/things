@@ -3,12 +3,12 @@ package scene
 import (
 	"context"
 	"gitee.com/unitedrhino/share/def"
-	"gitee.com/unitedrhino/share/devices"
-	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	devicemsg "gitee.com/unitedrhino/things/service/dmsvr/client/devicemsg"
 	"gitee.com/unitedrhino/things/service/dmsvr/dmExport"
+	"gitee.com/unitedrhino/things/share/devices"
+	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
 )

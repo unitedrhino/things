@@ -2,10 +2,10 @@ package pubDev
 
 import (
 	"gitee.com/unitedrhino/share/ctxs"
-	"gitee.com/unitedrhino/share/domain/deviceMsg"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/events"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"

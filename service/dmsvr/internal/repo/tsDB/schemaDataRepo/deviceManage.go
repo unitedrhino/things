@@ -3,8 +3,8 @@ package schemaDataRepo
 import (
 	"context"
 	"fmt"
-	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/things/share/domain/schema"
 )
 
 func (d *DeviceDataRepo) InitDevice(ctx context.Context,

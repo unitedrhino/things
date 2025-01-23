@@ -4,8 +4,8 @@ import (
 	//"gitee.com/unitedrhino/things/service/dgsvr/internal/domain"
 	"context"
 	"gitee.com/unitedrhino/share/conf"
-	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/things/share/devices"
 )
 
 type ConnType int8

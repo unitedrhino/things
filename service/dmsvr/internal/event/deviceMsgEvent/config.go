@@ -2,11 +2,11 @@ package deviceMsgEvent
 
 import (
 	"context"
-	"gitee.com/unitedrhino/share/domain/deviceMsg"
 	"gitee.com/unitedrhino/share/utils"
 	remoteconfiglogic "gitee.com/unitedrhino/things/service/dmsvr/internal/logic/remoteconfig"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

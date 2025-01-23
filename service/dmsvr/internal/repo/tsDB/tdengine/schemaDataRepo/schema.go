@@ -2,8 +2,8 @@ package schemaDataRepo
 
 import (
 	"fmt"
-	"gitee.com/unitedrhino/share/domain/schema"
-	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine"
+	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/spf13/cast"
 	"strings"
 )
@@ -14,7 +14,7 @@ type SchemaStore struct {
 func (S *SchemaStore) GetSpecsCreateColumn(s schema.Specs) string {
 	var column []string
 	for _, v := range s {
-		column = append(column, fmt.Sprintf("`%s` %s", v.Identifier, stores.GetTdType(v.DataType)))
+		column = append(column, fmt.Sprintf("`%s` %s", v.Identifier, tdengine.GetTdType(v.DataType)))
 	}
 	return strings.Join(column, ",")
 }

@@ -2,9 +2,9 @@ package scene
 
 import (
 	"context"
-	"gitee.com/unitedrhino/share/domain/schema"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/observerly/dusk/pkg/dusk"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"

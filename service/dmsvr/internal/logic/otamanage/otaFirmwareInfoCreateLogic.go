@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
-	"gitee.com/unitedrhino/share/domain/deviceMsg/msgOta"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/oss"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgOta"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"

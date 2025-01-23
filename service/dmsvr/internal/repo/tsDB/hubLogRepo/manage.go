@@ -2,8 +2,8 @@ package hubLogRepo
 
 import (
 	"context"
-	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/things/share/devices"
 )
 
 func (h *HubLogRepo) InitProduct(ctx context.Context, productID string) (err error) {

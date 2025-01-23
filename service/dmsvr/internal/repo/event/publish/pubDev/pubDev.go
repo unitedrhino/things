@@ -2,8 +2,8 @@ package pubDev
 
 import (
 	"context"
-	"gitee.com/unitedrhino/share/domain/deviceMsg"
 	"gitee.com/unitedrhino/share/eventBus"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"time"
 )
 

@@ -3,15 +3,16 @@ package devicemanagelogic
 import (
 	"context"
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
+	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
-	"gitee.com/unitedrhino/share/devices"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/eventBus"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/things/share/devices"
 	"gorm.io/gorm"
 	"time"
 
@@ -96,11 +97,11 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 
 	}
 	var (
-		ProjectID  stores.ProjectID
+		ProjectID  dataType.ProjectID
 		pi         *sys.ProjectInfo
 		err        error
-		AreaID     stores.AreaID = def.NotClassified
-		AreaIDPath string        = def.NotClassifiedPath
+		AreaID     dataType.AreaID = def.NotClassified
+		AreaIDPath string          = def.NotClassifiedPath
 		UserID     int64
 	)
 
@@ -125,14 +126,14 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 		if len(dp.List) == 0 {
 			return nil, errors.NotFind.AddMsg("用户未找到")
 		}
-		ProjectID = stores.ProjectID(dp.List[0].ProjectID)
+		ProjectID = dataType.ProjectID(dp.List[0].ProjectID)
 		pi, err = l.svcCtx.ProjectCache.GetData(l.ctx, dp.List[0].ProjectID)
 		if err != nil {
 			return nil, err
 		}
 		UserID = in.UserID
 	case DeviceTransferToProject:
-		ProjectID = stores.ProjectID(in.ProjectID)
+		ProjectID = dataType.ProjectID(in.ProjectID)
 		if in.AreaID != 0 {
 			ai, err := l.svcCtx.AreaCache.GetData(l.ctx, in.AreaID)
 			if err != nil {
@@ -141,7 +142,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 			if ai.ProjectID != in.ProjectID {
 				return nil, errors.Parameter.AddMsg("项目不对")
 			}
-			AreaID = stores.AreaID(ai.AreaID)
+			AreaID = dataType.AreaID(ai.AreaID)
 			AreaIDPath = ai.AreaIDPath
 			changeAreaIDPaths[AreaIDPath] = struct{}{}
 			projectIDSet[ai.ProjectID] = struct{}{}

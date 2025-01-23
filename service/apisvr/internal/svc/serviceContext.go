@@ -1,7 +1,6 @@
 package svc
 
 import (
-	"gitee.com/unitedrhino/core/service/apisvr/exportMiddleware"
 	"gitee.com/unitedrhino/core/service/syssvr/client/areamanage"
 	"gitee.com/unitedrhino/core/service/syssvr/client/dictmanage"
 	"gitee.com/unitedrhino/core/service/syssvr/client/log"
@@ -9,6 +8,7 @@ import (
 	tenant "gitee.com/unitedrhino/core/service/syssvr/client/tenantmanage"
 	user "gitee.com/unitedrhino/core/service/syssvr/client/usermanage"
 	"gitee.com/unitedrhino/core/service/syssvr/sysExport"
+	"gitee.com/unitedrhino/core/share/middlewares"
 	"gitee.com/unitedrhino/share/caches"
 	"gitee.com/unitedrhino/share/conf"
 	"gitee.com/unitedrhino/share/ctxs"
@@ -165,7 +165,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	logx.Must(err)
 	return &ServiceContext{
 		Config:         c,
-		CheckTokenWare: exportMiddleware.NewCheckTokenWareMiddleware(ur, ro, tm, lo).Handle,
+		CheckTokenWare: middlewares.NewCheckTokenWareMiddleware(ur, ro, tm, lo).Handle,
 		InitCtxsWare:   ctxs.InitMiddleware,
 		OssClient:      ossClient,
 		OtaM:           otaM,
