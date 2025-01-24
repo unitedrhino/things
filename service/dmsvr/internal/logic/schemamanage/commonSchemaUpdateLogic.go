@@ -74,6 +74,9 @@ func (l *CommonSchemaUpdateLogic) ruleCheck(in *dm.CommonSchemaUpdateReq) (*rela
 	if in.Info.IsHistory == 0 {
 		newPo.IsHistory = po.IsHistory
 	}
+	if in.Info.IsPassword == 0 {
+		newPo.IsPassword = po.IsPassword
+	}
 	if in.Info.ExtendConfig == "" {
 		newPo.ExtendConfig = po.ExtendConfig
 		if newPo.ExtendConfig == "" {

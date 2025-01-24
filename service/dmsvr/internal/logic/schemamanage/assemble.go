@@ -23,7 +23,8 @@ func ToCommonSchemaRpc(info *relationDB.DmCommonSchema) *dm.CommonSchemaInfo {
 		ControlMode:       info.ControlMode,
 		UserPerm:          info.UserPerm,
 		//IsShareAuthPerm:   info.IsShareAuthPerm,
-		IsHistory: info.IsHistory,
+		IsPassword: info.IsPassword,
+		IsHistory:  info.IsHistory,
 	}
 	return db
 }
@@ -43,6 +44,7 @@ func ToCommonSchemaPo(info *dm.CommonSchemaInfo) *relationDB.DmCommonSchema {
 			ControlMode:       info.ControlMode,
 			UserPerm:          info.UserPerm,
 			IsHistory:         info.IsHistory,
+			IsPassword:        info.IsPassword,
 			Order:             info.Order,
 			Affordance:        info.Affordance.GetValue(),
 		},
