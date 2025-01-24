@@ -70,6 +70,7 @@ func ToProductSchemaRpc(info *relationDB.DmSchemaInfo) *dm.ProductSchemaInfo {
 		ControlMode:       info.ControlMode,
 		UserPerm:          info.UserPerm,
 		IsHistory:         info.IsHistory,
+		IsPassword:        info.IsPassword,
 		Order:             info.Order,
 		Affordance:        utils.ToRpcNullString(&info.Affordance),
 	}
