@@ -88,7 +88,9 @@ func (l *ProductSchemaUpdateLogic) ruleCheck(in *dm.ProductSchemaUpdateReq) (*re
 	if in.Info.Order != 0 {
 		po.Order = newPo.Order
 	}
-
+	if in.Info.IsPassword != 0 {
+		po.IsPassword = newPo.IsPassword
+	}
 	if in.Info.ExtendConfig != "" {
 		po.ExtendConfig = newPo.ExtendConfig
 	}

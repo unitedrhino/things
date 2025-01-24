@@ -60,6 +60,7 @@ func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*re
 		po.ControlMode = cs.ControlMode
 		po.UserPerm = cs.UserPerm
 		po.IsHistory = cs.IsHistory
+		po.IsPassword = cs.IsPassword
 	}
 	if po.Name == "" {
 		if cs == nil {
@@ -88,6 +89,9 @@ func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*re
 	}
 	if po.Order == 0 && cs != nil {
 		po.Order = cs.Order
+	}
+	if po.IsPassword == 0 && cs != nil {
+		po.IsPassword = cs.IsPassword
 	}
 	if po.ExtendConfig == "" && cs != nil {
 		po.ExtendConfig = cs.ExtendConfig
