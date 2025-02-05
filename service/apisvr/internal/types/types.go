@@ -319,8 +319,8 @@ type DeviceInfo struct {
 	Profiles           map[string]string                  `json:"profiles,optional,omitempty"`
 	Owner              *UserCore                          `json:"owner,optional,omitempty"`
 	RatedPower         int64                              `json:"ratedPower,optional,omitempty"`
-	NetType            int64                              `json:"netType,optional,range=[0:8],omitempty"` //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
-	NeedConfirmVersion string                             `json:"needConfirmVersion,optional,omitempty"`  //待确认升级的版本
+	NetType            int64                              `json:"netType,optional,range=[0:10],omitempty"` //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网,9:4G+BLE
+	NeedConfirmVersion string                             `json:"needConfirmVersion,optional,omitempty"`   //待确认升级的版本
 	UserID             int64                              `json:"userID,string,optional,omitempty"`
 	LastIp             string                             `json:"lastIp,optional,omitempty"` //最后登录的ip地址
 	Desc               *string                            `json:"desc,optional,omitempty"`
@@ -1404,7 +1404,7 @@ type ProductInfo struct {
 	DeviceType         int64                       `json:"deviceType,optional,range=[0:4]"`       //设备类型:1:直连设备,2:网关,3:子设备,4:监控设备
 	DeviceSchemaMode   int64                       `json:"deviceSchemaMode,optional,range=[0:4]"` // 设备物模型模式:1:手动创建,2:设备自动创建 3: 设备自动创建及上报无定义自动创建 4: 设备自动创建及上报无定义自动创建(数字类型只使用浮点)
 	CategoryID         int64                       `json:"categoryID,optional"`                   //产品品类
-	NetType            int64                       `json:"netType,optional,range=[0:10]"`         //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
+	NetType            int64                       `json:"netType,optional,range=[0:10]"`         //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网,9:4G+BLE
 	ProtocolCode       string                      `json:"protocolCode,optional"`                 //协议code,默认iThings  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
 	AutoRegister       int64                       `json:"autoRegister,optional,range=[0:3]"`     //动态注册:1:关闭,2:打开,3:打开并自动创建设备
 	Secret             string                      `json:"secret,optional"`                       //动态注册产品秘钥 只读
@@ -1438,7 +1438,7 @@ type ProductInfoIndexReq struct {
 	SceneMode    string    `json:"sceneMode,optional"`              //场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
 	Status       int64     `json:"status,optional"`                 //产品状态 1:启用 2:禁用 3:开发中
 	Statuses     []int64   `json:"statuses,optional"`               //产品状态 1:启用 2:禁用 3:开发中
-	NetType      int64     `json:"netType,optional,range=[0:8]"`    //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
+	NetType      int64     `json:"netType,optional,range=[0:10]"`   //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网,9:4G+BLE
 	ProjectID    int64     `json:"projectID,string,optional"`       //项目id,只获取项目下有设备的
 	AreaID       int64     `json:"areaID,string,optional"`          //过滤区域下有设备的产品
 	AreaIDPath   string    `json:"areaIDPath,optional"`             //过滤区域id路径下有设备的产品
