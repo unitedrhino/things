@@ -7629,8 +7629,8 @@
         "netType": {
           "type": "integer",
           "format": "int64",
-          "description": "通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网",
-          "maximum": 8
+          "description": "通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网,9:4G+BLE",
+          "maximum": 10
         },
         "needConfirmVersion": {
           "type": "string",
@@ -11967,7 +11967,7 @@
         "netType": {
           "type": "integer",
           "format": "int64",
-          "description": "通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网",
+          "description": "通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网,9:4G+BLE",
           "maximum": 10
         },
         "protocolCode": {
@@ -12126,8 +12126,8 @@
         "netType": {
           "type": "integer",
           "format": "int64",
-          "description": "通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网",
-          "maximum": 8
+          "description": "通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网,9:4G+BLE",
+          "maximum": 10
         },
         "projectID": {
           "type": "string",
