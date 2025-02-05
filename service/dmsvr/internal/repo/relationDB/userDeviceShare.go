@@ -42,6 +42,9 @@ func (p UserDeviceShareRepo) fmtFilter(ctx context.Context, f UserDeviceShareFil
 	if f.SharedUserID != 0 {
 		db = db.Where("shared_user_id = ?", f.SharedUserID)
 	}
+	if len(f.SharedUserIDs) > 0 {
+		db = db.Where("shared_user_id in ?", f.SharedUserIDs)
+	}
 	if len(f.IDs) != 0 {
 		db = db.Where("id in ?", f.IDs)
 	}
