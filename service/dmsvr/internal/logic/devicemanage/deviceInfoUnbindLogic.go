@@ -70,7 +70,7 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceInfoUnbindReq) (*d
 				return nil, errors.Permissions
 			}
 			var secert string
-			ret, err := devicemsglogic.NewPropertyLogLatestIndexLogic(l.ctx, l.svcCtx).PropertyLogLatestIndex(&dm.PropertyLogLatestIndexReq{
+			ret, err := devicemsglogic.NewPropertyLogLatestIndexLogic(ctxs.WithRoot(l.ctx), l.svcCtx).PropertyLogLatestIndex(&dm.PropertyLogLatestIndexReq{
 				ProductID:  di.ProductID,
 				DeviceName: di.DeviceName,
 				DataIDs:    []string{in.SecretType},
@@ -79,7 +79,8 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceInfoUnbindReq) (*d
 				return nil, err
 			}
 			secert = ret.List[0].Value
-			sig := getSignature(in.SignType, secert, fmt.Sprintf("deviceName=%s&nonce=%d&productID=%s&timestamp=%d", in.DeviceName, in.Nonce, in.ProductID, in.Timestamp))
+			sig := getSignature(in.SignType, secert, fmt.Sprintf("deviceName=%s&nonce=%d&productID=%s&timestamp=%d",
+				in.DeviceName, in.Nonce, in.ProductID, in.Timestamp))
 			if sig != in.Signature {
 				return nil, errors.Parameter.AddMsg("无效签名")
 			}
