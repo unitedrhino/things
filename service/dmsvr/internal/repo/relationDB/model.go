@@ -10,6 +10,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/productCustom"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/protocol"
 	"gitee.com/unitedrhino/things/share/devices"
+	"gitee.com/unitedrhino/things/share/domain/protocols"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"
@@ -155,7 +156,8 @@ type DmProductInfo struct {
 	DeviceType       int64                 `gorm:"column:device_type;index;type:smallint;default:1"`            // 设备类型:1:设备,2:网关,3:子设备
 	CategoryID       int64                 `gorm:"column:category_id;type:integer;default:2"`                   // 产品品类 2:未分类
 	NetType          int64                 `gorm:"column:net_type;type:smallint;default:1"`                     // 通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
-	ProtocolCode     string                `gorm:"column:protocol_code;type:varchar(100);default:iThings"`      // 协议code,默认iThings  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
+	ProtocolCode     string                `gorm:"column:protocol_code;type:varchar(100);default:'urMqtt'"`     // 协议code,默认urMqtt  urMqtt,urHttp,wumei,aliyun,huaweiyun,tuya
+	SubProtocolCode  string                `gorm:"column:sub_protocol_code;type:varchar(100);default:''"`       //子协议,主协议和子协议传输类型必须不相同, 设备控制下发只会发送给主协议, 当设备是音视频设备但是控制协议需要单独走的时候就可以把主协议定义为普通协议,子协议定义为音视频协议,这样就能实现音视频走音视频协议,控制走子协议
 	AutoRegister     int64                 `gorm:"column:auto_register;type:smallint;default:1"`                // 动态注册:1:关闭,2:打开,3:打开并自动创建设备
 	DeviceSchemaMode int64                 `gorm:"column:device_schema_mode;type:smallint;default:1"`           // 设备物模型模式:1:关闭,2:设备自动创建3: 设备自动创建及上报无定义自动创建
 	BindLevel        int64                 `gorm:"column:bind_level;type:smallint;default:1"`                   // 绑定级别: 1:强绑定(默认,只有用户解绑之后才能绑定) 2:中绑定(可以通过token强制绑定设备) 3:弱绑定(app可以内部解绑被绑定的设备)
@@ -225,9 +227,10 @@ func (m *DmProductCategorySchema) TableName() string {
 type DmProtocolInfo struct {
 	ID            int64                 `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	Name          string                `gorm:"column:name;uniqueIndex:pn;type:varchar(100);NOT NULL"`                // 协议名称
-	Code          string                `gorm:"column:code;uniqueIndex:pc;type:varchar(100);default:iThings"`         // iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
+	Code          string                `gorm:"column:code;uniqueIndex:pc;type:varchar(100);NOT NULL"`                // iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
+	Type          protocols.Type        `gorm:"column:type;type:varchar(100);default:normal"`                         //协议类型
 	TransProtocol string                `gorm:"column:trans_protocol;type:varchar(100);default:mqtt"`                 // 传输协议: mqtt,tcp,udp
-	Desc          string                `gorm:"column:desc;type:varchar(200)"`                                        // 描述
+	Desc          string                `gorm:"column:desc;type:varchar(2000)"`                                       // 描述
 	ConfigFields  protocol.ConfigFields `gorm:"column:config_fields;type:json;serializer:json;NOT NULL;default:'[]'"` // 需要配置的字段列表,没有可以不传
 	ConfigInfos   protocol.ConfigInfos  `gorm:"column:config_infos;type:json;serializer:json;NOT NULL;default:'[]'"`  // 配置列表
 	Endpoints     []string              `gorm:"column:endpoints;type:json;serializer:json;NOT NULL;default:'[]'"`     // 协议端点,如果填写了优先使用该字段

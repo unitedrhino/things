@@ -2,6 +2,7 @@ package relationDB
 
 import (
 	"context"
+	"fmt"
 	"gitee.com/unitedrhino/share/stores"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -27,6 +28,7 @@ type ProtocolInfoFilter struct {
 	Name          string
 	Code          string //  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
 	TransProtocol string // 传输协议: mqtt,tcp,udp
+	Type          string
 	NotCodes      []string
 }
 
@@ -42,6 +44,9 @@ func (p ProtocolInfoRepo) fmtFilter(ctx context.Context, f ProtocolInfoFilter) *
 		db = db.Where("code = ?", f.Code)
 	} else if f.ID != 0 {
 		db = db.Where("id = ?", f.ID)
+	}
+	if f.Type != "" {
+		db = db.Where(fmt.Sprintf("%s = ?", stores.Col("type")), f.Type)
 	}
 	if f.TransProtocol != "" {
 		db = db.Where("trans_protocol = ?", f.TransProtocol)

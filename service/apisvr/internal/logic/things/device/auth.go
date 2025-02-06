@@ -11,6 +11,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dgsvr/client/deviceauth"
 	"gitee.com/unitedrhino/things/service/dgsvr/pb/dg"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/share/domain/protocols"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/zrpc"
 	"sync"
@@ -27,7 +28,8 @@ func Init(svcCtx *svc.ServiceContext) {
 	utils.Go(ctx, func() {
 		ticket := time.NewTicker(time.Minute)
 		run := func() {
-			pi, err := svcCtx.ProtocolM.ProtocolInfoIndex(ctx, &dm.ProtocolInfoIndexReq{TransProtocol: def.ProtocolMqtt, NotCodes: []string{def.ProtocolCodeUnitedRhino}})
+			pi, err := svcCtx.ProtocolM.ProtocolInfoIndex(ctx, &dm.ProtocolInfoIndexReq{
+				TransProtocol: def.ProtocolMqtt, NotCodes: []string{protocols.ProtocolCodeUrMqtt}})
 			if err != nil {
 				logx.WithContext(ctx).Error(err)
 				return

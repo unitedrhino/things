@@ -11972,7 +11972,11 @@
         },
         "protocolCode": {
           "type": "string",
-          "description": "协议code,默认iThings  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya"
+          "description": "协议code,默认urMqtt,设备下发只会发送给主协议  urMqtt,urHttp,wumei,aliyun,huaweiyun,tuya"
+        },
+        "subProtocolCode": {
+          "type": "string",
+          "description": "子协议,主协议和子协议传输类型必须不相同, 设备控制下发只会发送给主协议, 当设备是音视频设备但是控制协议需要单独走的时候就可以把主协议定义为普通协议,子协议定义为音视频协议,这样就能实现音视频走音视频协议,控制走子协议"
         },
         "autoRegister": {
           "type": "integer",
@@ -12087,7 +12091,11 @@
         },
         "protocolCode": {
           "type": "string",
-          "description": "协议code,默认iThings  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya"
+          "description": "协议code"
+        },
+        "protocolType": {
+          "type": "string",
+          "description": "协议类型"
         },
         "withProtocol": {
           "type": "boolean",
@@ -12686,6 +12694,10 @@
           "type": "string",
           "description": "  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya"
         },
+        "type": {
+          "type": "string",
+          "description": "协议类型: 普通设备(默认):normal  音视频:media"
+        },
         "transProtocol": {
           "type": "string",
           "description": " 传输协议: mqtt,tcp,udp"
@@ -12731,6 +12743,10 @@
         },
         "code": {
           "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "description": "协议类型: 普通设备(默认):normal  音视频:media"
         },
         "transProtocol": {
           "type": "string",

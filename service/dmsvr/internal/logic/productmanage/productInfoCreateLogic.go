@@ -81,6 +81,7 @@ func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relatio
 		SceneMode:        in.SceneMode,
 		DeviceSchemaMode: in.DeviceSchemaMode,
 		BindLevel:        in.BindLevel,
+		SubProtocolCode:  in.SubProtocolCode.GetValue(),
 	}
 	if in.AutoRegister != def.Unknown {
 		pi.AutoRegister = in.AutoRegister

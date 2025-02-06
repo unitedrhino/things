@@ -37,6 +37,7 @@ func (l *ProtocolInfoIndexLogic) ProtocolInfoIndex(in *dm.ProtocolInfoIndexReq) 
 	filter := relationDB.ProtocolInfoFilter{
 		Name:          in.Name,
 		Code:          in.Code,
+		Type:          in.Type,
 		TransProtocol: in.TransProtocol,
 		NotCodes:      in.NotCodes,
 	}

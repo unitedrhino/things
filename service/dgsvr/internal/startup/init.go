@@ -20,6 +20,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dgsvr/internal/svc"
 	"gitee.com/unitedrhino/things/share/clients"
 	"gitee.com/unitedrhino/things/share/devices"
+	"gitee.com/unitedrhino/things/share/domain/protocols"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
@@ -33,7 +34,7 @@ func PostInit(svcCtx *svc.ServiceContext) {
 	dl, err := pubDev.NewPubDev(svcCtx.Config.DevLink)
 	logx.Must(err)
 
-	il, err := pubInner.NewPubInner(svcCtx.Config.Event, def.ProtocolCodeUnitedRhino, svcCtx.NodeID)
+	il, err := pubInner.NewPubInner(svcCtx.Config.Event, protocols.ProtocolCodeUrMqtt, svcCtx.NodeID)
 	logx.Must(err)
 
 	svcCtx.PubDev = dl
@@ -72,7 +73,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 	})
 	logx.Must(err)
 
-	err = svcCtx.FastEvent.QueueSubscribe(fmt.Sprintf(topics.DeviceDownStatusConnected, def.ProtocolCodeUnitedRhino), func(ctx context.Context, t time.Time, body []byte) error {
+	err = svcCtx.FastEvent.QueueSubscribe(fmt.Sprintf(topics.DeviceDownStatusConnected, protocols.ProtocolCodeUrMqtt), func(ctx context.Context, t time.Time, body []byte) error {
 		info := devices.WithGateway{}
 		err := json.Unmarshal(body, &info)
 		if err != nil {

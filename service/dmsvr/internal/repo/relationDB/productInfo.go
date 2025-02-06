@@ -2,6 +2,7 @@ package relationDB
 
 import (
 	"context"
+	"fmt"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
@@ -25,6 +26,7 @@ type ProductFilter struct {
 	WithProtocol bool
 	WithCategory bool
 	ProtocolCode string
+	ProtocolType string
 	CategoryIDs  []int64
 	SceneMode    string
 	SceneModes   []string
@@ -60,7 +62,12 @@ func (p ProductInfoRepo) fmtFilter(ctx context.Context, f ProductFilter) *gorm.D
 	}
 
 	if f.ProtocolCode != "" {
-		db = db.Where("protocol_code=?", f.ProtocolCode)
+		db = db.Where("protocol_code=? or sub_protocol_code=?", f.ProtocolCode, f.ProtocolCode)
+	}
+	if f.ProtocolType != "" {
+		subQuery := p.db.Model(&DmProtocolInfo{}).Select("code").Where(
+			fmt.Sprintf("%s = ?", stores.Col("type")), f.ProtocolType)
+		db = db.Where("protocol_type in (?) or sub_protocol_code in (?)", subQuery, subQuery)
 	}
 	if f.SceneMode != "" {
 		db = db.Where("scene_mode=?", f.SceneMode)

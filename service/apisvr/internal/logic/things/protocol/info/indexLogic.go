@@ -29,6 +29,7 @@ func (l *IndexLogic) Index(req *types.ProtocolInfoIndexReq) (resp *types.Protoco
 	ret, err := l.svcCtx.ProtocolM.ProtocolInfoIndex(l.ctx, &dm.ProtocolInfoIndexReq{
 		Page:          logic.ToDmPageRpc(req.Page),
 		Name:          req.Name,
+		Type:          req.Type,
 		Code:          req.Code,
 		TransProtocol: req.TransProtocol,
 	})

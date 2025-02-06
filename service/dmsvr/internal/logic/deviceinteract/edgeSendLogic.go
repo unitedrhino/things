@@ -2,10 +2,10 @@ package deviceinteractlogic
 
 import (
 	"context"
-	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/event/deviceMsgEvent"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
+	"gitee.com/unitedrhino/things/share/domain/protocols"
 	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
@@ -37,7 +37,7 @@ func (l *EdgeSendLogic) EdgeSend(in *dm.EdgeSendReq) (*dm.EdgeSendResp, error) {
 		Timestamp:    time.Now().UnixMilli(),
 		ProductID:    in.ProductID,
 		DeviceName:   in.DeviceName,
-		ProtocolCode: def.ProtocolCodeUnitedRhino,
+		ProtocolCode: protocols.ProtocolCodeUrMqtt,
 	}
 	var resp *deviceMsg.PublishMsg
 	var err error

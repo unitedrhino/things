@@ -29,6 +29,7 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgOta"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
+	"gitee.com/unitedrhino/things/share/domain/protocols"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/cast"
@@ -83,7 +84,7 @@ func (l *ThingLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) 
 		Data: data,
 	}
 	if msg.ProtocolCode == "" {
-		msg.ProtocolCode = def.ProtocolCodeUnitedRhino
+		msg.ProtocolCode = protocols.ProtocolCodeUrMqtt
 	}
 	return &deviceMsg.PublishMsg{
 		Handle:       msg.Handle,
@@ -977,7 +978,7 @@ func (l *ThingLogic) OnlineFix(msg *deviceMsg.PublishMsg, di *dm.DeviceInfo, gw 
 			inDev.Gateway = &devices.Core{ProductID: gw.ProductID, DeviceName: gw.DeviceName}
 		}
 		if msg.ProtocolCode == "" {
-			msg.ProtocolCode = def.ProtocolCodeUnitedRhino
+			msg.ProtocolCode = protocols.ProtocolCodeUrMqtt
 		}
 		l.svcCtx.FastEvent.Publish(ctx, fmt.Sprintf(topics.DeviceDownStatusConnected, msg.ProtocolCode), inDev)
 	})

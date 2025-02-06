@@ -39,9 +39,7 @@ func (l *ProtocolInfoUpdateLogic) ProtocolInfoUpdate(in *dm.ProtocolInfo) (*dm.E
 		return nil, err
 	}
 	newPo := logic.ToProtocolInfoPo(in)
-	old.TransProtocol = newPo.TransProtocol
 	old.Name = newPo.Name
-	old.TransProtocol = newPo.TransProtocol
 	old.Desc = newPo.Desc
 	if newPo.ConfigFields != nil {
 		old.ConfigFields = newPo.ConfigFields

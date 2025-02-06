@@ -121,6 +121,9 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 	if data.Desc != nil {
 		old.Desc = data.Desc.GetValue()
 	}
+	if data.SubProtocolCode != nil {
+		old.SubProtocolCode = data.SubProtocolCode.GetValue()
+	}
 
 	if data.AutoRegister != def.Unknown {
 		old.AutoRegister = data.AutoRegister

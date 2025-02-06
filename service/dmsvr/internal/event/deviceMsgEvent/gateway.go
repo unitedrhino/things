@@ -20,6 +20,7 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/deviceAuth"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgGateway"
+	"gitee.com/unitedrhino/things/share/domain/protocols"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
@@ -57,7 +58,7 @@ func (l *GatewayLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any
 		Data: data,
 	}
 	if msg.ProtocolCode == "" {
-		msg.ProtocolCode = def.ProtocolCodeUnitedRhino
+		msg.ProtocolCode = protocols.ProtocolCodeUrMqtt
 	}
 	return &deviceMsg.PublishMsg{
 		Handle:       msg.Handle,
