@@ -113,7 +113,7 @@ func (p *CoreProtocol) Start() error {
 			_, err := p.ProtocolM.ProtocolServiceUpdate(ctx, &dm.ProtocolService{
 				Code:   p.Pi.Code,
 				Ip:     netx.InternalIp(),
-				Port:   1,
+				Port:   0,
 				Status: def.True,
 			})
 			if err != nil {
