@@ -15,7 +15,9 @@ func Migrate(c conf.Database) error {
 	if c.IsInitTable == false {
 		return nil
 	}
-	db := stores.GetCommonConn(ctxs.WithRoot(context.Background()))
+	ctx := ctxs.WithRoot(context.Background())
+	db := stores.GetCommonConn(ctx)
+
 	var needInitColumn bool
 	if !db.Migrator().HasTable(&DmProtocolInfo{}) {
 		//需要初始化表
@@ -69,6 +71,7 @@ func Migrate(c conf.Database) error {
 func versionUpdate(db *gorm.DB) error {
 	ctx := ctxs.WithRoot(context.Background())
 	//m := db.Migrator()
+
 	{
 		old, err := NewProtocolInfoRepo(ctx).FindOneByFilter(ctx, ProtocolInfoFilter{Code: "iThings"})
 		if err == nil { //旧版的需要更新为新版
@@ -81,7 +84,10 @@ func versionUpdate(db *gorm.DB) error {
 				if err := tx.CreateInBatches(&MigrateProtocolInfo, 100).Error; err != nil {
 					return err
 				}
-				return nil
+				err = NewProductInfoRepo(tx).UpdateWithField(ctx, ProductFilter{ProtocolCode: "iThings"}, map[string]any{
+					"protocol_code": protocols.ProtocolCodeUrMqtt,
+				})
+				return err
 			})
 		}
 	}

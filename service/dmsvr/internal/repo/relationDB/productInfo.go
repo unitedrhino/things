@@ -177,6 +177,12 @@ func (p ProductInfoRepo) Update(ctx context.Context, data *DmProductInfo) error 
 	return stores.ErrFmt(err)
 }
 
+func (d ProductInfoRepo) UpdateWithField(ctx context.Context, f ProductFilter, updates map[string]any) error {
+	db := d.fmtFilter(ctx, f)
+	err := db.Model(&DmProductInfo{}).Updates(updates).Error
+	return stores.ErrFmt(err)
+}
+
 func (p ProductInfoRepo) DeleteByFilter(ctx context.Context, f ProductFilter) error {
 	db := p.fmtFilter(ctx, f)
 	err := db.Delete(&DmProductInfo{}).Error
