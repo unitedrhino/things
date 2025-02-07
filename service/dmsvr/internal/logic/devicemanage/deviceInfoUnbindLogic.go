@@ -188,6 +188,6 @@ func getSignature(sigType string, secret string, dest string) string {
 	if secret == "" || dest == "" {
 		return ""
 	}
-
-	return base64.StdEncoding.EncodeToString([]byte(utils.Hmac(sigType, dest, []byte(secret))))
+	str := utils.Hmac(sigType, dest, []byte(secret))
+	return base64.StdEncoding.EncodeToString([]byte(str))
 }
