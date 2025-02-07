@@ -36,12 +36,18 @@ func Init(svcCtx *svc.ServiceContext) {
 			}
 			for _, pp := range pi.List {
 				p := pp
-				func() {
-					protocolLinkMutex.Lock()
-					defer protocolLinkMutex.Unlock()
+				t := func() bool {
+					protocolLinkMutex.RLock()
+					defer protocolLinkMutex.RUnlock()
 					if _, ok := protocolLink[p.Code]; ok {
-						return //已经连接上就不管了
+						return true //已经连接上就不管了
 					}
+					return false
+				}()
+				if t {
+					continue
+				}
+				func() {
 					var conf = svcCtx.Config.DgRpc.Conf
 					if p.EtcdKey != "" {
 						conf.Etcd = svcCtx.Config.Etcd
@@ -52,19 +58,17 @@ func Init(svcCtx *svc.ServiceContext) {
 						return
 					}
 					cli, err := zrpc.NewClient(conf)
+					protocolLinkMutex.Lock()
+					defer protocolLinkMutex.Unlock()
+					val, ok := protocolLink[p.Code]
 					if err == nil {
-						val, ok := protocolLink[p.Code]
 						protocolLink[p.Code] = cli
-						if ok {
+					}
+					if ok {
+						utils.Go(ctx, func() {
 							time.Sleep(time.Second * 3) //避免刚取出来的连接失效,所以需要延时关闭
 							val.(zrpc.Client).Conn().Close()
-						}
-					} else {
-						val, ok := protocolLink[p.Code]
-						if ok {
-							time.Sleep(time.Second * 3) //避免刚取出来的连接失效,所以需要延时关闭
-							val.(zrpc.Client).Conn().Close()
-						}
+						})
 					}
 				}()
 			}
