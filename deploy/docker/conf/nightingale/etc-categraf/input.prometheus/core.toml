@@ -1,0 +1,7 @@
+[[instances]]
+urls = [
+    "http://172.20.0.1:17777/metrics",
+]
+
+url_label_key = "instance"
+url_label_value = "联犀core:{{.Host}}"
