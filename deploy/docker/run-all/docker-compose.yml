@@ -14,6 +14,7 @@ services:
     restart: always
     ports:
       - "7788:7788"
+      - "17788:17788"
 #    volumes:
 #      - ../conf/things/etc:/unitedrhino/etc
     depends_on:

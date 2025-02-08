@@ -74,7 +74,7 @@ Event:
   Nats:
     Url: nats://nats:4222
 #Telemetry:
-#  Name: coresvr
+#  Name: thingsvr
 #  Endpoint: http://jaeger:14268/api/traces
 #  Sampler: 1.0
 #  Batcher: jaeger
