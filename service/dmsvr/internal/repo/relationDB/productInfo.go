@@ -67,7 +67,7 @@ func (p ProductInfoRepo) fmtFilter(ctx context.Context, f ProductFilter) *gorm.D
 	if f.ProtocolType != "" {
 		subQuery := p.db.Model(&DmProtocolInfo{}).Select("code").Where(
 			fmt.Sprintf("%s = ?", stores.Col("type")), f.ProtocolType)
-		db = db.Where("protocol_type in (?) or sub_protocol_code in (?)", subQuery, subQuery)
+		db = db.Where("protocol_code in (?) or sub_protocol_code in (?)", subQuery, subQuery)
 	}
 	if f.SceneMode != "" {
 		db = db.Where("scene_mode=?", f.SceneMode)

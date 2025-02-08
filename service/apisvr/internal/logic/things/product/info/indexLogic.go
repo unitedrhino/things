@@ -36,6 +36,7 @@ func (l *IndexLogic) Index(req *types.ProductInfoIndexReq) (resp *types.ProductI
 		Page:         logic.ToDmPageRpc(req.Page),
 		ProtocolCode: req.ProtocolCode,
 		WithProtocol: req.WithProtocol,
+		ProtocolType: req.ProtocolType,
 		WithCategory: req.WithCategory,
 		DeviceTypes:  req.DeviceTypes,
 		SceneMode:    req.SceneMode,
