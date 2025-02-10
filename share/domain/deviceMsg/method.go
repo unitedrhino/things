@@ -99,6 +99,8 @@ const (
 	*/
 	GetNtp      Method = "getNtp"      //表示设备ntp请求
 	GetNtpReply Method = "getNtpReply" //表示云端ntp返回
+
+	AppBindToken Method = "appBindToken"
 )
 
 func GetRespMethod(method Method) Method {

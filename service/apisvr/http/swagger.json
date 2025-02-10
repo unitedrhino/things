@@ -616,6 +616,80 @@
         ]
       }
     },
+    "/api/v1/things/device/info/bind/token/create": {
+      "post": {
+        "summary": "创建绑定token",
+        "operationId": "postApiV1ThingsDeviceInfoBindTokenCreate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/DeviceBindTokenInfo"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "things/device/info",
+          "thingsDeviceInfo"
+        ]
+      }
+    },
+    "/api/v1/things/device/info/bind/token/read": {
+      "post": {
+        "summary": "绑定token状态查询",
+        "operationId": "postApiV1ThingsDeviceInfoBindTokenRead",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/DeviceBindTokenInfo"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceBindTokenReadReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/info",
+          "thingsDeviceInfo"
+        ]
+      }
+    },
     "/api/v1/things/device/info/can-bind": {
       "post": {
         "summary": "是否可以绑定设备",
@@ -7218,6 +7292,34 @@
       },
       "title": "DeviceAuthRootCheckReq"
     },
+    "DeviceBindTokenInfo": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string",
+          "description": "配网token"
+        },
+        "status": {
+          "type": "integer",
+          "format": "int64",
+          "description": "token状态 1:初始状态 2: 设备已上报"
+        }
+      },
+      "title": "DeviceBindTokenInfo"
+    },
+    "DeviceBindTokenReadReq": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string",
+          "description": "配网token"
+        }
+      },
+      "title": "DeviceBindTokenReadReq",
+      "required": [
+        "token"
+      ]
+    },
     "DeviceCore": {
       "type": "object",
       "properties": {
@@ -7679,6 +7781,10 @@
         },
         "areaID": {
           "type": "string"
+        },
+        "token": {
+          "type": "string",
+          "description": "配网token,中绑定需要"
         }
       },
       "title": "DeviceInfoBindReq",

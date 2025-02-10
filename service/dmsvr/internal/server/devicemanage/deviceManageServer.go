@@ -75,6 +75,16 @@ func (s *DeviceManageServer) DeviceInfoBind(ctx context.Context, in *dm.DeviceIn
 	return l.DeviceInfoBind(in)
 }
 
+func (s *DeviceManageServer) DeviceBindTokenRead(ctx context.Context, in *dm.DeviceBindTokenReadReq) (*dm.DeviceBindTokenInfo, error) {
+	l := devicemanagelogic.NewDeviceBindTokenReadLogic(ctx, s.svcCtx)
+	return l.DeviceBindTokenRead(in)
+}
+
+func (s *DeviceManageServer) DeviceBindTokenCreate(ctx context.Context, in *dm.Empty) (*dm.DeviceBindTokenInfo, error) {
+	l := devicemanagelogic.NewDeviceBindTokenCreateLogic(ctx, s.svcCtx)
+	return l.DeviceBindTokenCreate(in)
+}
+
 func (s *DeviceManageServer) DeviceInfoMultiBind(ctx context.Context, in *dm.DeviceInfoMultiBindReq) (*dm.DeviceInfoMultiBindResp, error) {
 	l := devicemanagelogic.NewDeviceInfoMultiBindLogic(ctx, s.svcCtx)
 	return l.DeviceInfoMultiBind(in)

@@ -20,6 +20,7 @@ import (
 	"gitee.com/unitedrhino/share/utils"
 	ws "gitee.com/unitedrhino/share/websocket"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/config"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceBind"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/userShared"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/cache"
@@ -72,6 +73,7 @@ type ServiceContext struct {
 	DeviceCache          *caches.Cache[dm.DeviceInfo, devices.Core]
 	UserDeviceShare      *caches.Cache[dm.UserDeviceShareInfo, userShared.UserShareKey]
 	UserMultiDeviceShare *caches.Cache[dm.UserDeviceShareMultiInfo, string]
+	DeviceBindToken      *caches.Cache[deviceBind.TokenInfo, string]
 	TenantCache          sysExport.TenantCacheT
 	ProjectCache         sysExport.ProjectCacheT
 	AreaCache            sysExport.AreaCacheT

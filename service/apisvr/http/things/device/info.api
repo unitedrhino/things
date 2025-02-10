@@ -42,7 +42,6 @@ service api {
     )
     @handler multiUpdateImport
     post /multi-update-import (DeviceMultiUpdateImportReq) returns (DeviceMultiUpdateImportResp)
-
     @doc(
         summary: "删除设备"
         isNeedAuth: "true"
@@ -97,6 +96,17 @@ service api {
     )
     @handler unbind
     post /unbind (DeviceInfoUnbindReq) returns ()
+    @doc(
+        summary: "绑定token状态查询"
+    )
+    @handler bindTokenRead
+    post /bind/token/read (DeviceBindTokenReadReq) returns (DeviceBindTokenInfo)
+    @doc(
+        summary: "创建绑定token"
+        businessType: "modify"
+    )
+    @handler bindTokenCreate
+    post /bind/token/create () returns (DeviceBindTokenInfo)
     @doc(
         summary: "转移设备到新设备上"
         businessType: "modify"
@@ -221,6 +231,14 @@ type (
     DeviceInfoBindReq{
         Device DeviceCore `json:"device"`
         AreaID int64  `json:"areaID,optional,string"`
+        Token string  `json:"token,optional"`//配网token,中绑定需要
+    }
+    DeviceBindTokenReadReq{
+        Token string  `json:"token"`//配网token
+    }
+    DeviceBindTokenInfo{
+        Token string  `json:"token,optional"`//配网token
+        Status int64  `json:"status,optional"`//token状态 1:初始状态 2: 设备已上报
     }
     DeviceInfoSaveReq  {
         ProductID string `json:"productID"`                                              //产品id 只读

@@ -85,6 +85,8 @@ service DeviceManage {
   //获取设备信息详情
   rpc deviceInfoRead(DeviceInfoReadReq)     returns (DeviceInfo);
   rpc deviceInfoBind(DeviceInfoBindReq)returns(Empty);
+  rpc deviceBindTokenRead(DeviceBindTokenReadReq)returns(DeviceBindTokenInfo);
+  rpc deviceBindTokenCreate(Empty)returns(DeviceBindTokenInfo);
   rpc deviceInfoMultiBind(DeviceInfoMultiBindReq)returns(DeviceInfoMultiBindResp);//批量绑定
   rpc deviceInfoCanBind(DeviceInfoCanBindReq)returns(Empty);
   rpc deviceInfoUnbind(DeviceInfoUnbindReq)returns(Empty);
@@ -1729,17 +1731,18 @@ message DeviceInfoUnbindReq{
   string signType=6;//hmacsha256 hmacsha1 hmacmd5(默认)
   int64 nonce = 7;//随机数
 }
+message DeviceBindTokenReadReq{
+  string token =1;//配网token
+}
+message DeviceBindTokenInfo{
+  string token =1;//配网token
+  int64 status =2;//token状态 1:初始状态 2: 设备已上报
+}
 
 message DeviceInfoBindReq{
   DeviceCore device =1;
   int64 areaID =2;
-  /*
-  对参数（deviceName、nonce、productID、timestamp）按字典序升序排序。
-  将以上参数，按参数名称 = 参数值 & 参数名称 = 参数值拼接成字符串, 如："deviceName=xxx&nonce=2125656451&productID=xxx&timestamp=1687525491"。
-  使用 HMAC-sha1 算法对上一步中获得的字符串进行计算，密钥取secretType   默认取 deviceSecret,productSecret,如果是其他值则取设备的物模型。
-  将生成的结果使用 Base64 进行编码，即可获得最终的签名串放入 signature。
-  */
-  map<string,string> expand =3; //拓展, secretType: 采用秘钥的类型 signature:签名  timestamp:秒时间戳
+  string token =3;//中绑定的token
 }
 
 message DeviceProfileIndexReq{

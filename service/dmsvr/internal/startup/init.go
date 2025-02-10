@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceBind"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceGroup"
 	"time"
 
@@ -125,7 +126,18 @@ func InitCache(svcCtx *svc.ServiceContext) {
 		logx.Must(err)
 		svcCtx.UserMultiDeviceShare = userMultiDeviceShare
 	}
-
+	{
+		deviceBindToken, err := caches.NewCache(caches.CacheConfig[deviceBind.TokenInfo, string]{
+			KeyType:   eventBus.ServerCacheKeyDmDeviceBindToken,
+			FastEvent: svcCtx.FastEvent,
+			GetData: func(ctx context.Context, key string) (*deviceBind.TokenInfo, error) {
+				return &deviceBind.TokenInfo{}, errors.Failure.WithMsg("已过期")
+			},
+			ExpireTime: 10 * time.Minute,
+		})
+		logx.Must(err)
+		svcCtx.DeviceBindToken = deviceBindToken
+	}
 	productCache, err := caches.NewCache(caches.CacheConfig[dm.ProductInfo, string]{
 		KeyType:   eventBus.ServerCacheKeyDmProduct,
 		FastEvent: svcCtx.FastEvent,

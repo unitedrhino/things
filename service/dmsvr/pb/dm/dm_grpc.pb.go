@@ -30,6 +30,8 @@ const (
 	DeviceManage_DeviceInfoMultiUpdate_FullMethodName    = "/dm.DeviceManage/DeviceInfoMultiUpdate"
 	DeviceManage_DeviceInfoRead_FullMethodName           = "/dm.DeviceManage/deviceInfoRead"
 	DeviceManage_DeviceInfoBind_FullMethodName           = "/dm.DeviceManage/deviceInfoBind"
+	DeviceManage_DeviceBindTokenRead_FullMethodName      = "/dm.DeviceManage/deviceBindTokenRead"
+	DeviceManage_DeviceBindTokenCreate_FullMethodName    = "/dm.DeviceManage/deviceBindTokenCreate"
 	DeviceManage_DeviceInfoMultiBind_FullMethodName      = "/dm.DeviceManage/deviceInfoMultiBind"
 	DeviceManage_DeviceInfoCanBind_FullMethodName        = "/dm.DeviceManage/deviceInfoCanBind"
 	DeviceManage_DeviceInfoUnbind_FullMethodName         = "/dm.DeviceManage/deviceInfoUnbind"
@@ -80,6 +82,8 @@ type DeviceManageClient interface {
 	// 获取设备信息详情
 	DeviceInfoRead(ctx context.Context, in *DeviceInfoReadReq, opts ...grpc.CallOption) (*DeviceInfo, error)
 	DeviceInfoBind(ctx context.Context, in *DeviceInfoBindReq, opts ...grpc.CallOption) (*Empty, error)
+	DeviceBindTokenRead(ctx context.Context, in *DeviceBindTokenReadReq, opts ...grpc.CallOption) (*DeviceBindTokenInfo, error)
+	DeviceBindTokenCreate(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*DeviceBindTokenInfo, error)
 	DeviceInfoMultiBind(ctx context.Context, in *DeviceInfoMultiBindReq, opts ...grpc.CallOption) (*DeviceInfoMultiBindResp, error)
 	DeviceInfoCanBind(ctx context.Context, in *DeviceInfoCanBindReq, opts ...grpc.CallOption) (*Empty, error)
 	DeviceInfoUnbind(ctx context.Context, in *DeviceInfoUnbindReq, opts ...grpc.CallOption) (*Empty, error)
@@ -207,6 +211,24 @@ func (c *deviceManageClient) DeviceInfoRead(ctx context.Context, in *DeviceInfoR
 func (c *deviceManageClient) DeviceInfoBind(ctx context.Context, in *DeviceInfoBindReq, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, DeviceManage_DeviceInfoBind_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceManageClient) DeviceBindTokenRead(ctx context.Context, in *DeviceBindTokenReadReq, opts ...grpc.CallOption) (*DeviceBindTokenInfo, error) {
+	out := new(DeviceBindTokenInfo)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceBindTokenRead_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *deviceManageClient) DeviceBindTokenCreate(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*DeviceBindTokenInfo, error) {
+	out := new(DeviceBindTokenInfo)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceBindTokenCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -485,6 +507,8 @@ type DeviceManageServer interface {
 	// 获取设备信息详情
 	DeviceInfoRead(context.Context, *DeviceInfoReadReq) (*DeviceInfo, error)
 	DeviceInfoBind(context.Context, *DeviceInfoBindReq) (*Empty, error)
+	DeviceBindTokenRead(context.Context, *DeviceBindTokenReadReq) (*DeviceBindTokenInfo, error)
+	DeviceBindTokenCreate(context.Context, *Empty) (*DeviceBindTokenInfo, error)
 	DeviceInfoMultiBind(context.Context, *DeviceInfoMultiBindReq) (*DeviceInfoMultiBindResp, error)
 	DeviceInfoCanBind(context.Context, *DeviceInfoCanBindReq) (*Empty, error)
 	DeviceInfoUnbind(context.Context, *DeviceInfoUnbindReq) (*Empty, error)
@@ -560,6 +584,12 @@ func (UnimplementedDeviceManageServer) DeviceInfoRead(context.Context, *DeviceIn
 }
 func (UnimplementedDeviceManageServer) DeviceInfoBind(context.Context, *DeviceInfoBindReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoBind not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceBindTokenRead(context.Context, *DeviceBindTokenReadReq) (*DeviceBindTokenInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceBindTokenRead not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceBindTokenCreate(context.Context, *Empty) (*DeviceBindTokenInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceBindTokenCreate not implemented")
 }
 func (UnimplementedDeviceManageServer) DeviceInfoMultiBind(context.Context, *DeviceInfoMultiBindReq) (*DeviceInfoMultiBindResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfoMultiBind not implemented")
@@ -816,6 +846,42 @@ func _DeviceManage_DeviceInfoBind_Handler(srv interface{}, ctx context.Context, 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DeviceManageServer).DeviceInfoBind(ctx, req.(*DeviceInfoBindReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceManage_DeviceBindTokenRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceBindTokenReadReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceBindTokenRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceBindTokenRead_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceBindTokenRead(ctx, req.(*DeviceBindTokenReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DeviceManage_DeviceBindTokenCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceBindTokenCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceBindTokenCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceBindTokenCreate(ctx, req.(*Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1366,6 +1432,14 @@ var DeviceManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "deviceInfoBind",
 			Handler:    _DeviceManage_DeviceInfoBind_Handler,
+		},
+		{
+			MethodName: "deviceBindTokenRead",
+			Handler:    _DeviceManage_DeviceBindTokenRead_Handler,
+		},
+		{
+			MethodName: "deviceBindTokenCreate",
+			Handler:    _DeviceManage_DeviceBindTokenCreate_Handler,
 		},
 		{
 			MethodName: "deviceInfoMultiBind",

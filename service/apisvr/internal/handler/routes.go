@@ -180,6 +180,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: thingsdeviceinfo.BindHandler(serverCtx),
 				},
 				{
+					// 创建绑定token
+					Method:  http.MethodPost,
+					Path:    "/bind/token/create",
+					Handler: thingsdeviceinfo.BindTokenCreateHandler(serverCtx),
+				},
+				{
+					// 绑定token状态查询
+					Method:  http.MethodPost,
+					Path:    "/bind/token/read",
+					Handler: thingsdeviceinfo.BindTokenReadHandler(serverCtx),
+				},
+				{
 					// 是否可以绑定设备
 					Method:  http.MethodPost,
 					Path:    "/can-bind",

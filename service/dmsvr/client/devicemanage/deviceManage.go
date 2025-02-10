@@ -29,6 +29,8 @@ type (
 	CompareInt64                      = dm.CompareInt64
 	CompareString                     = dm.CompareString
 	CustomTopic                       = dm.CustomTopic
+	DeviceBindTokenInfo               = dm.DeviceBindTokenInfo
+	DeviceBindTokenReadReq            = dm.DeviceBindTokenReadReq
 	DeviceCore                        = dm.DeviceCore
 	DeviceCountInfo                   = dm.DeviceCountInfo
 	DeviceCountReq                    = dm.DeviceCountReq
@@ -244,6 +246,8 @@ type (
 		// 获取设备信息详情
 		DeviceInfoRead(ctx context.Context, in *DeviceInfoReadReq, opts ...grpc.CallOption) (*DeviceInfo, error)
 		DeviceInfoBind(ctx context.Context, in *DeviceInfoBindReq, opts ...grpc.CallOption) (*Empty, error)
+		DeviceBindTokenRead(ctx context.Context, in *DeviceBindTokenReadReq, opts ...grpc.CallOption) (*DeviceBindTokenInfo, error)
+		DeviceBindTokenCreate(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*DeviceBindTokenInfo, error)
 		DeviceInfoMultiBind(ctx context.Context, in *DeviceInfoMultiBindReq, opts ...grpc.CallOption) (*DeviceInfoMultiBindResp, error)
 		DeviceInfoCanBind(ctx context.Context, in *DeviceInfoCanBindReq, opts ...grpc.CallOption) (*Empty, error)
 		DeviceInfoUnbind(ctx context.Context, in *DeviceInfoUnbindReq, opts ...grpc.CallOption) (*Empty, error)
@@ -404,6 +408,24 @@ func (m *defaultDeviceManage) DeviceInfoBind(ctx context.Context, in *DeviceInfo
 
 func (d *directDeviceManage) DeviceInfoBind(ctx context.Context, in *DeviceInfoBindReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.DeviceInfoBind(ctx, in)
+}
+
+func (m *defaultDeviceManage) DeviceBindTokenRead(ctx context.Context, in *DeviceBindTokenReadReq, opts ...grpc.CallOption) (*DeviceBindTokenInfo, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceBindTokenRead(ctx, in, opts...)
+}
+
+func (d *directDeviceManage) DeviceBindTokenRead(ctx context.Context, in *DeviceBindTokenReadReq, opts ...grpc.CallOption) (*DeviceBindTokenInfo, error) {
+	return d.svr.DeviceBindTokenRead(ctx, in)
+}
+
+func (m *defaultDeviceManage) DeviceBindTokenCreate(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*DeviceBindTokenInfo, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceBindTokenCreate(ctx, in, opts...)
+}
+
+func (d *directDeviceManage) DeviceBindTokenCreate(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*DeviceBindTokenInfo, error) {
+	return d.svr.DeviceBindTokenCreate(ctx, in)
 }
 
 func (m *defaultDeviceManage) DeviceInfoMultiBind(ctx context.Context, in *DeviceInfoMultiBindReq, opts ...grpc.CallOption) (*DeviceInfoMultiBindResp, error) {

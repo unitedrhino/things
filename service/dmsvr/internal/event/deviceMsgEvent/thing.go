@@ -13,6 +13,7 @@ import (
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/events/topics"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceBind"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceStatus"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/product"
@@ -734,6 +735,23 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 	return l.DeviceResp(msg, errors.OK, nil), nil
 }
 
+func (l *ThingLogic) HandleService(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
+	l.Debugf("%s req:%v", utils.FuncName(), msg)
+	switch l.dreq.Method { //操作方法
+	case deviceMsg.AppBindToken:
+		token := cast.ToString(l.dreq.Params["token"])
+		tk, err := l.svcCtx.DeviceBindToken.GetData(l.ctx, token)
+		if err != nil {
+			return l.DeviceResp(msg, err, nil), err
+		}
+		tk.Status = deviceBind.StatusReport
+		err = l.svcCtx.DeviceBindToken.SetData(l.ctx, token, tk)
+		return l.DeviceResp(msg, err, nil), err
+	default:
+		return nil, errors.Method.AddMsg(l.dreq.Method)
+	}
+}
+
 func (l *ThingLogic) HandleAction(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Debugf("%s req:%v", utils.FuncName(), msg)
 	core := devices.Core{
@@ -897,6 +915,8 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 			return l.HandleEvent(msg)
 		case msgThing.TypeAction: //设备响应的 “应用调用设备行为”的执行结果
 			return l.HandleAction(msg)
+		case msgThing.TypeService:
+			return l.HandleService(msg)
 		default:
 			action = devices.Thing
 			return nil, errors.Parameter.AddDetailf("things types is err:%v", msg.Type)

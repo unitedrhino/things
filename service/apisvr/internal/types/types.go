@@ -218,6 +218,15 @@ type DeviceAuthRootCheckReq struct {
 	Certificate []byte `json:"certificate,optional,omitempty"` //客户端证书
 }
 
+type DeviceBindTokenInfo struct {
+	Token  string `json:"token,optional"`  //配网token
+	Status int64  `json:"status,optional"` //token状态 1:初始状态 2: 设备已上报
+}
+
+type DeviceBindTokenReadReq struct {
+	Token string `json:"token"` //配网token
+}
+
 type DeviceCore struct {
 	ProductID   string `json:"productID"` //产品ID
 	ProductName string `json:"productName,optional,omitempty"`
@@ -333,6 +342,7 @@ type DeviceInfo struct {
 type DeviceInfoBindReq struct {
 	Device DeviceCore `json:"device"`
 	AreaID int64      `json:"areaID,optional,string"`
+	Token  string     `json:"token,optional"` //配网token,中绑定需要
 }
 
 type DeviceInfoCanBindReq struct {

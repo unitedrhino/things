@@ -8,6 +8,7 @@ import (
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/product"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/share/devices"
@@ -89,13 +90,24 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 		l.Error(err)
 		return nil, err
 	}
-	//di.ProjectID=1  di.AreaID=2   dpi.ProjectID=0
-	if !((di.TenantCode == def.TenantCodeDefault && di.ProjectID < 3) || int64(di.ProjectID) == uc.ProjectID ||
-		int64(di.ProjectID) == dpi.DefaultProjectID) { //如果在其他租户下 则已经被绑定 或 在本租户下,但是不在一个项目下也不允许绑定
-		//只有归属于default租户和自己租户的才可以
-		l.Infof("DeviceCantBound di:%v uc:%v", utils.Fmt(di), utils.Fmt(uc))
-		return nil, errors.DeviceCantBound.WithMsg("设备已被其他用户绑定。如需解绑，请按照相关流程操作。")
+	//是否可以绑定校验
+	if pi.BindLevel == product.BindLeveMiddle2 && in.Token != "" {
+		tk, err := l.svcCtx.DeviceBindToken.GetData(l.ctx, in.Token)
+		if err != nil {
+			return nil, errors.NotFind.AddMsg("未发现配网token").AddDetail(err)
+		}
+		if tk.UserID != uc.UserID {
+			return nil, errors.Permissions.AddMsg("配网和绑定的用户不一致")
+		}
+	} else {
+		if !((di.TenantCode == def.TenantCodeDefault && di.ProjectID < 3) || int64(di.ProjectID) == uc.ProjectID ||
+			int64(di.ProjectID) == dpi.DefaultProjectID) { //如果在其他租户下 则已经被绑定 或 在本租户下,但是不在一个项目下也不允许绑定
+			//只有归属于default租户和自己租户的才可以
+			l.Infof("DeviceCantBound di:%v uc:%v", utils.Fmt(di), utils.Fmt(uc))
+			return nil, errors.DeviceCantBound.WithMsg("设备已被其他用户绑定。如需解绑，请按照相关流程操作。")
+		}
 	}
+
 	if string(di.TenantCode) == uc.TenantCode &&
 		int64(di.ProjectID) == uc.ProjectID { //如果已经绑定到自己名下
 		return &dm.Empty{}, err

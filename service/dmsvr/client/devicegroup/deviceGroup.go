@@ -29,6 +29,8 @@ type (
 	CompareInt64                      = dm.CompareInt64
 	CompareString                     = dm.CompareString
 	CustomTopic                       = dm.CustomTopic
+	DeviceBindTokenInfo               = dm.DeviceBindTokenInfo
+	DeviceBindTokenReadReq            = dm.DeviceBindTokenReadReq
 	DeviceCore                        = dm.DeviceCore
 	DeviceCountInfo                   = dm.DeviceCountInfo
 	DeviceCountReq                    = dm.DeviceCountReq
