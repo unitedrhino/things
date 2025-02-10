@@ -9,7 +9,7 @@ toolchain go1.23.3
 
 require (
 	gitee.com/unitedrhino/core v1.2.21
-	gitee.com/unitedrhino/share v1.2.23
+	gitee.com/unitedrhino/share v1.2.24
 	gitee.com/unitedrhino/squirrel v1.20.5
 	github.com/dgraph-io/ristretto v0.1.0
 	github.com/dop251/goja v0.0.0-20231024180952-594410467bc6
@@ -49,7 +49,6 @@ require (
 	github.com/alibabacloud-go/tea-utils v1.3.1 // indirect
 	github.com/alibabacloud-go/tea-utils/v2 v2.0.5 // indirect
 	github.com/alibabacloud-go/tea-xml v1.1.3 // indirect
-	github.com/alicebob/miniredis/v2 v2.34.0 // indirect
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.7+incompatible // indirect
 	github.com/aliyun/credentials-go v1.3.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
