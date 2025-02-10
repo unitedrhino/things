@@ -17,7 +17,8 @@ CacheRedis:
   - Host: redis:6379
     Pass:
     Type: node
-
+Middlewares:
+  Prometheus: false
 Rej:
   AccessSecret: ad879037-c7a4-4063-9236-6bfc35d54b7d
   AccessExpire: 600     #过期时间单位秒

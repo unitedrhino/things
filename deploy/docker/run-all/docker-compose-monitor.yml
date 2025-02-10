@@ -60,7 +60,7 @@ services:
       sh -c "/app/n9e"
 
   categraf:
-    image: "flashcatcloud/categraf:latest"
+    image: flashcatcloud/categraf:latest
     container_name: "categraf"
     hostname: "categraf01"
     restart: always

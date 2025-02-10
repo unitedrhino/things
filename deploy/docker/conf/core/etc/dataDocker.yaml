@@ -5,6 +5,8 @@ Timeout: 1000000
 MaxBytes: 1000000000
 Port: 9218
 NodeID: 1
+Middlewares:
+  Prometheus: false
 Log:
   Encoding: plain
   #Mode: file
