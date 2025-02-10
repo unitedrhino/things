@@ -188,7 +188,6 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 			"user_id":      UserID,
 			"area_id":      AreaID,
 			"area_id_path": AreaIDPath,
-			"last_bind":    time.Now(),
 		}
 		var tc string
 		if pi.TenantCode != uc.TenantCode {
