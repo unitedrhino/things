@@ -74,7 +74,7 @@ func (l *HalfHourHandle) Handle() error { //产品品类设备数量统计
 func (l *HalfHourHandle) DeviceExp() error { //设备过期处理
 	{ //有效期到了之后不启用
 		err := relationDB.NewDeviceInfoRepo(l.ctx).UpdateWithField(l.ctx,
-			relationDB.DeviceFilter{HasOwner: def.False, ExpTime: stores.CmpAnd(stores.CmpLte(time.Now()), stores.CmpIsNull(false))},
+			relationDB.DeviceFilter{HasOwner: def.True, ExpTime: stores.CmpAnd(stores.CmpLte(time.Now()), stores.CmpIsNull(false))},
 			map[string]any{"status": def.DeviceStatusArrearage})
 		if err != nil {
 			l.Error(err)
