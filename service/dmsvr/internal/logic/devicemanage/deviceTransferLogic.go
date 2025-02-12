@@ -7,12 +7,12 @@ import (
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
-	"gitee.com/unitedrhino/share/eventBus"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/share/devices"
+	"gitee.com/unitedrhino/things/share/topics"
 	"gorm.io/gorm"
 	"time"
 
@@ -218,7 +218,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 		if err != nil {
 			l.Error(err)
 		}
-		err = l.svcCtx.FastEvent.Publish(l.ctx, eventBus.DmDeviceInfoUnbind, &di)
+		err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUnbind, &di)
 		if err != nil {
 			l.Error(err)
 		}

@@ -5,11 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"gitee.com/unitedrhino/share/conf"
-	"gitee.com/unitedrhino/share/eventBus"
-	"gitee.com/unitedrhino/share/events/topics"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/share/devices"
+	"gitee.com/unitedrhino/things/share/topics"
 	"github.com/mitchellh/mapstructure"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -223,7 +222,7 @@ func (p *CloudProtocol[pConf]) RegisterInitHandler(
 }
 
 func (p *CloudProtocol[pConf]) RegisterConfigChange() error {
-	err := p.FastEvent.Subscribe(fmt.Sprintf(eventBus.DmProtocolInfoUpdate, p.Pi.Code),
+	err := p.FastEvent.Subscribe(fmt.Sprintf(topics.DmProtocolInfoUpdate, p.Pi.Code),
 		func(ctx context.Context, t time.Time, body []byte) error {
 			var conf []pConf
 			err := json.Unmarshal(body, &conf)

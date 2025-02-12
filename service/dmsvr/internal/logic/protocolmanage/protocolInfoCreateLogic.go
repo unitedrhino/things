@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 	"gitee.com/unitedrhino/share/ctxs"
-	"gitee.com/unitedrhino/share/eventBus"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/protocol"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/things/share/topics"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -42,7 +42,7 @@ func (l *ProtocolInfoCreateLogic) ProtocolInfoCreate(in *dm.ProtocolInfo) (*dm.W
 	if err != nil {
 		return nil, err
 	}
-	err = l.svcCtx.FastEvent.Publish(l.ctx, fmt.Sprintf(eventBus.DmProtocolInfoUpdate, po.Code), po.ConfigInfos.ToPubStu())
+	err = l.svcCtx.FastEvent.Publish(l.ctx, fmt.Sprintf(topics.DmProtocolInfoUpdate, po.Code), po.ConfigInfos.ToPubStu())
 	if err != nil {
 		return nil, err
 	}

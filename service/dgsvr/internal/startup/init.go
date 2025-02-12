@@ -7,9 +7,7 @@ import (
 	"gitee.com/unitedrhino/core/service/timed/timedjobsvr/client/timedmanage"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
-	"gitee.com/unitedrhino/share/eventBus"
 	"gitee.com/unitedrhino/share/events"
-	"gitee.com/unitedrhino/share/events/topics"
 	"gitee.com/unitedrhino/things/service/dgsvr/internal/event/deviceSub"
 	"gitee.com/unitedrhino/things/service/dgsvr/internal/event/innerSub"
 	"gitee.com/unitedrhino/things/service/dgsvr/internal/event/onlineCheck"
@@ -21,6 +19,7 @@ import (
 	"gitee.com/unitedrhino/things/share/clients"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/protocols"
+	"gitee.com/unitedrhino/things/share/topics"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
@@ -58,7 +57,7 @@ func PostInit(svcCtx *svc.ServiceContext) {
 	TimerInit(svcCtx)
 }
 func InitEventBus(svcCtx *svc.ServiceContext) {
-	err := svcCtx.FastEvent.Subscribe(eventBus.DmProductCustomUpdate, func(ctx context.Context, t time.Time, body []byte) error {
+	err := svcCtx.FastEvent.Subscribe(topics.DmProductCustomUpdate, func(ctx context.Context, t time.Time, body []byte) error {
 		info := events.DeviceUpdateInfo{}
 		err := json.Unmarshal(body, &info)
 		if err != nil {
@@ -68,7 +67,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 	})
 	logx.Must(err)
 
-	err = svcCtx.FastEvent.QueueSubscribe(eventBus.DgOnlineTimer, func(ctx context.Context, t time.Time, body []byte) error {
+	err = svcCtx.FastEvent.QueueSubscribe(topics.DgOnlineTimer, func(ctx context.Context, t time.Time, body []byte) error {
 		return onlineCheck.NewOnlineCheckEvent(svcCtx, ctx).Check()
 	})
 	logx.Must(err)
@@ -89,14 +88,14 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 func TimerInit(svcCtx *svc.ServiceContext) {
 	ctx := context.Background()
 	_, err := svcCtx.TimedM.TaskInfoCreate(ctx, &timedmanage.TaskInfo{
-		GroupCode: def.TimedUnitedRhinoQueueGroupCode,                                 //组编码
-		Type:      1,                                                                  //任务类型 1 定时任务 2 延时任务
-		Name:      "联犀协议网关定时处理",                                                       // 任务名称
-		Code:      "iThingsDgOnlineTimer",                                             //任务编码
-		Params:    fmt.Sprintf(`{"topic":"%s","payload":""}`, eventBus.DgOnlineTimer), // 任务参数,延时任务如果没有传任务参数会拿数据库的参数来执行
-		CronExpr:  "@every 5m",                                                        // cron执行表达式
-		Status:    def.StatusWaitRun,                                                  // 状态
-		Priority:  3,                                                                  //优先级: 10:critical 最高优先级  3: default 普通优先级 1:low 低优先级
+		GroupCode: def.TimedUnitedRhinoQueueGroupCode,                               //组编码
+		Type:      1,                                                                //任务类型 1 定时任务 2 延时任务
+		Name:      "联犀协议网关定时处理",                                                     // 任务名称
+		Code:      "iThingsDgOnlineTimer",                                           //任务编码
+		Params:    fmt.Sprintf(`{"topic":"%s","payload":""}`, topics.DgOnlineTimer), // 任务参数,延时任务如果没有传任务参数会拿数据库的参数来执行
+		CronExpr:  "@every 5m",                                                      // cron执行表达式
+		Status:    def.StatusWaitRun,                                                // 状态
+		Priority:  3,                                                                //优先级: 10:critical 最高优先级  3: default 普通优先级 1:low 低优先级
 	})
 	if err != nil && !errors.Cmp(errors.Fmt(err), errors.Duplicate) {
 		logx.Must(err)

@@ -6,7 +6,6 @@ import (
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
-	"gitee.com/unitedrhino/share/eventBus"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
@@ -14,6 +13,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgOta"
+	"gitee.com/unitedrhino/things/share/topics"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"
@@ -224,7 +224,7 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 				ProcessIn: dmOtaJob.Static.ScheduleTime,
 			},
 			ParamQueue: &timedjob.TaskParamQueue{
-				Topic:   eventBus.DmOtaJobDelayRun,
+				Topic:   topics.DmOtaJobDelayRun,
 				Payload: cast.ToString(dmOtaJob.ID),
 			},
 		})

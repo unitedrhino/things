@@ -6,13 +6,13 @@ import (
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
-	"gitee.com/unitedrhino/share/eventBus"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/domain/alarm"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/domain/scene"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/share/devices"
+	"gitee.com/unitedrhino/things/share/topics"
 	"time"
 
 	"gitee.com/unitedrhino/things/service/udsvr/internal/svc"
@@ -48,7 +48,7 @@ func (l *AlarmRecordCreateLogic) AlarmRecordCreate(in *ud.AlarmRecordCreateReq) 
 		if a.AlarmInfo.Status == def.False {
 			continue
 		}
-		err := l.svcCtx.FastEvent.Publish(l.ctx, fmt.Sprintf(eventBus.UdRuleAlarmNotify, in.Mode), utils.Copy[alarm.Notify](in))
+		err := l.svcCtx.FastEvent.Publish(l.ctx, fmt.Sprintf(topics.UdRuleAlarmNotify, in.Mode), utils.Copy[alarm.Notify](in))
 		if err != nil {
 			l.Error(err)
 		}

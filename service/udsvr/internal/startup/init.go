@@ -9,7 +9,6 @@ import (
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/eventBus"
-	"gitee.com/unitedrhino/share/events/topics"
 	"gitee.com/unitedrhino/share/tools"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/udsvr/internal/domain/alarm"
@@ -20,6 +19,7 @@ import (
 	"gitee.com/unitedrhino/things/service/udsvr/internal/svc"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/application"
+	"gitee.com/unitedrhino/things/share/topics"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"sync"
@@ -40,14 +40,14 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 	})
 	logx.Must(err)
 
-	err = svcCtx.FastEvent.QueueSubscribe(eventBus.DmDeviceInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
+	err = svcCtx.FastEvent.QueueSubscribe(topics.DmDeviceInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
 		var di devices.Core
 		err := json.Unmarshal(body, &di)
 		logx.WithContext(ctx).Infof("DmDeviceInfoDelete value:%v err:%v", string(body), err)
 		return sceneChangeEvent.NewHandle(ctx, svcCtx).SceneDeviceDelete(di)
 	})
 	logx.Must(err)
-	err = svcCtx.FastEvent.QueueSubscribe(eventBus.DmDeviceInfoUnbind, func(ctx context.Context, t time.Time, body []byte) error {
+	err = svcCtx.FastEvent.QueueSubscribe(topics.DmDeviceInfoUnbind, func(ctx context.Context, t time.Time, body []byte) error {
 		var di devices.Core
 		err := json.Unmarshal(body, &di)
 		logx.WithContext(ctx).Infof("DmDeviceInfoUnbind value:%v err:%v", string(body), err)
@@ -65,7 +65,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 	//logx.Must(err)
 
 	{
-		err = svcCtx.FastEvent.QueueSubscribe(eventBus.UdRuleTimer, func(ctx context.Context, t time.Time, body []byte) error {
+		err = svcCtx.FastEvent.QueueSubscribe(topics.UdRuleTimer, func(ctx context.Context, t time.Time, body []byte) error {
 			if t.Before(time.Now().Add(-time.Second * 2)) { //2秒之前的跳过
 				return nil
 			}
@@ -89,7 +89,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		logx.Must(err)
 	}
 	{
-		err = svcCtx.FastEvent.QueueSubscribe(eventBus.UdRuleTimerTenMinutes, func(ctx context.Context, t time.Time, body []byte) error {
+		err = svcCtx.FastEvent.QueueSubscribe(topics.UdRuleTimerTenMinutes, func(ctx context.Context, t time.Time, body []byte) error {
 			if t.Before(time.Now().Add(-time.Second * 2)) { //2秒之前的跳过
 				return nil
 			}
@@ -168,7 +168,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 			}
 			n := utils.Copy[alarm.Notify](ar)
 			n.Mode = scene.ActionAlarmModeRelieve
-			err = svcCtx.FastEvent.Publish(ctx, fmt.Sprintf(eventBus.UdRuleAlarmNotify, scene.ActionAlarmModeRelieve), n)
+			err = svcCtx.FastEvent.Publish(ctx, fmt.Sprintf(topics.UdRuleAlarmNotify, scene.ActionAlarmModeRelieve), n)
 			if err != nil {
 				logx.WithContext(ctx).Error(err)
 			}
@@ -207,14 +207,14 @@ func TimerInit(svcCtx *svc.ServiceContext) {
 	ctx := context.Background()
 	{
 		_, err := svcCtx.TimedM.TaskInfoCreate(ctx, &timedmanage.TaskInfo{
-			GroupCode: def.TimedUnitedRhinoQueueGroupCode,                               //组编码
-			Type:      1,                                                                //任务类型 1 定时任务 2 延时任务
-			Name:      "联犀规则引擎定时任务",                                                     // 任务名称
-			Code:      "iThingsRuleTimer",                                               //任务编码
-			Params:    fmt.Sprintf(`{"topic":"%s","payload":""}`, eventBus.UdRuleTimer), // 任务参数,延时任务如果没有传任务参数会拿数据库的参数来执行
-			CronExpr:  "@every 1s",                                                      // cron执行表达式
-			Status:    def.StatusWaitRun,                                                // 状态
-			Priority:  3,                                                                //优先级: 10:critical 最高优先级  3: default 普通优先级 1:low 低优先级
+			GroupCode: def.TimedUnitedRhinoQueueGroupCode,                             //组编码
+			Type:      1,                                                              //任务类型 1 定时任务 2 延时任务
+			Name:      "联犀规则引擎定时任务",                                                   // 任务名称
+			Code:      "iThingsRuleTimer",                                             //任务编码
+			Params:    fmt.Sprintf(`{"topic":"%s","payload":""}`, topics.UdRuleTimer), // 任务参数,延时任务如果没有传任务参数会拿数据库的参数来执行
+			CronExpr:  "@every 1s",                                                    // cron执行表达式
+			Status:    def.StatusWaitRun,                                              // 状态
+			Priority:  3,                                                              //优先级: 10:critical 最高优先级  3: default 普通优先级 1:low 低优先级
 		})
 		if err != nil && !errors.Cmp(errors.Fmt(err), errors.Duplicate) {
 			logx.Must(err)
@@ -222,14 +222,14 @@ func TimerInit(svcCtx *svc.ServiceContext) {
 	}
 	{
 		_, err := svcCtx.TimedM.TaskInfoCreate(ctx, &timedmanage.TaskInfo{
-			GroupCode: def.TimedUnitedRhinoQueueGroupCode,                                         //组编码
-			Type:      1,                                                                          //任务类型 1 定时任务 2 延时任务
-			Name:      "联犀规则引擎定时任务10分钟",                                                           // 任务名称
-			Code:      "UdRuleTimerTenMinutes",                                                    //任务编码
-			Params:    fmt.Sprintf(`{"topic":"%s","payload":""}`, eventBus.UdRuleTimerTenMinutes), // 任务参数,延时任务如果没有传任务参数会拿数据库的参数来执行
-			CronExpr:  "@every 10m",                                                               // cron执行表达式
-			Status:    def.StatusWaitRun,                                                          // 状态
-			Priority:  3,                                                                          //优先级: 10:critical 最高优先级  3: default 普通优先级 1:low 低优先级
+			GroupCode: def.TimedUnitedRhinoQueueGroupCode,                                       //组编码
+			Type:      1,                                                                        //任务类型 1 定时任务 2 延时任务
+			Name:      "联犀规则引擎定时任务10分钟",                                                         // 任务名称
+			Code:      "UdRuleTimerTenMinutes",                                                  //任务编码
+			Params:    fmt.Sprintf(`{"topic":"%s","payload":""}`, topics.UdRuleTimerTenMinutes), // 任务参数,延时任务如果没有传任务参数会拿数据库的参数来执行
+			CronExpr:  "@every 10m",                                                             // cron执行表达式
+			Status:    def.StatusWaitRun,                                                        // 状态
+			Priority:  3,                                                                        //优先级: 10:critical 最高优先级  3: default 普通优先级 1:low 低优先级
 		})
 		if err != nil && !errors.Cmp(errors.Fmt(err), errors.Duplicate) {
 			logx.Must(err)

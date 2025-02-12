@@ -37,6 +37,7 @@ import (
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
+	"gitee.com/unitedrhino/things/share/topics"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -115,7 +116,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	logx.Must(err)
 
 	getProductSchemaModel, err := caches.NewCache(caches.CacheConfig[schema.Model, string]{
-		KeyType:   eventBus.ServerCacheKeyDmProductSchema,
+		KeyType:   topics.ServerCacheKeyDmProductSchema,
 		FastEvent: serverMsg,
 		GetData: func(ctx context.Context, key string) (*schema.Model, error) {
 			db := relationDB.NewProductSchemaRepo(ctx)
@@ -135,7 +136,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	})
 	logx.Must(err)
 	getDeviceSchemaModel, err := caches.NewCache(caches.CacheConfig[schema.Model, devices.Core]{
-		KeyType:   eventBus.ServerCacheKeyDmDeviceSchema,
+		KeyType:   topics.ServerCacheKeyDmDeviceSchema,
 		FastEvent: serverMsg,
 		GetData: func(ctx context.Context, key devices.Core) (*schema.Model, error) {
 			db := relationDB.NewDeviceSchemaRepo(ctx)

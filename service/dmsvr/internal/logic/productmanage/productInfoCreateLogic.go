@@ -7,6 +7,7 @@ import (
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/protocol"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/things/share/topics"
 	"gorm.io/gorm"
 	"regexp"
 
@@ -204,6 +205,10 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Empt
 	if err != nil {
 		l.Errorf("%s.Insert err=%+v", utils.FuncName(), err)
 		return nil, err
+	}
+	err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmProductInfoCreate, in.ProductID)
+	if err != nil {
+		l.Error(err)
 	}
 	return &dm.Empty{}, nil
 }

@@ -4,9 +4,9 @@ import (
 	"context"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
-	"gitee.com/unitedrhino/share/eventBus"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/things/share/topics"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -86,7 +86,7 @@ func (l *ProductInfoDeleteLogic) DropProduct(in *dm.ProductInfoDeleteReq) error 
 	if err != nil {
 		l.Error(err)
 	}
-	err = l.svcCtx.FastEvent.Publish(l.ctx, eventBus.DmProductInfoDelete, in.ProductID)
+	err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmProductInfoDelete, in.ProductID)
 	if err != nil {
 		l.Error(err)
 	}

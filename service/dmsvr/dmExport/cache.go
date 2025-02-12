@@ -3,6 +3,7 @@ package dmExport
 import (
 	"context"
 	"encoding/json"
+	"gitee.com/unitedrhino/things/share/topics"
 
 	"gitee.com/unitedrhino/share/caches"
 	"gitee.com/unitedrhino/share/eventBus"
@@ -19,7 +20,7 @@ type ProductCacheT = *caches.Cache[dm.ProductInfo, string]
 
 func NewProductInfoCache(pm productmanage.ProductManage, fastEvent *eventBus.FastEvent) (ProductCacheT, error) {
 	return caches.NewCache(caches.CacheConfig[dm.ProductInfo, string]{
-		KeyType:   eventBus.ServerCacheKeyDmProduct,
+		KeyType:   topics.ServerCacheKeyDmProduct,
 		FastEvent: fastEvent,
 		GetData: func(ctx context.Context, key string) (*dm.ProductInfo, error) {
 			ret, err := pm.ProductInfoRead(ctx, &dm.ProductInfoReadReq{ProductID: key, WithCategory: true, WithProtocol: true})
@@ -32,7 +33,7 @@ type DeviceCacheT = *caches.Cache[dm.DeviceInfo, devices.Core]
 
 func NewDeviceInfoCache(devM devicemanage.DeviceManage, fastEvent *eventBus.FastEvent) (DeviceCacheT, error) {
 	return caches.NewCache(caches.CacheConfig[dm.DeviceInfo, devices.Core]{
-		KeyType:   eventBus.ServerCacheKeyDmDevice,
+		KeyType:   topics.ServerCacheKeyDmDevice,
 		FastEvent: fastEvent,
 		GetData: func(ctx context.Context, key devices.Core) (*dm.DeviceInfo, error) {
 			ret, err := devM.DeviceInfoRead(ctx, &dm.DeviceInfoReadReq{ProductID: key.ProductID, DeviceName: key.DeviceName})
@@ -50,7 +51,7 @@ type UserShareCacheT = *caches.Cache[dm.UserDeviceShareInfo, userShared.UserShar
 
 func NewUserShareCache(devM userdevice.UserDevice, fastEvent *eventBus.FastEvent) (UserShareCacheT, error) {
 	return caches.NewCache(caches.CacheConfig[dm.UserDeviceShareInfo, userShared.UserShareKey]{
-		KeyType:   eventBus.ServerCacheKeyDmUserShareDevice,
+		KeyType:   topics.ServerCacheKeyDmUserShareDevice,
 		FastEvent: fastEvent,
 		GetData: func(ctx context.Context, key userShared.UserShareKey) (*dm.UserDeviceShareInfo, error) {
 			ret, err := devM.UserDeviceShareRead(ctx, &dm.UserDeviceShareReadReq{
@@ -68,7 +69,7 @@ type ProductSchemaCacheT = *caches.Cache[schema.Model, string]
 
 func NewProductSchemaCache(pm productmanage.ProductManage, fastEvent *eventBus.FastEvent) (ProductSchemaCacheT, error) {
 	return caches.NewCache(caches.CacheConfig[schema.Model, string]{
-		KeyType:   eventBus.ServerCacheKeyDmProductSchema,
+		KeyType:   topics.ServerCacheKeyDmProductSchema,
 		FastEvent: fastEvent,
 		Fmt: func(ctx context.Context, key string, data *schema.Model) *schema.Model {
 			data.ValidateWithFmt()
@@ -88,7 +89,7 @@ type DeviceSchemaCacheT = *caches.Cache[schema.Model, devices.Core]
 
 func NewDeviceSchemaCache(pm devicemanage.DeviceManage, pc ProductSchemaCacheT, fastEvent *eventBus.FastEvent) (DeviceSchemaCacheT, error) {
 	ret, err := caches.NewCache(caches.CacheConfig[schema.Model, devices.Core]{
-		KeyType:   eventBus.ServerCacheKeyDmDeviceSchema,
+		KeyType:   topics.ServerCacheKeyDmDeviceSchema,
 		FastEvent: fastEvent,
 		Fmt: func(ctx context.Context, key devices.Core, data *schema.Model) *schema.Model {
 			pd, _ := pc.GetData(ctx, key.ProductID)

@@ -14,6 +14,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/share/topics"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"os"
@@ -250,6 +251,10 @@ func (l *ProductInfoUpdateLogic) ProductInfoUpdate(in *dm.ProductInfo) (*dm.Empt
 		return nil, err
 	}
 	err = l.svcCtx.ProductCache.SetData(l.ctx, in.ProductID, nil)
+	if err != nil {
+		l.Error(err)
+	}
+	err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmProductInfoUpdate, in.ProductID)
 	if err != nil {
 		l.Error(err)
 	}
