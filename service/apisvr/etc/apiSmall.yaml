@@ -4,16 +4,17 @@ Host: 0.0.0.0
 CpuThreshold: 0
 Timeout: 1000000
 MaxBytes: 1000000000
-Port: 7777
+Port: 7788
 NodeID: 1
 Log:
   Encoding: plain
   #Mode: file
 CacheRedis:
-  - Host: localhost:6379
+  - Host: 127.0.0.1:6379
     Pass:
     Type: node
-
+Middlewares:
+  Prometheus: false
 Rej:
   AccessSecret: ad879037-c7a4-4063-9236-6bfc35d54b7d
   AccessExpire: 600     #过期时间单位秒
@@ -23,50 +24,33 @@ OpenAuth:
       Password: iThings
     - UserName: root
       Password: iThings
-Proxy:
-  StaticProxy:
-    - Router: /api/v1/view/
-      Dest: http://localhost:7789
-    - Router: /api/v1/app/
-      Dest: http://localhost:8000
-    - Router: /api/v1/things/
-      Dest: http://localhost:7788
-    - Router: /api/v1/protocol/cloud/tencent/
-      Dest: http://localhost:9363
-    - Router: /api/v1/video/
-      Dest: http://localhost:7800
-    - Router: /api/v1/media/
-      Dest: http://localhost:8088
-    - Router: /api/v1/data/
-      Dest: http://localhost:9218
-    - Router: /api/v1/sale/
-      Dest: http://localhost:9283
-    - Router: /api/v1/tunnel/
-      Dest: http://localhost:8533
-    - Router: /oss/
-      DeletePrefix: true
-      Dest: http://localhost:9000
-    - Router: /iot
-      DeletePrefix: false
-      Dest: http://localhost:9119
-
+DgRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000
+DmRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000
 SysRpc:
   Enable: true
-  Mode: direct
-  RunProxy: true
+  Mode: grpc
   Conf:
     Timeout: 1000000
-
+    Endpoints:
+      - localhost:9180
 TimedJobRpc:
   Enable: true
-  Mode: direct
-  RunProxy: true
+  Mode: grpc
   Conf:
     Timeout: 1000000
-TimedSchedulerRpc:
+    Endpoints:
+      - localhost:3256
+UdRpc:
   Enable: true
   Mode: direct
-  RunProxy: true
   Conf:
     Timeout: 1000000
 
@@ -77,17 +61,21 @@ OssConf:
   TemporaryBucketName: ithings-temporary
   AccessKeyID: root
   AccessKeySecret: password
-  Location: localhost:9000
+  Location: 127.0.0.1:9000
   ConnectTimeout: 6000
   ReadWriteTimeout: 60000
   UseSSL: false
 
+Event:
+  Nats:
+    Url: nats://127.0.0.1:4222
+    Consumer: things-apisvr
 #Telemetry:
-#  Name: coresvr
+#  Name: thingsvr
 #  Endpoint: http://localhost:14268/api/traces
 #  Sampler: 1.0
 #  Batcher: jaeger
 #Prometheus:
 #  Host: 0.0.0.0
-#  Port: 17777
+#  Port: 17788
 #  Path: /metrics
