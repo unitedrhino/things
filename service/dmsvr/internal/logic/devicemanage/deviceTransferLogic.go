@@ -226,6 +226,10 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 	if len(changeAreaIDPaths) > 0 {
 		ctxs.GoNewCtx(l.ctx, func(ctx2 context.Context) {
 			logic.FillAreaDeviceCount(ctx2, l.svcCtx, utils.SetToSlice(changeAreaIDPaths)...)
+		})
+	}
+	if len(projectIDSet) > 0 {
+		ctxs.GoNewCtx(l.ctx, func(ctx2 context.Context) {
 			logic.FillProjectDeviceCount(ctx2, l.svcCtx, utils.SetToSlice(projectIDSet)...)
 		})
 	}
