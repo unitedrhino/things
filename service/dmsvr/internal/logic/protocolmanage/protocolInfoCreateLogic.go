@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"gitee.com/unitedrhino/share/ctxs"
+	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/protocol"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
@@ -34,11 +35,34 @@ func (l *ProtocolInfoCreateLogic) ProtocolInfoCreate(in *dm.ProtocolInfo) (*dm.W
 	if err := ctxs.IsRoot(l.ctx); err != nil {
 		return nil, err
 	}
+
 	po := logic.ToProtocolInfoPo(in)
 	if err := protocol.Check(po.ConfigFields, po.ConfigInfos); err != nil {
 		return nil, err
 	}
-	err := relationDB.NewProtocolInfoRepo(l.ctx).Insert(l.ctx, po)
+	old, err := relationDB.NewProtocolInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.ProtocolInfoFilter{Code: in.Code})
+	if err == nil {
+		old.Name = in.Name
+		old.Desc = in.Desc
+		old.ProductFields = po.ProductFields
+		if old.ProductFields == nil {
+			old.ProductFields = protocol.ConfigFields{}
+		}
+		old.ConfigFields = po.ConfigFields
+		if old.ConfigFields == nil {
+			old.ConfigFields = protocol.ConfigFields{}
+		}
+		old.Endpoints = po.Endpoints
+		if old.Endpoints == nil {
+			old.Endpoints = []string{}
+		}
+		old.EtcdKey = po.EtcdKey
+		err := relationDB.NewProtocolInfoRepo(l.ctx).Update(l.ctx, old)
+		return &dm.WithID{Id: old.ID}, err
+	} else if !errors.NotFind.Eq(err) {
+		return nil, err
+	}
+	err = relationDB.NewProtocolInfoRepo(l.ctx).Insert(l.ctx, po)
 	if err != nil {
 		return nil, err
 	}

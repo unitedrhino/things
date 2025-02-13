@@ -78,6 +78,7 @@ type (
         Status int64 `json:"status,optional"` //产品状态 1:启用 2:禁用 3:开发中
         BindLevel int64 `json:"bindLevel,optional"` //绑定级别: 1:强绑定(默认,只有用户解绑之后才能绑定) 2:中绑定(可以通过token强制解绑设备) 3:弱绑定(app可以内部解绑被绑定的设备)
         ProtocolConf []*Tag `json:"protocolConf,optional,omitempty"` //协议配置
+        SubProtocolConf []*Tag `json:"subProtocolConf,optional,omitempty"` //子协议协议配置
     //  DevStatus *string `json:"devStatus,optional,omitempty"`                           // 产品状态
         Protocol           *ProtocolInfo           `json:"protocol,omitempty"`
         Category           *ProductCategory        `json:"category,omitempty"`

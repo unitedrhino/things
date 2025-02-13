@@ -231,7 +231,8 @@ func (p *CoreProtocol) RegisterProductIDSync() error {
 		p.ProductIDMap = map[string]string{}
 		p.UnitedRhinoProductIDs = nil
 		for _, pi := range pis.List {
-			id := pi.ProtocolConf[p.ThirdProductIDFieldName]
+			pc := p.GetProtocolConf(pi)
+			id := pc[p.ThirdProductIDFieldName]
 			if id == "" {
 				continue
 			}
@@ -254,4 +255,11 @@ func (p *CoreProtocol) GetUnitedRhinoProductIDs() []string {
 	p.ProductIDMapMutex.RLock()
 	defer p.ProductIDMapMutex.RUnlock()
 	return p.UnitedRhinoProductIDs
+}
+
+func (p *CoreProtocol) GetProtocolConf(pi *dm.ProductInfo) map[string]string {
+	if pi.SubProtocolCode != nil && pi.SubProtocolCode.GetValue() == p.Pi.Code {
+		return pi.SubProtocolConf
+	}
+	return pi.ProtocolConf
 }

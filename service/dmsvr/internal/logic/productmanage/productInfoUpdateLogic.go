@@ -207,6 +207,9 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 	if data.ProtocolConf != nil {
 		old.ProtocolConf = data.ProtocolConf
 	}
+	if data.SubProtocolConf != nil {
+		old.SubProtocolConf = data.SubProtocolConf
+	}
 	if data.CategoryID != 0 {
 		old.CategoryID = data.CategoryID
 	}

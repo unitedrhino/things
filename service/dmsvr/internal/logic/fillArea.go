@@ -65,6 +65,7 @@ func fillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, areaID
 			area, err := svcCtx.AreaCache.GetData(ctx, id)
 			if err != nil {
 				log.Error(err)
+				continue
 			}
 			_, err = svcCtx.AreaM.AreaInfoUpdate(ctx, &sys.AreaInfo{ProjectID: area.ProjectID, AreaID: id, DeviceCount: &wrapperspb.Int64Value{Value: count}})
 			if err != nil {

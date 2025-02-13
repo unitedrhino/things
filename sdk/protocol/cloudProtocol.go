@@ -163,7 +163,8 @@ func (p *CloudProtocol[pConf]) RegisterDeviceSync(fieldName string /*自定义�
 			return err
 		}
 		for _, pi := range pis.List {
-			key := pi.ProtocolConf[fieldName]
+			pc := p.GetProtocolConf(pi)
+			key := pc[fieldName]
 			if key == "" {
 				continue
 			}

@@ -20,6 +20,7 @@ func ToInfoPb(in *types.ProtocolInfo) *dm.ProtocolInfo {
 		EtcdKey:       in.EtcdKey,
 		ConfigFields:  ToConfigFieldsPb(in.ConfigFields),
 		ConfigInfos:   ToConfigInfosPb(in.ConfigInfos),
+		ProductFields: ToConfigFieldsPb(in.ProductFields),
 	}
 }
 
@@ -63,6 +64,7 @@ func ToInfoTypes(in *dm.ProtocolInfo) *types.ProtocolInfo {
 		EtcdKey:       in.EtcdKey,
 		ConfigFields:  ToConfigFieldsTypes(in.ConfigFields),
 		ConfigInfos:   ToConfigInfosTypes(in.ConfigInfos),
+		ProductFields: ToConfigFieldsTypes(in.ProductFields),
 	}
 }
 func ToInfosTypes(in []*dm.ProtocolInfo) (ret []*types.ProtocolInfo) {

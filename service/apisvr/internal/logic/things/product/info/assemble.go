@@ -12,6 +12,7 @@ func productInfoToApi(ctx context.Context, v *dm.ProductInfo) *types.ProductInfo
 	if uc := ctxs.GetUserCtx(ctx); uc != nil && !uc.IsAdmin {
 		v.Secret = ""        // 设备秘钥
 		v.ProtocolConf = nil // 设备证书
+		v.SubProtocolConf = nil
 	}
 	return utils.Copy[types.ProductInfo](v)
 }

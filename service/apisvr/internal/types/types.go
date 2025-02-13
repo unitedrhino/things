@@ -1426,6 +1426,7 @@ type ProductInfo struct {
 	Status             int64                       `json:"status,optional"`                       //产品状态 1:启用 2:禁用 3:开发中
 	BindLevel          int64                       `json:"bindLevel,optional"`                    //绑定级别: 1:强绑定(默认,只有用户解绑之后才能绑定) 2:中绑定(可以通过token强制解绑设备) 3:弱绑定(app可以内部解绑被绑定的设备)
 	ProtocolConf       []*Tag                      `json:"protocolConf,optional,omitempty"`       //协议配置
+	SubProtocolConf    []*Tag                      `json:"subProtocolConf,optional,omitempty"`    //子协议协议配置
 	Protocol           *ProtocolInfo               `json:"protocol,omitempty"`
 	Category           *ProductCategory            `json:"category,omitempty"`
 	CustomUi           map[string]*ProductCustomUi `json:"customUi,optional,omitempty"` //自定义ui,key是端的类型(web-client  mini-client) value是以下类型的对象{version:123(版本号,只读),isUpdateUi:bool(是否更新ui),path:string(前端路径,如果需要修改,需要将isUpdateUi置为true并在这个参数中传入压缩包的filePath)}
@@ -1600,8 +1601,9 @@ type ProtocolInfo struct {
 	Desc          string                 `json:"desc,optional"`
 	Endpoints     []string               `json:"endpoints,optional"`
 	EtcdKey       string                 `json:"etcdKey,optional"`
-	ConfigFields  []*ProtocolConfigField `json:"configFields,optional"` //配置字段列表,没有可以不传
-	ConfigInfos   []*ProtocolConfigInfo  `json:"configInfos,optional"`  //配置列表
+	ConfigFields  []*ProtocolConfigField `json:"configFields,optional"`  //配置字段列表,没有可以不传
+	ConfigInfos   []*ProtocolConfigInfo  `json:"configInfos,optional"`   //配置列表
+	ProductFields []*ProtocolConfigField `json:"productFields,optional"` //产品级的配置字段列表,没有可以不传
 }
 
 type ProtocolInfoIndexReq struct {

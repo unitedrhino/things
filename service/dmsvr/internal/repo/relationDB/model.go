@@ -165,9 +165,10 @@ type DmProductInfo struct {
 	Desc             string                `gorm:"column:desc;type:varchar(200)"`                               // 描述
 	TrialTime        int64                 `gorm:"column:trial_time"`                                           //试用时间(单位为天,为0不限制)
 	Status           devices.ProductStatus `gorm:"column:status;type:smallint;default:1"`
-	SceneMode        string                `gorm:"column:scene_mode;type:varchar(20);default:rw"`                        // 场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
-	Tags             map[string]string     `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"`          // 产品标签
-	ProtocolConf     map[string]string     `gorm:"column:protocol_conf;type:json;serializer:json;NOT NULL;default:'{}'"` // 自定义协议配置
+	SceneMode        string                `gorm:"column:scene_mode;type:varchar(20);default:rw"`                            // 场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
+	Tags             map[string]string     `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"`              // 产品标签
+	ProtocolConf     map[string]string     `gorm:"column:protocol_conf;type:json;serializer:json;NOT NULL;default:'{}'"`     // 自定义协议配置
+	SubProtocolConf  map[string]string     `gorm:"column:sub_protocol_conf;type:json;serializer:json;NOT NULL;default:'{}'"` // 子模块自定义协议配置
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:pd"`
 	Category    *DmProductCategory `gorm:"foreignKey:ID;references:CategoryID"` // 添加外键
@@ -226,15 +227,16 @@ func (m *DmProductCategorySchema) TableName() string {
 // 自定义协议表
 type DmProtocolInfo struct {
 	ID            int64                 `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	Name          string                `gorm:"column:name;uniqueIndex:pn;type:varchar(100);NOT NULL"`                // 协议名称
-	Code          string                `gorm:"column:code;uniqueIndex:pc;type:varchar(100);NOT NULL"`                // iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
-	Type          protocols.Type        `gorm:"column:type;type:varchar(100);default:normal"`                         //协议类型
-	TransProtocol string                `gorm:"column:trans_protocol;type:varchar(100);default:mqtt"`                 // 传输协议: mqtt,tcp,udp
-	Desc          string                `gorm:"column:desc;type:varchar(2000)"`                                       // 描述
-	ConfigFields  protocol.ConfigFields `gorm:"column:config_fields;type:json;serializer:json;NOT NULL;default:'[]'"` // 需要配置的字段列表,没有可以不传
-	ConfigInfos   protocol.ConfigInfos  `gorm:"column:config_infos;type:json;serializer:json;NOT NULL;default:'[]'"`  // 配置列表
-	Endpoints     []string              `gorm:"column:endpoints;type:json;serializer:json;NOT NULL;default:'[]'"`     // 协议端点,如果填写了优先使用该字段
-	EtcdKey       string                `gorm:"column:etcd_key;type:varchar(200);default:null"`                       // 服务etcd发现的key etcd key
+	Name          string                `gorm:"column:name;uniqueIndex:pn;type:varchar(100);NOT NULL"`                 // 协议名称
+	Code          string                `gorm:"column:code;uniqueIndex:pc;type:varchar(100);NOT NULL"`                 // iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
+	Type          protocols.Type        `gorm:"column:type;type:varchar(100);default:normal"`                          //协议类型
+	TransProtocol string                `gorm:"column:trans_protocol;type:varchar(100);default:mqtt"`                  // 传输协议: mqtt,tcp,udp
+	Desc          string                `gorm:"column:desc;type:varchar(2000)"`                                        // 描述
+	ProductFields protocol.ConfigFields `gorm:"column:product_fields;type:json;serializer:json;NOT NULL;default:'[]'"` // 协议需要的产品配置字段列表,没有可以不传
+	ConfigFields  protocol.ConfigFields `gorm:"column:config_fields;type:json;serializer:json;NOT NULL;default:'[]'"`  // 需要配置的字段列表,没有可以不传
+	ConfigInfos   protocol.ConfigInfos  `gorm:"column:config_infos;type:json;serializer:json;NOT NULL;default:'[]'"`   // 配置列表
+	Endpoints     []string              `gorm:"column:endpoints;type:json;serializer:json;NOT NULL;default:'[]'"`      // 协议端点,如果填写了优先使用该字段
+	EtcdKey       string                `gorm:"column:etcd_key;type:varchar(200);default:null"`                        // 服务etcd发现的key etcd key
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:pc;uniqueIndex:pn"`
 }
