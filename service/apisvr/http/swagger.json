@@ -12864,6 +12864,12 @@
         "code": {
           "type": "string"
         },
+        "codes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
         "type": {
           "type": "string",
           "description": "协议类型: 普通设备(默认):normal  音视频:media"

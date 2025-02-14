@@ -582,6 +582,7 @@ message ProtocolInfoIndexReq{
   string type =4;//协议类型
   string  transProtocol = 5;// 传输协议: mqtt,tcp,udp
   repeated string notCodes =6;//排除的协议包
+  repeated string  codes =7;
 }
 
 message ProtocolInfoIndexResp{

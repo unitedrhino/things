@@ -40,6 +40,7 @@ func (l *ProtocolInfoIndexLogic) ProtocolInfoIndex(in *dm.ProtocolInfoIndexReq) 
 		Type:          in.Type,
 		TransProtocol: in.TransProtocol,
 		NotCodes:      in.NotCodes,
+		Codes:         in.Codes,
 	}
 	size, err = piDB.CountByFilter(l.ctx, filter)
 	if err != nil {

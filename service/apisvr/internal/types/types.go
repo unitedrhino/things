@@ -1607,9 +1607,10 @@ type ProtocolInfo struct {
 }
 
 type ProtocolInfoIndexReq struct {
-	Page          *PageInfo `json:"page,optional"`          //分页信息,只获取一个则不填
-	Name          string    `json:"name,optional"`          //
-	Code          string    `json:"code,optional"`          //
+	Page          *PageInfo `json:"page,optional"` //分页信息,只获取一个则不填
+	Name          string    `json:"name,optional"` //
+	Code          string    `json:"code,optional"` //
+	Codes         []string  `json:"codes,optional"`
 	Type          string    `json:"type,optional"`          //协议类型: 普通设备(默认):normal  音视频:media
 	TransProtocol string    `json:"transProtocol,optional"` // 传输协议: mqtt,tcp,udp
 }

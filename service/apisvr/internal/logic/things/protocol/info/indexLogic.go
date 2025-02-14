@@ -2,7 +2,7 @@ package info
 
 import (
 	"context"
-	"gitee.com/unitedrhino/things/service/apisvr/internal/logic"
+	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 
 	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
@@ -26,13 +26,7 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 }
 
 func (l *IndexLogic) Index(req *types.ProtocolInfoIndexReq) (resp *types.ProtocolInfoIndexResp, err error) {
-	ret, err := l.svcCtx.ProtocolM.ProtocolInfoIndex(l.ctx, &dm.ProtocolInfoIndexReq{
-		Page:          logic.ToDmPageRpc(req.Page),
-		Name:          req.Name,
-		Type:          req.Type,
-		Code:          req.Code,
-		TransProtocol: req.TransProtocol,
-	})
+	ret, err := l.svcCtx.ProtocolM.ProtocolInfoIndex(l.ctx, utils.Copy[dm.ProtocolInfoIndexReq](req))
 
 	return &types.ProtocolInfoIndexResp{
 		List:  ToInfosTypes(ret.List),
