@@ -1,7 +1,8 @@
-package apidirect
+package export
 
 import (
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/apisvr/direct"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/config"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/handler"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/startup"
@@ -13,8 +14,9 @@ type (
 	Config         = config.Config
 	ServiceContext = svc.ServiceContext
 	ApiCtx         struct {
-		Server *rest.Server
-		SvcCtx *ServiceContext
+		Server        *rest.Server
+		SvcCtx        *ServiceContext
+		NotInitHandle bool
 	}
 )
 
@@ -36,20 +38,10 @@ func runApi(apiCtx ApiCtx) ApiCtx {
 		server = rest.MustNewServer(c.RestConf)
 		apiCtx.Server = server
 	}
-	handler.RegisterHandlers(server, ctx)
-	//subAppCli, err := subApp.NewSubApp(ctx.Config.Event)
-	//if err != nil {
-	//	logx.Error("NewSubApp err", err)
-	//	os.Exit(-1)
-	//}
-	//err = subAppCli.Subscribe(func(ctx1 context.Context) subApp.AppSubEvent {
-	//	return appDeviceEvent.NewAppDeviceHandle(ctx1, ctx)
-	//})
-	//if err != nil {
-	//	log.Fatalf("%v.subApp.Subscribe err:%v",
-	//		utils.FuncName(), err)
-	//}
-	//ota附件处理
+	if !apiCtx.NotInitHandle {
+		handler.RegisterHandlers(server, ctx)
+	}
 	startup.Init(apiCtx.SvcCtx)
+	direct.InitServers(server)
 	return apiCtx
 }
