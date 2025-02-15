@@ -128,7 +128,7 @@ func (m MqttClient) SetClientMutSub(ctx context.Context, clientID string, topics
 		break
 	}
 	if errs != nil {
-		return errors.System.AddDetail(errs, string(body))
+		return errors.System.AddDetail(topics, qos, errs, string(body))
 	}
 
 	return nil

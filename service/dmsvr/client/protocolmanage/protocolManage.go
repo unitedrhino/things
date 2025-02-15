@@ -188,6 +188,9 @@ type (
 	ProtocolInfo                      = dm.ProtocolInfo
 	ProtocolInfoIndexReq              = dm.ProtocolInfoIndexReq
 	ProtocolInfoIndexResp             = dm.ProtocolInfoIndexResp
+	ProtocolPlugin                    = dm.ProtocolPlugin
+	ProtocolPluginIndexReq            = dm.ProtocolPluginIndexReq
+	ProtocolPluginIndexResp           = dm.ProtocolPluginIndexResp
 	ProtocolService                   = dm.ProtocolService
 	ProtocolServiceIndexReq           = dm.ProtocolServiceIndexReq
 	ProtocolServiceIndexResp          = dm.ProtocolServiceIndexResp
@@ -244,6 +247,16 @@ type (
 		ProtocolServiceUpdate(ctx context.Context, in *ProtocolService, opts ...grpc.CallOption) (*Empty, error)
 		ProtocolServiceDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
 		ProtocolServiceIndex(ctx context.Context, in *ProtocolServiceIndexReq, opts ...grpc.CallOption) (*ProtocolServiceIndexResp, error)
+		// 协议列表
+		ProtocolPluginIndex(ctx context.Context, in *ProtocolPluginIndexReq, opts ...grpc.CallOption) (*ProtocolPluginIndexResp, error)
+		// 协议详情
+		ProtocolPluginRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProtocolPlugin, error)
+		// 协议创建
+		ProtocolPluginCreate(ctx context.Context, in *ProtocolPlugin, opts ...grpc.CallOption) (*WithID, error)
+		// 协议更新
+		ProtocolPluginUpdate(ctx context.Context, in *ProtocolPlugin, opts ...grpc.CallOption) (*Empty, error)
+		// 协议删除
+		ProtocolPluginDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
 	}
 
 	defaultProtocolManage struct {
@@ -351,4 +364,59 @@ func (m *defaultProtocolManage) ProtocolServiceIndex(ctx context.Context, in *Pr
 
 func (d *directProtocolManage) ProtocolServiceIndex(ctx context.Context, in *ProtocolServiceIndexReq, opts ...grpc.CallOption) (*ProtocolServiceIndexResp, error) {
 	return d.svr.ProtocolServiceIndex(ctx, in)
+}
+
+// 协议列表
+func (m *defaultProtocolManage) ProtocolPluginIndex(ctx context.Context, in *ProtocolPluginIndexReq, opts ...grpc.CallOption) (*ProtocolPluginIndexResp, error) {
+	client := dm.NewProtocolManageClient(m.cli.Conn())
+	return client.ProtocolPluginIndex(ctx, in, opts...)
+}
+
+// 协议列表
+func (d *directProtocolManage) ProtocolPluginIndex(ctx context.Context, in *ProtocolPluginIndexReq, opts ...grpc.CallOption) (*ProtocolPluginIndexResp, error) {
+	return d.svr.ProtocolPluginIndex(ctx, in)
+}
+
+// 协议详情
+func (m *defaultProtocolManage) ProtocolPluginRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProtocolPlugin, error) {
+	client := dm.NewProtocolManageClient(m.cli.Conn())
+	return client.ProtocolPluginRead(ctx, in, opts...)
+}
+
+// 协议详情
+func (d *directProtocolManage) ProtocolPluginRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProtocolPlugin, error) {
+	return d.svr.ProtocolPluginRead(ctx, in)
+}
+
+// 协议创建
+func (m *defaultProtocolManage) ProtocolPluginCreate(ctx context.Context, in *ProtocolPlugin, opts ...grpc.CallOption) (*WithID, error) {
+	client := dm.NewProtocolManageClient(m.cli.Conn())
+	return client.ProtocolPluginCreate(ctx, in, opts...)
+}
+
+// 协议创建
+func (d *directProtocolManage) ProtocolPluginCreate(ctx context.Context, in *ProtocolPlugin, opts ...grpc.CallOption) (*WithID, error) {
+	return d.svr.ProtocolPluginCreate(ctx, in)
+}
+
+// 协议更新
+func (m *defaultProtocolManage) ProtocolPluginUpdate(ctx context.Context, in *ProtocolPlugin, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewProtocolManageClient(m.cli.Conn())
+	return client.ProtocolPluginUpdate(ctx, in, opts...)
+}
+
+// 协议更新
+func (d *directProtocolManage) ProtocolPluginUpdate(ctx context.Context, in *ProtocolPlugin, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.ProtocolPluginUpdate(ctx, in)
+}
+
+// 协议删除
+func (m *defaultProtocolManage) ProtocolPluginDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewProtocolManageClient(m.cli.Conn())
+	return client.ProtocolPluginDelete(ctx, in, opts...)
+}
+
+// 协议删除
+func (d *directProtocolManage) ProtocolPluginDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.ProtocolPluginDelete(ctx, in)
 }

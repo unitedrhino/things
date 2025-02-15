@@ -9,6 +9,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/productCustom"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/protocol"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/protocolTrans"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/protocols"
 	"gitee.com/unitedrhino/things/share/domain/schema"
@@ -28,6 +29,8 @@ type DmDeviceInfo struct {
 	ProjectID   dataType.ProjectID  `gorm:"column:project_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`       // 项目ID(雪花ID)
 	AreaID      dataType.AreaID     `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`          // 项目区域ID(雪花ID)
 	AreaIDPath  dataType.AreaIDPath `gorm:"column:area_id_path;type:varchar(100);default:'';NOT NULL"`                       // 项目区域ID路径(雪花ID)
+	DeptID      int64               `gorm:"column:dept_id;uniqueIndex:ri_mi;NOT NULL;type:BIGINT"`                           // 角色ID
+	DeptIDPath  string              `gorm:"column:dept_id_path;type:varchar(100);NOT NULL"`                                  // 1-2-3-的格式记录顶级区域到当前id的路径
 	ProductID   string              `gorm:"column:product_id;type:varchar(100);uniqueIndex:product_id_deviceName;NOT NULL"`  // 产品id
 	DeviceName  string              `gorm:"column:device_name;uniqueIndex:product_id_deviceName;type:varchar(100);NOT NULL"` // 设备名称
 	DeviceAlias string              `gorm:"column:device_alias;type:varchar(100);NOT NULL"`                                  // 设备别名
@@ -256,6 +259,31 @@ type DmProtocolService struct {
 
 func (m *DmProtocolService) TableName() string {
 	return "dm_protocol_service"
+}
+
+// 协议插件
+type DmProtocolPlugin struct {
+	ID   int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	Name string `gorm:"column:name;uniqueIndex:pc;type:varchar(100);not null"` //转换名称
+	//ProductIDs    []string          `gorm:"column:product_ids;type:json;serializer:json;default:'[]'"` // 产品id
+	//Devices       []devices.Core    `gorm:"column:devices;type:json;serializer:json;default:'[]'"`     //设备触发
+	TriggerSrc    protocolTrans.TriggerSrc   `gorm:"column:trigger_src;"`                                //product:1 device:2
+	TriggerDir    protocolTrans.TriggerDir   `gorm:"column:trigger_dir;not null"`                        //up down
+	TriggerTimer  protocolTrans.TriggerTimer `gorm:"column:trigger_timer;"`                              //收到前处理before after
+	TriggerHandle devices.MsgHandle          `gorm:"column:trigger_handle;type:varchar(100);default:''"` //对应 mqtt topic的第一个 thing ota config 等等
+	TriggerType   string                     `gorm:"column:trigger_type;type:varchar(100);default:''"`   // 操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
+	//TriggerMethod string            //方法级触发
+	Priority   int64    `gorm:"column:priority;default:1"`                  //执行优先级
+	ScriptLang int64    `gorm:"column:script_lang;type:smallint;default:1"` // 脚本语言类型 1:go
+	Script     string   `gorm:"column:script;type:text"`                    // 协议转换脚本
+	Desc       string   `gorm:"column:desc;type:varchar(200)"`              // 描述
+	Status     def.Bool //状态:是否启用
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:pn"`
+}
+
+func (m *DmProtocolPlugin) TableName() string {
+	return "dm_protocol_plugin"
 }
 
 // 产品自定义协议表

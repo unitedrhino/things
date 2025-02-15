@@ -1620,6 +1620,38 @@ type ProtocolInfoIndexResp struct {
 	Total int64           `json:"total,optional"` //拥有的总数
 }
 
+type ProtocolPlugin struct {
+	ID            int64   `json:"id,string,optional"`
+	Name          string  `json:"name,optional"`
+	Desc          *string `json:"desc,optional"`
+	TriggerSrc    int64   `json:"triggerSrc,optional"`    //product:1 device:2
+	TriggerDir    int64   `json:"triggerDir,optional"`    //1:up 2:down
+	TriggerTimer  int64   `json:"triggerTimer,optional"`  //收到前处理1:before 2:after
+	TriggerHandle string  `json:"triggerHandle,optional"` //对应 mqtt topic的第一个 thing ota config 等等
+	TriggerType   string  `json:"triggerType,optional"`   // 操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
+	Priority      int64   `json:"priority,optional"`      //   执行优先级
+	Script        string  `json:"script,optional"`        //脚本内容
+	Status        int64   `json:"status,optional"`        //状态:是否启用
+	CreatedTime   int64   `json:"createdTime,optional"`   //创建时间
+}
+
+type ProtocolPluginIndexReq struct {
+	Page          *PageInfo   `json:"page,optional"`          //分页信息,只获取一个则不填
+	Name          string      `json:"name,optional"`          //
+	TriggerSrc    int64       `json:"triggerSrc,optional"`    //product:1 device:2
+	TriggerDir    int64       `json:"triggerDir,optional"`    //1:up 2:down
+	TriggerTimer  int64       `json:"triggerTimer,optional"`  //收到前处理1:before 2:after
+	TriggerHandle string      `json:"triggerHandle,optional"` //对应 mqtt topic的第一个 thing ota config 等等
+	TriggerType   string      `json:"triggerType,optional"`   // 操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
+	BindProductID string      `json:"bindProductID,optional"` //绑定该协议的产品
+	BindDevice    *DeviceCore `json:"bindDevice,optional"`    //绑定该协议的设备
+}
+
+type ProtocolPluginIndexResp struct {
+	List  []*ProtocolPlugin `json:"list"`           //自定义协议信息
+	Total int64             `json:"total,optional"` //拥有的总数
+}
+
 type ProtocolService struct {
 	ID          int64  `json:"id"`
 	Code        string `json:"code"`        //协议code
@@ -1938,6 +1970,10 @@ type WithIDChildren struct {
 type WithIDOrCode struct {
 	ID   int64  `json:"id,optional"` // id
 	Code string `json:"code,optional"`
+}
+
+type WithIDStr struct {
+	ID int64 `json:"id,string,optional"` // id
 }
 
 type WithProfile struct {

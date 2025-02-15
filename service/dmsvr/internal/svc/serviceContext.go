@@ -22,6 +22,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/config"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceBind"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/protocolTrans"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/userShared"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/cache"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/event/publish/pubApp"
@@ -48,9 +49,9 @@ import (
 type ServiceContext struct {
 	Config config.Config
 
-	PubDev pubDev.PubDev
-	PubApp pubApp.PubApp
-
+	PubDev               pubDev.PubDev
+	PubApp               pubApp.PubApp
+	ScriptTrans          *protocolTrans.ScriptTrans
 	OssClient            *oss.Client
 	TimedM               timedmanage.TimedManage
 	ProductSchemaRepo    *caches.Cache[schema.Model, string]
@@ -241,6 +242,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		NodeID:            nodeID,
 		Slot:              Slot,
 		ProjectCache:      projectC,
+		ScriptTrans:       protocolTrans.NewScriptTrans(),
 		AreaCache:         areaC,
 	}
 }
@@ -252,3 +254,24 @@ func (s *ServiceContext) WithDeviceTenant(ctx context.Context, dev devices.Core)
 	}
 	return ctxs.BindTenantCode(ctx, di.TenantCode, di.ProjectID)
 }
+
+//func test() {
+//	i := interp.New(interp.Options{})
+//
+//	i.Use(stdlib.Symbols)
+//
+//	_, err := i.Eval(`import "ur/ur"`)
+//	if err != nil {
+//		panic(err)
+//	}
+//
+//	funv, err := i.Eval(`ur.Hello`)
+//	if err != nil {
+//		panic(err)
+//	}
+//	fn, ok := funv.Interface().(func(context.Context, string))
+//	if !ok {
+//		panic(ok)
+//	}
+//	fn(context.Background(), "hello world")
+//}

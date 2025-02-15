@@ -1644,6 +1644,101 @@
       ],
       "authType": "admin"
     },
+    "thingsProtocolPluginAdd": {
+      "name": "新增协议管理",
+      "code": "thingsProtocolPluginAdd",
+      "group": "设备自定义",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProtocolPluginAdd",
+          "method": "POST",
+          "route": "/api/v1/things/protocol/plugin/create",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "add",
+          "desc": "",
+          "authType": "admin",
+          "recordLogMode": 0
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsProtocolPluginDelete": {
+      "name": "删除协议管理",
+      "code": "thingsProtocolPluginDelete",
+      "group": "设备自定义",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProtocolPluginDelete",
+          "method": "POST",
+          "route": "/api/v1/things/protocol/plugin/delete",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "delete",
+          "desc": "",
+          "authType": "admin",
+          "recordLogMode": 0
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsProtocolPluginFind": {
+      "name": "查询协议管理",
+      "code": "thingsProtocolPluginFind",
+      "group": "设备自定义",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProtocolPluginFind",
+          "method": "POST",
+          "route": "/api/v1/things/protocol/plugin/index",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "find",
+          "desc": "",
+          "authType": "admin",
+          "recordLogMode": 0
+        },
+        {
+          "accessCode": "thingsProtocolPluginFind",
+          "method": "POST",
+          "route": "/api/v1/things/protocol/plugin/read",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "find",
+          "desc": "",
+          "authType": "admin",
+          "recordLogMode": 0
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsProtocolPluginModify": {
+      "name": "修改协议管理",
+      "code": "thingsProtocolPluginModify",
+      "group": "设备自定义",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProtocolPluginModify",
+          "method": "POST",
+          "route": "/api/v1/things/protocol/plugin/update",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "admin",
+          "recordLogMode": 0
+        }
+      ],
+      "authType": "admin"
+    },
     "thingsRuleAlarmAdd": {
       "name": "新增告警管理",
       "code": "thingsRuleAlarmAdd",

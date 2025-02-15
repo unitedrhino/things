@@ -68,3 +68,33 @@ func (s *ProtocolManageServer) ProtocolServiceIndex(ctx context.Context, in *dm.
 	l := protocolmanagelogic.NewProtocolServiceIndexLogic(ctx, s.svcCtx)
 	return l.ProtocolServiceIndex(in)
 }
+
+// 协议列表
+func (s *ProtocolManageServer) ProtocolPluginIndex(ctx context.Context, in *dm.ProtocolPluginIndexReq) (*dm.ProtocolPluginIndexResp, error) {
+	l := protocolmanagelogic.NewProtocolPluginIndexLogic(ctx, s.svcCtx)
+	return l.ProtocolPluginIndex(in)
+}
+
+// 协议详情
+func (s *ProtocolManageServer) ProtocolPluginRead(ctx context.Context, in *dm.WithID) (*dm.ProtocolPlugin, error) {
+	l := protocolmanagelogic.NewProtocolPluginReadLogic(ctx, s.svcCtx)
+	return l.ProtocolPluginRead(in)
+}
+
+// 协议创建
+func (s *ProtocolManageServer) ProtocolPluginCreate(ctx context.Context, in *dm.ProtocolPlugin) (*dm.WithID, error) {
+	l := protocolmanagelogic.NewProtocolPluginCreateLogic(ctx, s.svcCtx)
+	return l.ProtocolPluginCreate(in)
+}
+
+// 协议更新
+func (s *ProtocolManageServer) ProtocolPluginUpdate(ctx context.Context, in *dm.ProtocolPlugin) (*dm.Empty, error) {
+	l := protocolmanagelogic.NewProtocolPluginUpdateLogic(ctx, s.svcCtx)
+	return l.ProtocolPluginUpdate(in)
+}
+
+// 协议删除
+func (s *ProtocolManageServer) ProtocolPluginDelete(ctx context.Context, in *dm.WithID) (*dm.Empty, error) {
+	l := protocolmanagelogic.NewProtocolPluginDeleteLogic(ctx, s.svcCtx)
+	return l.ProtocolPluginDelete(in)
+}

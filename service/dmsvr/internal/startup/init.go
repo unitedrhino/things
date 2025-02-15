@@ -44,6 +44,7 @@ func Init(svcCtx *svc.ServiceContext) {
 	InitSubscribe(svcCtx)
 	InitEventBus(svcCtx)
 	DictInit(svcCtx)
+	ScriptSymbolInit(svcCtx)
 }
 
 func init() {

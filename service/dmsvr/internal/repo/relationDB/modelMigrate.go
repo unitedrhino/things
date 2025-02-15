@@ -36,6 +36,7 @@ func Migrate(c conf.Database) error {
 		&DmDeviceInfo{},
 		&DmProductCustom{},
 		&DmDeviceSchema{},
+		&DmProtocolPlugin{},
 		//&DmProductSchema{},
 		&DmSchemaInfo{},
 		&DmGroupInfo{},

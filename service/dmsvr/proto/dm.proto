@@ -224,6 +224,20 @@ service ProtocolManage {
   rpc protocolServiceUpdate(ProtocolService)returns(Empty);
   rpc protocolServiceDelete(WithID)returns(Empty);
   rpc protocolServiceIndex(ProtocolServiceIndexReq)returns(ProtocolServiceIndexResp);
+
+  //协议列表
+  rpc protocolPluginIndex(ProtocolPluginIndexReq)     returns (ProtocolPluginIndexResp);
+  //协议详情
+  rpc protocolPluginRead(WithID)     returns (ProtocolPlugin);
+  //协议创建
+  rpc protocolPluginCreate(ProtocolPlugin)     returns (WithID);
+  //协议更新
+  rpc protocolPluginUpdate(ProtocolPlugin)     returns (Empty);
+  //协议删除
+  rpc protocolPluginDelete(WithID)     returns (Empty);
+
+  rpc protocolPluginDebug(ProtocolPluginDebugReq)     returns (ProtocolPluginDebugResp);
+
 }
 
 service DeviceGroup {
@@ -572,6 +586,45 @@ message ProductCategoryIndexReq{
 message ProductCategoryIndexResp{
   repeated ProductCategory list = 1;//产品信息
   int64  total = 2;//总数(只有分页的时候会返回)
+}
+
+message ProtocolPluginDebugReq{
+
+}
+
+message ProtocolPluginDebugResp{
+
+}
+
+message ProtocolPlugin{
+  int64  id = 1;
+  string  name = 2; //名称
+  int64 triggerSrc =3;    //product:1 device:2
+  int64 triggerDir =4;    //1:up 2:down
+  int64 triggerTimer =5;  //收到前处理1:before 2:after
+  string triggerHandle =6; //对应 mqtt topic的第一个 thing ota config 等等
+  string triggerType =7;    // 操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
+  google.protobuf.StringValue  desc = 9; //描述
+  int64 priority =12;//   执行优先级
+  string script =13;//脚本内容
+  int64 status =14;//状态:是否启用
+  int64 createdTime = 15;//创建时间
+}
+
+message ProtocolPluginIndexReq{
+  PageInfo page = 1;
+  string  name = 2;
+  int64 TriggerSrc =3;    //product:1 device:2
+  int64 TriggerDir =4;    //1:up 2:down
+  int64 TriggerTimer =5;  //收到前处理1:before 2:after
+  string bindProductID = 6; //产品获取绑定的协议
+  DeviceCore bindDevice =7; //设备获取绑定的协议
+}
+
+
+message ProtocolPluginIndexResp{
+  repeated ProtocolPlugin list = 1;
+  int64 total = 2;
 }
 
 

@@ -22,6 +22,9 @@ type(
     WithID{
         ID int64 `json:"id,optional"`         // id
     }
+    WithIDStr{
+        ID int64 `json:"id,string,optional"`         // id
+    }
     WithIDChildren{
         ID int64 `json:"id,optional"`         // id
         WithChildren bool `json:"withChildren,optional"`

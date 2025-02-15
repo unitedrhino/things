@@ -188,6 +188,9 @@ type (
 	ProtocolInfo                      = dm.ProtocolInfo
 	ProtocolInfoIndexReq              = dm.ProtocolInfoIndexReq
 	ProtocolInfoIndexResp             = dm.ProtocolInfoIndexResp
+	ProtocolPlugin                    = dm.ProtocolPlugin
+	ProtocolPluginIndexReq            = dm.ProtocolPluginIndexReq
+	ProtocolPluginIndexResp           = dm.ProtocolPluginIndexResp
 	ProtocolService                   = dm.ProtocolService
 	ProtocolServiceIndexReq           = dm.ProtocolServiceIndexReq
 	ProtocolServiceIndexResp          = dm.ProtocolServiceIndexResp

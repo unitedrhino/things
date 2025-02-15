@@ -4912,6 +4912,210 @@
         ]
       }
     },
+    "/api/v1/things/protocol/plugin/create": {
+      "post": {
+        "summary": "新增协议插件",
+        "operationId": "postApiV1ThingsProtocolPluginCreate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/WithIDStr"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProtocolPlugin"
+            }
+          }
+        ],
+        "tags": [
+          "things/protocol/plugin",
+          "thingsProtocolPlugin"
+        ]
+      }
+    },
+    "/api/v1/things/protocol/plugin/delete": {
+      "post": {
+        "summary": "删除协议插件",
+        "operationId": "postApiV1ThingsProtocolPluginDelete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/WithIDStr"
+            }
+          }
+        ],
+        "tags": [
+          "things/protocol/plugin",
+          "thingsProtocolPlugin"
+        ]
+      }
+    },
+    "/api/v1/things/protocol/plugin/index": {
+      "post": {
+        "summary": "获取协议插件列表",
+        "operationId": "postApiV1ThingsProtocolPluginIndex",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/ProtocolPluginIndexResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProtocolPluginIndexReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/protocol/plugin",
+          "thingsProtocolPlugin"
+        ]
+      }
+    },
+    "/api/v1/things/protocol/plugin/read": {
+      "post": {
+        "summary": "获取协议插件详情",
+        "operationId": "postApiV1ThingsProtocolPluginRead",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/ProtocolPlugin"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/WithIDStr"
+            }
+          }
+        ],
+        "tags": [
+          "things/protocol/plugin",
+          "thingsProtocolPlugin"
+        ]
+      }
+    },
+    "/api/v1/things/protocol/plugin/update": {
+      "post": {
+        "summary": "更新协议插件",
+        "operationId": "postApiV1ThingsProtocolPluginUpdate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProtocolPlugin"
+            }
+          }
+        ],
+        "tags": [
+          "things/protocol/plugin",
+          "thingsProtocolPlugin"
+        ]
+      }
+    },
     "/api/v1/things/protocol/service/delete": {
       "post": {
         "summary": "删除自定义协议服务器",
@@ -12902,6 +13106,128 @@
         "list"
       ]
     },
+    "ProtocolPlugin": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "desc": {
+          "type": "string"
+        },
+        "triggerSrc": {
+          "type": "integer",
+          "format": "int64",
+          "description": "product:1 device:2"
+        },
+        "triggerDir": {
+          "type": "integer",
+          "format": "int64",
+          "description": "1:up 2:down"
+        },
+        "triggerTimer": {
+          "type": "integer",
+          "format": "int64",
+          "description": "收到前处理1:before 2:after"
+        },
+        "triggerHandle": {
+          "type": "string",
+          "description": "对应 mqtt topic的第一个 thing ota config 等等"
+        },
+        "triggerType": {
+          "type": "string",
+          "description": " 操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为"
+        },
+        "priority": {
+          "type": "integer",
+          "format": "int64",
+          "description": "   执行优先级"
+        },
+        "script": {
+          "type": "string",
+          "description": "脚本内容"
+        },
+        "status": {
+          "type": "integer",
+          "format": "int64",
+          "description": "状态:是否启用"
+        },
+        "createdTime": {
+          "type": "integer",
+          "format": "int64",
+          "description": "创建时间"
+        }
+      },
+      "title": "ProtocolPlugin"
+    },
+    "ProtocolPluginIndexReq": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "$ref": "#/definitions/PageInfo",
+          "description": "分页信息,只获取一个则不填"
+        },
+        "name": {
+          "type": "string"
+        },
+        "triggerSrc": {
+          "type": "integer",
+          "format": "int64",
+          "description": "product:1 device:2"
+        },
+        "triggerDir": {
+          "type": "integer",
+          "format": "int64",
+          "description": "1:up 2:down"
+        },
+        "triggerTimer": {
+          "type": "integer",
+          "format": "int64",
+          "description": "收到前处理1:before 2:after"
+        },
+        "triggerHandle": {
+          "type": "string",
+          "description": "对应 mqtt topic的第一个 thing ota config 等等"
+        },
+        "triggerType": {
+          "type": "string",
+          "description": " 操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为"
+        },
+        "bindProductID": {
+          "type": "string",
+          "description": "绑定该协议的产品"
+        },
+        "bindDevice": {
+          "$ref": "#/definitions/DeviceCore",
+          "description": "绑定该协议的设备"
+        }
+      },
+      "title": "ProtocolPluginIndexReq"
+    },
+    "ProtocolPluginIndexResp": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ProtocolPlugin"
+          },
+          "description": "自定义协议信息"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64",
+          "description": "拥有的总数"
+        }
+      },
+      "title": "ProtocolPluginIndexResp",
+      "required": [
+        "list"
+      ]
+    },
     "ProtocolService": {
       "type": "object",
       "properties": {
@@ -14218,6 +14544,16 @@
         }
       },
       "title": "WithIDOrCode"
+    },
+    "WithIDStr": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": " id"
+        }
+      },
+      "title": "WithIDStr"
     },
     "WithProfile": {
       "type": "object",

@@ -2,8 +2,6 @@ module gitee.com/unitedrhino/things
 
 go 1.22.7
 
-toolchain go1.23.3
-
 //gitee.com/unitedrhino/core => ../core
 //gitee.com/unitedrhino/share => ../share
 
@@ -25,6 +23,7 @@ require (
 	github.com/observerly/dusk v1.16.0
 	github.com/parnurzeal/gorequest v0.3.0
 	github.com/spf13/cast v1.7.0
+	github.com/traefik/yaegi v0.16.1
 	github.com/zeromicro/go-zero v1.7.2
 	go.uber.org/atomic v1.11.0
 	golang.org/x/exp v0.0.0-20241204233417-43b7b7cde48d
@@ -72,7 +71,7 @@ require (
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
 	github.com/gammazero/deque v0.2.1 // indirect
-	github.com/glebarez/go-sqlite v1.21.1 // indirect
+	github.com/glebarez/go-sqlite v1.21.2 // indirect
 	github.com/glebarez/sqlite v1.8.0 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
@@ -203,10 +202,10 @@ require (
 	k8s.io/klog/v2 v2.110.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20231010175941-2dd684a91f00 // indirect
 	k8s.io/utils v0.0.0-20240711033017-18e509b52bc8 // indirect
-	modernc.org/libc v1.22.3 // indirect
+	modernc.org/libc v1.22.5 // indirect
 	modernc.org/mathutil v1.6.0 // indirect
 	modernc.org/memory v1.5.0 // indirect
-	modernc.org/sqlite v1.21.1 // indirect
+	modernc.org/sqlite v1.23.1 // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.4.1 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect

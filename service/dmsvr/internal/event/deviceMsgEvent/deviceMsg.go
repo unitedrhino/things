@@ -32,6 +32,7 @@ func NewDeviceMsgHandle(ctx context.Context, svcCtx *svc.ServiceContext) *Device
 
 func (l *DeviceMsgHandle) Gateway(msg *deviceMsg.PublishMsg) error {
 	l.Infof("%s req=%v", utils.FuncName(), msg)
+	msg = l.svcCtx.ScriptTrans.UpBeforeTrans(l.ctx, msg)
 	l.FixDisconnect(msg)
 	resp, err := NewGatewayLogic(l.ctx, l.svcCtx).Handle(msg)
 	l.deviceResp(resp)
@@ -43,6 +44,7 @@ func (l *DeviceMsgHandle) Thing(msg *deviceMsg.PublishMsg) error {
 	l.Infof("%s req=%v", utils.FuncName(), msg)
 	l.FixDisconnect(msg)
 	startTime := time.Now()
+	msg = l.svcCtx.ScriptTrans.UpBeforeTrans(l.ctx, msg)
 	resp, err := NewThingLogic(l.ctx, l.svcCtx).Handle(msg)
 	l.deviceResp(resp)
 	l.WithDuration(time.Now().Sub(startTime)).Infof("%s startTime:%v req:%v resp:%v err:%v",
@@ -51,6 +53,7 @@ func (l *DeviceMsgHandle) Thing(msg *deviceMsg.PublishMsg) error {
 }
 
 func (l *DeviceMsgHandle) Ota(msg *deviceMsg.PublishMsg) error {
+	msg = l.svcCtx.ScriptTrans.UpBeforeTrans(l.ctx, msg)
 	l.Infof("%s req=%v", utils.FuncName(), msg)
 	l.FixDisconnect(msg)
 	resp, err := NewOtaLogic(l.ctx, l.svcCtx).Handle(msg)
@@ -60,6 +63,7 @@ func (l *DeviceMsgHandle) Ota(msg *deviceMsg.PublishMsg) error {
 }
 
 func (l *DeviceMsgHandle) Shadow(msg *deviceMsg.PublishMsg) error {
+	msg = l.svcCtx.ScriptTrans.UpBeforeTrans(l.ctx, msg)
 	l.Infof("%s req=%v", utils.FuncName(), msg)
 	l.FixDisconnect(msg)
 	resp, err := NewShadowLogic(l.ctx, l.svcCtx).Handle(msg)
@@ -69,6 +73,7 @@ func (l *DeviceMsgHandle) Shadow(msg *deviceMsg.PublishMsg) error {
 }
 
 func (l *DeviceMsgHandle) Config(msg *deviceMsg.PublishMsg) error {
+	msg = l.svcCtx.ScriptTrans.UpBeforeTrans(l.ctx, msg)
 	l.Infof("%s req=%v", utils.FuncName(), msg)
 	l.FixDisconnect(msg)
 	respMsg, err := NewConfigLogic(l.ctx, l.svcCtx).Handle(msg)
@@ -78,6 +83,7 @@ func (l *DeviceMsgHandle) Config(msg *deviceMsg.PublishMsg) error {
 }
 
 func (l *DeviceMsgHandle) Ext(msg *deviceMsg.PublishMsg) error {
+	msg = l.svcCtx.ScriptTrans.UpBeforeTrans(l.ctx, msg)
 	l.Infof("%s req=%v", utils.FuncName(), msg)
 	l.FixDisconnect(msg)
 	resp, err := NewExtLogic(l.ctx, l.svcCtx).Handle(msg)
@@ -87,6 +93,7 @@ func (l *DeviceMsgHandle) Ext(msg *deviceMsg.PublishMsg) error {
 }
 
 func (l *DeviceMsgHandle) SDKLog(msg *deviceMsg.PublishMsg) error {
+	msg = l.svcCtx.ScriptTrans.UpBeforeTrans(l.ctx, msg)
 	l.FixDisconnect(msg)
 	respMsg, err := NewSDKLogLogic(l.ctx, l.svcCtx).Handle(msg)
 	l.deviceResp(respMsg)
@@ -108,6 +115,7 @@ func (l *DeviceMsgHandle) deviceResp(respMsg *deviceMsg.PublishMsg) {
 		return
 	}
 	startTime := time.Now()
+	respMsg = l.svcCtx.ScriptTrans.DownBeforeTrans(l.ctx, respMsg)
 	er := l.svcCtx.PubDev.PublishToDev(l.ctx, respMsg)
 	if er != nil {
 		l.Errorf("DeviceMsgHandle.deviceResp.PublishToDev failure err:%v", er)

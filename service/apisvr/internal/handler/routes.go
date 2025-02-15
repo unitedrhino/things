@@ -29,6 +29,7 @@ import (
 	thingsproductremoteConfig "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/product/remoteConfig"
 	thingsproductschema "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/product/schema"
 	thingsprotocolinfo "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/protocol/info"
+	thingsprotocolplugin "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/protocol/plugin"
 	thingsprotocolservice "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/protocol/service"
 	thingsrulealarminfo "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/rule/alarm/info"
 	thingsrulealarmrecord "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/rule/alarm/record"
@@ -971,6 +972,45 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/protocol/info"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckTokenWare, serverCtx.InitCtxsWare},
+			[]rest.Route{
+				{
+					// 新增协议插件
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsprotocolplugin.CreateHandler(serverCtx),
+				},
+				{
+					// 删除协议插件
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsprotocolplugin.DeleteHandler(serverCtx),
+				},
+				{
+					// 获取协议插件列表
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsprotocolplugin.IndexHandler(serverCtx),
+				},
+				{
+					// 获取协议插件详情
+					Method:  http.MethodPost,
+					Path:    "/read",
+					Handler: thingsprotocolplugin.ReadHandler(serverCtx),
+				},
+				{
+					// 更新协议插件
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsprotocolplugin.UpdateHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/protocol/plugin"),
 	)
 
 	server.AddRoutes(

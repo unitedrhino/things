@@ -55,7 +55,7 @@ const (
 )
 
 // 行为的执行方向
-type ActionDir string
+type ActionDir = string
 
 const (
 	ActionDirUp   ActionDir = "up"   //向上调用

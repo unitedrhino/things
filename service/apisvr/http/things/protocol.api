@@ -53,6 +53,8 @@ service api {
     post /read (WithIDOrCode) returns (ProtocolInfo)
 }
 
+
+
 @server(
     group: things/protocol/service
     prefix: /api/v1/things/protocol/service
@@ -77,6 +79,87 @@ service api {
     @handler index
     post /index (ProtocolServiceIndexReq) returns (ProtocolServiceIndexResp)
 }
+
+@server(
+    group: things/protocol/plugin
+    prefix: /api/v1/things/protocol/plugin
+    accessCodePrefix: "thingsProtocolPlugin"
+    accessNamePrefix: "协议管理"
+    accessGroup: "设备自定义"
+    middleware:  CheckTokenWare,InitCtxsWare
+)
+service api {
+    @doc(
+        summary: "新增协议插件"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
+    @handler create
+    post /create (ProtocolPlugin) returns (WithIDStr)
+    @doc(
+        summary: "更新协议插件"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
+    @handler update
+    post /update (ProtocolPlugin) returns ()
+    @doc(
+        summary: "删除协议插件"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
+    @handler delete
+    post /delete (WithIDStr) returns ()
+    @doc(
+        summary: "获取协议插件列表"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
+    @handler index
+    post /index (ProtocolPluginIndexReq) returns (ProtocolPluginIndexResp)
+    @doc(
+        summary: "获取协议插件详情"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
+    @handler read
+    post /read (WithIDStr) returns (ProtocolPlugin)
+}
+
+type (
+    ProtocolPlugin  {
+        ID            int64                  `json:"id,string,optional"`
+        Name          string                 `json:"name,optional"`
+        Desc          *string                 `json:"desc,optional"`
+        TriggerSrc  int64 `json:"triggerSrc,optional"`    //product:1 device:2
+        TriggerDir  int64 `json:"triggerDir,optional"`    //1:up 2:down
+        TriggerTimer  int64 `json:"triggerTimer,optional"`  //收到前处理1:before 2:after
+        TriggerHandle  string `json:"triggerHandle,optional"` //对应 mqtt topic的第一个 thing ota config 等等
+        TriggerType  string `json:"triggerType,optional"`    // 操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
+        Priority  int64 `json:"priority,optional"`//   执行优先级
+        Script  string `json:"script,optional"`//脚本内容
+        Status  int64 `json:"status,optional"`//状态:是否启用
+        CreatedTime  int64 `json:"createdTime,optional"`//创建时间
+    }
+
+
+    ProtocolPluginIndexReq  {
+        Page *PageInfo `json:"page,optional"`           //分页信息,只获取一个则不填
+        Name string `json:"name,optional"` //
+        TriggerSrc  int64 `json:"triggerSrc,optional"`    //product:1 device:2
+        TriggerDir  int64 `json:"triggerDir,optional"`    //1:up 2:down
+        TriggerTimer  int64 `json:"triggerTimer,optional"`  //收到前处理1:before 2:after
+        TriggerHandle  string `json:"triggerHandle,optional"` //对应 mqtt topic的第一个 thing ota config 等等
+        TriggerType  string `json:"triggerType,optional"`    // 操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
+        BindProductID string `json:"bindProductID,optional"` //绑定该协议的产品
+        BindDevice *DeviceCore `json:"bindDevice,optional"`  //绑定该协议的设备
+    }
+
+    ProtocolPluginIndexResp  {
+        List []*ProtocolPlugin `json:"list"`    //自定义协议信息
+        Total int64 `json:"total,optional"`  //拥有的总数
+    }
+)
 
 type (
     ProtocolInfo  {
