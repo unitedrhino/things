@@ -1739,6 +1739,27 @@
       ],
       "authType": "admin"
     },
+    "thingsProtocolPluginOther": {
+      "name": "操作协议管理",
+      "code": "thingsProtocolPluginOther",
+      "group": "设备自定义",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProtocolPluginOther",
+          "method": "POST",
+          "route": "/api/v1/things/protocol/plugin/debug",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "other",
+          "desc": "",
+          "authType": "admin",
+          "recordLogMode": 0
+        }
+      ],
+      "authType": "admin"
+    },
     "thingsRuleAlarmAdd": {
       "name": "新增告警管理",
       "code": "thingsRuleAlarmAdd",

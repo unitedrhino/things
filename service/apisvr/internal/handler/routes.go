@@ -985,6 +985,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: thingsprotocolplugin.CreateHandler(serverCtx),
 				},
 				{
+					// 协议插件调试
+					Method:  http.MethodPost,
+					Path:    "/debug",
+					Handler: thingsprotocolplugin.DebugHandler(serverCtx),
+				},
+				{
 					// 删除协议插件
 					Method:  http.MethodPost,
 					Path:    "/delete",

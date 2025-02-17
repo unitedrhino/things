@@ -24,18 +24,19 @@ func newNatsClient(fast *eventBus.FastEvent) (*NatsClient, error) {
 	return &NatsClient{client: fast}, nil
 }
 
-func (n *NatsClient) PublishToDev(ctx context.Context, respMsg *deviceMsg.PublishMsg) error {
+func (n *NatsClient) PublishToDev(ctx context.Context, reqMsg *deviceMsg.PublishMsg) error {
 	startTime := time.Now()
-	if respMsg.ProtocolCode == "" {
-		respMsg.ProtocolCode = protocols.ProtocolCodeUrMqtt
+	if reqMsg.ProtocolCode == "" {
+		reqMsg.ProtocolCode = protocols.ProtocolCodeUrMqtt
 	}
 	defer func() {
 		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).
-			Infof("PublishToDev msg:%v", respMsg)
+			Infof("PublishToDev msg:%v", reqMsg)
 	}()
-	err := n.client.Publish(ctx, fmt.Sprintf(topics.DeviceDownMsg, respMsg.ProtocolCode, respMsg.Handle, respMsg.ProductID, respMsg.DeviceName), devices.PublishToDev(
-		respMsg.Handle, respMsg.Type, respMsg.Payload, respMsg.ProtocolCode,
-		respMsg.ProductID, respMsg.DeviceName))
+	reqMsg = s.DownBeforeTrans(ctx, reqMsg)
+	err := n.client.Publish(ctx, fmt.Sprintf(topics.DeviceDownMsg, reqMsg.ProtocolCode, reqMsg.Handle, reqMsg.ProductID, reqMsg.DeviceName), devices.PublishToDev(
+		reqMsg.Handle, reqMsg.Type, reqMsg.Payload, reqMsg.ProtocolCode,
+		reqMsg.ProductID, reqMsg.DeviceName))
 
 	if err != nil {
 		logx.WithContext(ctx).Errorf("%s Publish failure err:%v", utils.FuncName(), err)
@@ -48,6 +49,8 @@ func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqMsg *deviceMsg.Publ
 	start := time.Now()
 	topic := fmt.Sprintf(topics.DeviceUpMsg, reqMsg.Handle, reqMsg.ProductID, reqMsg.DeviceName)
 	done := make(chan struct{})
+	reqMsg = s.DownBeforeTrans(ctx, reqMsg)
+
 	sub, err := n.client.SubscribeWithID(topic, func(ctx context.Context, t time.Time, body []byte) error {
 		msg, err := deviceMsg.GetDevPublish(ctx, body)
 		if err != nil {

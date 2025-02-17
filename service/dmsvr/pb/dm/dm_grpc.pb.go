@@ -2797,6 +2797,7 @@ const (
 	ProtocolManage_ProtocolPluginCreate_FullMethodName  = "/dm.ProtocolManage/protocolPluginCreate"
 	ProtocolManage_ProtocolPluginUpdate_FullMethodName  = "/dm.ProtocolManage/protocolPluginUpdate"
 	ProtocolManage_ProtocolPluginDelete_FullMethodName  = "/dm.ProtocolManage/protocolPluginDelete"
+	ProtocolManage_ProtocolPluginDebug_FullMethodName   = "/dm.ProtocolManage/protocolPluginDebug"
 )
 
 // ProtocolManageClient is the client API for ProtocolManage service.
@@ -2827,6 +2828,7 @@ type ProtocolManageClient interface {
 	ProtocolPluginUpdate(ctx context.Context, in *ProtocolPlugin, opts ...grpc.CallOption) (*Empty, error)
 	// 协议删除
 	ProtocolPluginDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
+	ProtocolPluginDebug(ctx context.Context, in *ProtocolPluginDebugReq, opts ...grpc.CallOption) (*ProtocolPluginDebugResp, error)
 }
 
 type protocolManageClient struct {
@@ -2954,6 +2956,15 @@ func (c *protocolManageClient) ProtocolPluginDelete(ctx context.Context, in *Wit
 	return out, nil
 }
 
+func (c *protocolManageClient) ProtocolPluginDebug(ctx context.Context, in *ProtocolPluginDebugReq, opts ...grpc.CallOption) (*ProtocolPluginDebugResp, error) {
+	out := new(ProtocolPluginDebugResp)
+	err := c.cc.Invoke(ctx, ProtocolManage_ProtocolPluginDebug_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProtocolManageServer is the server API for ProtocolManage service.
 // All implementations must embed UnimplementedProtocolManageServer
 // for forward compatibility
@@ -2982,6 +2993,7 @@ type ProtocolManageServer interface {
 	ProtocolPluginUpdate(context.Context, *ProtocolPlugin) (*Empty, error)
 	// 协议删除
 	ProtocolPluginDelete(context.Context, *WithID) (*Empty, error)
+	ProtocolPluginDebug(context.Context, *ProtocolPluginDebugReq) (*ProtocolPluginDebugResp, error)
 	mustEmbedUnimplementedProtocolManageServer()
 }
 
@@ -3027,6 +3039,9 @@ func (UnimplementedProtocolManageServer) ProtocolPluginUpdate(context.Context, *
 }
 func (UnimplementedProtocolManageServer) ProtocolPluginDelete(context.Context, *WithID) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProtocolPluginDelete not implemented")
+}
+func (UnimplementedProtocolManageServer) ProtocolPluginDebug(context.Context, *ProtocolPluginDebugReq) (*ProtocolPluginDebugResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProtocolPluginDebug not implemented")
 }
 func (UnimplementedProtocolManageServer) mustEmbedUnimplementedProtocolManageServer() {}
 
@@ -3275,6 +3290,24 @@ func _ProtocolManage_ProtocolPluginDelete_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProtocolManage_ProtocolPluginDebug_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProtocolPluginDebugReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolManageServer).ProtocolPluginDebug(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProtocolManage_ProtocolPluginDebug_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolManageServer).ProtocolPluginDebug(ctx, req.(*ProtocolPluginDebugReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ProtocolManage_ServiceDesc is the grpc.ServiceDesc for ProtocolManage service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -3333,6 +3366,10 @@ var ProtocolManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "protocolPluginDelete",
 			Handler:    _ProtocolManage_ProtocolPluginDelete_Handler,
+		},
+		{
+			MethodName: "protocolPluginDebug",
+			Handler:    _ProtocolManage_ProtocolPluginDebug_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

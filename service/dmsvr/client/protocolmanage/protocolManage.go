@@ -189,6 +189,8 @@ type (
 	ProtocolInfoIndexReq              = dm.ProtocolInfoIndexReq
 	ProtocolInfoIndexResp             = dm.ProtocolInfoIndexResp
 	ProtocolPlugin                    = dm.ProtocolPlugin
+	ProtocolPluginDebugReq            = dm.ProtocolPluginDebugReq
+	ProtocolPluginDebugResp           = dm.ProtocolPluginDebugResp
 	ProtocolPluginIndexReq            = dm.ProtocolPluginIndexReq
 	ProtocolPluginIndexResp           = dm.ProtocolPluginIndexResp
 	ProtocolService                   = dm.ProtocolService
@@ -257,6 +259,7 @@ type (
 		ProtocolPluginUpdate(ctx context.Context, in *ProtocolPlugin, opts ...grpc.CallOption) (*Empty, error)
 		// 协议删除
 		ProtocolPluginDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
+		ProtocolPluginDebug(ctx context.Context, in *ProtocolPluginDebugReq, opts ...grpc.CallOption) (*ProtocolPluginDebugResp, error)
 	}
 
 	defaultProtocolManage struct {
@@ -419,4 +422,13 @@ func (m *defaultProtocolManage) ProtocolPluginDelete(ctx context.Context, in *Wi
 // 协议删除
 func (d *directProtocolManage) ProtocolPluginDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.ProtocolPluginDelete(ctx, in)
+}
+
+func (m *defaultProtocolManage) ProtocolPluginDebug(ctx context.Context, in *ProtocolPluginDebugReq, opts ...grpc.CallOption) (*ProtocolPluginDebugResp, error) {
+	client := dm.NewProtocolManageClient(m.cli.Conn())
+	return client.ProtocolPluginDebug(ctx, in, opts...)
+}
+
+func (d *directProtocolManage) ProtocolPluginDebug(ctx context.Context, in *ProtocolPluginDebugReq, opts ...grpc.CallOption) (*ProtocolPluginDebugResp, error) {
+	return d.svr.ProtocolPluginDebug(ctx, in)
 }

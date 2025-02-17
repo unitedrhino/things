@@ -7,6 +7,7 @@ import (
 	devicemanageServer "gitee.com/unitedrhino/things/service/dmsvr/internal/server/devicemanage"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"reflect"
 )
 
@@ -229,7 +230,9 @@ func dmSymbolInit(svcCtx *svc.ServiceContext) map[string]reflect.Value {
 	WithIDChildren := dm.WithIDChildren{}
 	WithIDCode := dm.WithIDCode{}
 	WithProfile := dm.WithProfile{}
+	PublishMsg := deviceMsg.PublishMsg{}
 	return map[string]reflect.Value{
+		"PublishMsg":                 reflect.ValueOf(PublishMsg),
 		"ActionSend":                 reflect.ValueOf(deviceinteract.NewDirectDeviceInteract(svcCtx, deviceinteractServer.NewDeviceInteractServer(svcCtx)).ActionSend),
 		"ActionRead":                 reflect.ValueOf(deviceinteract.NewDirectDeviceInteract(svcCtx, deviceinteractServer.NewDeviceInteractServer(svcCtx)).ActionRead),
 		"ActionResp":                 reflect.ValueOf(deviceinteract.NewDirectDeviceInteract(svcCtx, deviceinteractServer.NewDeviceInteractServer(svcCtx)).ActionResp),

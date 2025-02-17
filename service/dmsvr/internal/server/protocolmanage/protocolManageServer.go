@@ -98,3 +98,8 @@ func (s *ProtocolManageServer) ProtocolPluginDelete(ctx context.Context, in *dm.
 	l := protocolmanagelogic.NewProtocolPluginDeleteLogic(ctx, s.svcCtx)
 	return l.ProtocolPluginDelete(in)
 }
+
+func (s *ProtocolManageServer) ProtocolPluginDebug(ctx context.Context, in *dm.ProtocolPluginDebugReq) (*dm.ProtocolPluginDebugResp, error) {
+	l := protocolmanagelogic.NewProtocolPluginDebugLogic(ctx, s.svcCtx)
+	return l.ProtocolPluginDebug(in)
+}

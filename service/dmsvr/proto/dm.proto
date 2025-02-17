@@ -589,11 +589,16 @@ message ProductCategoryIndexResp{
 }
 
 message ProtocolPluginDebugReq{
-
+  int64 triggerDir =2;    //1:up 2:down
+  int64 triggerTimer =3;  //收到前处理1:before 2:after
+  string script =6;//脚本内容
+  string req =8;//请求
+  string resp =9;//回复
 }
 
 message ProtocolPluginDebugResp{
-
+  string out =1;
+  repeated string logs =2;
 }
 
 message ProtocolPlugin{

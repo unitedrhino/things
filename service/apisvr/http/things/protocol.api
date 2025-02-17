@@ -124,9 +124,26 @@ service api {
     )
     @handler read
     post /read (WithIDStr) returns (ProtocolPlugin)
+    @doc(
+        summary: "协议插件调试"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
+    @handler debug
+    post /debug (ProtocolPluginDebugReq) returns (ProtocolPluginDebugResp)
 }
 
 type (
+    ProtocolPluginDebugReq{
+        TriggerDir   int64 `json:"triggerDir"`    //1:up 2:down
+        TriggerTimer   int64 `json:"triggerTimer"`  //收到前处理1:before 2:after
+        Req   string `json:"req"`//请求
+        Resp string  `json:"resp,optional"`
+    }
+    ProtocolPluginDebugResp{
+        Out string `json:"out"`
+        Logs []string `json:"logs"`
+    }
     ProtocolPlugin  {
         ID            int64                  `json:"id,string,optional"`
         Name          string                 `json:"name,optional"`

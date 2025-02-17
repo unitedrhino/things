@@ -4954,6 +4954,48 @@
         ]
       }
     },
+    "/api/v1/things/protocol/plugin/debug": {
+      "post": {
+        "summary": "协议插件调试",
+        "operationId": "postApiV1ThingsProtocolPluginDebug",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/ProtocolPluginDebugResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProtocolPluginDebugReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/protocol/plugin",
+          "thingsProtocolPlugin"
+        ]
+      }
+    },
     "/api/v1/things/protocol/plugin/delete": {
       "post": {
         "summary": "删除协议插件",
@@ -13162,6 +13204,53 @@
         }
       },
       "title": "ProtocolPlugin"
+    },
+    "ProtocolPluginDebugReq": {
+      "type": "object",
+      "properties": {
+        "triggerDir": {
+          "type": "integer",
+          "format": "int64",
+          "description": "1:up 2:down"
+        },
+        "triggerTimer": {
+          "type": "integer",
+          "format": "int64",
+          "description": "收到前处理1:before 2:after"
+        },
+        "req": {
+          "type": "string",
+          "description": "请求"
+        },
+        "resp": {
+          "type": "string"
+        }
+      },
+      "title": "ProtocolPluginDebugReq",
+      "required": [
+        "triggerDir",
+        "triggerTimer",
+        "req"
+      ]
+    },
+    "ProtocolPluginDebugResp": {
+      "type": "object",
+      "properties": {
+        "out": {
+          "type": "string"
+        },
+        "logs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "ProtocolPluginDebugResp",
+      "required": [
+        "out",
+        "logs"
+      ]
     },
     "ProtocolPluginIndexReq": {
       "type": "object",

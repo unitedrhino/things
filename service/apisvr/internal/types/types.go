@@ -1635,6 +1635,18 @@ type ProtocolPlugin struct {
 	CreatedTime   int64   `json:"createdTime,optional"`   //创建时间
 }
 
+type ProtocolPluginDebugReq struct {
+	TriggerDir   int64  `json:"triggerDir"`   //1:up 2:down
+	TriggerTimer int64  `json:"triggerTimer"` //收到前处理1:before 2:after
+	Req          string `json:"req"`          //请求
+	Resp         string `json:"resp,optional"`
+}
+
+type ProtocolPluginDebugResp struct {
+	Out  string   `json:"out"`
+	Logs []string `json:"logs"`
+}
+
 type ProtocolPluginIndexReq struct {
 	Page          *PageInfo   `json:"page,optional"`          //分页信息,只获取一个则不填
 	Name          string      `json:"name,optional"`          //

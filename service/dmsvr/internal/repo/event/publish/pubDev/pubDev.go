@@ -3,6 +3,7 @@ package pubDev
 import (
 	"context"
 	"gitee.com/unitedrhino/share/eventBus"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/protocol"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"time"
 )
@@ -16,6 +17,8 @@ type (
 	}
 )
 
-func NewPubDev(fast *eventBus.FastEvent) (PubDev, error) {
+var s *protocol.ScriptTrans
+
+func NewPubDev(fast *eventBus.FastEvent, S *protocol.ScriptTrans) (PubDev, error) {
 	return newNatsClient(fast)
 }

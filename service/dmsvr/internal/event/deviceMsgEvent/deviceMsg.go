@@ -36,6 +36,12 @@ func (l *DeviceMsgHandle) Gateway(msg *deviceMsg.PublishMsg) error {
 	l.FixDisconnect(msg)
 	resp, err := NewGatewayLogic(l.ctx, l.svcCtx).Handle(msg)
 	l.deviceResp(resp)
+	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
+		err := l.svcCtx.ScriptTrans.UpAfterTrans(l.ctx, msg, resp)
+		if err != nil {
+			l.Error(msg, resp, err)
+		}
+	})
 	l.Infof("%s req:%v resp:%v err:%v", utils.FuncName(), msg, resp, err)
 	return err
 }
@@ -47,6 +53,12 @@ func (l *DeviceMsgHandle) Thing(msg *deviceMsg.PublishMsg) error {
 	msg = l.svcCtx.ScriptTrans.UpBeforeTrans(l.ctx, msg)
 	resp, err := NewThingLogic(l.ctx, l.svcCtx).Handle(msg)
 	l.deviceResp(resp)
+	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
+		err := l.svcCtx.ScriptTrans.UpAfterTrans(l.ctx, msg, resp)
+		if err != nil {
+			l.Error(msg, resp, err)
+		}
+	})
 	l.WithDuration(time.Now().Sub(startTime)).Infof("%s startTime:%v req:%v resp:%v err:%v",
 		utils.FuncName(), startTime, msg, resp, err)
 	return err
@@ -58,6 +70,12 @@ func (l *DeviceMsgHandle) Ota(msg *deviceMsg.PublishMsg) error {
 	l.FixDisconnect(msg)
 	resp, err := NewOtaLogic(l.ctx, l.svcCtx).Handle(msg)
 	l.deviceResp(resp)
+	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
+		err := l.svcCtx.ScriptTrans.UpAfterTrans(l.ctx, msg, resp)
+		if err != nil {
+			l.Error(msg, resp, err)
+		}
+	})
 	l.Infof("%s req:%v resp:%v err:%v", utils.FuncName(), msg, resp, err)
 	return err
 }
@@ -68,6 +86,12 @@ func (l *DeviceMsgHandle) Shadow(msg *deviceMsg.PublishMsg) error {
 	l.FixDisconnect(msg)
 	resp, err := NewShadowLogic(l.ctx, l.svcCtx).Handle(msg)
 	l.deviceResp(resp)
+	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
+		err := l.svcCtx.ScriptTrans.UpAfterTrans(l.ctx, msg, resp)
+		if err != nil {
+			l.Error(msg, resp, err)
+		}
+	})
 	l.Infof("%s req:%v resp:%v err:%v", utils.FuncName(), msg, resp, err)
 	return err
 }
@@ -78,6 +102,12 @@ func (l *DeviceMsgHandle) Config(msg *deviceMsg.PublishMsg) error {
 	l.FixDisconnect(msg)
 	respMsg, err := NewConfigLogic(l.ctx, l.svcCtx).Handle(msg)
 	l.deviceResp(respMsg)
+	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
+		err := l.svcCtx.ScriptTrans.UpAfterTrans(l.ctx, msg, respMsg)
+		if err != nil {
+			l.Error(msg, respMsg, err)
+		}
+	})
 	l.Infof("%s req:%v resp:%v err:%v", utils.FuncName(), msg, respMsg, err)
 	return err
 }
@@ -88,6 +118,12 @@ func (l *DeviceMsgHandle) Ext(msg *deviceMsg.PublishMsg) error {
 	l.FixDisconnect(msg)
 	resp, err := NewExtLogic(l.ctx, l.svcCtx).Handle(msg)
 	l.deviceResp(resp)
+	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
+		err := l.svcCtx.ScriptTrans.UpAfterTrans(l.ctx, msg, resp)
+		if err != nil {
+			l.Error(msg, resp, err)
+		}
+	})
 	l.Infof("%s req:%v resp:%v err:%v", utils.FuncName(), msg, resp, err)
 	return err
 }
@@ -97,6 +133,12 @@ func (l *DeviceMsgHandle) SDKLog(msg *deviceMsg.PublishMsg) error {
 	l.FixDisconnect(msg)
 	respMsg, err := NewSDKLogLogic(l.ctx, l.svcCtx).Handle(msg)
 	l.deviceResp(respMsg)
+	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
+		err := l.svcCtx.ScriptTrans.UpAfterTrans(l.ctx, msg, respMsg)
+		if err != nil {
+			l.Error(msg, respMsg, err)
+		}
+	})
 	l.Infof("%s req:%v resp:%v err:%v", utils.FuncName(), msg, respMsg, err)
 	return err
 }

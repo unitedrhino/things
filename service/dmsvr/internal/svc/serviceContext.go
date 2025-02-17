@@ -22,7 +22,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/config"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceBind"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
-	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/protocolTrans"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/protocol"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/userShared"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/cache"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/event/publish/pubApp"
@@ -51,7 +51,7 @@ type ServiceContext struct {
 
 	PubDev               pubDev.PubDev
 	PubApp               pubApp.PubApp
-	ScriptTrans          *protocolTrans.ScriptTrans
+	ScriptTrans          *protocol.ScriptTrans
 	OssClient            *oss.Client
 	TimedM               timedmanage.TimedManage
 	ProductSchemaRepo    *caches.Cache[schema.Model, string]
@@ -179,7 +179,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}, getDeviceSchemaModel.GetData, ca)
 	err = deviceDataR.Init(context.Background())
 	logx.Must(err)
-	pd, err := pubDev.NewPubDev(serverMsg)
+	script := protocol.NewScriptTrans()
+	pd, err := pubDev.NewPubDev(serverMsg, script)
 	if err != nil {
 		logx.Error("NewPubDev err", err)
 		os.Exit(-1)
@@ -242,7 +243,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		NodeID:            nodeID,
 		Slot:              Slot,
 		ProjectCache:      projectC,
-		ScriptTrans:       protocolTrans.NewScriptTrans(),
+		ScriptTrans:       script,
 		AreaCache:         areaC,
 	}
 }
