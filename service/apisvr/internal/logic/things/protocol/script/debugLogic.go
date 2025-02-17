@@ -1,4 +1,4 @@
-package plugin
+package script
 
 import (
 	"context"
@@ -26,7 +26,7 @@ func NewDebugLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DebugLogic 
 	}
 }
 
-func (l *DebugLogic) Debug(req *types.ProtocolPluginDebugReq) (resp *types.ProtocolPluginDebugResp, err error) {
-	ret, err := l.svcCtx.ProtocolM.ProtocolPluginDebug(l.ctx, utils.Copy[dm.ProtocolPluginDebugReq](req))
-	return utils.Copy[types.ProtocolPluginDebugResp](ret), err
+func (l *DebugLogic) Debug(req *types.ProtocolScriptDebugReq) (resp *types.ProtocolScriptDebugResp, err error) {
+	ret, err := l.svcCtx.ProtocolM.ProtocolScriptDebug(l.ctx, utils.Copy[dm.ProtocolScriptDebugReq](req))
+	return utils.Copy[types.ProtocolScriptDebugResp](ret), err
 }

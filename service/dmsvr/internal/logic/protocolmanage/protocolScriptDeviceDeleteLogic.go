@@ -10,14 +10,14 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type ProtocolPluginDeleteLogic struct {
+type ProtocolScriptDeviceDeleteLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewProtocolPluginDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProtocolPluginDeleteLogic {
-	return &ProtocolPluginDeleteLogic{
+func NewProtocolScriptDeviceDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProtocolScriptDeviceDeleteLogic {
+	return &ProtocolScriptDeviceDeleteLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
@@ -25,8 +25,8 @@ func NewProtocolPluginDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContex
 }
 
 // 协议删除
-func (l *ProtocolPluginDeleteLogic) ProtocolPluginDelete(in *dm.WithID) (*dm.Empty, error) {
-	err := relationDB.NewProtocolPluginRepo(l.ctx).Delete(l.ctx, in.Id)
+func (l *ProtocolScriptDeviceDeleteLogic) ProtocolScriptDeviceDelete(in *dm.WithID) (*dm.Empty, error) {
+	err := relationDB.NewProtocolScriptDeviceRepo(l.ctx).Delete(l.ctx, in.Id)
 
 	return &dm.Empty{}, err
 }

@@ -81,74 +81,154 @@ service api {
 }
 
 @server(
-    group: things/protocol/plugin
-    prefix: /api/v1/things/protocol/plugin
-    accessCodePrefix: "thingsProtocolPlugin"
+    group: things/protocol/script
+    prefix: /api/v1/things/protocol/script
+    accessCodePrefix: "thingsProtocolScript"
     accessNamePrefix: "协议管理"
     accessGroup: "设备自定义"
     middleware:  CheckTokenWare,InitCtxsWare
 )
 service api {
     @doc(
-        summary: "新增协议插件"
+        summary: "新增协议脚本"
         authType: "admin"
         isNeedAuth: "true"
     )
     @handler create
-    post /create (ProtocolPlugin) returns (WithIDStr)
+    post /create (ProtocolScript) returns (WithIDStr)
     @doc(
-        summary: "更新协议插件"
+        summary: "更新协议脚本"
         authType: "admin"
         isNeedAuth: "true"
     )
     @handler update
-    post /update (ProtocolPlugin) returns ()
+    post /update (ProtocolScript) returns ()
     @doc(
-        summary: "删除协议插件"
+        summary: "删除协议脚本"
         authType: "admin"
         isNeedAuth: "true"
     )
     @handler delete
     post /delete (WithIDStr) returns ()
     @doc(
-        summary: "获取协议插件列表"
+        summary: "获取协议脚本列表"
         authType: "admin"
         isNeedAuth: "true"
     )
     @handler index
-    post /index (ProtocolPluginIndexReq) returns (ProtocolPluginIndexResp)
+    post /index (ProtocolScriptIndexReq) returns (ProtocolScriptIndexResp)
     @doc(
-        summary: "获取协议插件详情"
+        summary: "获取协议脚本详情"
         authType: "admin"
         isNeedAuth: "true"
     )
     @handler read
-    post /read (WithIDStr) returns (ProtocolPlugin)
+    post /read (WithIDStr) returns (ProtocolScript)
     @doc(
-        summary: "协议插件调试"
+        summary: "协议脚本调试"
         authType: "admin"
         isNeedAuth: "true"
     )
     @handler debug
-    post /debug (ProtocolPluginDebugReq) returns (ProtocolPluginDebugResp)
+    post /debug (ProtocolScriptDebugReq) returns (ProtocolScriptDebugResp)
+}
+
+
+@server(
+    group: things/protocol/script/device
+    prefix: /api/v1/things/protocol/script/device
+    accessCodePrefix: "thingsProtocolScriptDevice"
+    accessNamePrefix: "协议管理"
+    accessGroup: "设备自定义"
+    middleware:  CheckTokenWare,InitCtxsWare
+)
+service api {
+    @doc(
+        summary: "新增协议脚本设备"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
+    @handler create
+    post /create (ProtocolScriptDevice) returns (WithIDStr)
+    @doc(
+        summary: "更新协议脚本设备"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
+    @handler update
+    post /update (ProtocolScriptDevice) returns ()
+    @doc(
+        summary: "删除协议脚本设备"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
+    @handler delete
+    post /delete (WithIDStr) returns ()
+    @doc(
+        summary: "获取协议脚本列表设备"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
+    @handler index
+    post /index (ProtocolScriptDeviceIndexReq) returns (ProtocolScriptDeviceIndexResp)
+    @doc(
+        summary: "获取协议脚本详情设备"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
+    @handler read
+    post /read (WithIDStr) returns (ProtocolScriptDevice)
 }
 
 type (
-    ProtocolPluginDebugReq{
+    ProtocolScriptDevice  {
+        ID            int64                  `json:"id,string,optional"`
+        TriggerSrc  int64 `json:"triggerSrc,optional"`    //product:1 device:2
+        ProductID string  `json:"productID,optional"`
+        DeviceName string `json:"deviceName,optional"`
+        ScriptID int64 `json:"scriptID,optional"`
+        Priority  int64 `json:"priority,optional"`//执行优先级
+        Status  int64 `json:"status,optional"`//状态:是否启用
+        CreatedTime  int64 `json:"createdTime,optional"`//创建时间
+        Script *ProtocolScript `json:"script,optional"` //只读 脚本信息 withScript传true返回
+        Product *ProductInfo `json:"product,optional"`//withDevice时,绑定的是产品返回
+        Device *DeviceInfo `json:"device,optional"`//withDevice时,绑定的是设备返回
+    }
+
+    ProtocolScriptDeviceIndexReq  {
+        Page *PageInfo `json:"page,optional"`           //分页信息,只获取一个则不填
+        TriggerSrc  int64 `json:"triggerSrc,optional"`    //product:1 device:2
+        ProductID string  `json:"productID,optional"`
+        DeviceName string `json:"deviceName,optional"`
+        Status  int64 `json:"status,optional"`//状态:是否启用
+        ScriptID int64 `json:"scriptID,optional"`
+        WithScript bool  `json:"withScript,optional"`
+        WithDevice bool  `json:"withDevice,optional"`
+    }
+
+    ProtocolScriptDeviceIndexResp  {
+        List []*ProtocolScriptDevice `json:"list"`    //自定义协议信息
+        Total int64 `json:"total,optional"`  //拥有的总数
+    }
+
+)
+
+type (
+    ProtocolScriptDebugReq{
         TriggerDir   int64 `json:"triggerDir"`    //1:up 2:down
         TriggerTimer   int64 `json:"triggerTimer"`  //收到前处理1:before 2:after
+        Script string  `json:"script"` //脚本内容
         Req   string `json:"req"`//请求
-        Resp string  `json:"resp,optional"`
+        Resp string  `json:"resp,optional"`//回复
     }
-    ProtocolPluginDebugResp{
+    ProtocolScriptDebugResp{
         Out string `json:"out"`
         Logs []string `json:"logs"`
     }
-    ProtocolPlugin  {
+    ProtocolScript  {
         ID            int64                  `json:"id,string,optional"`
         Name          string                 `json:"name,optional"`
         Desc          *string                 `json:"desc,optional"`
-        TriggerSrc  int64 `json:"triggerSrc,optional"`    //product:1 device:2
         TriggerDir  int64 `json:"triggerDir,optional"`    //1:up 2:down
         TriggerTimer  int64 `json:"triggerTimer,optional"`  //收到前处理1:before 2:after
         TriggerHandle  string `json:"triggerHandle,optional"` //对应 mqtt topic的第一个 thing ota config 等等
@@ -160,20 +240,18 @@ type (
     }
 
 
-    ProtocolPluginIndexReq  {
+    ProtocolScriptIndexReq  {
         Page *PageInfo `json:"page,optional"`           //分页信息,只获取一个则不填
         Name string `json:"name,optional"` //
-        TriggerSrc  int64 `json:"triggerSrc,optional"`    //product:1 device:2
         TriggerDir  int64 `json:"triggerDir,optional"`    //1:up 2:down
         TriggerTimer  int64 `json:"triggerTimer,optional"`  //收到前处理1:before 2:after
         TriggerHandle  string `json:"triggerHandle,optional"` //对应 mqtt topic的第一个 thing ota config 等等
         TriggerType  string `json:"triggerType,optional"`    // 操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
-        BindProductID string `json:"bindProductID,optional"` //绑定该协议的产品
-        BindDevice *DeviceCore `json:"bindDevice,optional"`  //绑定该协议的设备
+        Status  int64 `json:"status,optional"`//状态:是否启用
     }
 
-    ProtocolPluginIndexResp  {
-        List []*ProtocolPlugin `json:"list"`    //自定义协议信息
+    ProtocolScriptIndexResp  {
+        List []*ProtocolScript `json:"list"`    //自定义协议信息
         Total int64 `json:"total,optional"`  //拥有的总数
     }
 )

@@ -261,28 +261,44 @@ func (m *DmProtocolService) TableName() string {
 }
 
 // 协议插件
-type DmProtocolPlugin struct {
+type DmProtocolScript struct {
 	ID   int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	Name string `gorm:"column:name;uniqueIndex:pc;type:varchar(100);not null"` //转换名称
 	//ProductIDs    []string          `gorm:"column:product_ids;type:json;serializer:json;default:'[]'"` // 产品id
 	//Devices       []devices.Core    `gorm:"column:devices;type:json;serializer:json;default:'[]'"`     //设备触发
-	TriggerSrc    protocol.TriggerSrc   `gorm:"column:trigger_src;"`                                //product:1 device:2
 	TriggerDir    protocol.TriggerDir   `gorm:"column:trigger_dir;not null"`                        //up down
 	TriggerTimer  protocol.TriggerTimer `gorm:"column:trigger_timer;"`                              //收到前处理before after
 	TriggerHandle devices.MsgHandle     `gorm:"column:trigger_handle;type:varchar(100);default:''"` //对应 mqtt topic的第一个 thing ota config 等等
 	TriggerType   string                `gorm:"column:trigger_type;type:varchar(100);default:''"`   // 操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
 	//TriggerMethod string            //方法级触发
-	Priority   int64    `gorm:"column:priority;default:1"`                  //执行优先级
 	ScriptLang int64    `gorm:"column:script_lang;type:smallint;default:1"` // 脚本语言类型 1:go
 	Script     string   `gorm:"column:script;type:text"`                    // 协议转换脚本
 	Desc       string   `gorm:"column:desc;type:varchar(200)"`              // 描述
-	Status     def.Bool //状态:是否启用
+	Status     def.Bool `gorm:"column:status;default:1"`                    //状态:是否启用
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:pn"`
 }
 
-func (m *DmProtocolPlugin) TableName() string {
-	return "dm_protocol_plugin"
+func (m *DmProtocolScript) TableName() string {
+	return "dm_protocol_script"
+}
+
+// 协议插件
+type DmProtocolScriptDevice struct {
+	ID         int64               `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	TriggerSrc protocol.TriggerSrc `gorm:"column:trigger_src;"`                             //product:1 device:2
+	ProductID  string              `gorm:"column:product_id;type:varchar(100);not null"`    // 产品id
+	DeviceName string              `gorm:"column:device_name;type:varchar(100);default:''"` //设备
+	ScriptID   int64               `gorm:"column:script_id;type:bigint"`
+	Priority   int64               `gorm:"column:priority;default:1"` //执行优先级
+	Status     def.Bool            `gorm:"column:status;default:1"`   //状态:是否启用
+	Script     *DmProtocolScript   `gorm:"foreignKey:ID;references:ScriptID"`
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:pn"`
+}
+
+func (m *DmProtocolScriptDevice) TableName() string {
+	return "dm_protocol_script_device"
 }
 
 // 产品自定义协议表

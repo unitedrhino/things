@@ -2784,20 +2784,25 @@ var SchemaManage_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	ProtocolManage_ProtocolInfoIndex_FullMethodName     = "/dm.ProtocolManage/protocolInfoIndex"
-	ProtocolManage_ProtocolInfoRead_FullMethodName      = "/dm.ProtocolManage/protocolInfoRead"
-	ProtocolManage_ProtocolInfoCreate_FullMethodName    = "/dm.ProtocolManage/protocolInfoCreate"
-	ProtocolManage_ProtocolInfoUpdate_FullMethodName    = "/dm.ProtocolManage/protocolInfoUpdate"
-	ProtocolManage_ProtocolInfoDelete_FullMethodName    = "/dm.ProtocolManage/protocolInfoDelete"
-	ProtocolManage_ProtocolServiceUpdate_FullMethodName = "/dm.ProtocolManage/protocolServiceUpdate"
-	ProtocolManage_ProtocolServiceDelete_FullMethodName = "/dm.ProtocolManage/protocolServiceDelete"
-	ProtocolManage_ProtocolServiceIndex_FullMethodName  = "/dm.ProtocolManage/protocolServiceIndex"
-	ProtocolManage_ProtocolPluginIndex_FullMethodName   = "/dm.ProtocolManage/protocolPluginIndex"
-	ProtocolManage_ProtocolPluginRead_FullMethodName    = "/dm.ProtocolManage/protocolPluginRead"
-	ProtocolManage_ProtocolPluginCreate_FullMethodName  = "/dm.ProtocolManage/protocolPluginCreate"
-	ProtocolManage_ProtocolPluginUpdate_FullMethodName  = "/dm.ProtocolManage/protocolPluginUpdate"
-	ProtocolManage_ProtocolPluginDelete_FullMethodName  = "/dm.ProtocolManage/protocolPluginDelete"
-	ProtocolManage_ProtocolPluginDebug_FullMethodName   = "/dm.ProtocolManage/protocolPluginDebug"
+	ProtocolManage_ProtocolInfoIndex_FullMethodName          = "/dm.ProtocolManage/protocolInfoIndex"
+	ProtocolManage_ProtocolInfoRead_FullMethodName           = "/dm.ProtocolManage/protocolInfoRead"
+	ProtocolManage_ProtocolInfoCreate_FullMethodName         = "/dm.ProtocolManage/protocolInfoCreate"
+	ProtocolManage_ProtocolInfoUpdate_FullMethodName         = "/dm.ProtocolManage/protocolInfoUpdate"
+	ProtocolManage_ProtocolInfoDelete_FullMethodName         = "/dm.ProtocolManage/protocolInfoDelete"
+	ProtocolManage_ProtocolServiceUpdate_FullMethodName      = "/dm.ProtocolManage/protocolServiceUpdate"
+	ProtocolManage_ProtocolServiceDelete_FullMethodName      = "/dm.ProtocolManage/protocolServiceDelete"
+	ProtocolManage_ProtocolServiceIndex_FullMethodName       = "/dm.ProtocolManage/protocolServiceIndex"
+	ProtocolManage_ProtocolScriptIndex_FullMethodName        = "/dm.ProtocolManage/ProtocolScriptIndex"
+	ProtocolManage_ProtocolScriptRead_FullMethodName         = "/dm.ProtocolManage/ProtocolScriptRead"
+	ProtocolManage_ProtocolScriptCreate_FullMethodName       = "/dm.ProtocolManage/ProtocolScriptCreate"
+	ProtocolManage_ProtocolScriptUpdate_FullMethodName       = "/dm.ProtocolManage/ProtocolScriptUpdate"
+	ProtocolManage_ProtocolScriptDelete_FullMethodName       = "/dm.ProtocolManage/ProtocolScriptDelete"
+	ProtocolManage_ProtocolScriptDebug_FullMethodName        = "/dm.ProtocolManage/ProtocolScriptDebug"
+	ProtocolManage_ProtocolScriptDeviceIndex_FullMethodName  = "/dm.ProtocolManage/ProtocolScriptDeviceIndex"
+	ProtocolManage_ProtocolScriptDeviceRead_FullMethodName   = "/dm.ProtocolManage/ProtocolScriptDeviceRead"
+	ProtocolManage_ProtocolScriptDeviceCreate_FullMethodName = "/dm.ProtocolManage/ProtocolScriptDeviceCreate"
+	ProtocolManage_ProtocolScriptDeviceUpdate_FullMethodName = "/dm.ProtocolManage/ProtocolScriptDeviceUpdate"
+	ProtocolManage_ProtocolScriptDeviceDelete_FullMethodName = "/dm.ProtocolManage/ProtocolScriptDeviceDelete"
 )
 
 // ProtocolManageClient is the client API for ProtocolManage service.
@@ -2819,16 +2824,26 @@ type ProtocolManageClient interface {
 	ProtocolServiceDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
 	ProtocolServiceIndex(ctx context.Context, in *ProtocolServiceIndexReq, opts ...grpc.CallOption) (*ProtocolServiceIndexResp, error)
 	// 协议列表
-	ProtocolPluginIndex(ctx context.Context, in *ProtocolPluginIndexReq, opts ...grpc.CallOption) (*ProtocolPluginIndexResp, error)
+	ProtocolScriptIndex(ctx context.Context, in *ProtocolScriptIndexReq, opts ...grpc.CallOption) (*ProtocolScriptIndexResp, error)
 	// 协议详情
-	ProtocolPluginRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProtocolPlugin, error)
+	ProtocolScriptRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProtocolScript, error)
 	// 协议创建
-	ProtocolPluginCreate(ctx context.Context, in *ProtocolPlugin, opts ...grpc.CallOption) (*WithID, error)
+	ProtocolScriptCreate(ctx context.Context, in *ProtocolScript, opts ...grpc.CallOption) (*WithID, error)
 	// 协议更新
-	ProtocolPluginUpdate(ctx context.Context, in *ProtocolPlugin, opts ...grpc.CallOption) (*Empty, error)
+	ProtocolScriptUpdate(ctx context.Context, in *ProtocolScript, opts ...grpc.CallOption) (*Empty, error)
 	// 协议删除
-	ProtocolPluginDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
-	ProtocolPluginDebug(ctx context.Context, in *ProtocolPluginDebugReq, opts ...grpc.CallOption) (*ProtocolPluginDebugResp, error)
+	ProtocolScriptDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
+	ProtocolScriptDebug(ctx context.Context, in *ProtocolScriptDebugReq, opts ...grpc.CallOption) (*ProtocolScriptDebugResp, error)
+	// 协议列表
+	ProtocolScriptDeviceIndex(ctx context.Context, in *ProtocolScriptDeviceIndexReq, opts ...grpc.CallOption) (*ProtocolScriptDeviceIndexResp, error)
+	// 协议详情
+	ProtocolScriptDeviceRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProtocolScriptDevice, error)
+	// 协议创建
+	ProtocolScriptDeviceCreate(ctx context.Context, in *ProtocolScriptDevice, opts ...grpc.CallOption) (*WithID, error)
+	// 协议更新
+	ProtocolScriptDeviceUpdate(ctx context.Context, in *ProtocolScriptDevice, opts ...grpc.CallOption) (*Empty, error)
+	// 协议删除
+	ProtocolScriptDeviceDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type protocolManageClient struct {
@@ -2911,54 +2926,99 @@ func (c *protocolManageClient) ProtocolServiceIndex(ctx context.Context, in *Pro
 	return out, nil
 }
 
-func (c *protocolManageClient) ProtocolPluginIndex(ctx context.Context, in *ProtocolPluginIndexReq, opts ...grpc.CallOption) (*ProtocolPluginIndexResp, error) {
-	out := new(ProtocolPluginIndexResp)
-	err := c.cc.Invoke(ctx, ProtocolManage_ProtocolPluginIndex_FullMethodName, in, out, opts...)
+func (c *protocolManageClient) ProtocolScriptIndex(ctx context.Context, in *ProtocolScriptIndexReq, opts ...grpc.CallOption) (*ProtocolScriptIndexResp, error) {
+	out := new(ProtocolScriptIndexResp)
+	err := c.cc.Invoke(ctx, ProtocolManage_ProtocolScriptIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolManageClient) ProtocolPluginRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProtocolPlugin, error) {
-	out := new(ProtocolPlugin)
-	err := c.cc.Invoke(ctx, ProtocolManage_ProtocolPluginRead_FullMethodName, in, out, opts...)
+func (c *protocolManageClient) ProtocolScriptRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProtocolScript, error) {
+	out := new(ProtocolScript)
+	err := c.cc.Invoke(ctx, ProtocolManage_ProtocolScriptRead_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolManageClient) ProtocolPluginCreate(ctx context.Context, in *ProtocolPlugin, opts ...grpc.CallOption) (*WithID, error) {
+func (c *protocolManageClient) ProtocolScriptCreate(ctx context.Context, in *ProtocolScript, opts ...grpc.CallOption) (*WithID, error) {
 	out := new(WithID)
-	err := c.cc.Invoke(ctx, ProtocolManage_ProtocolPluginCreate_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, ProtocolManage_ProtocolScriptCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolManageClient) ProtocolPluginUpdate(ctx context.Context, in *ProtocolPlugin, opts ...grpc.CallOption) (*Empty, error) {
+func (c *protocolManageClient) ProtocolScriptUpdate(ctx context.Context, in *ProtocolScript, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
-	err := c.cc.Invoke(ctx, ProtocolManage_ProtocolPluginUpdate_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, ProtocolManage_ProtocolScriptUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolManageClient) ProtocolPluginDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+func (c *protocolManageClient) ProtocolScriptDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
-	err := c.cc.Invoke(ctx, ProtocolManage_ProtocolPluginDelete_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, ProtocolManage_ProtocolScriptDelete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolManageClient) ProtocolPluginDebug(ctx context.Context, in *ProtocolPluginDebugReq, opts ...grpc.CallOption) (*ProtocolPluginDebugResp, error) {
-	out := new(ProtocolPluginDebugResp)
-	err := c.cc.Invoke(ctx, ProtocolManage_ProtocolPluginDebug_FullMethodName, in, out, opts...)
+func (c *protocolManageClient) ProtocolScriptDebug(ctx context.Context, in *ProtocolScriptDebugReq, opts ...grpc.CallOption) (*ProtocolScriptDebugResp, error) {
+	out := new(ProtocolScriptDebugResp)
+	err := c.cc.Invoke(ctx, ProtocolManage_ProtocolScriptDebug_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolManageClient) ProtocolScriptDeviceIndex(ctx context.Context, in *ProtocolScriptDeviceIndexReq, opts ...grpc.CallOption) (*ProtocolScriptDeviceIndexResp, error) {
+	out := new(ProtocolScriptDeviceIndexResp)
+	err := c.cc.Invoke(ctx, ProtocolManage_ProtocolScriptDeviceIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolManageClient) ProtocolScriptDeviceRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProtocolScriptDevice, error) {
+	out := new(ProtocolScriptDevice)
+	err := c.cc.Invoke(ctx, ProtocolManage_ProtocolScriptDeviceRead_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolManageClient) ProtocolScriptDeviceCreate(ctx context.Context, in *ProtocolScriptDevice, opts ...grpc.CallOption) (*WithID, error) {
+	out := new(WithID)
+	err := c.cc.Invoke(ctx, ProtocolManage_ProtocolScriptDeviceCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolManageClient) ProtocolScriptDeviceUpdate(ctx context.Context, in *ProtocolScriptDevice, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, ProtocolManage_ProtocolScriptDeviceUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolManageClient) ProtocolScriptDeviceDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, ProtocolManage_ProtocolScriptDeviceDelete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -2984,16 +3044,26 @@ type ProtocolManageServer interface {
 	ProtocolServiceDelete(context.Context, *WithID) (*Empty, error)
 	ProtocolServiceIndex(context.Context, *ProtocolServiceIndexReq) (*ProtocolServiceIndexResp, error)
 	// 协议列表
-	ProtocolPluginIndex(context.Context, *ProtocolPluginIndexReq) (*ProtocolPluginIndexResp, error)
+	ProtocolScriptIndex(context.Context, *ProtocolScriptIndexReq) (*ProtocolScriptIndexResp, error)
 	// 协议详情
-	ProtocolPluginRead(context.Context, *WithID) (*ProtocolPlugin, error)
+	ProtocolScriptRead(context.Context, *WithID) (*ProtocolScript, error)
 	// 协议创建
-	ProtocolPluginCreate(context.Context, *ProtocolPlugin) (*WithID, error)
+	ProtocolScriptCreate(context.Context, *ProtocolScript) (*WithID, error)
 	// 协议更新
-	ProtocolPluginUpdate(context.Context, *ProtocolPlugin) (*Empty, error)
+	ProtocolScriptUpdate(context.Context, *ProtocolScript) (*Empty, error)
 	// 协议删除
-	ProtocolPluginDelete(context.Context, *WithID) (*Empty, error)
-	ProtocolPluginDebug(context.Context, *ProtocolPluginDebugReq) (*ProtocolPluginDebugResp, error)
+	ProtocolScriptDelete(context.Context, *WithID) (*Empty, error)
+	ProtocolScriptDebug(context.Context, *ProtocolScriptDebugReq) (*ProtocolScriptDebugResp, error)
+	// 协议列表
+	ProtocolScriptDeviceIndex(context.Context, *ProtocolScriptDeviceIndexReq) (*ProtocolScriptDeviceIndexResp, error)
+	// 协议详情
+	ProtocolScriptDeviceRead(context.Context, *WithID) (*ProtocolScriptDevice, error)
+	// 协议创建
+	ProtocolScriptDeviceCreate(context.Context, *ProtocolScriptDevice) (*WithID, error)
+	// 协议更新
+	ProtocolScriptDeviceUpdate(context.Context, *ProtocolScriptDevice) (*Empty, error)
+	// 协议删除
+	ProtocolScriptDeviceDelete(context.Context, *WithID) (*Empty, error)
 	mustEmbedUnimplementedProtocolManageServer()
 }
 
@@ -3025,23 +3095,38 @@ func (UnimplementedProtocolManageServer) ProtocolServiceDelete(context.Context, 
 func (UnimplementedProtocolManageServer) ProtocolServiceIndex(context.Context, *ProtocolServiceIndexReq) (*ProtocolServiceIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProtocolServiceIndex not implemented")
 }
-func (UnimplementedProtocolManageServer) ProtocolPluginIndex(context.Context, *ProtocolPluginIndexReq) (*ProtocolPluginIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProtocolPluginIndex not implemented")
+func (UnimplementedProtocolManageServer) ProtocolScriptIndex(context.Context, *ProtocolScriptIndexReq) (*ProtocolScriptIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProtocolScriptIndex not implemented")
 }
-func (UnimplementedProtocolManageServer) ProtocolPluginRead(context.Context, *WithID) (*ProtocolPlugin, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProtocolPluginRead not implemented")
+func (UnimplementedProtocolManageServer) ProtocolScriptRead(context.Context, *WithID) (*ProtocolScript, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProtocolScriptRead not implemented")
 }
-func (UnimplementedProtocolManageServer) ProtocolPluginCreate(context.Context, *ProtocolPlugin) (*WithID, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProtocolPluginCreate not implemented")
+func (UnimplementedProtocolManageServer) ProtocolScriptCreate(context.Context, *ProtocolScript) (*WithID, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProtocolScriptCreate not implemented")
 }
-func (UnimplementedProtocolManageServer) ProtocolPluginUpdate(context.Context, *ProtocolPlugin) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProtocolPluginUpdate not implemented")
+func (UnimplementedProtocolManageServer) ProtocolScriptUpdate(context.Context, *ProtocolScript) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProtocolScriptUpdate not implemented")
 }
-func (UnimplementedProtocolManageServer) ProtocolPluginDelete(context.Context, *WithID) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProtocolPluginDelete not implemented")
+func (UnimplementedProtocolManageServer) ProtocolScriptDelete(context.Context, *WithID) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProtocolScriptDelete not implemented")
 }
-func (UnimplementedProtocolManageServer) ProtocolPluginDebug(context.Context, *ProtocolPluginDebugReq) (*ProtocolPluginDebugResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProtocolPluginDebug not implemented")
+func (UnimplementedProtocolManageServer) ProtocolScriptDebug(context.Context, *ProtocolScriptDebugReq) (*ProtocolScriptDebugResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProtocolScriptDebug not implemented")
+}
+func (UnimplementedProtocolManageServer) ProtocolScriptDeviceIndex(context.Context, *ProtocolScriptDeviceIndexReq) (*ProtocolScriptDeviceIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProtocolScriptDeviceIndex not implemented")
+}
+func (UnimplementedProtocolManageServer) ProtocolScriptDeviceRead(context.Context, *WithID) (*ProtocolScriptDevice, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProtocolScriptDeviceRead not implemented")
+}
+func (UnimplementedProtocolManageServer) ProtocolScriptDeviceCreate(context.Context, *ProtocolScriptDevice) (*WithID, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProtocolScriptDeviceCreate not implemented")
+}
+func (UnimplementedProtocolManageServer) ProtocolScriptDeviceUpdate(context.Context, *ProtocolScriptDevice) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProtocolScriptDeviceUpdate not implemented")
+}
+func (UnimplementedProtocolManageServer) ProtocolScriptDeviceDelete(context.Context, *WithID) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProtocolScriptDeviceDelete not implemented")
 }
 func (UnimplementedProtocolManageServer) mustEmbedUnimplementedProtocolManageServer() {}
 
@@ -3200,110 +3285,200 @@ func _ProtocolManage_ProtocolServiceIndex_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProtocolManage_ProtocolPluginIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProtocolPluginIndexReq)
+func _ProtocolManage_ProtocolScriptIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProtocolScriptIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolManageServer).ProtocolPluginIndex(ctx, in)
+		return srv.(ProtocolManageServer).ProtocolScriptIndex(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ProtocolManage_ProtocolPluginIndex_FullMethodName,
+		FullMethod: ProtocolManage_ProtocolScriptIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolManageServer).ProtocolPluginIndex(ctx, req.(*ProtocolPluginIndexReq))
+		return srv.(ProtocolManageServer).ProtocolScriptIndex(ctx, req.(*ProtocolScriptIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProtocolManage_ProtocolPluginRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ProtocolManage_ProtocolScriptRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(WithID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolManageServer).ProtocolPluginRead(ctx, in)
+		return srv.(ProtocolManageServer).ProtocolScriptRead(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ProtocolManage_ProtocolPluginRead_FullMethodName,
+		FullMethod: ProtocolManage_ProtocolScriptRead_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolManageServer).ProtocolPluginRead(ctx, req.(*WithID))
+		return srv.(ProtocolManageServer).ProtocolScriptRead(ctx, req.(*WithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProtocolManage_ProtocolPluginCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProtocolPlugin)
+func _ProtocolManage_ProtocolScriptCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProtocolScript)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolManageServer).ProtocolPluginCreate(ctx, in)
+		return srv.(ProtocolManageServer).ProtocolScriptCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ProtocolManage_ProtocolPluginCreate_FullMethodName,
+		FullMethod: ProtocolManage_ProtocolScriptCreate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolManageServer).ProtocolPluginCreate(ctx, req.(*ProtocolPlugin))
+		return srv.(ProtocolManageServer).ProtocolScriptCreate(ctx, req.(*ProtocolScript))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProtocolManage_ProtocolPluginUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProtocolPlugin)
+func _ProtocolManage_ProtocolScriptUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProtocolScript)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolManageServer).ProtocolPluginUpdate(ctx, in)
+		return srv.(ProtocolManageServer).ProtocolScriptUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ProtocolManage_ProtocolPluginUpdate_FullMethodName,
+		FullMethod: ProtocolManage_ProtocolScriptUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolManageServer).ProtocolPluginUpdate(ctx, req.(*ProtocolPlugin))
+		return srv.(ProtocolManageServer).ProtocolScriptUpdate(ctx, req.(*ProtocolScript))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProtocolManage_ProtocolPluginDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ProtocolManage_ProtocolScriptDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(WithID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolManageServer).ProtocolPluginDelete(ctx, in)
+		return srv.(ProtocolManageServer).ProtocolScriptDelete(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ProtocolManage_ProtocolPluginDelete_FullMethodName,
+		FullMethod: ProtocolManage_ProtocolScriptDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolManageServer).ProtocolPluginDelete(ctx, req.(*WithID))
+		return srv.(ProtocolManageServer).ProtocolScriptDelete(ctx, req.(*WithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProtocolManage_ProtocolPluginDebug_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProtocolPluginDebugReq)
+func _ProtocolManage_ProtocolScriptDebug_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProtocolScriptDebugReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolManageServer).ProtocolPluginDebug(ctx, in)
+		return srv.(ProtocolManageServer).ProtocolScriptDebug(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ProtocolManage_ProtocolPluginDebug_FullMethodName,
+		FullMethod: ProtocolManage_ProtocolScriptDebug_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolManageServer).ProtocolPluginDebug(ctx, req.(*ProtocolPluginDebugReq))
+		return srv.(ProtocolManageServer).ProtocolScriptDebug(ctx, req.(*ProtocolScriptDebugReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtocolManage_ProtocolScriptDeviceIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProtocolScriptDeviceIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolManageServer).ProtocolScriptDeviceIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProtocolManage_ProtocolScriptDeviceIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolManageServer).ProtocolScriptDeviceIndex(ctx, req.(*ProtocolScriptDeviceIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtocolManage_ProtocolScriptDeviceRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WithID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolManageServer).ProtocolScriptDeviceRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProtocolManage_ProtocolScriptDeviceRead_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolManageServer).ProtocolScriptDeviceRead(ctx, req.(*WithID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtocolManage_ProtocolScriptDeviceCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProtocolScriptDevice)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolManageServer).ProtocolScriptDeviceCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProtocolManage_ProtocolScriptDeviceCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolManageServer).ProtocolScriptDeviceCreate(ctx, req.(*ProtocolScriptDevice))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtocolManage_ProtocolScriptDeviceUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProtocolScriptDevice)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolManageServer).ProtocolScriptDeviceUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProtocolManage_ProtocolScriptDeviceUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolManageServer).ProtocolScriptDeviceUpdate(ctx, req.(*ProtocolScriptDevice))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtocolManage_ProtocolScriptDeviceDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WithID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolManageServer).ProtocolScriptDeviceDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProtocolManage_ProtocolScriptDeviceDelete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolManageServer).ProtocolScriptDeviceDelete(ctx, req.(*WithID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3348,28 +3523,48 @@ var ProtocolManage_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ProtocolManage_ProtocolServiceIndex_Handler,
 		},
 		{
-			MethodName: "protocolPluginIndex",
-			Handler:    _ProtocolManage_ProtocolPluginIndex_Handler,
+			MethodName: "ProtocolScriptIndex",
+			Handler:    _ProtocolManage_ProtocolScriptIndex_Handler,
 		},
 		{
-			MethodName: "protocolPluginRead",
-			Handler:    _ProtocolManage_ProtocolPluginRead_Handler,
+			MethodName: "ProtocolScriptRead",
+			Handler:    _ProtocolManage_ProtocolScriptRead_Handler,
 		},
 		{
-			MethodName: "protocolPluginCreate",
-			Handler:    _ProtocolManage_ProtocolPluginCreate_Handler,
+			MethodName: "ProtocolScriptCreate",
+			Handler:    _ProtocolManage_ProtocolScriptCreate_Handler,
 		},
 		{
-			MethodName: "protocolPluginUpdate",
-			Handler:    _ProtocolManage_ProtocolPluginUpdate_Handler,
+			MethodName: "ProtocolScriptUpdate",
+			Handler:    _ProtocolManage_ProtocolScriptUpdate_Handler,
 		},
 		{
-			MethodName: "protocolPluginDelete",
-			Handler:    _ProtocolManage_ProtocolPluginDelete_Handler,
+			MethodName: "ProtocolScriptDelete",
+			Handler:    _ProtocolManage_ProtocolScriptDelete_Handler,
 		},
 		{
-			MethodName: "protocolPluginDebug",
-			Handler:    _ProtocolManage_ProtocolPluginDebug_Handler,
+			MethodName: "ProtocolScriptDebug",
+			Handler:    _ProtocolManage_ProtocolScriptDebug_Handler,
+		},
+		{
+			MethodName: "ProtocolScriptDeviceIndex",
+			Handler:    _ProtocolManage_ProtocolScriptDeviceIndex_Handler,
+		},
+		{
+			MethodName: "ProtocolScriptDeviceRead",
+			Handler:    _ProtocolManage_ProtocolScriptDeviceRead_Handler,
+		},
+		{
+			MethodName: "ProtocolScriptDeviceCreate",
+			Handler:    _ProtocolManage_ProtocolScriptDeviceCreate_Handler,
+		},
+		{
+			MethodName: "ProtocolScriptDeviceUpdate",
+			Handler:    _ProtocolManage_ProtocolScriptDeviceUpdate_Handler,
+		},
+		{
+			MethodName: "ProtocolScriptDeviceDelete",
+			Handler:    _ProtocolManage_ProtocolScriptDeviceDelete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

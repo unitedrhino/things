@@ -1,4 +1,4 @@
-package plugin
+package device
 
 import (
 	"context"
@@ -26,8 +26,8 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 	}
 }
 
-func (l *CreateLogic) Create(req *types.ProtocolPlugin) (resp *types.WithIDStr, err error) {
-	ret, err := l.svcCtx.ProtocolM.ProtocolPluginCreate(l.ctx, utils.Copy[dm.ProtocolPlugin](req))
+func (l *CreateLogic) Create(req *types.ProtocolScriptDevice) (resp *types.WithIDStr, err error) {
+	ret, err := l.svcCtx.ProtocolM.ProtocolScriptDeviceCreate(l.ctx, utils.Copy[dm.ProtocolScriptDevice](req))
 	if err != nil {
 		return nil, err
 	}

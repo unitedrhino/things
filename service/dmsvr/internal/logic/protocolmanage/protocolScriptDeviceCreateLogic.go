@@ -11,14 +11,14 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type ProtocolPluginCreateLogic struct {
+type ProtocolScriptDeviceCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewProtocolPluginCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProtocolPluginCreateLogic {
-	return &ProtocolPluginCreateLogic{
+func NewProtocolScriptDeviceCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProtocolScriptDeviceCreateLogic {
+	return &ProtocolScriptDeviceCreateLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
@@ -26,8 +26,8 @@ func NewProtocolPluginCreateLogic(ctx context.Context, svcCtx *svc.ServiceContex
 }
 
 // 协议创建
-func (l *ProtocolPluginCreateLogic) ProtocolPluginCreate(in *dm.ProtocolPlugin) (*dm.WithID, error) {
-	po := utils.Copy[relationDB.DmProtocolPlugin](in)
-	err := relationDB.NewProtocolPluginRepo(l.ctx).Insert(l.ctx, po)
+func (l *ProtocolScriptDeviceCreateLogic) ProtocolScriptDeviceCreate(in *dm.ProtocolScriptDevice) (*dm.WithID, error) {
+	po := utils.Copy[relationDB.DmProtocolScriptDevice](in)
+	err := relationDB.NewProtocolScriptDeviceRepo(l.ctx).Insert(l.ctx, po)
 	return &dm.WithID{Id: po.ID}, err
 }

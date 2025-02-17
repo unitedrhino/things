@@ -70,36 +70,66 @@ func (s *ProtocolManageServer) ProtocolServiceIndex(ctx context.Context, in *dm.
 }
 
 // 协议列表
-func (s *ProtocolManageServer) ProtocolPluginIndex(ctx context.Context, in *dm.ProtocolPluginIndexReq) (*dm.ProtocolPluginIndexResp, error) {
-	l := protocolmanagelogic.NewProtocolPluginIndexLogic(ctx, s.svcCtx)
-	return l.ProtocolPluginIndex(in)
+func (s *ProtocolManageServer) ProtocolScriptIndex(ctx context.Context, in *dm.ProtocolScriptIndexReq) (*dm.ProtocolScriptIndexResp, error) {
+	l := protocolmanagelogic.NewProtocolScriptIndexLogic(ctx, s.svcCtx)
+	return l.ProtocolScriptIndex(in)
 }
 
 // 协议详情
-func (s *ProtocolManageServer) ProtocolPluginRead(ctx context.Context, in *dm.WithID) (*dm.ProtocolPlugin, error) {
-	l := protocolmanagelogic.NewProtocolPluginReadLogic(ctx, s.svcCtx)
-	return l.ProtocolPluginRead(in)
+func (s *ProtocolManageServer) ProtocolScriptRead(ctx context.Context, in *dm.WithID) (*dm.ProtocolScript, error) {
+	l := protocolmanagelogic.NewProtocolScriptReadLogic(ctx, s.svcCtx)
+	return l.ProtocolScriptRead(in)
 }
 
 // 协议创建
-func (s *ProtocolManageServer) ProtocolPluginCreate(ctx context.Context, in *dm.ProtocolPlugin) (*dm.WithID, error) {
-	l := protocolmanagelogic.NewProtocolPluginCreateLogic(ctx, s.svcCtx)
-	return l.ProtocolPluginCreate(in)
+func (s *ProtocolManageServer) ProtocolScriptCreate(ctx context.Context, in *dm.ProtocolScript) (*dm.WithID, error) {
+	l := protocolmanagelogic.NewProtocolScriptCreateLogic(ctx, s.svcCtx)
+	return l.ProtocolScriptCreate(in)
 }
 
 // 协议更新
-func (s *ProtocolManageServer) ProtocolPluginUpdate(ctx context.Context, in *dm.ProtocolPlugin) (*dm.Empty, error) {
-	l := protocolmanagelogic.NewProtocolPluginUpdateLogic(ctx, s.svcCtx)
-	return l.ProtocolPluginUpdate(in)
+func (s *ProtocolManageServer) ProtocolScriptUpdate(ctx context.Context, in *dm.ProtocolScript) (*dm.Empty, error) {
+	l := protocolmanagelogic.NewProtocolScriptUpdateLogic(ctx, s.svcCtx)
+	return l.ProtocolScriptUpdate(in)
 }
 
 // 协议删除
-func (s *ProtocolManageServer) ProtocolPluginDelete(ctx context.Context, in *dm.WithID) (*dm.Empty, error) {
-	l := protocolmanagelogic.NewProtocolPluginDeleteLogic(ctx, s.svcCtx)
-	return l.ProtocolPluginDelete(in)
+func (s *ProtocolManageServer) ProtocolScriptDelete(ctx context.Context, in *dm.WithID) (*dm.Empty, error) {
+	l := protocolmanagelogic.NewProtocolScriptDeleteLogic(ctx, s.svcCtx)
+	return l.ProtocolScriptDelete(in)
 }
 
-func (s *ProtocolManageServer) ProtocolPluginDebug(ctx context.Context, in *dm.ProtocolPluginDebugReq) (*dm.ProtocolPluginDebugResp, error) {
-	l := protocolmanagelogic.NewProtocolPluginDebugLogic(ctx, s.svcCtx)
-	return l.ProtocolPluginDebug(in)
+func (s *ProtocolManageServer) ProtocolScriptDebug(ctx context.Context, in *dm.ProtocolScriptDebugReq) (*dm.ProtocolScriptDebugResp, error) {
+	l := protocolmanagelogic.NewProtocolScriptDebugLogic(ctx, s.svcCtx)
+	return l.ProtocolScriptDebug(in)
+}
+
+// 协议列表
+func (s *ProtocolManageServer) ProtocolScriptDeviceIndex(ctx context.Context, in *dm.ProtocolScriptDeviceIndexReq) (*dm.ProtocolScriptDeviceIndexResp, error) {
+	l := protocolmanagelogic.NewProtocolScriptDeviceIndexLogic(ctx, s.svcCtx)
+	return l.ProtocolScriptDeviceIndex(in)
+}
+
+// 协议详情
+func (s *ProtocolManageServer) ProtocolScriptDeviceRead(ctx context.Context, in *dm.WithID) (*dm.ProtocolScriptDevice, error) {
+	l := protocolmanagelogic.NewProtocolScriptDeviceReadLogic(ctx, s.svcCtx)
+	return l.ProtocolScriptDeviceRead(in)
+}
+
+// 协议创建
+func (s *ProtocolManageServer) ProtocolScriptDeviceCreate(ctx context.Context, in *dm.ProtocolScriptDevice) (*dm.WithID, error) {
+	l := protocolmanagelogic.NewProtocolScriptDeviceCreateLogic(ctx, s.svcCtx)
+	return l.ProtocolScriptDeviceCreate(in)
+}
+
+// 协议更新
+func (s *ProtocolManageServer) ProtocolScriptDeviceUpdate(ctx context.Context, in *dm.ProtocolScriptDevice) (*dm.Empty, error) {
+	l := protocolmanagelogic.NewProtocolScriptDeviceUpdateLogic(ctx, s.svcCtx)
+	return l.ProtocolScriptDeviceUpdate(in)
+}
+
+// 协议删除
+func (s *ProtocolManageServer) ProtocolScriptDeviceDelete(ctx context.Context, in *dm.WithID) (*dm.Empty, error) {
+	l := protocolmanagelogic.NewProtocolScriptDeviceDeleteLogic(ctx, s.svcCtx)
+	return l.ProtocolScriptDeviceDelete(in)
 }

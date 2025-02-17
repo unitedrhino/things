@@ -11,14 +11,14 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type ProtocolPluginReadLogic struct {
+type ProtocolScriptReadLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewProtocolPluginReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProtocolPluginReadLogic {
-	return &ProtocolPluginReadLogic{
+func NewProtocolScriptReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProtocolScriptReadLogic {
+	return &ProtocolScriptReadLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
@@ -26,7 +26,7 @@ func NewProtocolPluginReadLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 }
 
 // 协议详情
-func (l *ProtocolPluginReadLogic) ProtocolPluginRead(in *dm.WithID) (*dm.ProtocolPlugin, error) {
-	po, err := relationDB.NewProtocolPluginRepo(l.ctx).FindOne(l.ctx, in.Id)
-	return utils.Copy[dm.ProtocolPlugin](po), err
+func (l *ProtocolScriptReadLogic) ProtocolScriptRead(in *dm.WithID) (*dm.ProtocolScript, error) {
+	po, err := relationDB.NewProtocolScriptRepo(l.ctx).FindOne(l.ctx, in.Id)
+	return utils.Copy[dm.ProtocolScript](po), err
 }

@@ -1,4 +1,4 @@
-package plugin
+package device
 
 import (
 	"context"
@@ -11,22 +11,22 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type ReadLogic struct {
+type DeleteLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-// 获取协议插件详情
-func NewReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogic {
-	return &ReadLogic{
+// 删除协议插件
+func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogic {
+	return &DeleteLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *ReadLogic) Read(req *types.WithIDStr) (resp *types.ProtocolPlugin, err error) {
-	ret, err := l.svcCtx.ProtocolM.ProtocolPluginRead(l.ctx, utils.Copy[dm.WithID](req))
-	return utils.Copy[types.ProtocolPlugin](ret), err
+func (l *DeleteLogic) Delete(req *types.WithIDStr) error {
+	_, err := l.svcCtx.ProtocolM.ProtocolScriptDeviceDelete(l.ctx, utils.Copy[dm.WithID](req))
+	return err
 }

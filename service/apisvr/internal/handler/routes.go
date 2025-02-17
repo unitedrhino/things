@@ -29,7 +29,8 @@ import (
 	thingsproductremoteConfig "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/product/remoteConfig"
 	thingsproductschema "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/product/schema"
 	thingsprotocolinfo "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/protocol/info"
-	thingsprotocolplugin "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/protocol/plugin"
+	thingsprotocolscript "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/protocol/script"
+	thingsprotocolscriptdevice "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/protocol/script/device"
 	thingsprotocolservice "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/protocol/service"
 	thingsrulealarminfo "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/rule/alarm/info"
 	thingsrulealarmrecord "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/rule/alarm/record"
@@ -979,44 +980,83 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Middleware{serverCtx.CheckTokenWare, serverCtx.InitCtxsWare},
 			[]rest.Route{
 				{
-					// 新增协议插件
+					// 新增协议脚本
 					Method:  http.MethodPost,
 					Path:    "/create",
-					Handler: thingsprotocolplugin.CreateHandler(serverCtx),
+					Handler: thingsprotocolscript.CreateHandler(serverCtx),
 				},
 				{
-					// 协议插件调试
+					// 协议脚本调试
 					Method:  http.MethodPost,
 					Path:    "/debug",
-					Handler: thingsprotocolplugin.DebugHandler(serverCtx),
+					Handler: thingsprotocolscript.DebugHandler(serverCtx),
 				},
 				{
-					// 删除协议插件
+					// 删除协议脚本
 					Method:  http.MethodPost,
 					Path:    "/delete",
-					Handler: thingsprotocolplugin.DeleteHandler(serverCtx),
+					Handler: thingsprotocolscript.DeleteHandler(serverCtx),
 				},
 				{
-					// 获取协议插件列表
+					// 获取协议脚本列表
 					Method:  http.MethodPost,
 					Path:    "/index",
-					Handler: thingsprotocolplugin.IndexHandler(serverCtx),
+					Handler: thingsprotocolscript.IndexHandler(serverCtx),
 				},
 				{
-					// 获取协议插件详情
+					// 获取协议脚本详情
 					Method:  http.MethodPost,
 					Path:    "/read",
-					Handler: thingsprotocolplugin.ReadHandler(serverCtx),
+					Handler: thingsprotocolscript.ReadHandler(serverCtx),
 				},
 				{
-					// 更新协议插件
+					// 更新协议脚本
 					Method:  http.MethodPost,
 					Path:    "/update",
-					Handler: thingsprotocolplugin.UpdateHandler(serverCtx),
+					Handler: thingsprotocolscript.UpdateHandler(serverCtx),
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/things/protocol/plugin"),
+		rest.WithPrefix("/api/v1/things/protocol/script"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckTokenWare, serverCtx.InitCtxsWare},
+			[]rest.Route{
+				{
+					// 新增协议脚本设备
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: thingsprotocolscriptdevice.CreateHandler(serverCtx),
+				},
+				{
+					// 删除协议脚本设备
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: thingsprotocolscriptdevice.DeleteHandler(serverCtx),
+				},
+				{
+					// 获取协议脚本列表设备
+					Method:  http.MethodPost,
+					Path:    "/index",
+					Handler: thingsprotocolscriptdevice.IndexHandler(serverCtx),
+				},
+				{
+					// 获取协议脚本详情设备
+					Method:  http.MethodPost,
+					Path:    "/read",
+					Handler: thingsprotocolscriptdevice.ReadHandler(serverCtx),
+				},
+				{
+					// 更新协议脚本设备
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsprotocolscriptdevice.UpdateHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/protocol/script/device"),
 	)
 
 	server.AddRoutes(

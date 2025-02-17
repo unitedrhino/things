@@ -226,18 +226,29 @@ service ProtocolManage {
   rpc protocolServiceIndex(ProtocolServiceIndexReq)returns(ProtocolServiceIndexResp);
 
   //协议列表
-  rpc protocolPluginIndex(ProtocolPluginIndexReq)     returns (ProtocolPluginIndexResp);
+  rpc ProtocolScriptIndex(ProtocolScriptIndexReq)     returns (ProtocolScriptIndexResp);
   //协议详情
-  rpc protocolPluginRead(WithID)     returns (ProtocolPlugin);
+  rpc ProtocolScriptRead(WithID)     returns (ProtocolScript);
   //协议创建
-  rpc protocolPluginCreate(ProtocolPlugin)     returns (WithID);
+  rpc ProtocolScriptCreate(ProtocolScript)     returns (WithID);
   //协议更新
-  rpc protocolPluginUpdate(ProtocolPlugin)     returns (Empty);
+  rpc ProtocolScriptUpdate(ProtocolScript)     returns (Empty);
   //协议删除
-  rpc protocolPluginDelete(WithID)     returns (Empty);
+  rpc ProtocolScriptDelete(WithID)     returns (Empty);
 
-  rpc protocolPluginDebug(ProtocolPluginDebugReq)     returns (ProtocolPluginDebugResp);
+  rpc ProtocolScriptDebug(ProtocolScriptDebugReq)     returns (ProtocolScriptDebugResp);
 
+
+  //协议列表
+  rpc ProtocolScriptDeviceIndex(ProtocolScriptDeviceIndexReq)     returns (ProtocolScriptDeviceIndexResp);
+  //协议详情
+  rpc ProtocolScriptDeviceRead(WithID)     returns (ProtocolScriptDevice);
+  //协议创建
+  rpc ProtocolScriptDeviceCreate(ProtocolScriptDevice)     returns (WithID);
+  //协议更新
+  rpc ProtocolScriptDeviceUpdate(ProtocolScriptDevice)     returns (Empty);
+  //协议删除
+  rpc ProtocolScriptDeviceDelete(WithID)     returns (Empty);
 }
 
 service DeviceGroup {
@@ -588,7 +599,7 @@ message ProductCategoryIndexResp{
   int64  total = 2;//总数(只有分页的时候会返回)
 }
 
-message ProtocolPluginDebugReq{
+message ProtocolScriptDebugReq{
   int64 triggerDir =2;    //1:up 2:down
   int64 triggerTimer =3;  //收到前处理1:before 2:after
   string script =6;//脚本内容
@@ -596,39 +607,67 @@ message ProtocolPluginDebugReq{
   string resp =9;//回复
 }
 
-message ProtocolPluginDebugResp{
+message ProtocolScriptDebugResp{
   string out =1;
   repeated string logs =2;
 }
 
-message ProtocolPlugin{
+message ProtocolScript{
   int64  id = 1;
   string  name = 2; //名称
-  int64 triggerSrc =3;    //product:1 device:2
-  int64 triggerDir =4;    //1:up 2:down
-  int64 triggerTimer =5;  //收到前处理1:before 2:after
-  string triggerHandle =6; //对应 mqtt topic的第一个 thing ota config 等等
-  string triggerType =7;    // 操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
-  google.protobuf.StringValue  desc = 9; //描述
-  int64 priority =12;//   执行优先级
-  string script =13;//脚本内容
-  int64 status =14;//状态:是否启用
-  int64 createdTime = 15;//创建时间
+  int64 triggerDir =3;    //1:up 2:down
+  int64 triggerTimer =4;  //收到前处理1:before 2:after
+  string triggerHandle =5; //对应 mqtt topic的第一个 thing ota config 等等
+  string triggerType =6;    // 操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
+  google.protobuf.StringValue  desc = 7; //描述
+  string script =8;//脚本内容
+  int64 status =9;//状态:是否启用
+  int64 createdTime = 10;//创建时间
 }
 
-message ProtocolPluginIndexReq{
+message ProtocolScriptIndexReq{
   PageInfo page = 1;
   string  name = 2;
-  int64 TriggerSrc =3;    //product:1 device:2
-  int64 TriggerDir =4;    //1:up 2:down
-  int64 TriggerTimer =5;  //收到前处理1:before 2:after
-  string bindProductID = 6; //产品获取绑定的协议
-  DeviceCore bindDevice =7; //设备获取绑定的协议
+  int64 TriggerDir =3;    //1:up 2:down
+  int64 TriggerTimer =4;  //收到前处理1:before 2:after
+  int64 status =7;//状态:是否启用
 }
 
 
-message ProtocolPluginIndexResp{
-  repeated ProtocolPlugin list = 1;
+message ProtocolScriptIndexResp{
+  repeated ProtocolScript list = 1;
+  int64 total = 2;
+}
+
+
+message ProtocolScriptDevice{
+  int64  id = 1;
+  int64 triggerSrc =2;    //产品:1 设备:2
+  string productID =3;
+  string deviceName =4;
+  int64 scriptID = 5;//脚本对应的ID
+  int64 priority =6;//执行优先级 大于0
+  int64 status =7;//状态:是否启用
+  int64 createdTime = 8;//创建时间
+  ProtocolScript script =9;//脚本信息
+  ProductInfo product = 10;//withDevice时,绑定的是产品返回
+  DeviceInfo device =11;//withDevice时,绑定的是设备返回
+}
+
+message ProtocolScriptDeviceIndexReq{
+  PageInfo page = 1;
+  int64 triggerSrc = 2;    //product:1 device:2
+  string productID = 3;  //
+  string deviceName = 4; //
+  int64 status = 5;//状态:是否启用
+  int64 scriptID = 6;//脚本对应的ID
+  bool withDevice = 7;//同时返回产品或设备信息
+  bool withScript =8;// 同时返回脚本信息
+}
+
+
+message ProtocolScriptDeviceIndexResp{
+  repeated ProtocolScriptDevice list = 1;
   int64 total = 2;
 }
 

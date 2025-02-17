@@ -1,4 +1,4 @@
-package plugin
+package script
 
 import (
 	"context"
@@ -26,7 +26,7 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 	}
 }
 
-func (l *IndexLogic) Index(req *types.ProtocolPluginIndexReq) (resp *types.ProtocolPluginIndexResp, err error) {
-	ret, err := l.svcCtx.ProtocolM.ProtocolPluginIndex(l.ctx, utils.Copy[dm.ProtocolPluginIndexReq](req))
-	return utils.Copy[types.ProtocolPluginIndexResp](ret), err
+func (l *IndexLogic) Index(req *types.ProtocolScriptIndexReq) (resp *types.ProtocolScriptIndexResp, err error) {
+	ret, err := l.svcCtx.ProtocolM.ProtocolScriptIndex(l.ctx, utils.Copy[dm.ProtocolScriptIndexReq](req))
+	return utils.Copy[types.ProtocolScriptIndexResp](ret), err
 }

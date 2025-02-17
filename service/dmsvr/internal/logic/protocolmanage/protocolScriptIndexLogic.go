@@ -12,14 +12,14 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type ProtocolPluginIndexLogic struct {
+type ProtocolScriptIndexLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewProtocolPluginIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProtocolPluginIndexLogic {
-	return &ProtocolPluginIndexLogic{
+func NewProtocolScriptIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProtocolScriptIndexLogic {
+	return &ProtocolScriptIndexLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
@@ -27,16 +27,16 @@ func NewProtocolPluginIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext
 }
 
 // 协议列表
-func (l *ProtocolPluginIndexLogic) ProtocolPluginIndex(in *dm.ProtocolPluginIndexReq) (*dm.ProtocolPluginIndexResp, error) {
+func (l *ProtocolScriptIndexLogic) ProtocolScriptIndex(in *dm.ProtocolScriptIndexReq) (*dm.ProtocolScriptIndexResp, error) {
 	var (
 		size int64
 		err  error
-		piDB = relationDB.NewProtocolPluginRepo(l.ctx)
+		piDB = relationDB.NewProtocolScriptRepo(l.ctx)
 	)
 
-	filter := relationDB.ProtocolPluginFilter{
+	filter := relationDB.ProtocolScriptFilter{
 		Name:         in.Name,
-		TriggerSrc:   in.TriggerSrc,
+		Status:       in.Status,
 		TriggerDir:   in.TriggerDir,
 		TriggerTimer: in.TriggerTimer,
 	}
@@ -52,6 +52,6 @@ func (l *ProtocolPluginIndexLogic) ProtocolPluginIndex(in *dm.ProtocolPluginInde
 		return nil, err
 	}
 
-	info := utils.CopySlice[dm.ProtocolPlugin](di)
-	return &dm.ProtocolPluginIndexResp{List: info, Total: size}, nil
+	info := utils.CopySlice[dm.ProtocolScript](di)
+	return &dm.ProtocolScriptIndexResp{List: info, Total: size}, nil
 }

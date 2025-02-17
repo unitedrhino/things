@@ -78,8 +78,8 @@ func (s *ScriptTrans) AddSymbol(key string, syb map[string]reflect.Value) {
 	}
 }
 
-func (s *ScriptTrans) GetFunc(ctx context.Context, script string, funcName string) (any, []string, error) {
-	var logs []string
+func (s *ScriptTrans) GetFunc(ctx context.Context, script string, funcName string) (any, *[]string, error) {
+	var logs = make([]string, 0, 5)
 	i := interp.New(interp.Options{})
 	i.Use(stdlib.Symbols)
 	i.Use(s.ScriptSymbol)
@@ -102,7 +102,7 @@ func (s *ScriptTrans) GetFunc(ctx context.Context, script string, funcName strin
 	if err != nil {
 		return nil, nil, err
 	}
-	return handle, logs, nil
+	return handle.Interface(), &logs, nil
 }
 func (s *ScriptTrans) PublishMsgRun(ctx context.Context, msg *deviceMsg.PublishMsg, script string) (*deviceMsg.PublishMsg, []string, error) {
 	var out = *msg
@@ -118,7 +118,7 @@ func (s *ScriptTrans) PublishMsgRun(ctx context.Context, msg *deviceMsg.PublishM
 	if newMsg != nil {
 		out = *newMsg
 	}
-	return newMsg, logs, nil
+	return newMsg, *logs, nil
 }
 
 func (s *ScriptTrans) RespMsgRun(ctx context.Context, req *deviceMsg.PublishMsg, resp *deviceMsg.PublishMsg, script string) ([]string, error) {
@@ -131,7 +131,7 @@ func (s *ScriptTrans) RespMsgRun(ctx context.Context, req *deviceMsg.PublishMsg,
 		return nil, errors.Parameter.AddMsg("结构体中需要定义: func Handle(context.Context, *dm.PublishMsg) *dm.PublishMsg")
 	}
 	fn(ctx, req, resp)
-	return logs, nil
+	return *logs, nil
 }
 
 func (s *ScriptTrans) GetScripts(ctx context.Context, script map[devices.MsgHandle]map[string]ScriptInfos, msg *deviceMsg.PublishMsg) (ret ScriptInfos) {

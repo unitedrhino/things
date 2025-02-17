@@ -14,14 +14,14 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type ProtocolPluginDebugLogic struct {
+type ProtocolScriptDebugLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewProtocolPluginDebugLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProtocolPluginDebugLogic {
-	return &ProtocolPluginDebugLogic{
+func NewProtocolScriptDebugLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProtocolScriptDebugLogic {
+	return &ProtocolScriptDebugLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
@@ -45,7 +45,7 @@ var str = "{\"DeviceName\":\"867713079344958\",\"Handle\":\"thing\",\"Payload\":
 
 var script = "import \"log\"\nimport \"context\"\n  import \"dm\"\nfunc Handle(ctx context.Context,in *dm.PublishMsg) *dm.PublishMsg{\nlog.Print(in)\nreturn in\n  }"
 
-func (l *ProtocolPluginDebugLogic) ProtocolPluginDebug(in *dm.ProtocolPluginDebugReq) (*dm.ProtocolPluginDebugResp, error) {
+func (l *ProtocolScriptDebugLogic) ProtocolScriptDebug(in *dm.ProtocolScriptDebugReq) (*dm.ProtocolScriptDebugResp, error) {
 	switch in.TriggerTimer {
 	case protocol.TriggerTimerBefore:
 		var req deviceMsg.PublishMsg
@@ -57,7 +57,7 @@ func (l *ProtocolPluginDebugLogic) ProtocolPluginDebug(in *dm.ProtocolPluginDebu
 		if err != nil {
 			return nil, err
 		}
-		return &dm.ProtocolPluginDebugResp{
+		return &dm.ProtocolScriptDebugResp{
 			Out:  utils.MarshalNoErr(ret),
 			Logs: logs,
 		}, nil
@@ -76,10 +76,10 @@ func (l *ProtocolPluginDebugLogic) ProtocolPluginDebug(in *dm.ProtocolPluginDebu
 		if err != nil {
 			return nil, err
 		}
-		return &dm.ProtocolPluginDebugResp{
+		return &dm.ProtocolScriptDebugResp{
 			Logs: logs,
 		}, nil
 	}
 
-	return &dm.ProtocolPluginDebugResp{}, nil
+	return &dm.ProtocolScriptDebugResp{}, nil
 }

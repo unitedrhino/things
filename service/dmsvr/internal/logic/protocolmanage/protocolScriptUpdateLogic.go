@@ -10,14 +10,14 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type ProtocolPluginUpdateLogic struct {
+type ProtocolScriptUpdateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewProtocolPluginUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProtocolPluginUpdateLogic {
-	return &ProtocolPluginUpdateLogic{
+func NewProtocolScriptUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ProtocolScriptUpdateLogic {
+	return &ProtocolScriptUpdateLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
@@ -25,8 +25,8 @@ func NewProtocolPluginUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContex
 }
 
 // 协议更新
-func (l *ProtocolPluginUpdateLogic) ProtocolPluginUpdate(in *dm.ProtocolPlugin) (*dm.Empty, error) {
-	old, err := relationDB.NewProtocolPluginRepo(l.ctx).FindOne(l.ctx, in.Id)
+func (l *ProtocolScriptUpdateLogic) ProtocolScriptUpdate(in *dm.ProtocolScript) (*dm.Empty, error) {
+	old, err := relationDB.NewProtocolScriptRepo(l.ctx).FindOne(l.ctx, in.Id)
 	if err != nil {
 		return &dm.Empty{}, err
 	}
@@ -45,6 +45,6 @@ func (l *ProtocolPluginUpdateLogic) ProtocolPluginUpdate(in *dm.ProtocolPlugin) 
 	if in.Status != 0 {
 		old.Status = in.Status
 	}
-	err = relationDB.NewProtocolPluginRepo(l.ctx).Update(l.ctx, old)
+	err = relationDB.NewProtocolScriptRepo(l.ctx).Update(l.ctx, old)
 	return &dm.Empty{}, err
 }

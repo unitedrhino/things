@@ -1644,17 +1644,17 @@
       ],
       "authType": "admin"
     },
-    "thingsProtocolPluginAdd": {
+    "thingsProtocolScriptAdd": {
       "name": "新增协议管理",
-      "code": "thingsProtocolPluginAdd",
+      "code": "thingsProtocolScriptAdd",
       "group": "设备自定义",
       "isNeedAuth": 1,
       "desc": "",
       "apis": [
         {
-          "accessCode": "thingsProtocolPluginAdd",
+          "accessCode": "thingsProtocolScriptAdd",
           "method": "POST",
-          "route": "/api/v1/things/protocol/plugin/create",
+          "route": "/api/v1/things/protocol/script/create",
           "name": "",
           "isNeedAuth": 1,
           "businessType": "add",
@@ -1665,17 +1665,17 @@
       ],
       "authType": "admin"
     },
-    "thingsProtocolPluginDelete": {
+    "thingsProtocolScriptDelete": {
       "name": "删除协议管理",
-      "code": "thingsProtocolPluginDelete",
+      "code": "thingsProtocolScriptDelete",
       "group": "设备自定义",
       "isNeedAuth": 1,
       "desc": "",
       "apis": [
         {
-          "accessCode": "thingsProtocolPluginDelete",
+          "accessCode": "thingsProtocolScriptDelete",
           "method": "POST",
-          "route": "/api/v1/things/protocol/plugin/delete",
+          "route": "/api/v1/things/protocol/script/delete",
           "name": "",
           "isNeedAuth": 1,
           "businessType": "delete",
@@ -1686,17 +1686,59 @@
       ],
       "authType": "admin"
     },
-    "thingsProtocolPluginFind": {
-      "name": "查询协议管理",
-      "code": "thingsProtocolPluginFind",
+    "thingsProtocolScriptDeviceAdd": {
+      "name": "新增协议管理",
+      "code": "thingsProtocolScriptDeviceAdd",
       "group": "设备自定义",
       "isNeedAuth": 1,
       "desc": "",
       "apis": [
         {
-          "accessCode": "thingsProtocolPluginFind",
+          "accessCode": "thingsProtocolScriptDeviceAdd",
           "method": "POST",
-          "route": "/api/v1/things/protocol/plugin/index",
+          "route": "/api/v1/things/protocol/script/device/create",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "add",
+          "desc": "",
+          "authType": "admin",
+          "recordLogMode": 0
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsProtocolScriptDeviceDelete": {
+      "name": "删除协议管理",
+      "code": "thingsProtocolScriptDeviceDelete",
+      "group": "设备自定义",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProtocolScriptDeviceDelete",
+          "method": "POST",
+          "route": "/api/v1/things/protocol/script/device/delete",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "delete",
+          "desc": "",
+          "authType": "admin",
+          "recordLogMode": 0
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsProtocolScriptDeviceFind": {
+      "name": "查询协议管理",
+      "code": "thingsProtocolScriptDeviceFind",
+      "group": "设备自定义",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProtocolScriptDeviceFind",
+          "method": "POST",
+          "route": "/api/v1/things/protocol/script/device/index",
           "name": "",
           "isNeedAuth": 1,
           "businessType": "find",
@@ -1705,9 +1747,9 @@
           "recordLogMode": 0
         },
         {
-          "accessCode": "thingsProtocolPluginFind",
+          "accessCode": "thingsProtocolScriptDeviceFind",
           "method": "POST",
-          "route": "/api/v1/things/protocol/plugin/read",
+          "route": "/api/v1/things/protocol/script/device/read",
           "name": "",
           "isNeedAuth": 1,
           "businessType": "find",
@@ -1718,17 +1760,17 @@
       ],
       "authType": "admin"
     },
-    "thingsProtocolPluginModify": {
+    "thingsProtocolScriptDeviceModify": {
       "name": "修改协议管理",
-      "code": "thingsProtocolPluginModify",
+      "code": "thingsProtocolScriptDeviceModify",
       "group": "设备自定义",
       "isNeedAuth": 1,
       "desc": "",
       "apis": [
         {
-          "accessCode": "thingsProtocolPluginModify",
+          "accessCode": "thingsProtocolScriptDeviceModify",
           "method": "POST",
-          "route": "/api/v1/things/protocol/plugin/update",
+          "route": "/api/v1/things/protocol/script/device/update",
           "name": "",
           "isNeedAuth": 1,
           "businessType": "modify",
@@ -1739,17 +1781,70 @@
       ],
       "authType": "admin"
     },
-    "thingsProtocolPluginOther": {
-      "name": "操作协议管理",
-      "code": "thingsProtocolPluginOther",
+    "thingsProtocolScriptFind": {
+      "name": "查询协议管理",
+      "code": "thingsProtocolScriptFind",
       "group": "设备自定义",
       "isNeedAuth": 1,
       "desc": "",
       "apis": [
         {
-          "accessCode": "thingsProtocolPluginOther",
+          "accessCode": "thingsProtocolScriptFind",
           "method": "POST",
-          "route": "/api/v1/things/protocol/plugin/debug",
+          "route": "/api/v1/things/protocol/script/index",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "find",
+          "desc": "",
+          "authType": "admin",
+          "recordLogMode": 0
+        },
+        {
+          "accessCode": "thingsProtocolScriptFind",
+          "method": "POST",
+          "route": "/api/v1/things/protocol/script/read",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "find",
+          "desc": "",
+          "authType": "admin",
+          "recordLogMode": 0
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsProtocolScriptModify": {
+      "name": "修改协议管理",
+      "code": "thingsProtocolScriptModify",
+      "group": "设备自定义",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProtocolScriptModify",
+          "method": "POST",
+          "route": "/api/v1/things/protocol/script/update",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "admin",
+          "recordLogMode": 0
+        }
+      ],
+      "authType": "admin"
+    },
+    "thingsProtocolScriptOther": {
+      "name": "操作协议管理",
+      "code": "thingsProtocolScriptOther",
+      "group": "设备自定义",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProtocolScriptOther",
+          "method": "POST",
+          "route": "/api/v1/things/protocol/script/debug",
           "name": "",
           "isNeedAuth": 1,
           "businessType": "other",

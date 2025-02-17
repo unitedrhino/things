@@ -188,11 +188,14 @@ type (
 	ProtocolInfo                      = dm.ProtocolInfo
 	ProtocolInfoIndexReq              = dm.ProtocolInfoIndexReq
 	ProtocolInfoIndexResp             = dm.ProtocolInfoIndexResp
-	ProtocolPlugin                    = dm.ProtocolPlugin
-	ProtocolPluginDebugReq            = dm.ProtocolPluginDebugReq
-	ProtocolPluginDebugResp           = dm.ProtocolPluginDebugResp
-	ProtocolPluginIndexReq            = dm.ProtocolPluginIndexReq
-	ProtocolPluginIndexResp           = dm.ProtocolPluginIndexResp
+	ProtocolScript                    = dm.ProtocolScript
+	ProtocolScriptDebugReq            = dm.ProtocolScriptDebugReq
+	ProtocolScriptDebugResp           = dm.ProtocolScriptDebugResp
+	ProtocolScriptDevice              = dm.ProtocolScriptDevice
+	ProtocolScriptDeviceIndexReq      = dm.ProtocolScriptDeviceIndexReq
+	ProtocolScriptDeviceIndexResp     = dm.ProtocolScriptDeviceIndexResp
+	ProtocolScriptIndexReq            = dm.ProtocolScriptIndexReq
+	ProtocolScriptIndexResp           = dm.ProtocolScriptIndexResp
 	ProtocolService                   = dm.ProtocolService
 	ProtocolServiceIndexReq           = dm.ProtocolServiceIndexReq
 	ProtocolServiceIndexResp          = dm.ProtocolServiceIndexResp
@@ -250,16 +253,26 @@ type (
 		ProtocolServiceDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
 		ProtocolServiceIndex(ctx context.Context, in *ProtocolServiceIndexReq, opts ...grpc.CallOption) (*ProtocolServiceIndexResp, error)
 		// 协议列表
-		ProtocolPluginIndex(ctx context.Context, in *ProtocolPluginIndexReq, opts ...grpc.CallOption) (*ProtocolPluginIndexResp, error)
+		ProtocolScriptIndex(ctx context.Context, in *ProtocolScriptIndexReq, opts ...grpc.CallOption) (*ProtocolScriptIndexResp, error)
 		// 协议详情
-		ProtocolPluginRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProtocolPlugin, error)
+		ProtocolScriptRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProtocolScript, error)
 		// 协议创建
-		ProtocolPluginCreate(ctx context.Context, in *ProtocolPlugin, opts ...grpc.CallOption) (*WithID, error)
+		ProtocolScriptCreate(ctx context.Context, in *ProtocolScript, opts ...grpc.CallOption) (*WithID, error)
 		// 协议更新
-		ProtocolPluginUpdate(ctx context.Context, in *ProtocolPlugin, opts ...grpc.CallOption) (*Empty, error)
+		ProtocolScriptUpdate(ctx context.Context, in *ProtocolScript, opts ...grpc.CallOption) (*Empty, error)
 		// 协议删除
-		ProtocolPluginDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
-		ProtocolPluginDebug(ctx context.Context, in *ProtocolPluginDebugReq, opts ...grpc.CallOption) (*ProtocolPluginDebugResp, error)
+		ProtocolScriptDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
+		ProtocolScriptDebug(ctx context.Context, in *ProtocolScriptDebugReq, opts ...grpc.CallOption) (*ProtocolScriptDebugResp, error)
+		// 协议列表
+		ProtocolScriptDeviceIndex(ctx context.Context, in *ProtocolScriptDeviceIndexReq, opts ...grpc.CallOption) (*ProtocolScriptDeviceIndexResp, error)
+		// 协议详情
+		ProtocolScriptDeviceRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProtocolScriptDevice, error)
+		// 协议创建
+		ProtocolScriptDeviceCreate(ctx context.Context, in *ProtocolScriptDevice, opts ...grpc.CallOption) (*WithID, error)
+		// 协议更新
+		ProtocolScriptDeviceUpdate(ctx context.Context, in *ProtocolScriptDevice, opts ...grpc.CallOption) (*Empty, error)
+		// 协议删除
+		ProtocolScriptDeviceDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
 	}
 
 	defaultProtocolManage struct {
@@ -370,65 +383,120 @@ func (d *directProtocolManage) ProtocolServiceIndex(ctx context.Context, in *Pro
 }
 
 // 协议列表
-func (m *defaultProtocolManage) ProtocolPluginIndex(ctx context.Context, in *ProtocolPluginIndexReq, opts ...grpc.CallOption) (*ProtocolPluginIndexResp, error) {
+func (m *defaultProtocolManage) ProtocolScriptIndex(ctx context.Context, in *ProtocolScriptIndexReq, opts ...grpc.CallOption) (*ProtocolScriptIndexResp, error) {
 	client := dm.NewProtocolManageClient(m.cli.Conn())
-	return client.ProtocolPluginIndex(ctx, in, opts...)
+	return client.ProtocolScriptIndex(ctx, in, opts...)
 }
 
 // 协议列表
-func (d *directProtocolManage) ProtocolPluginIndex(ctx context.Context, in *ProtocolPluginIndexReq, opts ...grpc.CallOption) (*ProtocolPluginIndexResp, error) {
-	return d.svr.ProtocolPluginIndex(ctx, in)
+func (d *directProtocolManage) ProtocolScriptIndex(ctx context.Context, in *ProtocolScriptIndexReq, opts ...grpc.CallOption) (*ProtocolScriptIndexResp, error) {
+	return d.svr.ProtocolScriptIndex(ctx, in)
 }
 
 // 协议详情
-func (m *defaultProtocolManage) ProtocolPluginRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProtocolPlugin, error) {
+func (m *defaultProtocolManage) ProtocolScriptRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProtocolScript, error) {
 	client := dm.NewProtocolManageClient(m.cli.Conn())
-	return client.ProtocolPluginRead(ctx, in, opts...)
+	return client.ProtocolScriptRead(ctx, in, opts...)
 }
 
 // 协议详情
-func (d *directProtocolManage) ProtocolPluginRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProtocolPlugin, error) {
-	return d.svr.ProtocolPluginRead(ctx, in)
+func (d *directProtocolManage) ProtocolScriptRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProtocolScript, error) {
+	return d.svr.ProtocolScriptRead(ctx, in)
 }
 
 // 协议创建
-func (m *defaultProtocolManage) ProtocolPluginCreate(ctx context.Context, in *ProtocolPlugin, opts ...grpc.CallOption) (*WithID, error) {
+func (m *defaultProtocolManage) ProtocolScriptCreate(ctx context.Context, in *ProtocolScript, opts ...grpc.CallOption) (*WithID, error) {
 	client := dm.NewProtocolManageClient(m.cli.Conn())
-	return client.ProtocolPluginCreate(ctx, in, opts...)
+	return client.ProtocolScriptCreate(ctx, in, opts...)
 }
 
 // 协议创建
-func (d *directProtocolManage) ProtocolPluginCreate(ctx context.Context, in *ProtocolPlugin, opts ...grpc.CallOption) (*WithID, error) {
-	return d.svr.ProtocolPluginCreate(ctx, in)
+func (d *directProtocolManage) ProtocolScriptCreate(ctx context.Context, in *ProtocolScript, opts ...grpc.CallOption) (*WithID, error) {
+	return d.svr.ProtocolScriptCreate(ctx, in)
 }
 
 // 协议更新
-func (m *defaultProtocolManage) ProtocolPluginUpdate(ctx context.Context, in *ProtocolPlugin, opts ...grpc.CallOption) (*Empty, error) {
+func (m *defaultProtocolManage) ProtocolScriptUpdate(ctx context.Context, in *ProtocolScript, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewProtocolManageClient(m.cli.Conn())
-	return client.ProtocolPluginUpdate(ctx, in, opts...)
+	return client.ProtocolScriptUpdate(ctx, in, opts...)
 }
 
 // 协议更新
-func (d *directProtocolManage) ProtocolPluginUpdate(ctx context.Context, in *ProtocolPlugin, opts ...grpc.CallOption) (*Empty, error) {
-	return d.svr.ProtocolPluginUpdate(ctx, in)
+func (d *directProtocolManage) ProtocolScriptUpdate(ctx context.Context, in *ProtocolScript, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.ProtocolScriptUpdate(ctx, in)
 }
 
 // 协议删除
-func (m *defaultProtocolManage) ProtocolPluginDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+func (m *defaultProtocolManage) ProtocolScriptDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
 	client := dm.NewProtocolManageClient(m.cli.Conn())
-	return client.ProtocolPluginDelete(ctx, in, opts...)
+	return client.ProtocolScriptDelete(ctx, in, opts...)
 }
 
 // 协议删除
-func (d *directProtocolManage) ProtocolPluginDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
-	return d.svr.ProtocolPluginDelete(ctx, in)
+func (d *directProtocolManage) ProtocolScriptDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.ProtocolScriptDelete(ctx, in)
 }
 
-func (m *defaultProtocolManage) ProtocolPluginDebug(ctx context.Context, in *ProtocolPluginDebugReq, opts ...grpc.CallOption) (*ProtocolPluginDebugResp, error) {
+func (m *defaultProtocolManage) ProtocolScriptDebug(ctx context.Context, in *ProtocolScriptDebugReq, opts ...grpc.CallOption) (*ProtocolScriptDebugResp, error) {
 	client := dm.NewProtocolManageClient(m.cli.Conn())
-	return client.ProtocolPluginDebug(ctx, in, opts...)
+	return client.ProtocolScriptDebug(ctx, in, opts...)
 }
 
-func (d *directProtocolManage) ProtocolPluginDebug(ctx context.Context, in *ProtocolPluginDebugReq, opts ...grpc.CallOption) (*ProtocolPluginDebugResp, error) {
-	return d.svr.ProtocolPluginDebug(ctx, in)
+func (d *directProtocolManage) ProtocolScriptDebug(ctx context.Context, in *ProtocolScriptDebugReq, opts ...grpc.CallOption) (*ProtocolScriptDebugResp, error) {
+	return d.svr.ProtocolScriptDebug(ctx, in)
+}
+
+// 协议列表
+func (m *defaultProtocolManage) ProtocolScriptDeviceIndex(ctx context.Context, in *ProtocolScriptDeviceIndexReq, opts ...grpc.CallOption) (*ProtocolScriptDeviceIndexResp, error) {
+	client := dm.NewProtocolManageClient(m.cli.Conn())
+	return client.ProtocolScriptDeviceIndex(ctx, in, opts...)
+}
+
+// 协议列表
+func (d *directProtocolManage) ProtocolScriptDeviceIndex(ctx context.Context, in *ProtocolScriptDeviceIndexReq, opts ...grpc.CallOption) (*ProtocolScriptDeviceIndexResp, error) {
+	return d.svr.ProtocolScriptDeviceIndex(ctx, in)
+}
+
+// 协议详情
+func (m *defaultProtocolManage) ProtocolScriptDeviceRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProtocolScriptDevice, error) {
+	client := dm.NewProtocolManageClient(m.cli.Conn())
+	return client.ProtocolScriptDeviceRead(ctx, in, opts...)
+}
+
+// 协议详情
+func (d *directProtocolManage) ProtocolScriptDeviceRead(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*ProtocolScriptDevice, error) {
+	return d.svr.ProtocolScriptDeviceRead(ctx, in)
+}
+
+// 协议创建
+func (m *defaultProtocolManage) ProtocolScriptDeviceCreate(ctx context.Context, in *ProtocolScriptDevice, opts ...grpc.CallOption) (*WithID, error) {
+	client := dm.NewProtocolManageClient(m.cli.Conn())
+	return client.ProtocolScriptDeviceCreate(ctx, in, opts...)
+}
+
+// 协议创建
+func (d *directProtocolManage) ProtocolScriptDeviceCreate(ctx context.Context, in *ProtocolScriptDevice, opts ...grpc.CallOption) (*WithID, error) {
+	return d.svr.ProtocolScriptDeviceCreate(ctx, in)
+}
+
+// 协议更新
+func (m *defaultProtocolManage) ProtocolScriptDeviceUpdate(ctx context.Context, in *ProtocolScriptDevice, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewProtocolManageClient(m.cli.Conn())
+	return client.ProtocolScriptDeviceUpdate(ctx, in, opts...)
+}
+
+// 协议更新
+func (d *directProtocolManage) ProtocolScriptDeviceUpdate(ctx context.Context, in *ProtocolScriptDevice, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.ProtocolScriptDeviceUpdate(ctx, in)
+}
+
+// 协议删除
+func (m *defaultProtocolManage) ProtocolScriptDeviceDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewProtocolManageClient(m.cli.Conn())
+	return client.ProtocolScriptDeviceDelete(ctx, in, opts...)
+}
+
+// 协议删除
+func (d *directProtocolManage) ProtocolScriptDeviceDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.ProtocolScriptDeviceDelete(ctx, in)
 }
