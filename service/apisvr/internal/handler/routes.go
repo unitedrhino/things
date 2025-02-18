@@ -1037,13 +1037,13 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: thingsprotocolscriptdevice.DeleteHandler(serverCtx),
 				},
 				{
-					// 获取协议脚本列表设备
+					// 获取协议脚本设备列表
 					Method:  http.MethodPost,
 					Path:    "/index",
 					Handler: thingsprotocolscriptdevice.IndexHandler(serverCtx),
 				},
 				{
-					// 获取协议脚本详情设备
+					// 获取协议脚本设备详情
 					Method:  http.MethodPost,
 					Path:    "/read",
 					Handler: thingsprotocolscriptdevice.ReadHandler(serverCtx),

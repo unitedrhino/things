@@ -1628,7 +1628,6 @@ type ProtocolScript struct {
 	TriggerTimer  int64   `json:"triggerTimer,optional"`  //收到前处理1:before 2:after
 	TriggerHandle string  `json:"triggerHandle,optional"` //对应 mqtt topic的第一个 thing ota config 等等
 	TriggerType   string  `json:"triggerType,optional"`   // 操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
-	Priority      int64   `json:"priority,optional"`      //   执行优先级
 	Script        string  `json:"script,optional"`        //脚本内容
 	Status        int64   `json:"status,optional"`        //状态:是否启用
 	CreatedTime   int64   `json:"createdTime,optional"`   //创建时间
@@ -1667,7 +1666,7 @@ type ProtocolScriptDeviceIndexReq struct {
 	ProductID  string    `json:"productID,optional"`
 	DeviceName string    `json:"deviceName,optional"`
 	Status     int64     `json:"status,optional"` //状态:是否启用
-	ScriptID   int64     `json:"scriptID,optional"`
+	ScriptID   int64     `json:"scriptID,string,optional"`
 	WithScript bool      `json:"withScript,optional"`
 	WithDevice bool      `json:"withDevice,optional"`
 }

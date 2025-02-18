@@ -5118,7 +5118,7 @@
     },
     "/api/v1/things/protocol/script/device/index": {
       "post": {
-        "summary": "获取协议脚本列表设备",
+        "summary": "获取协议脚本设备列表",
         "operationId": "postApiV1ThingsProtocolScriptDeviceIndex",
         "responses": {
           "200": {
@@ -5160,7 +5160,7 @@
     },
     "/api/v1/things/protocol/script/device/read": {
       "post": {
-        "summary": "获取协议脚本详情设备",
+        "summary": "获取协议脚本设备详情",
         "operationId": "postApiV1ThingsProtocolScriptDeviceRead",
         "responses": {
           "200": {
@@ -13382,11 +13382,6 @@
           "type": "string",
           "description": " 操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为"
         },
-        "priority": {
-          "type": "integer",
-          "format": "int64",
-          "description": "   执行优先级"
-        },
         "script": {
           "type": "string",
           "description": "脚本内容"
@@ -13532,8 +13527,7 @@
           "description": "状态:是否启用"
         },
         "scriptID": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string"
         },
         "withScript": {
           "type": "boolean",
