@@ -20,5 +20,6 @@ type (
 var s *protocol.ScriptTrans
 
 func NewPubDev(fast *eventBus.FastEvent, S *protocol.ScriptTrans) (PubDev, error) {
+	s = S
 	return newNatsClient(fast)
 }
