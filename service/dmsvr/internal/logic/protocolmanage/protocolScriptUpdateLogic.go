@@ -3,10 +3,8 @@ package protocolmanagelogic
 import (
 	"context"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
-
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -35,9 +33,6 @@ func (l *ProtocolScriptUpdateLogic) ProtocolScriptUpdate(in *dm.ProtocolScript) 
 	}
 	if in.Desc != nil {
 		old.Desc = in.Desc.GetValue()
-	}
-	if in.Priority != 0 {
-		old.Priority = in.Priority
 	}
 	if in.Script != "" && in.Script != old.Script {
 		old.Script = in.Script
