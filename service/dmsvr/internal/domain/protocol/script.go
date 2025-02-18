@@ -3,7 +3,9 @@ package protocol
 import (
 	"context"
 	"fmt"
+	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"github.com/traefik/yaegi/interp"
@@ -12,6 +14,7 @@ import (
 	"reflect"
 	"sort"
 	"sync"
+	"time"
 )
 
 type ScriptInfo struct {
@@ -39,6 +42,7 @@ func (a ScriptInfos) Swap(i, j int) {
 }
 
 type ScriptTrans struct {
+	loadFunc               func(context.Context, *ScriptTrans) error
 	ScriptSymbol           map[string]map[string]reflect.Value
 	ProductUpBeforeCache   map[string]map[devices.MsgHandle]map[string]ScriptInfos       //第一级是
 	DeviceUpBeforeCache    map[devices.Core]map[devices.MsgHandle]map[string]ScriptInfos //第一级是
@@ -65,7 +69,26 @@ func NewScriptTrans() *ScriptTrans {
 		ProductDownBeforeCache: make(map[string]map[devices.MsgHandle]map[string]ScriptInfos),
 		DeviceDownBeforeCache:  make(map[devices.Core]map[devices.MsgHandle]map[string]ScriptInfos),
 	}
+	ctx := ctxs.WithRoot(context.Background())
+	utils.Go(ctx, func() {
+		var t = time.NewTicker(10 * time.Minute) //10分钟刷新一次
+		for range t.C {
+			if s.loadFunc != nil {
+				if err := s.loadFunc(ctx, &s); err != nil {
+					logx.WithContext(ctx).Error(err.Error())
+				}
+			}
+		}
+	})
 	return &s
+}
+
+func (s *ScriptTrans) SetLoad(f func(context.Context, *ScriptTrans) error) {
+	s.loadFunc = f
+	ctx := ctxs.WithRoot(context.Background())
+	if err := s.loadFunc(ctx, s); err != nil {
+		logx.WithContext(ctx).Error(err.Error())
+	}
 }
 
 func (s *ScriptTrans) AddSymbol(key string, syb map[string]reflect.Value) {
@@ -158,7 +181,6 @@ func (s *ScriptTrans) GetScripts(ctx context.Context, script map[devices.MsgHand
 }
 
 func (s *ScriptTrans) UpAfterTrans(ctx context.Context, req *deviceMsg.PublishMsg, resp *deviceMsg.PublishMsg) error {
-	return nil
 	//todo 后面需要加上缓存
 	var scripts ScriptInfos
 	func() {
@@ -179,7 +201,9 @@ func (s *ScriptTrans) UpAfterTrans(ctx context.Context, req *deviceMsg.PublishMs
 			scripts = append(scripts, script...)
 		}
 	}()
-
+	if len(scripts) == 0 {
+		return nil
+	}
 	sort.Sort(scripts)
 	logs := make([]string, 0)
 	for _, script := range scripts {
@@ -198,8 +222,6 @@ func (s *ScriptTrans) UpAfterTrans(ctx context.Context, req *deviceMsg.PublishMs
 }
 
 func (s *ScriptTrans) UpBeforeTrans(ctx context.Context, msg *deviceMsg.PublishMsg) *deviceMsg.PublishMsg {
-	return msg
-	//todo 后面需要加上缓存
 	var out = *msg
 	var scripts ScriptInfos
 	func() {
@@ -220,7 +242,9 @@ func (s *ScriptTrans) UpBeforeTrans(ctx context.Context, msg *deviceMsg.PublishM
 			scripts = append(scripts, script...)
 		}
 	}()
-
+	if len(scripts) == 0 {
+		return &out
+	}
 	sort.Sort(scripts)
 	logs := make([]string, 0)
 	for _, script := range scripts {
@@ -243,8 +267,6 @@ func (s *ScriptTrans) UpBeforeTrans(ctx context.Context, msg *deviceMsg.PublishM
 }
 
 func (s *ScriptTrans) DownBeforeTrans(ctx context.Context, msg *deviceMsg.PublishMsg) *deviceMsg.PublishMsg {
-	return msg
-	//todo 后面需要加上缓存
 	var out = *msg
 	var scripts ScriptInfos
 	func() {
@@ -265,7 +287,9 @@ func (s *ScriptTrans) DownBeforeTrans(ctx context.Context, msg *deviceMsg.Publis
 			scripts = append(scripts, script...)
 		}
 	}()
-
+	if len(scripts) == 0 {
+		return &out
+	}
 	sort.Sort(scripts)
 	logs := make([]string, 0)
 	for _, script := range scripts {

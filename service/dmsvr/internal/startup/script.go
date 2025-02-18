@@ -1,19 +1,166 @@
 package startup
 
 import (
+	"context"
+	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/deviceinteract"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/devicemanage"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/protocol"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	deviceinteractServer "gitee.com/unitedrhino/things/service/dmsvr/internal/server/deviceinteract"
 	devicemanageServer "gitee.com/unitedrhino/things/service/dmsvr/internal/server/devicemanage"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
+	"github.com/zeromicro/go-zero/core/logx"
 	"reflect"
 )
 
-func ScriptSymbolInit(svcCtx *svc.ServiceContext) {
+func ScriptInit(svcCtx *svc.ServiceContext) {
+	ScriptLoad(svcCtx)
 	svcCtx.ScriptTrans.AddSymbol("dm/dm", dmSymbolInit(svcCtx))
 	return
+}
+
+func ScriptLoad(svcCtx *svc.ServiceContext) {
+	svcCtx.ScriptTrans.SetLoad(func(ctx context.Context, trans *protocol.ScriptTrans) error {
+		sds, err := relationDB.NewProtocolScriptDeviceRepo(ctx).FindByFilter(ctx, relationDB.ProtocolScriptDeviceFilter{
+			WithScript: true, Status: def.True}, nil)
+		if err != nil {
+			logx.WithContext(ctx).Error(err)
+			return err
+		}
+		var (
+			ProductCache = make(map[protocol.TriggerDir]map[protocol.TriggerTimer]map[string]map[devices.MsgHandle]map[string]protocol.ScriptInfos)
+			DeviceCache  = make(map[protocol.TriggerDir]map[protocol.TriggerTimer]map[devices.Core]map[devices.MsgHandle]map[string]protocol.ScriptInfos)
+		)
+		for _, sd := range sds {
+			if sd.Script == nil || sd.Script.Status == def.False {
+				continue
+			}
+			si := protocol.ScriptInfo{
+				Name:       sd.Script.Name,
+				Priority:   sd.Priority,
+				ScriptLang: sd.Script.ScriptLang,
+				Script:     sd.Script.Script,
+			}
+			switch sd.TriggerSrc {
+			case protocol.TriggerSrcDevice:
+				dev := devices.Core{ProductID: sd.ProductID, DeviceName: sd.DeviceName}
+				_, ok := DeviceCache[sd.Script.TriggerDir]
+				if !ok {
+					DeviceCache[sd.Script.TriggerDir] = map[protocol.TriggerTimer]map[devices.Core]map[devices.MsgHandle]map[string]protocol.ScriptInfos{
+						sd.Script.TriggerTimer: {dev: {sd.Script.TriggerHandle: {sd.Script.TriggerType: protocol.ScriptInfos{si}}}},
+					}
+					continue
+				}
+				_, ok = DeviceCache[sd.Script.TriggerDir][sd.Script.TriggerTimer]
+				if !ok {
+					DeviceCache[sd.Script.TriggerDir][sd.Script.TriggerTimer] = map[devices.Core]map[devices.MsgHandle]map[string]protocol.ScriptInfos{
+						dev: {sd.Script.TriggerHandle: {sd.Script.TriggerType: protocol.ScriptInfos{si}}},
+					}
+					continue
+				}
+				_, ok = DeviceCache[sd.Script.TriggerDir][sd.Script.TriggerTimer][dev]
+				if !ok {
+					DeviceCache[sd.Script.TriggerDir][sd.Script.TriggerTimer][dev] = map[devices.MsgHandle]map[string]protocol.ScriptInfos{
+						sd.Script.TriggerHandle: {sd.Script.TriggerType: protocol.ScriptInfos{si}},
+					}
+					continue
+				}
+				_, ok = DeviceCache[sd.Script.TriggerDir][sd.Script.TriggerTimer][dev][sd.Script.TriggerHandle]
+				if !ok {
+					DeviceCache[sd.Script.TriggerDir][sd.Script.TriggerTimer][dev][sd.Script.TriggerHandle] = map[string]protocol.ScriptInfos{
+						sd.Script.TriggerType: protocol.ScriptInfos{si},
+					}
+					continue
+				}
+				DeviceCache[sd.Script.TriggerDir][sd.Script.TriggerTimer][dev][sd.Script.TriggerHandle][sd.Script.TriggerType] =
+					append(DeviceCache[sd.Script.TriggerDir][sd.Script.TriggerTimer][dev][sd.Script.TriggerHandle][sd.Script.TriggerType], si)
+			case protocol.TriggerSrcProduct:
+				_, ok := ProductCache[sd.Script.TriggerDir]
+				if !ok {
+					ProductCache[sd.Script.TriggerDir] = map[protocol.TriggerTimer]map[string]map[devices.MsgHandle]map[string]protocol.ScriptInfos{
+						sd.Script.TriggerTimer: {sd.ProductID: {sd.Script.TriggerHandle: {sd.Script.TriggerType: protocol.ScriptInfos{si}}}},
+					}
+					continue
+				}
+				_, ok = ProductCache[sd.Script.TriggerDir][sd.Script.TriggerTimer]
+				if !ok {
+					ProductCache[sd.Script.TriggerDir][sd.Script.TriggerTimer] = map[string]map[devices.MsgHandle]map[string]protocol.ScriptInfos{
+						sd.ProductID: {sd.Script.TriggerHandle: {sd.Script.TriggerType: protocol.ScriptInfos{si}}},
+					}
+					continue
+				}
+				_, ok = ProductCache[sd.Script.TriggerDir][sd.Script.TriggerTimer][sd.ProductID]
+				if !ok {
+					ProductCache[sd.Script.TriggerDir][sd.Script.TriggerTimer][sd.ProductID] = map[devices.MsgHandle]map[string]protocol.ScriptInfos{
+						sd.Script.TriggerHandle: {sd.Script.TriggerType: protocol.ScriptInfos{si}},
+					}
+					continue
+				}
+				_, ok = ProductCache[sd.Script.TriggerDir][sd.Script.TriggerTimer][sd.ProductID][sd.Script.TriggerHandle]
+				if !ok {
+					ProductCache[sd.Script.TriggerDir][sd.Script.TriggerTimer][sd.ProductID][sd.Script.TriggerHandle] = map[string]protocol.ScriptInfos{
+						sd.Script.TriggerType: protocol.ScriptInfos{si},
+					}
+					continue
+				}
+				ProductCache[sd.Script.TriggerDir][sd.Script.TriggerTimer][sd.ProductID][sd.Script.TriggerHandle][sd.Script.TriggerType] =
+					append(ProductCache[sd.Script.TriggerDir][sd.Script.TriggerTimer][sd.ProductID][sd.Script.TriggerHandle][sd.Script.TriggerType], si)
+			}
+		}
+		if len(DeviceCache) > 0 {
+			up := DeviceCache[protocol.TriggerDirUp]
+			down := DeviceCache[protocol.TriggerDirDown]
+			if len(up) > 0 {
+				before := up[protocol.TriggerTimerBefore]
+				if len(before) > 0 {
+					func() {
+						trans.DeviceUpBeforeMutex.Lock()
+						defer trans.DeviceUpBeforeMutex.Unlock()
+						trans.DeviceUpBeforeCache = before
+					}()
+				}
+			}
+			if len(down) > 0 {
+				before := down[protocol.TriggerTimerBefore]
+				if len(before) > 0 {
+					func() {
+						trans.DeviceDownBeforeMutex.Lock()
+						defer trans.DeviceDownBeforeMutex.Unlock()
+						trans.DeviceDownBeforeCache = before
+					}()
+				}
+			}
+		}
+		if len(ProductCache) > 0 {
+			up := ProductCache[protocol.TriggerDirUp]
+			down := ProductCache[protocol.TriggerDirDown]
+			if len(up) > 0 {
+				before := up[protocol.TriggerTimerBefore]
+				if len(before) > 0 {
+					func() {
+						trans.ProductUpBeforeMutex.Lock()
+						defer trans.ProductUpBeforeMutex.Unlock()
+						trans.ProductUpBeforeCache = before
+					}()
+				}
+			}
+			if len(down) > 0 {
+				before := down[protocol.TriggerTimerBefore]
+				if len(before) > 0 {
+					func() {
+						trans.ProductDownBeforeMutex.Lock()
+						defer trans.ProductDownBeforeMutex.Unlock()
+						trans.ProductDownBeforeCache = before
+					}()
+				}
+			}
+		}
+		return nil
+	})
 }
 
 func dmSymbolInit(svcCtx *svc.ServiceContext) map[string]reflect.Value {
