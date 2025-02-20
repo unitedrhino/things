@@ -11479,6 +11479,14 @@
         "deviceName": {
           "type": "string",
           "description": " 设备名称"
+        },
+        "srcVersion": {
+          "type": "string"
+        },
+        "status": {
+          "type": "integer",
+          "format": "int64",
+          "description": "设备升级作业状态。1：待确认。 2：待推送。 3：已推送。  4：升级中。 5:升级成功 6: 升级失败. 7:已取消"
         }
       },
       "title": "OtaFirmwareDeviceIndexReq"
@@ -11553,6 +11561,11 @@
         "updatedTime": {
           "type": "integer",
           "format": "int64"
+        },
+        "isOnline": {
+          "type": "integer",
+          "format": "int64",
+          "description": "设备是否在线"
         }
       },
       "title": "OtaFirmwareDeviceInfo",

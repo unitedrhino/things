@@ -34,6 +34,7 @@ type OtaFirmwareDeviceFilter struct {
 	WithScheduleTime bool
 	//Msg     int64
 	Statues         []int64
+	Status          int64
 	SrcVersion      string
 	DestVersion     string
 	WithFirmware    bool
@@ -78,6 +79,9 @@ func (p OtaFirmwareDeviceRepo) fmtFilter(ctx context.Context, f OtaFirmwareDevic
 	}
 	if len(f.Statues) != 0 {
 		db = db.Where("status in ?", f.Statues)
+	}
+	if f.Status != 0 {
+		db = db.Where("status = ?", f.Status)
 	}
 	if f.SrcVersion != "" {
 		db = db.Where("src_version=?", f.SrcVersion)

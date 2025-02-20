@@ -40,6 +40,8 @@ func (l *OtaFirmwareDeviceIndexLogic) OtaFirmwareDeviceIndex(in *dm.OtaFirmwareD
 	pos, err := repo.FindByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
 		FirmwareID: in.FirmwareID,
 		JobID:      in.JobID,
+		Status:     in.Status,
+		SrcVersion: in.SrcVersion,
 		DeviceName: in.DeviceName}, logic.ToPageInfo(in.Page).
 		WithDefaultOrder(stores.OrderBy{Field: "created_time", Sort: stores.OrderDesc}))
 	if err != nil {

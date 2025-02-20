@@ -1163,6 +1163,8 @@ type OtaFirmwareDeviceIndexReq struct {
 	JobID      int64     `json:"jobID,optional"`      // 作业ID
 	FirmwareID int64     `json:"firmwareID,optional"` // 任务状态
 	DeviceName string    `json:"deviceName,optional"` // 设备名称
+	SrcVersion string    `json:"srcVersion,optional"`
+	Status     int64     `json:"status,optional"` //设备升级作业状态。1：待确认。 2：待推送。 3：已推送。  4：升级中。 5:升级成功 6: 升级失败. 7:已取消
 }
 
 type OtaFirmwareDeviceIndexResp struct {
@@ -1184,6 +1186,7 @@ type OtaFirmwareDeviceInfo struct {
 	Status      int64  `json:"status"`
 	CreatedTime int64  `json:"createdTime"`
 	UpdatedTime int64  `json:"updatedTime"`
+	IsOnline    int64  `json:"isOnline,optional"` //设备是否在线
 }
 
 type OtaFirmwareDeviceInfoResp struct {
