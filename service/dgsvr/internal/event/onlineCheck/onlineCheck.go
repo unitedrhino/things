@@ -108,7 +108,6 @@ func (o *CheckEvent) Check() error {
 					ConnectAt: 0,
 				})
 			}
-			protocol.DeleteDeviceActivity(o.ctx, dev)
 		}
 	}
 	logx.WithContext(o.ctx).Infof("fixOnline %v", utils.Fmt(needOnlineDevices))
