@@ -524,41 +524,45 @@ func DictInit(svcCtx *svc.ServiceContext) {
 		Value:    "online",
 		Sort:     1,
 	})
+	{
+		_, err := svcCtx.DictM.DictInfoCreate(ctx, &sys.DictInfo{
+			Group:      def.DictGroupThings,
+			Name:       "设备操作",
+			Code:       "deviceHandle",
+			StructType: 2,
+		})
+		if err == nil {
+			svcCtx.DictM.DictDetailMultiCreate(ctx, &sys.DictDetailMultiCreateReq{
+				DictCode: "deviceHandle",
+				List: []*sys.DictDetail{
+					{Label: "物模型", Value: "thing", Desc: &wrapperspb.StringValue{Value: "物模型相关"}, Children: []*sys.DictDetail{
+						{Label: "属性", Value: "property", Desc: &wrapperspb.StringValue{Value: ""}},
+						{Label: "事件", Value: "event", Desc: &wrapperspb.StringValue{Value: ""}},
+						{Label: "行为", Value: "action", Desc: &wrapperspb.StringValue{Value: ""}},
+						{Label: "应用相关服务", Value: "service", Desc: &wrapperspb.StringValue{Value: ""}},
+					}},
+					{Label: "设备日志", Value: "log", Desc: &wrapperspb.StringValue{Value: ""}, Children: []*sys.DictDetail{
+						{Label: "获取日志级别", Value: "operation", Desc: &wrapperspb.StringValue{Value: ""}},
+						{Label: "日志上报", Value: "report", Desc: &wrapperspb.StringValue{Value: ""}},
+						{Label: "日志级别改变推送", Value: "update", Desc: &wrapperspb.StringValue{Value: ""}},
+					}},
+					{Label: "固件升级", Value: "ota", Desc: &wrapperspb.StringValue{Value: ""}, Children: []*sys.DictDetail{
+						{Label: "固件升级消息下行", Value: "upgrade", Desc: &wrapperspb.StringValue{Value: ""}},
+						{Label: "设备端上报升级进度", Value: "progress", Desc: &wrapperspb.StringValue{Value: ""}},
+					}},
+					{Label: "网关子设备", Value: "gateway", Desc: &wrapperspb.StringValue{Value: ""}, Children: []*sys.DictDetail{
+						{Label: "拓扑关系管理", Value: "topo", Desc: &wrapperspb.StringValue{Value: ""}},
+						{Label: "代理子设备上下线", Value: "status", Desc: &wrapperspb.StringValue{Value: ""}},
+						{Label: "物模型操作", Value: "thing", Desc: &wrapperspb.StringValue{Value: ""}},
+					}},
+					{Label: "拓展", Value: "ext", Desc: &wrapperspb.StringValue{Value: ""}, Children: []*sys.DictDetail{
+						{Label: "网络时间", Value: "ntp", Desc: &wrapperspb.StringValue{Value: ""}},
+						{Label: "设备注册", Value: "register", Desc: &wrapperspb.StringValue{Value: ""}},
+					}},
+				},
+			})
+		}
 
-	svcCtx.DictM.DictInfoCreate(ctx, &sys.DictInfo{
-		Group:      def.DictGroupThings,
-		Name:       "设备操作",
-		Code:       "deviceHandle",
-		StructType: 2,
-	})
+	}
 
-	svcCtx.DictM.DictDetailMultiCreate(ctx, &sys.DictDetailMultiCreateReq{
-		DictCode: "deviceHandle",
-		List: []*sys.DictDetail{
-			{Label: "物模型", Value: "thing", Desc: &wrapperspb.StringValue{Value: "物模型相关"}, Children: []*sys.DictDetail{
-				{Label: "属性", Value: "property", Desc: &wrapperspb.StringValue{Value: ""}},
-				{Label: "事件", Value: "event", Desc: &wrapperspb.StringValue{Value: ""}},
-				{Label: "行为", Value: "action", Desc: &wrapperspb.StringValue{Value: ""}},
-				{Label: "应用相关服务", Value: "service", Desc: &wrapperspb.StringValue{Value: ""}},
-			}},
-			{Label: "设备日志", Value: "log", Desc: &wrapperspb.StringValue{Value: ""}, Children: []*sys.DictDetail{
-				{Label: "获取日志级别", Value: "operation", Desc: &wrapperspb.StringValue{Value: ""}},
-				{Label: "日志上报", Value: "report", Desc: &wrapperspb.StringValue{Value: ""}},
-				{Label: "日志级别改变推送", Value: "update", Desc: &wrapperspb.StringValue{Value: ""}},
-			}},
-			{Label: "固件升级", Value: "ota", Desc: &wrapperspb.StringValue{Value: ""}, Children: []*sys.DictDetail{
-				{Label: "固件升级消息下行", Value: "upgrade", Desc: &wrapperspb.StringValue{Value: ""}},
-				{Label: "设备端上报升级进度", Value: "progress", Desc: &wrapperspb.StringValue{Value: ""}},
-			}},
-			{Label: "网关子设备", Value: "gateway", Desc: &wrapperspb.StringValue{Value: ""}, Children: []*sys.DictDetail{
-				{Label: "拓扑关系管理", Value: "topo", Desc: &wrapperspb.StringValue{Value: ""}},
-				{Label: "代理子设备上下线", Value: "status", Desc: &wrapperspb.StringValue{Value: ""}},
-				{Label: "物模型操作", Value: "thing", Desc: &wrapperspb.StringValue{Value: ""}},
-			}},
-			{Label: "拓展", Value: "ext", Desc: &wrapperspb.StringValue{Value: ""}, Children: []*sys.DictDetail{
-				{Label: "网络时间", Value: "ntp", Desc: &wrapperspb.StringValue{Value: ""}},
-				{Label: "设备注册", Value: "register", Desc: &wrapperspb.StringValue{Value: ""}},
-			}},
-		},
-	})
 }

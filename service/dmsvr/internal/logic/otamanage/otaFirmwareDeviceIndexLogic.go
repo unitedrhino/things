@@ -31,18 +31,18 @@ func (l *OtaFirmwareDeviceIndexLogic) OtaFirmwareDeviceIndex(in *dm.OtaFirmwareD
 		return nil, err
 	}
 	l.ctx = ctxs.WithRoot(l.ctx)
-	f := relationDB.OtaFirmwareDeviceFilter{FirmwareID: in.FirmwareID, JobID: in.JobID, DeviceName: in.DeviceName}
+	f := relationDB.OtaFirmwareDeviceFilter{
+		FirmwareID: in.FirmwareID,
+		JobID:      in.JobID,
+		Status:     in.Status,
+		SrcVersion: in.SrcVersion,
+		DeviceName: in.DeviceName}
 	repo := relationDB.NewOtaFirmwareDeviceRepo(l.ctx)
 	total, err := repo.CountByFilter(l.ctx, f)
 	if err != nil {
 		return nil, err
 	}
-	pos, err := repo.FindByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
-		FirmwareID: in.FirmwareID,
-		JobID:      in.JobID,
-		Status:     in.Status,
-		SrcVersion: in.SrcVersion,
-		DeviceName: in.DeviceName}, logic.ToPageInfo(in.Page).
+	pos, err := repo.FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page).
 		WithDefaultOrder(stores.OrderBy{Field: "created_time", Sort: stores.OrderDesc}))
 	if err != nil {
 		return nil, err
