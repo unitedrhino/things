@@ -58,8 +58,12 @@ func (p OtaFirmwareDeviceRepo) fmtFilter(ctx context.Context, f OtaFirmwareDevic
 	if f.JobID != 0 {
 		db = db.Where("job_id = ?", f.JobID)
 	}
-	if f.IsOnline != 0 && f.ProductID != "" {
+	if f.IsOnline != 0 {
 		subSelect := p.db.WithContext(ctx).Model(&DmDeviceInfo{}).Select("device_name").Where("is_online=? and product_id = ?", f.IsOnline, f.ProductID)
+		if f.ProductID == "" {
+			subQuery := p.db.Model(&DmOtaFirmwareInfo{}).Select("product_id").Where("id=?", f.FirmwareID).Limit(1)
+			subSelect = p.db.WithContext(ctx).Model(&DmDeviceInfo{}).Select("device_name").Where("is_online=? and product_id = (?)", f.IsOnline, subQuery)
+		}
 		if !f.LastLogin.IsZero() {
 			subSelect = subSelect.Where("last_login <= ?", f.LastLogin)
 		}

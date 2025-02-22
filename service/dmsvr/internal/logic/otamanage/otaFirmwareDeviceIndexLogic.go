@@ -36,6 +36,7 @@ func (l *OtaFirmwareDeviceIndexLogic) OtaFirmwareDeviceIndex(in *dm.OtaFirmwareD
 		JobID:      in.JobID,
 		Status:     in.Status,
 		SrcVersion: in.SrcVersion,
+		IsOnline:   in.IsOnline,
 		DeviceName: in.DeviceName}
 	repo := relationDB.NewOtaFirmwareDeviceRepo(l.ctx)
 	total, err := repo.CountByFilter(l.ctx, f)
