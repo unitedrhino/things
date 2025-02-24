@@ -179,9 +179,9 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 			if account == "" && uc.UserID <= def.RootNode {
 				account = "系统控制"
 			}
-			di, err := l.svcCtx.DeviceCache.GetData(ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
-			if err != nil {
-				l.Error(err)
+			di, er := l.svcCtx.DeviceCache.GetData(ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
+			if er != nil {
+				l.Error(er)
 				return
 			}
 			for dataID, content := range param {
