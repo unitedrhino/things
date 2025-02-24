@@ -1,4 +1,4 @@
-FROM registry.cn-qingdao.aliyuncs.com/unitedrhino/golang:1.23.4-alpine3.21 as go-builder
+FROM docker.unitedrhino.com/unitedrhino/golang:1.23.4-alpine3.21 as go-builder
 WORKDIR /unitedrhino/
 COPY ./ ./
 RUN go env -w GOPROXY=https://goproxy.cn,direct
@@ -8,8 +8,7 @@ RUN apk add  git
 RUN go mod tidy
 RUN cd ./service/apisvr  && go build -tags no_k8s -ldflags="-s -w" .
 
-
-FROM registry.cn-qingdao.aliyuncs.com/ithings/alpine:3.20
+FROM docker.unitedrhino.com/unitedrhino/alpine:3.20
 LABEL homepage="https://gitee.com/unitedrhino"
 ENV TZ Asia/Shanghai
 RUN apk add tzdata
