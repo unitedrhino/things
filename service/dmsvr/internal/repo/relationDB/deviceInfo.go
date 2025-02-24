@@ -328,17 +328,6 @@ func shareAll(ctx context.Context, db *gorm.DB, uc *ctxs.UserCtx) *gorm.DB {
 	if uc.ProjectID > def.NotClassified {
 		pas = map[int64]*ctxs.ProjectAuth{uc.ProjectID: uc.ProjectAuth[uc.ProjectID]}
 	}
-	pas[563] = &ctxs.ProjectAuth{
-		Area: map[int64]def.AuthType{
-			2342:   def.AuthAdmin,
-			234234: def.AuthRead,
-		},
-		//AreaPath: map[string]def.AuthType{
-		//	"1231": def.AuthAdmin,
-		//	"214":  def.AuthRead,
-		//},
-		AuthType: def.AuthRead,
-	}
 	or := db
 	or = or.Or("(product_id, device_name)  in (?)", subQuery)
 	for pid, pa := range pas {
