@@ -172,6 +172,10 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 	if di.ProtocolConf == nil {
 		di.ProtocolConf = map[string]string{}
 	}
+	di.SubProtocolConf = in.SubProtocolConf
+	if di.SubProtocolConf == nil {
+		di.SubProtocolConf = map[string]string{}
+	}
 	di.SchemaAlias = in.SchemaAlias
 	if di.SchemaAlias == nil {
 		di.SchemaAlias = map[string]string{}

@@ -2,10 +2,9 @@ version: '3.2'
 # Network
 networks:
   unitedrhino_net:
-
 services:
   protocol-wumei-mqtt:
-    image: registry.cn-qingdao.aliyuncs.com/unitedrhino/protocol-wumei-mqtt:latest
+    image: docker.unitedrhino.com/unitedrhino/protocol-wumei-mqtt:latest
     container_name: protocol-wumei-mqtt
     hostname: protocol-wumei-mqtt
     restart: always

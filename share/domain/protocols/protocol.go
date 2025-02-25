@@ -19,6 +19,7 @@ const (
 	//普通设备接入
 	ProtocolCloud Trans = "cloud" //云云对接
 	ProtocolMqtt  Trans = "mqtt"  //device
+	ProtocolOther Trans = "other" //其他
 	ProtocolHttp  Trans = "http"  //device
 	ProtocolTcp   Trans = "tcp"
 	ProtocolUdp   Trans = "udp"
@@ -32,5 +33,5 @@ const (
 	ProtocolCodeAliyunCloud  = "aliyunCloud"
 	ProtocolCodeAliyunMqtt   = "aliyunMqtt"
 	ProtocolCodeTencentCloud = "tencentCloud"
-	ProtocolCodeWumei        = "wumei"
+	ProtocolCodeModbus       = "modbus"
 )

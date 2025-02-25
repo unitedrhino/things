@@ -152,6 +152,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		Adcode:             utils.ToNullString(v.Adcode),
 		Tags:               logic.ToTagsType(v.Tags), //设备标签
 		ProtocolConf:       logic.ToTagsType(v.ProtocolConf),
+		SubProtocolConf:    logic.ToTagsType(v.SubProtocolConf),
 		SchemaAlias:        v.SchemaAlias, //设备物模型别名,如果是结构体类型则key为xxx.xxx
 		IsOnline:           v.IsOnline,    //在线状态 1离线 2在线 只读
 		FirstBind:          v.FirstBind,

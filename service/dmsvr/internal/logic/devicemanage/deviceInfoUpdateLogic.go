@@ -102,6 +102,9 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 	if uc.IsAdmin && data.ProtocolConf != nil {
 		old.ProtocolConf = data.ProtocolConf
 	}
+	if uc.IsAdmin && data.SubProtocolConf != nil {
+		old.SubProtocolConf = data.SubProtocolConf
+	}
 	if data.SchemaAlias != nil {
 		old.SchemaAlias = data.SchemaAlias
 	}

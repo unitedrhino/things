@@ -8168,6 +8168,13 @@
           },
           "description": "协议配置"
         },
+        "subProtocolConf": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Tag"
+          },
+          "description": "子协议配置"
+        },
         "profiles": {
           "type": "object"
         },
@@ -13315,6 +13322,13 @@
             "$ref": "#/definitions/ProtocolConfigField"
           },
           "description": "产品级的配置字段列表,没有可以不传"
+        },
+        "deviceFields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ProtocolConfigField"
+          },
+          "description": "设备级的配置字段列表,没有可以不传"
         }
       },
       "title": "ProtocolInfo"

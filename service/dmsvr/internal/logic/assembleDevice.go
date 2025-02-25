@@ -76,6 +76,7 @@ func ToDeviceInfo(ctx context.Context, svcCtx *svc.ServiceContext, in *relationD
 		LogLevel:           in.LogLevel,
 		CreatedTime:        in.CreatedTime.Unix(),
 		ProtocolConf:       in.ProtocolConf,
+		SubProtocolConf:    in.SubProtocolConf,
 		Status:             in.Status,
 		ProductName:        productName,
 		DeviceType:         deviceType,

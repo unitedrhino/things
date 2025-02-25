@@ -325,6 +325,7 @@ type DeviceInfo struct {
 	IsEnable           int64                              `json:"isEnable,optional,omitempty"`             //是否启用
 	WithProperties     map[string]*DeviceInfoWithProperty `json:"withProperties,optional,omitempty"`       //获取的属性列表,如果不传withProperty,则不会返回
 	ProtocolConf       []*Tag                             `json:"protocolConf,optional,omitempty"`         //协议配置
+	SubProtocolConf    []*Tag                             `json:"subProtocolConf,optional,omitempty"`      //子协议配置
 	Profiles           map[string]string                  `json:"profiles,optional,omitempty"`
 	Owner              *UserCore                          `json:"owner,optional,omitempty"`
 	RatedPower         int64                              `json:"ratedPower,optional,omitempty"`
@@ -1608,6 +1609,7 @@ type ProtocolInfo struct {
 	ConfigFields  []*ProtocolConfigField `json:"configFields,optional"`  //配置字段列表,没有可以不传
 	ConfigInfos   []*ProtocolConfigInfo  `json:"configInfos,optional"`   //配置列表
 	ProductFields []*ProtocolConfigField `json:"productFields,optional"` //产品级的配置字段列表,没有可以不传
+	DeviceFields  []*ProtocolConfigField `json:"deviceFields,optional"`  //设备级的配置字段列表,没有可以不传
 }
 
 type ProtocolInfoIndexReq struct {
