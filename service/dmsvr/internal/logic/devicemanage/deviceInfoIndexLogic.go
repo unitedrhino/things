@@ -55,6 +55,7 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		ProductID:          in.ProductID,
 		ProductIDs:         in.ProductIDs,
 		AreaIDs:            in.AreaIDs,
+		ProtocolCode:       in.ProtocolCode,
 		AreaIDPath:         in.AreaIDPath,
 		DeviceName:         in.DeviceName,
 		DeviceNames:        in.DeviceNames,
@@ -91,6 +92,9 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 	}
 	if in.ExpTime != nil {
 		filter.ExpTime = stores.GetCmp(in.ExpTime.CmpType, cast.ToTime(in.ExpTime.Value))
+	}
+	if in.Rssi != nil {
+		filter.Rssi = stores.GetCmp(in.Rssi.CmpType, cast.ToTime(in.Rssi.Value))
 	}
 	if err := ctxs.IsRoot(l.ctx); err == nil { //default租户才可以查看其他租户的设备
 		ctxs.GetUserCtx(l.ctx).AllTenant = true

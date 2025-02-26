@@ -59,12 +59,14 @@ type (
 		Distributor        *stores.IDPathFilter
 		RatedPower         *stores.Cmp
 		ExpTime            *stores.Cmp
+		Rssi               *stores.Cmp
 		AreaIDPath         string
 		HasOwner           int64 //是否被人拥有
 		NotOtaJobID        int64
 		NeedConfirmJobID   int64
 		NeedConfirmVersion string
 		NetType            int64
+		ProtocolCode       string
 	}
 )
 
@@ -78,6 +80,7 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	db = f.Distributor.Filter(db, "distributor")
 	db = f.RatedPower.Where(db, "rated_power")
 	db = f.ExpTime.Where(db, "exp_time")
+	db = f.Rssi.Where(db, "rssi")
 	if f.WithProduct {
 		db = db.Preload("ProductInfo")
 	}
@@ -216,14 +219,22 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 		//f.Position 形如：point(116.393 39.905)
 		db = db.Where(f.Position.Range("position", f.Range))
 	}
-
+	var productQuery = d.db.Model(&DmProductInfo{}).Select("product_id")
+	var hasProductQuery bool
 	if f.DeviceType != 0 {
-		subQuery := d.db.Model(&DmProductInfo{}).Select("product_id").Where("device_type=?", f.DeviceType)
-		db = db.Where("product_id in (?)", subQuery)
+		productQuery = productQuery.Where("device_type=?", f.DeviceType)
+		hasProductQuery = true
+	}
+	if f.ProtocolCode != "" {
+		productQuery = productQuery.Where("protocol_code=? or sub_protocol_code=?", f.ProtocolCode, f.ProtocolCode)
+		hasProductQuery = true
 	}
 	if len(f.DeviceTypes) != 0 {
-		subQuery := d.db.Model(&DmProductInfo{}).Select("product_id").Where("device_type in ?", f.DeviceTypes)
-		db = db.Where("product_id in (?)", subQuery)
+		productQuery = productQuery.Where("device_type in ?", f.DeviceTypes)
+		hasProductQuery = true
+	}
+	if hasProductQuery {
+		db = db.Where("product_id in (?)", productQuery)
 	}
 	if f.NotOtaJobID != 0 {
 		subQuery := d.db.Model(&DmOtaFirmwareDevice{}).Select("device_name").Where("job_id = ?", f.NotOtaJobID)

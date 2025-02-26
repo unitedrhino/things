@@ -1540,6 +1540,8 @@ message DeviceInfoIndexReq{
   CompareInt64  expTime =38; //到期时间
   string iccid = 40;//SIM卡卡号
   bool withGateway =41;//同时返回子设备的网关
+  string protocolCode =51;//协议查询
+  CompareInt64 rssi=52;
 }
 
 message DeviceInfoIndexResp{

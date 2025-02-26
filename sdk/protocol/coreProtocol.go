@@ -263,3 +263,14 @@ func (p *CoreProtocol) GetProtocolConf(pi *dm.ProductInfo) map[string]string {
 	}
 	return pi.ProtocolConf
 }
+
+func (p *CoreProtocol) GetDevProtocolConf(ctx context.Context, di *dm.DeviceInfo) (map[string]string, error) {
+	pi, err := p.ProductCache.GetData(ctx, di.ProductID)
+	if err != nil {
+		return nil, err
+	}
+	if pi.SubProtocolCode != nil && pi.SubProtocolCode.GetValue() == p.Pi.Code {
+		return di.SubProtocolConf, nil
+	}
+	return di.ProtocolConf, nil
+}
