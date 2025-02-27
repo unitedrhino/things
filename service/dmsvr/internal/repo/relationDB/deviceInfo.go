@@ -62,11 +62,11 @@ type (
 		Rssi               *stores.Cmp
 		AreaIDPath         string
 		HasOwner           int64 //是否被人拥有
-		NotOtaJobID        int64
 		NeedConfirmJobID   int64
 		NeedConfirmVersion string
 		NetType            int64
 		ProtocolCode       string
+		tableAlias         string
 	}
 )
 
@@ -120,7 +120,7 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	}
 	//业务过滤条件
 	if f.ProductID != "" {
-		db = db.Where("product_id = ?", f.ProductID)
+		db = db.Where(fmt.Sprintf("%s = ?", stores.ColWithT("product_id", f.tableAlias)), f.ProductID)
 	}
 	if len(f.ProductIDs) != 0 {
 		db = db.Where("product_id in ?", f.ProductIDs)
@@ -135,7 +135,7 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 		db = db.Where("area_id != ?", f.NotAreaID)
 	}
 	if len(f.Versions) != 0 {
-		db = db.Where("version in ?", f.Versions)
+		db = db.Where(fmt.Sprintf("%s in ?", stores.ColWithT("version", f.tableAlias)), f.Versions)
 	}
 	if f.NotVersion != "" {
 		db = db.Where("version != ?", f.NotVersion)
@@ -236,10 +236,7 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	if hasProductQuery {
 		db = db.Where("product_id in (?)", productQuery)
 	}
-	if f.NotOtaJobID != 0 {
-		subQuery := d.db.Model(&DmOtaFirmwareDevice{}).Select("device_name").Where("job_id = ?", f.NotOtaJobID)
-		db = db.Where("need_confirm_job_id =0 and device_name not in (?)", subQuery) //如果不加 need_confirm_job_id =0 会导致查出来的设备量非常多,导致慢sql
-	}
+
 	if f.Gateway != nil {
 		subQuery := d.db.Model(&DmGatewayDevice{}).Select("product_id, device_name").
 			Where(" gateway_product_id=? and gateway_device_name=?", f.Gateway.ProductID, f.Gateway.DeviceName)
@@ -408,6 +405,20 @@ func (d DeviceInfoRepo) FindByFilter(ctx context.Context, f DeviceFilter, page *
 	db := d.fmtFilter(ctx, f).Model(&DmDeviceInfo{})
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
+	if err != nil {
+		return nil, stores.ErrFmt(err)
+	}
+	return results, nil
+}
+
+func (d DeviceInfoRepo) FindWithNotOtaJobIDByFilter(ctx context.Context, f DeviceFilter, notOtaJobID int64, page *stores.PageInfo) ([]*DmDeviceInfo, error) {
+	var results []*DmDeviceInfo
+	f.tableAlias = "di"
+	db := d.fmtFilter(ctx, f).Model(&DmDeviceInfo{}).Table("dm_device_info di").
+		Joins("LEFT JOIN dm_ota_firmware_device ofd ON di.device_name = ofd.device_name   AND ofd.job_id = ?  AND ofd.deleted_time = 0", notOtaJobID).
+		Where("ofd.device_name IS NULL")
+	db = page.ToGorm(db)
+	err := db.Select("di.*").Find(&results).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}

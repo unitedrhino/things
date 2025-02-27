@@ -321,8 +321,8 @@ func (l *OtaEvent) DevicesTimeout(jobInfos []*relationDB.DmOtaFirmwareJob) error
 }
 
 func (l *OtaEvent) AddDevice(dmOtaJob *relationDB.DmOtaFirmwareJob) error {
-	devicePos, err := stores.WithNoDebug(l.ctx, relationDB.NewDeviceInfoRepo).FindByFilter(l.ctx,
-		relationDB.DeviceFilter{NotOtaJobID: dmOtaJob.ID, ProductID: dmOtaJob.ProductID, Versions: dmOtaJob.SrcVersions}, nil)
+	devicePos, err := stores.WithNoDebug(l.ctx, relationDB.NewDeviceInfoRepo).FindWithNotOtaJobIDByFilter(l.ctx,
+		relationDB.DeviceFilter{ProductID: dmOtaJob.ProductID, Versions: dmOtaJob.SrcVersions}, dmOtaJob.ID, nil)
 	if err != nil {
 		l.Error(err)
 	}
