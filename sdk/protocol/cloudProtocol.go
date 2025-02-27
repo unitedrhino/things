@@ -5,9 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"gitee.com/unitedrhino/share/conf"
-	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
-	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/topics"
 	"github.com/mitchellh/mapstructure"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -233,21 +231,5 @@ func (p *CloudProtocol[pConf]) RegisterConfigChange() error {
 			err = p.UpdateConfig(ctx, conf)
 			return err
 		})
-	return err
-}
-
-func (p *CloudProtocol[pConf]) ReportDevConn(ctx context.Context, conn devices.DevConn) (err error) {
-	switch conn.Action {
-	case devices.ActionConnected:
-		err = p.FastEvent.Publish(ctx, topics.DeviceUpStatusConnected, conn)
-	case devices.ActionDisconnected:
-		err = p.FastEvent.Publish(ctx, topics.DeviceUpStatusDisconnected, conn)
-	default:
-		panic("not support conn type")
-	}
-	if err != nil {
-		logx.Errorf("%s.publish  err:%v", utils.FuncName(), err)
-		return err
-	}
 	return err
 }

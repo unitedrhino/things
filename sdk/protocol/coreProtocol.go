@@ -274,3 +274,20 @@ func (p *CoreProtocol) GetDevProtocolConf(ctx context.Context, di *dm.DeviceInfo
 	}
 	return di.ProtocolConf, nil
 }
+
+func (p *CoreProtocol) ReportDevConn(ctx context.Context, conn devices.DevConn) (err error) {
+	logx.WithContext(ctx).Infof("ReportDevConn msg:%v", conn)
+	switch conn.Action {
+	case devices.ActionConnected:
+		err = p.FastEvent.Publish(ctx, topics.DeviceUpStatusConnected, conn)
+	case devices.ActionDisconnected:
+		err = p.FastEvent.Publish(ctx, topics.DeviceUpStatusDisconnected, conn)
+	default:
+		panic("not support conn type")
+	}
+	if err != nil {
+		logx.Errorf("%s.publish  err:%v", utils.FuncName(), err)
+		return err
+	}
+	return err
+}
