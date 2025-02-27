@@ -88,7 +88,7 @@ type(
         Msg        string `json:"msg,omitempty"`
     }
     CompareInt64{
-        CmpTYpe string `json:"cmpTYpe"`//"=":相等 "!=":不相等 ">":大于">=":大于等于"<":小于"<=":小于等于 "like":模糊查询
+        CmpType string `json:"cmpType"`//"=":相等 "!=":不相等 ">":大于">=":大于等于"<":小于"<=":小于等于 "like":模糊查询
         Value int64 `json:"value,string"`
     }
     AreaInfo  {
