@@ -2,7 +2,6 @@ package otamanagelogic
 
 import (
 	"context"
-	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
@@ -33,10 +32,6 @@ func NewOtaFirmwareInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContex
 
 // 升级包列表
 func (l *OtaFirmwareInfoIndexLogic) OtaFirmwareInfoIndex(in *dm.OtaFirmwareInfoIndexReq) (*dm.OtaFirmwareInfoIndexResp, error) {
-	if err := ctxs.IsRoot(l.ctx); err != nil {
-		return nil, err
-	}
-	l.ctx = ctxs.WithRoot(l.ctx)
 	var (
 		info []*dm.OtaFirmwareInfo
 		size int64
