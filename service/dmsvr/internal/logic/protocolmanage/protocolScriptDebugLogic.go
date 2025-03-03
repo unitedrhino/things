@@ -2,8 +2,6 @@ package protocolmanagelogic
 
 import (
 	"context"
-	"encoding/json"
-	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/protocol"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
@@ -48,12 +46,8 @@ var script = "import \"log\"\nimport \"context\"\n  import \"dm\"\nfunc Handle(c
 func (l *ProtocolScriptDebugLogic) ProtocolScriptDebug(in *dm.ProtocolScriptDebugReq) (*dm.ProtocolScriptDebugResp, error) {
 	switch in.TriggerTimer {
 	case protocol.TriggerTimerBefore:
-		var req deviceMsg.PublishMsg
-		err := json.Unmarshal([]byte(in.Req), &req)
-		if err != nil {
-			return nil, errors.Parameter.AddMsgf("入参错误,需要的结构体格式为:%s", PublishMsgStr)
-		}
-		ret, logs, err := l.svcCtx.ScriptTrans.PublishMsgRun(l.ctx, &req, in.Script)
+		req := utils.Copy[deviceMsg.PublishMsg](in.Req)
+		ret, logs, err := l.svcCtx.ScriptTrans.PublishMsgRun(l.ctx, req, in.Script)
 		if err != nil {
 			return nil, err
 		}
@@ -62,17 +56,9 @@ func (l *ProtocolScriptDebugLogic) ProtocolScriptDebug(in *dm.ProtocolScriptDebu
 			Logs: logs,
 		}, nil
 	case protocol.TriggerTimerAfter:
-		var req deviceMsg.PublishMsg
-		err := json.Unmarshal([]byte(in.Req), &req)
-		if err != nil {
-			return nil, errors.Parameter.AddMsgf("入参错误,需要的结构体格式为:%s", PublishMsgStr)
-		}
-		var resp deviceMsg.PublishMsg
-		err = json.Unmarshal([]byte(in.Resp), &resp)
-		if err != nil {
-			return nil, errors.Parameter.AddMsgf("入参错误,需要的结构体格式为:%s", PublishMsgStr)
-		}
-		logs, err := l.svcCtx.ScriptTrans.RespMsgRun(l.ctx, &req, &resp, in.Script)
+		req := utils.Copy[deviceMsg.PublishMsg](in.Req)
+		resp := utils.Copy[deviceMsg.PublishMsg](in.Resp)
+		logs, err := l.svcCtx.ScriptTrans.RespMsgRun(l.ctx, req, resp, in.Script)
 		if err != nil {
 			return nil, err
 		}

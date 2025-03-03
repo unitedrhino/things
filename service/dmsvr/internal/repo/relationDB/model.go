@@ -296,7 +296,7 @@ type DmProtocolScriptDevice struct {
 	Status     def.Bool            `gorm:"column:status;default:1"`   //状态:是否启用
 	Script     *DmProtocolScript   `gorm:"foreignKey:ID;references:ScriptID"`
 	stores.NoDelTime
-	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:pn"`
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0"`
 }
 
 func (m *DmProtocolScriptDevice) TableName() string {

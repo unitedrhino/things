@@ -218,8 +218,8 @@ type (
         TriggerDir   int64 `json:"triggerDir"`    //1:up 2:down
         TriggerTimer   int64 `json:"triggerTimer"`  //收到前处理1:before 2:after
         Script string  `json:"script"` //脚本内容
-        Req   string `json:"req"`//请求
-        Resp string  `json:"resp,optional"`//回复
+        Req   *PublishMsg `json:"req"`//请求
+        Resp *PublishMsg  `json:"resp,optional"`//回复
     }
     ProtocolScriptDebugResp{
         Out string `json:"out"`

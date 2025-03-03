@@ -199,6 +199,7 @@ type (
 	ProtocolService                   = dm.ProtocolService
 	ProtocolServiceIndexReq           = dm.ProtocolServiceIndexReq
 	ProtocolServiceIndexResp          = dm.ProtocolServiceIndexResp
+	PublishMsg                        = dm.PublishMsg
 	RemoteConfigCreateReq             = dm.RemoteConfigCreateReq
 	RemoteConfigIndexReq              = dm.RemoteConfigIndexReq
 	RemoteConfigIndexResp             = dm.RemoteConfigIndexResp

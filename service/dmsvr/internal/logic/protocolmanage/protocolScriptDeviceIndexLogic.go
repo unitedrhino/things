@@ -37,6 +37,7 @@ func (l *ProtocolScriptDeviceIndexLogic) ProtocolScriptDeviceIndex(in *dm.Protoc
 	filter := relationDB.ProtocolScriptDeviceFilter{
 		TriggerSrc: in.TriggerSrc,
 		ProductID:  in.ProductID,
+		ScriptID:   in.ScriptID,
 		DeviceName: in.DeviceName,
 		Status:     in.Status,
 		WithScript: in.WithScript,

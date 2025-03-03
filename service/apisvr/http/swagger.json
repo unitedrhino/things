@@ -13453,11 +13453,11 @@
           "description": "脚本内容"
         },
         "req": {
-          "type": "string",
+          "$ref": "#/definitions/PublishMsg",
           "description": "请求"
         },
         "resp": {
-          "type": "string",
+          "$ref": "#/definitions/PublishMsg",
           "description": "回复"
         }
       },
@@ -13736,6 +13736,52 @@
       "title": "ProtocolServiceIndexResp",
       "required": [
         "list"
+      ]
+    },
+    "PublishMsg": {
+      "type": "object",
+      "properties": {
+        "handle": {
+          "type": "string",
+          "description": "对应 mqtt topic的第一个 thing ota config 等等"
+        },
+        "type": {
+          "type": "string",
+          "description": "操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为"
+        },
+        "payload": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "integer",
+          "format": "int64",
+          "description": "毫秒时间戳"
+        },
+        "productID": {
+          "type": "string"
+        },
+        "deviceName": {
+          "type": "string"
+        },
+        "explain": {
+          "type": "string",
+          "description": "内部使用的拓展字段"
+        },
+        "protocolCode": {
+          "type": "string",
+          "description": "如果有该字段则回复的时候也会带上该字段"
+        }
+      },
+      "title": "PublishMsg",
+      "required": [
+        "handle",
+        "type",
+        "payload",
+        "timestamp",
+        "productID",
+        "deviceName",
+        "explain",
+        "protocolCode"
       ]
     },
     "SceneFlowInfo": {

@@ -1641,11 +1641,11 @@ type ProtocolScript struct {
 }
 
 type ProtocolScriptDebugReq struct {
-	TriggerDir   int64  `json:"triggerDir"`    //1:up 2:down
-	TriggerTimer int64  `json:"triggerTimer"`  //收到前处理1:before 2:after
-	Script       string `json:"script"`        //脚本内容
-	Req          string `json:"req"`           //请求
-	Resp         string `json:"resp,optional"` //回复
+	TriggerDir   int64       `json:"triggerDir"`    //1:up 2:down
+	TriggerTimer int64       `json:"triggerTimer"`  //收到前处理1:before 2:after
+	Script       string      `json:"script"`        //脚本内容
+	Req          *PublishMsg `json:"req"`           //请求
+	Resp         *PublishMsg `json:"resp,optional"` //回复
 }
 
 type ProtocolScriptDebugResp struct {
@@ -1716,6 +1716,17 @@ type ProtocolServiceIndexReq struct {
 type ProtocolServiceIndexResp struct {
 	List  []*ProtocolService `json:"list"`           //自定义协议信息
 	Total int64              `json:"total,optional"` //拥有的总数
+}
+
+type PublishMsg struct {
+	Handle       string `json:"handle"` //对应 mqtt topic的第一个 thing ota config 等等
+	Type         string `json:"type"`   //操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
+	Payload      []byte `json:"payload"`
+	Timestamp    int64  `json:"timestamp"` //毫秒时间戳
+	ProductID    string `json:"productID"`
+	DeviceName   string `json:"deviceName"`
+	Explain      string `json:"explain"`      //内部使用的拓展字段
+	ProtocolCode string `json:"protocolCode"` //如果有该字段则回复的时候也会带上该字段
 }
 
 type SceneFlowInfo struct {
