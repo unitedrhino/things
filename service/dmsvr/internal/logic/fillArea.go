@@ -87,8 +87,8 @@ var projectIDChan chan []int64
 var areaIDPathChan chan []string
 
 func Init(svcCtx *svc.ServiceContext) {
-	projectIDChan = make(chan []int64, 500)
-	areaIDPathChan = make(chan []string, 1000)
+	projectIDChan = make(chan []int64, 100000)
+	areaIDPathChan = make(chan []string, 100000)
 	utils.Go(context.Background(), func() {
 		tick := time.Tick(time.Second)
 		execProjectIDs := make([]int64, 0, 500)
@@ -97,18 +97,25 @@ func Init(svcCtx *svc.ServiceContext) {
 			select {
 			case _ = <-tick:
 				if len(execProjectIDs) > 0 {
-					var newProjectIDs []int64
-					newProjectIDs = append(newProjectIDs, execProjectIDs...)
-					execProjectIDs = execProjectIDs[0:0] //清空切片
+					batchSize := len(execProjectIDs)
+					if batchSize > 100 { //控制每秒执行的速率
+						batchSize = 100
+					}
+					newProjectIDs := execProjectIDs[:batchSize]
+					execProjectIDs = execProjectIDs[batchSize:] //清空切片
 					utils.Go(context.Background(), func() {
 						ctx := ctxs.WithRoot(context.Background())
 						fillProjectDeviceCount(ctx, svcCtx, newProjectIDs...)
 					})
 				}
 				if len(execAreaIDPaths) > 0 {
-					var newAreaIDPaths []string
-					newAreaIDPaths = append(newAreaIDPaths, execAreaIDPaths...)
-					execAreaIDPaths = execAreaIDPaths[0:0] //清空切片
+					batchSize := len(execProjectIDs)
+					if batchSize > 100 { //控制每秒执行的速率
+						batchSize = 100
+					}
+					newAreaIDPaths := execAreaIDPaths[:batchSize]
+					execProjectIDs = execProjectIDs[batchSize:] //清空切片
+					execAreaIDPaths = execAreaIDPaths[0:0]      //清空切片
 					utils.Go(context.Background(), func() {
 						ctx := ctxs.WithRoot(context.Background())
 						fillAreaDeviceCount(ctx, svcCtx, newAreaIDPaths...)
