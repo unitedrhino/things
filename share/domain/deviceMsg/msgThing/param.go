@@ -158,8 +158,12 @@ func GetVal(d *schema.Define, val any) (any, error) {
 		if num, err := cast.ToInt64E(val); err != nil {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
-			if validateDataRange && (num > cast.ToInt64(d.Max) || num < cast.ToInt64(d.Min)) {
-				return nil, errors.OutRange.AddDetailf("value %v out of range:[%s,%s]", val, d.Max, d.Min)
+			if validateDataRange {
+				if num > cast.ToInt64(d.Max) {
+					num = cast.ToInt64(d.Max)
+				} else if num < cast.ToInt64(d.Min) {
+					num = cast.ToInt64(d.Min)
+				}
 			}
 			step := cast.ToInt64(d.Step)
 			if step != 0 {
@@ -171,9 +175,12 @@ func GetVal(d *schema.Define, val any) (any, error) {
 		if num, err := cast.ToFloat64E(val); err != nil {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
-			if validateDataRange && (num > cast.ToFloat64(d.Max) || num < cast.ToFloat64(d.Min)) {
-				return nil, errors.OutRange.AddDetailf(
-					"value %v out of range:[%s,%s]", val, d.Max, d.Min)
+			if validateDataRange {
+				if num > cast.ToFloat64(d.Max) {
+					num = cast.ToFloat64(d.Max)
+				} else if num < cast.ToFloat64(d.Min) {
+					num = cast.ToFloat64(d.Min)
+				}
 			}
 			step := cast.ToFloat64(d.Step)
 			if step != 0 && !math.IsNaN(step) && !math.IsInf(step, 0) {
