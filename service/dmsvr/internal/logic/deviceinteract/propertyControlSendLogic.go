@@ -251,6 +251,8 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 		}
 		return &dm.PropertyControlSendResp{
 			MsgToken: req.MsgToken,
+			Code:     errors.OK.Code,
+			Msg:      errors.OK.GetMsg(),
 		}, nil
 	}
 	var resp []byte
