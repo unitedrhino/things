@@ -499,21 +499,20 @@ func (l *GatewayLogic) HandleStatus(msg *deviceMsg.PublishMsg) (respMsg *msgGate
 			DeviceName: v.DeviceName,
 		})
 	}
-	gs, err := relationDB.NewGatewayDeviceRepo(l.ctx).CountByFilter(l.ctx, relationDB.GatewayDeviceFilter{SubDevices: subDevices, Gateway: &devices.Core{
+	gs, err := relationDB.NewGatewayDeviceRepo(l.ctx).FindByFilter(l.ctx, relationDB.GatewayDeviceFilter{SubDevices: subDevices, Gateway: &devices.Core{
 		ProductID:  msg.ProductID,
 		DeviceName: msg.DeviceName,
-	}})
+	}}, nil)
 	if err != nil {
 		resp.AddStatus(err, l.dreq.NeedRetMsg())
 		return &resp, err
 	}
-	if int(gs) != len(l.dreq.Payload.Devices) {
+	if len(gs) != len(l.dreq.Payload.Devices) {
 		err := errors.DeviceNotBound
 		resp.AddStatus(err, l.dreq.NeedRetMsg())
-		return &resp, err
 	}
 
-	for _, v := range l.dreq.Payload.Devices {
+	for _, v := range gs {
 		payload.Devices = append(payload.Devices, &msgGateway.Device{
 			ProductID:  v.ProductID,
 			DeviceName: v.DeviceName,
