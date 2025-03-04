@@ -172,6 +172,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		Owner:              owner,
 		ProductName:        v.ProductName,
 		DeviceType:         v.DeviceType,
+		Sort:               v.Sort,
 		NetType:            v.NetType,
 		ExpTime:            utils.ToNullInt64(v.ExpTime),
 		RatedPower:         v.RatedPower,

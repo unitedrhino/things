@@ -333,6 +333,7 @@ type DeviceInfo struct {
 	NeedConfirmVersion string                             `json:"needConfirmVersion,optional,omitempty"`   //待确认升级的版本
 	UserID             int64                              `json:"userID,string,optional,omitempty"`
 	LastIp             string                             `json:"lastIp,optional,omitempty"` //最后登录的ip地址
+	Sort               int64                              `json:"sort,optional,omitempty"`   //排序
 	Desc               *string                            `json:"desc,optional,omitempty"`
 	Distributor        *IDPath                            `json:"distributor,optional,omitempty"`
 	Gateway            *DeviceInfo                        `json:"gateway,optional,omitempty"` //子设备绑定的网关信息,只读

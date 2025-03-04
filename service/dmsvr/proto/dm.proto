@@ -1395,6 +1395,8 @@ message DeviceInfo {
   string lastIp = 49;//最后登录的ip,只读
   google.protobuf.StringValue desc=47;
   DeviceInfo Gateway =46;//子设备绑定的网关
+  int64 sort =53; //排序
+
 }
 
 message ProductInfo{

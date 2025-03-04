@@ -87,6 +87,7 @@ func ToDeviceInfo(ctx context.Context, svcCtx *svc.ServiceContext, in *relationD
 		NeedConfirmJobID:   in.NeedConfirmJobID,
 		ProductImg:         ProductImg,
 		UserID:             in.UserID,
+		Sort:               in.Sort,
 		CategoryID:         CategoryID,
 	}
 }

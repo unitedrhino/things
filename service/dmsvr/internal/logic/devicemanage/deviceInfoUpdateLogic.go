@@ -68,7 +68,9 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 		old.ProjectID = dataType.ProjectID(data.ProjectID)
 		isUpdateTag = true
 	}
-
+	if data.Sort != 0 {
+		old.Sort = data.Sort
+	}
 	if uc.IsAdmin && data.ExpTime != nil {
 		if data.ExpTime.Value == 0 && old.UserID > def.RootNode { //如果是主动传0且被绑定了则需要看下过期时间是否正确
 			pi, err := l.svcCtx.ProductCache.GetData(l.ctx, data.ProductID)

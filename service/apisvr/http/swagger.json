@@ -8202,6 +8202,11 @@
           "type": "string",
           "description": "最后登录的ip地址"
         },
+        "sort": {
+          "type": "integer",
+          "format": "int64",
+          "description": "排序"
+        },
         "desc": {
           "type": "string"
         },
