@@ -26,8 +26,8 @@ DevLink:
       - tcp://emqx:1883
     OpenApi:
       Host: http://emqx:18083
-      ApiKey: c0d931d242831cde
-      SecretKey: Pbd9A3iMLtE46zAulj2u05aM89CrnUIeWo1BChJrfXl8O
+      ApiKey: 69b84915bc0d50db
+      SecretKey: nzREWI29BQjrY9A1gsgczHEUhDr3kJXonkUE9A7hueCB4G
 #      ApiKey: a4372308268d07d4
 #      SecretKey: JRELoqeZVRlTwmXmvYxr2S7g9BkNE9B9BZFoJMXNYIaOrC
 DmRpc:

@@ -2,6 +2,7 @@ version: '3.2'
 # Network
 networks:
   unitedrhino_net:
+    name: unitedrhino_net
     ipam:
       config:
         - subnet: 172.20.0.0/16
@@ -23,8 +24,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.2
+      - unitedrhino_net
 
   etcd:
     image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:bitnami-etcd-3.5
@@ -47,8 +47,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.3
+      - unitedrhino_net
 
   mariadb:
     image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:mariadb-10.7
@@ -68,8 +67,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.4
+      - unitedrhino_net
 
   redis:
     image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:redis-7-alpine
@@ -84,8 +82,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.5
+      - unitedrhino_net
 
   tdengine:
     image: tdengine/tdengine:latest
@@ -105,8 +102,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.6
+      - unitedrhino_net
 
   emqx:
     image: emqx/emqx:latest
@@ -130,8 +126,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.7
+      - unitedrhino_net
   minio:
     image: minio/minio:latest
     hostname: minio
@@ -153,20 +148,18 @@ services:
 #      - /docker/minio/data:/data               #映射当前目录下的data目录至容器内/data目录
 #      - /docker/minio/config:/root/.minio/     #映射配置目录
     networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.10
+      - unitedrhino_net
 
-  init-db:
-    image: alpine:3.20
-    container_name: init-db
-    depends_on:
-      - tdengine
-    volumes:
-      - ./init-db.sh:/init-db.sh
-    command: /bin/sh /init-db.sh
-    networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.9
+#  init-db:
+#    image: alpine:3.20
+#    container_name: init-db
+#    depends_on:
+#      - tdengine
+#    volumes:
+#      - ./init-db.sh:/init-db.sh
+#    command: /bin/sh /init-db.sh
+#    networks:
+#      - unitedrhino_net
 #  zlmediakit:
 #    image: registry.cn-shenzhen.aliyuncs.com/airgens/zlmediakit:v1
 #    container_name: ienv-zlmediakit

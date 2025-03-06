@@ -14,8 +14,8 @@ DevLink:
   SubMode: emq
   OpenApi:
     Host: http://127.0.0.1:18083
-    ApiKey: a4372308268d07d4
-    SecretKey: cuAVYN5wu4619AcYTbtD9Cv55Vh9CkzXHGlePyIgaKisxO
+    ApiKey: 69b84915bc0d50db
+    SecretKey: nzREWI29BQjrY9A1gsgczHEUhDr3kJXonkUE9A7hueCB4G
   Mqtt:
     ClientID: dg.rpc
     Pass: iThings
