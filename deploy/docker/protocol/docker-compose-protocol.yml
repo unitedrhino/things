@@ -1,0 +1,110 @@
+version: '3.2'
+# Network
+networks:
+  unitedrhino_net:
+    external: true
+services:
+  protocol-aliyun-cloud:
+    image: docker.unitedrhino.com/protocol/aliyun-cloud:latest
+    container_name: protocol-aliyun-cloud
+    hostname: protocol-aliyun-cloud
+    restart: always
+    ports:
+      - "9103:9103"
+    environment:
+      - devOpenApiApiKey=${devOpenApiApiKey} #emq的秘钥配置,参考: https://doc.unitedrhino.com/pages/24d647/#%E8%AE%BE%E5%A4%87%E5%9C%A8%E7%BA%BF%E7%8A%B6%E6%80%81%E6%A0%A1%E5%87%86-%E5%8F%AF%E9%80%89
+      - devOpenApiSecretKey=${devOpenApiSecretKey} #如上
+      - confSuffix=${confSuffix}
+    logging:
+      options:
+        max-size: "50M"
+        max-file: "10"
+      driver: json-file
+    networks:
+      - unitedrhino_net
+  protocol-aliyun-mqtt:
+    image: docker.unitedrhino.com/protocol/aliyun-mqtt:latest
+    container_name: protocol-aliyun-mqtt
+    hostname: protocol-aliyun-mqtt
+    restart: always
+    ports:
+      - "9108:9108"
+    environment:
+      - devOpenApiApiKey=${devOpenApiApiKey} #emq的秘钥配置,参考: https://doc.unitedrhino.com/pages/24d647/#%E8%AE%BE%E5%A4%87%E5%9C%A8%E7%BA%BF%E7%8A%B6%E6%80%81%E6%A0%A1%E5%87%86-%E5%8F%AF%E9%80%89
+      - devOpenApiSecretKey=${devOpenApiSecretKey} #如上
+      - confSuffix=${confSuffix}
+    logging:
+      options:
+        max-size: "50M"
+        max-file: "10"
+      driver: json-file
+    networks:
+      - unitedrhino_net
+  protocol-tencent-cloud:
+    image: docker.unitedrhino.com/protocol/tencent-cloud:latest
+    container_name: protocol-tencent-cloud
+    hostname: protocol-tencent-cloud
+    restart: always
+    ports:
+      - "9363:9363"
+    environment:
+      - confSuffix=${confSuffix}
+    logging:
+      options:
+        max-size: "50M"
+        max-file: "10"
+      driver: json-file
+    networks:
+      - unitedrhino_net
+  protocol-modbus:
+    image: docker.unitedrhino.com/protocol/modbus:latest
+    container_name: protocol-modbus
+    hostname: protocol-modbus
+    restart: always
+    ports:
+      - "9356:9356"
+    environment:
+      - confSuffix=${confSuffix}
+    logging:
+      options:
+        max-size: "50M"
+        max-file: "10"
+      driver: json-file
+    networks:
+      - unitedrhino_net
+  protocol-wumei-mqtt:
+    image: docker.unitedrhino.com/protocol/wumei-mqtt:latest
+    container_name: protocol-wumei-mqtt
+    hostname: protocol-wumei-mqtt
+    restart: always
+    ports:
+      - "9104:9104"
+    environment:
+      - devOpenApiApiKey=${devOpenApiApiKey} #emq的秘钥配置,参考: https://doc.unitedrhino.com/pages/24d647/#%E8%AE%BE%E5%A4%87%E5%9C%A8%E7%BA%BF%E7%8A%B6%E6%80%81%E6%A0%A1%E5%87%86-%E5%8F%AF%E9%80%89
+      - devOpenApiSecretKey=${devOpenApiSecretKey} #如上
+      - confSuffix=${confSuffix}
+    logging:
+      options:
+        max-size: "50M"
+        max-file: "10"
+      driver: json-file
+    networks:
+      - unitedrhino_net
+  protocol-glsb-mqtt:
+    image: docker.unitedrhino.com/protocol/glsb-mqtt:latest
+    container_name: protocol-glsb-mqtt
+    hostname: protocol-glsb-mqtt
+    restart: always
+    ports:
+      - "8934:8934"
+    environment:
+      - devOpenApiApiKey=${devOpenApiApiKey} #emq的秘钥配置,参考: https://doc.unitedrhino.com/pages/24d647/#%E8%AE%BE%E5%A4%87%E5%9C%A8%E7%BA%BF%E7%8A%B6%E6%80%81%E6%A0%A1%E5%87%86-%E5%8F%AF%E9%80%89
+      - devOpenApiSecretKey=${devOpenApiSecretKey} #如上
+      - confSuffix=${confSuffix}
+    logging:
+      options:
+        max-size: "50M"
+        max-file: "10"
+      driver: json-file
+    networks:
+      - unitedrhino_net

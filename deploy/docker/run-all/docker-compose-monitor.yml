@@ -2,6 +2,7 @@ version: '3.2'
 # Network
 networks:
   unitedrhino_net:
+    external: true
 
 services:
   jaeger:

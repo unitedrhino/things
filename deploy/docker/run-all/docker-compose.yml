@@ -2,6 +2,7 @@ version: '3.2'
 # Network
 networks:
   unitedrhino_net:
+    name: unitedrhino_net
     ipam:
       config:
         - subnet: 172.20.0.0/16
