@@ -57,12 +57,12 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceInfoUnbindReq) (*d
 	if pi != nil {
 		adminUserID = pi.AdminUserID
 	}
+	pc, err := l.svcCtx.ProductCache.GetData(l.ctx, di.ProductID)
+	if err != nil {
+		return nil, err
+	}
 	//如果是超管有全部权限
 	if !uc.IsAdmin && (di.TenantCode != di.TenantCode || adminUserID != uc.UserID || int64(di.ProjectID) != uc.ProjectID) {
-		pc, err := l.svcCtx.ProductCache.GetData(l.ctx, di.ProductID)
-		if err != nil {
-			return nil, err
-		}
 		switch pc.BindLevel {
 		case product.BindLeveWeak3: //弱绑定谁都可以解绑
 		case product.BindLeveMiddle2:
@@ -98,6 +98,7 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceInfoUnbindReq) (*d
 	di.UserID = def.RootNode
 	di.AreaID = dataType.AreaID(def.NotClassified)
 	di.AreaIDPath = def.NotClassifiedPath
+	di.DeviceAlias = pc.ProductName
 	if di.FirstBind.Valid && di.FirstBind.Time.After(time.Now().AddDate(0, 0, -1)) { //绑定一天内的不算绑定时间
 		pc, err := l.svcCtx.ProductCache.GetData(l.ctx, di.ProductID)
 		if err != nil {

@@ -1,9 +1,13 @@
 package share
 
 import (
+	"context"
+	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/types"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 func ToSharePb(in *types.UserDeviceShareInfo) *dm.UserDeviceShareInfo {
@@ -25,7 +29,7 @@ func ToSharePb(in *types.UserDeviceShareInfo) *dm.UserDeviceShareInfo {
 	}
 }
 
-func ToShareTypes(in *dm.UserDeviceShareInfo) *types.UserDeviceShareInfo {
+func ToShareTypes(in *dm.UserDeviceShareInfo, ui *sys.UserInfo) *types.UserDeviceShareInfo {
 	if in == nil {
 		return nil
 	}
@@ -41,13 +45,22 @@ func ToShareTypes(in *dm.UserDeviceShareInfo) *types.UserDeviceShareInfo {
 		SharedUserAccount: in.SharedUserAccount,
 		SharedUserID:      in.SharedUserID,
 		ProjectID:         in.ProjectID,
+		User:              utils.Copy[types.UserCore](ui),
 		AccessPerm:        utils.CopyMap[types.SharePerm](in.AccessPerm),
 		SchemaPerm:        utils.CopyMap[types.SharePerm](in.SchemaPerm),
 	}
 }
-func ToSharesTypes(in []*dm.UserDeviceShareInfo) (ret []*types.UserDeviceShareInfo) {
+func ToSharesTypes(ctx context.Context, svcCtx *svc.ServiceContext, withUser bool, in []*dm.UserDeviceShareInfo) (ret []*types.UserDeviceShareInfo) {
 	for _, v := range in {
-		ret = append(ret, ToShareTypes(v))
+		var ui *sys.UserInfo
+		var err error
+		if withUser {
+			ui, err = svcCtx.UserC.GetData(ctx, v.SharedUserID)
+			if err != nil {
+				logx.WithContext(ctx).Error(err.Error())
+			}
+		}
+		ret = append(ret, ToShareTypes(v, ui))
 	}
 	return
 }

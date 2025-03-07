@@ -14808,6 +14808,11 @@
         "device": {
           "$ref": "#/definitions/DeviceCore",
           "description": "设备信息"
+        },
+        "withUser": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "同时返回用户信息"
         }
       },
       "title": "UserDeviceShareIndexReq"
@@ -14865,6 +14870,10 @@
         "expTime": {
           "type": "string",
           "description": "到期时间"
+        },
+        "user": {
+          "$ref": "#/definitions/UserCore",
+          "description": "只读,传withUser会赋值"
         },
         "createdTime": {
           "type": "integer",

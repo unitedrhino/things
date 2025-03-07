@@ -1961,8 +1961,9 @@ type UserCore struct {
 }
 
 type UserDeviceShareIndexReq struct {
-	Page   *PageInfo   `json:"page,optional"`
-	Device *DeviceCore `json:"device,optional"` //设备信息
+	Page     *PageInfo   `json:"page,optional"`
+	Device   *DeviceCore `json:"device,optional"`   //设备信息
+	WithUser bool        `json:"withUser,optional"` //同时返回用户信息
 }
 
 type UserDeviceShareIndexResp struct {
@@ -1980,6 +1981,7 @@ type UserDeviceShareInfo struct {
 	SchemaPerm        map[string]*SharePerm `json:"schemaPerm,optional"`     //普通功能权限 2:读写权限 3读权限
 	AccessPerm        map[string]*SharePerm `json:"accessPerm,optional"`     //系统功能权限 2:读写权限 3读权限
 	ExpTime           *int64                `json:"expTime,optional,string"` //到期时间
+	User              *UserCore             `json:"user,optional"`           //只读,传withUser会赋值
 	CreatedTime       int64                 `json:"createdTime,optional"`
 }
 

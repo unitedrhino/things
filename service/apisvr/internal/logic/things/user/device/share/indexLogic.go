@@ -37,7 +37,7 @@ func (l *IndexLogic) Index(req *types.UserDeviceShareIndexReq) (resp *types.User
 	}
 
 	return &types.UserDeviceShareIndexResp{
-		List:  ToSharesTypes(ret.List),
+		List:  ToSharesTypes(l.ctx, l.svcCtx, req.WithUser, ret.List),
 		Total: ret.Total,
 	}, nil
 }
