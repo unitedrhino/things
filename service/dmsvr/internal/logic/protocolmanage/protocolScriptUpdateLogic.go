@@ -2,9 +2,12 @@ package protocolmanagelogic
 
 import (
 	"context"
+	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/protocol"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -35,6 +38,22 @@ func (l *ProtocolScriptUpdateLogic) ProtocolScriptUpdate(in *dm.ProtocolScript) 
 		old.Desc = in.Desc.GetValue()
 	}
 	if in.Script != "" && in.Script != old.Script {
+		handle, _, err := l.svcCtx.ScriptTrans.GetFunc(l.ctx, in.Script, "Handle")
+		if err != nil {
+			return &dm.Empty{}, err
+		}
+		switch old.TriggerTimer {
+		case protocol.TriggerTimerBefore:
+			_, ok := handle.(func(context.Context, *deviceMsg.PublishMsg) *deviceMsg.PublishMsg)
+			if !ok {
+				return nil, errors.Parameter.AddMsg("结构体中需要定义: func Handle(context.Context,req *dm.PublishMsg) *dm.PublishMsg")
+			}
+		case protocol.TriggerTimerAfter:
+			_, ok := handle.(func(context.Context, *deviceMsg.PublishMsg, *deviceMsg.PublishMsg))
+			if !ok {
+				return nil, errors.Parameter.AddMsg("结构体中需要定义: func Handle(ctx context.Context,req *dm.PublishMsg,resp *dm.PublishMsg)")
+			}
+		}
 		old.Script = in.Script
 	}
 	if in.Status != 0 {

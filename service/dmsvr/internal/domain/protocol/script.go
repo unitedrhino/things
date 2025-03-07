@@ -149,7 +149,7 @@ func (s *ScriptTrans) RespMsgRun(ctx context.Context, req *deviceMsg.PublishMsg,
 	if err != nil {
 		return nil, errors.Parameter.AddMsg("结构体中需要定义: func Handle(context.Context, *dm.PublishMsg) *dm.PublishMsg")
 	}
-	fn, ok := handle.(func(context.Context, *deviceMsg.PublishMsg, *deviceMsg.PublishMsg) *deviceMsg.PublishMsg)
+	fn, ok := handle.(func(context.Context, *deviceMsg.PublishMsg, *deviceMsg.PublishMsg))
 	if !ok {
 		return nil, errors.Parameter.AddMsg("结构体中需要定义: func Handle(context.Context, *dm.PublishMsg) *dm.PublishMsg")
 	}
