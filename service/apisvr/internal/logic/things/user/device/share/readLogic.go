@@ -33,5 +33,5 @@ func (l *ReadLogic) Read(req *types.UserDeviceShareReadReq) (resp *types.UserDev
 	if err != nil {
 		return nil, err
 	}
-	return ToShareTypes(ret), nil
+	return ToShareTypes(ret, nil), nil
 }
