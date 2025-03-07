@@ -108,11 +108,56 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 			ProductID:  ld.ProductID,
 			DeviceName: ld.DeviceName,
 		}
-		var needPush bool
 		di, err := svcCtx.DeviceCache.GetData(ctx, dev)
 		if err != nil {
 			log.Error(err)
 			return
+		}
+		push := func(appMsg application.ConnectMsg, di *dm.DeviceInfo) {
+			err = svcCtx.StatusRepo.Insert(ctx, &deviceLog.Status{
+				ProductID:  appMsg.Device.ProductID,
+				Status:     status,
+				Timestamp:  msg.Timestamp, // 操作时间
+				DeviceName: appMsg.Device.DeviceName,
+			})
+			if err != nil {
+				log.Errorf("%s.HubLogRepo.insert productID:%v deviceName:%v err:%v",
+					utils.FuncName(), ld.ProductID, ld.DeviceName, err)
+			}
+
+			err = svcCtx.PubApp.DeviceStatusDisConnected(ctx, appMsg)
+			if err != nil {
+				log.Errorf("%s.pubApp productID:%v deviceName:%v err:%v",
+					utils.FuncName(), ld.ProductID, ld.DeviceName, err)
+			}
+			err = svcCtx.WebHook.Publish(svcCtx.WithDeviceTenant(ctx, appMsg.Device), func() string {
+				if status == def.ConnectedStatus {
+					return sysExport.CodeDmDeviceConn
+				}
+				return sysExport.CodeDmDeviceDisConn
+			}(), appMsg)
+			if err != nil {
+				log.Error(err)
+			}
+			if di == nil {
+				di, err = svcCtx.DeviceCache.GetData(ctx, dev)
+				if err != nil {
+					log.Error(err)
+					return
+				}
+			}
+			err = svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDeviceConn, appMsg, map[string]any{
+				"productID":  appMsg.Device.ProductID,
+				"deviceName": appMsg.Device.DeviceName,
+			}, map[string]any{
+				"projectID": di.ProjectID,
+			}, map[string]any{
+				"projectID": cast.ToString(di.ProjectID),
+				"areaID":    cast.ToString(di.AreaID),
+			})
+			if err != nil {
+				log.Error(err)
+			}
 		}
 		if status == def.ConnectedStatus {
 			var updates = map[string]any{"is_online": def.True, "last_login": msg.Timestamp, "status": def.DeviceStatusOnline, "last_ip": msg.Address}
@@ -129,12 +174,7 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 				log.Error(err)
 			}
 			if di.IsOnline != def.True {
-				needPush = true
-			}
-			err = svcCtx.PubApp.DeviceStatusConnected(ctx, appMsg)
-			if err != nil {
-				log.Errorf("%s.pubApp productID:%v deviceName:%v err:%v",
-					utils.FuncName(), ld.ProductID, ld.DeviceName, err)
+				push(appMsg, di)
 			}
 			protocol.UpdateDeviceActivity(ctx, dev)
 		} else {
@@ -146,6 +186,9 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 						log.Error(err)
 					} else {
 						for _, v := range subDevs {
+							app := appMsg
+							app.Device = devices.Core{ProductID: v.ProductID, DeviceName: v.DeviceName}
+							push(appMsg, nil)
 							subDeviceInsert = append(subDeviceInsert, &deviceStatus.ConnectMsg{Action: msg.Action,
 								Device: devices.Core{ProductID: v.ProductID, DeviceName: v.DeviceName}})
 						}
@@ -153,47 +196,9 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 				}
 				OffLineDevices = append(OffLineDevices, &dev)
 				if di.IsOnline == def.True {
-					needPush = true
+					push(appMsg, di)
 				}
 				protocol.DeleteDeviceActivity(ctx, dev)
-			}
-		}
-		err = svcCtx.StatusRepo.Insert(ctx, &deviceLog.Status{
-			ProductID:  ld.ProductID,
-			Status:     status,
-			Timestamp:  msg.Timestamp, // 操作时间
-			DeviceName: ld.DeviceName,
-		})
-		if err != nil {
-			log.Errorf("%s.HubLogRepo.insert productID:%v deviceName:%v err:%v",
-				utils.FuncName(), ld.ProductID, ld.DeviceName, err)
-		}
-		if needPush {
-			err = svcCtx.PubApp.DeviceStatusDisConnected(ctx, appMsg)
-			if err != nil {
-				log.Errorf("%s.pubApp productID:%v deviceName:%v err:%v",
-					utils.FuncName(), ld.ProductID, ld.DeviceName, err)
-			}
-			err = svcCtx.WebHook.Publish(svcCtx.WithDeviceTenant(ctx, dev), func() string {
-				if status == def.ConnectedStatus {
-					return sysExport.CodeDmDeviceConn
-				}
-				return sysExport.CodeDmDeviceDisConn
-			}(), appMsg)
-			if err != nil {
-				log.Error(err)
-			}
-			err = svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDeviceConn, appMsg, map[string]any{
-				"productID":  ld.ProductID,
-				"deviceName": ld.DeviceName,
-			}, map[string]any{
-				"projectID": di.ProjectID,
-			}, map[string]any{
-				"projectID": cast.ToString(di.ProjectID),
-				"areaID":    cast.ToString(di.AreaID),
-			})
-			if err != nil {
-				log.Error(err)
 			}
 		}
 

@@ -28,13 +28,16 @@ service api {
 service api {
 	@doc "插槽用户订阅"
 	@handler subscribe
-	post /subscribe (SlotUserSubscribeReq) returns ()
+	post /subscribe (SlotUserSubscribe) returns (SlotUserSubscribeResp)
 }
 
 type (
-	SlotUserSubscribeReq{
+	SlotUserSubscribe{
 		Code string  `json:"code"`
 		Params map[string ]interface{} `json:"params"`
+	}
+	SlotUserSubscribeResp{
+		List []map[string ]interface{} `json:"list"`
 	}
 	SlotAreaSaveReq{
 		ProjectID int64 `json:"projectID,string,optional"`       //项目id（只读）

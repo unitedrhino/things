@@ -149,7 +149,7 @@ func (l *DeviceMsgHandle) Connected(msg *deviceStatus.ConnectMsg) error {
 }
 
 func (l *DeviceMsgHandle) Disconnected(msg *deviceStatus.ConnectMsg) error {
-	l.Infof("%s req=%v", utils.FuncName(), msg)
+	l.Infof("%s req=%v", utils.FuncName(), utils.Fmt(msg))
 	return NewDisconnectedLogic(l.ctx, l.svcCtx).Handle(msg)
 }
 func (l *DeviceMsgHandle) deviceResp(respMsg *deviceMsg.PublishMsg) {

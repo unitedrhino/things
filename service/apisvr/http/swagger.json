@@ -6417,6 +6417,9 @@
                 "msg": {
                   "type": "string",
                   "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/SlotUserSubscribeResp"
                 }
               }
             }
@@ -6428,7 +6431,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/SlotUserSubscribeReq"
+              "$ref": "#/definitions/SlotUserSubscribe"
             }
           }
         ],
@@ -14661,7 +14664,7 @@
       },
       "title": "SlotAreaSaveReq"
     },
-    "SlotUserSubscribeReq": {
+    "SlotUserSubscribe": {
       "type": "object",
       "properties": {
         "code": {
@@ -14671,10 +14674,25 @@
           "type": "object"
         }
       },
-      "title": "SlotUserSubscribeReq",
+      "title": "SlotUserSubscribe",
       "required": [
         "code",
         "params"
+      ]
+    },
+    "SlotUserSubscribeResp": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/map[string]interface"
+          }
+        }
+      },
+      "title": "SlotUserSubscribeResp",
+      "required": [
+        "list"
       ]
     },
     "Tag": {
