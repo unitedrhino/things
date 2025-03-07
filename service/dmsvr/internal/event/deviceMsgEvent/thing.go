@@ -115,7 +115,8 @@ func (l *ThingLogic) HandlePackReport(msg *deviceMsg.PublishMsg, req msgThing.Re
 			}
 			di, err := l.svcCtx.DeviceCache.GetData(l.ctx, d)
 			if err != nil {
-				return l.DeviceResp(msg, err, nil), err
+				l.Errorf("存在没有的设备:%v", d)
+				continue
 			}
 			c, err := relationDB.NewGatewayDeviceRepo(l.ctx).CountByFilter(l.ctx, relationDB.GatewayDeviceFilter{
 				SubDevice: &d,
@@ -128,10 +129,9 @@ func (l *ThingLogic) HandlePackReport(msg *deviceMsg.PublishMsg, req msgThing.Re
 				return l.DeviceResp(msg, err, nil), err
 			}
 			if c == 0 {
-				err = errors.DeviceNotBound
-				return l.DeviceResp(msg, err, nil), err
+				l.Errorf("存在未绑定的设备:%v", d)
+				continue
 			}
-
 			l.OnlineFix(msg, di, l.di)
 			schema, err := l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, devices.Core{ProductID: dev.ProductID, DeviceName: dev.DeviceName})
 			if err != nil {
