@@ -322,7 +322,7 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Empty, 
 		er := l.svcCtx.PubDev.PublishToDev(l.ctx, &msg)
 		if er != nil {
 			l.Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)
-			return nil, err
+			return nil, er
 		}
 	}
 	return &dm.Empty{}, nil
