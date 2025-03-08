@@ -4,8 +4,8 @@ gitee.com/unitedrhino/core v1.3.2 h1:BnA9kU7JQyGviykeQPRyZmgI8vB2VaNCmT0MxE2ZgZ8
 gitee.com/unitedrhino/core v1.3.2/go.mod h1:pNpCxoWJ775wf33eiubt6oDRRTEed0fgd7lE41DYn2c=
 gitee.com/unitedrhino/driver-go/v3 v3.30.1 h1:hVBG8jRPaPL+fS/tAvsG60Jt7QvLW50OQuD0Ms+6iao=
 gitee.com/unitedrhino/driver-go/v3 v3.30.1/go.mod h1:Kdr+5rPmtqqxpliQ0NJrg24F9jCHcwywyWiDaVA5eEQ=
-gitee.com/unitedrhino/share v1.3.7 h1:siFtCc/riKHC86beuvTLQMLLPWUObutOPnhVW4PzOiw=
-gitee.com/unitedrhino/share v1.3.7/go.mod h1:k7DpdSF4/7GLpcYas/y5ZtC2+qZNB9Vpan+nrsldOmU=
+gitee.com/unitedrhino/share v1.3.8 h1:yyYN766uzIJpEEVrizCnHnllBv3yhyjA5+DUyofC5is=
+gitee.com/unitedrhino/share v1.3.8/go.mod h1:k7DpdSF4/7GLpcYas/y5ZtC2+qZNB9Vpan+nrsldOmU=
 gitee.com/unitedrhino/squirrel v1.20.5 h1:Mi11U2zk3VEPUMh2+TxThcjRkFA3rtBwVK6qL8dnTmU=
 gitee.com/unitedrhino/squirrel v1.20.5/go.mod h1:NVTC7zI2TMArBB7L0eOp67c0TVBOJ3TKpY+Qbs8R+TU=
 github.com/BurntSushi/toml v1.3.2 h1:o7IhLm0Msx3BaB+n3Ag7L8EVlByGnpq14C4YWiu/gL8=
