@@ -1415,7 +1415,8 @@ message ProductInfo{
   map<string, string> tags = 13; //产品标签
   string productImg = 14; //产品图片
   bool isUpdateProductImg = 15;//只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
-  ProtocolInfo protocol = 16;
+  ProtocolInfo protocol = 16; //主协议信息
+  ProtocolInfo subProtocol = 39;//子协议信息
   ProductCategory category = 17;
   map<string,string>protocolConf =18;
   map<string,string>subProtocolConf =25;

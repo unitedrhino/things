@@ -11,6 +11,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/share/clients"
 	"gitee.com/unitedrhino/things/share/devices"
+	"gitee.com/unitedrhino/things/share/domain/protocols"
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.uber.org/atomic"
 )
@@ -75,6 +76,18 @@ func (o *CheckEvent) Check() error {
 			}
 			di, err := o.svcCtx.DeviceCache.GetData(o.ctx, c)
 			if err != nil {
+				continue
+			}
+			pi, err := o.svcCtx.ProductCache.GetData(o.ctx, di.ProductID)
+			if err != nil {
+				continue
+			}
+			if pi.Protocol != nil && pi.Protocol.TransProtocol != protocols.ProtocolMqtt {
+				delete(devs, c)
+				continue
+			}
+			if pi.SubProtocol != nil && pi.SubProtocol.TransProtocol != protocols.ProtocolMqtt {
+				delete(devs, c)
 				continue
 			}
 			delete(devs, c)

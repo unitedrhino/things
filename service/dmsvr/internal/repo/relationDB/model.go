@@ -177,6 +177,8 @@ type DmProductInfo struct {
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:pd"`
 	Category    *DmProductCategory `gorm:"foreignKey:ID;references:CategoryID"` // 添加外键
 	Protocol    *DmProtocolInfo    `gorm:"foreignKey:Code;references:ProtocolCode"`
+	SubProtocol *DmProtocolInfo    `gorm:"foreignKey:Code;references:SubProtocolCode"`
+
 	//Devices []*DmDeviceInfo    `gorm:"foreignKey:ProductID;references:ProductID"` // 添加外键
 	CustomUi map[string]*ProductCustomUi `gorm:"column:customUi;type:json;serializer:json;NOT NULL;default:'{}'"`
 }
@@ -273,11 +275,10 @@ type DmProtocolScript struct {
 	TriggerTimer  protocol.TriggerTimer `gorm:"column:trigger_timer;"`                              //收到前处理before after
 	TriggerHandle devices.MsgHandle     `gorm:"column:trigger_handle;type:varchar(100);default:''"` //对应 mqtt topic的第一个 thing ota config 等等
 	TriggerType   string                `gorm:"column:trigger_type;type:varchar(100);default:''"`   // 操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
-	//TriggerMethod string            //方法级触发
-	ScriptLang int64    `gorm:"column:script_lang;type:smallint;default:1"` // 脚本语言类型 1:go
-	Script     string   `gorm:"column:script;type:text"`                    // 协议转换脚本
-	Desc       string   `gorm:"column:desc;type:varchar(200)"`              // 描述
-	Status     def.Bool `gorm:"column:status;default:1"`                    //状态:是否启用
+	ScriptLang    int64                 `gorm:"column:script_lang;type:smallint;default:1"`         // 脚本语言类型 1:go
+	Script        string                `gorm:"column:script;type:text"`                            // 协议转换脚本
+	Desc          string                `gorm:"column:desc;type:varchar(200)"`                      // 描述
+	Status        def.Bool              `gorm:"column:status;default:1"`                            //状态:是否启用
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:name"`
 }

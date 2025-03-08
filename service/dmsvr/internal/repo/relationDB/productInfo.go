@@ -82,7 +82,7 @@ func (p ProductInfoRepo) fmtFilter(ctx context.Context, f ProductFilter) *gorm.D
 		db = db.Where("status in ?", f.Statuses)
 	}
 	if f.WithProtocol {
-		db = db.Preload("Protocol")
+		db = db.Preload("Protocol").Preload("subProtocol")
 	}
 	if f.WithCategory {
 		db = db.Preload("Category")
