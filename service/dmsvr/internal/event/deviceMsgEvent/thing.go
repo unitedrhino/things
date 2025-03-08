@@ -601,8 +601,16 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 			return nil, err
 		}
 		if len(shadows) != 0 {
+			vals := shadow.ToValues(shadows, l.schema.Property)
+			for k, v := range vals {
+				vv, err := v.ToVal()
+				if err != nil {
+					continue
+				}
+				respData[k] = vv
+			}
 			//插入多条设备物模型属性数据
-			err = l.repo.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, shadow.ToValues(shadows, l.schema.Property), time.Now(), msgThing.Optional{Sync: true})
+			err = l.repo.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, vals, time.Now(), msgThing.Optional{Sync: true})
 			if err != nil {
 				l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
 				return l.DeviceResp(msg, errors.Database.AddDetail(err), nil), err
@@ -620,6 +628,9 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 	}
 	var propertyMap = schema.PropertyMap{}
 	for _, d := range dataIDs {
+		if _, ok := respData[d]; ok {
+			continue
+		}
 		p := l.schema.Property[d]
 		if p != nil {
 			propertyMap[p.Identifier] = p
