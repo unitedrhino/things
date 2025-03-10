@@ -39,7 +39,7 @@ type (
     }
     AlarmRecordIndexResp  {
         List []*AlarmRecord `json:"list"`    //告警信息
-        Total int64 `json:"total"`          //总数(只有分页的时候会返回)
+        PageResp
     }
 )
 

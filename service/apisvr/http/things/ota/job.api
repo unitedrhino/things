@@ -47,7 +47,7 @@ type OtaFirmwareJobIndexReq  {
 // OtaFirmwareJobInfoIndexResp 表示OTA作业信息索引的响应。
 type OtaFirmwareJobInfoIndexResp  {
     List []*OtaFirmwareJobInfo `json:"list"` // OTA作业信息列表
-    Total          int64         `json:"total"`      // 总数
+    PageResp
 }
 
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"github.com/spf13/cast"
 
@@ -47,7 +48,7 @@ func (l *IndexLogic) Index(req *types.ProductRemoteConfigIndexReq) (resp *types.
 		})
 	}
 	return &types.ProductRemoteConfigIndexResp{
-		List:  list,
-		Total: res.Total,
+		List:     list,
+		PageResp: logic.ToPageResp(req.Page, res.Total),
 	}, nil
 }

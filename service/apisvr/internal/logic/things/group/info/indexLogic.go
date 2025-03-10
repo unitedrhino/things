@@ -46,7 +46,7 @@ func (l *IndexLogic) Index(req *types.GroupInfoIndexReq) (resp *types.GroupInfoI
 	}
 
 	return &types.GroupInfoIndexResp{
-		List:  glist,
-		Total: res.Total,
+		List:     glist,
+		PageResp: logic.ToPageResp(req.Page, res.Total),
 	}, nil
 }

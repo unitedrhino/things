@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/types"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -35,5 +36,5 @@ func (l *IndexLogic) Index(req *types.FirmwareIndexReq) (resp *types.FirmwareInd
 	}
 	var list []types.FirmwareInfo
 	_ = utils.CopyE(&list, &index.List)
-	return &types.FirmwareIndexResp{List: list, Total: index.Total}, nil
+	return &types.FirmwareIndexResp{List: list, PageResp: logic.ToPageResp(req.Page, index.Total)}, nil
 }

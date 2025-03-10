@@ -66,3 +66,13 @@ func ToDmSendOption(in *types.SendOption) *dm.SendOption {
 		RetryInterval:  in.RetryInterval,
 	}
 }
+
+func ToPageResp(p *types.PageInfo, total int64) types.PageResp {
+	ret := types.PageResp{Total: total}
+	if p == nil {
+		return ret
+	}
+	ret.Page = p.Page
+	ret.Size = p.Size
+	return ret
+}

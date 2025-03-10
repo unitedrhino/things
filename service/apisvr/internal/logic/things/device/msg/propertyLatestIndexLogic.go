@@ -5,6 +5,7 @@ import (
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/types"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -46,7 +47,7 @@ func (l *PropertyLatestIndexLogic) PropertyLatestIndex(req *types.DeviceMsgPrope
 		})
 	}
 	return &types.DeviceMsgPropertyIndexResp{
-		Total: dmResp.Total,
-		List:  info,
+		PageResp: logic.ToPageResp(nil, dmResp.Total),
+		List:     info,
 	}, nil
 }

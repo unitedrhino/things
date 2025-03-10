@@ -45,8 +45,7 @@ func (l *IndexLogic) Index(req *types.DeviceGateWayIndexReq) (resp *types.Device
 	}
 	if dmResp.Total == 0 {
 		return &types.DeviceGateWayIndexResp{
-			List:  nil,
-			Total: 0,
+			List: nil,
 		}, nil
 	}
 	pis := make([]*types.DeviceInfo, 0, len(dmResp.List))
@@ -61,7 +60,7 @@ func (l *IndexLogic) Index(req *types.DeviceGateWayIndexReq) (resp *types.Device
 		pis = append(pis, pi)
 	}
 	return &types.DeviceGateWayIndexResp{
-		Total: dmResp.Total,
-		List:  pis,
+		PageResp: logic.ToPageResp(req.Page, dmResp.Total),
+		List:     pis,
 	}, nil
 }

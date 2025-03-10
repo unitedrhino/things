@@ -6,6 +6,7 @@ import (
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 
 	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
@@ -65,5 +66,5 @@ func (l *SendLogIndexLogic) SendLogIndex(req *types.DeviceMsgSendLogIndexReq) (r
 			User:       user,
 		})
 	}
-	return &types.DeviceMsgSendLogIndexResp{List: info, Total: dmResp.Total}, err
+	return &types.DeviceMsgSendLogIndexResp{List: info, PageResp: logic.ToPageResp(req.Page, dmResp.Total)}, err
 }

@@ -340,7 +340,7 @@ type (
     }
     DeviceInfoIndexResp  {
         List []*DeviceInfo `json:"list"`    //设备信息
-        Total int64 `json:"total"`          //总数(只有分页的时候会返回)
+        PageResp
     }
 
     DeviceCountReq {

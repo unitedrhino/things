@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 
 	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
@@ -39,7 +40,7 @@ func (l *IndexLogic) Index(req *types.ProductSchemaIndexReq) (resp *types.Produc
 		pis = append(pis, pi)
 	}
 	return &types.ProductSchemaIndexResp{
-		Total: dmResp.Total,
-		List:  pis,
+		PageResp: logic.ToPageResp(req.Page, dmResp.Total),
+		List:     pis,
 	}, nil
 }

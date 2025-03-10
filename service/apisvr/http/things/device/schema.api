@@ -108,7 +108,7 @@ type (
     }
     DeviceSchemaIndexResp {
         List []*DeviceSchema `json:"list"`           //分页信息,只获取一个则不填
-        Total int64 `json:"total"`                        //总数(只有分页的时候会返回)
+        PageResp
     }
 )
 

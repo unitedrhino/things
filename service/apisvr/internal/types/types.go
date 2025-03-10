@@ -22,8 +22,8 @@ type AlarmInfoIndexReq struct {
 }
 
 type AlarmInfoIndexResp struct {
-	List  []*AlarmInfo `json:"list"`  //告警信息
-	Total int64        `json:"total"` //总数(只有分页的时候会返回)
+	List []*AlarmInfo `json:"list"` //告警信息
+	PageResp
 }
 
 type AlarmNotify struct {
@@ -65,8 +65,8 @@ type AlarmRecordIndexReq struct {
 }
 
 type AlarmRecordIndexResp struct {
-	List  []*AlarmRecord `json:"list"`  //告警信息
-	Total int64          `json:"total"` //总数(只有分页的时候会返回)
+	List []*AlarmRecord `json:"list"` //告警信息
+	PageResp
 }
 
 type AlarmSceneDeleteReq struct {
@@ -133,8 +133,8 @@ type CommonSchemaIndexReq struct {
 }
 
 type CommonSchemaIndexResp struct {
-	List  []*CommonSchemaInfo `json:"list"`  //分页信息,只获取一个则不填
-	Total int64               `json:"total"` //总数(只有分页的时候会返回)
+	List []*CommonSchemaInfo `json:"list"` //分页信息,只获取一个则不填
+	PageResp
 }
 
 type CommonSchemaInfo struct {
@@ -262,8 +262,8 @@ type DeviceGateWayIndexReq struct {
 }
 
 type DeviceGateWayIndexResp struct {
-	List  []*DeviceInfo `json:"list"`  //分组信息
-	Total int64         `json:"total"` //总数(只有分页的时候会返回)
+	List []*DeviceInfo `json:"list"` //分组信息
+	PageResp
 }
 
 type DeviceGateWayMultiCreateReq struct {
@@ -404,8 +404,8 @@ type DeviceInfoIndexReq struct {
 }
 
 type DeviceInfoIndexResp struct {
-	List  []*DeviceInfo `json:"list"`  //设备信息
-	Total int64         `json:"total"` //总数(只有分页的时候会返回)
+	List []*DeviceInfo `json:"list"` //设备信息
+	PageResp
 }
 
 type DeviceInfoMultiBindReq struct {
@@ -612,8 +612,8 @@ type DeviceModuleVersionIndexReq struct {
 }
 
 type DeviceModuleVersionIndexResp struct {
-	List  []*DeviceModuleVersion `json:"list"`  //设备信息
-	Total int64                  `json:"total"` //总数(只有分页的时候会返回)
+	List []*DeviceModuleVersion `json:"list"` //设备信息
+	PageResp
 }
 
 type DeviceModuleVersionReadReq struct {
@@ -645,8 +645,8 @@ type DeviceMsgAbnormalLogIndexReq struct {
 }
 
 type DeviceMsgAbnormalLogIndexResp struct {
-	List  []*DeviceMsgAbnormalLogInfo `json:"list"`  //数据
-	Total int64                       `json:"total"` //总数
+	List []*DeviceMsgAbnormalLogInfo `json:"list"` //数据
+	PageResp
 }
 
 type DeviceMsgAbnormalLogInfo struct {
@@ -670,8 +670,8 @@ type DeviceMsgEventLogIndexReq struct {
 }
 
 type DeviceMsgEventLogIndexResp struct {
-	List  []*DeviceMsgEventLogInfo `json:"list"`  //数据
-	Total int64                    `json:"total"` //总数
+	List []*DeviceMsgEventLogInfo `json:"list"` //数据
+	PageResp
 }
 
 type DeviceMsgEventLogInfo struct {
@@ -694,8 +694,8 @@ type DeviceMsgHubLogIndexReq struct {
 }
 
 type DeviceMsgHubLogIndexResp struct {
-	List  []*DeviceMsgHubLogInfo `json:"list"`  //数据
-	Total int64                  `json:"total"` //总数
+	List []*DeviceMsgHubLogInfo `json:"list"` //数据
+	PageResp
 }
 
 type DeviceMsgHubLogInfo struct {
@@ -710,8 +710,8 @@ type DeviceMsgHubLogInfo struct {
 }
 
 type DeviceMsgPropertyIndexResp struct {
-	List  []*DeviceMsgPropertyLogInfo `json:"list"`  //数据
-	Total int64                       `json:"total"` //总数
+	List []*DeviceMsgPropertyLogInfo `json:"list"` //数据
+	PageResp
 }
 
 type DeviceMsgPropertyLogIndexReq struct {
@@ -745,8 +745,8 @@ type DeviceMsgPropertyLogLatestIndexReq struct {
 }
 
 type DeviceMsgSdkIndexResp struct {
-	List  []*DeviceMsgSdkInfo `json:"list"`  //数据
-	Total int64               `json:"total"` //总数
+	List []*DeviceMsgSdkInfo `json:"list"` //数据
+	PageResp
 }
 
 type DeviceMsgSdkInfo struct {
@@ -784,8 +784,8 @@ type DeviceMsgSendLogIndexReq struct {
 }
 
 type DeviceMsgSendLogIndexResp struct {
-	List  []*DeviceMsgSendLogInfo `json:"list"`  //数据
-	Total int64                   `json:"total"` //总数
+	List []*DeviceMsgSendLogInfo `json:"list"` //数据
+	PageResp
 }
 
 type DeviceMsgSendLogInfo struct {
@@ -822,8 +822,8 @@ type DeviceMsgStatusLogIndexReq struct {
 }
 
 type DeviceMsgStatusLogIndexResp struct {
-	List  []*DeviceMsgStatusLogInfo `json:"list"`  //数据
-	Total int64                     `json:"total"` //总数
+	List []*DeviceMsgStatusLogInfo `json:"list"` //数据
+	PageResp
 }
 
 type DeviceMsgStatusLogInfo struct {
@@ -956,8 +956,8 @@ type DeviceSchemaIndexReq struct {
 }
 
 type DeviceSchemaIndexResp struct {
-	List  []*DeviceSchema `json:"list"`  //分页信息,只获取一个则不填
-	Total int64           `json:"total"` //总数(只有分页的时候会返回)
+	List []*DeviceSchema `json:"list"` //分页信息,只获取一个则不填
+	PageResp
 }
 
 type DeviceSchemaMultiCreateReq struct {
@@ -1021,8 +1021,8 @@ type FirmwareIndexReq struct {
 }
 
 type FirmwareIndexResp struct {
-	List  []FirmwareInfo `json:"list"`
-	Total int64          `json:"total"`
+	List []FirmwareInfo `json:"list"`
+	PageResp
 }
 
 type FirmwareInfo struct {
@@ -1114,8 +1114,8 @@ type GroupInfoIndexReq struct {
 }
 
 type GroupInfoIndexResp struct {
-	List  []*GroupInfo `json:"list"`  //分组信息
-	Total int64        `json:"total"` //总数(只有分页的时候会返回)
+	List []*GroupInfo `json:"list"` //分组信息
+	PageResp
 }
 
 type GroupInfoReadReq struct {
@@ -1172,8 +1172,8 @@ type OtaFirmwareDeviceIndexReq struct {
 }
 
 type OtaFirmwareDeviceIndexResp struct {
-	List  []*OtaFirmwareDeviceInfo `json:"list"`  // OTA任务信息列表
-	Total int64                    `json:"total"` // 总数
+	List []*OtaFirmwareDeviceInfo `json:"list"` // OTA任务信息列表
+	PageResp
 }
 
 type OtaFirmwareDeviceInfo struct {
@@ -1234,8 +1234,8 @@ type OtaFirmwareIndexReq struct {
 }
 
 type OtaFirmwareIndexResp struct {
-	List  []*OtaFirmwareIndex `json:"list"`  //数据
-	Total int64               `json:"total"` //总数
+	List []*OtaFirmwareIndex `json:"list"` //数据
+	PageResp
 }
 
 type OtaFirmwareInfo struct {
@@ -1290,8 +1290,8 @@ type OtaFirmwareJobInfo struct {
 }
 
 type OtaFirmwareJobInfoIndexResp struct {
-	List  []*OtaFirmwareJobInfo `json:"list"`  // OTA作业信息列表
-	Total int64                 `json:"total"` // 总数
+	List []*OtaFirmwareJobInfo `json:"list"` // OTA作业信息列表
+	PageResp
 }
 
 type OtaFirmwareJobStatic struct {
@@ -1332,14 +1332,20 @@ type OtaModuleInfoIndexReq struct {
 }
 
 type OtaModuleInfoIndexResp struct {
-	List  []*OtaModuleInfo `json:"list"`  // OTA作业信息列表
-	Total int64            `json:"total"` // 总数
+	List []*OtaModuleInfo `json:"list"` // OTA作业信息列表
+	PageResp
 }
 
 type PageInfo struct {
 	Page   int64      `json:"page,optional" form:"page,optional"` // 页码
 	Size   int64      `json:"size,optional" form:"size,optional"` // 每页大小
 	Orders []*OrderBy `json:"orders,optional"`                    //排序
+}
+
+type PageResp struct {
+	Page  int64 `json:"page,optional"` // 页码
+	Size  int64 `json:"size,optional"` // 每页大小
+	Total int64 `json:"total"`
 }
 
 type Point struct {
@@ -1498,8 +1504,8 @@ type ProductRemoteConfigIndexReq struct {
 }
 
 type ProductRemoteConfigIndexResp struct {
-	List  []*ProductRemoteConfig `json:"list"`  //产品信息
-	Total int64                  `json:"total"` //拥有的总数
+	List []*ProductRemoteConfig `json:"list"` //产品信息
+	PageResp
 }
 
 type ProductRemoteConfigLastestReadReq struct {
@@ -1539,8 +1545,8 @@ type ProductSchemaIndexReq struct {
 }
 
 type ProductSchemaIndexResp struct {
-	List  []*ProductSchemaInfo `json:"list"`  //分页信息,只获取一个则不填
-	Total int64                `json:"total"` //总数(只有分页的时候会返回)
+	List []*ProductSchemaInfo `json:"list"` //分页信息,只获取一个则不填
+	PageResp
 }
 
 type ProductSchemaInfo struct {
@@ -1786,9 +1792,9 @@ type SceneInfoIndexReq struct {
 }
 
 type SceneInfoIndexResp struct {
-	List  []*SceneInfo `json:"list"`  //场景信息
-	Total int64        `json:"total"` //总数(只有分页的时候会返回)
-	Num   int64        `json:"num"`   //返回的数量
+	List []*SceneInfo `json:"list"` //场景信息
+	PageResp
+	Num int64 `json:"num"` //返回的数量
 }
 
 type SceneInfoUpdateReq struct {

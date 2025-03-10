@@ -5,6 +5,7 @@ import (
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/udsvr/pb/ud"
 
 	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
@@ -45,8 +46,8 @@ func (l *IndexLogic) Index(req *types.SceneInfoIndexReq) (resp *types.SceneInfoI
 		pis = append(pis, pi)
 	}
 	return &types.SceneInfoIndexResp{
-		Total: ruleResp.Total,
-		List:  pis,
-		Num:   int64(len(pis)),
+		PageResp: logic.ToPageResp(req.Page, ruleResp.Total),
+		List:     pis,
+		Num:      int64(len(pis)),
 	}, nil
 }

@@ -52,6 +52,6 @@ func (l *SdkLogIndexLogic) SdkLogIndex(req *types.DeviceMsgSdkLogIndexReq) (resp
 			Content:   v.Content,
 		})
 	}
-	return &types.DeviceMsgSdkIndexResp{List: info, Total: dmResp.Total}, err
+	return &types.DeviceMsgSdkIndexResp{List: info, PageResp: logic.ToPageResp(req.Page, dmResp.Total)}, err
 
 }

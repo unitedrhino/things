@@ -7002,16 +7002,24 @@
           },
           "description": "告警信息"
         },
-        "total": {
+        "page": {
           "type": "integer",
           "format": "int64",
-          "description": "总数(只有分页的时候会返回)"
+          "description": " 页码"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "AlarmInfoIndexResp",
       "required": [
-        "list",
-        "total"
+        "list"
       ]
     },
     "AlarmNotify": {
@@ -7184,16 +7192,24 @@
           },
           "description": "告警信息"
         },
-        "total": {
+        "page": {
           "type": "integer",
           "format": "int64",
-          "description": "总数(只有分页的时候会返回)"
+          "description": " 页码"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "AlarmRecordIndexResp",
       "required": [
-        "list",
-        "total"
+        "list"
       ]
     },
     "AlarmSceneDeleteReq": {
@@ -7446,16 +7462,24 @@
           },
           "description": "分页信息,只获取一个则不填"
         },
-        "total": {
+        "page": {
           "type": "integer",
           "format": "int64",
-          "description": "总数(只有分页的时候会返回)"
+          "description": " 页码"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "CommonSchemaIndexResp",
       "required": [
-        "list",
-        "total"
+        "list"
       ]
     },
     "CommonSchemaInfo": {
@@ -7907,16 +7931,24 @@
           },
           "description": "分组信息"
         },
-        "total": {
+        "page": {
           "type": "integer",
           "format": "int64",
-          "description": "总数(只有分页的时候会返回)"
+          "description": " 页码"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "DeviceGateWayIndexResp",
       "required": [
-        "list",
-        "total"
+        "list"
       ]
     },
     "DeviceGateWayMultiCreateReq": {
@@ -8519,16 +8551,24 @@
           },
           "description": "设备信息"
         },
-        "total": {
+        "page": {
           "type": "integer",
           "format": "int64",
-          "description": "总数(只有分页的时候会返回)"
+          "description": " 页码"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "DeviceInfoIndexResp",
       "required": [
-        "list",
-        "total"
+        "list"
       ]
     },
     "DeviceInfoMultiBindReq": {
@@ -9332,16 +9372,24 @@
           },
           "description": "设备信息"
         },
-        "total": {
+        "page": {
           "type": "integer",
           "format": "int64",
-          "description": "总数(只有分页的时候会返回)"
+          "description": " 页码"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "DeviceModuleVersionIndexResp",
       "required": [
-        "list",
-        "total"
+        "list"
       ]
     },
     "DeviceModuleVersionReadReq": {
@@ -9462,16 +9510,24 @@
           },
           "description": "数据"
         },
-        "total": {
+        "page": {
           "type": "integer",
           "format": "int64",
-          "description": "总数"
+          "description": " 页码"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "DeviceMsgAbnormalLogIndexResp",
       "required": [
-        "list",
-        "total"
+        "list"
       ]
     },
     "DeviceMsgAbnormalLogInfo": {
@@ -9557,16 +9613,24 @@
           },
           "description": "数据"
         },
-        "total": {
+        "page": {
           "type": "integer",
           "format": "int64",
-          "description": "总数"
+          "description": " 页码"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "DeviceMsgEventLogIndexResp",
       "required": [
-        "list",
-        "total"
+        "list"
       ]
     },
     "DeviceMsgEventLogInfo": {
@@ -9653,16 +9717,24 @@
           },
           "description": "数据"
         },
-        "total": {
+        "page": {
           "type": "integer",
           "format": "int64",
-          "description": "总数"
+          "description": " 页码"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "DeviceMsgHubLogIndexResp",
       "required": [
-        "list",
-        "total"
+        "list"
       ]
     },
     "DeviceMsgHubLogInfo": {
@@ -9716,16 +9788,24 @@
           },
           "description": "数据"
         },
-        "total": {
+        "page": {
           "type": "integer",
           "format": "int64",
-          "description": "总数"
+          "description": " 页码"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "DeviceMsgPropertyIndexResp",
       "required": [
-        "list",
-        "total"
+        "list"
       ]
     },
     "DeviceMsgPropertyLogIndexReq": {
@@ -9854,16 +9934,24 @@
           },
           "description": "数据"
         },
-        "total": {
+        "page": {
           "type": "integer",
           "format": "int64",
-          "description": "总数"
+          "description": " 页码"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "DeviceMsgSdkIndexResp",
       "required": [
-        "list",
-        "total"
+        "list"
       ]
     },
     "DeviceMsgSdkInfo": {
@@ -10014,16 +10102,24 @@
           },
           "description": "数据"
         },
-        "total": {
+        "page": {
           "type": "integer",
           "format": "int64",
-          "description": "总数"
+          "description": " 页码"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "DeviceMsgSendLogIndexResp",
       "required": [
-        "list",
-        "total"
+        "list"
       ]
     },
     "DeviceMsgSendLogInfo": {
@@ -10152,16 +10248,24 @@
           },
           "description": "数据"
         },
-        "total": {
+        "page": {
           "type": "integer",
           "format": "int64",
-          "description": "总数"
+          "description": " 页码"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "DeviceMsgStatusLogIndexResp",
       "required": [
-        "list",
-        "total"
+        "list"
       ]
     },
     "DeviceMsgStatusLogInfo": {
@@ -10689,16 +10793,24 @@
           },
           "description": "分页信息,只获取一个则不填"
         },
-        "total": {
+        "page": {
           "type": "integer",
           "format": "int64",
-          "description": "总数(只有分页的时候会返回)"
+          "description": " 页码"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "DeviceSchemaIndexResp",
       "required": [
-        "list",
-        "total"
+        "list"
       ]
     },
     "DeviceSchemaMultiCreateReq": {
@@ -10921,6 +11033,16 @@
             "$ref": "#/definitions/FirmwareInfo"
           }
         },
+        "page": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 页码"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
         "total": {
           "type": "integer",
           "format": "int64"
@@ -10928,8 +11050,7 @@
       },
       "title": "FirmwareIndexResp",
       "required": [
-        "list",
-        "total"
+        "list"
       ]
     },
     "FirmwareInfo": {
@@ -11306,16 +11427,24 @@
           },
           "description": "分组信息"
         },
-        "total": {
+        "page": {
           "type": "integer",
           "format": "int64",
-          "description": "总数(只有分页的时候会返回)"
+          "description": " 页码"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "GroupInfoIndexResp",
       "required": [
-        "list",
-        "total"
+        "list"
       ]
     },
     "GroupInfoReadReq": {
@@ -11525,16 +11654,24 @@
           },
           "description": " OTA任务信息列表"
         },
-        "total": {
+        "page": {
           "type": "integer",
           "format": "int64",
-          "description": " 总数"
+          "description": " 页码"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "OtaFirmwareDeviceIndexResp",
       "required": [
-        "list",
-        "total"
+        "list"
       ]
     },
     "OtaFirmwareDeviceInfo": {
@@ -11776,16 +11913,24 @@
           },
           "description": "数据"
         },
-        "total": {
+        "page": {
           "type": "integer",
           "format": "int64",
-          "description": "总数"
+          "description": " 页码"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "OtaFirmwareIndexResp",
       "required": [
-        "list",
-        "total"
+        "list"
       ]
     },
     "OtaFirmwareInfo": {
@@ -12042,16 +12187,24 @@
           },
           "description": " OTA作业信息列表"
         },
-        "total": {
+        "page": {
           "type": "integer",
           "format": "int64",
-          "description": " 总数"
+          "description": " 页码"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "OtaFirmwareJobInfoIndexResp",
       "required": [
-        "list",
-        "total"
+        "list"
       ]
     },
     "OtaFirmwareJobStatic": {
@@ -12206,16 +12359,24 @@
           },
           "description": " OTA作业信息列表"
         },
-        "total": {
+        "page": {
           "type": "integer",
           "format": "int64",
-          "description": " 总数"
+          "description": " 页码"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "OtaModuleInfoIndexResp",
       "required": [
-        "list",
-        "total"
+        "list"
       ]
     },
     "PageInfo": {
@@ -12240,6 +12401,29 @@
         }
       },
       "title": "PageInfo"
+    },
+    "PageResp": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 页码"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "PageResp",
+      "required": [
+        "total"
+      ]
     },
     "Point": {
       "type": "object",
@@ -12891,16 +13075,24 @@
           },
           "description": "产品信息"
         },
-        "total": {
+        "page": {
           "type": "integer",
           "format": "int64",
-          "description": "拥有的总数"
+          "description": " 页码"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "ProductRemoteConfigIndexResp",
       "required": [
-        "list",
-        "total"
+        "list"
       ]
     },
     "ProductRemoteConfigLastestReadReq": {
@@ -13053,16 +13245,24 @@
           },
           "description": "分页信息,只获取一个则不填"
         },
-        "total": {
+        "page": {
           "type": "integer",
           "format": "int64",
-          "description": "总数(只有分页的时候会返回)"
+          "description": " 页码"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "ProductSchemaIndexResp",
       "required": [
-        "list",
-        "total"
+        "list"
       ]
     },
     "ProductSchemaInfo": {
@@ -14097,10 +14297,19 @@
           },
           "description": "场景信息"
         },
-        "total": {
+        "page": {
           "type": "integer",
           "format": "int64",
-          "description": "总数(只有分页的时候会返回)"
+          "description": " 页码"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
         },
         "num": {
           "type": "integer",
@@ -14111,7 +14320,6 @@
       "title": "SceneInfoIndexResp",
       "required": [
         "list",
-        "total",
         "num"
       ]
     },

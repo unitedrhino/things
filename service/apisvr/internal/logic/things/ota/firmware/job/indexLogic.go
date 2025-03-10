@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/types"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -41,5 +42,5 @@ func (l *IndexLogic) Index(req *types.OtaFirmwareJobIndexReq) (resp *types.OtaFi
 		utils.CopyE(&result.OtaFirmwareJobDynamic, &v.Dynamic)
 		list = append(list, &result)
 	}
-	return &types.OtaFirmwareJobInfoIndexResp{List: list, Total: index.Total}, nil
+	return &types.OtaFirmwareJobInfoIndexResp{List: list, PageResp: logic.ToPageResp(req.Page, index.Total)}, nil
 }

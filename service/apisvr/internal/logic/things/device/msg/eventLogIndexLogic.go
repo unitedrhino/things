@@ -52,7 +52,7 @@ func (l *EventLogIndexLogic) EventLogIndex(req *types.DeviceMsgEventLogIndexReq)
 		})
 	}
 	return &types.DeviceMsgEventLogIndexResp{
-		Total: dmResp.Total,
-		List:  info,
+		PageResp: logic.ToPageResp(req.Page, dmResp.Total),
+		List:     info,
 	}, nil
 }

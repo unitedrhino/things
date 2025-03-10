@@ -77,7 +77,7 @@ type (
     }
     SceneInfoIndexResp  {
         List []*SceneInfo `json:"list"`    //场景信息
-        Total int64 `json:"total"`          //总数(只有分页的时候会返回)
+        PageResp
         Num int64 `json:"num"`              //返回的数量
     }
 )

@@ -78,7 +78,7 @@ type (
     }
     DeviceMsgHubLogIndexResp  {
         List []*DeviceMsgHubLogInfo `json:"list"`//数据
-        Total int64 `json:"total"`//总数
+        PageResp
     }
     DeviceMsgHubLogInfo  {
         Timestamp int64 `json:"timestamp,string"`
@@ -112,7 +112,7 @@ type (
     }
     DeviceMsgSendLogIndexResp  {
         List []*DeviceMsgSendLogInfo `json:"list"`//数据
-        Total int64 `json:"total"`//总数
+        PageResp
     }
     DeviceMsgSendLogInfo  {
         Timestamp  int64  `json:"timestamp,string,optional"` //发生时间戳(毫秒时间戳)
@@ -145,7 +145,7 @@ type (
     }
     DeviceMsgAbnormalLogIndexResp  {
         List []*DeviceMsgAbnormalLogInfo `json:"list"`//数据
-        Total int64 `json:"total"`//总数
+        PageResp
     }
     DeviceMsgAbnormalLogInfo  {
         Timestamp  int64  `json:"timestamp,string,optional"` //发生时间戳(毫秒时间戳)
@@ -169,7 +169,7 @@ type (
 
     DeviceMsgStatusLogIndexResp  {
         List []*DeviceMsgStatusLogInfo `json:"list"`//数据
-        Total int64 `json:"total"`//总数
+        PageResp
     }
 
     DeviceMsgStatusLogInfo  {
@@ -192,7 +192,7 @@ type (
     }
     DeviceMsgSdkIndexResp {
         List []*DeviceMsgSdkInfo `json:"list"`//数据
-        Total int64 `json:"total"`//总数
+        PageResp
     }
     DeviceMsgSdkInfo {
         Timestamp int64 `json:"timestamp,string"`               //发生时间戳
@@ -227,7 +227,7 @@ type (
     //设备的日志数据
     DeviceMsgPropertyIndexResp  {
         List []*DeviceMsgPropertyLogInfo `json:"list"`//数据
-        Total int64 `json:"total"`//总数
+        PageResp
     }
 
      DeviceMsgPropertyLogInfo {
@@ -250,7 +250,7 @@ type (
         //设备的日志数据
     DeviceMsgEventLogIndexResp  {
         List []*DeviceMsgEventLogInfo `json:"list"`//数据
-        Total int64 `json:"total"`//总数
+        PageResp
     }
     DeviceMsgEventLogInfo {
         Timestamp int64 `json:"timestamp,string"`               //发生时间戳

@@ -51,5 +51,5 @@ func (l *StatusLogIndexLogic) StatusLogIndex(req *types.DeviceMsgStatusLogIndexR
 			DeviceName: v.DeviceName,
 		})
 	}
-	return &types.DeviceMsgStatusLogIndexResp{List: info, Total: dmResp.Total}, err
+	return &types.DeviceMsgStatusLogIndexResp{List: info, PageResp: logic.ToPageResp(req.Page, dmResp.Total)}, err
 }

@@ -48,7 +48,7 @@ type (
 
     ProductRemoteConfigIndexResp  {
         List []*ProductRemoteConfig `json:"list"` //产品信息
-        Total int64 `json:"total"`       //拥有的总数
+        PageResp
     }
 
     ProductRemoteConfigPushAllReq  {

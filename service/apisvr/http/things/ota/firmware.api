@@ -88,7 +88,7 @@ type FirmwareIndexReq  {
 // OtaFirmwareIndexResp 表示获取升级包列表的响应结构
 type FirmwareIndexResp  {
     List []FirmwareInfo `json:"list"`
-    Total int64 `json:"total"`
+    PageResp
 }
 
 
@@ -120,7 +120,7 @@ type (
     }
     OtaFirmwareIndexResp  {
         List []*OtaFirmwareIndex `json:"list"`//数据
-        Total int64 `json:"total"`//总数
+        PageResp
     }
     OtaFirmwareInfoUpdateReq  {
         ID int64 `json:"id"` //固件升级包编号

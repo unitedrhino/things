@@ -42,8 +42,8 @@ func (l *IndexLogic) Index(req *types.AlarmInfoIndexReq) (resp *types.AlarmInfoI
 		pis = append(pis, AlarmInfoToApi(v))
 	}
 	return &types.AlarmInfoIndexResp{
-		Total: ret.Total,
-		List:  pis,
+		PageResp: logic.ToPageResp(req.Page, ret.Total),
+		List:     pis,
 	}, nil
 
 }

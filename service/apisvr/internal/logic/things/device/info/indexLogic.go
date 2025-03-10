@@ -5,6 +5,7 @@ import (
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/logic/things"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"sync"
@@ -56,7 +57,7 @@ func (l *IndexLogic) Index(req *types.DeviceInfoIndexReq) (resp *types.DeviceInf
 		pis = append(pis, piMap[v.Id])
 	}
 	return &types.DeviceInfoIndexResp{
-		Total: dmResp.Total,
-		List:  pis,
+		PageResp: logic.ToPageResp(req.Page, dmResp.Total),
+		List:     pis,
 	}, nil
 }
