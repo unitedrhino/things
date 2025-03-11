@@ -133,6 +133,10 @@ func (l *Handle) SceneDeviceDelete(di devices.Core) error {
 				logx.WithContext(l.ctx).Error(err)
 			}
 		}
+		err = relationDB.NewAlarmRecordRepo(l.ctx).DeleteByFilter(l.ctx, relationDB.AlarmRecordFilter{ProductID: di.ProductID, DeviceName: di.DeviceName})
+		if err != nil {
+			logx.WithContext(l.ctx).Error(err)
+		}
 	}
 	//var sceneIDs []int64
 	//var reason = scene.ReasonDeviceDelete
@@ -183,5 +187,28 @@ func (l *Handle) SceneDeviceDelete(di devices.Core) error {
 	//		logx.WithContext(l.ctx).Error(err)
 	//	}
 	//}
+	return nil
+}
+
+func (l *Handle) SceneDeviceUpdate(dc devices.Core) error {
+	{
+		if dc.ProductID == "" || dc.DeviceName == "" {
+			return nil
+		}
+		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, dc)
+		if err != nil {
+			return err
+		}
+		err = relationDB.NewAlarmRecordRepo(l.ctx).UpdateWithField(l.ctx,
+			relationDB.AlarmRecordFilter{ProductID: dc.ProductID, DeviceName: dc.DeviceName}, map[string]any{
+				"tenant_code":  di.TenantCode,
+				"project_id":   di.ProjectID,
+				"area_id":      di.AreaID,
+				"area_id_path": di.AreaIDPath,
+			})
+		if err != nil {
+			logx.WithContext(l.ctx).Error(err)
+		}
+	}
 	return nil
 }

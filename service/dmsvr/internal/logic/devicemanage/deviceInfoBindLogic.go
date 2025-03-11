@@ -12,6 +12,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/share/devices"
+	"gitee.com/unitedrhino/things/share/topics"
 	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
@@ -173,5 +174,9 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 	}
 	logic.FillAreaDeviceCount(l.ctx, l.svcCtx, ai.AreaIDPath, string(oldAreaIDPath))
 	logic.FillProjectDeviceCount(l.ctx, l.svcCtx, int64(di.ProjectID))
+	er := l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUpdate, &devices.Core{ProductID: di.ProductID, DeviceName: di.DeviceName})
+	if er != nil {
+		l.Error(er)
+	}
 	return &dm.Empty{}, err
 }

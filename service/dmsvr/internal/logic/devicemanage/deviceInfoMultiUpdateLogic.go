@@ -11,6 +11,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/share/devices"
+	"gitee.com/unitedrhino/things/share/topics"
 	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
@@ -102,6 +103,12 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 	}
 	if len(tagUpdateDevices) > 0 {
 		l.svcCtx.AbnormalRepo.UpdateDevice(l.ctx, devs, deviceAffiliation)
+	}
+	for _, dev := range devs {
+		err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUpdate, dev)
+		if err != nil {
+			l.Error(err)
+		}
 	}
 	return &dm.Empty{}, err
 }

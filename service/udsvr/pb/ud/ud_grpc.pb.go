@@ -35,7 +35,7 @@ const (
 	Rule_AlarmSceneDelete_FullMethodName      = "/ud.rule/alarmSceneDelete"
 	Rule_AlarmSceneIndex_FullMethodName       = "/ud.rule/alarmSceneIndex"
 	Rule_AlarmRecordIndex_FullMethodName      = "/ud.rule/alarmRecordIndex"
-	Rule_AlarmRecordCreate_FullMethodName     = "/ud.rule/AlarmRecordCreate"
+	Rule_AlarmRecordCreate_FullMethodName     = "/ud.rule/alarmRecordCreate"
 	Rule_AlarmRecordDeal_FullMethodName       = "/ud.rule/alarmRecordDeal"
 )
 
@@ -731,7 +731,7 @@ var Rule_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Rule_AlarmRecordIndex_Handler,
 		},
 		{
-			MethodName: "AlarmRecordCreate",
+			MethodName: "alarmRecordCreate",
 			Handler:    _Rule_AlarmRecordCreate_Handler,
 		},
 		{

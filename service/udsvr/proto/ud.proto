@@ -55,7 +55,7 @@ service rule {
 
   //告警记录
   rpc alarmRecordIndex(AlarmRecordIndexReq)returns(AlarmRecordIndexResp);
-  rpc AlarmRecordCreate(AlarmRecordCreateReq)returns(Empty);
+  rpc alarmRecordCreate(AlarmRecordCreateReq)returns(Empty);
   rpc alarmRecordDeal(AlarmRecordDealReq)returns(Empty);//处理告警
 }
 
@@ -77,6 +77,7 @@ message AlarmRecordIndexResp{
 message AlarmRecord{
   int64 id = 1;//编号
   int64 alarmID = 2;//告警记录ID
+  int64 areaID =18;//告警的区域ID
   string alarmName =12;//告警名称
   string triggerType = 3;//触发类型 device:设备触发 timer:定时触发 weather:天气触发
   string triggerSubType =16;
@@ -92,10 +93,10 @@ message AlarmRecord{
   int64 dealStatus = 11;//告警记录状态（1无告警 2告警中 3已处理 4 无效）
   int64 alarmCount =13; //告警次数
   string desc =14; //描述
-
 }
 
 message AlarmRecordCreateReq{
+  int64 alarmID = 1;//告警记录ID(如果不填写sceneID则需要填写告警ID,指定告警)
   string triggerType = 3;//触发类型(设备触发1,其他2)
   string triggerSubType =10;
   string triggerDetail = 11;//设备触发的会有触发详情json

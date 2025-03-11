@@ -32,7 +32,7 @@ func (d *DeviceDataRepo) fmtSql(f msgThing.FilterOpt, sql sq.SelectBuilder) sq.S
 		sql = sql.Where("`product_id`=? ", f.ProductID)
 	}
 	if len(f.DeviceNames) != 0 {
-		sql = sql.Where(fmt.Sprintf("`device_name`= (%v)", stores.ArrayToSql(f.DeviceNames)))
+		sql = sql.Where(fmt.Sprintf("`device_name` in (%v)", stores.ArrayToSql(f.DeviceNames)))
 	}
 	if f.DataID != "" {
 		sql = sql.Where("`event_id`=? ", f.DataID)

@@ -32,6 +32,8 @@ type AlarmRecordFilter struct {
 	DeviceAlias   string
 	ProductID     string
 	DeviceName    string
+	AreaID        int64
+	AreaIDPath    string
 	DealStatus    scene.AlarmDealStatus
 	DealStatuses  []scene.AlarmDealStatus
 	Time          *def.TimeRange
@@ -64,6 +66,12 @@ func (p AlarmRecordRepo) fmtFilter(ctx context.Context, f AlarmRecordFilter) *go
 	}
 	if f.DeviceName != "" {
 		db = db.Where("device_name=?", f.DeviceName)
+	}
+	if f.AreaIDPath != "" {
+		db = db.Where("area_id_path=?", f.AreaIDPath)
+	}
+	if f.AreaID != 0 {
+		db = db.Where("area_id=?", f.AreaID)
 	}
 	if f.DeviceAlias != "" {
 		db = db.Where("device_alias=?", f.DeviceAlias)

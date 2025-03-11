@@ -54,7 +54,13 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		return sceneChangeEvent.NewHandle(ctx, svcCtx).SceneDeviceDelete(di)
 	})
 	logx.Must(err)
-
+	err = svcCtx.FastEvent.QueueSubscribe(topics.DmProductInfoUpdate, func(ctx context.Context, t time.Time, body []byte) error {
+		var di devices.Core
+		err := json.Unmarshal(body, &di)
+		logx.WithContext(ctx).Infof("SceneDeviceUpdate value:%v err:%v", string(body), err)
+		return sceneChangeEvent.NewHandle(ctx, svcCtx).SceneDeviceUpdate(di)
+	})
+	logx.Must(err)
 	//err := svcCtx.FastEvent.QueueSubscribe(eventBus.UdRuleTimer, func(ctx context.Context, t time.Time, body []byte) error {
 	//	if t.Add(2 * time.Second).Before(time.Now()) { //2秒过期时间
 	//		return nil

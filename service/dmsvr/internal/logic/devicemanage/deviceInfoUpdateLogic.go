@@ -19,6 +19,7 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgOta"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgSdkLog"
+	"gitee.com/unitedrhino/things/share/topics"
 	"github.com/spf13/cast"
 	"sync"
 	"time"
@@ -329,6 +330,10 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Empty, 
 			l.Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)
 			return nil, err
 		}
+	}
+	err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUpdate, &devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
+	if err != nil {
+		l.Error(err)
 	}
 	return &dm.Empty{}, nil
 }

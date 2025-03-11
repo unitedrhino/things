@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
+	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
@@ -36,17 +37,12 @@ func NewAlarmRecordCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 }
 
 func (l *AlarmRecordCreateLogic) AlarmRecordCreate(in *ud.AlarmRecordCreateReq) (*ud.Empty, error) {
-	pos, err := relationDB.NewAlarmSceneRepo(l.ctx).FindByFilter(l.ctx, relationDB.AlarmSceneFilter{
-		SceneID: in.SceneID, WithAlarmInfo: true, WithSceneInfo: true}, nil)
-	if err != nil {
-		return nil, err
+	if in.AlarmID == 0 && in.SceneID == 0 {
+		return nil, errors.Parameter.AddMsg("请填写告警ID或触发的场景ID")
 	}
-	if len(pos) == 0 {
-		return nil, err
-	}
-	for _, a := range pos {
-		if a.AlarmInfo.Status == def.False {
-			continue
+	alarmHandle := func(alarmInfo *relationDB.UdAlarmInfo, sceneID int64) error {
+		if alarmInfo.Status == def.False {
+			return nil
 		}
 		err := l.svcCtx.FastEvent.Publish(l.ctx, fmt.Sprintf(topics.UdRuleAlarmNotify, in.Mode), utils.Copy[alarm.Notify](in))
 		if err != nil {
@@ -55,20 +51,28 @@ func (l *AlarmRecordCreateLogic) AlarmRecordCreate(in *ud.AlarmRecordCreateReq) 
 		switch in.Mode {
 		case scene.ActionAlarmModeRelieve:
 			err = relationDB.NewAlarmRecordRepo(l.ctx).UpdateWithField(l.ctx,
-				relationDB.AlarmRecordFilter{AlarmID: a.AlarmID, ProductID: in.ProductID, DeviceName: in.DeviceName, DealStatus: scene.AlarmDealStatusWaring},
+				relationDB.AlarmRecordFilter{AlarmID: alarmInfo.ID, ProductID: in.ProductID, DeviceName: in.DeviceName, DealStatus: scene.AlarmDealStatusWaring},
 				map[string]any{
 					"deal_status": scene.AlarmDealStatusIgnore,
 					"desc":        fmt.Sprintf("场景:%v(%v)解除告警", in.SceneName, in.SceneID),
 				})
 			if err != nil {
-				return nil, err
+				return err
 			}
 		case scene.ActionAlarmModeTrigger:
 			err := func() error {
 				po, err := relationDB.NewAlarmRecordRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.AlarmRecordFilter{
-					AlarmID: a.AlarmID, ProductID: in.ProductID, DeviceName: in.DeviceName,
+					AlarmID: alarmInfo.ID, ProductID: in.ProductID, DeviceName: in.DeviceName,
 					DealStatuses: []scene.AlarmDealStatus{scene.AlarmDealStatusWaring}, //还处在报警中,新增次数即可
 				})
+				var di *dm.DeviceInfo
+				if in.DeviceName != "" {
+					di, err = l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
+					if err != nil {
+						l.Error(err)
+					}
+
+				}
 				defer func() {
 					if po != nil {
 						var params = map[string]string{
@@ -77,21 +81,15 @@ func (l *AlarmRecordCreateLogic) AlarmRecordCreate(in *ud.AlarmRecordCreateReq) 
 							"sceneName":   in.SceneName,
 							"deviceAlias": in.DeviceAlias,
 						}
-						if in.DeviceName != "" {
-							di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
-							if err != nil {
-								l.Error(err)
-							}
-							if di != nil {
-								p := utils.ToStringMapString(di)
-								params = p
-								params["sceneName"] = in.SceneName
-							}
+						if di != nil {
+							p := utils.ToStringMapString(di)
+							params = p
+							params["sceneName"] = in.SceneName
 						}
-						for _, notify := range a.AlarmInfo.Notifies {
+						for _, notify := range alarmInfo.Notifies {
 							_, err := l.svcCtx.NotifyM.NotifyConfigSend(l.ctx, &sys.NotifyConfigSendReq{
-								UserIDs:    a.AlarmInfo.UserIDs,
-								Accounts:   a.AlarmInfo.Accounts,
+								UserIDs:    alarmInfo.UserIDs,
+								Accounts:   alarmInfo.Accounts,
 								NotifyCode: def.NotifyCodeDeviceAlarm,
 								TemplateID: notify.TemplateID,
 								Type:       notify.Type,
@@ -106,27 +104,31 @@ func (l *AlarmRecordCreateLogic) AlarmRecordCreate(in *ud.AlarmRecordCreateReq) 
 				}()
 				if err != nil {
 					if !errors.Cmp(err, errors.NotFind) { //直接创建并且进行通知
-						l.Errorf("NewAlarmRecordFind a:%v err:%v", a, err)
+						l.Errorf("NewAlarmRecordFind a:%v err:%v", alarmInfo, err)
 						return err
 					}
 					po = &relationDB.UdAlarmRecord{
-						TenantCode:     a.TenantCode,
-						ProjectID:      a.ProjectID,
-						AlarmID:        a.AlarmID,
-						AlarmName:      a.AlarmInfo.Name,
+						TenantCode:     alarmInfo.TenantCode,
+						ProjectID:      alarmInfo.ProjectID,
+						AlarmID:        alarmInfo.ID,
+						AlarmName:      alarmInfo.Name,
 						TriggerType:    in.TriggerType,
 						TriggerSubType: in.TriggerSubType,
 						TriggerDetail:  in.TriggerDetail,
 						ProductID:      in.ProductID,
 						DeviceName:     in.DeviceName,
 						DeviceAlias:    in.DeviceAlias,
-						Level:          a.AlarmInfo.Level,
-						SceneName:      a.SceneInfo.Name,
-						SceneID:        a.SceneID,
+						Level:          alarmInfo.Level,
+						SceneName:      alarmInfo.Name,
+						SceneID:        sceneID,
 						DealStatus:     scene.AlarmDealStatusWaring,
 						Desc:           fmt.Sprintf("自动化触发告警:%v", in.SceneName),
 						AlarmCount:     1,
 						LastAlarm:      time.Now(),
+					}
+					if di != nil {
+						po.AreaID = dataType.AreaID(di.AreaID)
+						po.AreaIDPath = dataType.AreaIDPath(di.AreaIDPath)
 					}
 					err = relationDB.NewAlarmRecordRepo(l.ctx).Insert(l.ctx, po)
 					if err != nil {
@@ -138,16 +140,41 @@ func (l *AlarmRecordCreateLogic) AlarmRecordCreate(in *ud.AlarmRecordCreateReq) 
 				po.AlarmCount++
 				err = relationDB.NewAlarmRecordRepo(l.ctx).Update(l.ctx, po)
 				if err != nil {
-					l.Errorf("NewAlarmRecordUpdate a:%v err:%v", a, err)
+					l.Errorf("NewAlarmRecordUpdate a:%v err:%v", alarmInfo, err)
 					return err
 				}
 				return nil
 			}()
 			if err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+
+	if in.SceneID != 0 {
+		pos, err := relationDB.NewAlarmSceneRepo(l.ctx).FindByFilter(l.ctx, relationDB.AlarmSceneFilter{
+			SceneID: in.SceneID, WithAlarmInfo: true, WithSceneInfo: true}, nil)
+		if err != nil {
+			return nil, err
+		}
+		if len(pos) == 0 {
+			return nil, err
+		}
+		for _, a := range pos {
+			err := alarmHandle(a.AlarmInfo, a.SceneID)
+			if err != nil {
 				return nil, err
 			}
 		}
+	} else if in.AlarmID != 0 {
+		ai, err := relationDB.NewAlarmInfoRepo(l.ctx).FindOne(l.ctx, in.AlarmID)
+		if err != nil {
+			return nil, err
+		}
+		alarmHandle(ai, 0)
 	}
+
 	if in.DeviceName != "" && in.ProductID != "" {
 		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
 		if err != nil {

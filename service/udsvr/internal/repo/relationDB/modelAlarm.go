@@ -57,17 +57,19 @@ func (m *UdAlarmScene) TableName() string {
 // 告警记录表 一个告警
 type UdAlarmRecord struct {
 	ID             int64                   `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
-	TenantCode     dataType.TenantCode     `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`       // 租户编码
-	ProjectID      dataType.ProjectID      `gorm:"column:project_id;type:bigint;default:0;NOT NULL"`   // 项目ID(雪花ID)
-	AlarmID        int64                   `gorm:"column:alarm_id;type:BIGINT;NOT NULL"`               //告警记录ID
-	AlarmName      string                  `gorm:"column:alarm_name;type:VARCHAR(100);NOT NULL"`       //告警名称
-	TriggerType    scene.TriggerType       `gorm:"column:trigger_type;type:VARCHAR(100);NOT NULL"`     //触发类型(设备触发1,其他2)
-	TriggerSubType scene.TriggerDeviceType `gorm:"column:trigger_sub_type;type:VARCHAR(100);"`         //触发类型(设备触发1,其他2)
-	TriggerDetail  string                  `gorm:"column:trigger_detail;type:VARCHAR(500);default:''"` //触发详情
-	ProductID      string                  `gorm:"column:product_id;type:varchar(100);"`               //触发产品id
-	DeviceName     string                  `gorm:"column:device_name;type:varchar(100);"`              //触发设备ID
-	DeviceAlias    string                  `gorm:"column:device_alias;type:varchar(100);"`             //触发设备名称
-	Level          int64                   `gorm:"column:level;type:SMALLINT;NOT NULL"`                //告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
+	TenantCode     dataType.TenantCode     `gorm:"column:tenant_code;type:VARCHAR(50);NOT NULL"`              // 租户编码
+	ProjectID      dataType.ProjectID      `gorm:"column:project_id;type:bigint;default:0;NOT NULL"`          // 项目ID(雪花ID)
+	AreaID         dataType.AreaID         `gorm:"column:area_id;type:bigint;default:0;NOT NULL"`             //如果是设备告警,则会填写上区域ID
+	AreaIDPath     dataType.AreaIDPath     `gorm:"column:area_id_path;type:varchar(100);default:'';NOT NULL"` // 项目区域ID路径(雪花ID)
+	AlarmID        int64                   `gorm:"column:alarm_id;type:BIGINT;NOT NULL"`                      //告警记录ID
+	AlarmName      string                  `gorm:"column:alarm_name;type:VARCHAR(100);NOT NULL"`              //告警名称
+	TriggerType    scene.TriggerType       `gorm:"column:trigger_type;type:VARCHAR(100);NOT NULL"`            //触发类型(设备触发1,其他2)
+	TriggerSubType scene.TriggerDeviceType `gorm:"column:trigger_sub_type;type:VARCHAR(100);"`                //触发类型(设备触发1,其他2)
+	TriggerDetail  string                  `gorm:"column:trigger_detail;type:VARCHAR(500);default:''"`        //触发详情
+	ProductID      string                  `gorm:"column:product_id;type:varchar(100);"`                      //触发产品id
+	DeviceName     string                  `gorm:"column:device_name;type:varchar(100);"`                     //触发设备ID
+	DeviceAlias    string                  `gorm:"column:device_alias;type:varchar(100);"`                    //触发设备名称
+	Level          int64                   `gorm:"column:level;type:SMALLINT;NOT NULL"`                       //告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
 	SceneName      string                  `gorm:"column:scene_name;type:varchar(100);NOT NULL"`
 	SceneID        int64                   `gorm:"column:scene_id;type:BIGINT;NOT NULL"`
 	DealStatus     scene.AlarmDealStatus   `gorm:"column:deal_status;type:SMALLINT;default:1;NOT NULL"` //告警记录状态（1告警中 2已忽略 3已处理）
