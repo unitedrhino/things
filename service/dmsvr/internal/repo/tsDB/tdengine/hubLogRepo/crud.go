@@ -83,7 +83,7 @@ func (h *HubLogRepo) Insert(ctx context.Context, data *deviceLog.Hub) error {
 	//	data.RequestID, data.TraceID, data.ResultCode); err != nil {
 	//	return err
 	//}
-	h.t.AsyncInsert(sql, data.Timestamp, data.Content, data.Topic, data.Action,
+	h.t.AsyncInsertNoDebug(sql, data.Timestamp, data.Content, data.Topic, data.Action,
 		data.RequestID, data.TraceID, data.ResultCode, data.RespPayload)
 	return nil
 }

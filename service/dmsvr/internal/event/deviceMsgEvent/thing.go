@@ -12,6 +12,7 @@ import (
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/events/topics"
+	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceBind"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
@@ -118,7 +119,7 @@ func (l *ThingLogic) HandlePackReport(msg *deviceMsg.PublishMsg, req msgThing.Re
 				l.Errorf("存在没有的设备:%v", d)
 				continue
 			}
-			c, err := relationDB.NewGatewayDeviceRepo(l.ctx).CountByFilter(l.ctx, relationDB.GatewayDeviceFilter{
+			c, err := stores.WithNoDebug(l.ctx, relationDB.NewGatewayDeviceRepo).CountByFilter(l.ctx, relationDB.GatewayDeviceFilter{
 				SubDevice: &d,
 				Gateway: &devices.Core{
 					ProductID:  msg.ProductID,

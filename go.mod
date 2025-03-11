@@ -7,7 +7,7 @@ go 1.22.7
 
 require (
 	gitee.com/unitedrhino/core v1.3.2
-	gitee.com/unitedrhino/share v1.3.8
+	gitee.com/unitedrhino/share v1.3.10
 	gitee.com/unitedrhino/squirrel v1.20.5
 	github.com/dgraph-io/ristretto v0.1.0
 	github.com/dop251/goja v0.0.0-20231024180952-594410467bc6
@@ -22,7 +22,7 @@ require (
 	github.com/nats-io/nats.go v1.35.0
 	github.com/observerly/dusk v1.16.0
 	github.com/parnurzeal/gorequest v0.3.0
-	github.com/spf13/cast v1.7.0
+	github.com/spf13/cast v1.7.1
 	github.com/traefik/yaegi v0.16.1
 	github.com/zeromicro/go-zero v1.7.2
 	go.uber.org/atomic v1.11.0
@@ -35,7 +35,7 @@ require (
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
-	gitee.com/unitedrhino/driver-go/v3 v3.30.1 // indirect
+	gitee.com/unitedrhino/driver-go/v3 v3.30.2 // indirect
 	github.com/BurntSushi/toml v1.3.2 // indirect
 	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
 	github.com/alibabacloud-go/alibabacloud-gateway-spi v0.0.4 // indirect
@@ -176,7 +176,6 @@ require (
 	go.opentelemetry.io/otel/exporters/zipkin v1.24.0 // indirect
 	go.opentelemetry.io/otel/metric v1.33.0 // indirect
 	go.opentelemetry.io/otel/sdk v1.33.0 // indirect
-	go.opentelemetry.io/otel/sdk/metric v1.33.0 // indirect
 	go.opentelemetry.io/otel/trace v1.33.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.4.0 // indirect
 	go.uber.org/automaxprocs v1.6.0 // indirect
