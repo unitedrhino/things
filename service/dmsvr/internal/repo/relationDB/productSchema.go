@@ -93,8 +93,14 @@ func (p ProductSchemaRepo) fmtFilter(ctx context.Context, f ProductSchemaFilter)
 	return p.filter(db, f)
 }
 func (p ProductSchemaRepo) Insert(ctx context.Context, data *DmSchemaInfo) error {
-	result := p.db.WithContext(ctx).Create(data)
-	return stores.ErrFmt(result.Error)
+	err := p.db.Transaction(func(tx *gorm.DB) error {
+		err := NewSchemaInfoRepo(tx).DeleteByFilter(ctx, SchemaInfoFilter{ProductID: data.ProductID, Tag: schema.TagDevice, Identifiers: []string{data.Identifier}})
+		if err != nil {
+			return err
+		}
+		return tx.Create(data).Error
+	})
+	return stores.ErrFmt(err)
 }
 
 func (p ProductSchemaRepo) FindOneByFilter(ctx context.Context, f ProductSchemaFilter) (*DmSchemaInfo, error) {
@@ -181,19 +187,24 @@ func (p ProductSchemaRepo) MultiInsert(ctx context.Context, data []*DmSchemaInfo
 
 func (p ProductSchemaRepo) MultiUpdate(ctx context.Context, productID string, schemaInfo *schema.Model) error {
 	var datas []*DmSchemaInfo
+	var idents []string
+
 	for _, item := range schemaInfo.Property {
+		idents = append(idents, item.Identifier)
 		datas = append(datas, &DmSchemaInfo{
 			ProductID:    productID,
 			DmSchemaCore: ToPropertyPo(item),
 		})
 	}
 	for _, item := range schemaInfo.Event {
+		idents = append(idents, item.Identifier)
 		datas = append(datas, &DmSchemaInfo{
 			ProductID:    productID,
 			DmSchemaCore: ToEventPo(item),
 		})
 	}
 	for _, item := range schemaInfo.Action {
+		idents = append(idents, item.Identifier)
 		datas = append(datas, &DmSchemaInfo{
 			ProductID:    productID,
 			DmSchemaCore: ToActionPo(item),
@@ -211,7 +222,12 @@ func (p ProductSchemaRepo) MultiUpdate(ctx context.Context, productID string, sc
 				return err
 			}
 		}
-
+		//如果定义了产品级的,需要删除设备级的
+		err = NewSchemaInfoRepo(tx).DeleteByFilter(ctx, SchemaInfoFilter{ProductID: productID, Tag: schema.TagDevice,
+			Identifiers: idents})
+		if err != nil {
+			return err
+		}
 		return nil
 	})
 	return stores.ErrFmt(err)

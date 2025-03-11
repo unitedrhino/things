@@ -193,7 +193,7 @@ func GetVal(d *schema.Define, val any) (any, error) {
 			return nil, errors.Parameter.AddDetail(val)
 		} else {
 			if validateDataRange && (len(str) > cast.ToInt(d.Max)) {
-				return nil, errors.OutRange.AddDetailf("value %v out of range:%s", val, d.Max)
+				return str[:cast.ToInt(d.Max)], nil
 			}
 			return str, nil
 		}

@@ -17,6 +17,7 @@ type (
 	SchemaInfoFilter struct {
 		ID                int64
 		ProductID         string //产品id  必填
+		ProductIDs        []string
 		DeviceName        string //设备ID
 		Type              int64  //物模型类型 1:property属性 2:event事件 3:action行为
 		Types             []int64
@@ -41,6 +42,9 @@ func (p SchemaInfoRepo) fmtFilter(ctx context.Context, f SchemaInfoFilter) *gorm
 	db := p.db.WithContext(ctx)
 	if f.ProductID != "" {
 		db = db.Where("product_id = ?", f.ProductID)
+	}
+	if len(f.ProductIDs) != 0 {
+		db = db.Where("product_id IN ?", f.ProductIDs)
 	}
 	if f.DeviceName != "" {
 		db = db.Where("device_name = ?", f.DeviceName)

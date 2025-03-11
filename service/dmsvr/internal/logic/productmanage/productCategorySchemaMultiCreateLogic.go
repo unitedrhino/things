@@ -131,15 +131,22 @@ func (l *ProductCategorySchemaMultiCreateLogic) ProductCategorySchemaMultiCreate
 				}
 				findProducts = utils.SliceToSet(ps)
 				var schemas []*relationDB.DmSchemaInfo
+				var addProductIDs []string
 				for _, v := range productIDs {
 					if _, ok := findProducts[v]; ok {
 						continue
 					}
+					addProductIDs = append(addProductIDs, v)
 					//如果没有这个物模型需要新增
 					schemas = append(schemas, &relationDB.DmSchemaInfo{
 						ProductID:    v,
 						DmSchemaCore: identifier.DmSchemaCore,
 					})
+				}
+				//如果定义了产品级的,需要删除设备级的
+				err = relationDB.NewSchemaInfoRepo(tx).DeleteByFilter(l.ctx, relationDB.SchemaInfoFilter{ProductIDs: addProductIDs, Tag: schema.TagDevice, Identifiers: []string{identifier.Identifier}})
+				if err != nil {
+					return err
 				}
 				return psDB.MultiInsert(ctx, schemas)
 			})

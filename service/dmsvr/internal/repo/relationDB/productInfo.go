@@ -147,13 +147,20 @@ func (p ProductInfoRepo) Insert(ctx context.Context, data *DmProductInfo) error 
 				return nil
 			}
 			var schemas []*DmSchemaInfo
+			var idents []string
 			for _, v := range ids {
 				v.ID = 0
 				v.Tag = schema.TagRequired
+				idents = append(idents, v.Identifier)
 				schemas = append(schemas, &DmSchemaInfo{
 					ProductID:    data.ProductID,
 					DmSchemaCore: v.DmSchemaCore,
 				})
+			}
+			//如果定义了产品级的,需要删除设备级的
+			err = NewSchemaInfoRepo(tx).DeleteByFilter(ctx, SchemaInfoFilter{ProductID: data.ProductID, Tag: schema.TagDevice, Identifiers: idents})
+			if err != nil {
+				return err
 			}
 			err = NewProductSchemaRepo(tx).MultiInsert(ctx, schemas)
 		}

@@ -156,7 +156,10 @@ func NewServiceContext(c config.Config) *ServiceContext {
 				logx.WithContext(ctx).Error(err)
 			}
 			newOne := data.Copy().Aggregation(ps)
-			newOne.ValidateWithFmt()
+			err = newOne.ValidateWithFmt()
+			if err != nil {
+				logx.WithContext(ctx).Error(err)
+			}
 			return newOne
 		},
 		ExpireTime: 20 * time.Minute,

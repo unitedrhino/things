@@ -28,8 +28,8 @@ type DmDeviceInfo struct {
 	ProjectID   dataType.ProjectID  `gorm:"column:project_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`       // 项目ID(雪花ID)
 	AreaID      dataType.AreaID     `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`          // 项目区域ID(雪花ID)
 	AreaIDPath  dataType.AreaIDPath `gorm:"column:area_id_path;type:varchar(100);default:'';NOT NULL"`                       // 项目区域ID路径(雪花ID)
-	DeptID      int64               `gorm:"column:dept_id;NOT NULL;type:BIGINT"`                                             // 角色ID
-	DeptIDPath  string              `gorm:"column:dept_id_path;type:varchar(100);NOT NULL"`                                  // 1-2-3-的格式记录顶级区域到当前id的路径
+	DeptID      dataType.DeptID     `gorm:"column:dept_id;type:bigint;default:0;NOT NULL"`                                   // 部门ID
+	DeptIDPath  dataType.DeptIDPath `gorm:"column:dept_id_path;type:varchar(100);default:'';NOT NULL"`                       // 部门ID路径
 	ProductID   string              `gorm:"column:product_id;type:varchar(100);uniqueIndex:product_id_deviceName;NOT NULL"`  // 产品id
 	DeviceName  string              `gorm:"column:device_name;uniqueIndex:product_id_deviceName;type:varchar(100);NOT NULL"` // 设备名称
 	DeviceAlias string              `gorm:"column:device_alias;type:varchar(100);NOT NULL"`                                  // 设备别名
