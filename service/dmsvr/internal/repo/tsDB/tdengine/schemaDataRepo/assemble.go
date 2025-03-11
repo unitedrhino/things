@@ -20,6 +20,7 @@ func ToEventData(db map[string]any) *msgThing.EventData {
 	data := msgThing.EventData{
 		Identifier: cast.ToString(db["event_id"]),
 		Type:       cast.ToString(db["event_type"]),
+		DeviceName: cast.ToString(db["device_name"]),
 		Params:     params,
 		TimeStamp:  cast.ToTime(db["ts"]),
 	}

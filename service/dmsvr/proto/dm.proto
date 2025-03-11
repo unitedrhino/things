@@ -865,6 +865,7 @@ message EventLogInfo{
   string type = 2 ;// 事件类型: 信息:info  告警alert  故障:fault
   string dataID = 3;//属性id
   string params = 4;//获取到的值
+  string deviceName = 5; //设备名(不填获取产品下所有设备)
 }
 
 /*获取对应日志信息*/

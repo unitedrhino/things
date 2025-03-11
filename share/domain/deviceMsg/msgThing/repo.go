@@ -26,6 +26,7 @@ type (
 		Type       string         `gorm:"column:type;type:varchar(20);NOT NULL" json:"type" `            //事件类型: 信息:info  告警alert  故障:fault
 		Params     map[string]any `gorm:"column:param;type:varchar(256);NOT NULL" json:"params" `        //事件参数
 		TimeStamp  time.Time      `gorm:"column:ts;NOT NULL;" json:"timeStamp"`                          //时间戳
+		DeviceName string         `gorm:"column:device_name;type:varchar(50);NOT NULL" json:"device_name" `
 	}
 	/*
 	   FILL 语句指定某一窗口区间数据缺失的情况下的填充模式。填充模式包括以下几种：

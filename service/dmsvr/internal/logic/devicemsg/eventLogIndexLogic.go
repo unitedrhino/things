@@ -85,9 +85,10 @@ func (l *EventLogIndexLogic) EventLogIndex(in *dm.EventLogIndexReq) (*dm.EventLo
 	}
 	for _, devData := range dds {
 		diData := dm.EventLogInfo{
-			Timestamp: devData.TimeStamp.UnixMilli(),
-			Type:      devData.Type,
-			DataID:    devData.Identifier,
+			Timestamp:  devData.TimeStamp.UnixMilli(),
+			Type:       devData.Type,
+			DataID:     devData.Identifier,
+			DeviceName: devData.DeviceName,
 		}
 		var payload []byte
 		payload, _ = json.Marshal(devData.Params)
