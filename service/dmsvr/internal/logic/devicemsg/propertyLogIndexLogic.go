@@ -7,6 +7,7 @@ import (
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -52,6 +53,15 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 	}
 	if len(in.DeviceNames) == 0 {
 		return nil, errors.Parameter.AddMsg("需要填写设备")
+	}
+	for _, dev := range in.DeviceNames {
+		_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{
+			ProductID:  in.ProductID,
+			DeviceName: dev,
+		}, nil)
+		if err != nil {
+			return nil, err
+		}
 	}
 	if len(in.DeviceNames) == 1 && in.ProductCategoryID == 0 {
 		t, err = l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceNames[0]})

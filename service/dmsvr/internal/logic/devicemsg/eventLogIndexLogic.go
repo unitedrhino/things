@@ -37,15 +37,23 @@ func (l *EventLogIndexLogic) EventLogIndex(in *dm.EventLogIndexReq) (*dm.EventLo
 		dd      = l.svcCtx.SchemaManaRepo
 		total   int64
 	)
-	if len(in.DeviceNames) > 0 {
-		in.DeviceName = in.DeviceNames[0]
+	if len(in.DeviceNames) == 0 {
+		if in.DeviceName == "" {
+			return nil, errors.Parameter.AddMsg("需要填写设备")
+		}
+		in.DeviceNames = append(in.DeviceNames, in.DeviceName)
 	}
-	_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{
-		ProductID:  in.ProductID,
-		DeviceName: in.DeviceName,
-	}, nil)
-	if err != nil {
-		return nil, err
+	if len(in.DeviceNames) == 0 {
+		return nil, errors.Parameter.AddMsg("需要填写设备")
+	}
+	for _, dev := range in.DeviceNames {
+		_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{
+			ProductID:  in.ProductID,
+			DeviceName: dev,
+		}, nil)
+		if err != nil {
+			return nil, err
+		}
 	}
 	page := def.PageInfo2{
 		TimeStart: in.TimeStart,
