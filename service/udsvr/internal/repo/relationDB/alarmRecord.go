@@ -65,7 +65,7 @@ func (p AlarmRecordRepo) fmtFilter(ctx context.Context, f AlarmRecordFilter) *go
 		db = db.Where("product_id=?", f.ProductID)
 	}
 	if f.DeviceName != "" {
-		db = db.Where("device_name=?", f.DeviceName)
+		db = db.Where("device_name like ?", "%"+f.DeviceName+"%")
 	}
 	if f.AreaIDPath != "" {
 		db = db.Where("area_id_path=?", f.AreaIDPath)
