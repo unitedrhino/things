@@ -26,6 +26,7 @@ func NewAlarmRecordRepo(in any) *AlarmRecordRepo {
 
 type AlarmRecordFilter struct {
 	AlarmID       int64 // 告警配置ID
+	AlarmCode     string
 	AlarmName     string
 	TriggerType   scene.TriggerType
 	WorkOrderID   int64 //工作流ID
@@ -45,6 +46,12 @@ func (p AlarmRecordRepo) fmtFilter(ctx context.Context, f AlarmRecordFilter) *go
 	f.Time.ToGorm(db, "created_time")
 	if f.AlarmID != 0 {
 		db = db.Where("alarm_id=?", f.AlarmID)
+	}
+	if f.AlarmCode != "" {
+		subQuery := p.db.Model(&UdAlarmInfo{}).Select("id").
+			Where(" code=?", f.AlarmCode)
+		db = db.Where("id in (?)",
+			subQuery)
 	}
 	if f.WorkOrderID != 0 {
 		db = db.Where("work_order_id=?", f.WorkOrderID)

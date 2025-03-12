@@ -62,6 +62,7 @@ service rule {
 
 message AlarmRecordIndexReq{
   int64 alarmID = 1;//告警配置ID
+  string alarmCode =10;
   int64 areaID =8;
   string areaIDPath =9;
   string alarmName =5;//告警名称
@@ -138,6 +139,7 @@ message AlarmSceneIndexResp{
 
 message AlarmInfo{
   int64 id = 1;//编号
+  string code = 12;
   string name = 2;//告警配置名称
   string desc = 3;//告警配置说明
   int64 level = 4;//告警配置级别（1提醒 2一般 3严重 4紧急 5超紧急）
@@ -159,6 +161,7 @@ message AlarmNotify {
 message AlarmInfoIndexReq{
   PageInfo page       = 1;  // 分页信息 只获取一个则不填
   string name = 2;//告警配置名称 模糊查询
+  string code = 12;
 }
 
 message AlarmInfoIndexResp{

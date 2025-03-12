@@ -24,12 +24,16 @@ func NewAlarmInfoRepo(in any) *AlarmInfoRepo {
 
 type AlarmInfoFilter struct {
 	Name string
+	Code string
 }
 
 func (p AlarmInfoRepo) fmtFilter(ctx context.Context, f AlarmInfoFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if f.Name != "" {
 		db = db.Where("name like ?", "%"+f.Name+"%")
+	}
+	if f.Code != "" {
+		db = db.Where("code = ?", f.Code)
 	}
 	return db
 }

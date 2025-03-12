@@ -31,6 +31,7 @@ func (l *IndexLogic) Index(req *types.AlarmInfoIndexReq) (resp *types.AlarmInfoI
 	ret, err := l.svcCtx.Rule.AlarmInfoIndex(l.ctx, &ud.AlarmInfoIndexReq{
 		Page: logic.ToUdPageRpc(req.Page),
 		Name: req.Name,
+		Code: req.Code,
 	})
 	if err != nil {
 		er := errors.Fmt(err)

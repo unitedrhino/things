@@ -5,6 +5,7 @@ package types
 
 type AlarmInfo struct {
 	ID          int64          `json:"id,optional"`
+	Code        string         `json:"code,optional"`
 	Name        string         `json:"name,optional"`
 	Status      int64          `json:"status,optional"` //状态: 1启用 2禁用
 	Desc        string         `json:"desc,optional"`
@@ -19,6 +20,7 @@ type AlarmInfo struct {
 type AlarmInfoIndexReq struct {
 	Page *PageInfo `json:"page,optional"` //分页信息 只获取一个则不填
 	Name string    `json:"name,optional"` //告警名模糊查询
+	Code string    `json:"code,optional"`
 }
 
 type AlarmInfoIndexResp struct {
@@ -57,7 +59,8 @@ type AlarmRecordDealReq struct {
 type AlarmRecordIndexReq struct {
 	AreaID      int64      `json:"areaID,optional,string"` //区域ID过滤
 	AreaIDPath  string     `json:"areaIDPath,optional"`
-	AlarmID     int64      `json:"alarmID,optional"`   //告警记录ID
+	AlarmID     int64      `json:"alarmID,optional"` //告警记录ID
+	AlarmCode   string     `json:"alarmCode,optional"`
 	Page        *PageInfo  `json:"page,optional"`      //分页信息 只获取一个则不填
 	TimeRange   *TimeRange `json:"timeRange,optional"` //时间范围
 	AlarmName   string     `json:"alarmName,optional"`

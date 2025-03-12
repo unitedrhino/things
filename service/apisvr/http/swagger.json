@@ -6926,6 +6926,9 @@
           "type": "integer",
           "format": "int64"
         },
+        "code": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },
@@ -6988,6 +6991,9 @@
         "name": {
           "type": "string",
           "description": "告警名模糊查询"
+        },
+        "code": {
+          "type": "string"
         }
       },
       "title": "AlarmInfoIndexReq"
@@ -7158,6 +7164,9 @@
           "type": "integer",
           "format": "int64",
           "description": "告警记录ID"
+        },
+        "alarmCode": {
+          "type": "string"
         },
         "page": {
           "$ref": "#/definitions/PageInfo",

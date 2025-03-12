@@ -28,7 +28,7 @@ func NewAlarmInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Al
 }
 
 func (l *AlarmInfoIndexLogic) AlarmInfoIndex(in *ud.AlarmInfoIndexReq) (*ud.AlarmInfoIndexResp, error) {
-	f := relationDB.AlarmInfoFilter{Name: in.Name}
+	f := relationDB.AlarmInfoFilter{Name: in.Name, Code: in.Code}
 	pos, err := relationDB.NewAlarmInfoRepo(l.ctx).FindByFilter(l.ctx, f, logic.ToPageInfo(in.Page).
 		WithDefaultOrder(stores.OrderBy{
 			Field: "createdTime",
