@@ -67,11 +67,11 @@ func (l *AlarmRecordCreateLogic) AlarmRecordCreate(in *ud.AlarmRecordCreateReq) 
 				})
 				var di *dm.DeviceInfo
 				if in.DeviceName != "" {
-					di, err = l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
-					if err != nil {
-						l.Error(err)
+					var er error
+					di, er = l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
+					if er != nil {
+						l.Error(er)
 					}
-
 				}
 				defer func() {
 					if po != nil {
