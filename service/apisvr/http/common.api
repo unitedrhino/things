@@ -14,7 +14,7 @@ type(
     }
     PageResp{
         Page     int64 `json:"page,optional"`         // 页码
-        Size int64 `json:"size,optional"` // 每页大小
+        PageSize int64 `json:"pageSize,optional"` // 每页大小
         Total int64 `json:"total"`
     }
     OrderBy{

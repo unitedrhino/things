@@ -1348,9 +1348,9 @@ type PageInfo struct {
 }
 
 type PageResp struct {
-	Page  int64 `json:"page,optional"` // 页码
-	Size  int64 `json:"size,optional"` // 每页大小
-	Total int64 `json:"total"`
+	Page     int64 `json:"page,optional"`     // 页码
+	PageSize int64 `json:"pageSize,optional"` // 每页大小
+	Total    int64 `json:"total"`
 }
 
 type Point struct {

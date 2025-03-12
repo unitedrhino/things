@@ -73,6 +73,6 @@ func ToPageResp(p *types.PageInfo, total int64) types.PageResp {
 		return ret
 	}
 	ret.Page = p.Page
-	ret.Size = p.Size
+	ret.PageSize = p.Size
 	return ret
 }
