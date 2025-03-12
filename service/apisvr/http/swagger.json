@@ -15118,8 +15118,7 @@
           }
         },
         "projectID": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string"
         }
       },
       "title": "UserDeviceShareMultiDeleteReq"

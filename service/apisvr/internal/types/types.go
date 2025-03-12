@@ -1998,7 +1998,7 @@ type UserDeviceShareMultiAcceptInfo struct {
 
 type UserDeviceShareMultiDeleteReq struct {
 	IDs       []int64 `json:"ids,optional"`
-	ProjectID int64   `json:"projectID,optional"`
+	ProjectID int64   `json:"projectID,string,optional"`
 }
 
 type UserDeviceShareMultiIndexResp struct {

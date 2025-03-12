@@ -67,7 +67,7 @@ service api {
 type (
 	UserDeviceShareMultiDeleteReq{
 		IDs []int64 `json:"ids,optional"`
-		ProjectID int64 `json:"projectID,optional"`
+		ProjectID int64 `json:"projectID,string,optional"`
 	}
 	UserDeviceShareInfo {
 		ID         int64       `json:"id,optional"`
