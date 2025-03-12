@@ -68,7 +68,7 @@ message IDPathWithUpdate{
 }
 
 
- message   PublishMsg  { //发布消息结构体
+message   PublishMsg  { //发布消息结构体
     string handle =1; //对应 mqtt topic的第一个 thing ota config 等等
     string  type =2;   //操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
     bytes payload =3;
@@ -77,7 +77,7 @@ message IDPathWithUpdate{
     string  deviceName =6;
     string  explain =7;      //内部使用的拓展字段
     string  protocolCode =8; //如果有该字段则回复的时候也会带上该字段
-    }
+}
 
 //设备管理
 service DeviceManage {

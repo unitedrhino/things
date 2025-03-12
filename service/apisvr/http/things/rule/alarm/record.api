@@ -29,6 +29,8 @@ type (
         Handle int64 `json:"handle"`//告警处理结果 1:无效(告警无效) 2:派单(走工作流)
     }
     AlarmRecordIndexReq  {
+        AreaID int64  `json:"areaID,optional,string"` //区域ID过滤
+        AreaIDPath string `json:"areaIDPath,optional"`
         AlarmID int64 `json:"alarmID,optional"`//告警记录ID
         Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
         TimeRange        *TimeRange    `json:"timeRange,optional"` //时间范围

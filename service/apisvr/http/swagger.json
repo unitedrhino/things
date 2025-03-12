@@ -7147,6 +7147,13 @@
     "AlarmRecordIndexReq": {
       "type": "object",
       "properties": {
+        "areaID": {
+          "type": "string",
+          "description": "区域ID过滤"
+        },
+        "areaIDPath": {
+          "type": "string"
+        },
         "alarmID": {
           "type": "integer",
           "format": "int64",

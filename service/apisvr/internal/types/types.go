@@ -55,6 +55,8 @@ type AlarmRecordDealReq struct {
 }
 
 type AlarmRecordIndexReq struct {
+	AreaID      int64      `json:"areaID,optional,string"` //区域ID过滤
+	AreaIDPath  string     `json:"areaIDPath,optional"`
 	AlarmID     int64      `json:"alarmID,optional"`   //告警记录ID
 	Page        *PageInfo  `json:"page,optional"`      //分页信息 只获取一个则不填
 	TimeRange   *TimeRange `json:"timeRange,optional"` //时间范围
