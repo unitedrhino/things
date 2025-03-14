@@ -189,6 +189,7 @@ type (
         Value string `json:"value"`                  //获取到的值
         Timestamp int64 `json:"timestamp,string"`    //发生时间戳
     }
+
     DeviceInfoTransferReq{
         Device *DeviceCore `json:"device,optional"`
         Devices []*DeviceCore `json:"devices,optional"`
@@ -286,6 +287,7 @@ type (
         IgnoreCount int64  `json:"ignoreCount"` //忽略数
         SuccCount int64  `json:"succCount"` //成功数
     }
+
     DeviceMultiUpdateImportError{
         Device DeviceCore `json:"device"`
         Code int64 `json:"code"`

@@ -61,8 +61,7 @@ func (l *IndexLogic) Index(req *types.ProductInfoIndexReq) (resp *types.ProductI
 		pis = append(pis, pi)
 	}
 	return &types.ProductInfoIndexResp{
-		Total: dmResp.Total,
-		List:  pis,
-		Num:   int64(len(pis)),
+		PageResp: logic.ToPageResp(req.Page, dmResp.Total),
+		List:     pis,
 	}, nil
 }

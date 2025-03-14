@@ -1477,9 +1477,8 @@ type ProductInfoIndexReq struct {
 }
 
 type ProductInfoIndexResp struct {
-	List  []*ProductInfo `json:"list"`           //产品信息
-	Total int64          `json:"total,optional"` //拥有的总数
-	Num   int64          `json:"num,optional"`   //返回的数量
+	List []*ProductInfo `json:"list"` //产品信息
+	PageResp
 }
 
 type ProductInfoReadReq struct {

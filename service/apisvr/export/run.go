@@ -1,8 +1,8 @@
 package export
 
 import (
+	"gitee.com/unitedrhino/share/services"
 	"gitee.com/unitedrhino/share/utils"
-	"gitee.com/unitedrhino/things/service/apisvr/direct"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/config"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/handler"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/startup"
@@ -42,6 +42,6 @@ func runApi(apiCtx ApiCtx) ApiCtx {
 		handler.RegisterHandlers(server, ctx)
 	}
 	startup.Init(apiCtx.SvcCtx)
-	direct.InitServers(server)
+	services.InitApisvrs(server)
 	return apiCtx
 }

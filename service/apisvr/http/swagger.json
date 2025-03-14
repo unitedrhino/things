@@ -12970,15 +12970,19 @@
           },
           "description": "产品信息"
         },
+        "page": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 页码"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
         "total": {
           "type": "integer",
-          "format": "int64",
-          "description": "拥有的总数"
-        },
-        "num": {
-          "type": "integer",
-          "format": "int64",
-          "description": "返回的数量"
+          "format": "int64"
         }
       },
       "title": "ProductInfoIndexResp",
