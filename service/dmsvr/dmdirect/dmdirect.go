@@ -3,6 +3,7 @@ package dmdirect
 import (
 	"fmt"
 	"gitee.com/unitedrhino/share/interceptors"
+	"gitee.com/unitedrhino/share/services"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/config"
 	devicegroup "gitee.com/unitedrhino/things/service/dmsvr/internal/server/devicegroup"
@@ -19,7 +20,6 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/logx"
-	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"sync"
@@ -53,7 +53,7 @@ func RunServer(svcCtx *svc.ServiceContext) {
 }
 func Run(svcCtx *svc.ServiceContext) {
 	c := svcCtx.Config
-	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
+	s := services.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		dm.RegisterProtocolManageServer(grpcServer, protocolmanage.NewProtocolManageServer(svcCtx))
 		dm.RegisterDeviceManageServer(grpcServer, devicemanage.NewDeviceManageServer(svcCtx))
 		dm.RegisterProductManageServer(grpcServer, productmanage.NewProductManageServer(svcCtx))

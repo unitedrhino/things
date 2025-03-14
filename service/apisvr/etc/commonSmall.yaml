@@ -1,0 +1,77 @@
+Host: 0.0.0.0
+CpuThreshold: 0
+Timeout: 1000000
+MaxBytes: 1000000000
+Log:
+  Encoding: plain
+  #Mode: file
+CacheRedis:
+  - Host: 127.0.0.1:6379
+    Pass:
+    Type: node
+Middlewares:
+  Prometheus: false
+Database:
+  DBType: mysql
+  DSN: root:password@tcp(localhost:3306)/iThings?charset=utf8mb4&collation=utf8mb4_bin&parseTime=true&loc=Asia%2FShanghai
+#  DBType: pgsql
+#  DSN: postgres://postgres:password@localhost:5432/postgres
+
+TSDB:
+#  Driver: taosRestful
+#  DSN: root:taosdata@http(localhost:6041)/ithings?readBufferSize=5242880
+#  DSN: root:taosdata@ws(localhost:6041)/ithings?readBufferSize=5242880
+#  Driver: taosSql
+#  DSN: root:taosdata@tcp(localhost:6030)/ithings
+  DBType: mysql
+  DSN: root:password@tcp(localhost:3306)/iThings-ts?charset=utf8mb4&collation=utf8mb4_bin&parseTime=true&loc=Asia%2FShanghai
+
+DgRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000
+DmRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000
+SysRpc:
+  Enable: true
+  Mode: grpc
+  Conf:
+    Timeout: 1000000
+    Endpoints:
+      - localhost:9180
+TimedJobRpc:
+  Enable: true
+  Mode: grpc
+  Conf:
+    Timeout: 1000000
+    Endpoints:
+      - localhost:3256
+
+UdRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000
+
+OssConf:
+  OssType: local
+  PublicBucketName: ithings-public
+  PrivateBucketName: ithings-private
+  TemporaryBucketName: ithings-temporary
+
+Event:
+  Nats:
+    Url: nats://127.0.0.1:4222
+#Telemetry:
+#  Name: thingsvr
+#  Endpoint: http://localhost:14268/api/traces
+#  Sampler: 1.0
+#  Batcher: jaeger
+#Prometheus:
+#  Host: 0.0.0.0
+#  Port: 17788
+#  Path: /metrics
