@@ -61,6 +61,11 @@ func (s *DeviceMsgServer) PropertyLogLatestIndex(ctx context.Context, in *dm.Pro
 	return l.PropertyLogLatestIndex(in)
 }
 
+func (s *DeviceMsgServer) PropertyLogLatestIndex2(ctx context.Context, in *dm.PropertyLogLatestIndex2Req) (*dm.PropertyLogIndexResp, error) {
+	l := devicemsglogic.NewPropertyLogLatestIndex2Logic(ctx, s.svcCtx)
+	return l.PropertyLogLatestIndex2(in)
+}
+
 // 获取设备数据信息
 func (s *DeviceMsgServer) PropertyLogIndex(ctx context.Context, in *dm.PropertyLogIndexReq) (*dm.PropertyLogIndexResp, error) {
 	l := devicemsglogic.NewPropertyLogIndexLogic(ctx, s.svcCtx)

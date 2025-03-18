@@ -262,7 +262,7 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 	if p.Define.Type == schema.DataTypeStruct {
 		sql = sq.Select("FIRST(`ts`) AS ts,`device_name` ", d.GetSpecsColumnWithArgFunc(p.Define.Specs, filter.ArgFunc))
 	} else {
-		sql = sq.Select("FIRST(`ts`) AS ts,`device_name` ", fmt.Sprintf("%s(`param`) as param", filter.ArgFunc))
+		sql = sq.Select("FIRST(`ts`) AS ts,`device_name`  ", fmt.Sprintf("%s(`param`) as param", filter.ArgFunc))
 	}
 	if filter.Interval != 0 {
 		var unit = filter.IntervalUnit

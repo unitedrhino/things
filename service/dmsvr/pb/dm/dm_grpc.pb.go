@@ -4175,17 +4175,18 @@ var RemoteConfig_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	DeviceMsg_SdkLogIndex_FullMethodName            = "/dm.DeviceMsg/sdkLogIndex"
-	DeviceMsg_HubLogIndex_FullMethodName            = "/dm.DeviceMsg/hubLogIndex"
-	DeviceMsg_SendLogIndex_FullMethodName           = "/dm.DeviceMsg/sendLogIndex"
-	DeviceMsg_StatusLogIndex_FullMethodName         = "/dm.DeviceMsg/statusLogIndex"
-	DeviceMsg_AbnormalLogIndex_FullMethodName       = "/dm.DeviceMsg/abnormalLogIndex"
-	DeviceMsg_AbnormalLogCreate_FullMethodName      = "/dm.DeviceMsg/abnormalLogCreate"
-	DeviceMsg_PropertyLogLatestIndex_FullMethodName = "/dm.DeviceMsg/propertyLogLatestIndex"
-	DeviceMsg_PropertyLogIndex_FullMethodName       = "/dm.DeviceMsg/propertyLogIndex"
-	DeviceMsg_EventLogIndex_FullMethodName          = "/dm.DeviceMsg/eventLogIndex"
-	DeviceMsg_ShadowIndex_FullMethodName            = "/dm.DeviceMsg/shadowIndex"
-	DeviceMsg_GatewayCanBindIndex_FullMethodName    = "/dm.DeviceMsg/gatewayCanBindIndex"
+	DeviceMsg_SdkLogIndex_FullMethodName             = "/dm.DeviceMsg/sdkLogIndex"
+	DeviceMsg_HubLogIndex_FullMethodName             = "/dm.DeviceMsg/hubLogIndex"
+	DeviceMsg_SendLogIndex_FullMethodName            = "/dm.DeviceMsg/sendLogIndex"
+	DeviceMsg_StatusLogIndex_FullMethodName          = "/dm.DeviceMsg/statusLogIndex"
+	DeviceMsg_AbnormalLogIndex_FullMethodName        = "/dm.DeviceMsg/abnormalLogIndex"
+	DeviceMsg_AbnormalLogCreate_FullMethodName       = "/dm.DeviceMsg/abnormalLogCreate"
+	DeviceMsg_PropertyLogLatestIndex_FullMethodName  = "/dm.DeviceMsg/propertyLogLatestIndex"
+	DeviceMsg_PropertyLogLatestIndex2_FullMethodName = "/dm.DeviceMsg/propertyLogLatestIndex2"
+	DeviceMsg_PropertyLogIndex_FullMethodName        = "/dm.DeviceMsg/propertyLogIndex"
+	DeviceMsg_EventLogIndex_FullMethodName           = "/dm.DeviceMsg/eventLogIndex"
+	DeviceMsg_ShadowIndex_FullMethodName             = "/dm.DeviceMsg/shadowIndex"
+	DeviceMsg_GatewayCanBindIndex_FullMethodName     = "/dm.DeviceMsg/gatewayCanBindIndex"
 )
 
 // DeviceMsgClient is the client API for DeviceMsg service.
@@ -4202,6 +4203,7 @@ type DeviceMsgClient interface {
 	AbnormalLogCreate(ctx context.Context, in *AbnormalLogInfo, opts ...grpc.CallOption) (*Empty, error)
 	// 获取设备数据信息
 	PropertyLogLatestIndex(ctx context.Context, in *PropertyLogLatestIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error)
+	PropertyLogLatestIndex2(ctx context.Context, in *PropertyLogLatestIndex2Req, opts ...grpc.CallOption) (*PropertyLogIndexResp, error)
 	// 获取设备数据信息
 	PropertyLogIndex(ctx context.Context, in *PropertyLogIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error)
 	// 获取设备数据信息
@@ -4283,6 +4285,15 @@ func (c *deviceMsgClient) PropertyLogLatestIndex(ctx context.Context, in *Proper
 	return out, nil
 }
 
+func (c *deviceMsgClient) PropertyLogLatestIndex2(ctx context.Context, in *PropertyLogLatestIndex2Req, opts ...grpc.CallOption) (*PropertyLogIndexResp, error) {
+	out := new(PropertyLogIndexResp)
+	err := c.cc.Invoke(ctx, DeviceMsg_PropertyLogLatestIndex2_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *deviceMsgClient) PropertyLogIndex(ctx context.Context, in *PropertyLogIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error) {
 	out := new(PropertyLogIndexResp)
 	err := c.cc.Invoke(ctx, DeviceMsg_PropertyLogIndex_FullMethodName, in, out, opts...)
@@ -4333,6 +4344,7 @@ type DeviceMsgServer interface {
 	AbnormalLogCreate(context.Context, *AbnormalLogInfo) (*Empty, error)
 	// 获取设备数据信息
 	PropertyLogLatestIndex(context.Context, *PropertyLogLatestIndexReq) (*PropertyLogIndexResp, error)
+	PropertyLogLatestIndex2(context.Context, *PropertyLogLatestIndex2Req) (*PropertyLogIndexResp, error)
 	// 获取设备数据信息
 	PropertyLogIndex(context.Context, *PropertyLogIndexReq) (*PropertyLogIndexResp, error)
 	// 获取设备数据信息
@@ -4368,6 +4380,9 @@ func (UnimplementedDeviceMsgServer) AbnormalLogCreate(context.Context, *Abnormal
 }
 func (UnimplementedDeviceMsgServer) PropertyLogLatestIndex(context.Context, *PropertyLogLatestIndexReq) (*PropertyLogIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PropertyLogLatestIndex not implemented")
+}
+func (UnimplementedDeviceMsgServer) PropertyLogLatestIndex2(context.Context, *PropertyLogLatestIndex2Req) (*PropertyLogIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PropertyLogLatestIndex2 not implemented")
 }
 func (UnimplementedDeviceMsgServer) PropertyLogIndex(context.Context, *PropertyLogIndexReq) (*PropertyLogIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PropertyLogIndex not implemented")
@@ -4520,6 +4535,24 @@ func _DeviceMsg_PropertyLogLatestIndex_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DeviceMsg_PropertyLogLatestIndex2_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PropertyLogLatestIndex2Req)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceMsgServer).PropertyLogLatestIndex2(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceMsg_PropertyLogLatestIndex2_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceMsgServer).PropertyLogLatestIndex2(ctx, req.(*PropertyLogLatestIndex2Req))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _DeviceMsg_PropertyLogIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(PropertyLogIndexReq)
 	if err := dec(in); err != nil {
@@ -4626,6 +4659,10 @@ var DeviceMsg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "propertyLogLatestIndex",
 			Handler:    _DeviceMsg_PropertyLogLatestIndex_Handler,
+		},
+		{
+			MethodName: "propertyLogLatestIndex2",
+			Handler:    _DeviceMsg_PropertyLogLatestIndex2_Handler,
 		},
 		{
 			MethodName: "propertyLogIndex",

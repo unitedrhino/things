@@ -35,6 +35,7 @@ type (
 	DeviceCountInfo                   = dm.DeviceCountInfo
 	DeviceCountReq                    = dm.DeviceCountReq
 	DeviceCountResp                   = dm.DeviceCountResp
+	DeviceData                        = dm.DeviceData
 	DeviceError                       = dm.DeviceError
 	DeviceGatewayBindDevice           = dm.DeviceGatewayBindDevice
 	DeviceGatewayIndexReq             = dm.DeviceGatewayIndexReq
@@ -182,6 +183,7 @@ type (
 	PropertyLogIndexReq               = dm.PropertyLogIndexReq
 	PropertyLogIndexResp              = dm.PropertyLogIndexResp
 	PropertyLogInfo                   = dm.PropertyLogInfo
+	PropertyLogLatestIndex2Req        = dm.PropertyLogLatestIndex2Req
 	PropertyLogLatestIndexReq         = dm.PropertyLogLatestIndexReq
 	ProtocolConfigField               = dm.ProtocolConfigField
 	ProtocolConfigInfo                = dm.ProtocolConfigInfo
@@ -249,6 +251,7 @@ type (
 		AbnormalLogCreate(ctx context.Context, in *AbnormalLogInfo, opts ...grpc.CallOption) (*Empty, error)
 		// 获取设备数据信息
 		PropertyLogLatestIndex(ctx context.Context, in *PropertyLogLatestIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error)
+		PropertyLogLatestIndex2(ctx context.Context, in *PropertyLogLatestIndex2Req, opts ...grpc.CallOption) (*PropertyLogIndexResp, error)
 		// 获取设备数据信息
 		PropertyLogIndex(ctx context.Context, in *PropertyLogIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error)
 		// 获取设备数据信息
@@ -349,6 +352,15 @@ func (m *defaultDeviceMsg) PropertyLogLatestIndex(ctx context.Context, in *Prope
 // 获取设备数据信息
 func (d *directDeviceMsg) PropertyLogLatestIndex(ctx context.Context, in *PropertyLogLatestIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error) {
 	return d.svr.PropertyLogLatestIndex(ctx, in)
+}
+
+func (m *defaultDeviceMsg) PropertyLogLatestIndex2(ctx context.Context, in *PropertyLogLatestIndex2Req, opts ...grpc.CallOption) (*PropertyLogIndexResp, error) {
+	client := dm.NewDeviceMsgClient(m.cli.Conn())
+	return client.PropertyLogLatestIndex2(ctx, in, opts...)
+}
+
+func (d *directDeviceMsg) PropertyLogLatestIndex2(ctx context.Context, in *PropertyLogLatestIndex2Req, opts ...grpc.CallOption) (*PropertyLogIndexResp, error) {
+	return d.svr.PropertyLogLatestIndex2(ctx, in)
 }
 
 // 获取设备数据信息

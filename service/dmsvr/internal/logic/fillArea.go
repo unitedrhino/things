@@ -109,13 +109,12 @@ func Init(svcCtx *svc.ServiceContext) {
 					})
 				}
 				if len(execAreaIDPaths) > 0 {
-					batchSize := len(execProjectIDs)
+					batchSize := len(execAreaIDPaths)
 					if batchSize > 100 { //控制每秒执行的速率
 						batchSize = 100
 					}
 					newAreaIDPaths := execAreaIDPaths[:batchSize]
-					execProjectIDs = execProjectIDs[batchSize:] //清空切片
-					execAreaIDPaths = execAreaIDPaths[0:0]      //清空切片
+					execAreaIDPaths = execAreaIDPaths[batchSize:] //清空切片
 					utils.Go(context.Background(), func() {
 						ctx := ctxs.WithRoot(context.Background())
 						fillAreaDeviceCount(ctx, svcCtx, newAreaIDPaths...)

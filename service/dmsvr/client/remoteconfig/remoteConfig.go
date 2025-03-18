@@ -35,6 +35,7 @@ type (
 	DeviceCountInfo                   = dm.DeviceCountInfo
 	DeviceCountReq                    = dm.DeviceCountReq
 	DeviceCountResp                   = dm.DeviceCountResp
+	DeviceData                        = dm.DeviceData
 	DeviceError                       = dm.DeviceError
 	DeviceGatewayBindDevice           = dm.DeviceGatewayBindDevice
 	DeviceGatewayIndexReq             = dm.DeviceGatewayIndexReq
@@ -182,6 +183,7 @@ type (
 	PropertyLogIndexReq               = dm.PropertyLogIndexReq
 	PropertyLogIndexResp              = dm.PropertyLogIndexResp
 	PropertyLogInfo                   = dm.PropertyLogInfo
+	PropertyLogLatestIndex2Req        = dm.PropertyLogLatestIndex2Req
 	PropertyLogLatestIndexReq         = dm.PropertyLogLatestIndexReq
 	ProtocolConfigField               = dm.ProtocolConfigField
 	ProtocolConfigInfo                = dm.ProtocolConfigInfo

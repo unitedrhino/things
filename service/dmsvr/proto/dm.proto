@@ -305,6 +305,8 @@ service DeviceMsg {
 
   //获取设备数据信息
   rpc propertyLogLatestIndex(PropertyLogLatestIndexReq)     returns (PropertyLogIndexResp);
+  rpc propertyLogLatestIndex2(PropertyLogLatestIndex2Req)     returns (PropertyLogIndexResp);
+
   //获取设备数据信息
   rpc propertyLogIndex(PropertyLogIndexReq)     returns (PropertyLogIndexResp);
   //获取设备数据信息
@@ -833,9 +835,14 @@ message PropertyLogLatestIndexReq{
   repeated string dataIDs = 3; //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值
 }
 
+message PropertyLogLatestIndex2Req{
+  repeated DeviceData devices = 4;//
+}
+
 /*设备的日志数据*/
 message PropertyLogInfo{
   int64 timestamp = 1;//发生时间戳(毫秒时间戳)
+  string productID = 5;//产品名称
   string deviceName = 2;//设备名称
   string dataID = 3;//属性id
   string value = 4;//获取到的值
@@ -1491,6 +1498,12 @@ message DeviceInfoDeleteReq{
 message DeviceCore{
   string   productID = 1; //产品id
   string  deviceName = 2; //设备名称
+}
+
+message DeviceData{
+  string productID = 1; //产品id
+  string deviceName = 2; //设备名称
+  string dataID = 3;//属性id
 }
 
 message DeviceError{

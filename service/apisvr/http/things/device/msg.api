@@ -230,7 +230,7 @@ type (
         PageResp
     }
 
-     DeviceMsgPropertyLogInfo {
+    DeviceMsgPropertyLogInfo {
         Timestamp int64 `json:"timestamp,string"`               //发生时间戳
         DeviceName string `json:"deviceName"` //设备名称
         DataID string `json:"dataID"`                           //获取的具体属性值
