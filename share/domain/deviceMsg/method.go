@@ -101,6 +101,7 @@ const (
 	GetNtpReply Method = "getNtpReply" //表示云端ntp返回
 
 	AppBindToken Method = "appBindToken"
+	BindChange   Method = "bindChange"
 )
 
 func GetRespMethod(method Method) Method {

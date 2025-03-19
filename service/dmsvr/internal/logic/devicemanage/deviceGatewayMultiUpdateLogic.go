@@ -2,22 +2,17 @@ package devicemanagelogic
 
 import (
 	"context"
-	"encoding/json"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
-	"gitee.com/unitedrhino/things/share/devices"
-	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
-	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgGateway"
-	"github.com/spf13/cast"
-	"gorm.io/gorm"
-	"time"
-
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/share/devices"
+	"github.com/spf13/cast"
+	"gorm.io/gorm"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -78,6 +73,10 @@ func (l *DeviceGatewayMultiUpdateLogic) DeviceGatewayMultiUpdate(in *dm.DeviceGa
 		}
 	}
 	devicesDos := logic.ToDeviceCoreDos(in.List)
+	gateway := devices.Core{
+		ProductID:  in.Gateway.ProductID,
+		DeviceName: in.Gateway.DeviceName,
+	}
 	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
 		gd := relationDB.NewGatewayDeviceRepo(tx)
 		err := gd.MultiDelete(l.ctx, &devices.Core{
@@ -87,10 +86,7 @@ func (l *DeviceGatewayMultiUpdateLogic) DeviceGatewayMultiUpdate(in *dm.DeviceGa
 		if err != nil {
 			return err
 		}
-		err = gd.MultiInsert(l.ctx, &devices.Core{
-			ProductID:  in.Gateway.ProductID,
-			DeviceName: in.Gateway.DeviceName,
-		}, devicesDos)
+		err = gd.MultiInsert(l.ctx, &gateway, devicesDos)
 		if err != nil {
 			return err
 		}
@@ -102,24 +98,6 @@ func (l *DeviceGatewayMultiUpdateLogic) DeviceGatewayMultiUpdate(in *dm.DeviceGa
 	if in.IsNotNotify {
 		return &dm.Empty{}, nil
 	}
-	req := &msgGateway.Msg{
-		CommonMsg: *deviceMsg.NewRespCommonMsg(l.ctx, deviceMsg.Change, devices.GenMsgToken(l.ctx, l.svcCtx.NodeID)).AddStatus(errors.OK, false),
-		Payload:   logic.ToGatewayPayload(def.GatewayBind, devicesDos),
-	}
-	respBytes, _ := json.Marshal(req)
-	msg := deviceMsg.PublishMsg{
-		Handle:       devices.Gateway,
-		Type:         msgGateway.TypeTopo,
-		Payload:      respBytes,
-		Timestamp:    time.Now().UnixMilli(),
-		ProductID:    in.Gateway.ProductID,
-		DeviceName:   in.Gateway.DeviceName,
-		ProtocolCode: pi.ProtocolCode,
-	}
-	er := l.svcCtx.PubDev.PublishToDev(l.ctx, &msg)
-	if er != nil {
-		l.Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)
-		return nil, er
-	}
+	TopoChange(l.ctx, l.svcCtx, pi, gateway, devicesDos)
 	return &dm.Empty{}, nil
 }

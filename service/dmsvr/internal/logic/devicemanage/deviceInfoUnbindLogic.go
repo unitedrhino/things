@@ -41,6 +41,7 @@ func NewDeviceInfoUnbindLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 
 func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceInfoUnbindReq) (*dm.Empty, error) {
 	diDB := relationDB.NewDeviceInfoRepo(l.ctx)
+	dev := devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName}
 	di, err := diDB.FindOneByFilter(ctxs.WithRoot(l.ctx), relationDB.DeviceFilter{
 		ProductID:   in.ProductID,
 		DeviceNames: []string{in.DeviceName},
@@ -100,10 +101,6 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceInfoUnbindReq) (*d
 	di.AreaIDPath = def.NotClassifiedPath
 	di.DeviceAlias = pc.ProductName
 	if di.FirstBind.Valid && di.FirstBind.Time.After(time.Now().AddDate(0, 0, -1)) { //绑定一天内的不算绑定时间
-		pc, err := l.svcCtx.ProductCache.GetData(l.ctx, di.ProductID)
-		if err != nil {
-			return nil, err
-		}
 		if pc.TrialTime != nil && di.ExpTime.Valid { //如果设备的有效期大于从当前算起的有效期,那说明充值过,这时候不能清除过期时间
 			expTime := time.Now().Add(time.Hour * 24 * time.Duration(pc.TrialTime.GetValue()))
 			if expTime.After(di.ExpTime.Time) {
@@ -125,18 +122,12 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceInfoUnbindReq) (*d
 			return err
 		}
 		err = relationDB.NewDeviceProfileRepo(tx).DeleteByFilter(ctxs.WithRoot(l.ctx),
-			relationDB.DeviceProfileFilter{Device: devices.Core{
-				ProductID:  di.ProductID,
-				DeviceName: di.DeviceName,
-			}})
+			relationDB.DeviceProfileFilter{Device: dev})
 		if err != nil {
 			return err
 		}
 		err = relationDB.NewUserDeviceCollectRepo(tx).DeleteByFilter(l.ctx, relationDB.UserDeviceCollectFilter{Cores: []*devices.Core{
-			{
-				ProductID:  di.ProductID,
-				DeviceName: di.DeviceName,
-			},
+			&dev,
 		}})
 		if err != nil {
 			return err
@@ -150,15 +141,14 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceInfoUnbindReq) (*d
 	if err != nil {
 		return nil, err
 	}
-	l.svcCtx.DeviceCache.SetData(l.ctx, devices.Core{
-		ProductID:  di.ProductID,
-		DeviceName: di.DeviceName,
-	}, nil)
+	l.svcCtx.DeviceCache.SetData(l.ctx, dev, nil)
 	err = DeleteDeviceTimeData(l.ctx, l.svcCtx, in.ProductID, in.DeviceName, DeleteModeThing)
-	err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUnbind, &devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
+	err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUnbind, &dev)
 	if err != nil {
 		l.Error(err)
 	}
+	BindChange(l.ctx, l.svcCtx, pc, dev, int64(di.ProjectID))
+
 	if di.DeviceType == def.DeviceTypeGateway { //网关类型的需要解绑子设备
 		ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
 			subs, err := relationDB.NewGatewayDeviceRepo(ctx).FindByFilter(l.ctx, relationDB.GatewayDeviceFilter{Gateway: &devices.Core{

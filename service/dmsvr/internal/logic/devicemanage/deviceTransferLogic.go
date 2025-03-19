@@ -222,6 +222,8 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 		if err != nil {
 			l.Error(err)
 		}
+		BindChange(l.ctx, l.svcCtx, nil, *di, int64(ProjectID))
+
 	}
 	if len(changeAreaIDPaths) > 0 {
 		ctxs.GoNewCtx(l.ctx, func(ctx2 context.Context) {

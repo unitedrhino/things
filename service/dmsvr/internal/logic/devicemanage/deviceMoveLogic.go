@@ -61,6 +61,7 @@ func (l *DeviceMoveLogic) DeviceMove(in *dm.DeviceMoveReq) (*dm.Empty, error) {
 	newDev.UserID = oldDev.UserID
 	newDev.ExpTime = oldDev.ExpTime
 	newDev.Distributor = oldDev.Distributor
+	oldDev.ProjectID = def.NotClassified
 	if oldDev.FirstBind.Valid && oldDev.FirstBind.Time.After(time.Now().AddDate(0, 0, -1)) { //绑定一天内的不算绑定时间
 		oldDev.FirstBind.Valid = false
 		oldDev.ExpTime.Valid = false
@@ -177,17 +178,17 @@ func (l *DeviceMoveLogic) DeviceMove(in *dm.DeviceMoveReq) (*dm.Empty, error) {
 	if err != nil {
 		return nil, err
 	}
-	l.svcCtx.DeviceCache.SetData(l.ctx, devices.Core{
-		ProductID:  oldDev.ProductID,
-		DeviceName: oldDev.DeviceName,
-	}, nil)
-	l.svcCtx.DeviceCache.SetData(l.ctx, devices.Core{
-		ProductID:  newDev.ProductID,
-		DeviceName: newDev.DeviceName,
-	}, nil)
+	oldDevCore := devices.Core{ProductID: oldDev.ProductID, DeviceName: oldDev.DeviceName}
+	newDevCore := devices.Core{ProductID: newDev.ProductID, DeviceName: newDev.DeviceName}
+
+	l.svcCtx.DeviceCache.SetData(l.ctx, oldDevCore, nil)
+	l.svcCtx.DeviceCache.SetData(l.ctx, newDevCore, nil)
 	err = DeleteDeviceTimeData(l.ctx, l.svcCtx, oldDev.ProductID, oldDev.DeviceName, DeleteModeAll)
 	err = DeleteDeviceTimeData(l.ctx, l.svcCtx, newDev.ProductID, newDev.DeviceName, DeleteModeAll)
-	err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUnbind, &devices.Core{ProductID: oldDev.ProductID, DeviceName: oldDev.DeviceName})
+	err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUnbind, &oldDevCore)
+	BindChange(l.ctx, l.svcCtx, pi, oldDevCore, int64(oldDev.ProjectID))
+	BindChange(l.ctx, l.svcCtx, pi, newDevCore, int64(newDev.ProjectID))
+
 	if err != nil {
 		l.Error(err)
 	}

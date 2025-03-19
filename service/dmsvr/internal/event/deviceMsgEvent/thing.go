@@ -510,6 +510,12 @@ func (l *ThingLogic) HandlePropertyReportInfo(msg *deviceMsg.PublishMsg, req msg
 			OtaVersionCheck(l.ctx, l.svcCtx, diDeviceBasicInfoDo.Core, dmDeviceInfoReq.Version.GetValue(), "default")
 		})
 	}
+	if diDeviceBasicInfoDo.ProjectID != 0 {
+		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, dev)
+		if err == nil && di.ProjectID != diDeviceBasicInfoDo.ProjectID {
+			devicemanagelogic.BindChange(l.ctx, l.svcCtx, nil, dev, di.ProjectID)
+		}
+	}
 	_, err = devicemanagelogic.NewDeviceInfoUpdateLogic(l.ctx, l.svcCtx).DeviceInfoUpdate(dmDeviceInfoReq)
 	if err != nil {
 		l.Errorf("%s.DeviceInfoUpdate productID:%v deviceName:%v err:%v",
@@ -759,6 +765,8 @@ func (l *ThingLogic) HandleService(msg *deviceMsg.PublishMsg) (respMsg *deviceMs
 		tk.Status = deviceBind.StatusReport
 		err = l.svcCtx.DeviceBindToken.SetData(l.ctx, token, tk)
 		return l.DeviceResp(msg, err, nil), err
+	case deviceMsg.BindChange:
+		return nil, nil
 	default:
 		return nil, errors.Method.AddMsg(l.dreq.Method)
 	}

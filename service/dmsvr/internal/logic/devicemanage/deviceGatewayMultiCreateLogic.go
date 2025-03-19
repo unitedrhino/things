@@ -2,23 +2,17 @@ package devicemanagelogic
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
-	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceAuth"
-	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
-	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgGateway"
 	"github.com/spf13/cast"
-	"time"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -89,10 +83,11 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 			}
 		}
 	}
-	err = l.GdDB.MultiInsert(l.ctx, &devices.Core{
+	gateway := devices.Core{
 		ProductID:  in.Gateway.ProductID,
 		DeviceName: in.Gateway.DeviceName,
-	}, devs)
+	}
+	err = l.GdDB.MultiInsert(l.ctx, &gateway, devs)
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
@@ -108,25 +103,7 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 	if in.IsNotNotify {
 		return &dm.Empty{}, nil
 	}
-	req := &msgGateway.Msg{
-		CommonMsg: *deviceMsg.NewRespCommonMsg(l.ctx, deviceMsg.Change, devices.GenMsgToken(l.ctx, l.svcCtx.NodeID)).AddStatus(errors.OK, false),
-		Payload:   logic.ToGatewayPayload(def.GatewayBind, devs),
-	}
-	respBytes, _ := json.Marshal(req)
-	msg := deviceMsg.PublishMsg{
-		Handle:       devices.Gateway,
-		Type:         msgGateway.TypeTopo,
-		Payload:      respBytes,
-		Timestamp:    time.Now().UnixMilli(),
-		ProductID:    in.Gateway.ProductID,
-		DeviceName:   in.Gateway.DeviceName,
-		ProtocolCode: pi.ProtocolCode,
-	}
-	er := l.svcCtx.PubDev.PublishToDev(l.ctx, &msg)
-	if er != nil {
-		l.Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)
-		return nil, er
-	}
+	TopoChange(l.ctx, l.svcCtx, pi, gateway, devs)
 	return &dm.Empty{}, nil
 }
 

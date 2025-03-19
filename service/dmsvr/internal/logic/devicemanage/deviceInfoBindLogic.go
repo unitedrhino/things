@@ -174,9 +174,11 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 	}
 	logic.FillAreaDeviceCount(l.ctx, l.svcCtx, ai.AreaIDPath, string(oldAreaIDPath))
 	logic.FillProjectDeviceCount(l.ctx, l.svcCtx, int64(di.ProjectID))
-	er := l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUpdate, &devices.Core{ProductID: di.ProductID, DeviceName: di.DeviceName})
+	dev := devices.Core{ProductID: di.ProductID, DeviceName: di.DeviceName}
+	er := l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUpdate, &dev)
 	if er != nil {
 		l.Error(er)
 	}
+	BindChange(l.ctx, l.svcCtx, pi, dev, int64(di.ProjectID))
 	return &dm.Empty{}, err
 }

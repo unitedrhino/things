@@ -43,6 +43,7 @@ type (
 		MobileOperator int64             `json:"mobileOperator,omitempty"` //移动运营商:1)移动 2)联通 3)电信 4)广电
 		Rssi           *int64            `json:"rssi,omitempty"`
 		Iccid          *string           `json:"iccid"`
+		ProjectID      int64             `json:"projectID,string"`
 	}
 	PackReport struct {
 		*deviceMsg.CommonMsg

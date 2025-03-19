@@ -2,11 +2,9 @@ package devicemanagelogic
 
 import (
 	"context"
-	"encoding/json"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
-	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceStatus"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
@@ -14,8 +12,6 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceAuth"
-	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
-	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgGateway"
 	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -64,11 +60,11 @@ func (l *DeviceGatewayMultiDeleteLogic) DeviceGatewayMultiDelete(in *dm.DeviceGa
 	if err != nil {
 		return nil, err
 	}
-
-	err = l.GdDB.MultiDelete(l.ctx, &devices.Core{
+	gateway := devices.Core{
 		ProductID:  in.Gateway.ProductID,
 		DeviceName: in.Gateway.DeviceName,
-	}, devicesDos)
+	}
+	err = l.GdDB.MultiDelete(l.ctx, &gateway, devicesDos)
 	if err != nil {
 		return nil, err
 	}
@@ -88,25 +84,7 @@ func (l *DeviceGatewayMultiDeleteLogic) DeviceGatewayMultiDelete(in *dm.DeviceGa
 	if in.IsNotNotify {
 		return &dm.Empty{}, nil
 	}
-	req := &msgGateway.Msg{
-		CommonMsg: *deviceMsg.NewRespCommonMsg(l.ctx, deviceMsg.Change, devices.GenMsgToken(l.ctx, l.svcCtx.NodeID)).AddStatus(errors.OK, false),
-		Payload:   logic.ToGatewayPayload(def.GatewayUnbind, devicesDos),
-	}
-	respBytes, _ := json.Marshal(req)
-	msg := deviceMsg.PublishMsg{
-		Handle:       devices.Gateway,
-		Type:         msgGateway.TypeTopo,
-		Payload:      respBytes,
-		Timestamp:    now.UnixMilli(),
-		ProductID:    in.Gateway.ProductID,
-		DeviceName:   in.Gateway.DeviceName,
-		ProtocolCode: pi.ProtocolCode,
-	}
-	er := l.svcCtx.PubDev.PublishToDev(l.ctx, &msg)
-	if er != nil {
-		l.Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)
-		return nil, er
-	}
+	TopoChange(l.ctx, l.svcCtx, pi, gateway, devicesDos)
 
 	return &dm.Empty{}, nil
 }
