@@ -622,7 +622,7 @@ message ProtocolScriptDebugReq{
 }
 
 message ProtocolScriptDebugResp{
-  string out =1;
+  PublishMsg out =1;
   repeated string logs =2;
 }
 

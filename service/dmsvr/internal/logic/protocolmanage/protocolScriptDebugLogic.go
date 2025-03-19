@@ -52,7 +52,7 @@ func (l *ProtocolScriptDebugLogic) ProtocolScriptDebug(in *dm.ProtocolScriptDebu
 			return nil, err
 		}
 		return &dm.ProtocolScriptDebugResp{
-			Out:  utils.MarshalNoErr(ret),
+			Out:  utils.Copy[dm.PublishMsg](ret),
 			Logs: logs,
 		}, nil
 	case protocol.TriggerTimerAfter:

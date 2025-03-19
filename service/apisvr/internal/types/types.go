@@ -1660,8 +1660,8 @@ type ProtocolScriptDebugReq struct {
 }
 
 type ProtocolScriptDebugResp struct {
-	Out  string   `json:"out"`
-	Logs []string `json:"logs"`
+	Out  *PublishMsg `json:"out"`
+	Logs []string    `json:"logs"`
 }
 
 type ProtocolScriptDevice struct {

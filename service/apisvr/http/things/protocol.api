@@ -222,7 +222,7 @@ type (
         Resp *PublishMsg  `json:"resp,optional"`//回复
     }
     ProtocolScriptDebugResp{
-        Out string `json:"out"`
+        Out *PublishMsg `json:"out"`
         Logs []string `json:"logs"`
     }
     ProtocolScript  {
