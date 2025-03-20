@@ -2,21 +2,23 @@ version: '3.2'
 # Network
 networks:
   unitedrhino_net:
-    name: unitedrhino_net
     ipam:
       config:
         - subnet: 172.20.0.0/16
 
 services:
   things:
-    image: registry.cn-qingdao.aliyuncs.com/unitedrhino/things:v1.2.0
+    image: docker.unitedrhino.com/unitedrhino/things:latest
     container_name: things
     hostname: things
     restart: always
     ports:
       - "7788:7788"
+      - "17788:17788" #监控端口
+      - "9081:9081" # dmsvr rpc端口
     volumes:
-      - ../conf/things/etc:/unitedrhino/etc
+      - ../conf/oss:/oss
+    #      - ../conf/things/etc:/unitedrhino/etc
     depends_on:
       - tdengine
       - nats-server
@@ -42,15 +44,17 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.8
+      - unitedrhino_net
   core:
-    image: registry.cn-qingdao.aliyuncs.com/unitedrhino/core:v1.2.0
+    image: docker.unitedrhino.com/unitedrhino/core:latest
     container_name: core
     hostname: core
     restart: always
     ports:
       - "7777:7777"
+      - "17777:17777" #监控端口
+      - "9180:9180" # sys rpc 端口
+      - "3256:3256" # timedJob 端口
     depends_on:
       - tdengine
       - nats-server
@@ -58,7 +62,9 @@ services:
       - redis
       - emqx
     volumes:
-      - ../conf/core/etc:/unitedrhino/etc
+      - ../conf/oss:/oss
+    #      - ../conf/core/etc:/unitedrhino/etc
+    #      - ../conf/core/dist:/unitedrhino/dist
     environment:
       - confSuffix=${confSuffix}
       - isInitTable=${isInitTable}
@@ -73,8 +79,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.22
+      - unitedrhino_net
   nats-server:
     image: nats:latest
     container_name: nats
@@ -91,8 +96,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.2
+      - unitedrhino_net
 
   etcd:
     image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:bitnami-etcd-3.5
@@ -115,29 +119,8 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.3
+      - unitedrhino_net
 
-#  mariadb:
-#    image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:mariadb-10.7
-#    container_name: mariadb
-#    hostname: mariadb
-#    restart: always
-#    ports:
-#      - "3306:3306"
-#    environment:
-#      MYSQL_ROOT_PASSWORD: password
-#      TZ: Asia/Shanghai
-#    volumes:
-#      - ../conf/mysql/sql:/docker-entrypoint-initdb.d
-#    logging:
-#      options:
-#        max-size: "50M"
-#        max-file: "10"
-#      driver: json-file
-#    networks:
-#      unitedrhino_net:
-#        ipv4_address: 172.20.0.4
   postgres: # 服务名称
     image: postgis/postgis:17-3.5 # 指定镜像及其版本
     container_name: postgres # 指定容器的名称
@@ -156,8 +139,7 @@ services:
         max-size: "10m"
         max-file: "3"
     networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.20
+      - unitedrhino_net
 
   redis:
     image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:redis-7-alpine
@@ -172,8 +154,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.5
+      - unitedrhino_net
 
   tdengine:
     image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:tdengine-tdengine-3.0.4.2
@@ -193,8 +174,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.6
+      - unitedrhino_net
   emqx:
     image: emqx/emqx:5.4.0
     container_name: emqx
@@ -218,8 +198,7 @@ services:
         max-file: "10"
       driver: json-file
     networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.7
+      - unitedrhino_net
 
   minio:
     image: minio/minio:latest
@@ -242,8 +221,7 @@ services:
 #      - /docker/minio/data:/data               #映射当前目录下的data目录至容器内/data目录
 #      - /docker/minio/config:/root/.minio/     #映射配置目录
     networks:
-      unitedrhino_net:
-        ipv4_address: 172.20.0.10
+      - unitedrhino_net
 #
 #  zlmediakit:
 #    image: registry.cn-shenzhen.aliyuncs.com/airgens/zlmediakit:v1

@@ -2,21 +2,21 @@ version: '3.2'
 # Network
 networks:
   unitedrhino_net:
-    name: unitedrhino_net
     ipam:
       config:
         - subnet: 172.20.0.0/16
-
 services:
   things:
-    image: registry.cn-qingdao.aliyuncs.com/unitedrhino/things:latest
+    image: docker.unitedrhino.com/unitedrhino/things:latest
     container_name: things
     hostname: things
     restart: always
     ports:
       - "7788:7788"
       - "17788:17788"
-#    volumes:
+      - "9081:9081" # dmsvr rpc端口
+    volumes:
+      - ../conf/oss:/oss
 #      - ../conf/things/etc:/unitedrhino/etc
     depends_on:
       - tdengine
@@ -47,13 +47,15 @@ services:
     networks:
       - unitedrhino_net
   core:
-    image: registry.cn-qingdao.aliyuncs.com/unitedrhino/core:latest
+    image: docker.unitedrhino.com/unitedrhino/core:latest
     container_name: core
     hostname: core
     restart: always
     ports:
       - "7777:7777"
       - "17777:17777"
+      - "9180:9180" # sys rpc 端口
+      - "3256:3256" # timedJob 端口
     depends_on:
       - tdengine
       - nats-server
