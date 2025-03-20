@@ -56,6 +56,12 @@ func (l *ProtocolScriptUpdateLogic) ProtocolScriptUpdate(in *dm.ProtocolScript) 
 		}
 		old.Script = in.Script
 	}
+	if in.TriggerType != "" {
+		old.TriggerType = in.TriggerType
+	}
+	if in.TriggerHandle != "" {
+		old.TriggerHandle = in.TriggerHandle
+	}
 	if in.Status != 0 {
 		old.Status = in.Status
 	}
