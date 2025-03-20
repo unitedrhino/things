@@ -1730,14 +1730,14 @@ type ProtocolServiceIndexResp struct {
 }
 
 type PublishMsg struct {
-	Handle       string `json:"handle"` //对应 mqtt topic的第一个 thing ota config 等等
-	Type         string `json:"type"`   //操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
-	Payload      []byte `json:"payload"`
-	Timestamp    int64  `json:"timestamp,string"` //毫秒时间戳
-	ProductID    string `json:"productID"`
-	DeviceName   string `json:"deviceName"`
-	Explain      string `json:"explain"`      //内部使用的拓展字段
-	ProtocolCode string `json:"protocolCode"` //如果有该字段则回复的时候也会带上该字段
+	Handle       string `json:"handle,optional"` //对应 mqtt topic的第一个 thing ota config 等等
+	Type         string `json:"type,optional"`   //操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
+	Payload      []byte `json:"payload,optional"`
+	Timestamp    int64  `json:"timestamp,string,optional"` //毫秒时间戳
+	ProductID    string `json:"productID,optional"`
+	DeviceName   string `json:"deviceName,optional"`
+	Explain      string `json:"explain,optional"`      //内部使用的拓展字段
+	ProtocolCode string `json:"protocolCode,optional"` //如果有该字段则回复的时候也会带上该字段
 }
 
 type SceneFlowInfo struct {

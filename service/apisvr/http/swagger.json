@@ -13999,17 +13999,7 @@
           "description": "如果有该字段则回复的时候也会带上该字段"
         }
       },
-      "title": "PublishMsg",
-      "required": [
-        "handle",
-        "type",
-        "payload",
-        "timestamp",
-        "productID",
-        "deviceName",
-        "explain",
-        "protocolCode"
-      ]
+      "title": "PublishMsg"
     },
     "SceneFlowInfo": {
       "type": "object",
