@@ -15,12 +15,6 @@ packback: buildback toremote
 packbackzhou:  buildback  toremotezhou
 
 
-moduleupdate:
-	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>$@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@git submodule update --init --recursive
-	@git submodule foreach git checkout master
-	@git submodule foreach git pull
-
 build.front:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>$@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	@mkdir -p ./cmd/core/dist/app/things
@@ -41,10 +35,6 @@ build.coreback:
 toremote:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>tormote cmd<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	@rsync -r -v ./cmd/* root@120.79.205.165:/root/git/iThings
-
-toremotezhou:
-	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>tormote cmd<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@rsync -r -v ./cmd/* root@139.159.188.223:/root/git/iThings
 
 
 killall:
@@ -94,10 +84,6 @@ build.ud:
 run.api:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	@cd cmd/things && nohup ./apisvr &  cd ..
-
-run.view:
-	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>run $@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@cd cmd/things && nohup ./viewsvr &  cd ..
 
 
 run.dg:
