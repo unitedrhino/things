@@ -13981,8 +13981,7 @@
           "type": "string"
         },
         "timestamp": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "毫秒时间戳"
         },
         "productID": {

@@ -3,12 +3,15 @@ package deviceMsg
 
 import (
 	"context"
+	"encoding/hex"
 	"encoding/json"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/share/devices"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
+	"unicode"
+	"unicode/utf8"
 )
 
 type ReqType = string
@@ -53,11 +56,32 @@ func (c *CommonMsg) NeedRetMsg() bool {
 	return false
 }
 
+func isPrintable(data []byte) bool {
+	for _, b := range data {
+		// 检查是否为可打印字符（包括空格）
+		if b > unicode.MaxASCII || !unicode.IsPrint(rune(b)) {
+			return false
+		}
+	}
+	return true
+}
+
+func printBytes(data []byte) string {
+	// 检查是否为有效的 UTF-8 字符串
+	if utf8.Valid(data) && isPrintable(data) {
+		// 如果是字符串，直接打印字符串
+		return string(data)
+	} else {
+		// 如果是二进制数据，打印十六进制格式
+		return "0x" + hex.EncodeToString(data)
+	}
+}
+
 func (p *PublishMsg) String() string {
 	msgMap := map[string]any{
 		"Handle":       p.Handle,
 		"Type":         p.Type,
-		"Payload":      string(p.Payload),
+		"Payload":      printBytes(p.Payload),
 		"Timestamp":    p.Timestamp,
 		"ProductID":    p.ProductID,
 		"DeviceName":   p.DeviceName,
