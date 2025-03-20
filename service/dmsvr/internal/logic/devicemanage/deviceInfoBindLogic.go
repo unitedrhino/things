@@ -85,7 +85,7 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 			}
 		}
 	}
-	if string(di.TenantCode) == uc.TenantCode &&
+	if pi.BindLevel == product.BindLeveHard1 && string(di.TenantCode) == uc.TenantCode &&
 		int64(di.ProjectID) == uc.ProjectID { //如果已经绑定到自己名下则不允许重复绑定
 		return nil, errors.DeviceBound.WithMsg("设备已存在，请返回设备列表查看该设备")
 	}
