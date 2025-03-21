@@ -642,8 +642,10 @@ message ProtocolScript{
 message ProtocolScriptIndexReq{
   PageInfo page = 1;
   string  name = 2;
-  int64 TriggerDir =3;    //1:up 2:down
-  int64 TriggerTimer =4;  //收到前处理1:before 2:after
+  int64 triggerDir =3;    //1:up 2:down
+  int64 triggerTimer =4;  //收到前处理1:before 2:after
+  string triggerHandle =5;
+  string triggerType =6;
   int64 status =7;//状态:是否启用
 }
 
@@ -1462,6 +1464,7 @@ message ProductInfoIndexReq{
   map<string,string> protocolConf = 6; //协议配置查询
   string protocolCode =7;
   string protocolType = 25; //协议类型
+  string protocolTrans = 26;//传输层协议类型
   bool withProtocol =8;
   bool withCategory=9;
   string  sceneMode =16;//场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)

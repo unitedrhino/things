@@ -35,10 +35,12 @@ func (l *ProtocolScriptIndexLogic) ProtocolScriptIndex(in *dm.ProtocolScriptInde
 	)
 
 	filter := relationDB.ProtocolScriptFilter{
-		Name:         in.Name,
-		Status:       in.Status,
-		TriggerDir:   in.TriggerDir,
-		TriggerTimer: in.TriggerTimer,
+		Name:          in.Name,
+		Status:        in.Status,
+		TriggerDir:    in.TriggerDir,
+		TriggerTimer:  in.TriggerTimer,
+		TriggerHandle: in.TriggerHandle,
+		TriggerType:   in.TriggerType,
 	}
 	size, err = piDB.CountByFilter(l.ctx, filter)
 	if err != nil {

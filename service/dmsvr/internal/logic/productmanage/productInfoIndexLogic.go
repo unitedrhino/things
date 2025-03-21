@@ -61,7 +61,7 @@ func (l *ProductInfoIndexLogic) ProductInfoIndex(in *dm.ProductInfoIndexReq) (*d
 
 	filter := relationDB.ProductFilter{
 		CategoryIDs: in.CategoryIDs,
-		AreaIDPath:  in.AreaIDPath, ProtocolType: in.ProtocolType,
+		AreaIDPath:  in.AreaIDPath, ProtocolType: in.ProtocolType, ProtocolTrans: in.ProtocolTrans,
 		SceneMode: in.SceneMode, SceneModes: in.SceneModes, DeviceType: in.DeviceType, DeviceTypes: in.DeviceTypes, ProductName: in.ProductName, ProtocolCode: in.ProtocolCode,
 		Tags: in.Tags, ProductIDs: in.ProductIDs, WithProtocol: in.WithProtocol, WithCategory: in.WithCategory, ProtocolConf: in.ProtocolConf,
 		Statuses: in.Statuses, Status: in.Status, NetType: in.NetType, AreaID: in.AreaID,

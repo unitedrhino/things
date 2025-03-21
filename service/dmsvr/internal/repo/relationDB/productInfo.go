@@ -16,25 +16,26 @@ type ProductInfoRepo struct {
 }
 
 type ProductFilter struct {
-	DeviceType   int64
-	DeviceTypes  []int64
-	ProductName  string
-	ProductIDs   []string
-	ProductNames []string
-	Tags         map[string]string
-	ProtocolConf map[string]string
-	WithProtocol bool
-	WithCategory bool
-	ProtocolCode string
-	ProtocolType string
-	CategoryIDs  []int64
-	SceneMode    string
-	SceneModes   []string
-	Status       devices.ProductStatus
-	Statuses     []devices.ProductStatus
-	AreaID       int64
-	AreaIDPath   string
-	NetType      int64
+	DeviceType    int64
+	DeviceTypes   []int64
+	ProductName   string
+	ProductIDs    []string
+	ProductNames  []string
+	Tags          map[string]string
+	ProtocolConf  map[string]string
+	WithProtocol  bool
+	WithCategory  bool
+	ProtocolCode  string
+	ProtocolType  string
+	ProtocolTrans string
+	CategoryIDs   []int64
+	SceneMode     string
+	SceneModes    []string
+	Status        devices.ProductStatus
+	Statuses      []devices.ProductStatus
+	AreaID        int64
+	AreaIDPath    string
+	NetType       int64
 }
 
 func NewProductInfoRepo(in any) *ProductInfoRepo {
@@ -64,9 +65,16 @@ func (p ProductInfoRepo) fmtFilter(ctx context.Context, f ProductFilter) *gorm.D
 	if f.ProtocolCode != "" {
 		db = db.Where("protocol_code=? or sub_protocol_code=?", f.ProtocolCode, f.ProtocolCode)
 	}
-	if f.ProtocolType != "" {
-		subQuery := p.db.Model(&DmProtocolInfo{}).Select("code").Where(
-			fmt.Sprintf("%s = ?", stores.Col("type")), f.ProtocolType)
+	if f.ProtocolType != "" || f.ProtocolTrans != "" {
+		subQuery := p.db.Model(&DmProtocolInfo{}).Select("code")
+		if f.ProtocolType != "" {
+			subQuery = subQuery.Where(
+				fmt.Sprintf("%s = ?", stores.Col("type")), f.ProtocolType)
+		}
+		if f.ProtocolTrans != "" {
+			subQuery = subQuery.Where(
+				fmt.Sprintf("%s = ?", stores.Col("trans_protocol")), f.ProtocolTrans)
+		}
 		db = db.Where("protocol_code in (?) or sub_protocol_code in (?)", subQuery, subQuery)
 	}
 	if f.SceneMode != "" {
