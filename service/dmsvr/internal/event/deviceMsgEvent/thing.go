@@ -510,9 +510,9 @@ func (l *ThingLogic) HandlePropertyReportInfo(msg *deviceMsg.PublishMsg, req msg
 			OtaVersionCheck(l.ctx, l.svcCtx, diDeviceBasicInfoDo.Core, dmDeviceInfoReq.Version.GetValue(), "default")
 		})
 	}
-	if diDeviceBasicInfoDo.ProjectID != 0 {
+	if diDeviceBasicInfoDo.ProjectID != "" {
 		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, dev)
-		if err == nil && di.ProjectID != diDeviceBasicInfoDo.ProjectID {
+		if err == nil && di.ProjectID != cast.ToInt64(diDeviceBasicInfoDo.ProjectID) {
 			devicemanagelogic.BindChange(l.ctx, l.svcCtx, nil, dev, di.ProjectID)
 		}
 	}
