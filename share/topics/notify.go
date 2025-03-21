@@ -23,7 +23,9 @@ const (
 	//最后一个参数是告警模式
 	UdRuleAlarmNotify = "server.things.ud.rule.alarm.%s" //trigger:触发告警 relieve:解除告警
 	DgOnlineTimer     = "server.things.dg.online.timer"
-	PAliTimer         = "server.things.pali.data.timer"
+	DgOnlineTimer2    = "server.things.dg.online.timer2"
+
+	PAliTimer = "server.things.pali.data.timer"
 
 	DmActionCheckDelay = "server.things.dm.action.check.delay"
 )

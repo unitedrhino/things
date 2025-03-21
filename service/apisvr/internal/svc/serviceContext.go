@@ -110,7 +110,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			otaM = otamanage.NewOtaManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			protocolM = protocolmanage.NewProtocolManage(zrpc.MustNewClient(c.DmRpc.Conf))
 			schemaM = schemamanage.NewSchemaManage(zrpc.MustNewClient(c.DmRpc.Conf))
-			UserDevice = userdevice.NewUserDevice(zrpc.MustNewClient(c.UdRpc.Conf))
+			UserDevice = userdevice.NewUserDevice(zrpc.MustNewClient(c.DmRpc.Conf))
 
 		} else { //直连模式
 			deviceMsg = dmdirect.NewDeviceMsg(c.DmRpc.RunProxy)

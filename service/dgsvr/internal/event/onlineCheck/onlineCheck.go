@@ -32,21 +32,56 @@ func NewOnlineCheckEvent(svcCtx *svc.ServiceContext, ctx context.Context) *Check
 
 var isRun atomic.Bool
 
-func (o *CheckEvent) Check() error {
+func (o *CheckEvent) Check(isAll bool) error {
 	logx.WithContext(o.ctx).Infof("online_sync")
 	if !isRun.CompareAndSwap(false, true) {
 		logx.WithContext(o.ctx).Infof("online_sync other run")
 		return nil
 	}
 	defer isRun.Store(false)
+
+	var devs = map[devices.Core]struct{}{}
+	var err error
+	if !isAll {
+		devs, err = protocol.GetActivityDevices(o.ctx)
+		if err != nil {
+			logx.WithContext(o.ctx).Error(err)
+			return err
+		}
+	} else {
+		var page int64 = 0
+		var limit int64 = 500
+		var total int64 = 999999
+		pis, err := o.svcCtx.ProductM.ProductInfoIndex(o.ctx, &dm.ProductInfoIndexReq{ProtocolTrans: protocols.ProtocolMqtt})
+		if err != nil {
+			return err
+		}
+		if len(pis.List) == 0 {
+			return nil
+		}
+		productIDs := utils.ToSliceWithFunc(pis.List, func(in *dm.ProductInfo) string {
+			return in.ProductID
+		})
+		for page*limit < total {
+			page++
+			ret, err := o.svcCtx.DeviceM.DeviceInfoIndex(o.ctx, &dm.DeviceInfoIndexReq{IsOnline: def.True, ProductIDs: productIDs, Page: &dm.PageInfo{
+				Page:   page,
+				Size:   limit,
+				Orders: []*dm.PageInfo_OrderBy{{Field: "createdTime", Sort: 1}},
+			}})
+			if err != nil {
+				logx.WithContext(o.ctx).Error(err)
+				return err
+			}
+			total = ret.Total
+			for _, dev := range ret.List {
+				devs[devices.Core{ProductID: dev.ProductID, DeviceName: dev.DeviceName}] = struct{}{}
+			}
+		}
+	}
 	var total int64 = 10000
 	var limit int64 = 500
 	var page int64 = 0
-	devs, err := protocol.GetActivityDevices(o.ctx)
-	if err != nil {
-		logx.WithContext(o.ctx).Error(err)
-		devs = map[devices.Core]struct{}{}
-	}
 	var needOnlineDevices []*dm.DeviceOnlineMultiFix
 	for page*limit < total {
 		page++

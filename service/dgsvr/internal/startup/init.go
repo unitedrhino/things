@@ -68,7 +68,11 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 	logx.Must(err)
 
 	err = svcCtx.FastEvent.QueueSubscribe(topics.DgOnlineTimer, func(ctx context.Context, t time.Time, body []byte) error {
-		return onlineCheck.NewOnlineCheckEvent(svcCtx, ctx).Check()
+		return onlineCheck.NewOnlineCheckEvent(svcCtx, ctx).Check(false)
+	})
+	logx.Must(err)
+	err = svcCtx.FastEvent.QueueSubscribe(topics.DgOnlineTimer2, func(ctx context.Context, t time.Time, body []byte) error {
+		return onlineCheck.NewOnlineCheckEvent(svcCtx, ctx).Check(true)
 	})
 	logx.Must(err)
 
@@ -96,6 +100,19 @@ func TimerInit(svcCtx *svc.ServiceContext) {
 		CronExpr:  "@every 5m",                                                      // cron执行表达式
 		Status:    def.StatusWaitRun,                                                // 状态
 		Priority:  3,                                                                //优先级: 10:critical 最高优先级  3: default 普通优先级 1:low 低优先级
+	})
+	if err != nil && !errors.Cmp(errors.Fmt(err), errors.Duplicate) {
+		logx.Must(err)
+	}
+	_, err = svcCtx.TimedM.TaskInfoCreate(ctx, &timedmanage.TaskInfo{
+		GroupCode: def.TimedUnitedRhinoQueueGroupCode,                                //组编码
+		Type:      1,                                                                 //任务类型 1 定时任务 2 延时任务
+		Name:      "联犀协议网关定时处理全局",                                                    // 任务名称
+		Code:      "iThingsDgOnlineTimer2",                                           //任务编码
+		Params:    fmt.Sprintf(`{"topic":"%s","payload":""}`, topics.DgOnlineTimer2), // 任务参数,延时任务如果没有传任务参数会拿数据库的参数来执行
+		CronExpr:  "@every 8h",                                                       // cron执行表达式
+		Status:    def.StatusWaitRun,                                                 // 状态
+		Priority:  3,                                                                 //优先级: 10:critical 最高优先级  3: default 普通优先级 1:low 低优先级
 	})
 	if err != nil && !errors.Cmp(errors.Fmt(err), errors.Duplicate) {
 		logx.Must(err)
