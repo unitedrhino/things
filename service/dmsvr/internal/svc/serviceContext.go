@@ -84,6 +84,7 @@ type ServiceContext struct {
 	UserSubscribe        *ws.UserSubscribe
 	GatewayCanBind       *cache.GatewayCanBind
 	NodeID               int64
+	BindChange           *cache.BindChange
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -237,6 +238,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		SchemaManaRepo:    deviceDataR,
 		DeviceStatus:      cache.NewDeviceStatus(ca),
 		GatewayCanBind:    cache.NewGatewayCanBind(ca),
+		BindChange:        cache.NewBindChange(ca),
 		HubLogRepo:        hubLogR,
 		SDKLogRepo:        sdkLogR,
 		AbnormalRepo:      abnormalR,

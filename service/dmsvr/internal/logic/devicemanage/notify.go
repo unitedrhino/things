@@ -18,10 +18,14 @@ import (
 	"time"
 )
 
-func BindChange(ctx context.Context, svcCtx *svc.ServiceContext, pi *dm.ProductInfo, dev devices.Core, productID int64) error {
+func BindChange(ctx context.Context, svcCtx *svc.ServiceContext, pi *dm.ProductInfo, dev devices.Core, projectID int64) error {
+	v := svcCtx.BindChange.Get(ctx, dev)
+	if v == projectID {
+		return nil
+	}
 	req := &msgThing.Req{
 		CommonMsg: *deviceMsg.NewRespCommonMsg(ctx, deviceMsg.BindChange, devices.GenMsgToken(ctx, svcCtx.NodeID)).AddStatus(errors.OK, false),
-		Params:    map[string]any{"projectID": cast.ToString(productID)},
+		Params:    map[string]any{"projectID": cast.ToString(projectID)},
 	}
 	respBytes, _ := json.Marshal(req)
 	if pi == nil {
@@ -45,6 +49,7 @@ func BindChange(ctx context.Context, svcCtx *svc.ServiceContext, pi *dm.ProductI
 		logx.WithContext(ctx).Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)
 		return er
 	}
+	svcCtx.BindChange.Set(ctx, dev, projectID)
 	return nil
 }
 
