@@ -105,8 +105,6 @@ func (p *CloudProtocol[pConf]) Start() error {
 "uid":"209182205384655582",
 "consumerGroupID":"DEFAULT_GROUP"
 }
-
-
 */
 
 func (p *CloudProtocol[pConf]) ConfigChange(ctx context.Context, opt ConfigOpt, c pConf) error {

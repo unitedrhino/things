@@ -9,15 +9,23 @@ import (
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/events/topics"
+	"gitee.com/unitedrhino/share/interceptors"
+	"gitee.com/unitedrhino/share/services"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dgsvr/pb/dg"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/share/clients"
 	"gitee.com/unitedrhino/things/share/devices"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/core/timex"
+	"github.com/zeromicro/go-zero/zrpc"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	"math"
+
 	"strings"
 	"time"
 )
@@ -31,6 +39,8 @@ type MqttProtocol struct {
 	MqttClient   *clients.MqttClient
 	DevSubHandle map[string]DevHandle
 	ConnHandle   ConnHandle
+
+	s *zrpc.RpcServer
 }
 
 func NewMqttProtocol(c conf.EventConf, pi *dm.ProtocolInfo, pc *CoreProtocolConf, mqttc conf.DevLinkConf) (*MqttProtocol, error) {
@@ -46,6 +56,19 @@ func NewMqttProtocol(c conf.EventConf, pi *dm.ProtocolInfo, pc *CoreProtocolConf
 		return nil, err
 	}
 	return &MqttProtocol{CoreProtocol: lightProto, MqttClient: mc, DevSubHandle: make(map[string]DevHandle)}, nil
+}
+
+// RegisterRpc 如果不想自己维护proto,则实现方法注入即可
+func (m *MqttProtocol) RegisterRpc(c zrpc.RpcServerConf, handle dg.DeviceAuthServer) {
+	s := services.MustNewServer(c, func(grpcServer *grpc.Server) {
+		dg.RegisterDeviceAuthServer(grpcServer, handle)
+		if c.Mode == service.DevMode || c.Mode == service.TestMode {
+			reflection.Register(grpcServer)
+		}
+	})
+	defer s.Stop()
+	s.AddUnaryInterceptors(interceptors.Ctxs, interceptors.Error)
+	m.s = s
 }
 
 func (m *MqttProtocol) SubscribeDevMsg(topic string, handle DevHandle) error {
@@ -75,7 +98,16 @@ func (m *MqttProtocol) Start() error {
 			logx.Errorf("%s.mqttSetOnConnectHandler.subscribes err:%v", utils.FuncName(), err)
 		}
 	})
-	return m.CoreProtocol.Start()
+	err = m.CoreProtocol.Start()
+	if err != nil {
+		return err
+	}
+	if m.s != nil {
+		utils.Go(context.Background(), func() {
+			m.s.Start()
+		})
+	}
+	return nil
 }
 
 func (m *MqttProtocol) subscribes(cli mqtt.Client) error {
