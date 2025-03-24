@@ -1565,6 +1565,7 @@ const (
 	ProductManage_ProductInfoDelete_FullMethodName                = "/dm.ProductManage/productInfoDelete"
 	ProductManage_ProductInfoIndex_FullMethodName                 = "/dm.ProductManage/productInfoIndex"
 	ProductManage_ProductInfoRead_FullMethodName                  = "/dm.ProductManage/productInfoRead"
+	ProductManage_ProductConfigUpdate_FullMethodName              = "/dm.ProductManage/productConfigUpdate"
 	ProductManage_ProductSchemaUpdate_FullMethodName              = "/dm.ProductManage/productSchemaUpdate"
 	ProductManage_ProductSchemaCreate_FullMethodName              = "/dm.ProductManage/productSchemaCreate"
 	ProductManage_ProductSchemaMultiCreate_FullMethodName         = "/dm.ProductManage/productSchemaMultiCreate"
@@ -1600,6 +1601,8 @@ type ProductManageClient interface {
 	ProductInfoIndex(ctx context.Context, in *ProductInfoIndexReq, opts ...grpc.CallOption) (*ProductInfoIndexResp, error)
 	// 获取产品信息详情
 	ProductInfoRead(ctx context.Context, in *ProductInfoReadReq, opts ...grpc.CallOption) (*ProductInfo, error)
+	// 更新产品配置
+	ProductConfigUpdate(ctx context.Context, in *ProductConfig, opts ...grpc.CallOption) (*Empty, error)
 	// 更新产品物模型
 	ProductSchemaUpdate(ctx context.Context, in *ProductSchemaUpdateReq, opts ...grpc.CallOption) (*Empty, error)
 	// 新增产品
@@ -1690,6 +1693,15 @@ func (c *productManageClient) ProductInfoIndex(ctx context.Context, in *ProductI
 func (c *productManageClient) ProductInfoRead(ctx context.Context, in *ProductInfoReadReq, opts ...grpc.CallOption) (*ProductInfo, error) {
 	out := new(ProductInfo)
 	err := c.cc.Invoke(ctx, ProductManage_ProductInfoRead_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productManageClient) ProductConfigUpdate(ctx context.Context, in *ProductConfig, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, ProductManage_ProductConfigUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1873,6 +1885,8 @@ type ProductManageServer interface {
 	ProductInfoIndex(context.Context, *ProductInfoIndexReq) (*ProductInfoIndexResp, error)
 	// 获取产品信息详情
 	ProductInfoRead(context.Context, *ProductInfoReadReq) (*ProductInfo, error)
+	// 更新产品配置
+	ProductConfigUpdate(context.Context, *ProductConfig) (*Empty, error)
 	// 更新产品物模型
 	ProductSchemaUpdate(context.Context, *ProductSchemaUpdateReq) (*Empty, error)
 	// 新增产品
@@ -1929,6 +1943,9 @@ func (UnimplementedProductManageServer) ProductInfoIndex(context.Context, *Produ
 }
 func (UnimplementedProductManageServer) ProductInfoRead(context.Context, *ProductInfoReadReq) (*ProductInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductInfoRead not implemented")
+}
+func (UnimplementedProductManageServer) ProductConfigUpdate(context.Context, *ProductConfig) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductConfigUpdate not implemented")
 }
 func (UnimplementedProductManageServer) ProductSchemaUpdate(context.Context, *ProductSchemaUpdateReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductSchemaUpdate not implemented")
@@ -2101,6 +2118,24 @@ func _ProductManage_ProductInfoRead_Handler(srv interface{}, ctx context.Context
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProductManageServer).ProductInfoRead(ctx, req.(*ProductInfoReadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductManage_ProductConfigUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductConfig)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductConfigUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProductManage_ProductConfigUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductConfigUpdate(ctx, req.(*ProductConfig))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2459,6 +2494,10 @@ var ProductManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "productInfoRead",
 			Handler:    _ProductManage_ProductInfoRead_Handler,
+		},
+		{
+			MethodName: "productConfigUpdate",
+			Handler:    _ProductManage_ProductConfigUpdate_Handler,
 		},
 		{
 			MethodName: "productSchemaUpdate",

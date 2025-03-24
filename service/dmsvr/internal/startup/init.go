@@ -331,7 +331,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		}
 		err = relationDB.NewUserDeviceShareRepo(ctx).DeleteByFilter(ctx, relationDB.UserDeviceShareFilter{SharedUserIDs: value.IDs})
 		if err != nil {
-			logx.WithContext(ctx).Errorf("NewUserDeviceShareRepo.DeleteByFilter err:%v", err)
+			logx.WithContext(ctx).Errorf("NewUserDeviceShareRepo.Delete err:%v", err)
 		}
 		return nil
 	})

@@ -58,6 +58,12 @@ func (s *ProductManageServer) ProductInfoRead(ctx context.Context, in *dm.Produc
 	return l.ProductInfoRead(in)
 }
 
+// 更新产品配置
+func (s *ProductManageServer) ProductConfigUpdate(ctx context.Context, in *dm.ProductConfig) (*dm.Empty, error) {
+	l := productmanagelogic.NewProductConfigUpdateLogic(ctx, s.svcCtx)
+	return l.ProductConfigUpdate(in)
+}
+
 // 更新产品物模型
 func (s *ProductManageServer) ProductSchemaUpdate(ctx context.Context, in *dm.ProductSchemaUpdateReq) (*dm.Empty, error) {
 	l := productmanagelogic.NewProductSchemaUpdateLogic(ctx, s.svcCtx)

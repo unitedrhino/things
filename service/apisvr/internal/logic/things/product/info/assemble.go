@@ -13,6 +13,7 @@ func productInfoToApi(ctx context.Context, v *dm.ProductInfo) *types.ProductInfo
 		v.Secret = ""        // 设备秘钥
 		v.ProtocolConf = nil // 设备证书
 		v.SubProtocolConf = nil
+		v.Config = nil
 	}
 	return utils.Copy[types.ProductInfo](v)
 }

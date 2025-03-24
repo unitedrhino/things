@@ -174,6 +174,13 @@ type DateRange struct {
 	End   string `json:"end,optional"`   //结束时间 格式：yyyy-mm-dd
 }
 
+type DevInit struct {
+	TenantCode string `json:"tenantCode,optional"` //设备创建默认分配给的租户
+	ProjectID  int64  `json:"projectID,optional"`  //设备创建默认分配给的项目
+	AreaID     int64  `json:"areaID,optional"`     //设备创建默认分配给的区域ID
+	DeptID     int64  `json:"deptID,optional"`     //设备创建默认分配给的部门
+}
+
 type DeviceAuth5AccessReq struct {
 	Username string `json:"username,omitempty"` //用户名
 	Topic    string `json:"topic,omitempty"`    //主题
@@ -1399,6 +1406,11 @@ type ProductCategorySchemaMultiSaveReq struct {
 	Identifiers       []string `json:"identifiers"`
 }
 
+type ProductConfig struct {
+	ProductID string  `json:"productID"`
+	DevInit   DevInit `json:"devInit,optional"` //设备初始化配置
+}
+
 type ProductCustom struct {
 	ProductID       string                `json:"productID"`
 	TransformScript *string               `json:"transformScript,optional"` //协议转换脚本
@@ -1447,6 +1459,7 @@ type ProductInfo struct {
 	SubProtocolConf    []*Tag                      `json:"subProtocolConf,optional,omitempty"`    //子协议协议配置
 	Protocol           *ProtocolInfo               `json:"protocol,omitempty"`
 	Category           *ProductCategory            `json:"category,omitempty"`
+	Config             *ProductConfig              `json:"config,optional,omitempty"`   //产品配置,只有管理员会返回该字段
 	CustomUi           map[string]*ProductCustomUi `json:"customUi,optional,omitempty"` //自定义ui,key是端的类型(web-client  mini-client) value是以下类型的对象{version:123(版本号,只读),isUpdateUi:bool(是否更新ui),path:string(前端路径,如果需要修改,需要将isUpdateUi置为true并在这个参数中传入压缩包的filePath)}
 }
 

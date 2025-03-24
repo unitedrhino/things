@@ -1368,6 +1368,17 @@
         {
           "accessCode": "thingsProductInfoModify",
           "method": "POST",
+          "route": "/api/v1/things/product/config/update",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "modify",
+          "desc": "",
+          "authType": "admin",
+          "recordLogMode": 0
+        },
+        {
+          "accessCode": "thingsProductInfoModify",
+          "method": "POST",
           "route": "/api/v1/things/product/info/update",
           "name": "",
           "isNeedAuth": 1,

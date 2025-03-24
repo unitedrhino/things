@@ -29,6 +29,7 @@ type (
 	CompareInt64                      = dm.CompareInt64
 	CompareString                     = dm.CompareString
 	CustomTopic                       = dm.CustomTopic
+	DevInit                           = dm.DevInit
 	DeviceBindTokenInfo               = dm.DeviceBindTokenInfo
 	DeviceBindTokenReadReq            = dm.DeviceBindTokenReadReq
 	DeviceCore                        = dm.DeviceCore
@@ -150,6 +151,7 @@ type (
 	ProductCategorySchemaIndexReq     = dm.ProductCategorySchemaIndexReq
 	ProductCategorySchemaIndexResp    = dm.ProductCategorySchemaIndexResp
 	ProductCategorySchemaMultiSaveReq = dm.ProductCategorySchemaMultiSaveReq
+	ProductConfig                     = dm.ProductConfig
 	ProductCustom                     = dm.ProductCustom
 	ProductCustomReadReq              = dm.ProductCustomReadReq
 	ProductCustomUi                   = dm.ProductCustomUi
@@ -252,6 +254,8 @@ type (
 		ProductInfoIndex(ctx context.Context, in *ProductInfoIndexReq, opts ...grpc.CallOption) (*ProductInfoIndexResp, error)
 		// 获取产品信息详情
 		ProductInfoRead(ctx context.Context, in *ProductInfoReadReq, opts ...grpc.CallOption) (*ProductInfo, error)
+		// 更新产品配置
+		ProductConfigUpdate(ctx context.Context, in *ProductConfig, opts ...grpc.CallOption) (*Empty, error)
 		// 更新产品物模型
 		ProductSchemaUpdate(ctx context.Context, in *ProductSchemaUpdateReq, opts ...grpc.CallOption) (*Empty, error)
 		// 新增产品
@@ -371,6 +375,17 @@ func (m *defaultProductManage) ProductInfoRead(ctx context.Context, in *ProductI
 // 获取产品信息详情
 func (d *directProductManage) ProductInfoRead(ctx context.Context, in *ProductInfoReadReq, opts ...grpc.CallOption) (*ProductInfo, error) {
 	return d.svr.ProductInfoRead(ctx, in)
+}
+
+// 更新产品配置
+func (m *defaultProductManage) ProductConfigUpdate(ctx context.Context, in *ProductConfig, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewProductManageClient(m.cli.Conn())
+	return client.ProductConfigUpdate(ctx, in, opts...)
+}
+
+// 更新产品配置
+func (d *directProductManage) ProductConfigUpdate(ctx context.Context, in *ProductConfig, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.ProductConfigUpdate(ctx, in)
 }
 
 // 更新产品物模型

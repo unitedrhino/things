@@ -24,6 +24,7 @@ import (
 	thingsotafirmwarejob "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/ota/firmware/job"
 	thingsotamoduleinfo "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/ota/module/info"
 	thingsproductcategory "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/product/category"
+	thingsproductconfig "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/product/config"
 	thingsproductcustom "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/product/custom"
 	thingsproductinfo "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/product/info"
 	thingsproductremoteConfig "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/product/remoteConfig"
@@ -784,6 +785,21 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/product/category"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckTokenWare, serverCtx.InitCtxsWare},
+			[]rest.Route{
+				{
+					// 更新配置
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: thingsproductconfig.UpdateHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/product/config"),
 	)
 
 	server.AddRoutes(

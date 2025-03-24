@@ -7,14 +7,17 @@ import (
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/share/domain/protocols"
+	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
+var needInitProductConfig bool
+
 func Migrate(c conf.Database) error {
-	if c.IsInitTable == false {
-		return nil
-	}
+	//if c.IsInitTable == false {
+	//	return nil
+	//}
 	ctx := ctxs.WithRoot(context.Background())
 	db := stores.GetCommonConn(ctx)
 
@@ -22,9 +25,12 @@ func Migrate(c conf.Database) error {
 	if !db.Migrator().HasTable(&DmProtocolInfo{}) {
 		//需要初始化表
 		needInitColumn = true
+	} else if !db.Migrator().HasTable(&DmProductConfig{}) {
+		needInitProductConfig = true
 	}
 
 	err := db.AutoMigrate(
+		&DmProductConfig{},
 		&DmDeviceMsgCount{},
 		&DmManufacturerInfo{},
 		&DmProtocolService{},
@@ -67,6 +73,7 @@ func Migrate(c conf.Database) error {
 	if needInitColumn {
 		return migrateTableColumn()
 	}
+
 	return err
 }
 
@@ -91,6 +98,23 @@ func versionUpdate(db *gorm.DB) error {
 				})
 				return err
 			})
+		}
+	}
+
+	if needInitProductConfig { //1.3->1.4 升级
+		err := func() error {
+			pis, err := NewProductInfoRepo(ctx).FindByFilter(ctx, ProductFilter{}, nil)
+			if err != nil {
+				return err
+			}
+			var dbs []*DmProductConfig
+			for _, p := range pis {
+				dbs = append(dbs, &DmProductConfig{ProductID: p.ProductID})
+			}
+			return NewProductConfigRepo(ctx).MultiInsert(ctx, dbs)
+		}()
+		if err != nil {
+			logx.Error(err)
 		}
 	}
 

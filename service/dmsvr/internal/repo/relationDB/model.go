@@ -175,7 +175,8 @@ type DmProductInfo struct {
 	SubProtocolConf  map[string]string     `gorm:"column:sub_protocol_conf;type:json;serializer:json;NOT NULL;default:'{}'"` // 子模块自定义协议配置
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:pd"`
-	Category    *DmProductCategory `gorm:"foreignKey:ID;references:CategoryID"` // 添加外键
+	Category    *DmProductCategory `gorm:"foreignKey:ID;references:CategoryID"`       // 添加外键
+	Config      *DmProductConfig   `gorm:"foreignKey:ProductID;references:ProductID"` // 添加外键
 	Protocol    *DmProtocolInfo    `gorm:"foreignKey:Code;references:ProtocolCode"`
 	SubProtocol *DmProtocolInfo    `gorm:"foreignKey:Code;references:SubProtocolCode"`
 
@@ -199,6 +200,25 @@ type DmProductID struct {
 
 func (m *DmProductID) TableName() string {
 	return "dm_product_id"
+}
+
+type DmProductConfig struct {
+	ID        int64                                      `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	ProductID string                                     `gorm:"column:product_id;type:varchar(100);uniqueIndex:pd;NOT NULL"` // 产品id
+	DevInit   `gorm:"embedded;embeddedPrefix:dev_init_"` //设备初始化配置
+	stores.NoDelTime
+	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:pd"`
+}
+
+func (m *DmProductConfig) TableName() string {
+	return "dm_product_config"
+}
+
+type DevInit struct {
+	TenantCode string `gorm:"column:tenant_code;type:VARCHAR(50);default:''"` //设备创建默认分配给的租户
+	ProjectID  int64  `gorm:"column:project_id;type:bigint;default:0;"`       //设备创建默认分配给的项目
+	AreaID     int64  `gorm:"column:area_id;type:bigint;default:0;"`          //设备创建默认分配给的区域ID
+	DeptID     int64  `gorm:"column:dept_id;type:bigint;default:0;"`          //设备创建默认分配给的部门
 }
 
 type DmProductCategory struct {

@@ -165,7 +165,8 @@ service ProductManage{
   rpc productInfoIndex(ProductInfoIndexReq)     returns (ProductInfoIndexResp);
   //获取产品信息详情
   rpc productInfoRead(ProductInfoReadReq)     returns (ProductInfo);
-
+  //更新产品配置
+  rpc productConfigUpdate(ProductConfig)     returns (Empty);
   /*物模型管理*/
   //更新产品物模型
   rpc productSchemaUpdate(ProductSchemaUpdateReq)returns (Empty);
@@ -1409,6 +1410,17 @@ message DeviceInfo {
 
 }
 
+message ProductConfig{
+  string   productID = 1; //产品id 只读
+  DevInit DevInit =2;//设备初始化配置
+}
+message DevInit{
+  string tenantCode =1;//设备创建默认分配给的租户
+  int64 projectID =2;//设备创建默认分配给的项目
+  int64 areaID=3;//设备创建默认分配给的区域ID
+  int64 deptID=4;//设备创建默认分配给的部门
+}
+
 message ProductInfo{
   int64   createdTime = 1; //创建时间 只读
   string   productID = 2; //产品id 只读
@@ -1436,6 +1448,7 @@ message ProductInfo{
   map<string,ProductCustomUi> customUi=21;//自定义ui
   int64 deviceSchemaMode =22;// 设备物模型模式:1:关闭,2:设备自动创建3: 设备自动创建及上报无定义自动创建
   int64 bindLevel = 23;//绑定级别: 1:强绑定(默认,只有用户解绑之后才能绑定) 2:中绑定(可以通过token强制绑定设备) 3:弱绑定(app可以内部解绑被绑定的设备)
+  ProductConfig config =30;//产品配置
 }
 
 message ProductCustomUi{

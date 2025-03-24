@@ -29,6 +29,7 @@ type (
 	CompareInt64                      = dm.CompareInt64
 	CompareString                     = dm.CompareString
 	CustomTopic                       = dm.CustomTopic
+	DevInit                           = dm.DevInit
 	DeviceBindTokenInfo               = dm.DeviceBindTokenInfo
 	DeviceBindTokenReadReq            = dm.DeviceBindTokenReadReq
 	DeviceCore                        = dm.DeviceCore
@@ -150,6 +151,7 @@ type (
 	ProductCategorySchemaIndexReq     = dm.ProductCategorySchemaIndexReq
 	ProductCategorySchemaIndexResp    = dm.ProductCategorySchemaIndexResp
 	ProductCategorySchemaMultiSaveReq = dm.ProductCategorySchemaMultiSaveReq
+	ProductConfig                     = dm.ProductConfig
 	ProductCustom                     = dm.ProductCustom
 	ProductCustomReadReq              = dm.ProductCustomReadReq
 	ProductCustomUi                   = dm.ProductCustomUi

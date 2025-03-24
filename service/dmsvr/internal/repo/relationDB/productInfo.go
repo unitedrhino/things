@@ -171,8 +171,15 @@ func (p ProductInfoRepo) Insert(ctx context.Context, data *DmProductInfo) error 
 				return err
 			}
 			err = NewProductSchemaRepo(tx).MultiInsert(ctx, schemas)
+			if err != nil {
+				return err
+			}
+			err = NewProductConfigRepo(tx).Insert(ctx, &DmProductConfig{ProductID: data.ProductID})
+			if err != nil {
+				return err
+			}
 		}
-		return err
+		return nil
 	})
 	return stores.ErrFmt(err)
 }
@@ -180,7 +187,7 @@ func (p ProductInfoRepo) Insert(ctx context.Context, data *DmProductInfo) error 
 func (p ProductInfoRepo) FindOneByFilter(ctx context.Context, f ProductFilter) (*DmProductInfo, error) {
 	var result DmProductInfo
 	db := p.fmtFilter(ctx, f)
-	err := db.First(&result).Error
+	err := db.Preload("Config").First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
@@ -188,7 +195,9 @@ func (p ProductInfoRepo) FindOneByFilter(ctx context.Context, f ProductFilter) (
 }
 
 func (p ProductInfoRepo) Update(ctx context.Context, data *DmProductInfo) error {
-	err := p.db.WithContext(ctx).Where("product_id = ?", data.ProductID).Save(data).Error
+	data2 := *data
+	data2.Config = nil
+	err := p.db.WithContext(ctx).Where("product_id = ?", data.ProductID).Save(data2).Error
 	return stores.ErrFmt(err)
 }
 
@@ -198,9 +207,15 @@ func (d ProductInfoRepo) UpdateWithField(ctx context.Context, f ProductFilter, u
 	return stores.ErrFmt(err)
 }
 
-func (p ProductInfoRepo) DeleteByFilter(ctx context.Context, f ProductFilter) error {
-	db := p.fmtFilter(ctx, f)
-	err := db.Delete(&DmProductInfo{}).Error
+func (p ProductInfoRepo) Delete(ctx context.Context, productID string) error {
+	db := p.db.WithContext(ctx)
+	err := db.Transaction(func(tx *gorm.DB) error {
+		err := tx.Delete(&DmProductInfo{}).Where("product_id=?", productID).Error
+		if err != nil {
+			return err
+		}
+		return tx.Delete(&DmProductConfig{}).Where("product_id=?", productID).Error
+	})
 	return stores.ErrFmt(err)
 }
 
@@ -208,7 +223,7 @@ func (p ProductInfoRepo) FindByFilter(ctx context.Context, f ProductFilter, page
 	var results []*DmProductInfo
 	db := p.fmtFilter(ctx, f).Model(&DmProductInfo{})
 	db = page.ToGorm(db)
-	err := db.Find(&results).Error
+	err := db.Preload("Config").Find(&results).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}

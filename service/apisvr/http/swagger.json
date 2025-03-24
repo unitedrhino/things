@@ -3946,6 +3946,45 @@
         ]
       }
     },
+    "/api/v1/things/product/config/update": {
+      "post": {
+        "summary": "更新配置",
+        "operationId": "postApiV1ThingsProductConfigUpdate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProductConfig"
+            }
+          }
+        ],
+        "tags": [
+          "things/product/config",
+          "thingsProductConfig"
+        ]
+      }
+    },
     "/api/v1/things/product/custom/read": {
       "post": {
         "summary": "获取产品自定义信息详情",
@@ -7613,6 +7652,31 @@
         }
       },
       "title": "DateRange"
+    },
+    "DevInit": {
+      "type": "object",
+      "properties": {
+        "tenantCode": {
+          "type": "string",
+          "description": "设备创建默认分配给的租户"
+        },
+        "projectID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "设备创建默认分配给的项目"
+        },
+        "areaID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "设备创建默认分配给的区域ID"
+        },
+        "deptID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "设备创建默认分配给的部门"
+        }
+      },
+      "title": "DevInit"
     },
     "DeviceAuth5AccessReq": {
       "type": "object",
@@ -12624,6 +12688,22 @@
         "identifiers"
       ]
     },
+    "ProductConfig": {
+      "type": "object",
+      "properties": {
+        "productID": {
+          "type": "string"
+        },
+        "devInit": {
+          "$ref": "#/definitions/DevInit",
+          "description": "设备初始化配置"
+        }
+      },
+      "title": "ProductConfig",
+      "required": [
+        "productID"
+      ]
+    },
     "ProductCustom": {
       "type": "object",
       "properties": {
@@ -12829,6 +12909,10 @@
         },
         "category": {
           "$ref": "#/definitions/ProductCategory"
+        },
+        "config": {
+          "$ref": "#/definitions/ProductConfig",
+          "description": "产品配置,只有管理员会返回该字段"
         },
         "customUi": {
           "type": "object",
