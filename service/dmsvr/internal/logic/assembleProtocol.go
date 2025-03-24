@@ -11,18 +11,20 @@ func ToProtocolInfoPb(in *relationDB.DmProtocolInfo) *dm.ProtocolInfo {
 		return nil
 	}
 	dpi := &dm.ProtocolInfo{
-		Id:            in.ID,
-		Name:          in.Name,
-		Code:          in.Code,
-		Type:          in.Type,
-		TransProtocol: in.TransProtocol,
-		ConfigFields:  ToProtocolConfigFieldsPb(in.ConfigFields),
-		ConfigInfos:   ToProtocolConfigInfosPb(in.ConfigInfos),
-		ProductFields: ToProtocolConfigFieldsPb(in.ProductFields),
-		DeviceFields:  ToProtocolConfigFieldsPb(in.DeviceFields),
-		Desc:          in.Desc,
-		Endpoints:     in.Endpoints,
-		EtcdKey:       in.EtcdKey,
+		Id:                  in.ID,
+		Name:                in.Name,
+		Code:                in.Code,
+		IsEnableSyncProduct: in.IsEnableSyncProduct,
+		IsEnableSyncDevice:  in.IsEnableSyncDevice,
+		Type:                in.Type,
+		TransProtocol:       in.TransProtocol,
+		ConfigFields:        ToProtocolConfigFieldsPb(in.ConfigFields),
+		ConfigInfos:         ToProtocolConfigInfosPb(in.ConfigInfos),
+		ProductFields:       ToProtocolConfigFieldsPb(in.ProductFields),
+		DeviceFields:        ToProtocolConfigFieldsPb(in.DeviceFields),
+		Desc:                in.Desc,
+		Endpoints:           in.Endpoints,
+		EtcdKey:             in.EtcdKey,
 	}
 
 	return dpi
@@ -58,18 +60,20 @@ func ToProtocolInfoPo(in *dm.ProtocolInfo) *relationDB.DmProtocolInfo {
 		return nil
 	}
 	dpi := &relationDB.DmProtocolInfo{
-		ID:            in.Id,
-		Name:          in.Name,
-		Code:          in.Code,
-		Type:          in.Type,
-		TransProtocol: in.TransProtocol,
-		ConfigFields:  ToProtocolConfigFieldsPo(in.ConfigFields),
-		ConfigInfos:   ToProtocolConfigInfosPo(in.ConfigInfos),
-		ProductFields: ToProtocolConfigFieldsPo(in.ProductFields),
-		DeviceFields:  ToProtocolConfigFieldsPo(in.DeviceFields),
-		Desc:          in.Desc,
-		Endpoints:     in.Endpoints,
-		EtcdKey:       in.EtcdKey,
+		ID:                  in.Id,
+		Name:                in.Name,
+		Code:                in.Code,
+		Type:                in.Type,
+		IsEnableSyncProduct: in.IsEnableSyncProduct,
+		IsEnableSyncDevice:  in.IsEnableSyncDevice,
+		TransProtocol:       in.TransProtocol,
+		ConfigFields:        ToProtocolConfigFieldsPo(in.ConfigFields),
+		ConfigInfos:         ToProtocolConfigInfosPo(in.ConfigInfos),
+		ProductFields:       ToProtocolConfigFieldsPo(in.ProductFields),
+		DeviceFields:        ToProtocolConfigFieldsPo(in.DeviceFields),
+		Desc:                in.Desc,
+		Endpoints:           in.Endpoints,
+		EtcdKey:             in.EtcdKey,
 	}
 
 	return dpi

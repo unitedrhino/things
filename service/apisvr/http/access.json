@@ -1866,6 +1866,38 @@
       ],
       "authType": "admin"
     },
+    "thingsProtocolSyncOther": {
+      "name": "操作协议同步",
+      "code": "thingsProtocolSyncOther",
+      "group": "设备自定义",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProtocolSyncOther",
+          "method": "POST",
+          "route": "/api/v1/things/protocol/sync/device",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "other",
+          "desc": "",
+          "authType": "admin",
+          "recordLogMode": 0
+        },
+        {
+          "accessCode": "thingsProtocolSyncOther",
+          "method": "POST",
+          "route": "/api/v1/things/protocol/sync/product",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "other",
+          "desc": "",
+          "authType": "admin",
+          "recordLogMode": 0
+        }
+      ],
+      "authType": "admin"
+    },
     "thingsRuleAlarmAdd": {
       "name": "新增告警管理",
       "code": "thingsRuleAlarmAdd",

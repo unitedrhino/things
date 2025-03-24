@@ -44,6 +44,8 @@ func (l *ProtocolInfoCreateLogic) ProtocolInfoCreate(in *dm.ProtocolInfo) (*dm.W
 	if err == nil {
 		old.Name = in.Name
 		old.Desc = in.Desc
+		old.IsEnableSyncProduct = in.IsEnableSyncProduct
+		old.IsEnableSyncDevice = in.IsEnableSyncDevice
 		old.ProductFields = po.ProductFields
 		if old.ProductFields == nil {
 			old.ProductFields = protocol.ConfigFields{}

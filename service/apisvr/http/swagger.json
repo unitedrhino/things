@@ -5482,6 +5482,87 @@
         ]
       }
     },
+    "/api/v1/things/protocol/sync/device": {
+      "post": {
+        "summary": "设备同步(如果该协议不支持会返回不支持)",
+        "operationId": "postApiV1ThingsProtocolSyncDevice",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/ProtocolSyncDeviceResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProtocolSyncDeviceReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/protocol/sync",
+          "thingsProtocolSync"
+        ]
+      }
+    },
+    "/api/v1/things/protocol/sync/product": {
+      "post": {
+        "summary": "产品同步(如果该协议不支持会返回不支持)",
+        "operationId": "postApiV1ThingsProtocolSyncProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CodeReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/protocol/sync",
+          "thingsProtocolSync"
+        ]
+      }
+    },
     "/api/v1/things/rule/alarm/info/create": {
       "post": {
         "summary": "新增告警",
@@ -13618,6 +13699,16 @@
         "etcdKey": {
           "type": "string"
         },
+        "isEnableSyncProduct": {
+          "type": "integer",
+          "format": "int64",
+          "description": "是否支持主动同步产品信息"
+        },
+        "isEnableSyncDevice": {
+          "type": "integer",
+          "format": "int64",
+          "description": "是否支持主动同步设备信息"
+        },
         "configFields": {
           "type": "array",
           "items": {
@@ -13647,7 +13738,11 @@
           "description": "设备级的配置字段列表,没有可以不传"
         }
       },
-      "title": "ProtocolInfo"
+      "title": "ProtocolInfo",
+      "required": [
+        "isEnableSyncProduct",
+        "isEnableSyncDevice"
+      ]
     },
     "ProtocolInfoIndexReq": {
       "type": "object",
@@ -14048,6 +14143,39 @@
       "title": "ProtocolServiceIndexResp",
       "required": [
         "list"
+      ]
+    },
+    "ProtocolSyncDeviceReq": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "  协议code"
+        },
+        "productID": {
+          "type": "string"
+        }
+      },
+      "title": "ProtocolSyncDeviceReq",
+      "required": [
+        "code",
+        "productID"
+      ]
+    },
+    "ProtocolSyncDeviceResp": {
+      "type": "object",
+      "properties": {
+        "deviceNames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "同步新增的设备ID列表"
+        }
+      },
+      "title": "ProtocolSyncDeviceResp",
+      "required": [
+        "deviceNames"
       ]
     },
     "PublishMsg": {

@@ -733,6 +733,8 @@ message ProtocolInfo{
   string  desc = 6;
   repeated string  endpoints = 7;
   string  etcdKey = 8;
+  int64 isEnableSyncProduct =13;//是否支持主动同步产品信息
+  int64 isEnableSyncDevice =14;//是否支持主动同步设备信息
   repeated ProtocolConfigField configFields =9;//配置字段列表,没有可以不传
   repeated ProtocolConfigInfo configInfos =10;//配置列表
   repeated ProtocolConfigField productFields =11;//产品需要的配置字段列表

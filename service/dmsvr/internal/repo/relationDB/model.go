@@ -252,18 +252,20 @@ func (m *DmProductCategorySchema) TableName() string {
 
 // 自定义协议表
 type DmProtocolInfo struct {
-	ID            int64                 `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	Name          string                `gorm:"column:name;uniqueIndex:pn;type:varchar(100);NOT NULL"`                 // 协议名称
-	Code          string                `gorm:"column:code;uniqueIndex:pc;type:varchar(100);NOT NULL"`                 // iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
-	Type          protocols.Type        `gorm:"column:type;type:varchar(100);default:normal"`                          //协议类型
-	TransProtocol string                `gorm:"column:trans_protocol;type:varchar(100);default:mqtt"`                  // 传输协议: mqtt,tcp,udp
-	Desc          string                `gorm:"column:desc;type:varchar(2000)"`                                        // 描述
-	DeviceFields  protocol.ConfigFields `gorm:"column:device_fields;type:json;serializer:json;NOT NULL;default:'[]'"`  // 协议需要的设备配置字段列表,没有可以不传
-	ProductFields protocol.ConfigFields `gorm:"column:product_fields;type:json;serializer:json;NOT NULL;default:'[]'"` // 协议需要的产品配置字段列表,没有可以不传
-	ConfigFields  protocol.ConfigFields `gorm:"column:config_fields;type:json;serializer:json;NOT NULL;default:'[]'"`  // 需要配置的字段列表,没有可以不传
-	ConfigInfos   protocol.ConfigInfos  `gorm:"column:config_infos;type:json;serializer:json;NOT NULL;default:'[]'"`   // 配置列表
-	Endpoints     []string              `gorm:"column:endpoints;type:json;serializer:json;NOT NULL;default:'[]'"`      // 协议端点,如果填写了优先使用该字段
-	EtcdKey       string                `gorm:"column:etcd_key;type:varchar(200);default:null"`                        // 服务etcd发现的key etcd key
+	ID                  int64                 `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	Name                string                `gorm:"column:name;uniqueIndex:pn;type:varchar(100);NOT NULL"`                 // 协议名称
+	Code                string                `gorm:"column:code;uniqueIndex:pc;type:varchar(100);NOT NULL"`                 // iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
+	Type                protocols.Type        `gorm:"column:type;type:varchar(100);default:normal"`                          //协议类型
+	TransProtocol       string                `gorm:"column:trans_protocol;type:varchar(100);default:mqtt"`                  // 传输协议: mqtt,tcp,udp
+	Desc                string                `gorm:"column:desc;type:varchar(2000)"`                                        // 描述
+	IsEnableSyncProduct int64                 `gorm:"column:is_enable_sync_product;type:bigint;default:2"`                   //是否支持主动同步产品信息
+	IsEnableSyncDevice  int64                 `gorm:"column:is_enable_sync_device;type:bigint;default:2"`                    //是否支持主动同步设备信息
+	DeviceFields        protocol.ConfigFields `gorm:"column:device_fields;type:json;serializer:json;NOT NULL;default:'[]'"`  // 协议需要的设备配置字段列表,没有可以不传
+	ProductFields       protocol.ConfigFields `gorm:"column:product_fields;type:json;serializer:json;NOT NULL;default:'[]'"` // 协议需要的产品配置字段列表,没有可以不传
+	ConfigFields        protocol.ConfigFields `gorm:"column:config_fields;type:json;serializer:json;NOT NULL;default:'[]'"`  // 需要配置的字段列表,没有可以不传
+	ConfigInfos         protocol.ConfigInfos  `gorm:"column:config_infos;type:json;serializer:json;NOT NULL;default:'[]'"`   // 配置列表
+	Endpoints           []string              `gorm:"column:endpoints;type:json;serializer:json;NOT NULL;default:'[]'"`      // 协议端点,如果填写了优先使用该字段
+	EtcdKey             string                `gorm:"column:etcd_key;type:varchar(200);default:null"`                        // 服务etcd发现的key etcd key
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:pc;uniqueIndex:pn"`
 }

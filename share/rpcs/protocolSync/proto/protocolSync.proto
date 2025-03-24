@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package protocolSync;
+option go_package="pb/protocolSync";
+
+service protocolSync {
+  rpc SyncProduct(Empty) returns(Empty);
+  rpc SyncDevice(SyncDeviceReq) returns(SyncDeviceResp);
+}
+
+message Empty {
+}
+
+message SyncDeviceReq{
+  string productID =1;//
+}
+
+message SyncDeviceResp{
+  repeated string deviceNames =1;
+}

@@ -33,6 +33,7 @@ import (
 	thingsprotocolscript "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/protocol/script"
 	thingsprotocolscriptdevice "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/protocol/script/device"
 	thingsprotocolservice "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/protocol/service"
+	thingsprotocolsync "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/protocol/sync"
 	thingsrulealarminfo "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/rule/alarm/info"
 	thingsrulealarmrecord "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/rule/alarm/record"
 	thingsrulealarmscene "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/rule/alarm/scene"
@@ -1094,6 +1095,27 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/protocol/service"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckTokenWare, serverCtx.InitCtxsWare},
+			[]rest.Route{
+				{
+					// 设备同步(如果该协议不支持会返回不支持)
+					Method:  http.MethodPost,
+					Path:    "/device",
+					Handler: thingsprotocolsync.DeviceHandler(serverCtx),
+				},
+				{
+					// 产品同步(如果该协议不支持会返回不支持)
+					Method:  http.MethodPost,
+					Path:    "/product",
+					Handler: thingsprotocolsync.ProductHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/protocol/sync"),
 	)
 
 	server.AddRoutes(

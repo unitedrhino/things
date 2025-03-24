@@ -10,6 +10,7 @@ import (
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/eventBus"
 	"gitee.com/unitedrhino/share/events/topics"
+	"gitee.com/unitedrhino/share/interceptors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/deviceinteract"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/devicemanage"
@@ -18,9 +19,13 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/dmExport"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/share/devices"
+	"gitee.com/unitedrhino/things/share/rpcs/protocolSync/pb/protocolSync"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/netx"
+	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	"sync"
 	"time"
 )
@@ -47,6 +52,9 @@ type CoreProtocol struct {
 	CoreSvrClient
 	ThirdProductIDFieldName devices.ProtocolKey
 	taskCreateOnce          sync.Once
+	rpcServer               *zrpc.RpcServer
+	rpcRegisters            []func(grpcServer *grpc.Server)
+	rpcConf                 zrpc.RpcServerConf
 }
 
 type CoreProtocolConf struct {
@@ -130,6 +138,22 @@ func (p *CoreProtocol) Start() error {
 	err = p.FastEvent.Start()
 	if err != nil {
 		return err
+	}
+	if len(p.rpcRegisters) != 0 {
+		utils.Go(context.Background(), func() {
+			s := zrpc.MustNewServer(p.rpcConf, func(grpcServer *grpc.Server) {
+				for _, f := range p.rpcRegisters {
+					f(grpcServer)
+				}
+				if p.rpcConf.Mode == service.DevMode || p.rpcConf.Mode == service.TestMode {
+					reflection.Register(grpcServer)
+				}
+			})
+			defer s.Stop()
+			s.AddUnaryInterceptors(interceptors.Ctxs, interceptors.Error)
+			p.rpcServer = s
+			s.Start()
+		})
 	}
 	return nil
 }
@@ -290,4 +314,16 @@ func (p *CoreProtocol) ReportDevConn(ctx context.Context, conn devices.DevConn) 
 		return err
 	}
 	return err
+}
+
+func (m *CoreProtocol) RegisterRpcServer(c zrpc.RpcServerConf, f func(grpcServer *grpc.Server)) {
+	m.rpcRegisters = append(m.rpcRegisters, f)
+	m.rpcConf = c
+}
+
+// RegisterSync 主动同步产品或设备,支持才需填写
+func (m *CoreProtocol) RegisterSync(c zrpc.RpcServerConf, handle protocolSync.ProtocolSyncServer) {
+	m.RegisterRpcServer(c, func(grpcServer *grpc.Server) {
+		protocolSync.RegisterProtocolSyncServer(grpcServer, handle)
+	})
 }

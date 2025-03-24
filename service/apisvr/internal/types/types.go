@@ -1623,18 +1623,20 @@ type ProtocolConfigInfo struct {
 }
 
 type ProtocolInfo struct {
-	ID            int64                  `json:"id,optional"`
-	Name          string                 `json:"name,optional"`
-	Code          string                 `json:"code,optional"`          //  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
-	Type          string                 `json:"type,optional"`          //协议类型: 普通设备(默认):normal  音视频:media
-	TransProtocol string                 `json:"transProtocol,optional"` // 传输协议: mqtt,tcp,udp
-	Desc          string                 `json:"desc,optional"`
-	Endpoints     []string               `json:"endpoints,optional"`
-	EtcdKey       string                 `json:"etcdKey,optional"`
-	ConfigFields  []*ProtocolConfigField `json:"configFields,optional"`  //配置字段列表,没有可以不传
-	ConfigInfos   []*ProtocolConfigInfo  `json:"configInfos,optional"`   //配置列表
-	ProductFields []*ProtocolConfigField `json:"productFields,optional"` //产品级的配置字段列表,没有可以不传
-	DeviceFields  []*ProtocolConfigField `json:"deviceFields,optional"`  //设备级的配置字段列表,没有可以不传
+	ID                  int64                  `json:"id,optional"`
+	Name                string                 `json:"name,optional"`
+	Code                string                 `json:"code,optional"`          //  iThings,iThings-thingsboard,wumei,aliyun,huaweiyun,tuya
+	Type                string                 `json:"type,optional"`          //协议类型: 普通设备(默认):normal  音视频:media
+	TransProtocol       string                 `json:"transProtocol,optional"` // 传输协议: mqtt,tcp,udp
+	Desc                string                 `json:"desc,optional"`
+	Endpoints           []string               `json:"endpoints,optional"`
+	EtcdKey             string                 `json:"etcdKey,optional"`
+	IsEnableSyncProduct int64                  `json:"isEnableSyncProduct"`    //是否支持主动同步产品信息
+	IsEnableSyncDevice  int64                  `json:"isEnableSyncDevice"`     //是否支持主动同步设备信息
+	ConfigFields        []*ProtocolConfigField `json:"configFields,optional"`  //配置字段列表,没有可以不传
+	ConfigInfos         []*ProtocolConfigInfo  `json:"configInfos,optional"`   //配置列表
+	ProductFields       []*ProtocolConfigField `json:"productFields,optional"` //产品级的配置字段列表,没有可以不传
+	DeviceFields        []*ProtocolConfigField `json:"deviceFields,optional"`  //设备级的配置字段列表,没有可以不传
 }
 
 type ProtocolInfoIndexReq struct {
@@ -1740,6 +1742,15 @@ type ProtocolServiceIndexReq struct {
 type ProtocolServiceIndexResp struct {
 	List  []*ProtocolService `json:"list"`           //自定义协议信息
 	Total int64              `json:"total,optional"` //拥有的总数
+}
+
+type ProtocolSyncDeviceReq struct {
+	Code      string `json:"code"` //  协议code
+	ProductID string `json:"productID"`
+}
+
+type ProtocolSyncDeviceResp struct {
+	DeviceNames []string `json:"deviceNames"` //同步新增的设备ID列表
 }
 
 type PublishMsg struct {
