@@ -5,6 +5,7 @@ import (
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/things/share/topics"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -38,5 +39,16 @@ func (l *ProductConfigUpdateLogic) ProductConfigUpdate(in *dm.ProductConfig) (*d
 	po := utils.Copy[relationDB.DmProductConfig](in)
 	old.DevInit = po.DevInit
 	err = relationDB.NewProductConfigRepo(l.ctx).Update(l.ctx, old)
+	if err != nil {
+		return nil, err
+	}
+	err = l.svcCtx.ProductCache.SetData(l.ctx, in.ProductID, nil)
+	if err != nil {
+		l.Error(err)
+	}
+	err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmProductInfoUpdate, in.ProductID)
+	if err != nil {
+		l.Error(err)
+	}
 	return &dm.Empty{}, err
 }

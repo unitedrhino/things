@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
@@ -94,6 +95,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 	if err := ctxs.IsAdmin(l.ctx); err != nil {
 		return nil, err
 	}
+	uc := ctxs.GetUserCtxOrNil(l.ctx)
 	l.ctx = ctxs.WithDefaultAllProject(l.ctx)
 	if in.ProductID == "" && in.ProductName != "" { //通过唯一的产品名 查找唯一的产品ID
 		if pid, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductNames: []string{in.ProductName}}); err != nil {
@@ -130,20 +132,12 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 		areaID = dataType.AreaID(ti.DefaultAreaID)
 	}
 	//}
-
-	ai, err := l.svcCtx.AreaCache.GetData(l.ctx, int64(areaID))
-	if err != nil {
-		return nil, err
-	}
-	areaIDPath := ai.AreaIDPath
-
 	di := relationDB.DmDeviceInfo{
 		ProjectID:      projectID,
 		ProductID:      in.ProductID,  // 产品id
 		DeviceName:     in.DeviceName, // 设备名称
 		Position:       logic.ToStorePoint(in.Position),
 		AreaID:         areaID, //设备默认都是未分类
-		AreaIDPath:     dataType.AreaIDPath(areaIDPath),
 		Status:         def.DeviceStatusInactive,
 		MobileOperator: def.MobileOperatorNone,
 		IsEnable:       def.True,
@@ -152,6 +146,32 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 		UserID:         def.RootNode,
 		Desc:           in.Desc.GetValue(),
 	}
+	if pi.Config != nil && pi.Config.DevInit != nil {
+		cfg := pi.Config.DevInit
+		if cfg.TenantCode != "" && cfg.TenantCode != uc.TenantCode {
+			di.TenantCode = dataType.TenantCode(cfg.TenantCode)
+			l.ctx = ctxs.BindTenantCode(l.ctx, cfg.TenantCode, 0)
+		}
+		if cfg.ProjectID != 0 {
+			di.ProjectID = dataType.ProjectID(cfg.ProjectID)
+		}
+		if cfg.AreaID != 0 {
+			di.AreaID = dataType.AreaID(cfg.AreaID)
+		}
+		if cfg.DeptID != 0 {
+			de, err := l.svcCtx.DeptM.DeptInfoRead(l.ctx, &sys.DeptInfoReadReq{Id: cfg.DeptID})
+			if err == nil {
+				di.DeptID = dataType.DeptID(cfg.DeptID)
+				di.DeptIDPath = dataType.DeptIDPath(de.IdPath)
+			}
+		}
+	}
+	ai, err := l.svcCtx.AreaCache.GetData(l.ctx, int64(areaID))
+	if err != nil {
+		return nil, err
+	}
+	di.AreaIDPath = dataType.AreaIDPath(ai.AreaIDPath)
+
 	if di.Distributor.ID == 0 {
 		di.Distributor.ID = def.RootNode
 	}
@@ -242,7 +262,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 		l.Errorf("AddDevice.DeviceInfo.Insert err=%+v", err)
 		return nil, errors.Database.AddDetail(err)
 	}
-	logic.FillAreaDeviceCount(l.ctx, l.svcCtx, areaIDPath)
+	logic.FillAreaDeviceCount(l.ctx, l.svcCtx, string(di.AreaIDPath))
 	logic.FillProjectDeviceCount(l.ctx, l.svcCtx, int64(di.ProjectID))
 	err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoCreate, &devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
 	if err != nil {

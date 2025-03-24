@@ -6,6 +6,7 @@ import (
 	"gitee.com/unitedrhino/core/service/syssvr/client/areamanage"
 	"gitee.com/unitedrhino/core/service/syssvr/client/common"
 	"gitee.com/unitedrhino/core/service/syssvr/client/datamanage"
+	"gitee.com/unitedrhino/core/service/syssvr/client/departmentmanage"
 	"gitee.com/unitedrhino/core/service/syssvr/client/dictmanage"
 	"gitee.com/unitedrhino/core/service/syssvr/client/projectmanage"
 	"gitee.com/unitedrhino/core/service/syssvr/client/tenantmanage"
@@ -85,6 +86,7 @@ type ServiceContext struct {
 	GatewayCanBind       *cache.GatewayCanBind
 	NodeID               int64
 	BindChange           *cache.BindChange
+	DeptM                departmentmanage.DepartmentManage
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -93,6 +95,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		areaM    areamanage.AreaManage
 		projectM projectmanage.ProjectManage
 		Common   common.Common
+		DeptM    departmentmanage.DepartmentManage
 	)
 	stores.InitConn(c.Database)
 	err := relationDB.Migrate(c.Database)
@@ -200,6 +203,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	userM := usermanage.NewUserManage(zrpc.MustNewClient(c.SysRpc.Conf))
 	dictM := dictmanage.NewDictManage(zrpc.MustNewClient(c.SysRpc.Conf))
 	dataM := datamanage.NewDataManage(zrpc.MustNewClient(c.SysRpc.Conf))
+	DeptM = departmentmanage.NewDepartmentManage(zrpc.MustNewClient(c.SysRpc.Conf))
+
 	projectM = projectmanage.NewProjectManage(zrpc.MustNewClient(c.SysRpc.Conf))
 	Common = common.NewCommon(zrpc.MustNewClient(c.SysRpc.Conf))
 	tenantCache, err := sysExport.NewTenantInfoCache(tenantmanage.NewTenantManage(zrpc.MustNewClient(c.SysRpc.Conf)), serverMsg)
@@ -230,6 +235,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Cache:             ca,
 		UserM:             userM,
 		DictM:             dictM,
+		DeptM:             DeptM,
 		Common:            Common,
 		DataM:             dataM,
 		UserSubscribe:     ws.NewUserSubscribe(ca, serverMsg),

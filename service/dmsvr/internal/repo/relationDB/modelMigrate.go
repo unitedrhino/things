@@ -15,9 +15,9 @@ import (
 var needInitProductConfig bool
 
 func Migrate(c conf.Database) error {
-	//if c.IsInitTable == false {
-	//	return nil
-	//}
+	if c.IsInitTable == false {
+		return nil
+	}
 	ctx := ctxs.WithRoot(context.Background())
 	db := stores.GetCommonConn(ctx)
 

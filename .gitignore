@@ -65,3 +65,4 @@ service/usersvr/usersvr*
 /service/timedjobsvr/job
 /service/apisvr/apisvr
 /service/udsvr/internal/domain/scene.zip
+/service/apisvr/.env
