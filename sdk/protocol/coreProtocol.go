@@ -11,6 +11,7 @@ import (
 	"gitee.com/unitedrhino/share/eventBus"
 	"gitee.com/unitedrhino/share/events/topics"
 	"gitee.com/unitedrhino/share/interceptors"
+	"gitee.com/unitedrhino/share/services"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/deviceinteract"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/devicemanage"
@@ -141,7 +142,7 @@ func (p *CoreProtocol) Start() error {
 	}
 	if len(p.rpcRegisters) != 0 {
 		utils.Go(context.Background(), func() {
-			s := zrpc.MustNewServer(p.rpcConf, func(grpcServer *grpc.Server) {
+			s := services.MustNewServer(p.rpcConf, func(grpcServer *grpc.Server) {
 				for _, f := range p.rpcRegisters {
 					f(grpcServer)
 				}

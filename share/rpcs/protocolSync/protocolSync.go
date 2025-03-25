@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"gitee.com/unitedrhino/share/interceptors"
+	"gitee.com/unitedrhino/share/services"
 
 	"gitee.com/unitedrhino/things/share/rpcs/protocolSync/internal/config"
 	protocolsyncServer "gitee.com/unitedrhino/things/share/rpcs/protocolSync/internal/server/protocolsync"
@@ -13,7 +14,6 @@ import (
 
 	"gitee.com/unitedrhino/share/utils"
 	"github.com/zeromicro/go-zero/core/service"
-	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -24,7 +24,7 @@ func main() {
 	utils.ConfMustLoad("etc/protocolSync.yaml", &c)
 	svcCtx := svc.NewServiceContext(c)
 	startup.Init(svcCtx)
-	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
+	s := services.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		protocolSync.RegisterProtocolSyncServer(grpcServer, protocolsyncServer.NewProtocolSyncServer(svcCtx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
