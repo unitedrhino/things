@@ -1407,6 +1407,7 @@ message DeviceInfo {
   int64   categoryID = 44;//产品品类
   string lastIp = 49;//最后登录的ip,只读
   google.protobuf.StringValue desc=47;
+  IDPathWithUpdate dept =52;//过滤分销商的数据
   DeviceInfo Gateway =46;//子设备绑定的网关
   int64 sort =53; //排序
 
@@ -1589,6 +1590,7 @@ message DeviceInfoIndexReq{
   bool withGateway =41;//同时返回子设备的网关
   string protocolCode =51;//协议查询
   CompareInt64 rssi=52;
+  IDPath dept =53;//过滤分销商的数据
 }
 
 message DeviceInfoIndexResp{

@@ -7742,18 +7742,15 @@
           "description": "设备创建默认分配给的租户"
         },
         "projectID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "设备创建默认分配给的项目"
         },
         "areaID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "设备创建默认分配给的区域ID"
         },
         "deptID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "设备创建默认分配给的部门"
         }
       },

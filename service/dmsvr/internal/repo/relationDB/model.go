@@ -23,24 +23,25 @@ type DmExample struct {
 
 // 设备信息表
 type DmDeviceInfo struct {
-	ID          int64               `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	TenantCode  dataType.TenantCode `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"`                              // 租户编码
-	ProjectID   dataType.ProjectID  `gorm:"column:project_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`       // 项目ID(雪花ID)
-	AreaID      dataType.AreaID     `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`          // 项目区域ID(雪花ID)
-	AreaIDPath  dataType.AreaIDPath `gorm:"column:area_id_path;type:varchar(100);default:'';NOT NULL"`                       // 项目区域ID路径(雪花ID)
-	DeptID      dataType.DeptID     `gorm:"column:dept_id;type:bigint;default:0;NOT NULL"`                                   // 部门ID
-	DeptIDPath  dataType.DeptIDPath `gorm:"column:dept_id_path;type:varchar(100);default:'';NOT NULL"`                       // 部门ID路径
-	ProductID   string              `gorm:"column:product_id;type:varchar(100);uniqueIndex:product_id_deviceName;NOT NULL"`  // 产品id
-	DeviceName  string              `gorm:"column:device_name;uniqueIndex:product_id_deviceName;type:varchar(100);NOT NULL"` // 设备名称
-	DeviceAlias string              `gorm:"column:device_alias;type:varchar(100);NOT NULL"`                                  // 设备别名
-	Position    stores.Point        `gorm:"column:position;NOT NULL"`                                                        // 设备的位置(默认百度坐标系BD09)
-	RatedPower  int64               `gorm:"column:rated_power;index;type:bigint;NOT NULL;default:0"`                         // 额定功率:单位w/h
-	Secret      string              `gorm:"column:secret;type:varchar(50);NOT NULL"`                                         // 设备秘钥
-	Cert        string              `gorm:"column:cert;type:varchar(512);NOT NULL"`                                          // 设备证书
-	Imei        string              `gorm:"column:imei;type:varchar(25);NOT NULL"`                                           // IMEI号信息
-	Mac         string              `gorm:"column:mac;type:varchar(17);NOT NULL"`                                            // MAC号信息
-	DeviceType  int64               `gorm:"column:device_type;index;type:smallint;default:1"`                                // 设备类型:1:设备,2:网关,3:子设备
-	Version     string              `gorm:"column:version;index;type:varchar(64);NOT NULL"`                                  // 固件版本
+	ID              int64               `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	TenantCode      dataType.TenantCode `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"`                              // 租户编码
+	ProjectID       dataType.ProjectID  `gorm:"column:project_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`       // 项目ID(雪花ID)
+	AreaID          dataType.AreaID     `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`          // 项目区域ID(雪花ID)
+	AreaIDPath      dataType.AreaIDPath `gorm:"column:area_id_path;type:varchar(100);default:'';NOT NULL"`                       // 项目区域ID路径(雪花ID)
+	DeptID          dataType.DeptID     `gorm:"column:dept_id;type:bigint;default:0;NOT NULL"`                                   // 部门ID
+	DeptIDPath      dataType.DeptIDPath `gorm:"column:dept_id_path;type:varchar(100);default:'';NOT NULL"`                       // 部门ID路径
+	DeptUpdatedTime time.Time           `gorm:"column:dept_updated_time;default:null"`                                           //部门更新时间
+	ProductID       string              `gorm:"column:product_id;type:varchar(100);uniqueIndex:product_id_deviceName;NOT NULL"`  // 产品id
+	DeviceName      string              `gorm:"column:device_name;uniqueIndex:product_id_deviceName;type:varchar(100);NOT NULL"` // 设备名称
+	DeviceAlias     string              `gorm:"column:device_alias;type:varchar(100);NOT NULL"`                                  // 设备别名
+	Position        stores.Point        `gorm:"column:position;NOT NULL"`                                                        // 设备的位置(默认百度坐标系BD09)
+	RatedPower      int64               `gorm:"column:rated_power;index;type:bigint;NOT NULL;default:0"`                         // 额定功率:单位w/h
+	Secret          string              `gorm:"column:secret;type:varchar(50);NOT NULL"`                                         // 设备秘钥
+	Cert            string              `gorm:"column:cert;type:varchar(512);NOT NULL"`                                          // 设备证书
+	Imei            string              `gorm:"column:imei;type:varchar(25);NOT NULL"`                                           // IMEI号信息
+	Mac             string              `gorm:"column:mac;type:varchar(17);NOT NULL"`                                            // MAC号信息
+	DeviceType      int64               `gorm:"column:device_type;index;type:smallint;default:1"`                                // 设备类型:1:设备,2:网关,3:子设备
+	Version         string              `gorm:"column:version;index;type:varchar(64);NOT NULL"`                                  // 固件版本
 	//ModuleVersion  map[string]string `gorm:"column:module_version;type:json;serializer:json;NOT NULL;default:'{}'"`      // 所有模块的版本
 	HardInfo           string             `gorm:"column:hard_info;type:varchar(64);NOT NULL"`                               // 模组硬件型号
 	SoftInfo           string             `gorm:"column:soft_info;type:varchar(64);NOT NULL"`                               // 模组软件版本

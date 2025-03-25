@@ -175,10 +175,10 @@ type DateRange struct {
 }
 
 type DevInit struct {
-	TenantCode string `json:"tenantCode,optional"` //设备创建默认分配给的租户
-	ProjectID  int64  `json:"projectID,optional"`  //设备创建默认分配给的项目
-	AreaID     int64  `json:"areaID,optional"`     //设备创建默认分配给的区域ID
-	DeptID     int64  `json:"deptID,optional"`     //设备创建默认分配给的部门
+	TenantCode string `json:"tenantCode,optional"`       //设备创建默认分配给的租户
+	ProjectID  int64  `json:"projectID,string,optional"` //设备创建默认分配给的项目
+	AreaID     int64  `json:"areaID,string,optional"`    //设备创建默认分配给的区域ID
+	DeptID     int64  `json:"deptID,string,optional"`    //设备创建默认分配给的部门
 }
 
 type DeviceAuth5AccessReq struct {

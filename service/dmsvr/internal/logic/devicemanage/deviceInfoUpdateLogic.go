@@ -255,6 +255,11 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 		old.Distributor = utils.Copy2[stores.IDPathWithUpdate](data.Distributor)
 		old.Distributor.UpdatedTime = time.Now()
 	}
+	if uc.IsAdmin && data.Dept != nil {
+		old.DeptID = dataType.DeptID(data.Dept.Id)
+		old.DeptIDPath = dataType.DeptIDPath(data.Dept.IdPath)
+		old.DeptUpdatedTime = time.Now()
+	}
 	if data.Iccid != nil {
 		old.Iccid = utils.AnyToNullString(data.Iccid)
 	}

@@ -163,6 +163,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 			if err == nil {
 				di.DeptID = dataType.DeptID(cfg.DeptID)
 				di.DeptIDPath = dataType.DeptIDPath(de.IdPath)
+				di.DeptUpdatedTime = time.Now()
 			}
 		}
 	}
