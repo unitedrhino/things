@@ -31,8 +31,6 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/client/userdevice"
 	"gitee.com/unitedrhino/things/service/dmsvr/dmExport"
 	"gitee.com/unitedrhino/things/service/dmsvr/dmdirect"
-	"gitee.com/unitedrhino/things/service/udsvr/client/rule"
-	"gitee.com/unitedrhino/things/service/udsvr/uddirect"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -52,7 +50,6 @@ type SvrClient struct {
 
 	RemoteConfig remoteconfig.RemoteConfig
 
-	Rule       rule.Rule
 	UserDevice userdevice.UserDevice
 	UserM      user.UserManage
 	UserC      sysExport.UserCacheT
@@ -88,7 +85,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		remoteConfig   remoteconfig.RemoteConfig
 		otaM           otamanage.OtaManage
 		UserDevice     userdevice.UserDevice
-		Rule           rule.Rule
 		areaM          areamanage.AreaManage
 	)
 	var ur user.UserManage
@@ -134,13 +130,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			deviceA = dgdirect.NewDeviceAuth(c.DgRpc.RunProxy)
 		}
 	}
-	if c.UdRpc.Enable {
-		if c.UdRpc.Mode == conf.ClientModeGrpc {
-			Rule = rule.NewRule(zrpc.MustNewClient(c.UdRpc.Conf))
-		} else {
-			Rule = uddirect.NewRule(c.UdRpc.RunProxy)
-		}
-	}
+	//if c.UdRpc.Enable {
+	//	if c.UdRpc.Mode == conf.ClientModeGrpc {
+	//		Rule = rule.NewRule(zrpc.MustNewClient(c.UdRpc.Conf))
+	//	} else {
+	//		Rule = uddirect.NewRule(c.UdRpc.RunProxy)
+	//	}
+	//}
 	dictM := dictmanage.NewDictManage(zrpc.MustNewClient(c.SysRpc.Conf))
 	ur = user.NewUserManage(zrpc.MustNewClient(c.SysRpc.Conf))
 	ro = role.NewRoleManage(zrpc.MustNewClient(c.SysRpc.Conf))
@@ -187,7 +183,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			DeviceMsg:      deviceMsg,
 			DeviceInteract: deviceInteract,
 			RemoteConfig:   remoteConfig,
-			Rule:           Rule,
 			UserDevice:     UserDevice,
 		},
 		//OSS:        ossClient,

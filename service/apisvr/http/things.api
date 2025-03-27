@@ -10,7 +10,6 @@ import "things/protocol.api"  //协议相关功能接口
 import "things/product.api"  //产品相关功能接口
 import "things/device.api"  //设备相关功能接口
 import "things/group.api"  //设备分组相关功能接口
-import "things/rule.api"  //规则引擎相关功能接口
 import "things/ota.api"  //ota相关功能接口
 import "things/schema/common.api"  //物模型相关接口
 import "things/user/device.api"

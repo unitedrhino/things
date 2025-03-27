@@ -4,7 +4,6 @@ import (
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/types"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
-	"gitee.com/unitedrhino/things/service/udsvr/pb/ud"
 )
 
 func ToTagsMap(tags []*types.Tag) map[string]string {
@@ -30,20 +29,6 @@ func ToTagsType(tags map[string]string) (retTag []*types.Tag) {
 
 func ToDmPageRpc(in *types.PageInfo) *dm.PageInfo {
 	return utils.Copy[dm.PageInfo](in)
-}
-
-func ToUdPageRpc(in *types.PageInfo) *ud.PageInfo {
-	return utils.Copy[ud.PageInfo](in)
-}
-
-func ToUdTimeRangeRpc(in *types.TimeRange) *ud.TimeRange {
-	if in == nil {
-		return nil
-	}
-	return &ud.TimeRange{
-		Start: in.Start,
-		End:   in.End,
-	}
 }
 
 func ToDmPointRpc(in *types.Point) *dm.Point {

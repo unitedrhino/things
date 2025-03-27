@@ -7,7 +7,7 @@ go 1.22.7
 
 require (
 	gitee.com/unitedrhino/core v1.3.4
-	gitee.com/unitedrhino/share v1.3.12
+	gitee.com/unitedrhino/share v1.3.13
 	gitee.com/unitedrhino/squirrel v1.20.5
 	github.com/dgraph-io/ristretto v0.1.0
 	github.com/dop251/goja v0.0.0-20231024180952-594410467bc6
@@ -20,13 +20,11 @@ require (
 	github.com/maypok86/otter v1.2.0
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/nats-io/nats.go v1.35.0
-	github.com/observerly/dusk v1.16.0
 	github.com/parnurzeal/gorequest v0.3.0
 	github.com/spf13/cast v1.7.1
 	github.com/traefik/yaegi v0.16.1
 	github.com/zeromicro/go-zero v1.8.1
 	go.uber.org/atomic v1.11.0
-	golang.org/x/exp v0.0.0-20241204233417-43b7b7cde48d
 	golang.org/x/sync v0.11.0
 	google.golang.org/grpc v1.70.0
 	google.golang.org/protobuf v1.36.5
@@ -162,7 +160,6 @@ require (
 	github.com/xuri/excelize/v2 v2.8.1 // indirect
 	github.com/xuri/nfp v0.0.0-20230919160717-d98342af3f05 // indirect
 	github.com/zhaoyunxing92/dingtalk/v2 v2.1.0 // indirect
-	github.com/zsefvlol/timezonemapper v1.0.0 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.15 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.15 // indirect
 	go.etcd.io/etcd/client/v3 v3.5.15 // indirect
@@ -182,6 +179,7 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/crypto v0.33.0 // indirect
+	golang.org/x/exp v0.0.0-20241204233417-43b7b7cde48d // indirect
 	golang.org/x/net v0.35.0 // indirect
 	golang.org/x/oauth2 v0.24.0 // indirect
 	golang.org/x/sys v0.30.0 // indirect
