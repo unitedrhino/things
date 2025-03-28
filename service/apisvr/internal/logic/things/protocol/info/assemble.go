@@ -55,18 +55,20 @@ func ToInfoTypes(in *dm.ProtocolInfo) *types.ProtocolInfo {
 		return nil
 	}
 	return &types.ProtocolInfo{
-		ID:            in.Id,
-		Name:          in.Name,
-		Code:          in.Code,
-		TransProtocol: in.TransProtocol,
-		Type:          in.Type,
-		Desc:          in.Desc,
-		Endpoints:     in.Endpoints,
-		EtcdKey:       in.EtcdKey,
-		ConfigFields:  ToConfigFieldsTypes(in.ConfigFields),
-		ConfigInfos:   ToConfigInfosTypes(in.ConfigInfos),
-		ProductFields: ToConfigFieldsTypes(in.ProductFields),
-		DeviceFields:  ToConfigFieldsTypes(in.DeviceFields),
+		ID:                  in.Id,
+		Name:                in.Name,
+		Code:                in.Code,
+		TransProtocol:       in.TransProtocol,
+		Type:                in.Type,
+		Desc:                in.Desc,
+		Endpoints:           in.Endpoints,
+		EtcdKey:             in.EtcdKey,
+		IsEnableSyncDevice:  in.IsEnableSyncDevice,
+		IsEnableSyncProduct: in.IsEnableSyncProduct,
+		ConfigFields:        ToConfigFieldsTypes(in.ConfigFields),
+		ConfigInfos:         ToConfigInfosTypes(in.ConfigInfos),
+		ProductFields:       ToConfigFieldsTypes(in.ProductFields),
+		DeviceFields:        ToConfigFieldsTypes(in.DeviceFields),
 	}
 }
 func ToInfosTypes(in []*dm.ProtocolInfo) (ret []*types.ProtocolInfo) {
