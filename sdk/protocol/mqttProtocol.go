@@ -10,7 +10,6 @@ import (
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/events/topics"
 	"gitee.com/unitedrhino/share/utils"
-	"gitee.com/unitedrhino/things/service/dgsvr/pb/dg"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/share/clients"
 	"gitee.com/unitedrhino/things/share/devices"
@@ -18,8 +17,6 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/core/timex"
-	"github.com/zeromicro/go-zero/zrpc"
-	"google.golang.org/grpc"
 	"math"
 
 	"strings"
@@ -52,12 +49,12 @@ func NewMqttProtocol(c conf.EventConf, pi *dm.ProtocolInfo, pc *CoreProtocolConf
 	return &MqttProtocol{CoreProtocol: lightProto, MqttClient: mc, DevSubHandle: make(map[string]DevHandle)}, nil
 }
 
-// RegisterRpc 如果不想自己维护proto,则实现方法注入即可
-func (m *MqttProtocol) RegisterRpc(c zrpc.RpcServerConf, handle dg.DeviceAuthServer) {
-	m.RegisterRpcServer(c, func(grpcServer *grpc.Server) {
-		dg.RegisterDeviceAuthServer(grpcServer, handle)
-	})
-}
+//// RegisterRpc 如果不想自己维护proto,则实现方法注入即可
+//func (m *MqttProtocol) RegisterRpc(c zrpc.RpcServerConf, handle dg.DeviceAuthServer) {
+//	m.RegisterRpcServer(c, func(grpcServer *grpc.Server) {
+//		dg.RegisterDeviceAuthServer(grpcServer, handle)
+//	})
+//}
 
 func (m *MqttProtocol) SubscribeDevMsg(topic string, handle DevHandle) error {
 	newTopic := fmt.Sprintf("$share/%s/%s", m.ServerName, topic)

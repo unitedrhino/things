@@ -1355,15 +1355,15 @@ type ProductInfo struct {
 	AutoRegister       int64                       `json:"autoRegister,optional,range=[0:3]"`     //动态注册:1:关闭,2:打开,3:打开并自动创建设备
 	Secret             string                      `json:"secret,optional"`                       //动态注册产品秘钥 只读
 	TrialTime          int64                       `json:"trialTime,optional,string"`             //试用时间(单位为天,为0不限制)
-	Desc               *string                     `json:"desc,optional"`                         //描述
-	Tags               []*Tag                      `json:"tags,optional"`                         // 产品tag
-	SceneMode          string                      `json:"sceneMode,optional"`                    //场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
-	Status             int64                       `json:"status,optional"`                       //产品状态 1:启用 2:禁用 3:开发中
-	BindLevel          int64                       `json:"bindLevel,optional"`                    //绑定级别: 1:强绑定(默认,只有用户解绑之后才能绑定) 2:中绑定(可以通过token强制解绑设备) 3:弱绑定(app可以内部解绑被绑定的设备)
+	Desc               *string                     `json:"desc,optional,optional"`                //描述
+	Tags               []*Tag                      `json:"tags,optional,optional"`                // 产品tag
+	SceneMode          string                      `json:"sceneMode,optional,optional"`           //场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
+	Status             int64                       `json:"status,optional,optional"`              //产品状态 1:启用 2:禁用 3:开发中
+	BindLevel          int64                       `json:"bindLevel,optional,optional"`           //绑定级别: 1:强绑定(默认,只有用户解绑之后才能绑定) 2:中绑定(可以通过token强制解绑设备) 3:弱绑定(app可以内部解绑被绑定的设备)
 	ProtocolConf       []*Tag                      `json:"protocolConf,optional,omitempty"`       //协议配置
 	SubProtocolConf    []*Tag                      `json:"subProtocolConf,optional,omitempty"`    //子协议协议配置
-	Protocol           *ProtocolInfo               `json:"protocol,omitempty"`
-	Category           *ProductCategory            `json:"category,omitempty"`
+	Protocol           *ProtocolInfo               `json:"protocol,optional,omitempty"`
+	Category           *ProductCategory            `json:"category,optional,omitempty"`
 	Config             *ProductConfig              `json:"config,optional,omitempty"`   //产品配置,只有管理员会返回该字段
 	CustomUi           map[string]*ProductCustomUi `json:"customUi,optional,omitempty"` //自定义ui,key是端的类型(web-client  mini-client) value是以下类型的对象{version:123(版本号,只读),isUpdateUi:bool(是否更新ui),path:string(前端路径,如果需要修改,需要将isUpdateUi置为true并在这个参数中传入压缩包的filePath)}
 }
