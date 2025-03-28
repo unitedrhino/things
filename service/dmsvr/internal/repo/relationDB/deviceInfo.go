@@ -372,7 +372,11 @@ func (d DeviceInfoRepo) FindOneByFilter(ctx context.Context, f DeviceFilter) (*D
 }
 
 func (d DeviceInfoRepo) Update(ctx context.Context, data *DmDeviceInfo) error {
-	err := d.db.WithContext(ctx).Omit("tenant_code").Where("id = ?", data.ID).Save(data).Error
+	db := d.db.WithContext(ctx)
+	if !ctxs.GetUserCtxOrNil(ctx).AllTenant {
+		db = db.Omit("tenant_code")
+	}
+	err := db.Where("id = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 func (d DeviceInfoRepo) UpdateWithField(ctx context.Context, f DeviceFilter, updates map[string]any) error {
