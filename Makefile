@@ -12,7 +12,6 @@ buildback: build.clean mod cp.etc build.api
 
 packback: buildback toremote
 
-packbackzhou:  buildback  toremotezhou
 
 
 build.front:
@@ -34,7 +33,7 @@ build.coreback:
 
 toremote:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>tormote cmd<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@rsync -r -v ./cmd/* root@120.79.205.165:/root/git/iThings
+	@rsync -r -v ./cmd/* root@47.94.112.109:/root/run
 
 
 killall:

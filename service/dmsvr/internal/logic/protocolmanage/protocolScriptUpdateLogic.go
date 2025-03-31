@@ -40,7 +40,7 @@ func (l *ProtocolScriptUpdateLogic) ProtocolScriptUpdate(in *dm.ProtocolScript) 
 	if in.Script != "" && in.Script != old.Script {
 		handle, _, err := l.svcCtx.ScriptTrans.GetFunc(l.ctx, in.Script, "Handle")
 		if err != nil {
-			return &dm.Empty{}, err
+			return &dm.Empty{}, errors.Parameter.AddMsgf("脚本定义错误:%s", err.Error())
 		}
 		switch old.TriggerTimer {
 		case protocol.TriggerTimerBefore:

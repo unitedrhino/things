@@ -8,6 +8,8 @@ import (
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
+	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
 	"github.com/traefik/yaegi/interp"
 	"github.com/traefik/yaegi/stdlib"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -69,6 +71,20 @@ func NewScriptTrans() *ScriptTrans {
 		ProductDownBeforeCache: make(map[string]map[devices.MsgHandle]map[string]ScriptInfos),
 		DeviceDownBeforeCache:  make(map[devices.Core]map[devices.MsgHandle]map[string]ScriptInfos),
 	}
+	s.AddSymbol("gjson/gjson", map[string]reflect.Value{
+		"Get":          reflect.ValueOf(gjson.Get),
+		"GetMany":      reflect.ValueOf(gjson.GetMany),
+		"GetManyBytes": reflect.ValueOf(gjson.GetManyBytes),
+		"GetBytes":     reflect.ValueOf(gjson.GetBytes),
+		"Parse":        reflect.ValueOf(gjson.Parse),
+		"ParseBytes":   reflect.ValueOf(gjson.ParseBytes),
+		"Set":          reflect.ValueOf(sjson.Set),
+		"SetBytes":     reflect.ValueOf(sjson.SetBytes),
+		"Delete":       reflect.ValueOf(sjson.Delete),
+		"DeleteBytes":  reflect.ValueOf(sjson.DeleteBytes),
+		"SetRaw":       reflect.ValueOf(sjson.SetRaw),
+		"SetRawBytes":  reflect.ValueOf(sjson.SetRawBytes),
+	})
 	ctx := ctxs.WithRoot(context.Background())
 	utils.Go(ctx, func() {
 		var t = time.NewTicker(10 * time.Minute) //10分钟刷新一次
@@ -109,6 +125,9 @@ func (s *ScriptTrans) GetFunc(ctx context.Context, script string, funcName strin
 	i.Use(interp.Symbols)
 	i.Use(map[string]map[string]reflect.Value{
 		"log/log": {
+			"PrintLn": reflect.ValueOf(func(v ...any) {
+				logs = append(logs, fmt.Sprint(v...))
+			}),
 			"Print": reflect.ValueOf(func(v ...any) {
 				logs = append(logs, fmt.Sprint(v...))
 			}),
@@ -131,7 +150,7 @@ func (s *ScriptTrans) PublishMsgRun(ctx context.Context, msg *deviceMsg.PublishM
 	var out = *msg
 	handle, logs, err := s.GetFunc(ctx, script, "Handle")
 	if err != nil {
-		return nil, nil, errors.Parameter.AddMsg("结构体中需要定义: func Handle(context.Context, *dm.PublishMsg) *dm.PublishMsg")
+		return nil, nil, errors.Parameter.AddMsgf("脚本定义错误:%s", err.Error())
 	}
 	fn, ok := handle.(func(context.Context, *deviceMsg.PublishMsg) *deviceMsg.PublishMsg)
 	if !ok {

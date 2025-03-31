@@ -22,6 +22,8 @@ require (
 	github.com/nats-io/nats.go v1.35.0
 	github.com/parnurzeal/gorequest v0.3.0
 	github.com/spf13/cast v1.7.1
+	github.com/tidwall/gjson v1.14.2
+	github.com/tidwall/sjson v1.2.5
 	github.com/traefik/yaegi v0.16.1
 	github.com/zeromicro/go-zero v1.8.1
 	go.uber.org/atomic v1.11.0
@@ -151,7 +153,6 @@ require (
 	github.com/suifengtec/gocoord v0.0.0-20210116135606-a0cd8c71c959 // indirect
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.985 // indirect
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms v1.0.898 // indirect
-	github.com/tidwall/gjson v1.14.1 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/tjfoc/gmsm v1.3.2 // indirect
