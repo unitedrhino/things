@@ -97,7 +97,17 @@ func (p ProtocolScriptRepo) DeleteByFilter(ctx context.Context, f ProtocolScript
 }
 
 func (p ProtocolScriptRepo) Delete(ctx context.Context, id int64) error {
-	err := p.db.WithContext(ctx).Where("id = ?", id).Delete(&DmProtocolScript{}).Error
+	err := p.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		err := tx.Where("id = ?", id).Delete(&DmProtocolScript{}).Error
+		if err != nil {
+			return err
+		}
+		err = tx.Where("script_id = ?", id).Delete(&DmProtocolScriptDevice{}).Error
+		if err != nil {
+			return err
+		}
+		return nil
+	})
 	return stores.ErrFmt(err)
 }
 func (p ProtocolScriptRepo) FindOne(ctx context.Context, id int64) (*DmProtocolScript, error) {
