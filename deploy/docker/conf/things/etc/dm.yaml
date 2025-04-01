@@ -1,0 +1,19 @@
+#设备管理模块配置-dmsvr
+Name: dm.rpc
+ListenOn: 0.0.0.0:9081
+
+AuthWhite:
+  Users:
+    - UserName: dgsvr
+      Password: iThings
+    - UserName: pwumeisvr
+      Password: iThings
+    - UserName: paliMqttsvr
+      Password: iThings
+  IpRange:
+    - 127.0.0.1
+    - 172.18.0.1
+    - 172.20.0.1
+    - 192.168.1.1
+    - 172.20.0.0/16
+

@@ -1,32 +1,35 @@
-#api网关接口代理模块-apisvr
-Name: api
 Host: 0.0.0.0
 CpuThreshold: 0
 Timeout: 1000000
 MaxBytes: 1000000000
-Port: 7788
-NodeID: 1
 Etcd:
   Hosts:
-    - etcd:2379
-  Key: ithings
+    - 127.0.0.1:2379
+  Key:
 Log:
   Encoding: plain
   #Mode: file
 CacheRedis:
-  - Host: redis:6379
+  - Host: 127.0.0.1:6379
     Pass:
     Type: node
+Middlewares:
+  Prometheus: false
+Database:
+  DBType: mysql
+  DSN: root:password@tcp(localhost:3306)/iThings?charset=utf8mb4&collation=utf8mb4_bin&parseTime=true&loc=Asia%2FShanghai
+#  DBType: pgsql
+#  DSN: postgres://postgres:password@localhost:5432/postgres
 
-Rej:
-  AccessSecret: ad879037-c7a4-4063-9236-6bfc35d54b7d
-  AccessExpire: 600     #过期时间单位秒
-OpenAuth:
-  Users:
-    - UserName: nodeRed
-      Password: iThings
-    - UserName: root
-      Password: iThings
+TSDB:
+  Driver: taosRestful
+  DSN: root:taosdata@http(localhost:6041)/ithings?readBufferSize=5242880
+#  DSN: root:taosdata@ws(localhost:6041)/ithings?readBufferSize=5242880
+#  Driver: taosSql
+#  DSN: root:taosdata@tcp(localhost:6030)/ithings
+#  DBType: mysql
+#  DSN: root:password@tcp(localhost:3306)/iThings-ts?charset=utf8mb4&collation=utf8mb4_bin&parseTime=true&loc=Asia%2FShanghai
+
 DgRpc:
   Enable: true
   Mode: direct
@@ -44,7 +47,6 @@ SysRpc:
     Timeout: 1000000
     Etcd:
       Key: sys.rpc
-
 TimedJobRpc:
   Enable: true
   Mode: grpc
@@ -52,6 +54,13 @@ TimedJobRpc:
     Timeout: 1000000
     Etcd:
       Key: timedjob.rpc
+TimedSchedulerRpc:
+  Enable: true
+  Mode: grpc
+  Conf:
+    Timeout: 1000000
+    Etcd:
+      Key: timedscheduler.rpc
 UdRpc:
   Enable: true
   Mode: direct
@@ -65,17 +74,17 @@ OssConf:
   TemporaryBucketName: ithings-temporary
   AccessKeyID: root
   AccessKeySecret: password
-  Location: minio:9000
+  Location: 127.0.0.1:9000
   ConnectTimeout: 6000
   ReadWriteTimeout: 60000
   UseSSL: false
 
 Event:
   Nats:
-    Url: nats://nats:4222
+    Url: nats://127.0.0.1:4222
 #Telemetry:
 #  Name: thingsvr
-#  Endpoint: http://jaeger:14268/api/traces
+#  Endpoint: http://localhost:14268/api/traces
 #  Sampler: 1.0
 #  Batcher: jaeger
 #Prometheus:

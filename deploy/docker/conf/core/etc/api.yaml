@@ -1,0 +1,41 @@
+#api网关接口代理模块-apisvr
+Name: api
+Port: 7777
+
+Rej:
+  AccessSecret: ad879037-c7a4-4063-9236-6bfc35d54b7d
+  AccessExpire: 600     #过期时间单位秒
+OpenAuth:
+  Users:
+    - UserName: nodeRed
+      Password: iThings
+    - UserName: root
+      Password: iThings
+Proxy:
+  StaticProxy:
+    - Router: /api/v1/view/
+      Dest: http://localhost:7789
+    - Router: /api/v1/app/
+      Dest: http://localhost:8000
+    - Router: /api/v1/lowcode/
+      Dest: http://localhost:7788
+    - Router: /api/v1/things/
+      Dest: http://localhost:7788
+    - Router: /api/v1/protocol/cloud/tencent/
+      Dest: http://localhost:9363
+    - Router: /api/v1/video/
+      Dest: http://localhost:7800
+    - Router: /api/v1/media/
+      Dest: http://localhost:8088
+    - Router: /api/v1/data/
+      Dest: http://localhost:9218
+    - Router: /api/v1/sale/
+      Dest: http://localhost:9283
+    - Router: /api/v1/tunnel/
+      Dest: http://localhost:8533
+    - Router: /oss/
+      DeletePrefix: true
+      Dest: http://localhost:9000
+    - Router: /iot
+      DeletePrefix: false
+      Dest: http://localhost:9119

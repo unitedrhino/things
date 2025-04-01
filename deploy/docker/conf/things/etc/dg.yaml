@@ -1,6 +1,5 @@
 Name: dg.rpc
 ListenOn: 0.0.0.0:6166
-
 DevLink:
   Mode: mqtt
   SubMode: emq
@@ -9,9 +8,9 @@ DevLink:
     Pass: iThings
     User: dgsvr
     Brokers:
-      - tcp://emqx:1883
+      - tcp://127.0.0.1:1883
     OpenApi:
-      Host: http://emqx:18083
+      Host: http://127.0.0.1:18083
       ApiKey: 69b84915bc0d50db
       SecretKey: nzREWI29BQjrY9A1gsgczHEUhDr3kJXonkUE9A7hueCB4G
 #      ApiKey: a4372308268d07d4

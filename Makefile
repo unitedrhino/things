@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-.PHOmakeNY: build
+.PHONY: build
 
 build:build.clean mod cp.etc build.api build.dg  build.dm  build.ud
 

@@ -1,0 +1,32 @@
+#系统管理模块配置-syssvr
+Name: sys.rpc
+ListenOn: 0.0.0.0:9180
+
+UserToken:
+  AccessSecret: ad879037-c7a4-4063-9236-6bfc35d54b7d
+  AccessExpire: 36000000 #有效期为一小时
+
+UserOpt:
+  NeedUserName: true
+  NeedPassWord: true
+  PassLevel: 2
+
+Map:
+  Mode: gaode
+  AccessKey: baf440efe599a5cf45d1da812f59f48f
+  AccessSecret: 0d055d5aed204f9f53895652ec53b322
+
+
+
+
+Sms:
+  Enable: true
+  Mode: ali
+  Tencent:
+    AccessKeyID:
+    AccessKeySecret:
+    AppID:
+    AppKey:
+  Ali:
+    AccessKeyID:
+    AccessKeySecret:

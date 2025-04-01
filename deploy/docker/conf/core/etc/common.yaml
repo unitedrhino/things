@@ -1,0 +1,62 @@
+Host: 0.0.0.0
+CpuThreshold: 0
+Timeout: 1000000
+MaxBytes: 1000000000
+Log:
+  Encoding: plain
+  #Mode: file
+Etcd:
+  Hosts:
+    - localhost:2379
+  Key:
+CacheRedis:
+  - Host: localhost:6379
+    Pass:
+    Type: node
+Middlewares:
+  Prometheus: false
+Database:
+  DBType: mysql
+  DSN: root:password@tcp(localhost:3306)/iThings?charset=utf8mb4&collation=utf8mb4_bin&parseTime=true&loc=Asia%2FShanghai
+#  DBType: pgsql
+#  DSN: postgres://postgres:password@localhost:5432/postgres
+SysRpc:
+  Enable: true
+  Mode: direct
+  RunProxy: true
+  Conf:
+    Timeout: 1000000
+TimedJobRpc:
+  Enable: true
+  Mode: direct
+  RunProxy: true
+  Conf:
+    Timeout: 1000000
+TimedSchedulerRpc:
+  Enable: true
+  Mode: direct
+  RunProxy: true
+  Conf:
+    Timeout: 1000000
+
+OssConf:
+  OssType: minio # 如果不需要minio,可以填写local,默认存储路径为 ../oss
+  PublicBucketName: ithings-public
+  PrivateBucketName: ithings-private
+  TemporaryBucketName: ithings-temporary
+  AccessKeyID: root
+  AccessKeySecret: password
+  Location: localhost:9000
+  ConnectTimeout: 6000
+  ReadWriteTimeout: 60000
+  UseSSL: false
+
+#Telemetry:
+#  Name: coresvr
+#  Endpoint: http://localhost:14268/api/traces
+#  Sampler: 1.0
+#  Batcher: jaeger
+#Prometheus:
+#  Host: 0.0.0.0
+#  Port: 17777
+#  Path: /metrics
