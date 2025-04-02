@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
+	coreTopic "gitee.com/unitedrhino/core/share/topics"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceBind"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceGroup"
 	"gitee.com/unitedrhino/things/share/topics"
@@ -16,7 +17,6 @@ import (
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
-	"gitee.com/unitedrhino/share/eventBus"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceStatus"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/userShared"
@@ -311,7 +311,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		logx.Must(err)
 	}
 
-	err := svcCtx.FastEvent.QueueSubscribe(eventBus.CoreUserDelete, func(ctx context.Context, t time.Time, body []byte) error {
+	err := svcCtx.FastEvent.QueueSubscribe(coreTopic.CoreUserDelete, func(ctx context.Context, t time.Time, body []byte) error {
 		var value def.IDs
 		err := json.Unmarshal(body, &value)
 		if err != nil {
@@ -336,7 +336,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		return nil
 	})
 	logx.Must(err)
-	err = svcCtx.FastEvent.QueueSubscribe(eventBus.CoreProjectInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
+	err = svcCtx.FastEvent.QueueSubscribe(coreTopic.CoreProjectInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
 		pi := cast.ToInt64(string(body))
 		logx.WithContext(ctx).Infof("CoreProjectInfoDelete value:%v err:%v", string(body), err)
 		if pi == 0 {
@@ -360,7 +360,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		return nil
 	})
 	logx.Must(err)
-	err = svcCtx.FastEvent.QueueSubscribe(eventBus.CoreAreaInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
+	err = svcCtx.FastEvent.QueueSubscribe(coreTopic.CoreAreaInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
 		var value def.IDs
 		err := json.Unmarshal(body, &value)
 		if err != nil {

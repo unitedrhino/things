@@ -68,7 +68,7 @@ func isPrintable(data []byte) bool {
 
 func printBytes(data []byte) string {
 	// 检查是否为有效的 UTF-8 字符串
-	if utf8.Valid(data) && isPrintable(data) {
+	if utf8.Valid(data) {
 		// 如果是字符串，直接打印字符串
 		return string(data)
 	} else {

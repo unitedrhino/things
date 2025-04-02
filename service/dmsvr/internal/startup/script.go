@@ -5,14 +5,25 @@ import (
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/deviceinteract"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/devicemanage"
+	"gitee.com/unitedrhino/things/service/dmsvr/client/otamanage"
+	"gitee.com/unitedrhino/things/service/dmsvr/client/productmanage"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/protocol"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	deviceinteractServer "gitee.com/unitedrhino/things/service/dmsvr/internal/server/deviceinteract"
 	devicemanageServer "gitee.com/unitedrhino/things/service/dmsvr/internal/server/devicemanage"
+	otamanageServer "gitee.com/unitedrhino/things/service/dmsvr/internal/server/otamanage"
+	productmanageServer "gitee.com/unitedrhino/things/service/dmsvr/internal/server/productmanage"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgExt"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgGateway"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgOta"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgSdkLog"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
+	"gitee.com/unitedrhino/things/share/domain/schema"
+
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/share/devices"
-	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"github.com/zeromicro/go-zero/core/logx"
 	"reflect"
 )
@@ -20,6 +31,9 @@ import (
 func ScriptInit(svcCtx *svc.ServiceContext) {
 	ScriptLoad(svcCtx)
 	svcCtx.ScriptTrans.AddSymbol("dm/dm", dmSymbolInit(svcCtx))
+	svcCtx.ScriptTrans.AddSymbol("schema/schema", schemaSymbolInit(svcCtx))
+	svcCtx.ScriptTrans.AddSymbol("deviceMsg/deviceMsg", deviceMsgSymbolInit(svcCtx))
+
 	return
 }
 
@@ -163,481 +177,272 @@ func ScriptLoad(svcCtx *svc.ServiceContext) {
 	})
 }
 
-func dmSymbolInit(svcCtx *svc.ServiceContext) map[string]reflect.Value {
-	AbnormalLogIndexReq := dm.AbnormalLogIndexReq{}
-	AbnormalLogIndexResp := dm.AbnormalLogIndexResp{}
-	AbnormalLogInfo := dm.AbnormalLogInfo{}
-	ActionRespReq := dm.ActionRespReq{}
-	ActionSendReq := dm.ActionSendReq{}
-	ActionSendResp := dm.ActionSendResp{}
-	CommonSchemaCreateReq := dm.CommonSchemaCreateReq{}
-	CommonSchemaIndexReq := dm.CommonSchemaIndexReq{}
-	CommonSchemaIndexResp := dm.CommonSchemaIndexResp{}
-	CommonSchemaInfo := dm.CommonSchemaInfo{}
-	CommonSchemaUpdateReq := dm.CommonSchemaUpdateReq{}
-	CompareInt64 := dm.CompareInt64{}
-	CompareString := dm.CompareString{}
-	CustomTopic := dm.CustomTopic{}
-	DeviceBindTokenInfo := dm.DeviceBindTokenInfo{}
-	DeviceBindTokenReadReq := dm.DeviceBindTokenReadReq{}
-	DeviceCore := dm.DeviceCore{}
-	DeviceCountInfo := dm.DeviceCountInfo{}
-	DeviceCountReq := dm.DeviceCountReq{}
-	DeviceCountResp := dm.DeviceCountResp{}
-	DeviceError := dm.DeviceError{}
-	DeviceGatewayBindDevice := dm.DeviceGatewayBindDevice{}
-	DeviceGatewayIndexReq := dm.DeviceGatewayIndexReq{}
-	DeviceGatewayIndexResp := dm.DeviceGatewayIndexResp{}
-	DeviceGatewayMultiCreateReq := dm.DeviceGatewayMultiCreateReq{}
-	DeviceGatewayMultiSaveReq := dm.DeviceGatewayMultiSaveReq{}
-	DeviceGatewaySign := dm.DeviceGatewaySign{}
-	DeviceGroupMultiSaveReq := dm.DeviceGroupMultiSaveReq{}
-	DeviceInfo := dm.DeviceInfo{}
-	DeviceInfoBindReq := dm.DeviceInfoBindReq{}
-	DeviceInfoCanBindReq := dm.DeviceInfoCanBindReq{}
-	DeviceInfoCount := dm.DeviceInfoCount{}
-	DeviceInfoCountReq := dm.DeviceInfoCountReq{}
-	DeviceInfoDeleteReq := dm.DeviceInfoDeleteReq{}
-	DeviceInfoIndexReq := dm.DeviceInfoIndexReq{}
-	DeviceInfoIndexResp := dm.DeviceInfoIndexResp{}
-	DeviceInfoMultiBindReq := dm.DeviceInfoMultiBindReq{}
-	DeviceInfoMultiBindResp := dm.DeviceInfoMultiBindResp{}
-	DeviceInfoMultiUpdateReq := dm.DeviceInfoMultiUpdateReq{}
-	DeviceInfoReadReq := dm.DeviceInfoReadReq{}
-	DeviceInfoUnbindReq := dm.DeviceInfoUnbindReq{}
-	DeviceModuleVersion := dm.DeviceModuleVersion{}
-	DeviceModuleVersionIndexReq := dm.DeviceModuleVersionIndexReq{}
-	DeviceModuleVersionIndexResp := dm.DeviceModuleVersionIndexResp{}
-	DeviceModuleVersionReadReq := dm.DeviceModuleVersionReadReq{}
-	DeviceMoveReq := dm.DeviceMoveReq{}
-	DeviceOnlineMultiFix := dm.DeviceOnlineMultiFix{}
-	DeviceOnlineMultiFixReq := dm.DeviceOnlineMultiFixReq{}
-	DeviceProfile := dm.DeviceProfile{}
-	DeviceProfileIndexReq := dm.DeviceProfileIndexReq{}
-	DeviceProfileIndexResp := dm.DeviceProfileIndexResp{}
-	DeviceProfileReadReq := dm.DeviceProfileReadReq{}
-	DeviceResetReq := dm.DeviceResetReq{}
-	DeviceSchema := dm.DeviceSchema{}
-	DeviceSchemaIndexReq := dm.DeviceSchemaIndexReq{}
-	DeviceSchemaIndexResp := dm.DeviceSchemaIndexResp{}
-	DeviceSchemaMultiCreateReq := dm.DeviceSchemaMultiCreateReq{}
-	DeviceSchemaMultiDeleteReq := dm.DeviceSchemaMultiDeleteReq{}
-	DeviceSchemaTslReadReq := dm.DeviceSchemaTslReadReq{}
-	DeviceSchemaTslReadResp := dm.DeviceSchemaTslReadResp{}
-	DeviceShareInfo := dm.DeviceShareInfo{}
-	DeviceTransferReq := dm.DeviceTransferReq{}
-	DeviceTypeCountReq := dm.DeviceTypeCountReq{}
-	DeviceTypeCountResp := dm.DeviceTypeCountResp{}
-	EdgeSendReq := dm.EdgeSendReq{}
-	EdgeSendResp := dm.EdgeSendResp{}
-	Empty := dm.Empty{}
-	EventLogIndexReq := dm.EventLogIndexReq{}
-	EventLogIndexResp := dm.EventLogIndexResp{}
-	EventLogInfo := dm.EventLogInfo{}
-	Firmware := dm.Firmware{}
-	FirmwareFile := dm.FirmwareFile{}
-	FirmwareInfo := dm.FirmwareInfo{}
-	FirmwareInfoDeleteReq := dm.FirmwareInfoDeleteReq{}
-	FirmwareInfoDeleteResp := dm.FirmwareInfoDeleteResp{}
-	FirmwareInfoIndexReq := dm.FirmwareInfoIndexReq{}
-	FirmwareInfoIndexResp := dm.FirmwareInfoIndexResp{}
-	FirmwareInfoReadReq := dm.FirmwareInfoReadReq{}
-	FirmwareInfoReadResp := dm.FirmwareInfoReadResp{}
-	FirmwareResp := dm.FirmwareResp{}
-	GatewayCanBindIndexReq := dm.GatewayCanBindIndexReq{}
-	GatewayCanBindIndexResp := dm.GatewayCanBindIndexResp{}
-	GatewayGetFoundReq := dm.GatewayGetFoundReq{}
-	GatewayNotifyBindSendReq := dm.GatewayNotifyBindSendReq{}
-	GroupCore := dm.GroupCore{}
-	GroupDeviceMultiDeleteReq := dm.GroupDeviceMultiDeleteReq{}
-	GroupDeviceMultiSaveReq := dm.GroupDeviceMultiSaveReq{}
-	GroupInfo := dm.GroupInfo{}
-	GroupInfoCreateReq := dm.GroupInfoCreateReq{}
-	GroupInfoIndexReq := dm.GroupInfoIndexReq{}
-	GroupInfoIndexResp := dm.GroupInfoIndexResp{}
-	GroupInfoMultiCreateReq := dm.GroupInfoMultiCreateReq{}
-	GroupInfoReadReq := dm.GroupInfoReadReq{}
-	GroupInfoUpdateReq := dm.GroupInfoUpdateReq{}
-	HubLogIndexReq := dm.HubLogIndexReq{}
-	HubLogIndexResp := dm.HubLogIndexResp{}
-	HubLogInfo := dm.HubLogInfo{}
-	IDPath := dm.IDPath{}
-	IDPathWithUpdate := dm.IDPathWithUpdate{}
-	OtaFirmwareDeviceCancelReq := dm.OtaFirmwareDeviceCancelReq{}
-	OtaFirmwareDeviceConfirmReq := dm.OtaFirmwareDeviceConfirmReq{}
-	OtaFirmwareDeviceIndexReq := dm.OtaFirmwareDeviceIndexReq{}
-	OtaFirmwareDeviceIndexResp := dm.OtaFirmwareDeviceIndexResp{}
-	OtaFirmwareDeviceInfo := dm.OtaFirmwareDeviceInfo{}
-	OtaFirmwareDeviceRetryReq := dm.OtaFirmwareDeviceRetryReq{}
-	OtaFirmwareFile := dm.OtaFirmwareFile{}
-	OtaFirmwareFileIndexReq := dm.OtaFirmwareFileIndexReq{}
-	OtaFirmwareFileIndexResp := dm.OtaFirmwareFileIndexResp{}
-	OtaFirmwareFileInfo := dm.OtaFirmwareFileInfo{}
-	OtaFirmwareFileReq := dm.OtaFirmwareFileReq{}
-	OtaFirmwareFileResp := dm.OtaFirmwareFileResp{}
-	OtaFirmwareInfo := dm.OtaFirmwareInfo{}
-	OtaFirmwareInfoCreateReq := dm.OtaFirmwareInfoCreateReq{}
-	OtaFirmwareInfoIndexReq := dm.OtaFirmwareInfoIndexReq{}
-	OtaFirmwareInfoIndexResp := dm.OtaFirmwareInfoIndexResp{}
-	OtaFirmwareInfoUpdateReq := dm.OtaFirmwareInfoUpdateReq{}
-	OtaFirmwareJobIndexReq := dm.OtaFirmwareJobIndexReq{}
-	OtaFirmwareJobIndexResp := dm.OtaFirmwareJobIndexResp{}
-	OtaFirmwareJobInfo := dm.OtaFirmwareJobInfo{}
-	OtaJobByDeviceIndexReq := dm.OtaJobByDeviceIndexReq{}
-	OtaJobDynamicInfo := dm.OtaJobDynamicInfo{}
-	OtaJobStaticInfo := dm.OtaJobStaticInfo{}
-	OtaModuleInfo := dm.OtaModuleInfo{}
-	OtaModuleInfoIndexReq := dm.OtaModuleInfoIndexReq{}
-	OtaModuleInfoIndexResp := dm.OtaModuleInfoIndexResp{}
-	PageInfo := dm.PageInfo{}
-	PageInfo_OrderBy := dm.PageInfo_OrderBy{}
-	Point := dm.Point{}
-	ProductCategory := dm.ProductCategory{}
-	ProductCategoryIndexReq := dm.ProductCategoryIndexReq{}
-	ProductCategoryIndexResp := dm.ProductCategoryIndexResp{}
-	ProductCategorySchemaIndexReq := dm.ProductCategorySchemaIndexReq{}
-	ProductCategorySchemaIndexResp := dm.ProductCategorySchemaIndexResp{}
-	ProductCategorySchemaMultiSaveReq := dm.ProductCategorySchemaMultiSaveReq{}
-	ProductCustom := dm.ProductCustom{}
-	ProductCustomReadReq := dm.ProductCustomReadReq{}
-	ProductCustomUi := dm.ProductCustomUi{}
-	ProductInfo := dm.ProductInfo{}
-	ProductInfoDeleteReq := dm.ProductInfoDeleteReq{}
-	ProductInfoIndexReq := dm.ProductInfoIndexReq{}
-	ProductInfoIndexResp := dm.ProductInfoIndexResp{}
-	ProductInfoReadReq := dm.ProductInfoReadReq{}
-	ProductInitReq := dm.ProductInitReq{}
-	ProductRemoteConfig := dm.ProductRemoteConfig{}
-	ProductSchemaCreateReq := dm.ProductSchemaCreateReq{}
-	ProductSchemaDeleteReq := dm.ProductSchemaDeleteReq{}
-	ProductSchemaIndexReq := dm.ProductSchemaIndexReq{}
-	ProductSchemaIndexResp := dm.ProductSchemaIndexResp{}
-	ProductSchemaInfo := dm.ProductSchemaInfo{}
-	ProductSchemaMultiCreateReq := dm.ProductSchemaMultiCreateReq{}
-	ProductSchemaTslImportReq := dm.ProductSchemaTslImportReq{}
-	ProductSchemaTslReadReq := dm.ProductSchemaTslReadReq{}
-	ProductSchemaTslReadResp := dm.ProductSchemaTslReadResp{}
-	ProductSchemaUpdateReq := dm.ProductSchemaUpdateReq{}
-	PropertyControlMultiSendReq := dm.PropertyControlMultiSendReq{}
-	PropertyControlMultiSendResp := dm.PropertyControlMultiSendResp{}
-	PropertyControlSendMsg := dm.PropertyControlSendMsg{}
-	PropertyControlSendReq := dm.PropertyControlSendReq{}
-	PropertyControlSendResp := dm.PropertyControlSendResp{}
-	PropertyGetReportMultiSendReq := dm.PropertyGetReportMultiSendReq{}
-	PropertyGetReportMultiSendResp := dm.PropertyGetReportMultiSendResp{}
-	PropertyGetReportSendMsg := dm.PropertyGetReportSendMsg{}
-	PropertyGetReportSendReq := dm.PropertyGetReportSendReq{}
-	PropertyGetReportSendResp := dm.PropertyGetReportSendResp{}
-	PropertyLogIndexReq := dm.PropertyLogIndexReq{}
-	PropertyLogIndexResp := dm.PropertyLogIndexResp{}
-	PropertyLogInfo := dm.PropertyLogInfo{}
-	PropertyLogLatestIndexReq := dm.PropertyLogLatestIndexReq{}
-	ProtocolConfigField := dm.ProtocolConfigField{}
-	ProtocolConfigInfo := dm.ProtocolConfigInfo{}
-	ProtocolInfo := dm.ProtocolInfo{}
-	ProtocolInfoIndexReq := dm.ProtocolInfoIndexReq{}
-	ProtocolInfoIndexResp := dm.ProtocolInfoIndexResp{}
-	ProtocolService := dm.ProtocolService{}
-	ProtocolServiceIndexReq := dm.ProtocolServiceIndexReq{}
-	ProtocolServiceIndexResp := dm.ProtocolServiceIndexResp{}
-	RemoteConfigCreateReq := dm.RemoteConfigCreateReq{}
-	RemoteConfigIndexReq := dm.RemoteConfigIndexReq{}
-	RemoteConfigIndexResp := dm.RemoteConfigIndexResp{}
-	RemoteConfigLastReadReq := dm.RemoteConfigLastReadReq{}
-	RemoteConfigLastReadResp := dm.RemoteConfigLastReadResp{}
-	RemoteConfigPushAllReq := dm.RemoteConfigPushAllReq{}
-	RespReadReq := dm.RespReadReq{}
-	RootCheckReq := dm.RootCheckReq{}
-	SdkLogIndexReq := dm.SdkLogIndexReq{}
-	SdkLogIndexResp := dm.SdkLogIndexResp{}
-	SdkLogInfo := dm.SdkLogInfo{}
-	SendLogIndexReq := dm.SendLogIndexReq{}
-	SendLogIndexResp := dm.SendLogIndexResp{}
-	SendLogInfo := dm.SendLogInfo{}
-	SendMsgReq := dm.SendMsgReq{}
-	SendMsgResp := dm.SendMsgResp{}
-	SendOption := dm.SendOption{}
-	ShadowIndex := dm.ShadowIndex{}
-	ShadowIndexResp := dm.ShadowIndexResp{}
-	SharePerm := dm.SharePerm{}
-	StatusLogIndexReq := dm.StatusLogIndexReq{}
-	StatusLogIndexResp := dm.StatusLogIndexResp{}
-	StatusLogInfo := dm.StatusLogInfo{}
-	TimeRange := dm.TimeRange{}
-	UserDeviceCollectSave := dm.UserDeviceCollectSave{}
-	UserDeviceShareIndexReq := dm.UserDeviceShareIndexReq{}
-	UserDeviceShareIndexResp := dm.UserDeviceShareIndexResp{}
-	UserDeviceShareInfo := dm.UserDeviceShareInfo{}
-	UserDeviceShareMultiAcceptReq := dm.UserDeviceShareMultiAcceptReq{}
-	UserDeviceShareMultiDeleteReq := dm.UserDeviceShareMultiDeleteReq{}
-	UserDeviceShareMultiInfo := dm.UserDeviceShareMultiInfo{}
-	UserDeviceShareMultiToken := dm.UserDeviceShareMultiToken{}
-	UserDeviceShareReadReq := dm.UserDeviceShareReadReq{}
-	WithID := dm.WithID{}
-	WithIDChildren := dm.WithIDChildren{}
-	WithIDCode := dm.WithIDCode{}
-	WithProfile := dm.WithProfile{}
-	PublishMsg := deviceMsg.PublishMsg{}
+func schemaSymbolInit(svcCtx *svc.ServiceContext) map[string]reflect.Value {
 	return map[string]reflect.Value{
-		"PublishMsg":                 reflect.ValueOf(PublishMsg),
-		"ActionSend":                 reflect.ValueOf(deviceinteract.NewDirectDeviceInteract(svcCtx, deviceinteractServer.NewDeviceInteractServer(svcCtx)).ActionSend),
-		"ActionRead":                 reflect.ValueOf(deviceinteract.NewDirectDeviceInteract(svcCtx, deviceinteractServer.NewDeviceInteractServer(svcCtx)).ActionRead),
-		"ActionResp":                 reflect.ValueOf(deviceinteract.NewDirectDeviceInteract(svcCtx, deviceinteractServer.NewDeviceInteractServer(svcCtx)).ActionResp),
-		"PropertyGetReportSend":      reflect.ValueOf(deviceinteract.NewDirectDeviceInteract(svcCtx, deviceinteractServer.NewDeviceInteractServer(svcCtx)).PropertyGetReportSend),
-		"PropertyGetReportMultiSend": reflect.ValueOf(deviceinteract.NewDirectDeviceInteract(svcCtx, deviceinteractServer.NewDeviceInteractServer(svcCtx)).PropertyGetReportMultiSend),
-		"PropertyControlSend":        reflect.ValueOf(deviceinteract.NewDirectDeviceInteract(svcCtx, deviceinteractServer.NewDeviceInteractServer(svcCtx)).PropertyControlSend),
-		"PropertyControlMultiSend":   reflect.ValueOf(deviceinteract.NewDirectDeviceInteract(svcCtx, deviceinteractServer.NewDeviceInteractServer(svcCtx)).PropertyControlMultiSend),
-		"PropertyControlRead":        reflect.ValueOf(deviceinteract.NewDirectDeviceInteract(svcCtx, deviceinteractServer.NewDeviceInteractServer(svcCtx)).PropertyControlRead),
-		"GatewayGetFoundSend":        reflect.ValueOf(deviceinteract.NewDirectDeviceInteract(svcCtx, deviceinteractServer.NewDeviceInteractServer(svcCtx)).GatewayGetFoundSend),
-		"GatewayNotifyBindSend":      reflect.ValueOf(deviceinteract.NewDirectDeviceInteract(svcCtx, deviceinteractServer.NewDeviceInteractServer(svcCtx)).GatewayNotifyBindSend),
+		"ModelSimple": reflect.ValueOf((*schema.ModelSimple)(nil)),
+		"Model":       reflect.ValueOf((*schema.Model)(nil)),
+	}
+}
 
-		"DeviceInfoCreate":         reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceInfoCreate),
-		"DeviceInfoUpdate":         reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceInfoUpdate),
-		"DeviceInfoDelete":         reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceInfoDelete),
-		"DeviceInfoIndex":          reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceInfoIndex),
-		"DeviceInfoMultiUpdate":    reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceInfoMultiUpdate),
-		"DeviceInfoRead":           reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceInfoRead),
-		"DeviceInfoBind":           reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceInfoBind),
-		"DeviceBindTokenRead":      reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceBindTokenRead),
-		"DeviceBindTokenCreate":    reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceBindTokenCreate),
-		"DeviceInfoMultiBind":      reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceInfoMultiBind),
-		"DeviceInfoCanBind":        reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceInfoCanBind),
-		"DeviceInfoUnbind":         reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceInfoUnbind),
-		"DeviceTransfer":           reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceTransfer),
-		"DeviceReset":              reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceReset),
-		"DeviceMove":               reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceMove),
-		"DeviceModuleVersionRead":  reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceModuleVersionRead),
-		"DeviceModuleVersionIndex": reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceModuleVersionIndex),
-		"DeviceGatewayMultiCreate": reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceGatewayMultiCreate),
-		"DeviceGatewayMultiUpdate": reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceGatewayMultiUpdate),
-		"DeviceGatewayIndex":       reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceGatewayIndex),
-		"DeviceGatewayMultiDelete": reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceGatewayMultiDelete),
-		"DeviceProfileRead":        reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceProfileRead),
-		"DeviceProfileDelete":      reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceProfileDelete),
-		"DeviceProfileUpdate":      reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceProfileUpdate),
-		"DeviceProfileIndex":       reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceProfileIndex),
-		"DeviceSchemaUpdate":       reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceSchemaUpdate),
-		"DeviceSchemaCreate":       reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceSchemaCreate),
-		"DeviceSchemaMultiCreate":  reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceSchemaMultiCreate),
-		"DeviceSchemaMultiDelete":  reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceSchemaMultiDelete),
-		"DeviceSchemaIndex":        reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceSchemaIndex),
-		"DeviceSchemaTslRead":      reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceSchemaTslRead),
-		"DeviceGroupMultiCreate":   reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceGroupMultiCreate),
-		"DeviceGroupMultiUpdate":   reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceGroupMultiUpdate),
-		"DeviceGroupMultiDelete":   reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx)).DeviceGroupMultiDelete),
+func deviceMsgSymbolInit(svcCtx *svc.ServiceContext) map[string]reflect.Value {
+	return map[string]reflect.Value{
+		"PublishMsg": reflect.ValueOf((*deviceMsg.PublishMsg)(nil)),
+		"CommonMsg":  reflect.ValueOf((*deviceMsg.CommonMsg)(nil)),
+		"TimeParams": reflect.ValueOf((*deviceMsg.TimeParams)(nil)),
 
-		"AbnormalLogIndexReq":               reflect.ValueOf(AbnormalLogIndexReq),
-		"AbnormalLogIndexResp":              reflect.ValueOf(AbnormalLogIndexResp),
-		"AbnormalLogInfo":                   reflect.ValueOf(AbnormalLogInfo),
-		"ActionRespReq":                     reflect.ValueOf(ActionRespReq),
-		"ActionSendReq":                     reflect.ValueOf(ActionSendReq),
-		"ActionSendResp":                    reflect.ValueOf(ActionSendResp),
-		"CommonSchemaCreateReq":             reflect.ValueOf(CommonSchemaCreateReq),
-		"CommonSchemaIndexReq":              reflect.ValueOf(CommonSchemaIndexReq),
-		"CommonSchemaIndexResp":             reflect.ValueOf(CommonSchemaIndexResp),
-		"CommonSchemaInfo":                  reflect.ValueOf(CommonSchemaInfo),
-		"CommonSchemaUpdateReq":             reflect.ValueOf(CommonSchemaUpdateReq),
-		"CompareInt64":                      reflect.ValueOf(CompareInt64),
-		"CompareString":                     reflect.ValueOf(CompareString),
-		"CustomTopic":                       reflect.ValueOf(CustomTopic),
-		"DeviceBindTokenInfo":               reflect.ValueOf(DeviceBindTokenInfo),
-		"DeviceBindTokenReadReq":            reflect.ValueOf(DeviceBindTokenReadReq),
-		"DeviceCore":                        reflect.ValueOf(DeviceCore),
-		"DeviceCountInfo":                   reflect.ValueOf(DeviceCountInfo),
-		"DeviceCountReq":                    reflect.ValueOf(DeviceCountReq),
-		"DeviceCountResp":                   reflect.ValueOf(DeviceCountResp),
-		"DeviceError":                       reflect.ValueOf(DeviceError),
-		"DeviceGatewayBindDevice":           reflect.ValueOf(DeviceGatewayBindDevice),
-		"DeviceGatewayIndexReq":             reflect.ValueOf(DeviceGatewayIndexReq),
-		"DeviceGatewayIndexResp":            reflect.ValueOf(DeviceGatewayIndexResp),
-		"DeviceGatewayMultiCreateReq":       reflect.ValueOf(DeviceGatewayMultiCreateReq),
-		"DeviceGatewayMultiSaveReq":         reflect.ValueOf(DeviceGatewayMultiSaveReq),
-		"DeviceGatewaySign":                 reflect.ValueOf(DeviceGatewaySign),
-		"DeviceGroupMultiSaveReq":           reflect.ValueOf(DeviceGroupMultiSaveReq),
-		"DeviceInfo":                        reflect.ValueOf(DeviceInfo),
-		"DeviceInfoBindReq":                 reflect.ValueOf(DeviceInfoBindReq),
-		"DeviceInfoCanBindReq":              reflect.ValueOf(DeviceInfoCanBindReq),
-		"DeviceInfoCount":                   reflect.ValueOf(DeviceInfoCount),
-		"DeviceInfoCountReq":                reflect.ValueOf(DeviceInfoCountReq),
-		"DeviceInfoDeleteReq":               reflect.ValueOf(DeviceInfoDeleteReq),
-		"DeviceInfoIndexReq":                reflect.ValueOf(DeviceInfoIndexReq),
-		"DeviceInfoIndexResp":               reflect.ValueOf(DeviceInfoIndexResp),
-		"DeviceInfoMultiBindReq":            reflect.ValueOf(DeviceInfoMultiBindReq),
-		"DeviceInfoMultiBindResp":           reflect.ValueOf(DeviceInfoMultiBindResp),
-		"DeviceInfoMultiUpdateReq":          reflect.ValueOf(DeviceInfoMultiUpdateReq),
-		"DeviceInfoReadReq":                 reflect.ValueOf(DeviceInfoReadReq),
-		"DeviceInfoUnbindReq":               reflect.ValueOf(DeviceInfoUnbindReq),
-		"DeviceModuleVersion":               reflect.ValueOf(DeviceModuleVersion),
-		"DeviceModuleVersionIndexReq":       reflect.ValueOf(DeviceModuleVersionIndexReq),
-		"DeviceModuleVersionIndexResp":      reflect.ValueOf(DeviceModuleVersionIndexResp),
-		"DeviceModuleVersionReadReq":        reflect.ValueOf(DeviceModuleVersionReadReq),
-		"DeviceMoveReq":                     reflect.ValueOf(DeviceMoveReq),
-		"DeviceOnlineMultiFix":              reflect.ValueOf(DeviceOnlineMultiFix),
-		"DeviceOnlineMultiFixReq":           reflect.ValueOf(DeviceOnlineMultiFixReq),
-		"DeviceProfile":                     reflect.ValueOf(DeviceProfile),
-		"DeviceProfileIndexReq":             reflect.ValueOf(DeviceProfileIndexReq),
-		"DeviceProfileIndexResp":            reflect.ValueOf(DeviceProfileIndexResp),
-		"DeviceProfileReadReq":              reflect.ValueOf(DeviceProfileReadReq),
-		"DeviceResetReq":                    reflect.ValueOf(DeviceResetReq),
-		"DeviceSchema":                      reflect.ValueOf(DeviceSchema),
-		"DeviceSchemaIndexReq":              reflect.ValueOf(DeviceSchemaIndexReq),
-		"DeviceSchemaIndexResp":             reflect.ValueOf(DeviceSchemaIndexResp),
-		"DeviceSchemaMultiCreateReq":        reflect.ValueOf(DeviceSchemaMultiCreateReq),
-		"DeviceSchemaMultiDeleteReq":        reflect.ValueOf(DeviceSchemaMultiDeleteReq),
-		"DeviceSchemaTslReadReq":            reflect.ValueOf(DeviceSchemaTslReadReq),
-		"DeviceSchemaTslReadResp":           reflect.ValueOf(DeviceSchemaTslReadResp),
-		"DeviceShareInfo":                   reflect.ValueOf(DeviceShareInfo),
-		"DeviceTransferReq":                 reflect.ValueOf(DeviceTransferReq),
-		"DeviceTypeCountReq":                reflect.ValueOf(DeviceTypeCountReq),
-		"DeviceTypeCountResp":               reflect.ValueOf(DeviceTypeCountResp),
-		"EdgeSendReq":                       reflect.ValueOf(EdgeSendReq),
-		"EdgeSendResp":                      reflect.ValueOf(EdgeSendResp),
-		"Empty":                             reflect.ValueOf(Empty),
-		"EventLogIndexReq":                  reflect.ValueOf(EventLogIndexReq),
-		"EventLogIndexResp":                 reflect.ValueOf(EventLogIndexResp),
-		"EventLogInfo":                      reflect.ValueOf(EventLogInfo),
-		"Firmware":                          reflect.ValueOf(Firmware),
-		"FirmwareFile":                      reflect.ValueOf(FirmwareFile),
-		"FirmwareInfo":                      reflect.ValueOf(FirmwareInfo),
-		"FirmwareInfoDeleteReq":             reflect.ValueOf(FirmwareInfoDeleteReq),
-		"FirmwareInfoDeleteResp":            reflect.ValueOf(FirmwareInfoDeleteResp),
-		"FirmwareInfoIndexReq":              reflect.ValueOf(FirmwareInfoIndexReq),
-		"FirmwareInfoIndexResp":             reflect.ValueOf(FirmwareInfoIndexResp),
-		"FirmwareInfoReadReq":               reflect.ValueOf(FirmwareInfoReadReq),
-		"FirmwareInfoReadResp":              reflect.ValueOf(FirmwareInfoReadResp),
-		"FirmwareResp":                      reflect.ValueOf(FirmwareResp),
-		"GatewayCanBindIndexReq":            reflect.ValueOf(GatewayCanBindIndexReq),
-		"GatewayCanBindIndexResp":           reflect.ValueOf(GatewayCanBindIndexResp),
-		"GatewayGetFoundReq":                reflect.ValueOf(GatewayGetFoundReq),
-		"GatewayNotifyBindSendReq":          reflect.ValueOf(GatewayNotifyBindSendReq),
-		"GroupCore":                         reflect.ValueOf(GroupCore),
-		"GroupDeviceMultiDeleteReq":         reflect.ValueOf(GroupDeviceMultiDeleteReq),
-		"GroupDeviceMultiSaveReq":           reflect.ValueOf(GroupDeviceMultiSaveReq),
-		"GroupInfo":                         reflect.ValueOf(GroupInfo),
-		"GroupInfoCreateReq":                reflect.ValueOf(GroupInfoCreateReq),
-		"GroupInfoIndexReq":                 reflect.ValueOf(GroupInfoIndexReq),
-		"GroupInfoIndexResp":                reflect.ValueOf(GroupInfoIndexResp),
-		"GroupInfoMultiCreateReq":           reflect.ValueOf(GroupInfoMultiCreateReq),
-		"GroupInfoReadReq":                  reflect.ValueOf(GroupInfoReadReq),
-		"GroupInfoUpdateReq":                reflect.ValueOf(GroupInfoUpdateReq),
-		"HubLogIndexReq":                    reflect.ValueOf(HubLogIndexReq),
-		"HubLogIndexResp":                   reflect.ValueOf(HubLogIndexResp),
-		"HubLogInfo":                        reflect.ValueOf(HubLogInfo),
-		"IDPath":                            reflect.ValueOf(IDPath),
-		"IDPathWithUpdate":                  reflect.ValueOf(IDPathWithUpdate),
-		"OtaFirmwareDeviceCancelReq":        reflect.ValueOf(OtaFirmwareDeviceCancelReq),
-		"OtaFirmwareDeviceConfirmReq":       reflect.ValueOf(OtaFirmwareDeviceConfirmReq),
-		"OtaFirmwareDeviceIndexReq":         reflect.ValueOf(OtaFirmwareDeviceIndexReq),
-		"OtaFirmwareDeviceIndexResp":        reflect.ValueOf(OtaFirmwareDeviceIndexResp),
-		"OtaFirmwareDeviceInfo":             reflect.ValueOf(OtaFirmwareDeviceInfo),
-		"OtaFirmwareDeviceRetryReq":         reflect.ValueOf(OtaFirmwareDeviceRetryReq),
-		"OtaFirmwareFile":                   reflect.ValueOf(OtaFirmwareFile),
-		"OtaFirmwareFileIndexReq":           reflect.ValueOf(OtaFirmwareFileIndexReq),
-		"OtaFirmwareFileIndexResp":          reflect.ValueOf(OtaFirmwareFileIndexResp),
-		"OtaFirmwareFileInfo":               reflect.ValueOf(OtaFirmwareFileInfo),
-		"OtaFirmwareFileReq":                reflect.ValueOf(OtaFirmwareFileReq),
-		"OtaFirmwareFileResp":               reflect.ValueOf(OtaFirmwareFileResp),
-		"OtaFirmwareInfo":                   reflect.ValueOf(OtaFirmwareInfo),
-		"OtaFirmwareInfoCreateReq":          reflect.ValueOf(OtaFirmwareInfoCreateReq),
-		"OtaFirmwareInfoIndexReq":           reflect.ValueOf(OtaFirmwareInfoIndexReq),
-		"OtaFirmwareInfoIndexResp":          reflect.ValueOf(OtaFirmwareInfoIndexResp),
-		"OtaFirmwareInfoUpdateReq":          reflect.ValueOf(OtaFirmwareInfoUpdateReq),
-		"OtaFirmwareJobIndexReq":            reflect.ValueOf(OtaFirmwareJobIndexReq),
-		"OtaFirmwareJobIndexResp":           reflect.ValueOf(OtaFirmwareJobIndexResp),
-		"OtaFirmwareJobInfo":                reflect.ValueOf(OtaFirmwareJobInfo),
-		"OtaJobByDeviceIndexReq":            reflect.ValueOf(OtaJobByDeviceIndexReq),
-		"OtaJobDynamicInfo":                 reflect.ValueOf(OtaJobDynamicInfo),
-		"OtaJobStaticInfo":                  reflect.ValueOf(OtaJobStaticInfo),
-		"OtaModuleInfo":                     reflect.ValueOf(OtaModuleInfo),
-		"OtaModuleInfoIndexReq":             reflect.ValueOf(OtaModuleInfoIndexReq),
-		"OtaModuleInfoIndexResp":            reflect.ValueOf(OtaModuleInfoIndexResp),
-		"PageInfo":                          reflect.ValueOf(PageInfo),
-		"PageInfo_OrderBy":                  reflect.ValueOf(PageInfo_OrderBy),
-		"Point":                             reflect.ValueOf(Point),
-		"ProductCategory":                   reflect.ValueOf(ProductCategory),
-		"ProductCategoryIndexReq":           reflect.ValueOf(ProductCategoryIndexReq),
-		"ProductCategoryIndexResp":          reflect.ValueOf(ProductCategoryIndexResp),
-		"ProductCategorySchemaIndexReq":     reflect.ValueOf(ProductCategorySchemaIndexReq),
-		"ProductCategorySchemaIndexResp":    reflect.ValueOf(ProductCategorySchemaIndexResp),
-		"ProductCategorySchemaMultiSaveReq": reflect.ValueOf(ProductCategorySchemaMultiSaveReq),
-		"ProductCustom":                     reflect.ValueOf(ProductCustom),
-		"ProductCustomReadReq":              reflect.ValueOf(ProductCustomReadReq),
-		"ProductCustomUi":                   reflect.ValueOf(ProductCustomUi),
-		"ProductInfo":                       reflect.ValueOf(ProductInfo),
-		"ProductInfoDeleteReq":              reflect.ValueOf(ProductInfoDeleteReq),
-		"ProductInfoIndexReq":               reflect.ValueOf(ProductInfoIndexReq),
-		"ProductInfoIndexResp":              reflect.ValueOf(ProductInfoIndexResp),
-		"ProductInfoReadReq":                reflect.ValueOf(ProductInfoReadReq),
-		"ProductInitReq":                    reflect.ValueOf(ProductInitReq),
-		"ProductRemoteConfig":               reflect.ValueOf(ProductRemoteConfig),
-		"ProductSchemaCreateReq":            reflect.ValueOf(ProductSchemaCreateReq),
-		"ProductSchemaDeleteReq":            reflect.ValueOf(ProductSchemaDeleteReq),
-		"ProductSchemaIndexReq":             reflect.ValueOf(ProductSchemaIndexReq),
-		"ProductSchemaIndexResp":            reflect.ValueOf(ProductSchemaIndexResp),
-		"ProductSchemaInfo":                 reflect.ValueOf(ProductSchemaInfo),
-		"ProductSchemaMultiCreateReq":       reflect.ValueOf(ProductSchemaMultiCreateReq),
-		"ProductSchemaTslImportReq":         reflect.ValueOf(ProductSchemaTslImportReq),
-		"ProductSchemaTslReadReq":           reflect.ValueOf(ProductSchemaTslReadReq),
-		"ProductSchemaTslReadResp":          reflect.ValueOf(ProductSchemaTslReadResp),
-		"ProductSchemaUpdateReq":            reflect.ValueOf(ProductSchemaUpdateReq),
-		"PropertyControlMultiSendReq":       reflect.ValueOf(PropertyControlMultiSendReq),
-		"PropertyControlMultiSendResp":      reflect.ValueOf(PropertyControlMultiSendResp),
-		"PropertyControlSendMsg":            reflect.ValueOf(PropertyControlSendMsg),
-		"PropertyControlSendReq":            reflect.ValueOf(PropertyControlSendReq),
-		"PropertyControlSendResp":           reflect.ValueOf(PropertyControlSendResp),
-		"PropertyGetReportMultiSendReq":     reflect.ValueOf(PropertyGetReportMultiSendReq),
-		"PropertyGetReportMultiSendResp":    reflect.ValueOf(PropertyGetReportMultiSendResp),
-		"PropertyGetReportSendMsg":          reflect.ValueOf(PropertyGetReportSendMsg),
-		"PropertyGetReportSendReq":          reflect.ValueOf(PropertyGetReportSendReq),
-		"PropertyGetReportSendResp":         reflect.ValueOf(PropertyGetReportSendResp),
-		"PropertyLogIndexReq":               reflect.ValueOf(PropertyLogIndexReq),
-		"PropertyLogIndexResp":              reflect.ValueOf(PropertyLogIndexResp),
-		"PropertyLogInfo":                   reflect.ValueOf(PropertyLogInfo),
-		"PropertyLogLatestIndexReq":         reflect.ValueOf(PropertyLogLatestIndexReq),
-		"ProtocolConfigField":               reflect.ValueOf(ProtocolConfigField),
-		"ProtocolConfigInfo":                reflect.ValueOf(ProtocolConfigInfo),
-		"ProtocolInfo":                      reflect.ValueOf(ProtocolInfo),
-		"ProtocolInfoIndexReq":              reflect.ValueOf(ProtocolInfoIndexReq),
-		"ProtocolInfoIndexResp":             reflect.ValueOf(ProtocolInfoIndexResp),
-		"ProtocolService":                   reflect.ValueOf(ProtocolService),
-		"ProtocolServiceIndexReq":           reflect.ValueOf(ProtocolServiceIndexReq),
-		"ProtocolServiceIndexResp":          reflect.ValueOf(ProtocolServiceIndexResp),
-		"RemoteConfigCreateReq":             reflect.ValueOf(RemoteConfigCreateReq),
-		"RemoteConfigIndexReq":              reflect.ValueOf(RemoteConfigIndexReq),
-		"RemoteConfigIndexResp":             reflect.ValueOf(RemoteConfigIndexResp),
-		"RemoteConfigLastReadReq":           reflect.ValueOf(RemoteConfigLastReadReq),
-		"RemoteConfigLastReadResp":          reflect.ValueOf(RemoteConfigLastReadResp),
-		"RemoteConfigPushAllReq":            reflect.ValueOf(RemoteConfigPushAllReq),
-		"RespReadReq":                       reflect.ValueOf(RespReadReq),
-		"RootCheckReq":                      reflect.ValueOf(RootCheckReq),
-		"SdkLogIndexReq":                    reflect.ValueOf(SdkLogIndexReq),
-		"SdkLogIndexResp":                   reflect.ValueOf(SdkLogIndexResp),
-		"SdkLogInfo":                        reflect.ValueOf(SdkLogInfo),
-		"SendLogIndexReq":                   reflect.ValueOf(SendLogIndexReq),
-		"SendLogIndexResp":                  reflect.ValueOf(SendLogIndexResp),
-		"SendLogInfo":                       reflect.ValueOf(SendLogInfo),
-		"SendMsgReq":                        reflect.ValueOf(SendMsgReq),
-		"SendMsgResp":                       reflect.ValueOf(SendMsgResp),
-		"SendOption":                        reflect.ValueOf(SendOption),
-		"ShadowIndex":                       reflect.ValueOf(ShadowIndex),
-		"ShadowIndexResp":                   reflect.ValueOf(ShadowIndexResp),
-		"SharePerm":                         reflect.ValueOf(SharePerm),
-		"StatusLogIndexReq":                 reflect.ValueOf(StatusLogIndexReq),
-		"StatusLogIndexResp":                reflect.ValueOf(StatusLogIndexResp),
-		"StatusLogInfo":                     reflect.ValueOf(StatusLogInfo),
-		"TimeRange":                         reflect.ValueOf(TimeRange),
-		"UserDeviceCollectSave":             reflect.ValueOf(UserDeviceCollectSave),
-		"UserDeviceShareIndexReq":           reflect.ValueOf(UserDeviceShareIndexReq),
-		"UserDeviceShareIndexResp":          reflect.ValueOf(UserDeviceShareIndexResp),
-		"UserDeviceShareInfo":               reflect.ValueOf(UserDeviceShareInfo),
-		"UserDeviceShareMultiAcceptReq":     reflect.ValueOf(UserDeviceShareMultiAcceptReq),
-		"UserDeviceShareMultiDeleteReq":     reflect.ValueOf(UserDeviceShareMultiDeleteReq),
-		"UserDeviceShareMultiInfo":          reflect.ValueOf(UserDeviceShareMultiInfo),
-		"UserDeviceShareMultiToken":         reflect.ValueOf(UserDeviceShareMultiToken),
-		"UserDeviceShareReadReq":            reflect.ValueOf(UserDeviceShareReadReq),
-		"WithID":                            reflect.ValueOf(WithID),
-		"WithIDChildren":                    reflect.ValueOf(WithIDChildren),
-		"WithIDCode":                        reflect.ValueOf(WithIDCode),
-		"WithProfile":                       reflect.ValueOf(WithProfile),
+		"SysConfig":      reflect.ValueOf((*deviceMsg.SysConfig)(nil)),
+		"thingReq":       reflect.ValueOf((*msgThing.Req)(nil)),
+		"thingSubDevice": reflect.ValueOf((*msgThing.SubDevice)(nil)),
+		"thingResp":      reflect.ValueOf((*msgThing.Resp)(nil)),
+
+		"sdkLogReq":    reflect.ValueOf((*msgSdkLog.Req)(nil)),
+		"sdkLogSdkLog": reflect.ValueOf((*msgSdkLog.SdkLog)(nil)),
+
+		"otaReq":           reflect.ValueOf((*msgOta.Req)(nil)),
+		"otaProcess":       reflect.ValueOf((*msgOta.Process)(nil)),
+		"otaParams":        reflect.ValueOf((*msgOta.Params)(nil)),
+		"otaProcessParams": reflect.ValueOf((*msgOta.ProcessParams)(nil)),
+		"otaUpgrade":       reflect.ValueOf((*msgOta.Upgrade)(nil)),
+
+		"gatewayMsg":      reflect.ValueOf((*msgGateway.Msg)(nil)),
+		"gatewayPayload":  reflect.ValueOf((*msgGateway.GatewayPayload)(nil)),
+		"gatewayRegister": reflect.ValueOf((*msgGateway.Register)(nil)),
+		"gatewayDevice":   reflect.ValueOf((*msgGateway.Device)(nil)),
+
+		"extReq":          reflect.ValueOf((*msgExt.Req)(nil)),
+		"extRegisterReq":  reflect.ValueOf((*msgExt.RegisterReq)(nil)),
+		"extResp":         reflect.ValueOf((*msgExt.Resp)(nil)),
+		"extRespRegister": reflect.ValueOf((*msgExt.RespRegister)(nil)),
+	}
+}
+
+func dmSymbolInit(svcCtx *svc.ServiceContext) map[string]reflect.Value {
+	return map[string]reflect.Value{
+		"ProductGet": reflect.ValueOf(func(ctx context.Context, productID string) (*dm.ProductInfo, error) {
+			return svcCtx.ProductCache.GetData(ctx, productID)
+		}),
+		"DeviceGet": reflect.ValueOf(func(ctx context.Context, productID string, deviceName string) (*dm.DeviceInfo, error) {
+			return svcCtx.DeviceCache.GetData(ctx, devices.Core{ProductID: productID, DeviceName: deviceName})
+		}),
+		"SchemaGet": reflect.ValueOf(func(ctx context.Context, productID string, deviceName string) (*schema.Model, error) {
+			return svcCtx.DeviceSchemaRepo.GetData(ctx, devices.Core{ProductID: productID, DeviceName: deviceName})
+		}),
+		"DeviceInteract":                    reflect.ValueOf(deviceinteract.NewDirectDeviceInteract(svcCtx, deviceinteractServer.NewDeviceInteractServer(svcCtx))),
+		"DeviceManage":                      reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx))),
+		"ProductManage":                     reflect.ValueOf(productmanage.NewDirectProductManage(svcCtx, productmanageServer.NewProductManageServer(svcCtx))),
+		"OtaManage":                         reflect.ValueOf(otamanage.NewDirectOtaManage(svcCtx, otamanageServer.NewOtaManageServer(svcCtx))),
+		"AbnormalLogIndexReq":               reflect.ValueOf((*dm.AbnormalLogIndexReq)(nil)),
+		"AbnormalLogIndexResp":              reflect.ValueOf((*dm.AbnormalLogIndexResp)(nil)),
+		"AbnormalLogInfo":                   reflect.ValueOf((*dm.AbnormalLogInfo)(nil)),
+		"ActionRespReq":                     reflect.ValueOf((*dm.ActionRespReq)(nil)),
+		"ActionSendReq":                     reflect.ValueOf((*dm.ActionSendReq)(nil)),
+		"ActionSendResp":                    reflect.ValueOf((*dm.ActionSendResp)(nil)),
+		"CommonSchemaCreateReq":             reflect.ValueOf((*dm.CommonSchemaCreateReq)(nil)),
+		"CommonSchemaIndexReq":              reflect.ValueOf((*dm.CommonSchemaIndexReq)(nil)),
+		"CommonSchemaIndexResp":             reflect.ValueOf((*dm.CommonSchemaIndexResp)(nil)),
+		"CommonSchemaInfo":                  reflect.ValueOf((*dm.CommonSchemaInfo)(nil)),
+		"CommonSchemaUpdateReq":             reflect.ValueOf((*dm.CommonSchemaUpdateReq)(nil)),
+		"CompareInt64":                      reflect.ValueOf((*dm.CompareInt64)(nil)),
+		"CompareString":                     reflect.ValueOf((*dm.CompareString)(nil)),
+		"CustomTopic":                       reflect.ValueOf((*dm.CustomTopic)(nil)),
+		"DeviceBindTokenInfo":               reflect.ValueOf((*dm.DeviceBindTokenInfo)(nil)),
+		"DeviceBindTokenReadReq":            reflect.ValueOf((*dm.DeviceBindTokenReadReq)(nil)),
+		"DeviceCore":                        reflect.ValueOf((*dm.DeviceCore)(nil)),
+		"DeviceCountInfo":                   reflect.ValueOf((*dm.DeviceCountInfo)(nil)),
+		"DeviceCountReq":                    reflect.ValueOf((*dm.DeviceCountReq)(nil)),
+		"DeviceCountResp":                   reflect.ValueOf((*dm.DeviceCountResp)(nil)),
+		"DeviceError":                       reflect.ValueOf((*dm.DeviceError)(nil)),
+		"DeviceGatewayBindDevice":           reflect.ValueOf((*dm.DeviceGatewayBindDevice)(nil)),
+		"DeviceGatewayIndexReq":             reflect.ValueOf((*dm.DeviceGatewayIndexReq)(nil)),
+		"DeviceGatewayIndexResp":            reflect.ValueOf((*dm.DeviceGatewayIndexResp)(nil)),
+		"DeviceGatewayMultiCreateReq":       reflect.ValueOf((*dm.DeviceGatewayMultiCreateReq)(nil)),
+		"DeviceGatewayMultiSaveReq":         reflect.ValueOf((*dm.DeviceGatewayMultiSaveReq)(nil)),
+		"DeviceGatewaySign":                 reflect.ValueOf((*dm.DeviceGatewaySign)(nil)),
+		"DeviceGroupMultiSaveReq":           reflect.ValueOf((*dm.DeviceGroupMultiSaveReq)(nil)),
+		"DeviceInfo":                        reflect.ValueOf((*dm.DeviceInfo)(nil)),
+		"DeviceInfoBindReq":                 reflect.ValueOf((*dm.DeviceInfoBindReq)(nil)),
+		"DeviceInfoCanBindReq":              reflect.ValueOf((*dm.DeviceInfoCanBindReq)(nil)),
+		"DeviceInfoCount":                   reflect.ValueOf((*dm.DeviceInfoCount)(nil)),
+		"DeviceInfoCountReq":                reflect.ValueOf((*dm.DeviceInfoCountReq)(nil)),
+		"DeviceInfoDeleteReq":               reflect.ValueOf((*dm.DeviceInfoDeleteReq)(nil)),
+		"DeviceInfoIndexReq":                reflect.ValueOf((*dm.DeviceInfoIndexReq)(nil)),
+		"DeviceInfoIndexResp":               reflect.ValueOf((*dm.DeviceInfoIndexResp)(nil)),
+		"DeviceInfoMultiBindReq":            reflect.ValueOf((*dm.DeviceInfoMultiBindReq)(nil)),
+		"DeviceInfoMultiBindResp":           reflect.ValueOf((*dm.DeviceInfoMultiBindResp)(nil)),
+		"DeviceInfoMultiUpdateReq":          reflect.ValueOf((*dm.DeviceInfoMultiUpdateReq)(nil)),
+		"DeviceInfoReadReq":                 reflect.ValueOf((*dm.DeviceInfoReadReq)(nil)),
+		"DeviceInfoUnbindReq":               reflect.ValueOf((*dm.DeviceInfoUnbindReq)(nil)),
+		"DeviceModuleVersion":               reflect.ValueOf((*dm.DeviceModuleVersion)(nil)),
+		"DeviceModuleVersionIndexReq":       reflect.ValueOf((*dm.DeviceModuleVersionIndexReq)(nil)),
+		"DeviceModuleVersionIndexResp":      reflect.ValueOf((*dm.DeviceModuleVersionIndexResp)(nil)),
+		"DeviceModuleVersionReadReq":        reflect.ValueOf((*dm.DeviceModuleVersionReadReq)(nil)),
+		"DeviceMoveReq":                     reflect.ValueOf((*dm.DeviceMoveReq)(nil)),
+		"DeviceOnlineMultiFix":              reflect.ValueOf((*dm.DeviceOnlineMultiFix)(nil)),
+		"DeviceOnlineMultiFixReq":           reflect.ValueOf((*dm.DeviceOnlineMultiFixReq)(nil)),
+		"DeviceProfile":                     reflect.ValueOf((*dm.DeviceProfile)(nil)),
+		"DeviceProfileIndexReq":             reflect.ValueOf((*dm.DeviceProfileIndexReq)(nil)),
+		"DeviceProfileIndexResp":            reflect.ValueOf((*dm.DeviceProfileIndexResp)(nil)),
+		"DeviceProfileReadReq":              reflect.ValueOf((*dm.DeviceProfileReadReq)(nil)),
+		"DeviceResetReq":                    reflect.ValueOf((*dm.DeviceResetReq)(nil)),
+		"DeviceSchema":                      reflect.ValueOf((*dm.DeviceSchema)(nil)),
+		"DeviceSchemaIndexReq":              reflect.ValueOf((*dm.DeviceSchemaIndexReq)(nil)),
+		"DeviceSchemaIndexResp":             reflect.ValueOf((*dm.DeviceSchemaIndexResp)(nil)),
+		"DeviceSchemaMultiCreateReq":        reflect.ValueOf((*dm.DeviceSchemaMultiCreateReq)(nil)),
+		"DeviceSchemaMultiDeleteReq":        reflect.ValueOf((*dm.DeviceSchemaMultiDeleteReq)(nil)),
+		"DeviceSchemaTslReadReq":            reflect.ValueOf((*dm.DeviceSchemaTslReadReq)(nil)),
+		"DeviceSchemaTslReadResp":           reflect.ValueOf((*dm.DeviceSchemaTslReadResp)(nil)),
+		"DeviceShareInfo":                   reflect.ValueOf((*dm.DeviceShareInfo)(nil)),
+		"DeviceTransferReq":                 reflect.ValueOf((*dm.DeviceTransferReq)(nil)),
+		"DeviceTypeCountReq":                reflect.ValueOf((*dm.DeviceTypeCountReq)(nil)),
+		"DeviceTypeCountResp":               reflect.ValueOf((*dm.DeviceTypeCountResp)(nil)),
+		"EdgeSendReq":                       reflect.ValueOf((*dm.EdgeSendReq)(nil)),
+		"EdgeSendResp":                      reflect.ValueOf((*dm.EdgeSendResp)(nil)),
+		"Empty":                             reflect.ValueOf((*dm.Empty)(nil)),
+		"EventLogIndexReq":                  reflect.ValueOf((*dm.EventLogIndexReq)(nil)),
+		"EventLogIndexResp":                 reflect.ValueOf((*dm.EventLogIndexResp)(nil)),
+		"EventLogInfo":                      reflect.ValueOf((*dm.EventLogInfo)(nil)),
+		"Firmware":                          reflect.ValueOf((*dm.Firmware)(nil)),
+		"FirmwareFile":                      reflect.ValueOf((*dm.FirmwareFile)(nil)),
+		"FirmwareInfo":                      reflect.ValueOf((*dm.FirmwareInfo)(nil)),
+		"FirmwareInfoDeleteReq":             reflect.ValueOf((*dm.FirmwareInfoDeleteReq)(nil)),
+		"FirmwareInfoDeleteResp":            reflect.ValueOf((*dm.FirmwareInfoDeleteResp)(nil)),
+		"FirmwareInfoIndexReq":              reflect.ValueOf((*dm.FirmwareInfoIndexReq)(nil)),
+		"FirmwareInfoIndexResp":             reflect.ValueOf((*dm.FirmwareInfoIndexResp)(nil)),
+		"FirmwareInfoReadReq":               reflect.ValueOf((*dm.FirmwareInfoReadReq)(nil)),
+		"FirmwareInfoReadResp":              reflect.ValueOf((*dm.FirmwareInfoReadResp)(nil)),
+		"FirmwareResp":                      reflect.ValueOf((*dm.FirmwareResp)(nil)),
+		"GatewayCanBindIndexReq":            reflect.ValueOf((*dm.GatewayCanBindIndexReq)(nil)),
+		"GatewayCanBindIndexResp":           reflect.ValueOf((*dm.GatewayCanBindIndexResp)(nil)),
+		"GatewayGetFoundReq":                reflect.ValueOf((*dm.GatewayGetFoundReq)(nil)),
+		"GatewayNotifyBindSendReq":          reflect.ValueOf((*dm.GatewayNotifyBindSendReq)(nil)),
+		"GroupCore":                         reflect.ValueOf((*dm.GroupCore)(nil)),
+		"GroupDeviceMultiDeleteReq":         reflect.ValueOf((*dm.GroupDeviceMultiDeleteReq)(nil)),
+		"GroupDeviceMultiSaveReq":           reflect.ValueOf((*dm.GroupDeviceMultiSaveReq)(nil)),
+		"GroupInfo":                         reflect.ValueOf((*dm.GroupInfo)(nil)),
+		"GroupInfoCreateReq":                reflect.ValueOf((*dm.GroupInfoCreateReq)(nil)),
+		"GroupInfoIndexReq":                 reflect.ValueOf((*dm.GroupInfoIndexReq)(nil)),
+		"GroupInfoIndexResp":                reflect.ValueOf((*dm.GroupInfoIndexResp)(nil)),
+		"GroupInfoMultiCreateReq":           reflect.ValueOf((*dm.GroupInfoMultiCreateReq)(nil)),
+		"GroupInfoReadReq":                  reflect.ValueOf((*dm.GroupInfoReadReq)(nil)),
+		"GroupInfoUpdateReq":                reflect.ValueOf((*dm.GroupInfoUpdateReq)(nil)),
+		"HubLogIndexReq":                    reflect.ValueOf((*dm.HubLogIndexReq)(nil)),
+		"HubLogIndexResp":                   reflect.ValueOf((*dm.HubLogIndexResp)(nil)),
+		"HubLogInfo":                        reflect.ValueOf((*dm.HubLogInfo)(nil)),
+		"IDPath":                            reflect.ValueOf((*dm.IDPath)(nil)),
+		"IDPathWithUpdate":                  reflect.ValueOf((*dm.IDPathWithUpdate)(nil)),
+		"OtaFirmwareDeviceCancelReq":        reflect.ValueOf((*dm.OtaFirmwareDeviceCancelReq)(nil)),
+		"OtaFirmwareDeviceConfirmReq":       reflect.ValueOf((*dm.OtaFirmwareDeviceConfirmReq)(nil)),
+		"OtaFirmwareDeviceIndexReq":         reflect.ValueOf((*dm.OtaFirmwareDeviceIndexReq)(nil)),
+		"OtaFirmwareDeviceIndexResp":        reflect.ValueOf((*dm.OtaFirmwareDeviceIndexResp)(nil)),
+		"OtaFirmwareDeviceInfo":             reflect.ValueOf((*dm.OtaFirmwareDeviceInfo)(nil)),
+		"OtaFirmwareDeviceRetryReq":         reflect.ValueOf((*dm.OtaFirmwareDeviceRetryReq)(nil)),
+		"OtaFirmwareFile":                   reflect.ValueOf((*dm.OtaFirmwareFile)(nil)),
+		"OtaFirmwareFileIndexReq":           reflect.ValueOf((*dm.OtaFirmwareFileIndexReq)(nil)),
+		"OtaFirmwareFileIndexResp":          reflect.ValueOf((*dm.OtaFirmwareFileIndexResp)(nil)),
+		"OtaFirmwareFileInfo":               reflect.ValueOf((*dm.OtaFirmwareFileInfo)(nil)),
+		"OtaFirmwareFileReq":                reflect.ValueOf((*dm.OtaFirmwareFileReq)(nil)),
+		"OtaFirmwareFileResp":               reflect.ValueOf((*dm.OtaFirmwareFileResp)(nil)),
+		"OtaFirmwareInfo":                   reflect.ValueOf((*dm.OtaFirmwareInfo)(nil)),
+		"OtaFirmwareInfoCreateReq":          reflect.ValueOf((*dm.OtaFirmwareInfoCreateReq)(nil)),
+		"OtaFirmwareInfoIndexReq":           reflect.ValueOf((*dm.OtaFirmwareInfoIndexReq)(nil)),
+		"OtaFirmwareInfoIndexResp":          reflect.ValueOf((*dm.OtaFirmwareInfoIndexResp)(nil)),
+		"OtaFirmwareInfoUpdateReq":          reflect.ValueOf((*dm.OtaFirmwareInfoUpdateReq)(nil)),
+		"OtaFirmwareJobIndexReq":            reflect.ValueOf((*dm.OtaFirmwareJobIndexReq)(nil)),
+		"OtaFirmwareJobIndexResp":           reflect.ValueOf((*dm.OtaFirmwareJobIndexResp)(nil)),
+		"OtaFirmwareJobInfo":                reflect.ValueOf((*dm.OtaFirmwareJobInfo)(nil)),
+		"OtaJobByDeviceIndexReq":            reflect.ValueOf((*dm.OtaJobByDeviceIndexReq)(nil)),
+		"OtaJobDynamicInfo":                 reflect.ValueOf((*dm.OtaJobDynamicInfo)(nil)),
+		"OtaJobStaticInfo":                  reflect.ValueOf((*dm.OtaJobStaticInfo)(nil)),
+		"OtaModuleInfo":                     reflect.ValueOf((*dm.OtaModuleInfo)(nil)),
+		"OtaModuleInfoIndexReq":             reflect.ValueOf((*dm.OtaModuleInfoIndexReq)(nil)),
+		"OtaModuleInfoIndexResp":            reflect.ValueOf((*dm.OtaModuleInfoIndexResp)(nil)),
+		"PageInfo":                          reflect.ValueOf((*dm.PageInfo)(nil)),
+		"PageInfo_OrderBy":                  reflect.ValueOf((*dm.PageInfo_OrderBy)(nil)),
+		"Point":                             reflect.ValueOf((*dm.Point)(nil)),
+		"ProductCategory":                   reflect.ValueOf((*dm.ProductCategory)(nil)),
+		"ProductCategoryIndexReq":           reflect.ValueOf((*dm.ProductCategoryIndexReq)(nil)),
+		"ProductCategoryIndexResp":          reflect.ValueOf((*dm.ProductCategoryIndexResp)(nil)),
+		"ProductCategorySchemaIndexReq":     reflect.ValueOf((*dm.ProductCategorySchemaIndexReq)(nil)),
+		"ProductCategorySchemaIndexResp":    reflect.ValueOf((*dm.ProductCategorySchemaIndexResp)(nil)),
+		"ProductCategorySchemaMultiSaveReq": reflect.ValueOf((*dm.ProductCategorySchemaMultiSaveReq)(nil)),
+		"ProductCustom":                     reflect.ValueOf((*dm.ProductCustom)(nil)),
+		"ProductCustomReadReq":              reflect.ValueOf((*dm.ProductCustomReadReq)(nil)),
+		"ProductCustomUi":                   reflect.ValueOf((*dm.ProductCustomUi)(nil)),
+		"ProductInfo":                       reflect.ValueOf((*dm.ProductInfo)(nil)),
+		"ProductInfoDeleteReq":              reflect.ValueOf((*dm.ProductInfoDeleteReq)(nil)),
+		"ProductInfoIndexReq":               reflect.ValueOf((*dm.ProductInfoIndexReq)(nil)),
+		"ProductInfoIndexResp":              reflect.ValueOf((*dm.ProductInfoIndexResp)(nil)),
+		"ProductInfoReadReq":                reflect.ValueOf((*dm.ProductInfoReadReq)(nil)),
+		"ProductInitReq":                    reflect.ValueOf((*dm.ProductInitReq)(nil)),
+		"ProductRemoteConfig":               reflect.ValueOf((*dm.ProductRemoteConfig)(nil)),
+		"ProductSchemaCreateReq":            reflect.ValueOf((*dm.ProductSchemaCreateReq)(nil)),
+		"ProductSchemaDeleteReq":            reflect.ValueOf((*dm.ProductSchemaDeleteReq)(nil)),
+		"ProductSchemaIndexReq":             reflect.ValueOf((*dm.ProductSchemaIndexReq)(nil)),
+		"ProductSchemaIndexResp":            reflect.ValueOf((*dm.ProductSchemaIndexResp)(nil)),
+		"ProductSchemaInfo":                 reflect.ValueOf((*dm.ProductSchemaInfo)(nil)),
+		"ProductSchemaMultiCreateReq":       reflect.ValueOf((*dm.ProductSchemaMultiCreateReq)(nil)),
+		"ProductSchemaTslImportReq":         reflect.ValueOf((*dm.ProductSchemaTslImportReq)(nil)),
+		"ProductSchemaTslReadReq":           reflect.ValueOf((*dm.ProductSchemaTslReadReq)(nil)),
+		"ProductSchemaTslReadResp":          reflect.ValueOf((*dm.ProductSchemaTslReadResp)(nil)),
+		"ProductSchemaUpdateReq":            reflect.ValueOf((*dm.ProductSchemaUpdateReq)(nil)),
+		"PropertyControlMultiSendReq":       reflect.ValueOf((*dm.PropertyControlMultiSendReq)(nil)),
+		"PropertyControlMultiSendResp":      reflect.ValueOf((*dm.PropertyControlMultiSendResp)(nil)),
+		"PropertyControlSendMsg":            reflect.ValueOf((*dm.PropertyControlSendMsg)(nil)),
+		"PropertyControlSendReq":            reflect.ValueOf((*dm.PropertyControlSendReq)(nil)),
+		"PropertyControlSendResp":           reflect.ValueOf((*dm.PropertyControlSendResp)(nil)),
+		"PropertyGetReportMultiSendReq":     reflect.ValueOf((*dm.PropertyGetReportMultiSendReq)(nil)),
+		"PropertyGetReportMultiSendResp":    reflect.ValueOf((*dm.PropertyGetReportMultiSendResp)(nil)),
+		"PropertyGetReportSendMsg":          reflect.ValueOf((*dm.PropertyGetReportSendMsg)(nil)),
+		"PropertyGetReportSendReq":          reflect.ValueOf((*dm.PropertyGetReportSendReq)(nil)),
+		"PropertyGetReportSendResp":         reflect.ValueOf((*dm.PropertyGetReportSendResp)(nil)),
+		"PropertyLogIndexReq":               reflect.ValueOf((*dm.PropertyLogIndexReq)(nil)),
+		"PropertyLogIndexResp":              reflect.ValueOf((*dm.PropertyLogIndexResp)(nil)),
+		"PropertyLogInfo":                   reflect.ValueOf((*dm.PropertyLogInfo)(nil)),
+		"PropertyLogLatestIndexReq":         reflect.ValueOf((*dm.PropertyLogLatestIndexReq)(nil)),
+		"ProtocolConfigField":               reflect.ValueOf((*dm.ProtocolConfigField)(nil)),
+		"ProtocolConfigInfo":                reflect.ValueOf((*dm.ProtocolConfigInfo)(nil)),
+		"ProtocolInfo":                      reflect.ValueOf((*dm.ProtocolInfo)(nil)),
+		"ProtocolInfoIndexReq":              reflect.ValueOf((*dm.ProtocolInfoIndexReq)(nil)),
+		"ProtocolInfoIndexResp":             reflect.ValueOf((*dm.ProtocolInfoIndexResp)(nil)),
+		"ProtocolService":                   reflect.ValueOf((*dm.ProtocolService)(nil)),
+		"ProtocolServiceIndexReq":           reflect.ValueOf((*dm.ProtocolServiceIndexReq)(nil)),
+		"ProtocolServiceIndexResp":          reflect.ValueOf((*dm.ProtocolServiceIndexResp)(nil)),
+		"RemoteConfigCreateReq":             reflect.ValueOf((*dm.RemoteConfigCreateReq)(nil)),
+		"RemoteConfigIndexReq":              reflect.ValueOf((*dm.RemoteConfigIndexReq)(nil)),
+		"RemoteConfigIndexResp":             reflect.ValueOf((*dm.RemoteConfigIndexResp)(nil)),
+		"RemoteConfigLastReadReq":           reflect.ValueOf((*dm.RemoteConfigLastReadReq)(nil)),
+		"RemoteConfigLastReadResp":          reflect.ValueOf((*dm.RemoteConfigLastReadResp)(nil)),
+		"RemoteConfigPushAllReq":            reflect.ValueOf((*dm.RemoteConfigPushAllReq)(nil)),
+		"RespReadReq":                       reflect.ValueOf((*dm.RespReadReq)(nil)),
+		"RootCheckReq":                      reflect.ValueOf((*dm.RootCheckReq)(nil)),
+		"SdkLogIndexReq":                    reflect.ValueOf((*dm.SdkLogIndexReq)(nil)),
+		"SdkLogIndexResp":                   reflect.ValueOf((*dm.SdkLogIndexResp)(nil)),
+		"SdkLogInfo":                        reflect.ValueOf((*dm.SdkLogInfo)(nil)),
+		"SendLogIndexReq":                   reflect.ValueOf((*dm.SendLogIndexReq)(nil)),
+		"SendLogIndexResp":                  reflect.ValueOf((*dm.SendLogIndexResp)(nil)),
+		"SendLogInfo":                       reflect.ValueOf((*dm.SendLogInfo)(nil)),
+		"SendMsgReq":                        reflect.ValueOf((*dm.SendMsgReq)(nil)),
+		"SendMsgResp":                       reflect.ValueOf((*dm.SendMsgResp)(nil)),
+		"SendOption":                        reflect.ValueOf((*dm.SendOption)(nil)),
+		"ShadowIndex":                       reflect.ValueOf((*dm.ShadowIndex)(nil)),
+		"ShadowIndexResp":                   reflect.ValueOf((*dm.ShadowIndexResp)(nil)),
+		"SharePerm":                         reflect.ValueOf((*dm.SharePerm)(nil)),
+		"StatusLogIndexReq":                 reflect.ValueOf((*dm.StatusLogIndexReq)(nil)),
+		"StatusLogIndexResp":                reflect.ValueOf((*dm.StatusLogIndexResp)(nil)),
+		"StatusLogInfo":                     reflect.ValueOf((*dm.StatusLogInfo)(nil)),
+		"TimeRange":                         reflect.ValueOf((*dm.TimeRange)(nil)),
+		"UserDeviceCollectSave":             reflect.ValueOf((*dm.UserDeviceCollectSave)(nil)),
+		"UserDeviceShareIndexReq":           reflect.ValueOf((*dm.UserDeviceShareIndexReq)(nil)),
+		"UserDeviceShareIndexResp":          reflect.ValueOf((*dm.UserDeviceShareIndexResp)(nil)),
+		"UserDeviceShareInfo":               reflect.ValueOf((*dm.UserDeviceShareInfo)(nil)),
+		"UserDeviceShareMultiAcceptReq":     reflect.ValueOf((*dm.UserDeviceShareMultiAcceptReq)(nil)),
+		"UserDeviceShareMultiDeleteReq":     reflect.ValueOf((*dm.UserDeviceShareMultiDeleteReq)(nil)),
+		"UserDeviceShareMultiInfo":          reflect.ValueOf((*dm.UserDeviceShareMultiInfo)(nil)),
+		"UserDeviceShareMultiToken":         reflect.ValueOf((*dm.UserDeviceShareMultiToken)(nil)),
+		"UserDeviceShareReadReq":            reflect.ValueOf((*dm.UserDeviceShareReadReq)(nil)),
+		"WithID":                            reflect.ValueOf((*dm.WithID)(nil)),
+		"WithIDChildren":                    reflect.ValueOf((*dm.WithIDChildren)(nil)),
+		"WithIDCode":                        reflect.ValueOf((*dm.WithIDCode)(nil)),
+		"WithProfile":                       reflect.ValueOf((*dm.WithProfile)(nil)),
 	}
 }
