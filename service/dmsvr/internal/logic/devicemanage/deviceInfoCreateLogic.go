@@ -131,6 +131,14 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 	if ti.DefaultAreaID != 0 {
 		areaID = dataType.AreaID(ti.DefaultAreaID)
 	}
+	if ctxs.IsRoot(l.ctx) == nil {
+		if in.ProjectID != 0 {
+			projectID = dataType.ProjectID(in.ProjectID)
+		}
+		if in.AreaID != 0 {
+			areaID = dataType.AreaID(in.AreaID)
+		}
+	}
 	//}
 	di := relationDB.DmDeviceInfo{
 		ProjectID:      projectID,
