@@ -1,7 +1,7 @@
 filippo.io/edwards25519 v1.1.0 h1:FNf4tywRC1HmFuKW5xopWpigGjJKiJSV0Cqo0cJWDaA=
 filippo.io/edwards25519 v1.1.0/go.mod h1:BxyFTGdWcka3PhytdK4V28tE5sGfRvvvRV7EaN4VDT4=
-gitee.com/unitedrhino/core v1.3.4 h1:cApUz2+U1AutLrkWF1tPHR35Y996zKGQFFMCZapVn/E=
-gitee.com/unitedrhino/core v1.3.4/go.mod h1:ZGBZs1wudRaxTsiKgzs3QGf2WwqGW+VxzY6ieY3qM7c=
+gitee.com/unitedrhino/core v1.3.5 h1:4KpfgRFO+eNmg6Mo1Q+/i7Zpz4NlB1JGLD4b5kdJYhE=
+gitee.com/unitedrhino/core v1.3.5/go.mod h1:aCz3Ki6Y0kSD+LgutWR77X2uKSxyU6I7fs4m9+qrzAw=
 gitee.com/unitedrhino/driver-go/v3 v3.30.2 h1:DxiojcyCCdA7CnoWI7igGH6xM2PvAWAhqgl2si4u8vU=
 gitee.com/unitedrhino/driver-go/v3 v3.30.2/go.mod h1:ZVLHSMMq8n7ShN1pxRXL43GBjkFdnx9TqEd6M69oe1A=
 gitee.com/unitedrhino/share v1.3.14 h1:kUPMnC484tL/EKhbjFnMZcgaav0bNVSTrXcgfDd+05E=
