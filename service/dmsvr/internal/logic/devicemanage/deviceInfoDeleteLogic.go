@@ -6,6 +6,7 @@ import (
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/topics"
@@ -104,6 +105,8 @@ func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*d
 	if err != nil {
 		l.Error(err)
 	}
+	logic.FillAreaDeviceCount(l.ctx, l.svcCtx, string(di.AreaIDPath))
+	logic.FillProjectDeviceCount(l.ctx, l.svcCtx, int64(di.ProjectID))
 	return &dm.Empty{}, nil
 }
 
