@@ -2,6 +2,7 @@ package protocol
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
@@ -84,6 +85,10 @@ func NewScriptTrans() *ScriptTrans {
 		"DeleteBytes":  reflect.ValueOf(sjson.DeleteBytes),
 		"SetRaw":       reflect.ValueOf(sjson.SetRaw),
 		"SetRawBytes":  reflect.ValueOf(sjson.SetRawBytes),
+	})
+	s.AddSymbol("json/json", map[string]reflect.Value{
+		"Marshal":   reflect.ValueOf(json.Marshal),
+		"Unmarshal": reflect.ValueOf(json.Unmarshal),
 	})
 	ctx := ctxs.WithRoot(context.Background())
 	utils.Go(ctx, func() {

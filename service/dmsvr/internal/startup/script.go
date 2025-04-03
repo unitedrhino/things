@@ -191,28 +191,28 @@ func deviceMsgSymbolInit(svcCtx *svc.ServiceContext) map[string]reflect.Value {
 		"TimeParams": reflect.ValueOf((*deviceMsg.TimeParams)(nil)),
 
 		"SysConfig":      reflect.ValueOf((*deviceMsg.SysConfig)(nil)),
-		"thingReq":       reflect.ValueOf((*msgThing.Req)(nil)),
-		"thingSubDevice": reflect.ValueOf((*msgThing.SubDevice)(nil)),
-		"thingResp":      reflect.ValueOf((*msgThing.Resp)(nil)),
+		"ThingReq":       reflect.ValueOf((*msgThing.Req)(nil)),
+		"ThingSubDevice": reflect.ValueOf((*msgThing.SubDevice)(nil)),
+		"ThingResp":      reflect.ValueOf((*msgThing.Resp)(nil)),
 
-		"sdkLogReq":    reflect.ValueOf((*msgSdkLog.Req)(nil)),
-		"sdkLogSdkLog": reflect.ValueOf((*msgSdkLog.SdkLog)(nil)),
+		"SdkLogReq":    reflect.ValueOf((*msgSdkLog.Req)(nil)),
+		"SdkLogSdkLog": reflect.ValueOf((*msgSdkLog.SdkLog)(nil)),
 
-		"otaReq":           reflect.ValueOf((*msgOta.Req)(nil)),
-		"otaProcess":       reflect.ValueOf((*msgOta.Process)(nil)),
-		"otaParams":        reflect.ValueOf((*msgOta.Params)(nil)),
-		"otaProcessParams": reflect.ValueOf((*msgOta.ProcessParams)(nil)),
-		"otaUpgrade":       reflect.ValueOf((*msgOta.Upgrade)(nil)),
+		"OtaReq":           reflect.ValueOf((*msgOta.Req)(nil)),
+		"OtaProcess":       reflect.ValueOf((*msgOta.Process)(nil)),
+		"OtaParams":        reflect.ValueOf((*msgOta.Params)(nil)),
+		"OtaProcessParams": reflect.ValueOf((*msgOta.ProcessParams)(nil)),
+		"OtaUpgrade":       reflect.ValueOf((*msgOta.Upgrade)(nil)),
 
-		"gatewayMsg":      reflect.ValueOf((*msgGateway.Msg)(nil)),
-		"gatewayPayload":  reflect.ValueOf((*msgGateway.GatewayPayload)(nil)),
-		"gatewayRegister": reflect.ValueOf((*msgGateway.Register)(nil)),
-		"gatewayDevice":   reflect.ValueOf((*msgGateway.Device)(nil)),
+		"GatewayMsg":      reflect.ValueOf((*msgGateway.Msg)(nil)),
+		"GatewayPayload":  reflect.ValueOf((*msgGateway.GatewayPayload)(nil)),
+		"GatewayRegister": reflect.ValueOf((*msgGateway.Register)(nil)),
+		"GatewayDevice":   reflect.ValueOf((*msgGateway.Device)(nil)),
 
-		"extReq":          reflect.ValueOf((*msgExt.Req)(nil)),
-		"extRegisterReq":  reflect.ValueOf((*msgExt.RegisterReq)(nil)),
-		"extResp":         reflect.ValueOf((*msgExt.Resp)(nil)),
-		"extRespRegister": reflect.ValueOf((*msgExt.RespRegister)(nil)),
+		"ExtReq":          reflect.ValueOf((*msgExt.Req)(nil)),
+		"ExtRegisterReq":  reflect.ValueOf((*msgExt.RegisterReq)(nil)),
+		"ExtResp":         reflect.ValueOf((*msgExt.Resp)(nil)),
+		"ExtRespRegister": reflect.ValueOf((*msgExt.RespRegister)(nil)),
 	}
 }
 

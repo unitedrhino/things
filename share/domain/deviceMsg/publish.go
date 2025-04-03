@@ -56,19 +56,28 @@ func (c *CommonMsg) NeedRetMsg() bool {
 	return false
 }
 
-func isPrintable(data []byte) bool {
-	for _, b := range data {
-		// 检查是否为可打印字符（包括空格）
-		if b > unicode.MaxASCII || !unicode.IsPrint(rune(b)) {
-			return false
-		}
+// IsLikelyText 判断字节切片是否更可能是文本
+func IsLikelyText(b []byte) bool {
+	validUTF8 := utf8.Valid(b)
+	if !validUTF8 {
+		return false
 	}
-	return true
+	total := len(b)
+	nonPrintable := 0
+	for len(b) > 0 {
+		r, size := utf8.DecodeRune(b)
+		if !unicode.IsPrint(r) {
+			nonPrintable++
+		}
+		b = b[size:]
+	}
+	// 如果不可打印字符占比超过 20%，则认为是二进制数据
+	return float64(nonPrintable)/float64(total) < 0.2
 }
 
 func printBytes(data []byte) string {
 	// 检查是否为有效的 UTF-8 字符串
-	if utf8.Valid(data) {
+	if IsLikelyText(data) {
 		// 如果是字符串，直接打印字符串
 		return string(data)
 	} else {
