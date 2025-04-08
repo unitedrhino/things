@@ -35,6 +35,24 @@ func NewDeviceInfoBindLogic(ctx context.Context, svcCtx *svc.ServiceContext) *De
 	}
 }
 
+func isAllowedChar(c rune) bool {
+	return (c >= 'a' && c <= 'z') ||
+		(c >= 'A' && c <= 'Z') ||
+		(c >= '0' && c <= '9') ||
+		c == '_' ||
+		c == '-'
+}
+
+func filterAllowedChars(input string) string {
+	var result []rune
+	for _, c := range input {
+		if isAllowedChar(c) {
+			result = append(result, c)
+		}
+	}
+	return string(result)
+}
+
 func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empty, error) {
 	uc := ctxs.GetUserCtxNoNil(l.ctx)
 	projectI, err := l.svcCtx.ProjectCache.GetData(l.ctx, uc.ProjectID)
@@ -61,13 +79,12 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 	}
 	if di == nil {
 		di, err = relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(ctxs.WithRoot(l.ctx), relationDB.DeviceFilter{
-			DeviceNames: []string{in.Device.DeviceName},
+			DeviceNames: []string{in.Device.DeviceName, filterAllowedChars(in.Device.DeviceName)}, //兼容打印错误
 		})
 		if err != nil {
 			if !errors.Cmp(err, errors.NotFind) {
 				return nil, err
 			}
-
 			if !(pi.NetType == def.NetBle && pi.AutoRegister == def.AutoRegAuto) {
 				return nil, errors.NotFind
 			}
