@@ -197,7 +197,7 @@ func (p ProductInfoRepo) FindOneByFilter(ctx context.Context, f ProductFilter) (
 func (p ProductInfoRepo) Update(ctx context.Context, data *DmProductInfo) error {
 	data2 := *data
 	data2.Config = nil
-	err := p.db.WithContext(ctx).Where("product_id = ?", data.ProductID).Save(data2).Error
+	err := p.db.WithContext(ctx).Where("product_id = ?", data.ProductID).Save(&data2).Error
 	return stores.ErrFmt(err)
 }
 
