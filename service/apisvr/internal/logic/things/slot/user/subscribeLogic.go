@@ -7,6 +7,7 @@ import (
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/share/userSubscribe"
 	"github.com/spf13/cast"
 
 	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
@@ -34,10 +35,10 @@ func (l *SubscribeLogic) Subscribe(req *types.SlotUserSubscribe) (resp *types.Sl
 	l.Infof("userSubscribeSlot:%v", utils.Fmt(req))
 	resp = &types.SlotUserSubscribeResp{List: []map[string]any{req.Params}}
 	switch req.Code {
-	case def.UserSubscribeDeviceConn:
-	case def.UserSubscribeDevicePropertyReport, def.UserSubscribeDevicePropertyReport2:
-	case def.UserSubscribeDeviceActionReport:
-	case def.UserSubscribeDeviceOtaReport:
+	case userSubscribe.DeviceConn:
+	case userSubscribe.DevicePropertyReport, userSubscribe.DevicePropertyReport2:
+	case userSubscribe.DeviceActionReport:
+	case userSubscribe.DeviceOtaReport:
 	default:
 		return resp, errors.NotRealize
 	}

@@ -13,6 +13,7 @@ import (
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/application"
 	"gitee.com/unitedrhino/things/share/domain/deviceAuth"
+	"gitee.com/unitedrhino/things/share/userSubscribe"
 	"github.com/spf13/cast"
 	"time"
 
@@ -146,7 +147,7 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 					return
 				}
 			}
-			err = svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDeviceConn, appMsg, map[string]any{
+			err = svcCtx.UserSubscribe.Publish(ctx, userSubscribe.DeviceConn, appMsg, map[string]any{
 				"productID":  appMsg.Device.ProductID,
 				"deviceName": appMsg.Device.DeviceName,
 			}, map[string]any{

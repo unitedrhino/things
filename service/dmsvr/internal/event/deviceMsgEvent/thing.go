@@ -33,6 +33,7 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/protocols"
 	"gitee.com/unitedrhino/things/share/domain/schema"
+	"gitee.com/unitedrhino/things/share/userSubscribe"
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -208,7 +209,7 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 				l.Error(err)
 			}
 			if di != nil {
-				err = l.svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDevicePropertyReport2, appMsg, map[string]any{
+				err = l.svcCtx.UserSubscribe.Publish(ctx, userSubscribe.DevicePropertyReport2, appMsg, map[string]any{
 					"productID":  device.ProductID,
 					"deviceName": device.DeviceName,
 				}, map[string]any{
@@ -242,7 +243,7 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 					l.Error(err)
 				}
 				if di != nil {
-					err = l.svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDevicePropertyReport, appMsg, map[string]any{
+					err = l.svcCtx.UserSubscribe.Publish(ctx, userSubscribe.DevicePropertyReport, appMsg, map[string]any{
 						"productID":  device.ProductID,
 						"deviceName": device.DeviceName,
 						"identifier": identifier,
@@ -427,7 +428,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 				l.Error(err)
 			}
 			if di != nil {
-				err = l.svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDevicePropertyReport, appMsg, map[string]any{
+				err = l.svcCtx.UserSubscribe.Publish(ctx, userSubscribe.DevicePropertyReport, appMsg, map[string]any{
 					"productID":  device.ProductID,
 					"deviceName": device.DeviceName,
 					"identifier": identifier,
@@ -462,7 +463,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 			l.Error(err)
 		}
 		if di != nil {
-			err = l.svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDevicePropertyReport2, appMsg, map[string]any{
+			err = l.svcCtx.UserSubscribe.Publish(ctx, userSubscribe.DevicePropertyReport2, appMsg, map[string]any{
 				"productID":  device.ProductID,
 				"deviceName": device.DeviceName,
 			}, map[string]any{
@@ -730,8 +731,9 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), err
 	}
+	device := devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName}
 	appMsg := application.EventReport{
-		Device:     devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName},
+		Device:     device,
 		Timestamp:  dbData.TimeStamp.UnixMilli(),
 		Identifier: dbData.Identifier,
 		Params:     paramValues,
@@ -744,6 +746,29 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 	err = l.svcCtx.WebHook.Publish(l.svcCtx.WithDeviceTenant(l.ctx, appMsg.Device), sysExport.CodeDmDeviceEventReport, appMsg)
 	if err != nil {
 		l.Error(err)
+	}
+
+	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, device)
+	if err != nil {
+		l.Error(err)
+	}
+	if di != nil {
+		err = l.svcCtx.UserSubscribe.Publish(l.ctx, userSubscribe.DeviceEventReport, appMsg, map[string]any{
+			"productID":  device.ProductID,
+			"deviceName": device.DeviceName,
+			"identifier": dbData.Identifier,
+		}, map[string]any{
+			"productID":  device.ProductID,
+			"deviceName": device.DeviceName,
+		}, map[string]any{
+			"projectID": di.ProjectID,
+		}, map[string]any{
+			"projectID": cast.ToString(di.ProjectID),
+			"areaID":    cast.ToString(di.AreaID),
+		})
+		if err != nil {
+			l.Error(err)
+		}
 	}
 	err = l.repo.InsertEventData(l.ctx, msg.ProductID, msg.DeviceName, &dbData)
 	if err != nil {
@@ -803,7 +828,7 @@ func (l *ThingLogic) HandleAction(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg
 				l.Error(err)
 			}
 			if di != nil {
-				err = l.svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDeviceActionReport, appMsg, map[string]any{
+				err = l.svcCtx.UserSubscribe.Publish(ctx, userSubscribe.DeviceActionReport, appMsg, map[string]any{
 					"productID":  core.ProductID,
 					"deviceName": core.DeviceName,
 					"identifier": l.dreq.ActionID,
@@ -863,7 +888,7 @@ func (l *ThingLogic) HandleAction(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg
 				l.Error(err)
 			}
 			if di != nil {
-				err = l.svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDeviceActionReport, appMsg, map[string]any{
+				err = l.svcCtx.UserSubscribe.Publish(ctx, userSubscribe.DeviceActionReport, appMsg, map[string]any{
 					"productID":  core.ProductID,
 					"deviceName": core.DeviceName,
 					"identifier": resp.ActionID,
@@ -958,7 +983,7 @@ func (l *ThingLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publi
 		RespPayload: respMsg.GetPayload(),
 	}
 	_ = l.svcCtx.HubLogRepo.Insert(l.ctx, hub)
-	l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDevicePublish, hub.ToApp(), map[string]any{
+	l.svcCtx.UserSubscribe.Publish(l.ctx, userSubscribe.DevicePublish, hub.ToApp(), map[string]any{
 		"productID":  msg.ProductID,
 		"deviceName": msg.DeviceName,
 	})

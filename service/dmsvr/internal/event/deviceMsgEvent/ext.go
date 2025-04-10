@@ -3,7 +3,6 @@ package deviceMsgEvent
 import (
 	"context"
 	"encoding/json"
-	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
@@ -11,6 +10,7 @@ import (
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgExt"
+	"gitee.com/unitedrhino/things/share/userSubscribe"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
@@ -140,7 +140,7 @@ func (l *ExtLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publish
 		RespPayload: respMsg.GetPayload(),
 	}
 	_ = l.svcCtx.HubLogRepo.Insert(l.ctx, hub)
-	l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDevicePublish, hub.ToApp(), map[string]any{
+	l.svcCtx.UserSubscribe.Publish(l.ctx, userSubscribe.DevicePublish, hub.ToApp(), map[string]any{
 		"productID":  msg.ProductID,
 		"deviceName": msg.DeviceName,
 	})

@@ -20,6 +20,7 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgOta"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgSdkLog"
 	"gitee.com/unitedrhino/things/share/topics"
+	"gitee.com/unitedrhino/things/share/userSubscribe"
 	"github.com/spf13/cast"
 	"sync"
 	"time"
@@ -154,7 +155,7 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 								Device:    devices.Core{ProductID: old.ProductID, DeviceName: old.DeviceName},
 								Timestamp: time.Now().UnixMilli(), Status: df.Status, Detail: df.Detail, Step: df.Step,
 							}
-							err = l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDeviceOtaReport, appMsg, map[string]any{
+							err = l.svcCtx.UserSubscribe.Publish(l.ctx, userSubscribe.DeviceOtaReport, appMsg, map[string]any{
 								"productID":  old.ProductID,
 								"deviceName": old.DeviceName,
 							}, map[string]any{

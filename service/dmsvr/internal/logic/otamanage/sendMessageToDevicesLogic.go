@@ -15,6 +15,7 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/application"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgOta"
+	"gitee.com/unitedrhino/things/share/userSubscribe"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"
@@ -211,7 +212,7 @@ func (l *SendMessageToDevicesLogic) DevicesTimeout(jobInfo *relationDB.DmOtaFirm
 					l.Error(err)
 					continue
 				}
-				err = l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDeviceOtaReport, appMsg, map[string]any{
+				err = l.svcCtx.UserSubscribe.Publish(l.ctx, userSubscribe.DeviceOtaReport, appMsg, map[string]any{
 					"productID":  di.ProductID,
 					"deviceName": di.DeviceName,
 				}, map[string]any{
@@ -408,7 +409,7 @@ func PushMessageToDevice(ctx context.Context, svcCtx *svc.ServiceContext, device
 		Detail:    device.Detail,
 		Step:      device.Step,
 	}
-	err = svcCtx.UserSubscribe.Publish(ctx, def.UserSubscribeDeviceOtaReport, appMsg, map[string]any{
+	err = svcCtx.UserSubscribe.Publish(ctx, userSubscribe.DeviceOtaReport, appMsg, map[string]any{
 		"productID":  di.ProductID,
 		"deviceName": di.DeviceName,
 	}, map[string]any{

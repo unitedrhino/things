@@ -4,11 +4,11 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/application"
+	"gitee.com/unitedrhino/things/share/userSubscribe"
 	"github.com/spf13/cast"
 	"time"
 
@@ -73,7 +73,7 @@ func (l *OtaLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publish
 		RespPayload: respMsg.GetPayload(),
 	}
 	l.svcCtx.HubLogRepo.Insert(l.ctx, hub)
-	l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDevicePublish, hub.ToApp(), map[string]any{
+	l.svcCtx.UserSubscribe.Publish(l.ctx, userSubscribe.DevicePublish, hub.ToApp(), map[string]any{
 		"productID":  msg.ProductID,
 		"deviceName": msg.DeviceName,
 	})
@@ -184,7 +184,7 @@ func (l *OtaLogic) HandleProgress(msg *deviceMsg.PublishMsg) (err error) {
 		Detail:    df.Detail,
 		Step:      df.Step,
 	}
-	err = l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDeviceOtaReport, appMsg, map[string]any{
+	err = l.svcCtx.UserSubscribe.Publish(l.ctx, userSubscribe.DeviceOtaReport, appMsg, map[string]any{
 		"productID":  di.ProductID,
 		"deviceName": di.DeviceName,
 	}, map[string]any{

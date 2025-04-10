@@ -20,6 +20,7 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
+	"gitee.com/unitedrhino/things/share/userSubscribe"
 	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
@@ -133,7 +134,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 			if err != nil {
 				l.Error(err)
 			}
-			err = l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDevicePropertyReport, appMsg, map[string]any{
+			err = l.svcCtx.UserSubscribe.Publish(l.ctx, userSubscribe.DevicePropertyReport, appMsg, map[string]any{
 				"productID":  dev.ProductID,
 				"deviceName": dev.DeviceName,
 			})
@@ -152,7 +153,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 			if err != nil {
 				l.Error(err)
 			}
-			err = l.svcCtx.UserSubscribe.Publish(l.ctx, def.UserSubscribeDevicePropertyReport, appMsg, map[string]any{
+			err = l.svcCtx.UserSubscribe.Publish(l.ctx, userSubscribe.DevicePropertyReport, appMsg, map[string]any{
 				"productID":  in.ProductID,
 				"deviceName": in.DeviceName,
 				"identifier": k,

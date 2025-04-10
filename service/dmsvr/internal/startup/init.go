@@ -9,6 +9,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceBind"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceGroup"
 	"gitee.com/unitedrhino/things/share/topics"
+	"gitee.com/unitedrhino/things/share/userSubscribe"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 	"time"
 
@@ -45,6 +46,7 @@ func Init(svcCtx *svc.ServiceContext) {
 	InitSubscribe(svcCtx)
 	InitEventBus(svcCtx)
 	DictInit(svcCtx)
+	SlotInit(svcCtx)
 	ScriptInit(svcCtx)
 }
 
@@ -497,6 +499,20 @@ func TimerInit(svcCtx *svc.ServiceContext) {
 	if err != nil && !errors.Cmp(errors.Fmt(err), errors.Duplicate) {
 		logx.Must(err)
 	}
+}
+
+func SlotInit(svcCtx *svc.ServiceContext) {
+	ctx := ctxs.WithRoot(context.Background())
+	svcCtx.Common.SlotInfoMultiCreate(ctx, &sys.SlotInfoMultiCreateReq{
+		List: []*sys.SlotInfo{
+			{Code: "areaInfo", SubCode: "create", SlotCode: "ithings", Uri: "/api/v1/things/slot/area/create", Hosts: []string{"http://localhost:7777"}, Body: `{"projectID":"{{.ProjectID}}","areaID":"{{.AreaID}}","parentAreaID":"{{.ParentAreaID}}"}`, AuthType: def.AppCore},
+			{Code: "areaInfo", SubCode: "delete", SlotCode: "ithings", Uri: "/api/v1/things/slot/area/delete", Hosts: []string{"http://localhost:7777"}, Body: `{"projectID":"{{.ProjectID}}","areaID":"{{.AreaID}}","parentAreaID":"{{.ParentAreaID}}"}`, AuthType: def.AppCore},
+			{Code: "userSubscribe", SubCode: userSubscribe.DevicePropertyReport, SlotCode: "ithings", Uri: "/api/v1/things/slot/user/subscribe", Hosts: []string{"http://localhost:7777"}, AuthType: def.AppCore},
+			{Code: "userSubscribe", SubCode: userSubscribe.DevicePropertyReport2, SlotCode: "ithings", Uri: "/api/v1/things/slot/user/subscribe", Hosts: []string{"http://localhost:7777"}, AuthType: def.AppCore},
+			{Code: "userSubscribe", SubCode: userSubscribe.DeviceConn, SlotCode: "ithings", Uri: "/api/v1/things/slot/user/subscribe", Hosts: []string{"http://localhost:7777"}, AuthType: def.AppCore},
+			{Code: "userSubscribe", SubCode: userSubscribe.DeviceOtaReport, SlotCode: "ithings", Uri: "/api/v1/things/slot/user/subscribe", Hosts: []string{"http://localhost:7777"}, AuthType: def.AppCore},
+		},
+	})
 }
 
 // 用到的字典初始化
