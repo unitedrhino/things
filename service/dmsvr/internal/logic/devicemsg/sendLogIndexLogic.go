@@ -40,6 +40,12 @@ func (l *SendLogIndexLogic) SendLogIndex(in *dm.SendLogIndexReq) (*dm.SendLogInd
 		DataIDs:    in.DataIDs,
 		DataID:     in.DataID,
 	}
+	page := def.PageInfo2{
+		TimeStart: in.TimeStart,
+		TimeEnd:   in.TimeEnd,
+		Page:      in.Page.GetPage(),
+		Size:      in.Page.GetSize(),
+	}
 	if in.ProductID != "" && in.DeviceName != "" {
 		_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{
 			ProductID:  in.ProductID,
@@ -69,12 +75,7 @@ func (l *SendLogIndexLogic) SendLogIndex(in *dm.SendLogIndexReq) (*dm.SendLogInd
 			}
 		}
 	}
-	page := def.PageInfo2{
-		TimeStart: in.TimeStart,
-		TimeEnd:   in.TimeEnd,
-		Page:      in.Page.GetPage(),
-		Size:      in.Page.GetSize(),
-	}
+
 	uc := ctxs.GetUserCtxNoNil(l.ctx)
 	if !uc.IsAdmin {
 		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{

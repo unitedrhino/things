@@ -46,6 +46,13 @@ func (l *EventLogIndexLogic) EventLogIndex(in *dm.EventLogIndexReq) (*dm.EventLo
 	if len(in.DeviceNames) == 0 {
 		return nil, errors.Parameter.AddMsg("需要填写设备")
 	}
+	page := def.PageInfo2{
+		TimeStart: in.TimeStart,
+		TimeEnd:   in.TimeEnd,
+		Page:      in.Page.GetPage(),
+		Size:      in.Page.GetSize(),
+	}
+	uc := ctxs.GetUserCtxNoNil(l.ctx)
 	for _, dev := range in.DeviceNames {
 		_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{
 			ProductID:  in.ProductID,
@@ -54,26 +61,20 @@ func (l *EventLogIndexLogic) EventLogIndex(in *dm.EventLogIndexReq) (*dm.EventLo
 		if err != nil {
 			return nil, err
 		}
-	}
-	page := def.PageInfo2{
-		TimeStart: in.TimeStart,
-		TimeEnd:   in.TimeEnd,
-		Page:      in.Page.GetPage(),
-		Size:      in.Page.GetSize(),
-	}
-	uc := ctxs.GetUserCtxNoNil(l.ctx)
-	if !uc.IsAdmin {
-		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
-			ProductID:  in.ProductID,
-			DeviceName: in.DeviceName,
-		})
-		if err != nil {
-			return nil, err
-		}
-		if di.LastBind*1000 > page.TimeStart {
-			page.TimeStart = di.LastBind * 1000
+		if !uc.IsAdmin {
+			di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
+				ProductID:  in.ProductID,
+				DeviceName: dev,
+			})
+			if err != nil {
+				return nil, err
+			}
+			if di.LastBind*1000 > page.TimeStart {
+				page.TimeStart = di.LastBind * 1000
+			}
 		}
 	}
+
 	dds, err := dd.GetEventDataByFilter(l.ctx, msgThing.FilterOpt{
 		Page:        page,
 		ProductID:   in.ProductID,
