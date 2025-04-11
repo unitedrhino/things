@@ -2,10 +2,13 @@ package devices
 
 import (
 	"context"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"gitee.com/unitedrhino/share/utils"
 	"sync/atomic"
+	"unicode"
+	"unicode/utf8"
 )
 
 type Action = string
@@ -39,51 +42,69 @@ type (
 		DeviceName string `json:"deviceName"`
 	}
 	// DevPublish ddsvr 发布设备 发布信息 的结构体
-	DevPublish struct {
-		Topic        string `json:"topic"` //只用于日志记录
-		Timestamp    int64  `json:"timestamp"`
-		ProductID    string `json:"productID"`
-		DeviceName   string `json:"deviceName"`
-		Handle       string `json:"handle"` //对应 mqtt topic的第一个 thing ota config 等等
-		Type         string `json:"type"`   //操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
-		Payload      []byte `json:"payload"`
-		ProtocolCode string `json:"protocolCode"` //协议code
-	}
-	// InnerPublish 用于其他服务 发送给ddsvr 转发给设备的
-	InnerPublish struct {
+	DevPublish struct { //发布消息结构体
+		Topic        string    `json:"topic"`  //只用于日志记录
 		Handle       MsgHandle `json:"handle"` //对应 mqtt topic的第一个 thing ota config 等等
-		Type         string    `json:"type"`   // 操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
+		Type         string    `json:"type"`   //操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
 		Payload      []byte    `json:"payload"`
+		Timestamp    int64     `json:"timestamp"` //毫秒时间戳
 		ProductID    string    `json:"productID"`
 		DeviceName   string    `json:"deviceName"`
-		ProtocolCode string    `json:"protocolCode"`
+		Explain      string    `json:"explain"`      //内部使用的拓展字段
+		ProtocolCode string    `json:"protocolCode"` //如果有该字段则回复的时候也会带上该字段
 	}
+	// InnerPublish 用于其他服务 发送给ddsvr 转发给设备的
+	InnerPublish = DevPublish
 )
 
-func (i DevPublish) String() string {
-	m := map[string]any{
-		"topic":        i.Topic,
-		"timestamp":    i.Timestamp,
-		"productID":    i.ProductID,
-		"deviceName":   i.DeviceName,
-		"handle":       i.Handle,
-		"type":         i.Type,
-		"payload":      string(i.Payload),
-		"protocolCode": i.ProtocolCode,
+// IsLikelyText 判断字节切片是否更可能是文本
+func IsLikelyText(b []byte) bool {
+	validUTF8 := utf8.Valid(b)
+	if !validUTF8 {
+		return false
 	}
-	return utils.Fmt(m)
+	total := len(b)
+	nonPrintable := 0
+	for len(b) > 0 {
+		r, size := utf8.DecodeRune(b)
+		if !unicode.IsPrint(r) {
+			nonPrintable++
+		}
+		b = b[size:]
+	}
+	// 如果不可打印字符占比超过 20%，则认为是二进制数据
+	return float64(nonPrintable)/float64(total) < 0.2
 }
 
-func (i InnerPublish) String() string {
-	m := map[string]any{
-		"handle":       i.Handle,
-		"type":         i.Type,
-		"payload":      string(i.Payload),
-		"productID":    i.ProductID,
-		"deviceName":   i.DeviceName,
-		"protocolCode": i.ProtocolCode,
+func printBytes(data []byte) string {
+	// 检查是否为有效的 UTF-8 字符串
+	if IsLikelyText(data) {
+		// 如果是字符串，直接打印字符串
+		return string(data)
+	} else {
+		// 如果是二进制数据，打印十六进制格式
+		return "0x" + hex.EncodeToString(data)
 	}
-	return utils.Fmt(m)
+}
+
+func (p *DevPublish) String() string {
+	msgMap := map[string]any{
+		"Handle":       p.Handle,
+		"Type":         p.Type,
+		"Payload":      printBytes(p.Payload),
+		"Timestamp":    p.Timestamp,
+		"ProductID":    p.ProductID,
+		"DeviceName":   p.DeviceName,
+		"protocolCode": p.ProtocolCode,
+	}
+	return utils.Fmt(msgMap)
+}
+
+func (p *DevPublish) GetPayload() string {
+	if p == nil || len(p.Payload) == 0 {
+		return ""
+	}
+	return string(p.Payload)
 }
 
 // 发送给设备的数据组包
