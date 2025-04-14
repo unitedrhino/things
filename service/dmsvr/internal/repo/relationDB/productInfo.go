@@ -210,11 +210,11 @@ func (d ProductInfoRepo) UpdateWithField(ctx context.Context, f ProductFilter, u
 func (p ProductInfoRepo) Delete(ctx context.Context, productID string) error {
 	db := p.db.WithContext(ctx)
 	err := db.Transaction(func(tx *gorm.DB) error {
-		err := tx.Delete(&DmProductInfo{}).Where("product_id=?", productID).Error
+		err := tx.Where("product_id=?", productID).Delete(&DmProductInfo{}).Error
 		if err != nil {
 			return err
 		}
-		return tx.Delete(&DmProductConfig{}).Where("product_id=?", productID).Error
+		return tx.Where("product_id=?", productID).Delete(&DmProductConfig{}).Error
 	})
 	return stores.ErrFmt(err)
 }
