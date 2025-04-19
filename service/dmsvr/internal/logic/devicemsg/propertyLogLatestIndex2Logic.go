@@ -58,6 +58,7 @@ func (l *PropertyLogLatestIndex2Logic) PropertyLogLatestIndex2(in *dm.PropertyLo
 			defer m.Unlock()
 			for _, v := range datas.List {
 				v.ProductID = dev.ProductID
+				v.DeviceName = dev.DeviceName
 				ret = append(ret, v)
 			}
 		})
