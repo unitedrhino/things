@@ -334,7 +334,7 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Empty, 
 		er := l.svcCtx.PubDev.PublishToDev(l.ctx, &msg)
 		if er != nil {
 			l.Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)
-			return nil, err
+			return nil, er
 		}
 	}
 	err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUpdate, &devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
