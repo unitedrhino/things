@@ -3,6 +3,7 @@ package dmExport
 import (
 	"context"
 	"encoding/json"
+	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/things/share/topics"
 
 	"gitee.com/unitedrhino/share/caches"
@@ -76,6 +77,9 @@ func NewProductSchemaCache(pm productmanage.ProductManage, fastEvent *eventBus.F
 			return data
 		},
 		GetData: func(ctx context.Context, key string) (*schema.Model, error) {
+			if key == "" {
+				return nil, errors.Parameter.AddMsgf("产品ID必填")
+			}
 			info, err := pm.ProductSchemaTslRead(ctx, &dm.ProductSchemaTslReadReq{ProductID: key})
 			if err != nil {
 				return nil, err
@@ -98,6 +102,9 @@ func NewDeviceSchemaCache(pm devicemanage.DeviceManage, pc ProductSchemaCacheT, 
 			return newOne
 		},
 		GetData: func(ctx context.Context, key devices.Core) (*schema.Model, error) {
+			if key.ProductID == "" || key.DeviceName == "" {
+				return nil, errors.Parameter.AddMsgf("产品ID和设备ID必填")
+			}
 			info, err := pm.DeviceSchemaTslRead(ctx, &dm.DeviceSchemaTslReadReq{ProductID: key.ProductID, DeviceName: key.DeviceName})
 			if err != nil {
 				return nil, err

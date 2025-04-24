@@ -103,7 +103,7 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 	if in.IsNotNotify {
 		return &dm.Empty{}, nil
 	}
-	TopoChange(l.ctx, l.svcCtx, pi, gateway, devs)
+	TopoChange(l.ctx, l.svcCtx, def.GatewayBind, pi, gateway, devs)
 	return &dm.Empty{}, nil
 }
 

@@ -8,11 +8,11 @@ go 1.22.7
 require (
 	gitee.com/unitedrhino/core v1.4.1
 	gitee.com/unitedrhino/share v1.4.0
-	gitee.com/unitedrhino/squirrel v1.20.5
+	gitee.com/unitedrhino/squirrel v1.20.6
 	github.com/dgraph-io/ristretto v0.1.0
 	github.com/dop251/goja v0.0.0-20231024180952-594410467bc6
 	github.com/eclipse/paho.mqtt.golang v1.4.3
-	github.com/golang-jwt/jwt/v5 v5.2.0
+	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/golang/protobuf v1.5.4
 	github.com/google/uuid v1.6.0
 	github.com/hashicorp/go-uuid v1.0.3
@@ -22,7 +22,7 @@ require (
 	github.com/nats-io/nats.go v1.35.0
 	github.com/parnurzeal/gorequest v0.3.0
 	github.com/spf13/cast v1.7.1
-	github.com/tidwall/gjson v1.14.2
+	github.com/tidwall/gjson v1.14.4
 	github.com/tidwall/sjson v1.2.5
 	github.com/traefik/yaegi v0.16.1
 	github.com/zeromicro/go-zero v1.8.1
@@ -154,7 +154,7 @@ require (
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.985 // indirect
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms v1.0.898 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
-	github.com/tidwall/pretty v1.2.0 // indirect
+	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/tjfoc/gmsm v1.3.2 // indirect
 	github.com/twpayne/go-geom v1.5.4 // indirect
 	github.com/xuri/efp v0.0.0-20231025114914-d1ff6096ae53 // indirect

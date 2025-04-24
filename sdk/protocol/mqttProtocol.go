@@ -237,13 +237,12 @@ func (m *MqttProtocol) SubscribeDevConn(handle ConnHandle) error {
 func (m *MqttProtocol) subscribeWithFunc(cli mqtt.Client, topic string, handle func(ctx context.Context, topic string, payload []byte) error) error {
 	return m.MqttClient.Subscribe(cli, topic,
 		1, func(client mqtt.Client, message mqtt.Message) {
-			go func() {
-				ctx, cancel := context.WithTimeout(context.Background(), 50*time.Second)
+			ctx, cancel := context.WithTimeout(context.Background(), 50*time.Second)
+			ctx, span := ctxs.StartSpan(ctx, message.Topic(), "")
+			utils.Go(ctx, func() {
 				defer cancel()
-				utils.Recover(ctx)
 				//dgsvr 订阅到了设备端数据，此时调用StartSpan方法，将订阅到的主题推送给jaeger
 				//此时的ctx已经包含当前节点的span信息，会随着 handle(ctx).Publish 传递到下个节点
-				ctx, span := ctxs.StartSpan(ctx, message.Topic(), "")
 				defer span.End()
 				startTime := timex.Now()
 				duration := timex.Since(startTime)
@@ -255,6 +254,6 @@ func (m *MqttProtocol) subscribeWithFunc(cli mqtt.Client, topic string, handle f
 				logx.WithContext(ctx).WithDuration(duration).Infof(
 					"SubscribeDevicePublish topic:%v message:%v err:%v",
 					message.Topic(), string(message.Payload()), err)
-			}()
+			})
 		})
 }

@@ -851,7 +851,11 @@ message PropertyLogInfo{
   string deviceName = 2;//设备名称
   string dataID = 3;//属性id
   string value = 4;//获取到的值
+  string dataName =6;//属性名称
 }
+
+
+
 
 /*获取对应日志信息*/
 message PropertyLogIndexResp{

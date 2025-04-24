@@ -84,7 +84,7 @@ func (l *DeviceGatewayMultiDeleteLogic) DeviceGatewayMultiDelete(in *dm.DeviceGa
 	if in.IsNotNotify {
 		return &dm.Empty{}, nil
 	}
-	TopoChange(l.ctx, l.svcCtx, pi, gateway, devicesDos)
+	TopoChange(l.ctx, l.svcCtx, def.GatewayUnbind, pi, gateway, devicesDos)
 
 	return &dm.Empty{}, nil
 }

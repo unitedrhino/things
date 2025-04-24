@@ -53,10 +53,10 @@ func BindChange(ctx context.Context, svcCtx *svc.ServiceContext, pi *dm.ProductI
 	return nil
 }
 
-func TopoChange(ctx context.Context, svcCtx *svc.ServiceContext, pi *dm.ProductInfo, gateway devices.Core, devs []*devices.Core) error {
+func TopoChange(ctx context.Context, svcCtx *svc.ServiceContext, status def.GatewayStatus, pi *dm.ProductInfo, gateway devices.Core, devs []*devices.Core) error {
 	req := &msgGateway.Msg{
 		CommonMsg: *deviceMsg.NewRespCommonMsg(ctx, deviceMsg.Change, devices.GenMsgToken(ctx, svcCtx.NodeID)).AddStatus(errors.OK, false),
-		Payload:   logic.ToGatewayPayload(def.GatewayBind, devs),
+		Payload:   logic.ToGatewayPayload(status, devs),
 	}
 	respBytes, _ := json.Marshal(req)
 	msg := deviceMsg.PublishMsg{

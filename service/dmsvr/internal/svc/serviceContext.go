@@ -15,6 +15,7 @@ import (
 	"gitee.com/unitedrhino/core/service/timed/timedjobsvr/client/timedmanage"
 	"gitee.com/unitedrhino/share/caches"
 	"gitee.com/unitedrhino/share/ctxs"
+	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/eventBus"
 	"gitee.com/unitedrhino/share/oss"
 	"gitee.com/unitedrhino/share/stores"
@@ -144,6 +145,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		KeyType:   topics.ServerCacheKeyDmDeviceSchema,
 		FastEvent: serverMsg,
 		GetData: func(ctx context.Context, key devices.Core) (*schema.Model, error) {
+			if key.ProductID == "" || key.DeviceName == "" {
+				return nil, errors.Parameter.AddMsgf("产品ID和设备ID必填")
+			}
 			db := relationDB.NewDeviceSchemaRepo(ctx)
 			dbSchemas, err := db.FindByFilter(ctx, relationDB.DeviceSchemaFilter{
 				ProductID: key.ProductID, DeviceName: key.DeviceName}, nil)

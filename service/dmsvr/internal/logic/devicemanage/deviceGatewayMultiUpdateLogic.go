@@ -98,6 +98,6 @@ func (l *DeviceGatewayMultiUpdateLogic) DeviceGatewayMultiUpdate(in *dm.DeviceGa
 	if in.IsNotNotify {
 		return &dm.Empty{}, nil
 	}
-	TopoChange(l.ctx, l.svcCtx, pi, gateway, devicesDos)
+	TopoChange(l.ctx, l.svcCtx, def.GatewayBind, pi, gateway, devicesDos)
 	return &dm.Empty{}, nil
 }

@@ -208,6 +208,7 @@ type DmProductConfig struct {
 	ProductID string                                     `gorm:"column:product_id;type:varchar(100);uniqueIndex:pd;NOT NULL"` // 产品id
 	DevInit   `gorm:"embedded;embeddedPrefix:dev_init_"` //设备初始化配置
 	stores.NoDelTime
+	Info        *DmProductInfo     `gorm:"foreignKey:product_id;references:product_id"`
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:pd"`
 }
 

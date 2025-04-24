@@ -98,11 +98,8 @@ func GetClientIDInfo(ClientID string) (*LoginDevice, error) {
 	}
 }
 
-// 先将 10进制 转为 62进制
-// 然后 因为字符串类型的产品id有11个字节，不够的需要在前面补0
 func GetStrProductID(id int64) string {
-	str := utils.DecimalToAny(id, 62)
-	return utils.FillZeroToLen(str, 3)
+	return fmt.Sprintf("%X", id)
 }
 
 func GetInt64ProductID(id string) int64 {

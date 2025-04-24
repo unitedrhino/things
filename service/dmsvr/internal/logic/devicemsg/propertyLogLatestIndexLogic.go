@@ -116,6 +116,7 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 				}
 				diData.Value = string(payload)
 			}
+			diData.DataName = property.Name
 			mutex.Lock()
 			defer mutex.Unlock()
 			diDatas = append(diDatas, &diData)
