@@ -254,8 +254,12 @@ type DeviceInfo struct {
 	NetType            int64                              `json:"netType,optional,range=[0:10],omitempty"` //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网,9:4G+BLE
 	NeedConfirmVersion string                             `json:"needConfirmVersion,optional,omitempty"`   //待确认升级的版本
 	UserID             int64                              `json:"userID,string,optional,omitempty"`
-	LastIp             string                             `json:"lastIp,optional,omitempty"` //最后登录的ip地址
-	Sort               int64                              `json:"sort,optional,omitempty"`   //排序
+	LastIp             string                             `json:"lastIp,optional,omitempty"`            //最后登录的ip地址
+	Sort               int64                              `json:"sort,optional,omitempty"`              //排序
+	DeviceImg          string                             `json:"deviceImg,omitempty,optional"`         //设备图片
+	IsUpdateDeviceImg  bool                               `json:"isUpdateDeviceImg,omitempty,optional"` //只有这个参数为true的时候才会更新设备图片,传参为设备图片的file path
+	File               string                             `json:"file,omitempty,optional"`              //设备相关文件
+	IsUpdateFile       bool                               `json:"isUpdateFile,omitempty,optional"`      //只有这个参数为true的时候才会更新设备文件,传参为设备文件的file path
 	Desc               *string                            `json:"desc,optional,omitempty"`
 	Distributor        *IDPath                            `json:"distributor,optional,omitempty"`
 	Gateway            *DeviceInfo                        `json:"gateway,optional,omitempty"` //子设备绑定的网关信息,只读

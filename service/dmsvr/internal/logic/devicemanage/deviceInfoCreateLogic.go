@@ -9,6 +9,7 @@ import (
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/share/oss"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
@@ -20,6 +21,7 @@ import (
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.uber.org/atomic"
+	"gorm.io/gorm"
 	"regexp"
 	"time"
 )
@@ -239,7 +241,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 	if in.Phone != nil {
 		di.Phone = utils.AnyToNullString(in.Phone)
 	}
-
+	var gateway *dm.DeviceInfo
 	if ctxs.IsRoot(l.ctx) == nil {
 		if in.Status != 0 {
 			di.Status = in.Status
@@ -254,8 +256,32 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 				}
 			}
 		}
+		if in.Gateway != nil {
+			g, _ := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: in.Gateway.ProductID, DeviceName: in.Gateway.DeviceName})
+			if g != nil && g.DeviceType == def.DeviceTypeGateway {
+				gateway = g
+				di.TenantCode = dataType.TenantCode(g.TenantCode)
+				di.ProjectID = dataType.ProjectID(g.ProjectID)
+				di.AreaID = dataType.AreaID(g.AreaID)
+			}
+		}
 	}
-
+	if in.DeviceImg != "" { //如果填了参数且不等于原来的,说明修改头像,需要处理
+		nwePath := oss.GenFilePath(l.ctx, l.svcCtx.Config.Name, oss.BusinessDeviceManage, oss.SceneDeviceImg, fmt.Sprintf("%s/%s/%s", in.ProductID, in.DeviceName, oss.GetFileNameWithPath(in.DeviceImg)))
+		path, err := l.svcCtx.OssClient.PrivateBucket().CopyFromTempBucket(in.DeviceImg, nwePath)
+		if err != nil {
+			return nil, errors.System.AddDetail(err)
+		}
+		di.DeviceImg = path
+	}
+	if in.File != "" { //如果填了参数且不等于原来的,说明修改头像,需要处理
+		nwePath := oss.GenFilePath(l.ctx, l.svcCtx.Config.Name, oss.BusinessDeviceManage, oss.SceneFile, fmt.Sprintf("%s/%s/%s", in.ProductID, in.DeviceName, oss.GetFileNameWithPath(in.File)))
+		path, err := l.svcCtx.OssClient.PrivateBucket().CopyFromTempBucket(in.File, nwePath)
+		if err != nil {
+			return nil, errors.System.AddDetail(err)
+		}
+		di.File = path
+	}
 	//err = l.InitDevice(devices.Info{
 	//	ProductID:  di.ProductID,
 	//	DeviceName: di.DeviceName,
@@ -266,7 +292,18 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 	//if err != nil {
 	//	return nil, err
 	//}
-	err = l.DiDB.Insert(l.ctx, &di)
+	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+		err := relationDB.NewDeviceInfoRepo(tx).Insert(l.ctx, &di)
+		if err != nil {
+			return err
+		}
+		if gateway != nil {
+			err = relationDB.NewGatewayDeviceRepo(tx).MultiInsert(l.ctx, &devices.Core{
+				ProductID: gateway.ProductID, DeviceName: gateway.DeviceName},
+				[]*devices.Core{{di.ProductID, di.DeviceName}})
+		}
+		return err
+	})
 	if err != nil {
 		l.Errorf("AddDevice.DeviceInfo.Insert err=%+v", err)
 		return nil, err

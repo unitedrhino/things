@@ -3,10 +3,13 @@ package devicemanagelogic
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/share/oss"
+	"gitee.com/unitedrhino/share/oss/common"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
@@ -115,7 +118,36 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 	if data.LogLevel != def.Unknown {
 		old.LogLevel = data.LogLevel
 	}
-
+	if data.DeviceImg != "" && data.IsUpdateDeviceImg == true { //如果填了参数且不等于原来的,说明修改头像,需要处理
+		if old.DeviceImg != "" {
+			err := l.svcCtx.OssClient.PrivateBucket().Delete(l.ctx, old.DeviceImg, common.OptionKv{})
+			if err != nil {
+				l.Errorf("Delete file err path:%v,err:%v", old.DeviceImg, err)
+			}
+		}
+		nwePath := oss.GenFilePath(l.ctx, l.svcCtx.Config.Name, oss.BusinessDeviceManage, oss.SceneDeviceImg,
+			fmt.Sprintf("%s/%s/%s", data.ProductID, data.DeviceName, oss.GetFileNameWithPath(data.DeviceImg)))
+		path, err := l.svcCtx.OssClient.PrivateBucket().CopyFromTempBucket(data.DeviceImg, nwePath)
+		if err != nil {
+			return errors.System.AddDetail(err)
+		}
+		old.DeviceImg = path
+	}
+	if data.File != "" && data.IsUpdateFile == true { //如果填了参数且不等于原来的,说明修改头像,需要处理
+		if old.File != "" {
+			err := l.svcCtx.OssClient.PrivateBucket().Delete(l.ctx, old.File, common.OptionKv{})
+			if err != nil {
+				l.Errorf("Delete file err path:%v,err:%v", old.File, err)
+			}
+		}
+		nwePath := oss.GenFilePath(l.ctx, l.svcCtx.Config.Name, oss.BusinessDeviceManage, oss.SceneFile,
+			fmt.Sprintf("%s/%s/%s", data.ProductID, data.DeviceName, oss.GetFileNameWithPath(data.File)))
+		path, err := l.svcCtx.OssClient.PrivateBucket().CopyFromTempBucket(data.File, nwePath)
+		if err != nil {
+			return errors.System.AddDetail(err)
+		}
+		old.File = path
+	}
 	if data.Imei != "" {
 		old.Imei = data.Imei
 	}

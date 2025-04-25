@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/events"
+	"gitee.com/unitedrhino/share/oss/common"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
@@ -11,6 +12,7 @@ import (
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgGateway"
 	"github.com/golang/protobuf/ptypes/wrappers"
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 func ToDeviceInfo(ctx context.Context, svcCtx *svc.ServiceContext, in *relationDB.DmDeviceInfo) *dm.DeviceInfo {
@@ -39,7 +41,18 @@ func ToDeviceInfo(ctx context.Context, svcCtx *svc.ServiceContext, in *relationD
 		CategoryID = pi.CategoryID
 	}
 	//return utils.Copy[dm.DeviceInfo](in)
-
+	if in.DeviceImg != "" {
+		in.DeviceImg, err = svcCtx.OssClient.PrivateBucket().SignedGetUrl(ctx, in.DeviceImg, 60*60, common.OptionKv{})
+		if err != nil {
+			logx.WithContext(ctx).Errorf("%s.SignedGetUrl err:%v", utils.FuncName(), err)
+		}
+	}
+	if in.File != "" {
+		in.File, err = svcCtx.OssClient.PrivateBucket().SignedGetUrl(ctx, in.File, 60*60, common.OptionKv{})
+		if err != nil {
+			logx.WithContext(ctx).Errorf("%s.SignedGetUrl err:%v", utils.FuncName(), err)
+		}
+	}
 	return &dm.DeviceInfo{
 		Id:                 in.ID,
 		TenantCode:         string(in.TenantCode),
@@ -73,6 +86,8 @@ func ToDeviceInfo(ctx context.Context, svcCtx *svc.ServiceContext, in *relationD
 		LastBind:           utils.GetNullTime(in.LastBind),
 		LastLogin:          utils.GetNullTime(in.LastLogin),
 		ExpTime:            utils.TimeToNullInt(in.ExpTime),
+		File:               in.File,
+		DeviceImg:          in.DeviceImg,
 		LogLevel:           in.LogLevel,
 		CreatedTime:        in.CreatedTime.Unix(),
 		ProtocolConf:       in.ProtocolConf,

@@ -139,6 +139,10 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		DeviceAlias:        &v.DeviceAlias.Value, //设备别名 读写
 		Secret:             v.Secret,             //设备秘钥 只读
 		Cert:               v.Cert,               //设备证书 只读
+		IsUpdateDeviceImg:  v.IsUpdateDeviceImg,
+		IsUpdateFile:       v.IsUpdateFile,
+		DeviceImg:          v.DeviceImg,
+		File:               v.File,
 		IsEnable:           v.IsEnable,
 		Imei:               v.Imei,                        //IMEI号信息 只读
 		Mac:                v.Mac,                         //MAC号信息 只读

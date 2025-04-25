@@ -171,6 +171,10 @@ type (
         UserID int64  `json:"userID,string,optional,omitempty"`
         LastIp string `json:"lastIp,optional,omitempty"`//最后登录的ip地址
         Sort int64  `json:"sort,optional,omitempty"` //排序
+        DeviceImg string `json:"deviceImg,omitempty,optional"`                        //设备图片
+        IsUpdateDeviceImg bool `json:"isUpdateDeviceImg,omitempty,optional"` //只有这个参数为true的时候才会更新设备图片,传参为设备图片的file path
+        File string `json:"file,omitempty,optional"`                        //设备相关文件
+        IsUpdateFile bool `json:"isUpdateFile,omitempty,optional"` //只有这个参数为true的时候才会更新设备文件,传参为设备文件的file path
         Desc *string  `json:"desc,optional,omitempty"`
         Distributor *IDPath `json:"distributor,optional,omitempty"`
         Gateway *DeviceInfo `json:"gateway,optional,omitempty"`//子设备绑定的网关信息,只读

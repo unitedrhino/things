@@ -1414,7 +1414,11 @@ message DeviceInfo {
   IDPathWithUpdate dept =52;//过滤分销商的数据
   DeviceInfo Gateway =46;//子设备绑定的网关
   int64 sort =53; //排序
+  string deviceImg = 54; //设备图片
+  bool isUpdateDeviceImg = 55;//只有这个参数为true的时候才会更新设备图片,传参为图片的file path
 
+  string file = 56; //设备文件
+  bool isUpdateFile = 57;//只有这个参数为true的时候才会更新设备文件,传参为文件的file path
 }
 
 message ProductConfig{

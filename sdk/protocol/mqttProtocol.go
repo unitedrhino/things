@@ -62,12 +62,21 @@ func (m *MqttProtocol) SubscribeDevMsg(topic string, handle DevHandle) error {
 	return nil
 }
 
-func (m *MqttProtocol) PublishToDev(ctx context.Context, topic string, payload []byte) error {
-	err := m.MqttClient.Publish(topic, 1, false, payload)
+func (m *MqttProtocol) PublishToDev(ctx context.Context, topic string, payload any) error {
+	var p []byte
+	switch payload.(type) {
+	case string:
+		p = []byte(payload.(string))
+	case []byte:
+		p = payload.([]byte)
+	default:
+		p, _ = json.Marshal(payload)
+	}
+	err := m.MqttClient.Publish(topic, 1, false, p)
 	if err != nil {
 		logx.WithContext(ctx).Errorf("PublishToDev failure err:%v topic:%v", err, topic)
 	} else {
-		logx.WithContext(ctx).Infof("PublishToDev  topic:%v payload:%v", topic, string(payload))
+		logx.WithContext(ctx).Infof("PublishToDev  topic:%v payload:%v", topic, string(p))
 	}
 	return err
 }

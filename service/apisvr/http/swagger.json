@@ -7322,6 +7322,24 @@
           "format": "int64",
           "description": "排序"
         },
+        "deviceImg": {
+          "type": "string",
+          "description": "设备图片"
+        },
+        "isUpdateDeviceImg": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "只有这个参数为true的时候才会更新设备图片,传参为设备图片的file path"
+        },
+        "file": {
+          "type": "string",
+          "description": "设备相关文件"
+        },
+        "isUpdateFile": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "只有这个参数为true的时候才会更新设备文件,传参为设备文件的file path"
+        },
         "desc": {
           "type": "string"
         },
