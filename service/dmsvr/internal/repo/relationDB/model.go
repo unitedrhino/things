@@ -55,8 +55,8 @@ type DmDeviceInfo struct {
 	Rssi               int64              `gorm:"column:rssi;type:bigint;default:0;NOT NULL"`                               // 设备信号（信号极好[-55— 0]，信号好[-70— -55]，信号一般[-85— -70]，信号差[-100— -85]）
 	ProtocolConf       map[string]string  `gorm:"column:protocol_conf;type:json;serializer:json;NOT NULL;default:'{}'"`     // 主协议配置
 	SubProtocolConf    map[string]string  `gorm:"column:sub_protocol_conf;type:json;serializer:json;NOT NULL;default:'{}'"` // 子模块自定义协议配置
-	DeviceImg          string             `gorm:"column:device_img;type:varchar(200)"`                                      // 设备图片
-	File               string             `gorm:"column:file;type:varchar(200)"`                                            // 设备相关文件
+	DeviceImg          string             `gorm:"column:device_img;type:varchar(200);default:''"`                           // 设备图片
+	File               string             `gorm:"column:file;type:varchar(200);default:''"`                                 // 设备相关文件
 	IsOnline           int64              `gorm:"column:is_online;type:smallint;default:2;NOT NULL"`                        // 是否在线,1是2否
 	FirstLogin         sql.NullTime       `gorm:"column:first_login"`                                                       // 激活时间
 	LastLogin          sql.NullTime       `gorm:"column:last_login"`                                                        // 最后上线时间

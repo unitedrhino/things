@@ -111,7 +111,7 @@ func (l *ProductSchemaCreateLogic) ProductSchemaCreate(in *dm.ProductSchemaCreat
 	l.Infof("%s req=%v", utils.FuncName(), utils.Fmt(in))
 	po, err := l.ruleCheck(in)
 	if err != nil {
-		l.Errorf("%s.ruleCheck err:%v", err)
+		l.Errorf("ruleCheck err:%v", err)
 		return nil, err
 	}
 

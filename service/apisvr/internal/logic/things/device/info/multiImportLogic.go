@@ -40,7 +40,7 @@ func (l *MultiImportLogic) MultiImport(req *types.DeviceMultiImportReq, rows [][
 		egg          errgroup.Group
 		headers      *types.DeviceMultiImportRow
 		errdata      []*types.DeviceMultiImportRow
-		GatewayMap   map[devices.Core][]*devices.Core
+		GatewayMap   = map[devices.Core][]*devices.Core{}
 		gatewayMutex sync.Mutex
 		LimitChan    = make(chan struct{}, 100) //100的并发
 	)
