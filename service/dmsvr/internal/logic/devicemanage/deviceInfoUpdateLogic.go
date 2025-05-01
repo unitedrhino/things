@@ -334,12 +334,23 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Empty, 
 	if err != nil {
 		return nil, err
 	}
-
+	if in.GroupIDs != nil && in.GroupPurpose != "" {
+		_, err := NewDeviceGroupMultiUpdateLogic(l.ctx, l.svcCtx).DeviceGroupMultiUpdate(&dm.DeviceGroupMultiSaveReq{
+			ProductID:  in.ProductID,
+			DeviceName: in.DeviceName,
+			GroupIDs:   in.GroupIDs,
+			Purpose:    in.GroupPurpose,
+		})
+		if err != nil {
+			return nil, err
+		}
+	}
 	err = l.DiDB.Update(l.ctx, dmDiPo)
 	if err != nil {
 		l.Errorf("DeviceInfoUpdate.DeviceInfo.Update err=%+v", err)
 		return nil, err
 	}
+
 	err = l.svcCtx.DeviceCache.SetData(l.ctx, devices.Core{
 		ProductID:  dmDiPo.ProductID,
 		DeviceName: dmDiPo.DeviceName,

@@ -15,6 +15,7 @@ import (
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/deviceinteract"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/devicemanage"
+	"gitee.com/unitedrhino/things/service/dmsvr/client/devicemsg"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/productmanage"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/protocolmanage"
 	"gitee.com/unitedrhino/things/service/dmsvr/dmExport"
@@ -32,12 +33,14 @@ import (
 )
 
 type CoreSvrClient struct {
-	ProtocolM      protocolmanage.ProtocolManage
-	ProductM       productmanage.ProductManage
-	ProductCache   dmExport.ProductCacheT
-	DeviceCache    dmExport.DeviceCacheT
-	SchemaCache    dmExport.DeviceSchemaCacheT
-	DeviceM        devicemanage.DeviceManage
+	ProtocolM    protocolmanage.ProtocolManage
+	ProductM     productmanage.ProductManage
+	ProductCache dmExport.ProductCacheT
+	DeviceCache  dmExport.DeviceCacheT
+	SchemaCache  dmExport.DeviceSchemaCacheT
+	DeviceM      devicemanage.DeviceManage
+	DeviceMsg    devicemsg.DeviceMsg
+
 	DeviceInteract deviceinteract.DeviceInteract
 	TimedM         timedmanage.TimedManage
 	TimerHandles   []func(ctx context.Context, t time.Time) error
@@ -106,6 +109,7 @@ func NewCoreProtocol(c conf.EventConf, pi *dm.ProtocolInfo, pc *CoreProtocolConf
 			ProductCache:   pic,
 			DeviceM:        di,
 			TimedM:         timedM,
+			DeviceMsg:      devicemsg.NewDeviceMsg(pc.DmClient),
 			DeviceInteract: deviceinteract.NewDeviceInteract(pc.DmClient),
 		},
 	}, nil

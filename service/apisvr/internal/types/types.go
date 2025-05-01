@@ -262,9 +262,11 @@ type DeviceInfo struct {
 	IsUpdateFile       bool                               `json:"isUpdateFile,omitempty,optional"`      //只有这个参数为true的时候才会更新设备文件,传参为设备文件的file path
 	Desc               *string                            `json:"desc,optional,omitempty"`
 	Distributor        *IDPath                            `json:"distributor,optional,omitempty"`
-	Gateway            *DeviceInfo                        `json:"gateway,optional,omitempty"` //子设备绑定的网关信息,只读
-	Area               *AreaInfo                          `json:"area,optional,omitempty"`    //区域信息
-	Groups             []*GroupCore                       `json:"groups,optional,omitempty"`  //所在分组信息
+	Gateway            *DeviceInfo                        `json:"gateway,optional,omitempty"`         //子设备绑定的网关信息,只读
+	Area               *AreaInfo                          `json:"area,optional,omitempty"`            //区域信息,只读
+	Groups             []*GroupCore                       `json:"groups,optional,omitempty"`          //所在分组信息,只读
+	GroupPurpose       string                             `json:"groupPurpose,optional,omitempty"`    //更新的时候使用,将设备该用途下的分组进行更新
+	GroupIDs           []int64                            `json:"groupIDs,optional,string,omitempty"` //如果要更新分组,必须填写groupPurpose
 }
 
 type DeviceInfoBindReq struct {
@@ -919,6 +921,11 @@ type DeviceShareInfo struct {
 	DeviceAlias string `json:"deviceAlias,optional"`          //设备别名 读写
 }
 
+type FileCore struct {
+	Path     string `json:"path,optional,omitempty"`     //文件的路径
+	IsUpdate bool   `json:"isUpdate,optional,omitempty"` //如果要更新该文件,则需要将该参数置为true
+}
+
 type FirmwareCreateReq struct {
 	ProductID      string   `json:"productID"`
 	Name           string   `json:"name"`
@@ -1012,21 +1019,22 @@ type GroupDeviceMultiSaveReq struct {
 }
 
 type GroupInfo struct {
-	ID          int64         `json:"id,optional"`                         //分组ID
-	Purpose     string        `json:"purpose,optional"`                    //用途 不填默认为default
-	ParentID    int64         `json:"parentID,optional"`                   //父组ID
-	ProjectID   int64         `json:"projectID,string,optional,omitempty"` //项目ID
-	AreaID      int64         `json:"areaID,string,optional,omitempty"`    //区域ID
-	Name        string        `json:"name,optional"`                       //分组名称
-	ProductID   string        `json:"productID,optional"`                  //产品ID
-	ProductName string        `json:"productName,optional,omitempty"`      //产品ID
-	CreatedTime int64         `json:"createdTime,string,optional"`         //创建时间
-	Desc        string        `json:"desc,optional,omitempty"`             //分组描述
-	DeviceCount int64         `json:"deviceCount,optional,omitempty"`      //设备数量统计
-	IsLeaf      int64         `json:"isLeaf,optional"`
-	Tags        []*Tag        `json:"tags,optional,omitempty"` //分组tag
-	Devices     []*DeviceCore `json:"devices,optional,omitempty"`
-	Children    []*GroupInfo  `json:"children,optional,omitempty"`
+	ID          int64             `json:"id,optional"`                         //分组ID
+	Purpose     string            `json:"purpose,optional"`                    //用途 不填默认为default
+	ParentID    int64             `json:"parentID,optional"`                   //父组ID
+	ProjectID   int64             `json:"projectID,string,optional,omitempty"` //项目ID
+	AreaID      int64             `json:"areaID,string,optional,omitempty"`    //区域ID
+	Name        string            `json:"name,optional"`                       //分组名称
+	ProductID   string            `json:"productID,optional"`                  //产品ID
+	ProductName string            `json:"productName,optional,omitempty"`      //产品ID
+	CreatedTime int64             `json:"createdTime,string,optional"`         //创建时间
+	Desc        string            `json:"desc,optional,omitempty"`             //分组描述
+	DeviceCount int64             `json:"deviceCount,optional,omitempty"`      //设备数量统计
+	IsLeaf      int64             `json:"isLeaf,optional"`
+	Tags        []*Tag            `json:"tags,optional,omitempty"`  //分组tag
+	Files       map[string]string `json:"files,optional,omitempty"` //key 是用途, value是文件的路径,
+	Devices     []*DeviceCore     `json:"devices,optional,omitempty"`
+	Children    []*GroupInfo      `json:"children,optional,omitempty"`
 }
 
 type GroupInfoIndexReq struct {

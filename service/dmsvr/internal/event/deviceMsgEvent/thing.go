@@ -11,7 +11,6 @@ import (
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
-	"gitee.com/unitedrhino/share/events/topics"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceBind"
@@ -33,6 +32,7 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/protocols"
 	"gitee.com/unitedrhino/things/share/domain/schema"
+	"gitee.com/unitedrhino/things/share/topics"
 	"gitee.com/unitedrhino/things/share/userSubscribe"
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/cast"
@@ -1047,5 +1047,4 @@ func (l *ThingLogic) OnlineFix(msg *deviceMsg.PublishMsg, di *dm.DeviceInfo, gw 
 		}
 		l.svcCtx.FastEvent.Publish(ctx, fmt.Sprintf(topics.DeviceDownStatusConnected, msg.ProtocolCode), inDev)
 	})
-
 }

@@ -89,7 +89,8 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 				return nil, errors.NotFind
 			}
 			//如果是蓝牙模式并且打开了自动注册,那么绑定的时候需要创建该设备
-			_, err = NewDeviceInfoCreateLogic(ctxs.WithProjectID(ctxs.WithAdmin(l.ctx), def.NotClassified), l.svcCtx).DeviceInfoCreate(&dm.DeviceInfo{ProductID: in.Device.ProductID, DeviceName: in.Device.DeviceName})
+			_, err = NewDeviceInfoCreateLogic(ctxs.WithProjectID(ctxs.WithAdmin(l.ctx), def.NotClassified), l.svcCtx).
+				DeviceInfoCreate(&dm.DeviceInfo{ProductID: in.Device.ProductID, DeviceName: in.Device.DeviceName, IsOnline: def.True})
 			if err != nil {
 				return nil, err
 			}
@@ -102,7 +103,10 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 			}
 		}
 	}
-	if pi.BindLevel == product.BindLeveHard1 && string(di.TenantCode) == uc.TenantCode &&
+	if pi.BindLevel < 3 && di.IsOnline != def.True { //如果是中绑定和强绑定,如果设备不在线,不允许绑定
+		return nil, errors.NotOnline
+	}
+	if string(di.TenantCode) == uc.TenantCode &&
 		int64(di.ProjectID) == uc.ProjectID { //如果已经绑定到自己名下则不允许重复绑定
 		if pi.BindLevel == product.BindLeveHard1 {
 			return nil, errors.DeviceBound.WithMsg("设备已存在，请返回设备列表查看该设备")

@@ -73,9 +73,11 @@ type (
         DeviceCount int64 `json:"deviceCount,optional,omitempty"` //设备数量统计
         IsLeaf int64 `json:"isLeaf,optional"`
         Tags []*Tag `json:"tags,optional,omitempty"`                 //分组tag
+        Files map[string]string `json:"files,optional,omitempty"` //key 是用途, value是文件的路径,
         Devices []*DeviceCore `json:"devices,optional,omitempty"`
         Children []*GroupInfo `json:"children,optional,omitempty"`
     }
+
 
     GroupInfoReadReq{
         ID int64 `json:"id"`         // id

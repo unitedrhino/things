@@ -175,6 +175,35 @@ func DeleteDeviceActivity(ctx context.Context, dev devices.Core) {
 	}
 }
 
+func (m *MqttProtocol) ReportDevConn(ctx context.Context, do devices.DevConn) error {
+	dev := devices.Core{
+		ProductID:  do.ProductID,
+		DeviceName: do.DeviceName,
+	}
+	err := caches.GetStore().Hset(DeviceMqttDevice, GenDeviceTopicKey(dev), utils.MarshalNoErr(do))
+	if err != nil {
+		logx.Error(err)
+	}
+	err = caches.GetStore().Hset(DeviceMqttClientID, do.ClientID, utils.MarshalNoErr(dev))
+	if err != nil {
+		logx.Error(err)
+	}
+	do.ClientID = fmt.Sprintf("%s&%s", do.ProductID, do.DeviceName)
+	switch do.Action {
+	case devices.ActionConnected:
+		err = m.FastEvent.Publish(ctx, topics.DeviceUpStatusConnected, do)
+	case devices.ActionDisconnected:
+		err = m.FastEvent.Publish(ctx, topics.DeviceUpStatusDisconnected, do)
+	default:
+		panic("not support conn type")
+	}
+	if err != nil {
+		logx.Errorf("%s.publish  err:%v", utils.FuncName(), err)
+		return err
+	}
+	return err
+}
+
 func (m *MqttProtocol) SubscribeDevConn(handle ConnHandle) error {
 	m.ConnHandle = handle
 	newTopic := fmt.Sprintf("$share/%s/%s", m.ServerName, "$SYS/brokers/+/clients/#")

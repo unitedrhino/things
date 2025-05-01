@@ -434,6 +434,8 @@ type DmGroupInfo struct {
 	Name       string              `gorm:"column:name;uniqueIndex:tc_ac;default:'';type:varchar(100);NOT NULL"`            // 分组名称
 	Desc       string              `gorm:"column:desc;type:varchar(200);default:''"`                                       // 描述
 	Tags       map[string]string   `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"`                    // 分组标签
+	Files      map[string]string   `gorm:"column:files;type:json;serializer:json;NOT NULL;default:'{}'"`                   // 分组文件
+
 	stores.NoDelTime
 	DeviceCount int64              `gorm:"column:device_count;type:bigint;default:0;"` //设备数量统计
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:tc_ac"`

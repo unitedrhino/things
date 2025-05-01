@@ -112,4 +112,8 @@ type(
         Explain      string `json:"explain,optional"`      //内部使用的拓展字段
         ProtocolCode string `json:"protocolCode,optional"` //如果有该字段则回复的时候也会带上该字段
     }
+    FileCore {
+        Path string  `json:"path,optional,omitempty"` //文件的路径
+        IsUpdate bool  `json:"isUpdate,optional,omitempty"` //如果要更新该文件,则需要将该参数置为true
+    }
 )

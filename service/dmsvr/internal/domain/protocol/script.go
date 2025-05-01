@@ -90,6 +90,34 @@ func NewScriptTrans() *ScriptTrans {
 		"Marshal":   reflect.ValueOf(json.Marshal),
 		"Unmarshal": reflect.ValueOf(json.Unmarshal),
 	})
+	s.AddSymbol("utils/utils", map[string]reflect.Value{
+		"ToInt64":                reflect.ValueOf(utils.ToInt64),
+		"ToBool":                 reflect.ValueOf(utils.ToBool),
+		"ToTime":                 reflect.ValueOf(utils.ToTime),
+		"ToDuration":             reflect.ValueOf(utils.ToDuration),
+		"ToFloat64":              reflect.ValueOf(utils.ToFloat64),
+		"ToFloat32":              reflect.ValueOf(utils.ToFloat32),
+		"ToInt32":                reflect.ValueOf(utils.ToInt32),
+		"ToInt16":                reflect.ValueOf(utils.ToInt16),
+		"ToInt8":                 reflect.ValueOf(utils.ToInt8),
+		"ToInt":                  reflect.ValueOf(utils.ToInt),
+		"ToUint":                 reflect.ValueOf(utils.ToUint),
+		"ToUint64":               reflect.ValueOf(utils.ToUint64),
+		"ToUint32":               reflect.ValueOf(utils.ToUint32),
+		"ToUint16":               reflect.ValueOf(utils.ToUint16),
+		"ToUint8":                reflect.ValueOf(utils.ToUint8),
+		"ToString":               reflect.ValueOf(utils.ToString),
+		"BoolToInt":              reflect.ValueOf(utils.BoolToInt),
+		"ToStringMapStringSlice": reflect.ValueOf(utils.ToStringMapStringSlice),
+		"ToStringMapBool":        reflect.ValueOf(utils.ToStringMapBool),
+		"ToStringMapInt":         reflect.ValueOf(utils.ToStringMapInt),
+		"ToStringMapInt64":       reflect.ValueOf(utils.ToStringMapInt64),
+		"ToSlice":                reflect.ValueOf(utils.ToSlice),
+		"ToBoolSlice":            reflect.ValueOf(utils.ToBoolSlice),
+		"ToStringSlice":          reflect.ValueOf(utils.ToStringSlice),
+		"ToIntSlice":             reflect.ValueOf(utils.ToIntSlice),
+		"ToDurationSlice":        reflect.ValueOf(utils.ToDurationSlice),
+	})
 	ctx := ctxs.WithRoot(context.Background())
 	utils.Go(ctx, func() {
 		var t = time.NewTicker(10 * time.Minute) //10分钟刷新一次

@@ -81,3 +81,8 @@ func (p ParamSimples) ToModel() Params {
 	}
 	return ret
 }
+
+// 转换成人看得懂的描述
+func (m *ModelSimple) ToHumanDesc() string {
+	return ""
+}

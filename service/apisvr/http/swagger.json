@@ -7352,14 +7352,25 @@
         },
         "area": {
           "$ref": "#/definitions/AreaInfo",
-          "description": "区域信息"
+          "description": "区域信息,只读"
         },
         "groups": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/GroupCore"
           },
-          "description": "所在分组信息"
+          "description": "所在分组信息,只读"
+        },
+        "groupPurpose": {
+          "type": "string",
+          "description": "更新的时候使用,将设备该用途下的分组进行更新"
+        },
+        "groupIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "如果要更新分组,必须填写groupPurpose"
         }
       },
       "title": "DeviceInfo",
@@ -10029,6 +10040,21 @@
         "deviceName"
       ]
     },
+    "FileCore": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "文件的路径"
+        },
+        "isUpdate": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "如果要更新该文件,则需要将该参数置为true"
+        }
+      },
+      "title": "FileCore"
+    },
     "FirmwareCreateReq": {
       "type": "object",
       "properties": {
@@ -10461,6 +10487,10 @@
             "$ref": "#/definitions/Tag"
           },
           "description": "分组tag"
+        },
+        "files": {
+          "type": "object",
+          "description": "key 是用途, value是文件的路径,"
         },
         "devices": {
           "type": "array",

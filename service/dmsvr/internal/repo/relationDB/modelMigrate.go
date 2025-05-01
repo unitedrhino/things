@@ -136,7 +136,6 @@ func migrateTableColumn() error {
 		return err
 	}
 	db.Create(&DmGroupInfo{ID: 10}) //分组前几个是特殊ID,不能使用,给他占位了
-	db.Delete(&DmGroupInfo{ID: 10})
 
 	return nil
 }

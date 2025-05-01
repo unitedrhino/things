@@ -178,8 +178,10 @@ type (
         Desc *string  `json:"desc,optional,omitempty"`
         Distributor *IDPath `json:"distributor,optional,omitempty"`
         Gateway *DeviceInfo `json:"gateway,optional,omitempty"`//子设备绑定的网关信息,只读
-        Area *AreaInfo `json:"area,optional,omitempty"` //区域信息
-        Groups []*GroupCore `json:"groups,optional,omitempty"`//所在分组信息
+        Area *AreaInfo `json:"area,optional,omitempty"` //区域信息,只读
+        Groups []*GroupCore `json:"groups,optional,omitempty"`//所在分组信息,只读
+        GroupPurpose string `json:"groupPurpose,optional,omitempty"`//更新的时候使用,将设备该用途下的分组进行更新
+        GroupIDs []int64 `json:"groupIDs,optional,string,omitempty"`//如果要更新分组,必须填写groupPurpose
     }
 
     GroupCore{

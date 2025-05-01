@@ -122,7 +122,7 @@ func (m *Model) ToSimple() *ModelSimple {
 			Identifier: p.Identifier,
 			Name:       p.Name,
 			Mode:       p.Mode,
-			Define:     p.Define.ToSimple(),
+			Define:     p.Define,
 		})
 	}
 	for _, e := range m.Events {

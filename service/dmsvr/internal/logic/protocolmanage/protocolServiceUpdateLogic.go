@@ -41,6 +41,7 @@ func (l *ProtocolServiceUpdateLogic) ProtocolServiceUpdate(in *dm.ProtocolServic
 		if errors.Cmp(err, errors.NotFind) {
 			return &dm.Empty{}, relationDB.NewProtocolServiceRepo(l.ctx).Insert(l.ctx, utils.Copy[relationDB.DmProtocolService](in))
 		}
+		return nil, err
 	}
 	old.Status = in.Status
 	err = relationDB.NewProtocolServiceRepo(l.ctx).Update(l.ctx, old)

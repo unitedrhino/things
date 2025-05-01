@@ -87,6 +87,7 @@ type (
 	EventLogIndexReq                  = dm.EventLogIndexReq
 	EventLogIndexResp                 = dm.EventLogIndexResp
 	EventLogInfo                      = dm.EventLogInfo
+	FileCore                          = dm.FileCore
 	Firmware                          = dm.Firmware
 	FirmwareFile                      = dm.FirmwareFile
 	FirmwareInfo                      = dm.FirmwareInfo

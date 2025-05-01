@@ -36,6 +36,11 @@ message CompareInt64{
   int64 value =2;//值
 }
 
+message FileCore{
+  string path =1;//文件的路径
+  bool isUpdate=2;//如果要更新该文件,则需要将该参数置为true
+}
+
 message SendOption {
   int64  timeoutToFail = 1;//超时失败时间
   int64  requestTimeout = 2;//请求超时,超时后会进行重试
@@ -1288,6 +1293,7 @@ message GroupInfo{
   repeated DeviceCore devices =11;
   int64 deviceCount = 12;
   int64 isLeaf =13;
+  map<string,string> files =16;//key 是用途, value是 是文件的路径,如果要更新该文件, 传filePath即可
   repeated GroupInfo children =14;
 //  DeviceInfoCount deviceInfoCount =11;
 }
@@ -1414,6 +1420,10 @@ message DeviceInfo {
   IDPathWithUpdate dept =52;//过滤分销商的数据
   DeviceInfo Gateway =46;//子设备绑定的网关
   int64 sort =53; //排序
+
+  string groupPurpose =58;//更新的时候使用,将设备该用途下的分组进行更新
+  repeated int64 groupIDs =59; //如果要更新分组,必须填写groupPurpose
+
   string deviceImg = 54; //设备图片
   bool isUpdateDeviceImg = 55;//只有这个参数为true的时候才会更新设备图片,传参为图片的file path
 

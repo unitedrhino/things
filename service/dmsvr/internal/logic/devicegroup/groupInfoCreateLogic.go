@@ -2,9 +2,11 @@ package devicegrouplogic
 
 import (
 	"context"
+	"fmt"
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/share/oss"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
@@ -104,9 +106,9 @@ func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfo) (*dm.WithID, er
 		Name:        in.Name,
 		Desc:        in.Desc,
 		Tags:        in.Tags,
+		Files:       in.Files,
 		DeviceCount: int64(len(in.Devices)),
 	}
-
 	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
 		err := relationDB.NewGroupInfoRepo(tx).Insert(l.ctx, &po)
 		if err != nil {
@@ -126,6 +128,19 @@ func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfo) (*dm.WithID, er
 				}
 			}
 			po.IDPath = parent.IDPath + po.IDPath
+		}
+		if len(in.Files) > 0 {
+			var files = map[string]string{}
+			for key, v := range in.Files {
+				nwePath := oss.GenFilePath(l.ctx, l.svcCtx.Config.Name, oss.BusinessDeviceGroup, oss.SceneFile, fmt.Sprintf("%d/%s/%s", po.ID, key, oss.GetFileNameWithPath(v)))
+				path, err := l.svcCtx.OssClient.PrivateBucket().CopyFromTempBucket(v, nwePath)
+				if err != nil {
+					l.Error(err)
+					continue
+				}
+				files[key] = path
+			}
+			po.Files = files
 		}
 		err = relationDB.NewGroupInfoRepo(tx).Update(l.ctx, &po)
 		if err != nil {
