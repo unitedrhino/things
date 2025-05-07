@@ -20,7 +20,7 @@ const (
 	DefineIntMin     = -9999999999999
 	DefineStringMax  = 2048
 	DefineArrayMax   = 256
-	DefineSpecsLen   = 10
+	DefineSpecsLen   = 20
 	ParamsLen        = 20
 )
 
