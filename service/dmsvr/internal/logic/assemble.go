@@ -17,6 +17,14 @@ func ToDmPoint(point *stores.Point) *dm.Point {
 	}
 	return &dm.Point{Longitude: point.Longitude, Latitude: point.Latitude}
 }
+
+func ToCompareString(in map[string]*dm.CompareString) map[string]string {
+	var ret = make(map[string]string)
+	for k, v := range in {
+		ret[k] = v.Value
+	}
+	return ret
+}
 func ToStorePoint(point *dm.Point) stores.Point {
 	if point == nil {
 		return stores.Point{Longitude: 0, Latitude: 0}

@@ -57,6 +57,7 @@ type (
 		NotGroupID         int64
 		NotAreaID          int64
 		Distributor        *stores.IDPathFilter
+		Property           map[string]string
 		RatedPower         *stores.Cmp
 		ExpTime            *stores.Cmp
 		Rssi               *stores.Cmp
@@ -236,13 +237,21 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	if hasProductQuery {
 		db = db.Where("product_id in (?)", productQuery)
 	}
-
+	if len(f.Property) != 0 {
+		subQuery := d.db.Model(&DmDeviceShadow{}).Select("product_id, device_name")
+		for k, v := range f.Property {
+			subQuery = subQuery.Where(" data_id=? and value=?", k, v)
+		}
+		db = db.Where("(product_id, device_name) in (?)",
+			subQuery)
+	}
 	if f.Gateway != nil {
 		subQuery := d.db.Model(&DmGatewayDevice{}).Select("product_id, device_name").
 			Where(" gateway_product_id=? and gateway_device_name=?", f.Gateway.ProductID, f.Gateway.DeviceName)
 		db = db.Where("(product_id, device_name) in (?)",
 			subQuery)
 	}
+
 	var groupSubQuery = d.db.Model(&DmGroupDevice{}).Select("product_id, device_name")
 	var groupFilter bool
 	if f.GroupID != 0 {

@@ -223,7 +223,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 			}
 			return nil, err
 		}
-		err = relationDB.NewShadowRepo(l.ctx).MultiUpdate(l.ctx, shadow.NewInfo(in.ProductID, in.DeviceName, param))
+		err = relationDB.NewShadowRepo(l.ctx).MultiUpdate(l.ctx, shadow.NewInfo(in.ProductID, in.DeviceName, param, nil))
 		if err != nil {
 			return nil, err
 		}

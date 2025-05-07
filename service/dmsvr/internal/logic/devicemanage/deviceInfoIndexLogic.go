@@ -66,6 +66,7 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		TagsLike:           in.TagsLike,
 		Range:              in.Range,
 		Position:           logic.ToStorePoint(in.Position),
+		Property:           logic.ToCompareString(in.Property),
 		DeviceAlias:        in.DeviceAlias,
 		IsOnline:           in.IsOnline,
 		ProductCategoryID:  in.ProductCategoryID,

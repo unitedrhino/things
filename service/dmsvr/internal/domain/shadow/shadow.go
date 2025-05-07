@@ -45,6 +45,8 @@ type (
 		FindByFilter(ctx context.Context, f Filter) ([]*Info, error)
 		// MultiUpdate 批量更新 LightStrategyDevice 记录
 		MultiUpdate(ctx context.Context, data []*Info) error
+		AsyncUpdate(ctx context.Context, data []*Info) error
+
 		// MultiDelete 批量删除 LightStrategyDevice 记录
 		MultiDelete(ctx context.Context, f Filter) error
 	}
@@ -61,15 +63,16 @@ func CheckEnableShadow(params map[string]any, model *schema.Model) error {
 	}
 	return nil
 }
-func NewInfo(productID, deviceName string, params map[string]any) []*Info {
+func NewInfo(productID, deviceName string, params map[string]any, updatedDeviceTime *time.Time) []*Info {
 	var ret []*Info
 	for k, v := range params {
 		ret = append(ret, &Info{
-			ID:         0,
-			ProductID:  productID,
-			DeviceName: deviceName,
-			DataID:     k,
-			Value:      utils.MarshalNoErr(v),
+			ID:                0,
+			ProductID:         productID,
+			DeviceName:        deviceName,
+			DataID:            k,
+			Value:             utils.MarshalNoErr(v),
+			UpdatedDeviceTime: updatedDeviceTime,
 		})
 	}
 	return ret

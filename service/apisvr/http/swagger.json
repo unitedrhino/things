@@ -6642,6 +6642,22 @@
         "value"
       ]
     },
+    "CompareString": {
+      "type": "object",
+      "properties": {
+        "cmpType": {
+          "type": "string",
+          "description": "默认为=,\"=\":相等 \"!=\":不相等 \"\u003e\":大于\"\u003e=\":大于等于\"\u003c\":小于\"\u003c=\":小于等于 \"like\":模糊查询"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "title": "CompareString",
+      "required": [
+        "value"
+      ]
+    },
     "DateRange": {
       "type": "object",
       "properties": {
@@ -7646,6 +7662,10 @@
           "items": {
             "type": "string"
           }
+        },
+        "property": {
+          "type": "object",
+          "description": "设备最新属性过滤,key为属性的id,如果是结构体则key为 aaa.bbb 数组为aaa.1"
         }
       },
       "title": "DeviceInfoIndexReq"

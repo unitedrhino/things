@@ -3,6 +3,7 @@ package msg
 import (
 	"context"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 
 	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
@@ -31,5 +32,9 @@ func (l *AbnormalLogIndexLogic) AbnormalLogIndex(req *types.DeviceMsgAbnormalLog
 	if err != nil {
 		return nil, err
 	}
-	return utils.Copy[types.DeviceMsgAbnormalLogIndexResp](dmResp), err
+
+	return &types.DeviceMsgAbnormalLogIndexResp{
+		PageResp: logic.ToPageResp(req.Page, dmResp.Total),
+		List:     utils.CopySlice[types.DeviceMsgAbnormalLogInfo](dmResp.List),
+	}, nil
 }

@@ -27,10 +27,12 @@ type Info struct {
 
 // 归属
 type Affiliation struct {
-	TenantCode string
-	ProjectID  int64
-	AreaID     int64
-	AreaIDPath string
+	TenantCode   string
+	ProjectID    int64
+	AreaID       int64
+	AreaIDPath   string
+	GroupIDs     []int64
+	GroupIDPaths []string
 }
 
 // 设备标签

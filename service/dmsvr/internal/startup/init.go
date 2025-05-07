@@ -48,6 +48,7 @@ func Init(svcCtx *svc.ServiceContext) {
 	DictInit(svcCtx)
 	SlotInit(svcCtx)
 	ScriptInit(svcCtx)
+	relationDB.Init()
 }
 
 func init() {

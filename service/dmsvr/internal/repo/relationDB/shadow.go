@@ -13,6 +13,12 @@ type ShadowRepo struct {
 	db *gorm.DB
 }
 
+var async *stores.AsyncInsert[DmDeviceShadow]
+
+func Init() {
+	async = stores.NewAsyncInsert[DmDeviceShadow](stores.GetCommonConn(context.Background()), "")
+}
+
 func NewShadowRepo(in any) shadow.Repo {
 	return &ShadowRepo{db: stores.GetCommonConn(in)}
 }
@@ -25,6 +31,13 @@ func (p *ShadowRepo) FindByFilter(ctx context.Context, f shadow.Filter) ([]*shad
 		return nil, errors.Database.AddDetail(err)
 	}
 	return ToShadowsDo(results), nil
+}
+
+func (p *ShadowRepo) AsyncUpdate(ctx context.Context, data []*shadow.Info) error {
+	for _, d := range data {
+		async.AsyncInsert(ToShadowPo(d))
+	}
+	return nil
 }
 
 func (p *ShadowRepo) MultiUpdate(ctx context.Context, data []*shadow.Info) error {

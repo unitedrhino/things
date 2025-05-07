@@ -623,15 +623,15 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 				l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
 				return l.DeviceResp(msg, errors.Database.AddDetail(err), nil), err
 			}
-			now := time.Now()
-			for _, v := range shadows {
-				v.UpdatedDeviceTime = &now
-			}
-			err = sr.MultiUpdate(l.ctx, shadows)
-			if err != nil {
-				l.Errorf("%s.MultiUpdate err=%+v", utils.FuncName(), err)
-				return l.DeviceResp(msg, errors.Database.AddDetail(err), nil), err
-			}
+			//now := time.Now()
+			//for _, v := range shadows {
+			//	v.UpdatedDeviceTime = &now
+			//}
+			//err = sr.MultiUpdate(l.ctx, shadows)
+			//if err != nil {
+			//	l.Errorf("%s.MultiUpdate err=%+v", utils.FuncName(), err)
+			//	return l.DeviceResp(msg, errors.Database.AddDetail(err), nil), err
+			//}
 		}
 	}
 	var propertyMap = schema.PropertyMap{}

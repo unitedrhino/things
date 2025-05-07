@@ -1610,6 +1610,7 @@ message DeviceInfoIndexReq{
   string protocolCode =51;//协议查询
   CompareInt64 rssi=52;
   IDPath dept =53;//过滤分销商的数据
+  map<string,CompareString> Property =54;//设备最新属性过滤,key为属性的id,如果是结构体则key为 aaa.bbb 数组为aaa.1
 }
 
 message DeviceInfoIndexResp{

@@ -345,6 +345,7 @@ type (
         IsOnlyCore bool `json:"isOnlyCore,optional"` //只返回核心信息
         Iccid          string   `json:"iccid,optional,omitempty"`                        //SIM卡卡号
         WithGroups []string  `json:"withGroups,optional"`
+        Property map[string ]*CompareString `json:"property,optional"`//设备最新属性过滤,key为属性的id,如果是结构体则key为 aaa.bbb 数组为aaa.1
     }
     DeviceInfoIndexResp  {
         List []*DeviceInfo `json:"list"`    //设备信息

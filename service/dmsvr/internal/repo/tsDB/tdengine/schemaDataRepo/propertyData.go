@@ -11,6 +11,8 @@ import (
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	sq "gitee.com/unitedrhino/squirrel"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/shadow"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -185,6 +187,7 @@ func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Mod
 		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).
 			Infof("DeviceDataRepo.InsertPropertiesData")
 	}()
+	var sp = map[string]any{}
 	for identifier, param := range params {
 		p := t.Property[param.Identifier]
 		//入库
@@ -198,6 +201,10 @@ func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Mod
 		if !optional.OnlyCache {
 			d.t.AsyncInsert(sql1, args1...)
 		}
+		sp[identifier], _ = param.ToVal()
+	}
+	if len(sp) != 0 {
+		relationDB.NewShadowRepo(ctx).AsyncUpdate(ctx, shadow.NewInfo(productID, deviceName, sp, &timestamp))
 	}
 	return nil
 }
