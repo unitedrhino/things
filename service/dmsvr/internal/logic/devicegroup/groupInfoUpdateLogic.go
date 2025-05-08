@@ -47,6 +47,9 @@ func (l *GroupInfoUpdateLogic) GroupInfoUpdate(in *dm.GroupInfo) (*dm.Empty, err
 		}
 		var files = map[string]string{}
 		for key, v := range in.Files {
+			if v == "" {
+				files[key] = ""
+			}
 			if !oss.IsFilePath(l.svcCtx.Config.OssConf, v) { //传入的不是file path,不更新
 				files[key] = po.Files[key]
 				continue

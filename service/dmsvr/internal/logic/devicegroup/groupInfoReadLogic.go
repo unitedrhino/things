@@ -62,18 +62,18 @@ func (l *GroupInfoReadLogic) GroupInfoRead(in *dm.GroupInfoReadReq) (*dm.GroupIn
 		}
 	}
 	if !in.WithChildren {
-		return ToGroupInfoPb(po), nil
+		return ToGroupInfoPb(l.ctx, l.svcCtx, po), nil
 	}
 	children, err := l.GiDB.FindByFilter(l.ctx,
 		relationDB.GroupInfoFilter{Purpose: in.Purpose, IDPath: po.IDPath, WithProduct: true}, nil)
 	if err != nil {
 		return nil, err
 	}
-	var ret = ToGroupInfoPb(po)
+	var ret = ToGroupInfoPb(l.ctx, l.svcCtx, po)
 	if children != nil {
 		var idMap = map[int64][]*dm.GroupInfo{}
 		for _, v := range children {
-			idMap[v.ParentID] = append(idMap[v.ParentID], ToGroupInfoPb(v))
+			idMap[v.ParentID] = append(idMap[v.ParentID], ToGroupInfoPb(l.ctx, l.svcCtx, v))
 		}
 		fillDictInfoChildren(ret, idMap)
 	}

@@ -51,7 +51,7 @@ func (l *GroupInfoIndexLogic) GroupInfoIndex(in *dm.GroupInfoIndexReq) (*dm.Grou
 	}
 	info := make([]*dm.GroupInfo, 0, len(ros))
 	for _, ro := range ros {
-		info = append(info, ToGroupInfoPb(ro))
+		info = append(info, ToGroupInfoPb(l.ctx, l.svcCtx, ro))
 	}
 	return &dm.GroupInfoIndexResp{List: info, Total: total}, nil
 }

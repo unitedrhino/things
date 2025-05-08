@@ -132,6 +132,9 @@ func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfo) (*dm.WithID, er
 		if len(in.Files) > 0 {
 			var files = map[string]string{}
 			for key, v := range in.Files {
+				if v == "" {
+					continue
+				}
 				nwePath := oss.GenFilePath(l.ctx, l.svcCtx.Config.Name, oss.BusinessDeviceGroup, oss.SceneFile, fmt.Sprintf("%d/%s/%s", po.ID, key, oss.GetFileNameWithPath(v)))
 				path, err := l.svcCtx.OssClient.PrivateBucket().CopyFromTempBucket(v, nwePath)
 				if err != nil {
