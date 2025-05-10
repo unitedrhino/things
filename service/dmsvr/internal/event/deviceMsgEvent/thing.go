@@ -182,7 +182,7 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 	}
 	for _, tp := range pTp {
 		timeStamp := time.UnixMilli(tp.Timestamp)
-		if timeStamp.IsZero() {
+		if tp.Timestamp == 0 {
 			timeStamp = l.dreq.GetTimeStamp(msg.Timestamp)
 		}
 
@@ -279,7 +279,7 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 			return err
 		}
 		dbData.TimeStamp = time.UnixMilli(tp.Timestamp)
-		if dbData.TimeStamp.IsZero() {
+		if tp.Timestamp == 0 {
 			dbData.TimeStamp = l.dreq.GetTimeStamp(msg.Timestamp)
 		}
 		paramValues, err := msgThing.ToParamValues(tp.Params)
@@ -1017,16 +1017,16 @@ func (l *ThingLogic) OnlineFix(msg *deviceMsg.PublishMsg, di *dm.DeviceInfo, gw 
 		if di.IsOnline == def.True {
 			return
 		}
+		err = devicemanagelogic.HandleOnlineFix(l.ctx, l.svcCtx, &deviceStatus.ConnectMsg{
+			ClientID:  deviceAuth.GenClientID(di.ProductID, di.DeviceName),
+			Timestamp: l.dreq.GetTimeStamp(msg.Timestamp),
+			Action:    devices.ActionConnected,
+			Reason:    "report_fix",
+		})
+		if err != nil {
+			l.Error(err)
+		}
 		if di.DeviceType != def.DeviceTypeSubset { //如果不是子设备类型则直接修复即可
-			err := devicemanagelogic.HandleOnlineFix(l.ctx, l.svcCtx, &deviceStatus.ConnectMsg{
-				ClientID:  deviceAuth.GenClientID(di.ProductID, di.DeviceName),
-				Timestamp: l.dreq.GetTimeStamp(msg.Timestamp),
-				Action:    devices.ActionConnected,
-				Reason:    "report_fix",
-			})
-			if err != nil {
-				l.Error(err)
-			}
 			return
 		}
 		var inDev = devices.WithGateway{

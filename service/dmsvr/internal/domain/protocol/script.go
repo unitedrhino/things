@@ -179,7 +179,13 @@ func (s *ScriptTrans) GetFunc(ctx context.Context, script string, funcName strin
 	}
 	return handle.Interface(), &logs, nil
 }
-func (s *ScriptTrans) PublishMsgRun(ctx context.Context, msg *deviceMsg.PublishMsg, script string) (*deviceMsg.PublishMsg, []string, error) {
+func (s *ScriptTrans) PublishMsgRun(ctx context.Context, msg *deviceMsg.PublishMsg, script string) (msgs *deviceMsg.PublishMsg, retLogs []string, err error) {
+	defer func() {
+		if p := recover(); p != nil {
+			err = errors.Parameter.AddMsgf("执行panic:%v", p)
+			return
+		}
+	}()
 	var out = *msg
 	handle, logs, err := s.GetFunc(ctx, script, "Handle")
 	if err != nil {
@@ -196,7 +202,13 @@ func (s *ScriptTrans) PublishMsgRun(ctx context.Context, msg *deviceMsg.PublishM
 	return newMsg, *logs, nil
 }
 
-func (s *ScriptTrans) RespMsgRun(ctx context.Context, req *deviceMsg.PublishMsg, resp *deviceMsg.PublishMsg, script string) ([]string, error) {
+func (s *ScriptTrans) RespMsgRun(ctx context.Context, req *deviceMsg.PublishMsg, resp *deviceMsg.PublishMsg, script string) (retLogs []string, err error) {
+	defer func() {
+		if p := recover(); p != nil {
+			err = errors.Parameter.AddMsgf("执行panic:%v", p)
+			return
+		}
+	}()
 	handle, logs, err := s.GetFunc(ctx, script, "Handle")
 	if err != nil {
 		return nil, errors.Parameter.AddMsg("结构体中需要定义: func Handle(context.Context, *dm.PublishMsg) *dm.PublishMsg")

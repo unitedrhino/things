@@ -29,15 +29,22 @@ func AffiliationToMap(in devices.Affiliation) map[string]any {
 
 func AlterTag(ctx context.Context, t *clients.Td, tables []string, tags map[string]any) error {
 	for _, table := range tables {
+		var vals []string
 		for k, v := range tags {
-			_, err := t.ExecContext(ctx, fmt.Sprintf(" ALTER TABLE %s SET TAG `%s`='%v'; ",
-				table, k, v))
+			vals = append(vals, fmt.Sprintf(" `%s`='%v' ", k, v))
+		}
+		for i := 3; i > 0; i-- { //重试三次
+			val := strings.Join(vals, ",")
+			_, err := t.ExecContext(ctx, fmt.Sprintf(" ALTER TABLE %s SET TAG %s; ",
+				table, val))
 			if err != nil {
 				if strings.Contains(err.Error(), "Table does not exist") {
 					break
 				}
-				logx.Error(err)
+				logx.WithContext(ctx).Error(err)
+				continue
 			}
+			break
 		}
 	}
 	return nil
@@ -50,17 +57,23 @@ type Tag struct {
 
 func AlterTags(ctx context.Context, t *clients.Td, tags []Tag) error {
 	for _, tag := range tags {
+		var vals []string
 		for k, v := range tag.Tags {
-			_, err := t.ExecContext(ctx, fmt.Sprintf(" ALTER TABLE %s SET TAG `%s`='%v'; ",
-				tag.Table, k, v))
+			vals = append(vals, fmt.Sprintf(" `%s`='%v' ", k, v))
+		}
+		for i := 3; i > 0; i-- { //重试三次
+			val := strings.Join(vals, ",")
+			_, err := t.ExecContext(ctx, fmt.Sprintf(" ALTER TABLE %s SET TAG %s; ",
+				tag.Table, val))
 			if err != nil {
 				if strings.Contains(err.Error(), "Table does not exist") {
 					break
 				}
-				logx.Error(err)
+				logx.WithContext(ctx).Error(err)
+				continue
 			}
+			break
 		}
-
 	}
 	return nil
 }

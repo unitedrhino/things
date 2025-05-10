@@ -8,8 +8,8 @@ toolchain go1.23.8
 //gitee.com/unitedrhino/share => ../share
 
 require (
-	gitee.com/unitedrhino/core v1.4.2
-	gitee.com/unitedrhino/share v1.4.8
+	gitee.com/unitedrhino/core v1.4.3
+	gitee.com/unitedrhino/share v1.4.9
 	gitee.com/unitedrhino/squirrel v1.20.6
 	github.com/dgraph-io/ristretto v0.1.0
 	github.com/dop251/goja v0.0.0-20231024180952-594410467bc6

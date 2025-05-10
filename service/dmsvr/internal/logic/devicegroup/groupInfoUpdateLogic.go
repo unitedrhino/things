@@ -3,6 +3,8 @@ package devicegrouplogic
 import (
 	"context"
 	"fmt"
+	"gitee.com/unitedrhino/core/share/dataType"
+	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/oss"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
@@ -40,6 +42,11 @@ func (l *GroupInfoUpdateLogic) GroupInfoUpdate(in *dm.GroupInfo) (*dm.Empty, err
 	po.Tags = in.Tags
 	if po.Tags == nil {
 		po.Tags = map[string]string{}
+	}
+	if ctxs.IsAdmin(l.ctx) == nil {
+		if in.AreaID != 0 {
+			po.AreaID = dataType.AreaID(in.AreaID)
+		}
 	}
 	if in.Files != nil {
 		if po.Files == nil {

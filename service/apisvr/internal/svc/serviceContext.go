@@ -11,7 +11,6 @@ import (
 	"gitee.com/unitedrhino/core/share/middlewares"
 	"gitee.com/unitedrhino/share/caches"
 	"gitee.com/unitedrhino/share/conf"
-	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/eventBus"
 	"gitee.com/unitedrhino/share/oss"
 	"gitee.com/unitedrhino/share/utils"
@@ -162,7 +161,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config:         c,
 		CheckTokenWare: middlewares.NewCheckTokenWareMiddleware(ur, ro, tm, lo).Handle,
-		InitCtxsWare:   ctxs.InitMiddleware,
+		InitCtxsWare:   middlewares.InitMiddleware,
 		OssClient:      ossClient,
 		OtaM:           otaM,
 		Ws:             ws.MustNewServer(c.RestConf),
