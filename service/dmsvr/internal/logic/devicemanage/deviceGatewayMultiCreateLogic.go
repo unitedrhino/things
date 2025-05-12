@@ -7,6 +7,7 @@ import (
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/product"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -66,20 +67,41 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 	}
 	if in.IsAuthSign { //秘钥检查
 		for _, device := range in.List {
+			subPi, err := l.svcCtx.ProductCache.GetData(l.ctx, device.ProductID)
+			if err != nil {
+				return nil, err
+			}
 			di, err := l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: device.ProductID, DeviceNames: []string{device.DeviceName}})
 			if err != nil { //检查是否找到
-				return nil, err
+				if subPi.BindLevel > product.BindLeveHard1 && subPi.AutoRegister == devices.DeviceAutoCreateEnable { //如果不是强绑定,可以动态创建
+					_, err := NewDeviceInfoCreateLogic(l.ctx, l.svcCtx).DeviceInfoCreate(&dm.DeviceInfo{ProductID: device.ProductID, DeviceName: device.DeviceName})
+					if err != nil {
+						return nil, err
+					}
+				} else {
+					return nil, err
+				}
+				di, err = l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: device.ProductID, DeviceNames: []string{device.DeviceName}})
+				if err != nil {
+					return nil, err
+				}
 			}
 			if device.Sign == nil {
 				return nil, errors.Parameter.AddMsg("没有填写签名信息")
 			}
-			pi, err := deviceAuth.NewPwdInfo(device.Sign.Signature, device.Sign.SignMethod)
+			pwdI, err := deviceAuth.NewPwdInfo(device.Sign.Signature, device.Sign.SignMethod)
 			if err != nil {
 				return nil, err
 			}
 			sign := fmt.Sprintf("%v;%v;%v;%v", device.ProductID, device.DeviceName, device.Sign.Random, device.Sign.Timestamp)
-			if err := pi.CmpPwd(sign, di.Secret); err != nil {
-				return nil, err
+			if err := pwdI.CmpPwd(sign, di.Secret); err != nil {
+				if subPi.BindLevel > product.BindLeveHard1 {
+					if err := pwdI.CmpPwd(sign, gd.Secret); err != nil {
+						return nil, err
+					}
+				} else {
+					return nil, err
+				}
 			}
 		}
 	}
@@ -173,7 +195,7 @@ func FilterCanBindSubDevices(ctx context.Context, svcCtx *svc.ServiceContext, ga
 			}
 			continue
 		} else {
-			if err != nil && !errors.Cmp(err, errors.NotFind) {
+			if !errors.Cmp(err, errors.NotFind) {
 				if checkDevice&CheckDeviceStrict == CheckDeviceStrict {
 					return nil, err
 				}
