@@ -65,13 +65,14 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 		old.AreaIDPath = dataType.AreaIDPath(ai.AreaIDPath)
 		isUpdateTag = true
 	}
-	if data.ProjectID != 0 && data.ProjectID != int64(old.ProjectID) {
+	if uc.IsAdmin && data.ProjectID != 0 && data.ProjectID != int64(old.ProjectID) {
 		ctxs.GoNewCtx(l.ctx, func(ctx2 context.Context) {
 			time.Sleep(2 * time.Second)
 			logic.FillProjectDeviceCount(ctx2, l.svcCtx, data.ProjectID, int64(old.ProjectID))
 		})
 		old.ProjectID = dataType.ProjectID(data.ProjectID)
 		isUpdateTag = true
+		BindChange(l.ctx, l.svcCtx, nil, devices.Core{ProductID: old.ProductID, DeviceName: old.DeviceName}, data.ProjectID)
 	}
 	if data.Sort != 0 {
 		old.Sort = data.Sort

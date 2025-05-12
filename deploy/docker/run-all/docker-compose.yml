@@ -120,7 +120,7 @@ services:
       - unitedrhino_net
 
   mariadb:
-    image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:mariadb-10.7
+    image:  docker.unitedrhino.com/unitedrhino/mariadb:11.4.5
     container_name: mariadb
     hostname: mariadb
     restart: always

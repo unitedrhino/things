@@ -18,6 +18,7 @@ import (
 	"time"
 )
 
+// BindChange 同一个项目只通知一次
 func BindChange(ctx context.Context, svcCtx *svc.ServiceContext, pi *dm.ProductInfo, dev devices.Core, projectID int64) error {
 	v := svcCtx.BindChange.Get(ctx, dev)
 	if v == projectID {
