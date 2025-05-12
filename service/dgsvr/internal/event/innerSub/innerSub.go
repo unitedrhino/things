@@ -64,6 +64,9 @@ func (s *InnerSubServer) GatewayHandle(info *devices.InnerPublish) error {
 	var topics []string
 	if resp.Payload != nil && len(resp.Payload.Devices) != 0 {
 		for _, v := range resp.Payload.Devices {
+			if v.ProductID == "" || v.DeviceName == "" {
+				continue
+			}
 			topics = append(topics,
 				fmt.Sprintf("$thing/down/property/%s/%s", v.ProductID, v.DeviceName),
 				fmt.Sprintf("$thing/down/event/%s/%s", v.ProductID, v.DeviceName),
