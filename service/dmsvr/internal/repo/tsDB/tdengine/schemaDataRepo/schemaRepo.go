@@ -39,13 +39,13 @@ func NewDeviceDataRepo(dataSource conf.TSDB, getProductSchemaModel schema.GetSch
 }
 
 func (d *DeviceDataRepo) VersionUpdate(ctx context.Context, version string, dc *caches.Cache[dm.DeviceInfo, devices.Core]) error {
-	//desc, err := d.t.DescTable(ctx, "model_device_property_bool")
-	//if err != nil {
-	//	return err
-	//}
-	//if desc["tenant_code"] != nil {
-	//	return nil
-	//}
+	desc, err := d.t.DescTable(ctx, "model_device_property_bool")
+	if err != nil {
+		return err
+	}
+	if desc["tenant_code"] != nil {
+		return nil
+	}
 	{
 		tbs, err := d.t.STables(ctx, "_property_")
 		if err != nil {

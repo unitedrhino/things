@@ -136,11 +136,11 @@ func (l *ThingLogic) HandlePackReport(msg *deviceMsg.PublishMsg, req msgThing.Re
 				continue
 			}
 			l.OnlineFix(msg, di, l.di)
-			schema, err := l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, devices.Core{ProductID: dev.ProductID, DeviceName: dev.DeviceName})
+			ds, err := l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, devices.Core{ProductID: dev.ProductID, DeviceName: dev.DeviceName})
 			if err != nil {
 				return l.DeviceResp(msg, err, nil), err
 			}
-			err = l.InsertPackReport(msg, schema, devices.Core{
+			err = l.InsertPackReport(msg, ds, devices.Core{
 				ProductID:  dev.ProductID,
 				DeviceName: dev.DeviceName,
 			}, dev.Properties, dev.Events)
