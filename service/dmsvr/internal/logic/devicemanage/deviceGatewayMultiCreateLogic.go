@@ -58,7 +58,7 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 			ProductID:  in.ProductID,
 			DeviceName: in.DeviceName,
 		}
-	}), CheckDeviceExist|CheckDeviceType)
+	}), CheckDeviceExist|CheckDeviceType|CheckDeviceNotAdd)
 	if err != nil {
 		return nil, err
 	}
@@ -135,6 +135,7 @@ const (
 	CheckDeviceExist CheckDevice = 1 << iota
 	CheckDeviceType
 	CheckDeviceStrict //严格模式
+	CheckDeviceNotAdd //如果没有也加入
 )
 
 func FilterCanBindSubDevices(ctx context.Context, svcCtx *svc.ServiceContext, gateway *devices.Core, subDevices []*devices.Core, checkDevice CheckDevice) (ret []*devices.Core, err error) {
@@ -168,6 +169,9 @@ func FilterCanBindSubDevices(ctx context.Context, svcCtx *svc.ServiceContext, ga
 		if err != nil {
 			return nil, errors.Database.AddDetail(err)
 		}
+		if len(products) != len(deviceProductList) {
+			return nil, errors.Parameter.AddDetailf("有设备的产品不存在")
+		}
 		for _, v := range products {
 			if v.DeviceType != def.DeviceTypeSubset {
 				return nil, errors.Parameter.AddMsg("网关只能绑定子设备类型")
@@ -178,6 +182,10 @@ func FilterCanBindSubDevices(ctx context.Context, svcCtx *svc.ServiceContext, ga
 		if checkDevice&CheckDeviceExist == CheckDeviceExist { //检查设备是否都存在
 			_, err := svcCtx.DeviceCache.GetData(ctx, *subDevice)
 			if err != nil {
+				if errors.Cmp(err, errors.NotFind) && checkDevice&CheckDeviceNotAdd == CheckDeviceNotAdd {
+					ret = append(ret, subDevice)
+					continue
+				}
 				if checkDevice&CheckDeviceStrict == CheckDeviceStrict {
 					return nil, err
 				}

@@ -71,7 +71,7 @@ func (c *CommonMsg) AddStatus(err error, needRet bool) *CommonMsg {
 	e := errors.Fmt(err)
 	c.Code = e.GetCode()
 	if needRet {
-		c.Msg = e.GetI18nMsg("en")
+		c.Msg = e.GetI18nMsg("")
 	}
 	return c
 }
