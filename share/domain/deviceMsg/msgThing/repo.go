@@ -3,10 +3,14 @@ package msgThing
 
 import (
 	"context"
+	"gitee.com/unitedrhino/core/share/dataType"
+	"gitee.com/unitedrhino/share/caches"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/zeromicro/go-zero/core/jsonx"
 	"time"
@@ -15,6 +19,13 @@ import (
 type (
 	// PropertyData 属性数据
 	PropertyData struct {
+		TenantCode   dataType.TenantCode `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"`                                                 // 租户编码
+		ProjectID    dataType.ProjectID  `gorm:"column:project_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`                          // 项目ID(雪花ID)
+		AreaID       dataType.AreaID     `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`                             // 项目区域ID(雪花ID)
+		AreaIDPath   dataType.AreaIDPath `gorm:"column:area_id_path;type:varchar(100);default:'';NOT NULL"`                                          // 项目区域ID路径(雪花ID)
+		GroupIDs     []int64             `gorm:"column:group_ids;type:varchar(256);serializer:json;default:'[]'" json:"groupIDs,omitempty"`          // 分组ID列表 ,12,3,423,5 这样的格式
+		GroupIDPaths []string            `gorm:"column:group_id_paths;type:varchar(512);serializer:json;default:'[]'" json:"groupIDPaths,omitempty"` // 分组id路径列表 ,123-,234-354-,23-, 这样的格式
+
 		DeviceName string    `gorm:"column:device_name;type:varchar(50);NOT NULL" json:"deviceName"`
 		Identifier string    `gorm:"column:identifier;type:varchar(50);NOT NULL" json:"identifier"` //标识符
 		Param      any       `gorm:"column:param;type:varchar(256);NOT NULL" json:"param" `         //一个属性的参数
@@ -22,6 +33,13 @@ type (
 	}
 	// EventData 事件数据
 	EventData struct {
+		TenantCode   dataType.TenantCode `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"`                                                 // 租户编码
+		ProjectID    dataType.ProjectID  `gorm:"column:project_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`                          // 项目ID(雪花ID)
+		AreaID       dataType.AreaID     `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`                             // 项目区域ID(雪花ID)
+		AreaIDPath   dataType.AreaIDPath `gorm:"column:area_id_path;type:varchar(100);default:'';NOT NULL"`                                          // 项目区域ID路径(雪花ID)
+		GroupIDs     []int64             `gorm:"column:group_ids;type:varchar(256);serializer:json;default:'[]'" json:"groupIDs,omitempty"`          // 分组ID列表 ,12,3,423,5 这样的格式
+		GroupIDPaths []string            `gorm:"column:group_id_paths;type:varchar(512);serializer:json;default:'[]'" json:"groupIDPaths,omitempty"` // 分组id路径列表 ,123-,234-354-,23-, 这样的格式
+
 		Identifier string         `gorm:"column:identifier;type:varchar(50);NOT NULL" json:"identifier"` //标识符
 		Type       string         `gorm:"column:type;type:varchar(20);NOT NULL" json:"type" `            //事件类型: 信息:info  告警alert  故障:fault
 		Params     map[string]any `gorm:"column:param;type:varchar(256);NOT NULL" json:"params" `        //事件参数
@@ -38,7 +56,16 @@ type (
 	   NEXT 填充：使用下一个非 NULL 值填充数据。例如：FILL(NEXT)。
 	*/
 	FilterOpt struct {
-		Page       def.PageInfo2
+		Page def.PageInfo2
+
+		TenantCode   string
+		ProjectID    int64    `json:"projectID,omitempty"`
+		AreaID       int64    `json:"areaID,omitempty"`
+		AreaIDPath   string   `json:"areaIDPath,omitempty"`
+		GroupIDs     []int64  `json:"groupIDs,omitempty"`
+		GroupIDPaths []string `json:"groupIDPaths,omitempty"`
+		AreaIDs      []int64  `json:"areaIDs"`
+
 		ProductID  string
 		ProductIDs []string
 		//DeviceName  string
@@ -60,10 +87,19 @@ type (
 	Optional struct {
 		Sync      bool //同步执行
 		OnlyCache bool //只记录到缓存中
+
+		TenantCode   dataType.TenantCode // 租户编码
+		ProjectID    dataType.ProjectID  // 项目ID(雪花ID)
+		AreaID       dataType.AreaID     // 项目区域ID(雪花ID)
+		AreaIDPath   dataType.AreaIDPath // 项目区域ID路径(雪花ID)
+		GroupIDs     []int64             // 分组ID列表 ,12,3,423,5 这样的格式
+		GroupIDPaths []string            // 分组id路径列表 ,123-,234-354-,23-, 这样的格式
+
 	}
 
 	SchemaDataRepo interface {
 		Init(ctx context.Context) error
+		VersionUpdate(ctx context.Context, version string, dc *caches.Cache[dm.DeviceInfo, devices.Core]) error
 		// InsertEventData 插入事件数据
 		InsertEventData(ctx context.Context, productID string, deviceName string, event *EventData) error
 		// InsertPropertyData 插入一条属性数据
@@ -91,6 +127,8 @@ type (
 		CreateProperty(ctx context.Context, p *schema.Property, productID string) error
 		DeleteProperty(ctx context.Context, p *schema.Property, productID string, identifier string) error
 		UpdateProperty(ctx context.Context, oldP *schema.Property, newP *schema.Property, productID string) error
+
+		UpdateDevice(ctx context.Context, dev devices.Core, t *schema.Model, affiliation devices.Affiliation) error
 	}
 )
 

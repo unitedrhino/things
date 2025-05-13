@@ -17,12 +17,14 @@ type WithGateway struct {
 }
 
 type Info struct {
-	ProductID  string `json:"productID"`  //产品id
-	DeviceName string `json:"deviceName"` //设备名称
-	TenantCode string
-	ProjectID  int64
-	AreaID     int64
-	AreaIDPath string
+	ProductID    string `json:"productID"`  //产品id
+	DeviceName   string `json:"deviceName"` //设备名称
+	TenantCode   string
+	ProjectID    int64
+	AreaID       int64
+	AreaIDPath   string
+	GroupIDs     []int64
+	GroupIDPaths []string
 }
 
 // 归属

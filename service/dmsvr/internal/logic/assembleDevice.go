@@ -104,6 +104,8 @@ func ToDeviceInfo(ctx context.Context, svcCtx *svc.ServiceContext, in *relationD
 		UserID:             in.UserID,
 		Sort:               in.Sort,
 		CategoryID:         CategoryID,
+		GroupIDs:           in.GroupIDs,
+		GroupIDPaths:       in.GroupIDPaths,
 	}
 }
 

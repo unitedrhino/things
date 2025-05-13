@@ -8,6 +8,7 @@ import (
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gorm.io/gorm"
@@ -149,7 +150,7 @@ func (l *DeviceResetLogic) DeviceReset(in *dm.DeviceResetReq) (*dm.Empty, error)
 			}
 		}
 		if in.Bind {
-			err := l.svcCtx.AbnormalRepo.UpdateDevices(l.ctx, []*devices.Info{
+			err := logic.UpdateDevices(l.ctx, l.svcCtx, []*devices.Info{
 				{ProductID: di.ProductID, DeviceName: di.DeviceName,
 					ProjectID: int64(projectID), AreaID: int64(areaID), AreaIDPath: areaIDPath}})
 			if err != nil {

@@ -564,18 +564,20 @@ type DeviceMoveReq struct {
 }
 
 type DeviceMsgAbnormalLogIndexReq struct {
-	ProductCategoryID int64     `json:"productCategoryID,optional"`    //只有管理员有权限
-	ProjectID         int64     `json:"projectID,optional,omitempty"`  //只有管理员有权限
-	AreaID            int64     `json:"areaID,optional,omitempty"`     //只有管理员有权限
-	AreaIDPath        string    `json:"areaIDPath,optional,omitempty"` //只有管理员有权限
-	AreaIDs           []int64   `json:"areaIDs,optional,omitempty"`    //只有管理员有权限
-	ProductID         string    `json:"productID,optional"`            //产品id
-	DeviceName        string    `json:"deviceName,optional"`           //设备名
-	TimeStart         int64     `json:"timeStart,string,optional"`     //获取时间的开始(毫秒时间戳)
-	TimeEnd           int64     `json:"timeEnd,string,optional"`       //时间的结束(毫秒时间戳)
-	Page              *PageInfo `json:"page,optional"`                 //分页信息
-	Type              string    `json:"type,optional"`                 //异常类型
-	Action            int64     `json:"action,optional"`               //触发1 还是解除2
+	ProductCategoryID int64     `json:"productCategoryID,optional"`      //只有管理员有权限
+	ProjectID         int64     `json:"projectID,optional,omitempty"`    //只有管理员有权限
+	AreaID            int64     `json:"areaID,optional,omitempty"`       //只有管理员有权限
+	AreaIDPath        string    `json:"areaIDPath,optional,omitempty"`   //只有管理员有权限
+	AreaIDs           []int64   `json:"areaIDs,optional,omitempty"`      //只有管理员有权限
+	GroupIDPaths      []string  `json:"groupIDPaths,optional,omitempty"` //只有管理员有权限
+	GroupIDs          []int64   `json:"groupIDs,optional,omitempty"`     //只有管理员有权限
+	ProductID         string    `json:"productID,optional"`              //产品id
+	DeviceName        string    `json:"deviceName,optional"`             //设备名
+	TimeStart         int64     `json:"timeStart,string,optional"`       //获取时间的开始(毫秒时间戳)
+	TimeEnd           int64     `json:"timeEnd,string,optional"`         //时间的结束(毫秒时间戳)
+	Page              *PageInfo `json:"page,optional"`                   //分页信息
+	Type              string    `json:"type,optional"`                   //异常类型
+	Action            int64     `json:"action,optional"`                 //触发1 还是解除2
 }
 
 type DeviceMsgAbnormalLogIndexResp struct {
@@ -649,6 +651,12 @@ type DeviceMsgPropertyIndexResp struct {
 }
 
 type DeviceMsgPropertyLogIndexReq struct {
+	ProjectID         int64     `json:"projectID,optional,omitempty"`        //只有管理员有权限
+	AreaID            int64     `json:"areaID,optional,omitempty"`           //只有管理员有权限
+	AreaIDPath        string    `json:"areaIDPath,optional,omitempty"`       //只有管理员有权限
+	AreaIDs           []int64   `json:"areaIDs,optional,omitempty"`          //只有管理员有权限
+	GroupIDPaths      []string  `json:"groupIDPaths,optional,omitempty"`     //只有管理员有权限
+	GroupIDs          []int64   `json:"groupIDs,optional,omitempty"`         //只有管理员有权限
 	DeviceName        string    `json:"deviceName,optional,omitempty"`       //设备名(不填获取产品下所有设备)
 	DeviceNames       []string  `json:"deviceNames,optional,omitempty"`      //设备名(不填获取产品下所有设备,只有管理员有权限)
 	ProductID         string    `json:"productID,omitempty,optional"`        //产品id 获取产品id下的所有设备信息
@@ -699,16 +707,18 @@ type DeviceMsgSdkLogIndexReq struct {
 }
 
 type DeviceMsgSendLogIndexReq struct {
-	ProductCategoryID int64     `json:"productCategoryID,optional"`    //只有管理员有权限
-	ProjectID         int64     `json:"projectID,optional,omitempty"`  //只有管理员有权限
-	AreaID            int64     `json:"areaID,optional,omitempty"`     //只有管理员有权限
-	AreaIDPath        string    `json:"areaIDPath,optional,omitempty"` //只有管理员有权限
-	AreaIDs           []int64   `json:"areaIDs,optional,omitempty"`    //只有管理员有权限
-	ProductID         string    `json:"productID,optional"`            //产品id
-	DeviceName        string    `json:"deviceName,optional"`           //设备名
-	TimeStart         int64     `json:"timeStart,string,optional"`     //获取时间的开始(毫秒时间戳)
-	TimeEnd           int64     `json:"timeEnd,string,optional"`       //时间的结束(毫秒时间戳)
-	Page              *PageInfo `json:"page,optional"`                 //分页信息
+	ProductCategoryID int64     `json:"productCategoryID,optional"`      //只有管理员有权限
+	ProjectID         int64     `json:"projectID,optional,omitempty"`    //只有管理员有权限
+	AreaID            int64     `json:"areaID,optional,omitempty"`       //只有管理员有权限
+	AreaIDPath        string    `json:"areaIDPath,optional,omitempty"`   //只有管理员有权限
+	AreaIDs           []int64   `json:"areaIDs,optional,omitempty"`      //只有管理员有权限
+	GroupIDPaths      []string  `json:"groupIDPaths,optional,omitempty"` //只有管理员有权限
+	GroupIDs          []int64   `json:"groupIDs,optional,omitempty"`     //只有管理员有权限
+	ProductID         string    `json:"productID,optional"`              //产品id
+	DeviceName        string    `json:"deviceName,optional"`             //设备名
+	TimeStart         int64     `json:"timeStart,string,optional"`       //获取时间的开始(毫秒时间戳)
+	TimeEnd           int64     `json:"timeEnd,string,optional"`         //时间的结束(毫秒时间戳)
+	Page              *PageInfo `json:"page,optional"`                   //分页信息
 	UserID            int64     `json:"userID,string,optional"`
 	Actions           []string  `json:"actions,optional"`
 	ResultCode        int64     `json:"resultCode,optional"` //请求结果状态,200为成功

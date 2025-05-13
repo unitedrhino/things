@@ -109,20 +109,22 @@ func (l *PropertyGetReportSendLogic) PropertyGetReportSend(in *dm.PropertyGetRep
 			return
 		}
 		do := deviceLog.Send{
-			TenantCode: dataType.TenantCode(di.TenantCode),
-			ProjectID:  dataType.ProjectID(di.ProjectID),
-			AreaID:     dataType.AreaID(di.AreaID),
-			AreaIDPath: dataType.AreaIDPath(di.AreaIDPath),
-			ProductID:  in.ProductID,
-			Action:     "propertyGetReportSend",
-			Timestamp:  time.Now(), // 操作时间
-			DataID:     strings.Join(in.DataIDs, ","),
-			DeviceName: in.DeviceName,
-			TraceID:    utils.TraceIdFromContext(l.ctx),
-			UserID:     uc.UserID,
-			Account:    account,
-			Content:    string(params),
-			ResultCode: errors.Fmt(err).GetCode(),
+			TenantCode:   dataType.TenantCode(di.TenantCode),
+			ProjectID:    dataType.ProjectID(di.ProjectID),
+			AreaID:       dataType.AreaID(di.AreaID),
+			AreaIDPath:   dataType.AreaIDPath(di.AreaIDPath),
+			GroupIDs:     di.GroupIDs,
+			GroupIDPaths: di.GroupIDPaths,
+			ProductID:    in.ProductID,
+			Action:       "propertyGetReportSend",
+			Timestamp:    time.Now(), // 操作时间
+			DataID:       strings.Join(in.DataIDs, ","),
+			DeviceName:   in.DeviceName,
+			TraceID:      utils.TraceIdFromContext(l.ctx),
+			UserID:       uc.UserID,
+			Account:      account,
+			Content:      string(params),
+			ResultCode:   errors.Fmt(err).GetCode(),
 		}
 
 		_ = l.svcCtx.SendRepo.Insert(l.ctx, &do)

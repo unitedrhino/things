@@ -2,6 +2,7 @@ package devicegrouplogic
 
 import (
 	"context"
+	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
@@ -35,15 +36,31 @@ func (l *GroupDeviceMultiDeleteLogic) GroupDeviceMultiDelete(in *dm.GroupDeviceM
 		if err != nil {
 			return nil, err
 		}
-		err = relationDB.NewGroupInfoRepo(l.ctx).UpdateGroupDeviceCount(l.ctx, in.GroupID)
+		relationDB.NewGroupInfoRepo(l.ctx).UpdateGroupDeviceCount(l.ctx, in.GroupID)
+		ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
+			ds, err := relationDB.NewGroupDeviceRepo(l.ctx).FindByFilter(l.ctx, relationDB.GroupDeviceFilter{GroupIDs: []int64{in.GroupID}, WithGroup: true}, nil)
+			if err != nil {
+				logx.WithContext(ctx).Errorf("dm.GroupDeviceMultiCreate err: %v", err)
+				return
+			}
+			var devs []devices.Core
+			for _, v := range ds {
+				devs = append(devs, devices.Core{ProductID: v.ProductID, DeviceName: v.DeviceName})
+			}
+			err = logic.UpdateDevGroupsTags(ctx, l.svcCtx, devs)
+			if err != nil {
+				logx.WithContext(ctx).Errorf("update device group tags error: %s", err.Error())
+			}
+		})
 		return &dm.Empty{}, err
 	}
 	gs, err := relationDB.NewGroupInfoRepo(l.ctx).FindByFilter(l.ctx, relationDB.GroupInfoFilter{Purpose: in.Purpose, HasDevices: utils.CopySlice[devices.Core](in.List)}, nil)
 	if err != nil {
 		return nil, err
 	}
-
+	var groupIDs []int64
 	for _, g := range gs {
+		groupIDs = append(groupIDs, g.ID)
 		err := l.GdDB.MultiDelete(l.ctx, g.ID, logic.ToDeviceCores(in.List))
 		if err != nil {
 			return nil, err
@@ -51,6 +68,21 @@ func (l *GroupDeviceMultiDeleteLogic) GroupDeviceMultiDelete(in *dm.GroupDeviceM
 		err = relationDB.NewGroupInfoRepo(l.ctx).UpdateGroupDeviceCount(l.ctx, g.ID)
 		return &dm.Empty{}, err
 	}
+	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
+		ds, err := relationDB.NewGroupDeviceRepo(l.ctx).FindByFilter(l.ctx, relationDB.GroupDeviceFilter{GroupIDs: groupIDs, WithGroup: true}, nil)
+		if err != nil {
+			logx.WithContext(ctx).Errorf("dm.GroupDeviceMultiCreate err: %v", err)
+			return
+		}
+		var devs []devices.Core
+		for _, v := range ds {
+			devs = append(devs, devices.Core{ProductID: v.ProductID, DeviceName: v.DeviceName})
+		}
+		err = logic.UpdateDevGroupsTags(ctx, l.svcCtx, devs)
+		if err != nil {
+			logx.WithContext(ctx).Errorf("update device group tags error: %s", err.Error())
+		}
+	})
 
 	return &dm.Empty{}, nil
 }

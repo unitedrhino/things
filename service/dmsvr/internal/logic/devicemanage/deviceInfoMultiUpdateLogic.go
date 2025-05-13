@@ -102,7 +102,7 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 		logic.FillProjectDeviceCount(l.ctx, l.svcCtx, utils.SetToSlice(projectIDSet)...)
 	}
 	if len(tagUpdateDevices) > 0 {
-		l.svcCtx.AbnormalRepo.UpdateDevice(l.ctx, devs, deviceAffiliation)
+		logic.UpdateDevice(l.ctx, l.svcCtx, devs, deviceAffiliation)
 	}
 	for _, dev := range devs {
 		err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUpdate, dev)

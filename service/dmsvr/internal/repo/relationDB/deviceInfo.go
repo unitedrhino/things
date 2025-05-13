@@ -37,6 +37,7 @@ type (
 		DeviceAlias        string
 		Versions           []string
 		NotVersion         string
+		Device             *devices.Core
 		Cores              []*devices.Core
 		Gateway            *devices.Core
 		Iccid              string
@@ -145,7 +146,9 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 		db = db.Where("device_name like ?", "%"+f.DeviceName+"%")
 	}
 	//db = f.Agency.Filter("agency", db)
-
+	if f.Device != nil {
+		db = db.Where("product_id = ? and device_name = ?", f.Device.ProductID, f.Device.DeviceName)
+	}
 	if len(f.Cores) != 0 {
 		scope := func(db *gorm.DB) *gorm.DB {
 			for i, d := range f.Cores {

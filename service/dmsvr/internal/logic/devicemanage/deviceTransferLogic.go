@@ -202,7 +202,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 		if err != nil {
 			return err
 		}
-		l.svcCtx.AbnormalRepo.UpdateDevice(l.ctx, devs, devices.Affiliation{
+		logic.UpdateDevice(l.ctx, l.svcCtx, devs, devices.Affiliation{
 			TenantCode: tc,
 			ProjectID:  int64(ProjectID),
 			AreaID:     int64(AreaID),

@@ -2,9 +2,11 @@ package devicegrouplogic
 
 import (
 	"context"
+	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/things/share/devices"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -53,5 +55,20 @@ func (l *GroupDeviceMultiUpdateLogic) GroupDeviceMultiUpdate(in *dm.GroupDeviceM
 		return nil, errors.Database.AddDetail(err)
 	}
 	relationDB.NewGroupInfoRepo(l.ctx).UpdateGroupDeviceCount(l.ctx, in.GroupID)
+	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
+		ds, err := relationDB.NewGroupDeviceRepo(l.ctx).FindByFilter(l.ctx, relationDB.GroupDeviceFilter{GroupIDs: []int64{in.GroupID}, WithGroup: true}, nil)
+		if err != nil {
+			logx.WithContext(ctx).Errorf("dm.GroupDeviceMultiCreate err: %v", err)
+			return
+		}
+		var devs []devices.Core
+		for _, v := range ds {
+			devs = append(devs, devices.Core{ProductID: v.ProductID, DeviceName: v.DeviceName})
+		}
+		err = logic.UpdateDevGroupsTags(ctx, l.svcCtx, devs)
+		if err != nil {
+			logx.WithContext(ctx).Errorf("update device group tags error: %s", err.Error())
+		}
+	})
 	return &dm.Empty{}, nil
 }

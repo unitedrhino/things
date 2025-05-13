@@ -40,7 +40,6 @@ import (
 
 func Init(svcCtx *svc.ServiceContext) {
 	logic.Init(svcCtx)
-	VersionUpdate(svcCtx)
 	InitCache(svcCtx)
 	TimerInit(svcCtx)
 	InitSubscribe(svcCtx)
@@ -48,6 +47,7 @@ func Init(svcCtx *svc.ServiceContext) {
 	DictInit(svcCtx)
 	SlotInit(svcCtx)
 	ScriptInit(svcCtx)
+	VersionUpdate(svcCtx)
 	relationDB.Init()
 }
 
@@ -74,6 +74,7 @@ func VersionUpdate(svcCtx *svc.ServiceContext) {
 	logx.Must(err)
 	svcCtx.AbnormalRepo.VersionUpdate(context.Background(), "")
 	svcCtx.SendRepo.VersionUpdate(context.Background(), "")
+	svcCtx.SchemaManaRepo.VersionUpdate(context.Background(), "", svcCtx.DeviceCache)
 }
 
 func InitSubscribe(svcCtx *svc.ServiceContext) {

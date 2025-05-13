@@ -814,6 +814,14 @@ message PropertyGetReportMultiSendResp{
 /*获取对应日志信息*/
 message PropertyLogIndexReq{
   PageInfo page = 1;//使用了聚合函数及间隔的时候无效
+  int64 projectID =20;//只有管理员有权限
+  int64 areaID =14;//只有管理员有权限
+  string areaIDPath =15;//只有管理员有权限
+  repeated int64 areaIDs =16;//只有管理员有权限
+  int64  productCategoryID = 17;//产品品类id
+  repeated int64 groupIDs =18; //如果要更新分组,必须填写groupPurpose
+  repeated string groupIDPaths = 19;//分组ID路径列表
+
   string deviceName=2;//设备ID
   repeated string deviceNames=3;
   string productID = 4; //产品id (必填)
@@ -835,7 +843,6 @@ message PropertyLogIndexReq{
   string fill = 10; //填充模式 参考:https://docs.taosdata.com/reference/taos-sql/distinguished/#fill-%E5%AD%90%E5%8F%A5
   int64 order = 11; //时间排序 0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)
   string partitionBy =13;//切分数据,可以填写deviceName
-  int64  productCategoryID = 14;//产品品类id,通用物模型有效
 }
 
 /*获取对应日志信息*/
@@ -963,6 +970,8 @@ message SendLogIndexReq{
   int64 areaID =14;//只有管理员有权限
   string areaIDPath =15;//只有管理员有权限
  repeated int64 areaIDs =16;//只有管理员有权限
+  repeated int64 groupIDs =17; //如果要更新分组,必须填写groupPurpose
+  repeated string groupIDPaths = 18;//分组ID路径列表
   int64  productCategoryID = 11;//产品品类id
   string  productID = 1; //产品id
   string  deviceName = 2; //设备名
@@ -1004,6 +1013,8 @@ message AbnormalLogIndexReq{
   string areaIDPath =15;//只有管理员有权限
   repeated int64 areaIDs =16;//只有管理员有权限
   int64  productCategoryID = 17;//产品品类id
+  repeated int64 groupIDs =18; //如果要更新分组,必须填写groupPurpose
+  repeated string groupIDPaths = 19;//分组ID路径列表
   string  productID = 1; //产品id
   string  deviceName = 2; //设备名
   int64   timeStart = 3;//获取时间的开始(毫秒时间戳)
@@ -1421,9 +1432,9 @@ message DeviceInfo {
   IDPathWithUpdate dept =52;//过滤分销商的数据
   DeviceInfo Gateway =46;//子设备绑定的网关
   int64 sort =53; //排序
-
   string groupPurpose =58;//更新的时候使用,将设备该用途下的分组进行更新
   repeated int64 groupIDs =59; //如果要更新分组,必须填写groupPurpose
+  repeated string groupIDPaths = 60;//分组ID路径列表
 
   string deviceImg = 54; //设备图片
   bool isUpdateDeviceImg = 55;//只有这个参数为true的时候才会更新设备图片,传参为图片的file path

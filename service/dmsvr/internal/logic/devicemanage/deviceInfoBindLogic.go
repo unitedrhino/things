@@ -176,7 +176,7 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 		l.Error(err)
 		return nil, err
 	}
-	err = l.svcCtx.AbnormalRepo.UpdateDevice(l.ctx, []*devices.Core{
+	err = logic.UpdateDevice(l.ctx, l.svcCtx, []*devices.Core{
 		{ProductID: di.ProductID, DeviceName: di.DeviceName}}, devices.Affiliation{TenantCode: string(di.TenantCode),
 		ProjectID: int64(di.ProjectID), AreaID: int64(di.AreaID), AreaIDPath: string(di.AreaIDPath)})
 	if err != nil {

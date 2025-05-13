@@ -2,9 +2,12 @@ package schemaDataRepo
 
 import (
 	"context"
+	"gitee.com/unitedrhino/share/caches"
 	"gitee.com/unitedrhino/share/conf"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine/schemaDataRepo"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	schema "gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/zeromicro/go-zero/core/stores/kv"
@@ -36,6 +39,14 @@ type DeviceDataRepo struct {
 	asyncPropertyStructArray    *stores.AsyncInsert[PropertyStructArray]
 	asyncPropertyEnum           *stores.AsyncInsert[PropertyEnum]
 	asyncPropertyEnumArray      *stores.AsyncInsert[PropertyEnumArray]
+}
+
+func (d *DeviceDataRepo) VersionUpdate(ctx context.Context, version string, dc *caches.Cache[dm.DeviceInfo, devices.Core]) error {
+	return nil
+}
+
+func (d *DeviceDataRepo) UpdateDevice(ctx context.Context, dev devices.Core, t *schema.Model, affiliation devices.Affiliation) error {
+	return nil
 }
 
 func NewDeviceDataRepo(dataSource conf.TSDB, getProductSchemaModel schema.GetSchemaModel, getDeviceSchemaModel schema.GetSchemaModel, kv kv.Store) msgThing.SchemaDataRepo {

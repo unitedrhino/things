@@ -163,10 +163,18 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 			})
 		}
 	}
+	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, dev)
+	if err != nil {
+		l.Error(err)
+	}
 	if in.ShadowControl == shadow.ControlOnlyCloud || in.ShadowControl == shadow.ControlOnlyCloudLatest {
 		//插入多条设备物模型属性数据
 		err = l.svcCtx.SchemaManaRepo.InsertPropertiesData(l.ctx, l.model, in.ProductID, in.DeviceName, params, time.Now(),
-			msgThing.Optional{OnlyCache: in.ShadowControl == shadow.ControlOnlyCloudLatest})
+			msgThing.Optional{OnlyCache: in.ShadowControl == shadow.ControlOnlyCloudLatest,
+				TenantCode: dataType.TenantCode(di.TenantCode),
+				ProjectID:  dataType.ProjectID(di.ProjectID), AreaID: dataType.AreaID(di.AreaID),
+				AreaIDPath: dataType.AreaIDPath(di.AreaIDPath),
+				GroupIDs:   di.GroupIDs, GroupIDPaths: di.GroupIDPaths})
 		if err != nil {
 			l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
 			return nil, err
@@ -187,27 +195,33 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 			}
 			for dataID, content := range param {
 				_ = l.svcCtx.SendRepo.Insert(ctx, &deviceLog.Send{
-					TenantCode: dataType.TenantCode(di.TenantCode),
-					ProjectID:  dataType.ProjectID(di.ProjectID),
-					AreaID:     dataType.AreaID(di.AreaID),
-					AreaIDPath: dataType.AreaIDPath(di.AreaIDPath),
-					ProductID:  in.ProductID,
-					Action:     "propertyControlSend",
-					Timestamp:  time.Now(), // 操作时间
-					DeviceName: in.DeviceName,
-					TraceID:    utils.TraceIdFromContext(ctx),
-					UserID:     uc.UserID,
-					DataID:     dataID,
-					Account:    account,
-					Content:    utils.Fmt(content),
-					ResultCode: errors.Fmt(err).GetCode(),
+					TenantCode:   dataType.TenantCode(di.TenantCode),
+					ProjectID:    dataType.ProjectID(di.ProjectID),
+					AreaID:       dataType.AreaID(di.AreaID),
+					AreaIDPath:   dataType.AreaIDPath(di.AreaIDPath),
+					GroupIDs:     di.GroupIDs,
+					GroupIDPaths: di.GroupIDPaths,
+					ProductID:    in.ProductID,
+					Action:       "propertyControlSend",
+					Timestamp:    time.Now(), // 操作时间
+					DeviceName:   in.DeviceName,
+					TraceID:      utils.TraceIdFromContext(ctx),
+					UserID:       uc.UserID,
+					DataID:       dataID,
+					Account:      account,
+					Content:      utils.Fmt(content),
+					ResultCode:   errors.Fmt(err).GetCode(),
 				})
 			}
 		})
 	}()
 	if in.ShadowControl == shadow.ControlOnlyCloudWithLog {
 		//插入多条设备物模型属性数据
-		err = l.svcCtx.SchemaManaRepo.InsertPropertiesData(l.ctx, l.model, in.ProductID, in.DeviceName, params, time.Now(), msgThing.Optional{})
+		err = l.svcCtx.SchemaManaRepo.InsertPropertiesData(l.ctx, l.model, in.ProductID, in.DeviceName, params, time.Now(),
+			msgThing.Optional{TenantCode: dataType.TenantCode(di.TenantCode),
+				ProjectID: dataType.ProjectID(di.ProjectID), AreaID: dataType.AreaID(di.AreaID),
+				AreaIDPath: dataType.AreaIDPath(di.AreaIDPath),
+				GroupIDs:   di.GroupIDs, GroupIDPaths: di.GroupIDPaths})
 		if err != nil {
 			l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
 			return nil, err

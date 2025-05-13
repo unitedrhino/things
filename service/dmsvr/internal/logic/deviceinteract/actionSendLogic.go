@@ -107,20 +107,22 @@ func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (ret *dm.ActionSendRe
 				return
 			}
 			_ = l.svcCtx.SendRepo.Insert(ctx, &deviceLog.Send{
-				TenantCode: dataType.TenantCode(di.TenantCode),
-				ProjectID:  dataType.ProjectID(di.ProjectID),
-				AreaID:     dataType.AreaID(di.AreaID),
-				AreaIDPath: dataType.AreaIDPath(di.AreaIDPath),
-				ProductID:  in.ProductID,
-				Account:    uc.Account,
-				Action:     "actionSend",
-				Timestamp:  time.Now(), // 操作时间
-				DeviceName: in.DeviceName,
-				TraceID:    utils.TraceIdFromContext(ctx),
-				UserID:     uc.UserID,
-				DataID:     in.ActionID,
-				Content:    string(contentStr),
-				ResultCode: errors.Fmt(err).GetCode(),
+				TenantCode:   dataType.TenantCode(di.TenantCode),
+				ProjectID:    dataType.ProjectID(di.ProjectID),
+				AreaID:       dataType.AreaID(di.AreaID),
+				AreaIDPath:   dataType.AreaIDPath(di.AreaIDPath),
+				GroupIDs:     di.GroupIDs,
+				GroupIDPaths: di.GroupIDPaths,
+				ProductID:    in.ProductID,
+				Account:      uc.Account,
+				Action:       "actionSend",
+				Timestamp:    time.Now(), // 操作时间
+				DeviceName:   in.DeviceName,
+				TraceID:      utils.TraceIdFromContext(ctx),
+				UserID:       uc.UserID,
+				DataID:       in.ActionID,
+				Content:      string(contentStr),
+				ResultCode:   errors.Fmt(err).GetCode(),
 			})
 		})
 	}()

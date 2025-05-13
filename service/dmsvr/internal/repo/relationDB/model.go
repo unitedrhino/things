@@ -71,6 +71,9 @@ type DmDeviceInfo struct {
 	NeedConfirmJobID   int64              `gorm:"column:need_confirm_job_id;type:smallint;default:0;"`                      // 需要app确认升级的任务ID,为0是没有
 	NeedConfirmVersion string             `gorm:"column:need_confirm_version;type:varchar(128);default:'';"`                // 待确认升级的版本
 	LastIp             string             `gorm:"column:last_ip;type:varchar(128);default:'';"`                             // 最后登录的ip地址
+	GroupIDs           []int64            `gorm:"column:group_ids;type:varchar(256);serializer:json;default:'[]'"`          // 分组ID列表 ,12,3,423,5 这样的格式
+	GroupIDPaths       []string           `gorm:"column:group_id_paths;type:varchar(512);serializer:json;default:'[]'"`     // 分组id路径列表 ,123-,234-354-,23-, 这样的格式
+
 	stores.NoDelTime
 	Desc        string                  `gorm:"column:desc;type:varchar(200)"`        // 描述
 	Distributor stores.IDPathWithUpdate `gorm:"embedded;embeddedPrefix:distributor_"` // 代理的id,如果为空,则未参与分销
@@ -459,6 +462,7 @@ type DmGroupDevice struct {
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:group_id_product_id_device_name"`
 	ProductInfo *DmProductInfo     `gorm:"foreignKey:ProductID;references:ProductID"`
 	Device      *DmDeviceInfo      `gorm:"foreignKey:ProductID,DeviceName;references:ProductID,DeviceName"`
+	Group       *DmGroupInfo       `gorm:"foreignKey:ID;references:GroupID"`
 }
 
 func (m *DmGroupDevice) TableName() string {

@@ -12,6 +12,7 @@ import (
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/product"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	devicemsglogic "gitee.com/unitedrhino/things/service/dmsvr/internal/logic/devicemsg"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/share/devices"
@@ -132,7 +133,7 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceInfoUnbindReq) (*d
 		if err != nil {
 			return err
 		}
-		err = l.svcCtx.AbnormalRepo.UpdateDevice(l.ctx, []*devices.Core{
+		err = logic.UpdateDevice(l.ctx, l.svcCtx, []*devices.Core{
 			{ProductID: di.ProductID, DeviceName: di.DeviceName}}, devices.Affiliation{
 			TenantCode: string(di.TenantCode), ProjectID: int64(di.ProjectID),
 			AreaID: int64(di.AreaID), AreaIDPath: string(di.AreaIDPath)})

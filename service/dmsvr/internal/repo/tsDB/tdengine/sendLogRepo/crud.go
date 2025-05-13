@@ -7,6 +7,7 @@ import (
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/share/utils"
 	sq "gitee.com/unitedrhino/squirrel"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 )
@@ -35,6 +36,12 @@ func (s *SendLogRepo) fillFilter(sql sq.SelectBuilder, filter deviceLog.SendFilt
 	}
 	if filter.ProjectID != 0 {
 		sql = sql.Where("`project_id`=?", filter.ProjectID)
+	}
+	if len(filter.GroupIDs) != 0 {
+		sql = sql.Where(stores.ArrayEqToSql("group_ids", filter.GroupIDs))
+	}
+	if len(filter.GroupIDPaths) != 0 {
+		sql = sql.Where(stores.ArrayPathToSql("group_id_paths", filter.GroupIDPaths))
 	}
 	if filter.AreaID != 0 {
 		sql = sql.Where("`area_id`=?", filter.AreaID)
@@ -100,9 +107,9 @@ func (s *SendLogRepo) GetDeviceLog(ctx context.Context, filter deviceLog.SendFil
 }
 
 func (s *SendLogRepo) Insert(ctx context.Context, data *deviceLog.Send) error {
-	sql := fmt.Sprintf("  %s using %s tags('%s','%s','%s',%d,%d,'%s')(`ts`, `user_id`,`account` ,`action` ,`data_id` ,`trace_id` ,`content`,`result_code`) values (?,?,?,?,?,?,?,?) ",
+	sql := fmt.Sprintf("  %s using %s tags('%s','%s','%s',%d,%d,'%s','%s','%s')(`ts`, `user_id`,`account` ,`action` ,`data_id` ,`trace_id` ,`content`,`result_code`) values (?,?,?,?,?,?,?,?) ",
 		s.GetLogTableName(data.ProductID, data.DeviceName), s.GetLogStableName(), data.ProductID, data.DeviceName, data.TenantCode, data.ProjectID,
-		data.AreaID, data.AreaIDPath)
+		data.AreaID, data.AreaIDPath, utils.GenSliceStr(data.GroupIDs), utils.GenSliceStr(data.GroupIDPaths))
 	s.t.AsyncInsert(sql, data.Timestamp, data.UserID, data.Account, data.Action, data.DataID, data.TraceID, data.Content, data.ResultCode)
 	return nil
 }

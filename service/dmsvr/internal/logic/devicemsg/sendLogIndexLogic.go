@@ -32,13 +32,15 @@ func NewSendLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Send
 
 func (l *SendLogIndexLogic) SendLogIndex(in *dm.SendLogIndexReq) (*dm.SendLogIndexResp, error) {
 	filter := deviceLog.SendFilter{
-		UserID:     in.UserID,
-		ProductID:  in.ProductID,
-		DeviceName: in.DeviceName,
-		Actions:    in.Actions,
-		ResultCode: in.ResultCode,
-		DataIDs:    in.DataIDs,
-		DataID:     in.DataID,
+		UserID:       in.UserID,
+		ProductID:    in.ProductID,
+		DeviceName:   in.DeviceName,
+		Actions:      in.Actions,
+		ResultCode:   in.ResultCode,
+		DataIDs:      in.DataIDs,
+		DataID:       in.DataID,
+		GroupIDs:     in.GroupIDs,
+		GroupIDPaths: in.GroupIDPaths,
 	}
 	page := def.PageInfo2{
 		TimeStart: in.TimeStart,
@@ -62,7 +64,7 @@ func (l *SendLogIndexLogic) SendLogIndex(in *dm.SendLogIndexReq) (*dm.SendLogInd
 		if ctxs.IsRoot(l.ctx) != nil {
 			filter.TenantCode = uc.TenantCode
 		}
-		if uc.ProjectID != 0 {
+		if uc.ProjectID > def.NotClassified {
 			filter.ProjectID = uc.ProjectID
 		}
 		if in.ProductCategoryID != 0 {

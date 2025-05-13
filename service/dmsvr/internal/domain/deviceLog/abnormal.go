@@ -11,30 +11,35 @@ import (
 
 type (
 	Abnormal struct {
-		TenantCode dataType.TenantCode `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"`                        // 租户编码
-		ProjectID  dataType.ProjectID  `gorm:"column:project_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"` // 项目ID(雪花ID)
-		AreaID     dataType.AreaID     `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`    // 项目区域ID(雪花ID)
-		AreaIDPath dataType.AreaIDPath `gorm:"column:area_id_path;type:varchar(100);default:'';NOT NULL"`                 // 项目区域ID路径(雪花ID)
-		ProductID  string              `gorm:"column:product_id;type:varchar(100);NOT NULL" json:"productID,omitempty"`   // 产品id
-		DeviceName string              `gorm:"column:device_name;type:varchar(100);NOT NULL" json:"deviceName,omitempty"` // 设备名称
-		Action     def.Bool            `gorm:"column:user_id;type:BIGINT;default:1" json:"action,omitempty"`              //触发1还是解除2
-		Type       string              `gorm:"column:type;type:varchar(100);NOT NULL" json:"type,omitempty"`              // 异常类型
-		Timestamp  time.Time           `gorm:"column:ts;NOT NULL;" json:"timestamp"`                                      // 操作时间
-		TraceID    string              `gorm:"column:trace_id;type:varchar(100);NOT NULL" json:"traceID,omitempty"`       // 服务器端事务id
-		Reason     string              `gorm:"column:reason;type:varchar(100);NOT NULL" json:"reason,omitempty"`          //原因
+		TenantCode   dataType.TenantCode `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"`                                                 // 租户编码
+		ProjectID    dataType.ProjectID  `gorm:"column:project_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`                          // 项目ID(雪花ID)
+		AreaID       dataType.AreaID     `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`                             // 项目区域ID(雪花ID)
+		AreaIDPath   dataType.AreaIDPath `gorm:"column:area_id_path;type:varchar(100);default:'';NOT NULL"`                                          // 项目区域ID路径(雪花ID)
+		GroupIDs     []int64             `gorm:"column:group_ids;type:varchar(256);serializer:json;default:'[]'" json:"groupIDs,omitempty"`          // 分组ID列表 ,12,3,423,5 这样的格式
+		GroupIDPaths []string            `gorm:"column:group_id_paths;type:varchar(512);serializer:json;default:'[]'" json:"groupIDPaths,omitempty"` // 分组id路径列表 ,123-,234-354-,23-, 这样的格式
+		ProductID    string              `gorm:"column:product_id;type:varchar(100);NOT NULL" json:"productID,omitempty"`                            // 产品id
+		DeviceName   string              `gorm:"column:device_name;type:varchar(100);NOT NULL" json:"deviceName,omitempty"`                          // 设备名称
+		Action       def.Bool            `gorm:"column:user_id;type:BIGINT;default:1" json:"action,omitempty"`                                       //触发1还是解除2
+		Type         string              `gorm:"column:type;type:varchar(100);NOT NULL" json:"type,omitempty"`                                       // 异常类型
+		Timestamp    time.Time           `gorm:"column:ts;NOT NULL;" json:"timestamp"`                                                               // 操作时间
+		TraceID      string              `gorm:"column:trace_id;type:varchar(100);NOT NULL" json:"traceID,omitempty"`                                // 服务器端事务id
+		Reason       string              `gorm:"column:reason;type:varchar(100);NOT NULL" json:"reason,omitempty"`                                   //原因
+
 	}
 	AbnormalFilter struct {
-		TenantCode string
-		ProjectID  int64   `json:"projectID,omitempty"`
-		AreaID     int64   `json:"areaID,omitempty"`
-		AreaIDPath string  `json:"areaIDPath,omitempty"`
-		AreaIDs    []int64 `json:"areaIDs"`
-		ProductID  string  // 产品id
-		ProductIDs []string
-		DeviceName string // 设备名称
-		Action     int64
-		Type       string `json:"type,omitempty"` // 异常类型
-		Reason     string
+		TenantCode   string
+		ProjectID    int64    `json:"projectID,omitempty"`
+		AreaID       int64    `json:"areaID,omitempty"`
+		AreaIDPath   string   `json:"areaIDPath,omitempty"`
+		GroupIDs     []int64  `json:"groupIDs,omitempty"`
+		GroupIDPaths []string `json:"groupIDPaths,omitempty"`
+		AreaIDs      []int64  `json:"areaIDs"`
+		ProductID    string   // 产品id
+		ProductIDs   []string
+		DeviceName   string // 设备名称
+		Action       int64
+		Type         string `json:"type,omitempty"` // 异常类型
+		Reason       string
 	}
 
 	AbnormalRepo interface {

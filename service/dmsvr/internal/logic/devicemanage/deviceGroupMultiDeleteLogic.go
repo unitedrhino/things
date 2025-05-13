@@ -2,6 +2,8 @@ package devicemanagelogic
 
 import (
 	"context"
+	"gitee.com/unitedrhino/share/ctxs"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/share/devices"
 
@@ -47,6 +49,15 @@ func (l *DeviceGroupMultiDeleteLogic) DeviceGroupMultiDelete(in *dm.DeviceGroupM
 		GroupIDs:   gids,
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
+	})
+	if err != nil {
+		return nil, err
+	}
+	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
+		err := logic.UpdateDevGroupsTags(ctx, l.svcCtx, []devices.Core{{ProductID: in.ProductID, DeviceName: in.DeviceName}})
+		if err != nil {
+			logx.WithContext(ctx).Errorf("update device group tags error: %s", err.Error())
+		}
 	})
 	return &dm.Empty{}, err
 }

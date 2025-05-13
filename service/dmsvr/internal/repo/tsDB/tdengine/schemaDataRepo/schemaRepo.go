@@ -3,10 +3,13 @@ package schemaDataRepo
 import (
 	"context"
 	"fmt"
+	"gitee.com/unitedrhino/share/caches"
 	"gitee.com/unitedrhino/share/clients"
 	"gitee.com/unitedrhino/share/conf"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	schema "gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -35,11 +38,87 @@ func NewDeviceDataRepo(dataSource conf.TSDB, getProductSchemaModel schema.GetSch
 	return &DeviceDataRepo{t: td, getProductSchemaModel: getProductSchemaModel, getDeviceSchemaModel: getDeviceSchemaModel, kv: kv}
 }
 
+func (d *DeviceDataRepo) VersionUpdate(ctx context.Context, version string, dc *caches.Cache[dm.DeviceInfo, devices.Core]) error {
+	//desc, err := d.t.DescTable(ctx, "model_device_property_bool")
+	//if err != nil {
+	//	return err
+	//}
+	//if desc["tenant_code"] != nil {
+	//	return nil
+	//}
+	{
+		tbs, err := d.t.STables(ctx, "_property_")
+		if err != nil {
+			return err
+		}
+		for _, tb := range tbs {
+			_, err = d.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG `tenant_code`  BINARY(50) ;", tb))
+			if err != nil {
+				continue
+			}
+			_, err = d.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG  `project_id` BIGINT ;", tb))
+			if err != nil {
+				continue
+			}
+			_, err = d.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG  `area_id` BIGINT  ;", tb))
+			if err != nil {
+				continue
+			}
+			_, err = d.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG `area_id_path`  BINARY(50) ;", tb))
+			if err != nil {
+				continue
+			}
+			_, err = d.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG `group_ids`  BINARY(250) ;", tb))
+			if err != nil {
+				continue
+			}
+			_, err = d.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG `group_id_paths`  BINARY(250) ;", tb))
+			if err != nil {
+				continue
+			}
+		}
+	}
+	{
+		tbs, err := d.t.Tables(ctx, "device_property_")
+		if err != nil {
+			return err
+		}
+		for _, tb := range tbs {
+			ts, err := d.t.TableTags(ctx, tb)
+			if err != nil {
+				logx.WithContext(ctx).Errorf("get tags err: %v", err)
+				continue
+			}
+			dev := devices.Core{ProductID: ts["product_id"], DeviceName: ts["device_name"]}
+			di, err := dc.GetData(ctx, dev)
+			if err != nil {
+				logx.WithContext(ctx).Error(err.Error())
+				continue
+			}
+			err = tdengine.AlterTag(ctx, d.t, []string{tb}, tdengine.AffiliationToMap(devices.Affiliation{
+				TenantCode:   di.TenantCode,
+				ProjectID:    di.ProjectID,
+				AreaID:       di.AreaID,
+				AreaIDPath:   di.AreaIDPath,
+				GroupIDs:     di.GroupIDs,
+				GroupIDPaths: di.GroupIDPaths,
+			}))
+			if err != nil {
+				logx.WithContext(ctx).Error(err.Error())
+				continue
+			}
+		}
+	}
+	return nil
+}
+
 func (d *DeviceDataRepo) Init(ctx context.Context) error {
 	{
 		sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s "+
 			"(`ts` timestamp,`event_id` BINARY(50),`event_type` BINARY(20), `param` BINARY(5000)) "+
-			"TAGS (`product_id` BINARY(50),`device_name` BINARY(50));",
+			"TAGS (`product_id` BINARY(50),`device_name` BINARY(50),"+
+			" `tenant_code`  BINARY(50),`project_id` BIGINT,`area_id` BIGINT,`area_id_path`  BINARY(50),"+
+			"`group_ids`  BINARY(250),`group_id_paths`  BINARY(250));",
 			d.GetEventStableName())
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
 			return errors.Database.AddDetail(err)
@@ -48,7 +127,9 @@ func (d *DeviceDataRepo) Init(ctx context.Context) error {
 
 	genDeviceStable := func(tb string, def schema.Define) error {
 		sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp,`param` %s)"+
-			" TAGS (`product_id` BINARY(50),`device_name` BINARY(50),`"+PropertyType+"` BINARY(50));",
+			" TAGS (`product_id` BINARY(50),`device_name` BINARY(50),`"+PropertyType+"` BINARY(50),"+
+			" `tenant_code`  BINARY(50),`project_id` BIGINT,`area_id` BIGINT,`area_id_path`  BINARY(50),"+
+			"`group_ids`  BINARY(250),`group_id_paths`  BINARY(250));",
 			tb, tdengine.GetTdType(def))
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
 			return errors.Database.AddDetail(err)

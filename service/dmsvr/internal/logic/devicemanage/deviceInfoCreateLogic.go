@@ -319,35 +319,35 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 
 func (l *DeviceInfoCreateLogic) InitDevice(in devices.Info) error {
 	return nil //不再预先创建,设备消息入库的时候自动建表
-	if in.TenantCode == "" {
-		in.TenantCode = ctxs.GetUserCtxNoNil(l.ctx).TenantCode
-	}
-	pt, err := l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
-	if err != nil {
-		return errors.System.AddDetail(err)
-	}
-	err = l.svcCtx.SchemaManaRepo.InitDevice(l.ctx, pt, in.ProductID, in.DeviceName)
-	if err != nil {
-		return errors.Database.AddDetail(err)
-	}
-	err = l.svcCtx.SDKLogRepo.InitDevice(l.ctx, in)
-	if err != nil {
-		return errors.Database.AddDetail(err)
-	}
-	err = l.svcCtx.StatusRepo.InitDevice(l.ctx, in)
-	if err != nil {
-		return errors.Database.AddDetail(err)
-	}
-	err = l.svcCtx.SendRepo.InitDevice(l.ctx, in)
-	if err != nil {
-		return errors.Database.AddDetail(err)
-	}
-	err = l.svcCtx.DeviceCache.SetData(l.ctx, devices.Core{
-		ProductID:  in.ProductID,
-		DeviceName: in.DeviceName,
-	}, nil)
-	if err != nil {
-		l.Error(err)
-	}
-	return nil
+	//if in.TenantCode == "" {
+	//	in.TenantCode = ctxs.GetUserCtxNoNil(l.ctx).TenantCode
+	//}
+	//pt, err := l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
+	//if err != nil {
+	//	return errors.System.AddDetail(err)
+	//}
+	//err = l.svcCtx.SchemaManaRepo.InitDevice(l.ctx, pt, in.ProductID, in.DeviceName)
+	//if err != nil {
+	//	return errors.Database.AddDetail(err)
+	//}
+	//err = l.svcCtx.SDKLogRepo.InitDevice(l.ctx, in)
+	//if err != nil {
+	//	return errors.Database.AddDetail(err)
+	//}
+	//err = l.svcCtx.StatusRepo.InitDevice(l.ctx, in)
+	//if err != nil {
+	//	return errors.Database.AddDetail(err)
+	//}
+	//err = l.svcCtx.SendRepo.InitDevice(l.ctx, in)
+	//if err != nil {
+	//	return errors.Database.AddDetail(err)
+	//}
+	//err = l.svcCtx.DeviceCache.SetData(l.ctx, devices.Core{
+	//	ProductID:  in.ProductID,
+	//	DeviceName: in.DeviceName,
+	//}, nil)
+	//if err != nil {
+	//	l.Error(err)
+	//}
+	//return nil
 }

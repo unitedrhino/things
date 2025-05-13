@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"gitee.com/unitedrhino/share/clients"
+	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -24,6 +25,12 @@ func AffiliationToMap(in devices.Affiliation) map[string]any {
 	if in.AreaID != 0 {
 		ret["area_id"] = in.AreaID
 	}
+	if in.GroupIDs != nil {
+		ret["group_ids"] = utils.GenSliceStr(in.GroupIDs)
+	}
+	if in.GroupIDPaths != nil {
+		ret["group_id_paths"] = utils.GenSliceStr(in.GroupIDPaths)
+	}
 	return ret
 }
 
@@ -35,7 +42,7 @@ func AlterTag(ctx context.Context, t *clients.Td, tables []string, tags map[stri
 		}
 		for i := 3; i > 0; i-- { //重试三次
 			val := strings.Join(vals, ",")
-			_, err := t.ExecContext(ctx, fmt.Sprintf(" ALTER TABLE %s SET TAG %s; ",
+			_, err := t.ExecContext(ctx, fmt.Sprintf(" ALTER TABLE `%s` SET TAG %s; ",
 				table, val))
 			if err != nil {
 				if strings.Contains(err.Error(), "Table does not exist") {
@@ -63,7 +70,7 @@ func AlterTags(ctx context.Context, t *clients.Td, tags []Tag) error {
 		}
 		for i := 3; i > 0; i-- { //重试三次
 			val := strings.Join(vals, ",")
-			_, err := t.ExecContext(ctx, fmt.Sprintf(" ALTER TABLE %s SET TAG %s; ",
+			_, err := t.ExecContext(ctx, fmt.Sprintf(" ALTER TABLE `%s` SET TAG %s; ",
 				tag.Table, val))
 			if err != nil {
 				if strings.Contains(err.Error(), "Table does not exist") {

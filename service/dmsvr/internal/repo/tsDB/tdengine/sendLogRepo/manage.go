@@ -3,6 +3,7 @@ package sendLogRepo
 import (
 	"context"
 	"fmt"
+	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine"
 	"gitee.com/unitedrhino/things/share/devices"
 )
@@ -11,7 +12,7 @@ func (s *SendLogRepo) InitProduct(ctx context.Context, productID string) (err er
 	s.once.Do(func() {
 		sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s "+
 			"(`ts` timestamp,`user_id` BIGINT,`account` BINARY(200),`action` BINARY(50),`data_id` BINARY(50),`trace_id` BINARY(50),`content` BINARY(200),`result_code` BINARY(50)) "+
-			"TAGS (`product_id` BINARY(50),`device_name`  BINARY(50), `tenant_code`  BINARY(50),`project_id` BIGINT,`area_id` BIGINT,`area_id_path`  BINARY(50));",
+			"TAGS (`product_id` BINARY(50),`device_name`  BINARY(50), `tenant_code`  BINARY(50),`project_id` BIGINT,`area_id` BIGINT,`area_id_path`  BINARY(50),`group_ids`  BINARY(250),`group_id_paths`  BINARY(250));",
 			s.GetLogStableName())
 		_, err = s.t.ExecContext(ctx, sql)
 	})
@@ -47,22 +48,27 @@ func (s *SendLogRepo) UpdateDevice(ctx context.Context, devices []*devices.Core,
 }
 
 func (s *SendLogRepo) VersionUpdate(ctx context.Context, version string) error {
-	s.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE %s ADD TAG `tenant_code`  BINARY(50) ;", s.GetLogStableName()))
+	s.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG `tenant_code`  BINARY(50) ;", s.GetLogStableName()))
 	//if err != nil {
 	//	return err
 	//}
-	s.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE %s ADD TAG  `project_id` BIGINT ;", s.GetLogStableName()))
+	s.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG  `project_id` BIGINT ;", s.GetLogStableName()))
 	//if err != nil {
 	//	return err
 	//}
-	s.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE %s ADD TAG  `area_id` BIGINT  ;", s.GetLogStableName()))
+	s.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG  `area_id` BIGINT  ;", s.GetLogStableName()))
 	//if err != nil {
 	//	return err
 	//}
-	s.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE %s ADD TAG `area_id_path`  BINARY(50) ;", s.GetLogStableName()))
+	s.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG `area_id_path`  BINARY(50) ;", s.GetLogStableName()))
 	//if err != nil {
 	//	return err
 	//}
+
+	s.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG `group_ids`  BINARY(250) ;", s.GetLogStableName()))
+
+	s.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG `group_id_paths`  BINARY(250) ;", s.GetLogStableName()))
+
 	return nil
 }
 
@@ -71,10 +77,7 @@ func (s *SendLogRepo) UpdateDevices(ctx context.Context, devs []*devices.Info) e
 	for _, device := range devs {
 		tags = append(tags, tdengine.Tag{
 			Table: s.GetLogTableName(device.ProductID, device.DeviceName),
-			Tags: tdengine.AffiliationToMap(devices.Affiliation{
-				TenantCode: device.TenantCode, ProjectID: device.ProjectID,
-				AreaID: device.AreaID, AreaIDPath: device.AreaIDPath,
-			}),
+			Tags:  tdengine.AffiliationToMap(utils.Copy2[devices.Affiliation](device)),
 		})
 	}
 	err := tdengine.AlterTags(ctx, s.t, tags)

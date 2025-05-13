@@ -7,6 +7,7 @@ import (
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -164,7 +165,7 @@ func (l *DeviceMoveLogic) DeviceMove(in *dm.DeviceMoveReq) (*dm.Empty, error) {
 			}
 		}
 		{
-			err := l.svcCtx.AbnormalRepo.UpdateDevices(l.ctx, []*devices.Info{
+			err := logic.UpdateDevices(l.ctx, l.svcCtx, []*devices.Info{
 				{ProductID: oldDev.ProductID, DeviceName: oldDev.DeviceName, TenantCode: string(oldDev.TenantCode),
 					ProjectID: int64(oldDev.ProjectID), AreaID: int64(oldDev.AreaID), AreaIDPath: string(oldDev.AreaIDPath)},
 				{ProductID: newDev.ProductID, DeviceName: newDev.DeviceName, TenantCode: string(newDev.TenantCode),

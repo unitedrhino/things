@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"gitee.com/unitedrhino/core/service/syssvr/sysExport"
 	"gitee.com/unitedrhino/core/service/timed/timedjobsvr/client/timedmanage"
+	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/caches"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
@@ -190,6 +191,10 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 		if err != nil {
 			return err
 		}
+		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, device)
+		if err != nil {
+			l.Error(err)
+		}
 		ctx := ctxs.CopyCtx(l.ctx)
 		utils.Go(ctx, func() {
 			appMsg := application.PropertyReportV2{
@@ -201,10 +206,6 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 				logx.WithContext(ctx).Errorf("%s.DeviceThingPropertyReport  params:%v,err:%v", utils.FuncName(), paramValues, err)
 			}
 			err = l.svcCtx.WebHook.Publish(l.svcCtx.WithDeviceTenant(ctx, device), sysExport.CodeDmDevicePropertyReportV2, appMsg)
-			if err != nil {
-				l.Error(err)
-			}
-			di, err := l.svcCtx.DeviceCache.GetData(l.ctx, device)
 			if err != nil {
 				l.Error(err)
 			}
@@ -223,6 +224,7 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 				logx.WithContext(ctx).Error(err)
 			}
 		})
+
 		utils.Go(ctx, func() {
 			for identifier, param := range paramValues {
 				appMsg := application.PropertyReport{
@@ -238,10 +240,7 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 				if err != nil {
 					l.Error(err)
 				}
-				di, err := l.svcCtx.DeviceCache.GetData(l.ctx, device)
-				if err != nil {
-					l.Error(err)
-				}
+
 				if di != nil {
 					err = l.svcCtx.UserSubscribe.Publish(ctx, userSubscribe.DevicePropertyReport, appMsg, map[string]any{
 						"productID":  device.ProductID,
@@ -264,14 +263,27 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 		})
 
 		//插入多条设备物模型属性数据
-		err = l.repo.InsertPropertiesData(l.ctx, t, device.ProductID, device.DeviceName, tp.Params, timeStamp, msgThing.Optional{})
+		err = l.repo.InsertPropertiesData(l.ctx, t, device.ProductID, device.DeviceName, tp.Params, timeStamp,
+			msgThing.Optional{TenantCode: dataType.TenantCode(di.TenantCode),
+				ProjectID: dataType.ProjectID(di.ProjectID), AreaID: dataType.AreaID(di.AreaID),
+				AreaIDPath: dataType.AreaIDPath(di.AreaIDPath),
+				GroupIDs:   di.GroupIDs, GroupIDPaths: di.GroupIDPaths})
 		if err != nil {
 			l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
 			return err
 		}
 	}
 	for _, tp := range eTp {
-		dbData := msgThing.EventData{}
+		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, device)
+		if err != nil {
+			l.Error(err)
+			return err
+		}
+		dbData := msgThing.EventData{
+			TenantCode: dataType.TenantCode(di.TenantCode),
+			ProjectID:  dataType.ProjectID(di.ProjectID), AreaID: dataType.AreaID(di.AreaID),
+			AreaIDPath: dataType.AreaIDPath(di.AreaIDPath),
+			GroupIDs:   di.GroupIDs, GroupIDPaths: di.GroupIDPaths}
 		dbData.Identifier = tp.EventID
 		dbData.Type = tp.Type
 		dbData.Params, err = msgThing.ToVal(tp.Params)
@@ -286,6 +298,7 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 		if err != nil {
 			return err
 		}
+
 		appMsg := application.EventReport{
 			Device:     device,
 			Timestamp:  dbData.TimeStamp.UnixMilli(),
@@ -298,6 +311,23 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 			l.Errorf("%s.DeviceThingEventReport  err:%v", utils.FuncName(), err)
 		}
 		err = l.svcCtx.WebHook.Publish(l.svcCtx.WithDeviceTenant(l.ctx, device), sysExport.CodeDmDeviceEventReport, appMsg)
+		if err != nil {
+			l.Error(err)
+		}
+
+		err = l.svcCtx.UserSubscribe.Publish(l.ctx, userSubscribe.DeviceEventReport, appMsg, map[string]any{
+			"productID":  device.ProductID,
+			"deviceName": device.DeviceName,
+			"identifier": dbData.Identifier,
+		}, map[string]any{
+			"productID":  device.ProductID,
+			"deviceName": device.DeviceName,
+		}, map[string]any{
+			"projectID": di.ProjectID,
+		}, map[string]any{
+			"projectID": cast.ToString(di.ProjectID),
+			"areaID":    cast.ToString(di.AreaID),
+		})
 		if err != nil {
 			l.Error(err)
 		}
@@ -478,7 +508,10 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 	})
 
 	//插入多条设备物模型属性数据
-	err = l.repo.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, tp, timeStamp, msgThing.Optional{})
+	err = l.repo.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, tp, timeStamp, msgThing.Optional{TenantCode: dataType.TenantCode(l.di.TenantCode),
+		ProjectID: dataType.ProjectID(l.di.ProjectID), AreaID: dataType.AreaID(l.di.AreaID),
+		AreaIDPath: dataType.AreaIDPath(l.di.AreaIDPath),
+		GroupIDs:   l.di.GroupIDs, GroupIDPaths: l.di.GroupIDPaths})
 	if err != nil {
 		l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
 		return l.DeviceResp(msg, errors.Database.AddDetail(err), nil), err
@@ -618,7 +651,11 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 				respData[k] = vv
 			}
 			//插入多条设备物模型属性数据
-			err = l.repo.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, vals, time.Now(), msgThing.Optional{Sync: true})
+			err = l.repo.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, vals, time.Now(),
+				msgThing.Optional{Sync: true, TenantCode: dataType.TenantCode(l.di.TenantCode),
+					ProjectID: dataType.ProjectID(l.di.ProjectID), AreaID: dataType.AreaID(l.di.AreaID),
+					AreaIDPath: dataType.AreaIDPath(l.di.AreaIDPath),
+					GroupIDs:   l.di.GroupIDs, GroupIDPaths: l.di.GroupIDPaths})
 			if err != nil {
 				l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
 				return l.DeviceResp(msg, errors.Database.AddDetail(err), nil), err
@@ -706,7 +743,12 @@ func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceM
 func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
 	l.Debugf("%s req:%v", utils.FuncName(), msg)
 
-	dbData := msgThing.EventData{}
+	dbData := msgThing.EventData{
+		TenantCode: dataType.TenantCode(l.di.TenantCode),
+		ProjectID:  dataType.ProjectID(l.di.ProjectID), AreaID: dataType.AreaID(l.di.AreaID),
+		AreaIDPath: dataType.AreaIDPath(l.di.AreaIDPath),
+		GroupIDs:   l.di.GroupIDs, GroupIDPaths: l.di.GroupIDPaths,
+	}
 	dbData.Identifier = l.dreq.EventID
 	dbData.Type = l.dreq.Type
 
@@ -748,28 +790,23 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 		l.Error(err)
 	}
 
-	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, device)
+	err = l.svcCtx.UserSubscribe.Publish(l.ctx, userSubscribe.DeviceEventReport, appMsg, map[string]any{
+		"productID":  device.ProductID,
+		"deviceName": device.DeviceName,
+		"identifier": dbData.Identifier,
+	}, map[string]any{
+		"productID":  device.ProductID,
+		"deviceName": device.DeviceName,
+	}, map[string]any{
+		"projectID": l.di.ProjectID,
+	}, map[string]any{
+		"projectID": cast.ToString(l.di.ProjectID),
+		"areaID":    cast.ToString(l.di.AreaID),
+	})
 	if err != nil {
 		l.Error(err)
 	}
-	if di != nil {
-		err = l.svcCtx.UserSubscribe.Publish(l.ctx, userSubscribe.DeviceEventReport, appMsg, map[string]any{
-			"productID":  device.ProductID,
-			"deviceName": device.DeviceName,
-			"identifier": dbData.Identifier,
-		}, map[string]any{
-			"productID":  device.ProductID,
-			"deviceName": device.DeviceName,
-		}, map[string]any{
-			"projectID": di.ProjectID,
-		}, map[string]any{
-			"projectID": cast.ToString(di.ProjectID),
-			"areaID":    cast.ToString(di.AreaID),
-		})
-		if err != nil {
-			l.Error(err)
-		}
-	}
+
 	err = l.repo.InsertEventData(l.ctx, msg.ProductID, msg.DeviceName, &dbData)
 	if err != nil {
 		l.Errorf("%s.InsertEventData err=%+v", utils.FuncName(), err)

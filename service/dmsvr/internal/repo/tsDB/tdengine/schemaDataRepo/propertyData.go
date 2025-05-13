@@ -44,16 +44,18 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 				if err != nil {
 					return err
 				}
-				sql += fmt.Sprintf(" %s using %s tags('%s','%s',%d,'%s') (`ts`, %s) values (?,%s) ",
+				sql += fmt.Sprintf(" %s using %s tags('%s','%s',%d,'%s','%s',%d,%d,'%s','%s','%s') (`ts`, %s) values (?,%s) ",
 					d.GetPropertyTableName(productID, deviceName, id),
-					d.GetPropertyStableName(p, productID, Identifier), productID, deviceName, num, p.Define.Type,
+					d.GetPropertyStableName(p, productID, Identifier), productID, deviceName, num, p.Define.Type, optional.TenantCode, optional.ProjectID,
+					optional.AreaID, optional.AreaIDPath, utils.GenSliceStr(optional.GroupIDs), utils.GenSliceStr(optional.GroupIDPaths),
 					paramIds, paramPlaceholder)
 				args = append([]any{timestamp}, paramValList...)
 			default:
 				sql += fmt.Sprintf(" %s using %s tags('%s','%s',%d,'%s')(`ts`, `param`) values (?,?) ",
 					d.GetPropertyTableName(productID, deviceName, id),
 					d.GetPropertyStableName(p, productID, Identifier),
-					productID, deviceName, num, p.Define.Type)
+					productID, deviceName, num, p.Define.Type, optional.TenantCode, optional.ProjectID,
+					optional.AreaID, optional.AreaIDPath, utils.GenSliceStr(optional.GroupIDs), utils.GenSliceStr(optional.GroupIDPaths))
 				args = append(args, timestamp, vv)
 			}
 			return nil
@@ -85,19 +87,21 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 			if err != nil {
 				return "", nil, err
 			}
-			sql = fmt.Sprintf(" %s using %s tags('%s','%s','%s') (`ts`, %s) values (?,%s) ",
+			sql = fmt.Sprintf(" %s using %s tags('%s','%s','%s','%s',%d,%d,'%s','%s','%s') (`ts`, %s) values (?,%s) ",
 				d.GetPropertyTableName(productID, deviceName, property.Identifier),
-				d.GetPropertyStableName(p, productID, property.Identifier), productID, deviceName, p.Define.Type,
+				d.GetPropertyStableName(p, productID, property.Identifier), productID, deviceName, p.Define.Type, optional.TenantCode, optional.ProjectID,
+				optional.AreaID, optional.AreaIDPath, utils.GenSliceStr(optional.GroupIDs), utils.GenSliceStr(optional.GroupIDPaths),
 				paramIds, paramPlaceholder)
 			args = append([]any{timestamp}, paramValList...)
 		default:
 			var (
 				param = property.Value
 			)
-			sql = fmt.Sprintf(" %s using %s tags('%s','%s','%s')(`ts`, `param`) values (?,?) ",
+			sql = fmt.Sprintf(" %s using %s tags('%s','%s','%s','%s',%d,%d,'%s','%s','%s')(`ts`, `param`) values (?,?) ",
 				d.GetPropertyTableName(productID, deviceName, property.Identifier),
 				d.GetPropertyStableName(p, productID, property.Identifier),
-				productID, deviceName, p.Define.Type)
+				productID, deviceName, p.Define.Type, optional.TenantCode, optional.ProjectID,
+				optional.AreaID, optional.AreaIDPath, utils.GenSliceStr(optional.GroupIDs), utils.GenSliceStr(optional.GroupIDPaths))
 			args = append(args, timestamp, param)
 		}
 	}
@@ -304,9 +308,27 @@ func (d *DeviceDataRepo) fillFilter(
 		sql = sql.Where("`product_id` = ?", filter.ProductID)
 	}
 
-	//if filter.DeviceName != "" {
-	//	sql = sql.Where("device_name=?", filter.DeviceName)
-	//}
+	if filter.TenantCode != "" {
+		sql = sql.Where("`tenant_code`=?", filter.TenantCode)
+	}
+	if len(filter.GroupIDs) != 0 {
+		sql = sql.Where(stores.ArrayEqToSql("group_ids", filter.GroupIDs))
+	}
+	if len(filter.GroupIDPaths) != 0 {
+		sql = sql.Where(stores.ArrayEqToSql("group_ids", filter.GroupIDs))
+	}
+	if filter.ProjectID != 0 {
+		sql = sql.Where("`project_id`=?", filter.ProjectID)
+	}
+	if filter.AreaID != 0 {
+		sql = sql.Where("`area_id`=?", filter.AreaID)
+	}
+	if filter.AreaIDPath != "" {
+		sql = sql.Where("`area_id_path` like ?", filter.AreaIDPath+"%")
+	}
+	if len(filter.AreaIDs) != 0 {
+		sql = sql.Where(fmt.Sprintf("`area_id` in (%v)", stores.ArrayToSql(filter.AreaIDs)))
+	}
 	return sql
 }
 

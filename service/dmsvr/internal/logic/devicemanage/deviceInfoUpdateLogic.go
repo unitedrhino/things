@@ -302,7 +302,7 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 	}
 
 	if isUpdateTag {
-		err := l.svcCtx.AbnormalRepo.UpdateDevice(l.ctx, []*devices.Core{
+		err := logic.UpdateDevice(l.ctx, l.svcCtx, []*devices.Core{
 			{ProductID: old.ProductID, DeviceName: old.DeviceName}},
 			devices.Affiliation{ProjectID: int64(old.ProjectID), AreaID: int64(old.AreaID), AreaIDPath: string(old.AreaIDPath)})
 		if err != nil {

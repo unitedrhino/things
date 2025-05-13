@@ -8,6 +8,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/share/devices"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -57,5 +58,20 @@ func (l *GroupDeviceMultiCreateLogic) GroupDeviceMultiCreate(in *dm.GroupDeviceM
 	}
 	relationDB.NewGroupInfoRepo(l.ctx).UpdateGroupDeviceCount(l.ctx, in.GroupID)
 
+	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
+		ds, err := relationDB.NewGroupDeviceRepo(ctx).FindByFilter(ctx, relationDB.GroupDeviceFilter{GroupIDs: []int64{in.GroupID}, WithGroup: true}, nil)
+		if err != nil {
+			logx.WithContext(ctx).Errorf("dm.GroupDeviceMultiCreate err: %v", err)
+			return
+		}
+		var devs []devices.Core
+		for _, v := range ds {
+			devs = append(devs, devices.Core{ProductID: v.ProductID, DeviceName: v.DeviceName})
+		}
+		err = logic.UpdateDevGroupsTags(ctx, l.svcCtx, devs)
+		if err != nil {
+			logx.WithContext(ctx).Errorf("update device group tags error: %s", err.Error())
+		}
+	})
 	return &dm.Empty{}, nil
 }

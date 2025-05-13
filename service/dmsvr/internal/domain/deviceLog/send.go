@@ -11,35 +11,40 @@ import (
 
 type (
 	Send struct {
-		TenantCode dataType.TenantCode `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"`                        // 租户编码
-		ProjectID  dataType.ProjectID  `gorm:"column:project_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"` // 项目ID(雪花ID)
-		AreaID     dataType.AreaID     `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`    // 项目区域ID(雪花ID)
-		AreaIDPath dataType.AreaIDPath `gorm:"column:area_id_path;type:varchar(100);default:'';NOT NULL"`                 // 项目区域ID路径(雪花ID)
-		UserID     int64               `gorm:"column:user_id;type:BIGINT;NOT NULL" json:"userID"`
-		ProductID  string              `gorm:"column:product_id;type:varchar(100);NOT NULL" json:"productID,omitempty"`   // 产品id
-		DeviceName string              `gorm:"column:device_name;type:varchar(100);NOT NULL" json:"deviceName,omitempty"` // 设备名称
-		Action     string              `gorm:"column:action;type:varchar(100);NOT NULL" json:"action,omitempty"`          // 操作类型 propertySend:属性控制 actionSend:操作控制 propertyGetReportSend:获取最新属性请求
-		DataID     string              `gorm:"column:data_id;type:varchar(100);NOT NULL" json:"dataID"`
-		Timestamp  time.Time           `gorm:"column:ts;NOT NULL;" json:"timestamp"`                                // 操作时间
-		TraceID    string              `gorm:"column:trace_id;type:varchar(100);NOT NULL" json:"traceID,omitempty"` // 服务器端事务id
-		Account    string              `gorm:"column:account;type:varchar(100);NOT NULL" json:"account"`
-		Content    string              `gorm:"column:content;type:varchar(100);NOT NULL" json:"content"`               //操作的内容
-		ResultCode int64               `gorm:"column:result_code;type:BIGINT;default:200" json:"resultCode,omitempty"` // 请求结果状态
+		TenantCode   dataType.TenantCode `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"`                                                 // 租户编码
+		ProjectID    dataType.ProjectID  `gorm:"column:project_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`                          // 项目ID(雪花ID)
+		AreaID       dataType.AreaID     `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`                             // 项目区域ID(雪花ID)
+		AreaIDPath   dataType.AreaIDPath `gorm:"column:area_id_path;type:varchar(100);default:'';NOT NULL"`                                          // 项目区域ID路径(雪花ID)
+		GroupIDs     []int64             `gorm:"column:group_ids;type:varchar(256);serializer:json;default:'[]'" json:"groupIDs,omitempty"`          // 分组ID列表 ,12,3,423,5 这样的格式
+		GroupIDPaths []string            `gorm:"column:group_id_paths;type:varchar(512);serializer:json;default:'[]'" json:"groupIDPaths,omitempty"` // 分组id路径列表 ,123-,234-354-,23-, 这样的格式
+
+		UserID     int64     `gorm:"column:user_id;type:BIGINT;NOT NULL" json:"userID"`
+		ProductID  string    `gorm:"column:product_id;type:varchar(100);NOT NULL" json:"productID,omitempty"`   // 产品id
+		DeviceName string    `gorm:"column:device_name;type:varchar(100);NOT NULL" json:"deviceName,omitempty"` // 设备名称
+		Action     string    `gorm:"column:action;type:varchar(100);NOT NULL" json:"action,omitempty"`          // 操作类型 propertySend:属性控制 actionSend:操作控制 propertyGetReportSend:获取最新属性请求
+		DataID     string    `gorm:"column:data_id;type:varchar(100);NOT NULL" json:"dataID"`
+		Timestamp  time.Time `gorm:"column:ts;NOT NULL;" json:"timestamp"`                                // 操作时间
+		TraceID    string    `gorm:"column:trace_id;type:varchar(100);NOT NULL" json:"traceID,omitempty"` // 服务器端事务id
+		Account    string    `gorm:"column:account;type:varchar(100);NOT NULL" json:"account"`
+		Content    string    `gorm:"column:content;type:varchar(100);NOT NULL" json:"content"`               //操作的内容
+		ResultCode int64     `gorm:"column:result_code;type:BIGINT;default:200" json:"resultCode,omitempty"` // 请求结果状态
 	}
 	SendFilter struct {
-		TenantCode string
-		ProjectID  int64   `json:"projectID,omitempty"`
-		AreaID     int64   `json:"areaID,omitempty"`
-		AreaIDPath string  `json:"areaIDPath,omitempty"`
-		AreaIDs    []int64 `json:"areaIDs"`
-		UserID     int64   `json:"userID"`
-		ProductIDs []string
-		ProductID  string   // 产品id
-		DeviceName string   // 设备名称
-		Actions    []string //过滤操作类型  propertySend:属性控制 actionSend:操作控制 propertyGetReportSend:获取最新属性请求
-		DataIDs    []string
-		DataID     string
-		ResultCode int64
+		TenantCode   string
+		ProjectID    int64    `json:"projectID,omitempty"`
+		AreaID       int64    `json:"areaID,omitempty"`
+		AreaIDPath   string   `json:"areaIDPath,omitempty"`
+		AreaIDs      []int64  `json:"areaIDs"`
+		GroupIDs     []int64  `json:"groupIDs,omitempty"`
+		GroupIDPaths []string `json:"groupIDPaths,omitempty"`
+		UserID       int64    `json:"userID"`
+		ProductIDs   []string
+		ProductID    string   // 产品id
+		DeviceName   string   // 设备名称
+		Actions      []string //过滤操作类型  propertySend:属性控制 actionSend:操作控制 propertyGetReportSend:获取最新属性请求
+		DataIDs      []string
+		DataID       string
+		ResultCode   int64
 	}
 
 	SendRepo interface {

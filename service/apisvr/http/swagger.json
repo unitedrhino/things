@@ -8597,6 +8597,21 @@
           },
           "description": "只有管理员有权限"
         },
+        "groupIDPaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "只有管理员有权限"
+        },
+        "groupIDs": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": "只有管理员有权限"
+        },
         "productID": {
           "type": "string",
           "description": "产品id"
@@ -8940,6 +8955,43 @@
     "DeviceMsgPropertyLogIndexReq": {
       "type": "object",
       "properties": {
+        "projectID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "只有管理员有权限"
+        },
+        "areaID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "只有管理员有权限"
+        },
+        "areaIDPath": {
+          "type": "string",
+          "description": "只有管理员有权限"
+        },
+        "areaIDs": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": "只有管理员有权限"
+        },
+        "groupIDPaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "只有管理员有权限"
+        },
+        "groupIDs": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": "只有管理员有权限"
+        },
         "deviceName": {
           "type": "string",
           "description": "设备名(不填获取产品下所有设备)"
@@ -9161,6 +9213,21 @@
           "description": "只有管理员有权限"
         },
         "areaIDs": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": "只有管理员有权限"
+        },
+        "groupIDPaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "只有管理员有权限"
+        },
+        "groupIDs": {
           "type": "array",
           "items": {
             "type": "integer",
