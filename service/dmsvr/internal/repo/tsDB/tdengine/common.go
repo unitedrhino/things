@@ -73,7 +73,10 @@ func AlterTags(ctx context.Context, t *clients.Td, tags []Tag) error {
 		}
 		for i := 3; i > 0; i-- { //重试三次
 			val := strings.Join(vals, ",")
-			_, err := t.ExecContext(ctx, fmt.Sprintf(" ALTER TABLE `%s` SET TAG %s; ",
+			if tag.Table[0] != '`' {
+				tag.Table = "`" + tag.Table + "`"
+			}
+			_, err := t.ExecContext(ctx, fmt.Sprintf(" ALTER TABLE %s SET TAG %s; ",
 				tag.Table, val))
 			if err != nil {
 				if strings.Contains(err.Error(), "Table does not exist") {
