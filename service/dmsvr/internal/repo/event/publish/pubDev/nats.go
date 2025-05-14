@@ -29,6 +29,7 @@ func (n *NatsClient) PublishToDev(ctx context.Context, reqMsg *deviceMsg.Publish
 	if reqMsg.ProtocolCode == "" {
 		reqMsg.ProtocolCode = protocols.ProtocolCodeUrMqtt
 	}
+	reqMsg = s.DownBeforeTrans(ctx, reqMsg)
 	defer func() {
 		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).
 			Infof("PublishToDev msg:%v", reqMsg)
