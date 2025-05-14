@@ -74,7 +74,7 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 			di, err := l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: device.ProductID, DeviceNames: []string{device.DeviceName}})
 			if err != nil { //检查是否找到
 				if subPi.BindLevel > product.BindLeveHard1 && subPi.AutoRegister == devices.DeviceAutoCreateEnable { //如果不是强绑定,可以动态创建
-					_, err := NewDeviceInfoCreateLogic(l.ctx, l.svcCtx).DeviceInfoCreate(&dm.DeviceInfo{ProductID: device.ProductID, DeviceName: device.DeviceName})
+					_, err := NewDeviceInfoCreateLogic(l.ctx, l.svcCtx).DeviceInfoCreate(&dm.DeviceInfo{ProductID: device.ProductID, DeviceName: device.DeviceName, DeviceAlias: utils.ToRpcNullString(device.DeviceAlias)})
 					if err != nil {
 						return nil, err
 					}

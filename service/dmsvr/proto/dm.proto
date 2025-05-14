@@ -1236,7 +1236,8 @@ message CustomTopic{
 
 message DeviceGatewayBindDevice{
   string   productID = 1; //产品id
-  string  deviceName = 2; //设备名称
+  string  deviceName = 2; //设备id
+  string deviceAlias =4;//设备名称,如果填写了则会更新设备的名称
   DeviceGatewaySign sign = 3;//签名
 }
 
