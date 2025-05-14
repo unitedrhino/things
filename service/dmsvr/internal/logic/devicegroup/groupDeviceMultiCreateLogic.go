@@ -37,7 +37,7 @@ func (l *GroupDeviceMultiCreateLogic) GroupDeviceMultiCreate(in *dm.GroupDeviceM
 		return nil, err
 	}
 	if int(t) != len(in.List) {
-		return nil, errors.Duplicate.AddMsg("有被删除的设备请重试")
+		return nil, errors.Parameter.AddMsg("有不存在的设备请重试")
 	}
 	gi, err := relationDB.NewGroupInfoRepo(l.ctx).FindOne(l.ctx, in.GroupID)
 	if err != nil {

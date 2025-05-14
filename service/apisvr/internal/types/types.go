@@ -651,6 +651,7 @@ type DeviceMsgPropertyIndexResp struct {
 }
 
 type DeviceMsgPropertyLogIndexReq struct {
+	TenantCode        string    `json:"tenantCode,optional,omitempty"`       //只有管理员有权限
 	ProjectID         int64     `json:"projectID,optional,omitempty"`        //只有管理员有权限
 	AreaID            int64     `json:"areaID,optional,omitempty"`           //只有管理员有权限
 	AreaIDPath        string    `json:"areaIDPath,optional,omitempty"`       //只有管理员有权限
@@ -674,10 +675,17 @@ type DeviceMsgPropertyLogIndexReq struct {
 }
 
 type DeviceMsgPropertyLogInfo struct {
-	Timestamp  int64  `json:"timestamp,string"` //发生时间戳
-	DeviceName string `json:"deviceName"`       //设备名称
-	DataID     string `json:"dataID"`           //获取的具体属性值
-	Value      string `json:"value,omitempty"`  //获取到的值
+	Timestamp    int64    `json:"timestamp,string"`                //发生时间戳
+	DeviceName   string   `json:"deviceName,omitempty"`            //设备名称
+	DataID       string   `json:"dataID"`                          //获取的具体属性值
+	Value        string   `json:"value,omitempty"`                 //获取到的值
+	TenantCode   string   `json:"tenantCode,optional,omitempty"`   //只有partitionBy 传该参数的时候才会返回
+	ProjectID    int64    `json:"projectID,optional,omitempty"`    //只有partitionBy 传该参数的时候才会返回
+	AreaID       int64    `json:"areaID,optional,omitempty"`       //只有partitionBy 传该参数的时候才会返回
+	AreaIDPath   string   `json:"areaIDPath,optional,omitempty"`   //只有partitionBy 传该参数的时候才会返回
+	AreaIDs      []int64  `json:"areaIDs,optional,omitempty"`      //只有partitionBy 传该参数的时候才会返回
+	GroupIDPaths []string `json:"groupIDPaths,optional,omitempty"` //只有partitionBy 传该参数的时候才会返回
+	GroupIDs     []int64  `json:"groupIDs,optional,omitempty"`     //只有partitionBy 传该参数的时候才会返回
 }
 
 type DeviceMsgPropertyLogLatestIndexReq struct {

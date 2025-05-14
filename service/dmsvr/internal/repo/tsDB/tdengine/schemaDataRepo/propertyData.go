@@ -271,13 +271,18 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 		sql sq.SelectBuilder
 	)
 	deviceName := ",`device_name` "
-	if !strings.Contains(utils.CamelCaseToUdnderscore(filter.PartitionBy), "device_name") { //如果没有传partition by 会报错
+	partitionBy := utils.CamelCaseToUdnderscore(filter.PartitionBy)
+	if !strings.Contains(partitionBy, "device_name") { //如果没有传partition by 会报错
 		deviceName = ""
 	}
+	pb := partitionBy
+	if partitionBy != "" {
+		pb = "," + pb
+	}
 	if p.Define.Type == schema.DataTypeStruct {
-		sql = sq.Select("FIRST(`ts`) AS ts"+deviceName, d.GetSpecsColumnWithArgFunc(p.Define.Specs, filter.ArgFunc))
+		sql = sq.Select("FIRST(`ts`) AS ts"+deviceName+pb, d.GetSpecsColumnWithArgFunc(p.Define.Specs, filter.ArgFunc))
 	} else {
-		sql = sq.Select("FIRST(`ts`) AS ts"+deviceName, fmt.Sprintf("%s(`param`) as param", filter.ArgFunc))
+		sql = sq.Select("FIRST(`ts`) AS ts"+deviceName+pb, fmt.Sprintf("%s(`param`) as param", filter.ArgFunc))
 	}
 	if filter.Interval != 0 {
 		var unit = filter.IntervalUnit
@@ -290,7 +295,7 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 		sql = sql.Fill(filter.Fill)
 	}
 	if filter.PartitionBy != "" {
-		sql = sql.PartitionBys(utils.CamelCaseToUdnderscore(filter.PartitionBy))
+		sql = sql.PartitionBys(partitionBy)
 	}
 	return sql, nil
 }

@@ -814,6 +814,7 @@ message PropertyGetReportMultiSendResp{
 /*获取对应日志信息*/
 message PropertyLogIndexReq{
   PageInfo page = 1;//使用了聚合函数及间隔的时候无效
+  string tenantCode = 21;//租户号,只有管理员有权限
   int64 projectID =20;//只有管理员有权限
   int64 areaID =14;//只有管理员有权限
   string areaIDPath =15;//只有管理员有权限
@@ -864,6 +865,12 @@ message PropertyLogInfo{
   string dataID = 3;//属性id
   string value = 4;//获取到的值
   string dataName =6;//属性名称
+  string tenantCode = 7;//租户号,只有partitionBy 传该参数的时候才会返回
+  int64 projectID = 8;//租户号,只有partitionBy 传该参数的时候才会返回
+  int64 areaID =9;//租户号,只有partitionBy 传该参数的时候才会返回
+  string areaIDPath =10;//租户号,只有partitionBy 传该参数的时候才会返回
+  repeated int64 groupIDs =18; //只有partitionBy 传该参数的时候才会返回
+  repeated string groupIDPaths = 19;//只有partitionBy 传该参数的时候才会返回
 }
 
 

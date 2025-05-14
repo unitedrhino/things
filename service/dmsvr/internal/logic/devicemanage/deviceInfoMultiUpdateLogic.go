@@ -48,7 +48,6 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 	var areaIDPath string
 	var projectIDSet = map[int64]struct{}{}
 	var changeAreaIDPaths = map[string]struct{}{}
-	var tagUpdateDevices []devices.Core
 	var deviceAffiliation devices.Affiliation
 	var devs = logic.ToDeviceCores(in.Devices)
 	if in.AreaID != 0 {
@@ -101,7 +100,7 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 		logic.FillAreaDeviceCount(l.ctx, l.svcCtx, utils.SetToSlice(changeAreaIDPaths)...)
 		logic.FillProjectDeviceCount(l.ctx, l.svcCtx, utils.SetToSlice(projectIDSet)...)
 	}
-	if len(tagUpdateDevices) > 0 {
+	if deviceAffiliation.AreaID != 0 {
 		logic.UpdateDevice(l.ctx, l.svcCtx, devs, deviceAffiliation)
 	}
 	for _, dev := range devs {

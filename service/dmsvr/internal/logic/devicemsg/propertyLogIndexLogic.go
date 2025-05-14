@@ -45,14 +45,14 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 	if in.Interval != 0 && in.ArgFunc == "" {
 		return nil, errors.Parameter.AddMsg("填写了间隔就必须填写聚合函数")
 	}
+	uc := ctxs.GetUserCtxNoNil(l.ctx)
 	if len(in.DeviceNames) == 0 {
-		if in.DeviceName == "" {
+		if in.DeviceName == "" && !uc.IsAdmin {
 			return nil, errors.Parameter.AddMsg("需要填写设备")
 		}
-		in.DeviceNames = append(in.DeviceNames, in.DeviceName)
-	}
-	if len(in.DeviceNames) == 0 {
-		return nil, errors.Parameter.AddMsg("需要填写设备")
+		if in.DeviceName != "" {
+			in.DeviceNames = append(in.DeviceNames, in.DeviceName)
+		}
 	}
 	for _, dev := range in.DeviceNames {
 		_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{
@@ -109,7 +109,6 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 		Page:      in.Page.GetPage(),
 		Size:      in.Page.GetSize(),
 	}
-	uc := ctxs.GetUserCtxNoNil(l.ctx)
 	if !uc.IsAdmin {
 		var lastBind int64
 		for _, d := range in.DeviceNames {
@@ -149,9 +148,15 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 			devData.TimeStamp = devData.TimeStamp.Truncate(def.TimeUnit(in.IntervalUnit).ToDuration(in.Interval))
 		}
 		diData := dm.PropertyLogInfo{
-			DeviceName: devData.DeviceName,
-			Timestamp:  devData.TimeStamp.UnixMilli(),
-			DataID:     devData.Identifier,
+			DeviceName:   devData.DeviceName,
+			Timestamp:    devData.TimeStamp.UnixMilli(),
+			DataID:       devData.Identifier,
+			TenantCode:   string(devData.TenantCode),
+			ProjectID:    int64(devData.ProjectID),
+			AreaID:       int64(devData.AreaID),
+			AreaIDPath:   string(devData.AreaIDPath),
+			GroupIDs:     devData.GroupIDs,
+			GroupIDPaths: devData.GroupIDPaths,
 		}
 		var payload []byte
 		if param, ok := devData.Param.(string); ok {

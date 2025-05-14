@@ -36,13 +36,16 @@ func AffiliationToMap(in devices.Affiliation) map[string]any {
 
 func AlterTag(ctx context.Context, t *clients.Td, tables []string, tags map[string]any) error {
 	for _, table := range tables {
+		if table[0] != '`' {
+			table = "`" + table + "`"
+		}
 		var vals []string
 		for k, v := range tags {
 			vals = append(vals, fmt.Sprintf(" `%s`='%v' ", k, v))
 		}
 		for i := 3; i > 0; i-- { //重试三次
 			val := strings.Join(vals, ",")
-			_, err := t.ExecContext(ctx, fmt.Sprintf(" ALTER TABLE `%s` SET TAG %s; ",
+			_, err := t.ExecContext(ctx, fmt.Sprintf(" ALTER TABLE %s SET TAG %s; ",
 				table, val))
 			if err != nil {
 				if strings.Contains(err.Error(), "Table does not exist") {

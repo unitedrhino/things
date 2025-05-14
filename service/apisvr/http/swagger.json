@@ -8955,6 +8955,10 @@
     "DeviceMsgPropertyLogIndexReq": {
       "type": "object",
       "properties": {
+        "tenantCode": {
+          "type": "string",
+          "description": "只有管理员有权限"
+        },
         "projectID": {
           "type": "integer",
           "format": "int64",
@@ -9075,12 +9079,52 @@
         "value": {
           "type": "string",
           "description": "获取到的值"
+        },
+        "tenantCode": {
+          "type": "string",
+          "description": "只有partitionBy 传该参数的时候才会返回"
+        },
+        "projectID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "只有partitionBy 传该参数的时候才会返回"
+        },
+        "areaID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "只有partitionBy 传该参数的时候才会返回"
+        },
+        "areaIDPath": {
+          "type": "string",
+          "description": "只有partitionBy 传该参数的时候才会返回"
+        },
+        "areaIDs": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": "只有partitionBy 传该参数的时候才会返回"
+        },
+        "groupIDPaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "只有partitionBy 传该参数的时候才会返回"
+        },
+        "groupIDs": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": "只有partitionBy 传该参数的时候才会返回"
         }
       },
       "title": "DeviceMsgPropertyLogInfo",
       "required": [
         "timestamp",
-        "deviceName",
         "dataID"
       ]
     },

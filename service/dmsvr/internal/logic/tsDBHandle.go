@@ -57,8 +57,8 @@ func UpdateDevGroupsTags(ctx context.Context, svcCtx *svc.ServiceContext, devs [
 		}
 		for i := 3; i > 0; i-- {
 			err := relationDB.NewDeviceInfoRepo(ctx).UpdateWithField(ctx, relationDB.DeviceFilter{Device: &devices.Core{ProductID: g.ProductID, DeviceName: g.DeviceName}}, map[string]any{
-				"group_ids":      groupIDs,
-				"group_id_paths": groupIDPaths,
+				"group_ids":      utils.MarshalNoErr(groupIDs),
+				"group_id_paths": utils.MarshalNoErr(groupIDPaths),
 			})
 			if err != nil {
 				logx.WithContext(ctx).Errorf("update group device error:%v", err)
