@@ -33,7 +33,6 @@ func (n *NatsClient) PublishToDev(ctx context.Context, reqMsg *deviceMsg.Publish
 		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).
 			Infof("PublishToDev msg:%v", reqMsg)
 	}()
-	reqMsg = s.DownBeforeTrans(ctx, reqMsg)
 	err := n.client.Publish(ctx, fmt.Sprintf(topics.DeviceDownMsg, reqMsg.ProtocolCode, reqMsg.Handle, reqMsg.ProductID, reqMsg.DeviceName), devices.PublishToDev(
 		reqMsg.Handle, reqMsg.Type, reqMsg.Payload, reqMsg.ProtocolCode,
 		reqMsg.ProductID, reqMsg.DeviceName))
@@ -49,8 +48,6 @@ func (n *NatsClient) ReqToDeviceSync(ctx context.Context, reqMsg *deviceMsg.Publ
 	start := time.Now()
 	topic := fmt.Sprintf(topics.DeviceUpMsg, reqMsg.Handle, reqMsg.ProductID, reqMsg.DeviceName)
 	done := make(chan struct{})
-	reqMsg = s.DownBeforeTrans(ctx, reqMsg)
-
 	sub, err := n.client.SubscribeWithID(topic, func(ctx context.Context, t time.Time, body []byte) error {
 		msg, err := deviceMsg.GetDevPublish(ctx, body)
 		if err != nil {
