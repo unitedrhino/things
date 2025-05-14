@@ -80,9 +80,9 @@ services:
       #POSTGRES_DB: default
     ports: # 端口映射
       - "5432:5432"
-    #    volumes: # 数据持久化的配置
-    #      - data:/var/lib/postgresql/data
-    #      - log:/var/log/postgresql
+    volumes: # 数据持久化的配置
+      - ../conf/pgsql/data:/var/lib/postgresql/data
+      - ../conf/pgsql/log:/var/log/postgresql
     logging:
       options:
         max-size: "10m"
@@ -105,7 +105,9 @@ services:
       driver: json-file
     networks:
       - unitedrhino_net
-
+    volumes:
+      - ../conf/redis:/usr/local/etc/redis
+      - ../conf/redis/data:/data
   tdengine:
     image: tdengine/tdengine:latest
     container_name: ienv-tdengine
@@ -125,7 +127,10 @@ services:
       driver: json-file
     networks:
       - unitedrhino_net
-
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ../conf/taos/dnode/data:/var/lib/taos
+      - ../conf/taos/dnode/log:/var/log/taos
   emqx:
     image: emqx/emqx:latest
     container_name: ienv-emqx
@@ -166,9 +171,9 @@ services:
         max-size: "50M" # 最大文件上传限制
         max-file: "10"
       driver: json-file
-#    volumes:
-#      - /docker/minio/data:/data               #映射当前目录下的data目录至容器内/data目录
-#      - /docker/minio/config:/root/.minio/     #映射配置目录
+    volumes:
+      - ../conf/minio/data:/data               #映射当前目录下的data目录至容器内/data目录
+      - ../conf/minio/config:/root/.minio/     #映射配置目录
     networks:
       - unitedrhino_net
 #  init-db:

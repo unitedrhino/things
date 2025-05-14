@@ -131,6 +131,8 @@ services:
       TZ: Asia/Shanghai
     volumes:
       - ../conf/mysql/sql:/docker-entrypoint-initdb.d
+      - ../conf/mysql/data:/var/lib/mysql
+      - ../conf/mysql/user:/var/user
     logging:
       options:
         max-size: "50M"
@@ -153,9 +155,11 @@ services:
       driver: json-file
     networks:
       - unitedrhino_net
-
+    volumes:
+      - ../conf/redis:/usr/local/etc/redis
+      - ../conf/redis/data:/data
   tdengine:
-    image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:tdengine-tdengine-3.0.4.2
+    image: tdengine/tdengine:latest
     container_name: tdengine
     hostname: tdengine
     ports:
@@ -173,7 +177,10 @@ services:
       driver: json-file
     networks:
       - unitedrhino_net
-
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ../conf/taos/dnode/data:/var/lib/taos
+      - ../conf/taos/dnode/log:/var/log/taos
   emqx:
     image: emqx/emqx:5.4.0
     container_name: emqx
@@ -216,9 +223,9 @@ services:
         max-size: "50M" # 最大文件上传限制
         max-file: "10"
       driver: json-file
-#    volumes:
-#      - /docker/minio/data:/data               #映射当前目录下的data目录至容器内/data目录
-#      - /docker/minio/config:/root/.minio/     #映射配置目录
+    volumes:
+      - ../conf/minio/data:/data               #映射当前目录下的data目录至容器内/data目录
+      - ../conf/minio/config:/root/.minio/     #映射配置目录
     networks:
       - unitedrhino_net
 

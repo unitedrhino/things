@@ -34,6 +34,8 @@ services:
     ports:
       - "2379:2379"
       - "2380:2380"
+    volumes:
+      - ../conf/etcd:/bitnami/etcd
     environment:
       - ALLOW_NONE_AUTHENTICATION=yes # 允许不用密码登录
       - ETCD_NAME=etcd                                     # etcd 的名字
@@ -61,6 +63,9 @@ services:
       TZ: Asia/Shanghai
     volumes:
       - ../conf/mysql/sql:/docker-entrypoint-initdb.d
+      - ../conf/mysql/data:/var/lib/mysql
+      - ../conf/mysql/user:/var/user
+
     logging:
       options:
         max-size: "50M"
@@ -83,7 +88,9 @@ services:
       driver: json-file
     networks:
       - unitedrhino_net
-
+    volumes:
+      - ../conf/redis:/usr/local/etc/redis
+      - ../conf/redis/data:/data
   tdengine:
     image: tdengine/tdengine:latest
     container_name: ienv-tdengine
@@ -103,7 +110,10 @@ services:
       driver: json-file
     networks:
       - unitedrhino_net
-
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ../conf/taos/dnode/data:/var/lib/taos
+      - ../conf/taos/dnode/log:/var/log/taos
   emqx:
     image: emqx/emqx:latest
     container_name: ienv-emqx
@@ -144,9 +154,9 @@ services:
         max-size: "50M" # 最大文件上传限制
         max-file: "10"
       driver: json-file
-#    volumes:
-#      - /docker/minio/data:/data               #映射当前目录下的data目录至容器内/data目录
-#      - /docker/minio/config:/root/.minio/     #映射配置目录
+    volumes:
+      - ../conf/minio/data:/data               #映射当前目录下的data目录至容器内/data目录
+      - ../conf/minio/config:/root/.minio/     #映射配置目录
     networks:
       - unitedrhino_net
 

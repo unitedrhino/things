@@ -51,6 +51,22 @@ func (l *ProductInitLogic) ProductInit(in *dm.ProductInitReq) (*dm.Empty, error)
 			}
 		})
 	}
+	if err := l.svcCtx.HubLogRepo.InitProduct(
+		l.ctx, ""); err != nil {
+		l.Errorf("%s.HubLogRepo.InitProduct failure,err:%v", utils.FuncName(), err)
+	}
+	if err := l.svcCtx.SDKLogRepo.InitProduct(
+		l.ctx, ""); err != nil {
+		l.Errorf("%s.SDKLogRepo.InitProduct failure,err:%v", utils.FuncName(), err)
+	}
+	if err := l.svcCtx.StatusRepo.InitProduct(
+		l.ctx, ""); err != nil {
+		l.Errorf("%s.StatusRepo.InitProduct failure,err:%v", utils.FuncName(), err)
+	}
+	if err := l.svcCtx.SendRepo.InitProduct(
+		l.ctx, ""); err != nil {
+		l.Errorf("%s.SendRepo.InitProduct failure,err:%v", utils.FuncName(), err)
+	}
 	wait.Wait()
 	return &dm.Empty{}, nil
 }

@@ -165,6 +165,7 @@ func (l *DeviceMsgHandle) deviceResp(respMsg *deviceMsg.PublishMsg) {
 	}
 	l.WithDuration(time.Now().Sub(startTime)).Infof("DeviceMsgHandle.deviceResp startTime:%v msg:%v", startTime, respMsg)
 }
+
 func (l *DeviceMsgHandle) FixDisconnect(msg *deviceMsg.PublishMsg) {
 	return
 	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
