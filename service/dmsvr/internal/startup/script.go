@@ -5,12 +5,14 @@ import (
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/deviceinteract"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/devicemanage"
+	"gitee.com/unitedrhino/things/service/dmsvr/client/devicemsg"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/otamanage"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/productmanage"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/protocol"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	deviceinteractServer "gitee.com/unitedrhino/things/service/dmsvr/internal/server/deviceinteract"
 	devicemanageServer "gitee.com/unitedrhino/things/service/dmsvr/internal/server/devicemanage"
+	devicemsgServer "gitee.com/unitedrhino/things/service/dmsvr/internal/server/devicemsg"
 	otamanageServer "gitee.com/unitedrhino/things/service/dmsvr/internal/server/otamanage"
 	productmanageServer "gitee.com/unitedrhino/things/service/dmsvr/internal/server/productmanage"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
@@ -227,6 +229,7 @@ func dmSymbolInit(svcCtx *svc.ServiceContext) map[string]reflect.Value {
 		"SchemaGet": reflect.ValueOf(func(ctx context.Context, productID string, deviceName string) (*schema.Model, error) {
 			return svcCtx.DeviceSchemaRepo.GetData(ctx, devices.Core{ProductID: productID, DeviceName: deviceName})
 		}),
+		"DeviceMsg":                         reflect.ValueOf(devicemsg.NewDirectDeviceMsg(svcCtx, devicemsgServer.NewDeviceMsgServer(svcCtx))),
 		"DeviceInteract":                    reflect.ValueOf(deviceinteract.NewDirectDeviceInteract(svcCtx, deviceinteractServer.NewDeviceInteractServer(svcCtx))),
 		"DeviceManage":                      reflect.ValueOf(devicemanage.NewDirectDeviceManage(svcCtx, devicemanageServer.NewDeviceManageServer(svcCtx))),
 		"ProductManage":                     reflect.ValueOf(productmanage.NewDirectProductManage(svcCtx, productmanageServer.NewProductManageServer(svcCtx))),
