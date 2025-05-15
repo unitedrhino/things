@@ -1304,6 +1304,7 @@ message GroupInfo{
   int64 projectID = 3;
   int64 id = 1;
   int64 parentID = 2;
+  string idPath =17;
   string name = 4;
   string desc = 5;
   int64 createdTime = 6;

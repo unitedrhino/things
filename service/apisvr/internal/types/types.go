@@ -1044,6 +1044,7 @@ type GroupDeviceMultiSaveReq struct {
 
 type GroupInfo struct {
 	ID          int64             `json:"id,optional"`                         //分组ID
+	IDPath      string            `json:"idPath,optional"`                     //分组ID路径
 	Purpose     string            `json:"purpose,optional"`                    //用途 不填默认为default
 	ParentID    int64             `json:"parentID,optional"`                   //父组ID
 	ProjectID   int64             `json:"projectID,string,optional,omitempty"` //项目ID

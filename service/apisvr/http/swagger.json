@@ -10566,6 +10566,10 @@
           "format": "int64",
           "description": "分组ID"
         },
+        "idPath": {
+          "type": "string",
+          "description": "分组ID路径"
+        },
         "purpose": {
           "type": "string",
           "description": "用途 不填默认为default"

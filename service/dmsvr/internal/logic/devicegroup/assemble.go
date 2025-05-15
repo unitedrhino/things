@@ -32,6 +32,7 @@ func ToGroupInfoPb(ctx context.Context, svcCtx *svc.ServiceContext, ro *relation
 	return &dm.GroupInfo{
 		AreaID:      int64(ro.AreaID),
 		Id:          ro.ID,
+		IdPath:      ro.IDPath,
 		ParentID:    ro.ParentID,
 		ProjectID:   int64(ro.ProjectID),
 		ProductName: productName,
