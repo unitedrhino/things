@@ -55,6 +55,16 @@ func (d *DeviceDataRepo) VersionUpdate(ctx context.Context, version string, dc *
 		for _, tb := range tbs {
 			d.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` DROP TAG `group_ids` ;", tb))
 			d.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` DROP TAG `group_id_paths`;", tb))
+			for _, g := range d.groupConfigs {
+				_, err = d.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG `group_%s_ids`  BINARY(250) ;", tb, g.Value))
+				if err != nil {
+					continue
+				}
+				_, err = d.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG `group_%s_id_paths`  BINARY(250) ;", tb, g.Value))
+				if err != nil {
+					continue
+				}
+			}
 		}
 	}
 	if desc["tenant_code"] != nil {

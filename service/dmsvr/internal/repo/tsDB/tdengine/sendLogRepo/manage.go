@@ -48,15 +48,15 @@ func (s *SendLogRepo) UpdateDevice(ctx context.Context, devices []*devices.Core,
 }
 
 func (s *SendLogRepo) VersionUpdate(ctx context.Context, version string) error {
-	s.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` DROP TAG `group_ids` ;", s.GetLogStableName()))
-	s.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` DROP TAG `group_id_paths`;", s.GetLogStableName()))
-	s.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG `tenant_code`  BINARY(50) ;", s.GetLogStableName()))
-	s.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG  `project_id` BIGINT ;", s.GetLogStableName()))
-	s.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG  `area_id` BIGINT  ;", s.GetLogStableName()))
-	s.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG `area_id_path`  BINARY(50) ;", s.GetLogStableName()))
+	s.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE %s DROP TAG `group_ids` ;", s.GetLogStableName()))
+	s.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE %s DROP TAG `group_id_paths`;", s.GetLogStableName()))
+	s.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE %s ADD TAG `tenant_code`  BINARY(50) ;", s.GetLogStableName()))
+	s.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE %s ADD TAG  `project_id` BIGINT ;", s.GetLogStableName()))
+	s.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE %s ADD TAG  `area_id` BIGINT  ;", s.GetLogStableName()))
+	s.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE %s ADD TAG `area_id_path`  BINARY(50) ;", s.GetLogStableName()))
 	for _, g := range s.groupConfigs {
-		s.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG `group_%s_ids`  BINARY(250) ;", s.GetLogStableName(), g.Value))
-		s.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG `group_%s_id_paths`  BINARY(250) ;", s.GetLogStableName(), g.Value))
+		s.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE %s ADD TAG `group_%s_ids`  BINARY(250) ;", s.GetLogStableName(), g.Value))
+		s.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE %s ADD TAG `group_%s_id_paths`  BINARY(250) ;", s.GetLogStableName(), g.Value))
 	}
 	return nil
 }
