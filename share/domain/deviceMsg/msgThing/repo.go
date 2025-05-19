@@ -19,12 +19,11 @@ import (
 type (
 	// PropertyData 属性数据
 	PropertyData struct {
-		TenantCode   dataType.TenantCode `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"`                                                 // 租户编码
-		ProjectID    dataType.ProjectID  `gorm:"column:project_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`                          // 项目ID(雪花ID)
-		AreaID       dataType.AreaID     `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`                             // 项目区域ID(雪花ID)
-		AreaIDPath   dataType.AreaIDPath `gorm:"column:area_id_path;type:varchar(100);default:'';NOT NULL"`                                          // 项目区域ID路径(雪花ID)
-		GroupIDs     []int64             `gorm:"column:group_ids;type:varchar(256);serializer:json;default:'[]'" json:"groupIDs,omitempty"`          // 分组ID列表 ,12,3,423,5 这样的格式
-		GroupIDPaths []string            `gorm:"column:group_id_paths;type:varchar(512);serializer:json;default:'[]'" json:"groupIDPaths,omitempty"` // 分组id路径列表 ,123-,234-354-,23-, 这样的格式
+		TenantCode  dataType.TenantCode    `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"`                        // 租户编码
+		ProjectID   dataType.ProjectID     `gorm:"column:project_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"` // 项目ID(雪花ID)
+		AreaID      dataType.AreaID        `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`    // 项目区域ID(雪花ID)
+		AreaIDPath  dataType.AreaIDPath    `gorm:"column:area_id_path;type:varchar(100);default:'';NOT NULL"`                 // 项目区域ID路径(雪花ID)
+		BelongGroup map[string]def.IDsInfo `gorm:"column:belong_group;type:json;serializer:json;default:'{}'"`
 
 		DeviceName string    `gorm:"column:device_name;type:varchar(50);NOT NULL" json:"deviceName"`
 		Identifier string    `gorm:"column:identifier;type:varchar(50);NOT NULL" json:"identifier"` //标识符
@@ -33,12 +32,11 @@ type (
 	}
 	// EventData 事件数据
 	EventData struct {
-		TenantCode   dataType.TenantCode `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"`                                                 // 租户编码
-		ProjectID    dataType.ProjectID  `gorm:"column:project_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`                          // 项目ID(雪花ID)
-		AreaID       dataType.AreaID     `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`                             // 项目区域ID(雪花ID)
-		AreaIDPath   dataType.AreaIDPath `gorm:"column:area_id_path;type:varchar(100);default:'';NOT NULL"`                                          // 项目区域ID路径(雪花ID)
-		GroupIDs     []int64             `gorm:"column:group_ids;type:varchar(256);serializer:json;default:'[]'" json:"groupIDs,omitempty"`          // 分组ID列表 ,12,3,423,5 这样的格式
-		GroupIDPaths []string            `gorm:"column:group_id_paths;type:varchar(512);serializer:json;default:'[]'" json:"groupIDPaths,omitempty"` // 分组id路径列表 ,123-,234-354-,23-, 这样的格式
+		TenantCode  dataType.TenantCode    `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"`                        // 租户编码
+		ProjectID   dataType.ProjectID     `gorm:"column:project_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"` // 项目ID(雪花ID)
+		AreaID      dataType.AreaID        `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`    // 项目区域ID(雪花ID)
+		AreaIDPath  dataType.AreaIDPath    `gorm:"column:area_id_path;type:varchar(100);default:'';NOT NULL"`                 // 项目区域ID路径(雪花ID)
+		BelongGroup map[string]def.IDsInfo `gorm:"column:belong_group;type:json;serializer:json;default:'{}'"`
 
 		Identifier string         `gorm:"column:identifier;type:varchar(50);NOT NULL" json:"identifier"` //标识符
 		Type       string         `gorm:"column:type;type:varchar(20);NOT NULL" json:"type" `            //事件类型: 信息:info  告警alert  故障:fault
@@ -58,13 +56,12 @@ type (
 	FilterOpt struct {
 		Page def.PageInfo2
 
-		TenantCode   string
-		ProjectID    int64    `json:"projectID,omitempty"`
-		AreaID       int64    `json:"areaID,omitempty"`
-		AreaIDPath   string   `json:"areaIDPath,omitempty"`
-		GroupIDs     []int64  `json:"groupIDs,omitempty"`
-		GroupIDPaths []string `json:"groupIDPaths,omitempty"`
-		AreaIDs      []int64  `json:"areaIDs"`
+		TenantCode  string
+		ProjectID   int64  `json:"projectID,omitempty"`
+		AreaID      int64  `json:"areaID,omitempty"`
+		AreaIDPath  string `json:"areaIDPath,omitempty"`
+		BelongGroup map[string]def.IDsInfo
+		AreaIDs     []int64 `json:"areaIDs"`
 
 		ProductID  string
 		ProductIDs []string
@@ -88,13 +85,11 @@ type (
 		Sync      bool //同步执行
 		OnlyCache bool //只记录到缓存中
 
-		TenantCode   dataType.TenantCode // 租户编码
-		ProjectID    dataType.ProjectID  // 项目ID(雪花ID)
-		AreaID       dataType.AreaID     // 项目区域ID(雪花ID)
-		AreaIDPath   dataType.AreaIDPath // 项目区域ID路径(雪花ID)
-		GroupIDs     []int64             // 分组ID列表 ,12,3,423,5 这样的格式
-		GroupIDPaths []string            // 分组id路径列表 ,123-,234-354-,23-, 这样的格式
-
+		TenantCode  dataType.TenantCode // 租户编码
+		ProjectID   dataType.ProjectID  // 项目ID(雪花ID)
+		AreaID      dataType.AreaID     // 项目区域ID(雪花ID)
+		AreaIDPath  dataType.AreaIDPath // 项目区域ID路径(雪花ID)
+		BelongGroup map[string]def.IDsInfo
 	}
 
 	SchemaDataRepo interface {

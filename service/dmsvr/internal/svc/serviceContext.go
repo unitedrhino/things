@@ -11,6 +11,7 @@ import (
 	"gitee.com/unitedrhino/core/service/syssvr/client/projectmanage"
 	"gitee.com/unitedrhino/core/service/syssvr/client/tenantmanage"
 	"gitee.com/unitedrhino/core/service/syssvr/client/usermanage"
+	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"gitee.com/unitedrhino/core/service/syssvr/sysExport"
 	"gitee.com/unitedrhino/core/service/timed/timedjobsvr/client/timedmanage"
 	"gitee.com/unitedrhino/share/caches"
@@ -23,6 +24,7 @@ import (
 	ws "gitee.com/unitedrhino/share/websocket"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/config"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceBind"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceGroup"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/protocol"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/userShared"
@@ -49,8 +51,8 @@ import (
 )
 
 type ServiceContext struct {
-	Config config.Config
-
+	Config               config.Config
+	GroupConfig          map[string]*deviceGroup.GroupDetail
 	PubDev               pubDev.PubDev
 	PubApp               pubApp.PubApp
 	ScriptTrans          *protocol.ScriptTrans
@@ -108,11 +110,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	nodeID := utils.GetNodeID(c.CacheRedis, c.Name)
 	ca := kv.NewStore(c.CacheRedis)
 
-	hubLogR := hubLogRepo.NewHubLogRepo(c.TSDB)
-	abnormalR := abnormalLogRepo.NewAbnormalLogRepo(c.TSDB)
-	sdkLogR := sdkLogRepo.NewSDKLogRepo(c.TSDB)
-	statusR := statusLogRepo.NewStatusLogRepo(c.TSDB)
-	sendR := sendLogRepo.NewSendLogRepo(c.TSDB)
 	ossClient, err := oss.NewOssClient(c.OssConf)
 	if err != nil {
 		logx.Errorf("NewOss err err:%v", err)
@@ -185,22 +182,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		})
 	})
 	logx.Must(err)
-	deviceDataR := schemaDataRepo.NewDeviceDataRepo(c.TSDB, func(ctx context.Context, productID devices.Core) (*schema.Model, error) {
-		return getProductSchemaModel.GetData(ctx, productID.ProductID)
-	}, getDeviceSchemaModel.GetData, ca)
-	err = deviceDataR.Init(context.Background())
-	logx.Must(err)
-	script := protocol.NewScriptTrans()
-	pd, err := pubDev.NewPubDev(serverMsg, script)
-	if err != nil {
-		logx.Error("NewPubDev err", err)
-		os.Exit(-1)
-	}
-	pa, err := pubApp.NewPubApp(c.Event)
-	if err != nil {
-		logx.Error("NewPubApp err", err)
-		os.Exit(-1)
-	}
 
 	timedM = timedmanage.NewTimedManage(zrpc.MustNewClient(c.TimedJobRpc.Conf))
 	areaM = areamanage.NewAreaManage(zrpc.MustNewClient(c.SysRpc.Conf))
@@ -226,12 +207,38 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	logx.Must(err)
 	areaC, err := sysExport.NewAreaInfoCache(areamanage.NewAreaManage(zrpc.MustNewClient(c.SysRpc.Conf)), serverMsg)
 	logx.Must(err)
+	dc, err := dictM.DictDetailIndex(ctxs.WithRoot(nil), &sys.DictDetailIndexReq{DictCode: deviceGroup.DictCode, Page: &sys.PageInfo{Orders: []*sys.PageInfo_OrderBy{{Field: "sort", Sort: 1}}}})
+	logx.Must(err)
+	gd := deviceGroup.NewGroupDetail(dc.List)
+	deviceDataR := schemaDataRepo.NewDeviceDataRepo(c.TSDB, func(ctx context.Context, productID devices.Core) (*schema.Model, error) {
+		return getProductSchemaModel.GetData(ctx, productID.ProductID)
+	}, getDeviceSchemaModel.GetData, ca, gd)
+	err = deviceDataR.Init(context.Background())
+	logx.Must(err)
+
+	hubLogR := hubLogRepo.NewHubLogRepo(c.TSDB, gd)
+	abnormalR := abnormalLogRepo.NewAbnormalLogRepo(c.TSDB, gd)
+	sdkLogR := sdkLogRepo.NewSDKLogRepo(c.TSDB, gd)
+	statusR := statusLogRepo.NewStatusLogRepo(c.TSDB, gd)
+	sendR := sendLogRepo.NewSendLogRepo(c.TSDB, gd)
+	script := protocol.NewScriptTrans()
+	pd, err := pubDev.NewPubDev(serverMsg, script)
+	if err != nil {
+		logx.Error("NewPubDev err", err)
+		os.Exit(-1)
+	}
+	pa, err := pubApp.NewPubApp(c.Event)
+	if err != nil {
+		logx.Error("NewPubApp err", err)
+		os.Exit(-1)
+	}
 	return &ServiceContext{
 		FastEvent:         serverMsg,
 		TenantCache:       tenantCache,
 		Config:            c,
 		OssClient:         ossClient,
 		TimedM:            timedM,
+		GroupConfig:       deviceGroup.ToMapGroup(dc.List),
 		AreaM:             areaM,
 		ProjectM:          projectM,
 		PubApp:            pa,

@@ -70,11 +70,13 @@ func init() {
 const Version = "v1.1.0"
 
 func VersionUpdate(svcCtx *svc.ServiceContext) {
-	err := svcCtx.AbnormalRepo.InitProduct(context.Background(), "")
-	logx.Must(err)
-	svcCtx.AbnormalRepo.VersionUpdate(context.Background(), "")
-	svcCtx.SendRepo.VersionUpdate(context.Background(), "")
-	svcCtx.SchemaManaRepo.VersionUpdate(context.Background(), "", svcCtx.DeviceCache)
+	svcCtx.HubLogRepo.InitProduct(context.Background(), "")
+	svcCtx.SDKLogRepo.InitProduct(context.Background(), "")
+	svcCtx.StatusRepo.InitProduct(context.Background(), "")
+	svcCtx.SendRepo.InitProduct(context.Background(), "")
+	//svcCtx.AbnormalRepo.VersionUpdate(context.Background(), "")
+	//svcCtx.SendRepo.VersionUpdate(context.Background(), "")
+	//svcCtx.SchemaManaRepo.VersionUpdate(context.Background(), "", svcCtx.DeviceCache)
 }
 
 func InitSubscribe(svcCtx *svc.ServiceContext) {
@@ -525,11 +527,16 @@ func DictInit(svcCtx *svc.ServiceContext) {
 		Name:  "设备分组用途",
 		Code:  deviceGroup.DictCode,
 	})
-	svcCtx.DictM.DictDetailCreate(ctx, &sys.DictDetail{
+	svcCtx.DictM.DictDetailMultiCreate(ctx, &sys.DictDetailMultiCreateReq{
 		DictCode: deviceGroup.DictCode,
-		Label:    "默认",
-		Value:    deviceGroup.DictDefault,
-		Sort:     1,
+		List: []*sys.DictDetail{
+			{
+				DictCode: deviceGroup.DictCode,
+				Label:    "默认",
+				Value:    deviceGroup.DictDefault,
+				Sort:     1,
+			},
+		},
 	})
 	svcCtx.DictM.DictInfoCreate(ctx, &sys.DictInfo{
 		Group: def.DictGroupThings,

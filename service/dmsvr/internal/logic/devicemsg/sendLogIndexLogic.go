@@ -5,6 +5,7 @@ import (
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
@@ -32,15 +33,14 @@ func NewSendLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Send
 
 func (l *SendLogIndexLogic) SendLogIndex(in *dm.SendLogIndexReq) (*dm.SendLogIndexResp, error) {
 	filter := deviceLog.SendFilter{
-		UserID:       in.UserID,
-		ProductID:    in.ProductID,
-		DeviceName:   in.DeviceName,
-		Actions:      in.Actions,
-		ResultCode:   in.ResultCode,
-		DataIDs:      in.DataIDs,
-		DataID:       in.DataID,
-		GroupIDs:     in.GroupIDs,
-		GroupIDPaths: in.GroupIDPaths,
+		UserID:      in.UserID,
+		ProductID:   in.ProductID,
+		DeviceName:  in.DeviceName,
+		Actions:     in.Actions,
+		ResultCode:  in.ResultCode,
+		DataIDs:     in.DataIDs,
+		DataID:      in.DataID,
+		BelongGroup: utils.CopyMap3[def.IDsInfo](in.BelongGroup),
 	}
 	page := def.PageInfo2{
 		TimeStart: in.TimeStart,

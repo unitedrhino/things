@@ -120,6 +120,6 @@ func (d *DeviceDataRepo) DeleteDeviceProperty(ctx context.Context, productID str
 
 func (d *DeviceDataRepo) UpdateDevice(ctx context.Context, dev devices.Core, t *schema.Model, affiliation devices.Affiliation) error {
 	var tables = d.GetTableNameList(t, dev.ProductID, dev.DeviceName)
-	err := tdengine.AlterTag(ctx, d.t, tables, tdengine.AffiliationToMap(affiliation))
+	err := tdengine.AlterTag(ctx, d.t, tables, tdengine.AffiliationToMap(affiliation, d.groupConfigs))
 	return err
 }

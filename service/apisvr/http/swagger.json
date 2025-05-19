@@ -8597,20 +8597,9 @@
           },
           "description": "只有管理员有权限"
         },
-        "groupIDPaths": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "只有管理员有权限"
-        },
-        "groupIDs": {
-          "type": "array",
-          "items": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "description": "只有管理员有权限"
+        "belongGroup": {
+          "type": "object",
+          "description": "key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回"
         },
         "productID": {
           "type": "string",
@@ -8981,20 +8970,9 @@
           },
           "description": "只有管理员有权限"
         },
-        "groupIDPaths": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "只有管理员有权限"
-        },
-        "groupIDs": {
-          "type": "array",
-          "items": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "description": "只有管理员有权限"
+        "belongGroup": {
+          "type": "object",
+          "description": "key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回"
         },
         "deviceName": {
           "type": "string",
@@ -9043,11 +9021,11 @@
         },
         "argFunc": {
           "type": "string",
-          "description": "聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考:https:docs.taosdata.com/taos-sql/function"
+          "description": "聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考: https:docs.taosdata.com/reference/taos-sql/function/#apercentile"
         },
         "fill": {
           "type": "string",
-          "description": "指定窗口区间数据缺失的情况下的填充模式 参考:https:docs.taosdata.com/reference/taos-sql/distinguished/#fill-%E5%AD%90%E5%8F%A5"
+          "description": "指定窗口区间数据缺失的情况下的填充模式 参考: https:docs.taosdata.com/reference/taos-sql/distinguished/#fill-%E5%AD%90%E5%8F%A5"
         },
         "order": {
           "type": "integer",
@@ -9106,20 +9084,9 @@
           },
           "description": "只有partitionBy 传该参数的时候才会返回"
         },
-        "groupIDPaths": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "只有partitionBy 传该参数的时候才会返回"
-        },
-        "groupIDs": {
-          "type": "array",
-          "items": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "description": "只有partitionBy 传该参数的时候才会返回"
+        "belongGroup": {
+          "type": "object",
+          "description": "key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回"
         }
       },
       "title": "DeviceMsgPropertyLogInfo",
@@ -10744,6 +10711,24 @@
         }
       },
       "title": "IDPath"
+    },
+    "IDsInfo": {
+      "type": "object",
+      "properties": {
+        "ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "idPaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "IDsInfo"
     },
     "OrderBy": {
       "type": "object",

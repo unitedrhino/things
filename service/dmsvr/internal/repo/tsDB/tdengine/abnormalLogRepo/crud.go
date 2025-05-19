@@ -10,6 +10,7 @@ import (
 	"gitee.com/unitedrhino/share/utils"
 	sq "gitee.com/unitedrhino/squirrel"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine"
 	"time"
 )
 
@@ -26,12 +27,7 @@ func (s *AbnormalLogRepo) fillFilter(sql sq.SelectBuilder, filter deviceLog.Abno
 	if filter.TenantCode != "" {
 		sql = sql.Where("`tenant_code`=?", filter.TenantCode)
 	}
-	if len(filter.GroupIDs) != 0 {
-		sql = sql.Where(stores.ArrayEqToSql("group_ids", filter.GroupIDs))
-	}
-	if len(filter.GroupIDPaths) != 0 {
-		sql = sql.Where(stores.ArrayEqToSql("group_ids", filter.GroupIDs))
-	}
+	sql = tdengine.GroupFilter(sql, s.groupConfigs, filter.BelongGroup)
 	if filter.ProjectID != 0 {
 		sql = sql.Where("`project_id`=?", filter.ProjectID)
 	}
@@ -103,9 +99,11 @@ func (s *AbnormalLogRepo) Insert(ctx context.Context, data *deviceLog.Abnormal) 
 		data.Timestamp = time.Now()
 	}
 	data.TraceID = utils.TraceIdFromContext(ctx)
-	sql := fmt.Sprintf("  %s using %s tags('%s','%s','%s',%d,%d,'%s','%s','%s')(`ts`, `type`,`reason` ,`action`  ,`trace_id` ) values (?,?,?,?,?) ",
-		s.GetLogTableName(data.ProductID, data.DeviceName), s.GetLogStableName(), data.ProductID, data.DeviceName, data.TenantCode, data.ProjectID,
-		data.AreaID, data.AreaIDPath, utils.GenSliceStr(data.GroupIDs), utils.GenSliceStr(data.GroupIDPaths))
+	tagKeys, tagVals := tdengine.GenTagsParams(defaultTags, s.groupConfigs, data.BelongGroup)
+
+	sql := fmt.Sprintf("  %s using %s (%s)tags('%s','%s','%s',%d,%d,'%s' %s)(`ts`, `type`,`reason` ,`action`  ,`trace_id` ) values (?,?,?,?,?) ",
+		s.GetLogTableName(data.ProductID, data.DeviceName), s.GetLogStableName(), tagKeys, data.ProductID, data.DeviceName, data.TenantCode, data.ProjectID,
+		data.AreaID, data.AreaIDPath, tagVals)
 	s.t.AsyncInsert(sql, data.Timestamp, data.Type, data.Reason, def.ToBool(data.Action), data.TraceID)
 	return nil
 }

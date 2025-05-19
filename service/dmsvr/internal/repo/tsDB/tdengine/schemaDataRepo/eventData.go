@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
-	"gitee.com/unitedrhino/share/utils"
 	sq "gitee.com/unitedrhino/squirrel"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 )
 
@@ -18,11 +18,11 @@ func (d *DeviceDataRepo) InsertEventData(ctx context.Context, productID string,
 	if err != nil {
 		return errors.System.AddDetail("param json parse failure")
 	}
+	tagKeys, tagVals := tdengine.GenTagsParams(defaultTags, d.groupConfigs, event.BelongGroup)
 	sql := fmt.Sprintf(
-		" %s using %s tags('%s','%s','%s',%d,%d,'%s','%s','%s') (`ts`,`event_id`,`event_type`, `param`) values (?,?,?,?);",
-		d.GetEventTableName(productID, deviceName), d.GetEventStableName(), productID, deviceName,
-		event.TenantCode, event.ProjectID, event.AreaID, event.AreaIDPath, utils.GenSliceStr(event.GroupIDs),
-		utils.GenSliceStr(event.GroupIDPaths))
+		" %s using %s (%s)tags('%s','%s','%s',%d,%d,'%s','%s') (`ts`,`event_id`,`event_type`, `param`) values (?,?,?,?);",
+		d.GetEventTableName(productID, deviceName), d.GetEventStableName(), tagKeys, productID, deviceName,
+		event.TenantCode, event.ProjectID, event.AreaID, event.AreaIDPath, tagVals)
 	//if _, err := d.t.ExecContext(ctx, sql, event.TimeStamp, event.Identifier, event.Type, param); err != nil {
 	//	return err
 	//}
@@ -47,12 +47,8 @@ func (d *DeviceDataRepo) fmtSql(f msgThing.FilterOpt, sql sq.SelectBuilder) sq.S
 	if f.TenantCode != "" {
 		sql = sql.Where("`tenant_code`=?", f.TenantCode)
 	}
-	if len(f.GroupIDs) != 0 {
-		sql = sql.Where(stores.ArrayEqToSql("group_ids", f.GroupIDs))
-	}
-	if len(f.GroupIDPaths) != 0 {
-		sql = sql.Where(stores.ArrayEqToSql("group_ids", f.GroupIDs))
-	}
+	sql = tdengine.GroupFilter(sql, d.groupConfigs, f.BelongGroup)
+
 	if f.ProjectID != 0 {
 		sql = sql.Where("`project_id`=?", f.ProjectID)
 	}

@@ -5,6 +5,7 @@ import (
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
@@ -32,16 +33,15 @@ func NewAbnormalLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 
 func (l *AbnormalLogIndexLogic) AbnormalLogIndex(in *dm.AbnormalLogIndexReq) (*dm.AbnormalLogIndexResp, error) {
 	filter := deviceLog.AbnormalFilter{
-		ProductID:    in.ProductID,
-		DeviceName:   in.DeviceName,
-		Action:       in.Action,
-		Type:         in.Type,
-		AreaIDs:      in.AreaIDs,
-		AreaID:       in.AreaID,
-		AreaIDPath:   in.AreaIDPath,
-		ProjectID:    in.ProjectID,
-		GroupIDs:     in.GroupIDs,
-		GroupIDPaths: in.GroupIDPaths,
+		ProductID:   in.ProductID,
+		DeviceName:  in.DeviceName,
+		Action:      in.Action,
+		Type:        in.Type,
+		AreaIDs:     in.AreaIDs,
+		AreaID:      in.AreaID,
+		AreaIDPath:  in.AreaIDPath,
+		ProjectID:   in.ProjectID,
+		BelongGroup: utils.CopyMap3[def.IDsInfo](in.BelongGroup),
 	}
 	if in.ProductID != "" && in.DeviceName != "" {
 		_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{

@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/unitedrhino/share/conf"
 	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceGroup"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine/statusLogRepo"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -22,7 +23,7 @@ type StatusLogRepo struct {
 	asyncInsert *stores.AsyncInsert[Status]
 }
 
-func NewStatusLogRepo(dataSource conf.TSDB) deviceLog.StatusRepo {
+func NewStatusLogRepo(dataSource conf.TSDB, g []*deviceGroup.GroupDetail) deviceLog.StatusRepo {
 	if dataSource.DBType == conf.Tdengine {
 		return statusLogRepo.NewStatusLogRepo(dataSource)
 	}

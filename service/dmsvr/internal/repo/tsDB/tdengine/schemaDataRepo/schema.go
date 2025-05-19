@@ -51,6 +51,11 @@ func (S *SchemaStore) GetPropertyStableName(p *schema.Property, productID, ident
 	}
 	return fmt.Sprintf("`model_common_property_%s`", identifier)
 }
+
+var defaultTags = "`product_id` ,`device_name`,`tenant_code`,`project_id`,`area_id`,`area_id_path` "
+var defaultTagDef = "`product_id` BINARY(50),`device_name` BINARY(50),`" + PropertyType + "` BINARY(50)," +
+	" `tenant_code`  BINARY(50),`project_id` BIGINT,`area_id` BIGINT,`area_id_path`  BINARY(50) "
+
 func (S *SchemaStore) GetEventStableName() string {
 	return fmt.Sprintf("`model_common_event`")
 }

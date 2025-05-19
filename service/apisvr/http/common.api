@@ -56,7 +56,10 @@ type(
         Start int64 `json:"start,optional"`       //开始时间 unix时间戳
         End int64 `json:"end,optional"`           //结束时间 unix时间戳
     }
-
+    IDsInfo{
+        IDs []int64 `json:"ids,string,optional"`
+        IDPaths []string `json:"idPaths,optional"`
+    }
     SendOption  {
         TimeoutToFail  int64 `json:"timeoutToFail,optional"`   //超时失败时间
         RequestTimeout int64 `json:"requestTimeout,optional"` //请求超时,超时后会进行重试

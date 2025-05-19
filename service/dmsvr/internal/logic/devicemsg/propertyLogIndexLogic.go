@@ -129,6 +129,7 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 		ProductID:    in.ProductID,
 		ProductIDs:   productIDs,
 		DeviceNames:  in.DeviceNames,
+		BelongGroup:  utils.CopyMap3[def.IDsInfo](in.BelongGroup),
 		Order:        in.Order,
 		DataID:       in.DataID,
 		Fill:         in.Fill,
@@ -148,15 +149,15 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 			devData.TimeStamp = devData.TimeStamp.Truncate(def.TimeUnit(in.IntervalUnit).ToDuration(in.Interval))
 		}
 		diData := dm.PropertyLogInfo{
-			DeviceName:   devData.DeviceName,
-			Timestamp:    devData.TimeStamp.UnixMilli(),
-			DataID:       devData.Identifier,
-			TenantCode:   string(devData.TenantCode),
-			ProjectID:    int64(devData.ProjectID),
-			AreaID:       int64(devData.AreaID),
-			AreaIDPath:   string(devData.AreaIDPath),
-			GroupIDs:     devData.GroupIDs,
-			GroupIDPaths: devData.GroupIDPaths,
+			DeviceName: devData.DeviceName,
+			Timestamp:  devData.TimeStamp.UnixMilli(),
+			DataID:     devData.Identifier,
+			TenantCode: string(devData.TenantCode),
+			ProjectID:  int64(devData.ProjectID),
+			AreaID:     int64(devData.AreaID),
+			AreaIDPath: string(devData.AreaIDPath),
+			//GroupIDs:     devData.GroupIDs,
+			//GroupIDPaths: devData.GroupIDPaths,
 		}
 		var payload []byte
 		if param, ok := devData.Param.(string); ok {
@@ -183,6 +184,7 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 			DataID:       in.DataID,
 			DeviceNames:  in.DeviceNames,
 			Interval:     in.Interval,
+			BelongGroup:  utils.CopyMap3[def.IDsInfo](in.BelongGroup),
 			IntervalUnit: def.TimeUnit(in.IntervalUnit),
 			ArgFunc:      in.ArgFunc})
 		if err != nil {

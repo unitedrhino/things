@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
@@ -46,20 +47,19 @@ func UpdateDevGroupsTags(ctx context.Context, svcCtx *svc.ServiceContext, devs [
 			logx.WithContext(ctx).Errorf("find group device error:%v", err)
 			continue
 		}
-		var groupIDs []int64
-		var groupIDPaths []string
+		var gp = map[string]def.IDsInfo{}
 		for _, g := range gs {
 			if g.Group == nil {
 				continue
 			}
-			groupIDs = append(groupIDs, g.GroupID)
-			groupIDPaths = append(groupIDPaths, g.Group.IDPath)
+			gg := gp[g.Group.Purpose]
+			gg.IDs = append(gg.IDs, g.GroupID)
+			gg.IDPaths = append(gg.IDPaths, g.Group.IDPath)
 		}
 		for i := 3; i > 0; i-- {
 			dev := devices.Core{ProductID: g.ProductID, DeviceName: g.DeviceName}
 			err := relationDB.NewDeviceInfoRepo(ctx).UpdateWithField(ctx, relationDB.DeviceFilter{Device: &dev}, map[string]any{
-				"group_ids":      utils.MarshalNoErr(groupIDs),
-				"group_id_paths": utils.MarshalNoErr(groupIDPaths),
+				"belong_group": utils.MarshalNoErr(gp),
 			})
 			if err != nil {
 				logx.WithContext(ctx).Errorf("update group device error:%v", err)
@@ -70,10 +70,9 @@ func UpdateDevGroupsTags(ctx context.Context, svcCtx *svc.ServiceContext, devs [
 		}
 
 		dgs = append(dgs, &devices.Info{
-			ProductID:    g.ProductID,
-			DeviceName:   g.DeviceName,
-			GroupIDs:     groupIDs,
-			GroupIDPaths: groupIDPaths,
+			ProductID:   g.ProductID,
+			DeviceName:  g.DeviceName,
+			BelongGroup: gp,
 		})
 	}
 	return UpdateDevices(ctx, svcCtx, dgs)

@@ -4,11 +4,13 @@ import (
 	"context"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/share/devices"
+	"gorm.io/gorm"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -43,7 +45,10 @@ func (l *GroupDeviceMultiCreateLogic) GroupDeviceMultiCreate(in *dm.GroupDeviceM
 	if err != nil {
 		return nil, err
 	}
+	gc := l.svcCtx.GroupConfig[gi.Purpose]
+
 	list := make([]*relationDB.DmGroupDevice, 0, len(in.List))
+	var devs []devices.Core
 	for _, v := range in.List {
 		list = append(list, &relationDB.DmGroupDevice{
 			GroupID:    in.GroupID,
@@ -51,10 +56,23 @@ func (l *GroupDeviceMultiCreateLogic) GroupDeviceMultiCreate(in *dm.GroupDeviceM
 			DeviceName: v.DeviceName,
 			AreaID:     gi.AreaID,
 		})
+		devs = append(devs, devices.Core{ProductID: v.ProductID, DeviceName: v.DeviceName})
 	}
-	err = l.GdDB.MultiInsert(l.ctx, list)
+	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+		if gc != nil && gc.UniqueDevice {
+			err = relationDB.NewGroupDeviceRepo(tx).DeleteByFilter(l.ctx, relationDB.GroupDeviceFilter{
+				Propose: gi.Purpose,
+				Devs:    devs,
+			})
+			if err != nil {
+				return err
+			}
+		}
+		err = relationDB.NewGroupDeviceRepo(tx).MultiInsert(l.ctx, list)
+		return err
+	})
 	if err != nil {
-		return nil, errors.Database.AddDetail(err)
+		return nil, err
 	}
 	relationDB.NewGroupInfoRepo(l.ctx).UpdateGroupDeviceCount(l.ctx, in.GroupID)
 

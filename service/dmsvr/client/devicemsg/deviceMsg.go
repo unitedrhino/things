@@ -117,6 +117,7 @@ type (
 	HubLogInfo                        = dm.HubLogInfo
 	IDPath                            = dm.IDPath
 	IDPathWithUpdate                  = dm.IDPathWithUpdate
+	IDsInfo                           = dm.IDsInfo
 	OtaFirmwareDeviceCancelReq        = dm.OtaFirmwareDeviceCancelReq
 	OtaFirmwareDeviceConfirmReq       = dm.OtaFirmwareDeviceConfirmReq
 	OtaFirmwareDeviceIndexReq         = dm.OtaFirmwareDeviceIndexReq

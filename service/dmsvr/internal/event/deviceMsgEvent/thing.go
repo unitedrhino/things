@@ -266,8 +266,7 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 		err = l.repo.InsertPropertiesData(l.ctx, t, device.ProductID, device.DeviceName, tp.Params, timeStamp,
 			msgThing.Optional{TenantCode: dataType.TenantCode(di.TenantCode),
 				ProjectID: dataType.ProjectID(di.ProjectID), AreaID: dataType.AreaID(di.AreaID),
-				AreaIDPath: dataType.AreaIDPath(di.AreaIDPath),
-				GroupIDs:   di.GroupIDs, GroupIDPaths: di.GroupIDPaths})
+				AreaIDPath: dataType.AreaIDPath(di.AreaIDPath), BelongGroup: utils.CopyMap3[def.IDsInfo](di.BelongGroup)})
 		if err != nil {
 			l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
 			return err
@@ -282,8 +281,8 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 		dbData := msgThing.EventData{
 			TenantCode: dataType.TenantCode(di.TenantCode),
 			ProjectID:  dataType.ProjectID(di.ProjectID), AreaID: dataType.AreaID(di.AreaID),
-			AreaIDPath: dataType.AreaIDPath(di.AreaIDPath),
-			GroupIDs:   di.GroupIDs, GroupIDPaths: di.GroupIDPaths}
+			AreaIDPath:  dataType.AreaIDPath(di.AreaIDPath),
+			BelongGroup: utils.CopyMap3[def.IDsInfo](di.BelongGroup)}
 		dbData.Identifier = tp.EventID
 		dbData.Type = tp.Type
 		dbData.Params, err = msgThing.ToVal(tp.Params)
@@ -510,8 +509,8 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 	//插入多条设备物模型属性数据
 	err = l.repo.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, tp, timeStamp, msgThing.Optional{TenantCode: dataType.TenantCode(l.di.TenantCode),
 		ProjectID: dataType.ProjectID(l.di.ProjectID), AreaID: dataType.AreaID(l.di.AreaID),
-		AreaIDPath: dataType.AreaIDPath(l.di.AreaIDPath),
-		GroupIDs:   l.di.GroupIDs, GroupIDPaths: l.di.GroupIDPaths})
+		AreaIDPath:  dataType.AreaIDPath(l.di.AreaIDPath),
+		BelongGroup: utils.CopyMap3[def.IDsInfo](l.di.BelongGroup)})
 	if err != nil {
 		l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
 		return l.DeviceResp(msg, errors.Database.AddDetail(err), nil), err
@@ -654,8 +653,8 @@ func (l *ThingLogic) HandlePropertyGetStatus(msg *deviceMsg.PublishMsg) (respMsg
 			err = l.repo.InsertPropertiesData(l.ctx, l.schema, msg.ProductID, msg.DeviceName, vals, time.Now(),
 				msgThing.Optional{Sync: true, TenantCode: dataType.TenantCode(l.di.TenantCode),
 					ProjectID: dataType.ProjectID(l.di.ProjectID), AreaID: dataType.AreaID(l.di.AreaID),
-					AreaIDPath: dataType.AreaIDPath(l.di.AreaIDPath),
-					GroupIDs:   l.di.GroupIDs, GroupIDPaths: l.di.GroupIDPaths})
+					AreaIDPath:  dataType.AreaIDPath(l.di.AreaIDPath),
+					BelongGroup: utils.CopyMap3[def.IDsInfo](l.di.BelongGroup)})
 			if err != nil {
 				l.Errorf("%s.InsertPropertyData err=%+v", utils.FuncName(), err)
 				return l.DeviceResp(msg, errors.Database.AddDetail(err), nil), err
@@ -746,8 +745,8 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 	dbData := msgThing.EventData{
 		TenantCode: dataType.TenantCode(l.di.TenantCode),
 		ProjectID:  dataType.ProjectID(l.di.ProjectID), AreaID: dataType.AreaID(l.di.AreaID),
-		AreaIDPath: dataType.AreaIDPath(l.di.AreaIDPath),
-		GroupIDs:   l.di.GroupIDs, GroupIDPaths: l.di.GroupIDPaths,
+		AreaIDPath:  dataType.AreaIDPath(l.di.AreaIDPath),
+		BelongGroup: utils.CopyMap3[def.IDsInfo](l.di.BelongGroup),
 	}
 	dbData.Identifier = l.dreq.EventID
 	dbData.Type = l.dreq.Type

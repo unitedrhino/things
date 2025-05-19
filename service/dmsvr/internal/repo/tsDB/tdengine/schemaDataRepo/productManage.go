@@ -134,11 +134,11 @@ func (d *DeviceDataRepo) createPropertyStable(
 	var sql string
 	switch p.Define.Type {
 	case schema.DataTypeStruct:
+		ts := "`product_id` BINARY(50),`device_name` BINARY(50),`" + PropertyType + "` BINARY(50)," +
+			" `tenant_code`  BINARY(50),`project_id` BIGINT,`area_id` BIGINT,`area_id_path`  BINARY(50)"
 		sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp, %s)"+
-			" TAGS (`product_id` BINARY(50),`device_name` BINARY(50),`"+PropertyType+"` BINARY(50),"+
-			" `tenant_code`  BINARY(50),`project_id` BIGINT,`area_id` BIGINT,`area_id_path`  BINARY(50),"+
-			"`group_ids`  BINARY(250),`group_id_paths`  BINARY(250));",
-			d.GetPropertyStableName(p, productID, p.Identifier), d.GetSpecsCreateColumn(p.Define.Specs))
+			" TAGS (%s);",
+			d.GetPropertyStableName(p, productID, p.Identifier), d.GetSpecsCreateColumn(p.Define.Specs), tdengine.GenTagsDef(ts, d.groupConfigs))
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
 			return errors.Database.AddDetail(err)
 		}
@@ -146,30 +146,30 @@ func (d *DeviceDataRepo) createPropertyStable(
 		arrayInfo := p.Define.ArrayInfo
 		switch arrayInfo.Type {
 		case schema.DataTypeStruct:
+			ts := "`product_id` BINARY(50),`device_name` BINARY(50),`_num` BIGINT,`" + PropertyType + "` BINARY(50)," +
+				" `tenant_code`  BINARY(50),`project_id` BIGINT,`area_id` BIGINT,`area_id_path`  BINARY(50)"
 			sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp, %s)"+
-				" TAGS (`product_id` BINARY(50),`device_name` BINARY(50),`_num` BIGINT,`"+PropertyType+"` BINARY(50),"+
-				" `tenant_code`  BINARY(50),`project_id` BIGINT,`area_id` BIGINT,`area_id_path`  BINARY(50),"+
-				"`group_ids`  BINARY(250),`group_id_paths`  BINARY(250));",
-				d.GetPropertyStableName(p, productID, p.Identifier), d.GetSpecsCreateColumn(arrayInfo.Specs))
+				" TAGS (%s);",
+				d.GetPropertyStableName(p, productID, p.Identifier), d.GetSpecsCreateColumn(arrayInfo.Specs), tdengine.GenTagsDef(ts, d.groupConfigs))
 			if _, err := d.t.ExecContext(ctx, sql); err != nil {
 				return errors.Database.AddDetail(err)
 			}
 		default:
+			ts := "`product_id` BINARY(50),`device_name` BINARY(50),`_num` BIGINT,`" + PropertyType + "` BINARY(50)," +
+				" `tenant_code`  BINARY(50),`project_id` BIGINT,`area_id` BIGINT,`area_id_path`  BINARY(50)"
 			sql = fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp,`param` %s)"+
-				" TAGS (`product_id` BINARY(50),`device_name` BINARY(50),`_num` BIGINT,`"+PropertyType+"` BINARY(50),"+
-				" `tenant_code`  BINARY(50),`project_id` BIGINT,`area_id` BIGINT,`area_id_path`  BINARY(50),"+
-				"`group_ids`  BINARY(250),`group_id_paths`  BINARY(250));",
-				d.GetPropertyStableName(p, productID, p.Identifier), tdengine.GetTdType(*arrayInfo))
+				" TAGS (%s);",
+				d.GetPropertyStableName(p, productID, p.Identifier), tdengine.GetTdType(*arrayInfo), tdengine.GenTagsDef(ts, d.groupConfigs))
 			if _, err := d.t.ExecContext(ctx, sql); err != nil {
 				return errors.Database.AddDetail(err)
 			}
 		}
 	default:
+		ts := "`product_id` BINARY(50),`device_name` BINARY(50),`" + PropertyType + "` BINARY(50)," +
+			" `tenant_code`  BINARY(50),`project_id` BIGINT,`area_id` BIGINT,`area_id_path`  BINARY(50)"
 		sql = fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp,`param` %s)"+
-			" TAGS (`product_id` BINARY(50),`device_name` BINARY(50),`"+PropertyType+"` BINARY(50),"+
-			" `tenant_code`  BINARY(50),`project_id` BIGINT,`area_id` BIGINT,`area_id_path`  BINARY(50),"+
-			"`group_ids`  BINARY(250),`group_id_paths`  BINARY(250));",
-			d.GetPropertyStableName(p, productID, p.Identifier), tdengine.GetTdType(p.Define))
+			" TAGS (%s);",
+			d.GetPropertyStableName(p, productID, p.Identifier), tdengine.GetTdType(p.Define), tdengine.GenTagsDef(ts, d.groupConfigs))
 		if _, err := d.t.ExecContext(ctx, sql); err != nil {
 			return errors.Database.AddDetail(err)
 		}

@@ -4,14 +4,30 @@ import (
 	"context"
 	"fmt"
 	"gitee.com/unitedrhino/share/clients"
+	"gitee.com/unitedrhino/share/def"
+	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
+	sq "gitee.com/unitedrhino/squirrel"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceGroup"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
 )
 
-func AffiliationToMap(in devices.Affiliation) map[string]any {
+func ToBelongGroup(in map[string]*dm.IDsInfo) (out map[string]def.IDsInfo) {
+	if in == nil {
+		return
+	}
+	out = make(map[string]def.IDsInfo)
+	for k, v := range in {
+		out[k] = utils.Copy2[def.IDsInfo](v)
+	}
+	return
+}
+
+func AffiliationToMap(in devices.Affiliation, groupConfigs []*deviceGroup.GroupDetail) map[string]any {
 	var ret = make(map[string]any)
 	if in.TenantCode != "" {
 		ret["tenant_code"] = in.TenantCode
@@ -25,13 +41,68 @@ func AffiliationToMap(in devices.Affiliation) map[string]any {
 	if in.AreaID != 0 {
 		ret["area_id"] = in.AreaID
 	}
-	if in.GroupIDs != nil {
-		ret["group_ids"] = utils.GenSliceStr(in.GroupIDs)
-	}
-	if in.GroupIDPaths != nil {
-		ret["group_id_paths"] = utils.GenSliceStr(in.GroupIDPaths)
+	if in.BelongGroup != nil && groupConfigs != nil {
+		for _, groupConfig := range groupConfigs {
+			if !groupConfig.TsIndex {
+				continue
+			}
+			ret[fmt.Sprintf("group_%s_ids", groupConfig.Value)] = utils.GenSliceStr(in.BelongGroup[groupConfig.Value].IDs)
+			ret[fmt.Sprintf("group_%s_id_paths", groupConfig.Value)] = utils.GenSliceStr(in.BelongGroup[groupConfig.Value].IDPaths)
+		}
 	}
 	return ret
+}
+
+func GenTagsDef(ts string, groupConfigs []*deviceGroup.GroupDetail) (tagNames string) {
+	var tags []string
+	for _, groupConfig := range groupConfigs {
+		if groupConfig.TsIndex == false {
+			continue
+		}
+		tags = append(tags, fmt.Sprintf("`group_%s_ids`  BINARY(250) ", groupConfig.Value), fmt.Sprintf("`group_%s_id_paths`  BINARY(250) ", groupConfig.Value))
+	}
+	if len(tags) == 0 {
+		return ts
+	}
+	return ts + "," + strings.Join(tags, ",")
+}
+
+func GroupFilter(sql sq.SelectBuilder, groupConfigs []*deviceGroup.GroupDetail, BelongGroup map[string]def.IDsInfo) sq.SelectBuilder {
+	if len(BelongGroup) == 0 {
+		return sql
+	}
+	for _, groupConfig := range groupConfigs {
+		if groupConfig.TsIndex == false {
+			continue
+		}
+		bg, ok := BelongGroup[groupConfig.Value]
+		if !ok {
+			continue
+		}
+		if len(bg.IDs) > 0 {
+			sql = sql.Where(stores.ArrayEqToSql("group_"+groupConfig.Value+"_ids", bg.IDs))
+		}
+		if len(bg.IDs) > 0 {
+			sql = sql.Where(stores.ArrayEqToSql("group_"+groupConfig.Value+"_id_paths", bg.IDPaths))
+		}
+	}
+	return sql
+}
+
+func GenTagsParams(ts string, groupConfigs []*deviceGroup.GroupDetail, BelongGroup map[string]def.IDsInfo) (tagNames string, vals string) {
+	var tags []string
+	var vv []string
+	for _, groupConfig := range groupConfigs {
+		if groupConfig.TsIndex == false {
+			continue
+		}
+		tags = append(tags, fmt.Sprintf("`group_%s_ids`", groupConfig.Value), fmt.Sprintf("`group_%s_id_paths`", groupConfig.Value))
+		vv = append(vv, "'"+utils.GenSliceStr(BelongGroup[groupConfig.Value].IDs)+"'", "'"+utils.GenSliceStr(BelongGroup[groupConfig.Value].IDPaths)+"'")
+	}
+	if len(tags) == 0 {
+		return ts, ""
+	}
+	return ts + "," + strings.Join(tags, ","), "," + strings.Join(vv, ",")
 }
 
 func AlterTag(ctx context.Context, t *clients.Td, tables []string, tags map[string]any) error {

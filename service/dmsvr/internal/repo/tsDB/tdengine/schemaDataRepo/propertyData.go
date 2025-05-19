@@ -13,6 +13,7 @@ import (
 	sq "gitee.com/unitedrhino/squirrel"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/shadow"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -33,9 +34,14 @@ func (d *DeviceDataRepo) InsertPropertyData(ctx context.Context, t *schema.Prope
 func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Property, productID string, deviceName string,
 	property *msgThing.Param, timestamp time.Time, optional msgThing.Optional) (sql string, args []any, err error) {
 	var ars = map[string]any{}
+
 	switch property.Define.Type {
 	case schema.DataTypeArray:
 		genArrSql := func(Identifier string, num int, v any) error {
+			ts := "`product_id` ,`device_name` ,`_num`,`" + PropertyType + "`," +
+				" `tenant_code` ,`project_id` ,`area_id`,`area_id_path`"
+			tagKeys, tagVals := tdengine.GenTagsParams(ts, d.groupConfigs, optional.BelongGroup)
+
 			id := GetArrayID(Identifier, num)
 			ars[schema.GenArray(Identifier, num)] = v
 			switch vv := v.(type) {
@@ -44,18 +50,18 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 				if err != nil {
 					return err
 				}
-				sql += fmt.Sprintf(" %s using %s tags('%s','%s',%d,'%s','%s',%d,%d,'%s','%s','%s') (`ts`, %s) values (?,%s) ",
+				sql += fmt.Sprintf(" %s using %s (%s)tags('%s','%s',%d,'%s','%s',%d,%d,'%s' %s) (`ts`, %s) values (?,%s) ",
 					d.GetPropertyTableName(productID, deviceName, id),
-					d.GetPropertyStableName(p, productID, Identifier), productID, deviceName, num, p.Define.Type, optional.TenantCode, optional.ProjectID,
-					optional.AreaID, optional.AreaIDPath, utils.GenSliceStr(optional.GroupIDs), utils.GenSliceStr(optional.GroupIDPaths),
+					d.GetPropertyStableName(p, productID, Identifier), tagKeys, productID, deviceName, num, p.Define.Type, optional.TenantCode, optional.ProjectID,
+					optional.AreaID, optional.AreaIDPath, tagVals,
 					paramIds, paramPlaceholder)
 				args = append([]any{timestamp}, paramValList...)
 			default:
-				sql += fmt.Sprintf(" %s using %s tags('%s','%s',%d,'%s')(`ts`, `param`) values (?,?) ",
+				sql += fmt.Sprintf(" %s using %s (%s)tags('%s','%s',%d,'%s','%s',%d,%d,'%s' %s)(`ts`, `param`) values (?,?) ",
 					d.GetPropertyTableName(productID, deviceName, id),
-					d.GetPropertyStableName(p, productID, Identifier),
+					d.GetPropertyStableName(p, productID, Identifier), tagKeys,
 					productID, deviceName, num, p.Define.Type, optional.TenantCode, optional.ProjectID,
-					optional.AreaID, optional.AreaIDPath, utils.GenSliceStr(optional.GroupIDs), utils.GenSliceStr(optional.GroupIDPaths))
+					optional.AreaID, optional.AreaIDPath, tagVals)
 				args = append(args, timestamp, vv)
 			}
 			return nil
@@ -80,6 +86,10 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 			}
 		}
 	default:
+		ts := "`product_id`,`device_name`,`" + PropertyType + "` ," +
+			" `tenant_code`  ,`project_id` ,`area_id` ,`area_id_path` "
+		tagKeys, tagVals := tdengine.GenTagsParams(ts, d.groupConfigs, optional.BelongGroup)
+
 		ars[property.Identifier] = property.Value
 		switch property.Value.(type) {
 		case map[string]any:
@@ -87,21 +97,21 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 			if err != nil {
 				return "", nil, err
 			}
-			sql = fmt.Sprintf(" %s using %s tags('%s','%s','%s','%s',%d,%d,'%s','%s','%s') (`ts`, %s) values (?,%s) ",
+			sql = fmt.Sprintf(" %s using %s (%s)tags('%s','%s','%s','%s',%d,%d,'%s' %s) (`ts`, %s) values (?,%s) ",
 				d.GetPropertyTableName(productID, deviceName, property.Identifier),
-				d.GetPropertyStableName(p, productID, property.Identifier), productID, deviceName, p.Define.Type, optional.TenantCode, optional.ProjectID,
-				optional.AreaID, optional.AreaIDPath, utils.GenSliceStr(optional.GroupIDs), utils.GenSliceStr(optional.GroupIDPaths),
+				d.GetPropertyStableName(p, productID, property.Identifier), tagKeys, productID, deviceName, p.Define.Type, optional.TenantCode, optional.ProjectID,
+				optional.AreaID, optional.AreaIDPath, tagVals,
 				paramIds, paramPlaceholder)
 			args = append([]any{timestamp}, paramValList...)
 		default:
 			var (
 				param = property.Value
 			)
-			sql = fmt.Sprintf(" %s using %s tags('%s','%s','%s','%s',%d,%d,'%s','%s','%s')(`ts`, `param`) values (?,?) ",
+			sql = fmt.Sprintf(" %s using %s (%s)tags('%s','%s','%s','%s',%d,%d,'%s' %s)(`ts`, `param`) values (?,?) ",
 				d.GetPropertyTableName(productID, deviceName, property.Identifier),
-				d.GetPropertyStableName(p, productID, property.Identifier),
+				d.GetPropertyStableName(p, productID, property.Identifier), tagKeys,
 				productID, deviceName, p.Define.Type, optional.TenantCode, optional.ProjectID,
-				optional.AreaID, optional.AreaIDPath, utils.GenSliceStr(optional.GroupIDs), utils.GenSliceStr(optional.GroupIDPaths))
+				optional.AreaID, optional.AreaIDPath, tagVals)
 			args = append(args, timestamp, param)
 		}
 	}
@@ -259,7 +269,7 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 	stores.Scan(rows, &datas)
 	retProperties := make([]*msgThing.PropertyData, 0, len(datas))
 	for _, v := range datas {
-		retProperties = append(retProperties, ToPropertyData(filter.DataID, p, v))
+		retProperties = append(retProperties, d.ToPropertyData(filter.DataID, p, v))
 	}
 	return retProperties, err
 }
@@ -316,12 +326,8 @@ func (d *DeviceDataRepo) fillFilter(
 	if filter.TenantCode != "" {
 		sql = sql.Where("`tenant_code`=?", filter.TenantCode)
 	}
-	if len(filter.GroupIDs) != 0 {
-		sql = sql.Where(stores.ArrayEqToSql("group_ids", filter.GroupIDs))
-	}
-	if len(filter.GroupIDPaths) != 0 {
-		sql = sql.Where(stores.ArrayEqToSql("group_ids", filter.GroupIDs))
-	}
+	sql = tdengine.GroupFilter(sql, d.groupConfigs, filter.BelongGroup)
+
 	if filter.ProjectID != 0 {
 		sql = sql.Where("`project_id`=?", filter.ProjectID)
 	}

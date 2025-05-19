@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/unitedrhino/share/conf"
 	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceGroup"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine/sendLogRepo"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -22,9 +23,9 @@ type SendLogRepo struct {
 	asyncInsert *stores.AsyncInsert[Send]
 }
 
-func NewSendLogRepo(dataSource conf.TSDB) deviceLog.SendRepo {
+func NewSendLogRepo(dataSource conf.TSDB, g []*deviceGroup.GroupDetail) deviceLog.SendRepo {
 	if dataSource.DBType == conf.Tdengine {
-		return sendLogRepo.NewSendLogRepo(dataSource)
+		return sendLogRepo.NewSendLogRepo(dataSource, g)
 	}
 	stores.InitTsConn(dataSource)
 	db := stores.GetTsConn(context.Background())

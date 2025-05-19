@@ -5,6 +5,7 @@ import (
 	"gitee.com/unitedrhino/share/caches"
 	"gitee.com/unitedrhino/share/conf"
 	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceGroup"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine/schemaDataRepo"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/share/devices"
@@ -49,9 +50,9 @@ func (d *DeviceDataRepo) UpdateDevice(ctx context.Context, dev devices.Core, t *
 	return nil
 }
 
-func NewDeviceDataRepo(dataSource conf.TSDB, getProductSchemaModel schema.GetSchemaModel, getDeviceSchemaModel schema.GetSchemaModel, kv kv.Store) msgThing.SchemaDataRepo {
+func NewDeviceDataRepo(dataSource conf.TSDB, getProductSchemaModel schema.GetSchemaModel, getDeviceSchemaModel schema.GetSchemaModel, kv kv.Store, g []*deviceGroup.GroupDetail) msgThing.SchemaDataRepo {
 	if dataSource.DBType == conf.Tdengine {
-		return schemaDataRepo.NewDeviceDataRepo(dataSource, getProductSchemaModel, getDeviceSchemaModel, kv)
+		return schemaDataRepo.NewDeviceDataRepo(dataSource, getProductSchemaModel, getDeviceSchemaModel, kv, g)
 	}
 	stores.InitTsConn(dataSource)
 	db := stores.GetTsConn(context.Background())

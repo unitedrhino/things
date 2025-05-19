@@ -1,5 +1,7 @@
 package devices
 
+import "gitee.com/unitedrhino/share/def"
+
 const (
 	DeviceRegisterUnable   = 1
 	DeviceAutoCreateEnable = 3
@@ -17,24 +19,22 @@ type WithGateway struct {
 }
 
 type Info struct {
-	ProductID    string `json:"productID"`  //产品id
-	DeviceName   string `json:"deviceName"` //设备名称
-	TenantCode   string
-	ProjectID    int64
-	AreaID       int64
-	AreaIDPath   string
-	GroupIDs     []int64
-	GroupIDPaths []string
+	ProductID   string `json:"productID"`  //产品id
+	DeviceName  string `json:"deviceName"` //设备名称
+	TenantCode  string
+	ProjectID   int64
+	AreaID      int64
+	AreaIDPath  string
+	BelongGroup map[string]def.IDsInfo
 }
 
 // 归属
 type Affiliation struct {
-	TenantCode   string
-	ProjectID    int64
-	AreaID       int64
-	AreaIDPath   string
-	GroupIDs     []int64
-	GroupIDPaths []string
+	TenantCode  string
+	ProjectID   int64
+	AreaID      int64
+	AreaIDPath  string
+	BelongGroup map[string]def.IDsInfo
 }
 
 // 设备标签

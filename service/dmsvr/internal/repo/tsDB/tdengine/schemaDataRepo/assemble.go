@@ -7,6 +7,7 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/spf13/cast"
+	"strings"
 )
 
 func ToEventData(db map[string]any) *msgThing.EventData {
@@ -28,7 +29,7 @@ func ToEventData(db map[string]any) *msgThing.EventData {
 	return &data
 }
 
-func ToPropertyData(id string, p *schema.Property, db map[string]any) *msgThing.PropertyData {
+func (d *DeviceDataRepo) ToPropertyData(id string, p *schema.Property, db map[string]any) *msgThing.PropertyData {
 	propertyType := db[PropertyType]
 	fill := func(data *msgThing.PropertyData) {
 		if db["tenant_code"] != nil {
@@ -43,11 +44,22 @@ func ToPropertyData(id string, p *schema.Property, db map[string]any) *msgThing.
 		if db["area_id_path"] != nil {
 			data.TenantCode = dataType.TenantCode(cast.ToString(db["area_id_path"]))
 		}
-		if db["group_ids"] != nil {
-			data.GroupIDs = utils.StrGenInt64Slice(cast.ToString(db["group_ids"]))
-		}
-		if db["group_id_paths"] != nil {
-			data.GroupIDPaths = utils.StrGenStrSlice(cast.ToString(db["group_id_paths"]))
+		for k, v := range db {
+			if !strings.HasPrefix(k, "group_") {
+				continue
+			}
+			delete(db, k)
+			if strings.HasSuffix(k, "_ids") {
+				purpose := k[len("group_") : len(k)-len("_ids")]
+				pp := data.BelongGroup[purpose]
+				pp.IDs = utils.StrGenInt64Slice(cast.ToString(v))
+				data.BelongGroup[purpose] = pp
+			} else if strings.HasSuffix(k, "_id_paths") {
+				purpose := k[len("group_") : len(k)-len("_id_paths")]
+				pp := data.BelongGroup[purpose]
+				pp.IDPaths = utils.StrGenStrSlice(cast.ToString(v))
+				data.BelongGroup[purpose] = pp
+			}
 		}
 		delete(db, "ts")
 		delete(db, "device_name")
@@ -55,8 +67,6 @@ func ToPropertyData(id string, p *schema.Property, db map[string]any) *msgThing.
 		delete(db, "project_id")
 		delete(db, "area_id")
 		delete(db, "area_id_path")
-		delete(db, "group_ids")
-		delete(db, "group_id_paths")
 		delete(db, PropertyType)
 	}
 	switch propertyType {

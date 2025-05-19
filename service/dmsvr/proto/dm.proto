@@ -66,6 +66,11 @@ message IDPath{
   int64 noParentID =3;
 }
 
+message IDsInfo{
+  repeated int64 ids=1;
+  repeated string  idPaths=2;
+}
+
 message IDPathWithUpdate{
   int64 id =1;
   string idPath=2;
@@ -820,8 +825,7 @@ message PropertyLogIndexReq{
   string areaIDPath =15;//只有管理员有权限
   repeated int64 areaIDs =16;//只有管理员有权限
   int64  productCategoryID = 17;//产品品类id
-  repeated int64 groupIDs =18; //如果要更新分组,必须填写groupPurpose
-  repeated string groupIDPaths = 19;//分组ID路径列表
+  map<string,IDsInfo> BelongGroup =18;//key是group的purpose, value是里面包含的分组id
 
   string deviceName=2;//设备ID
   repeated string deviceNames=3;
@@ -869,8 +873,8 @@ message PropertyLogInfo{
   int64 projectID = 8;//租户号,只有partitionBy 传该参数的时候才会返回
   int64 areaID =9;//租户号,只有partitionBy 传该参数的时候才会返回
   string areaIDPath =10;//租户号,只有partitionBy 传该参数的时候才会返回
-  repeated int64 groupIDs =18; //只有partitionBy 传该参数的时候才会返回
-  repeated string groupIDPaths = 19;//只有partitionBy 传该参数的时候才会返回
+  map<string,IDsInfo> BelongGroup =18;//key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回
+
 }
 
 
@@ -977,8 +981,8 @@ message SendLogIndexReq{
   int64 areaID =14;//只有管理员有权限
   string areaIDPath =15;//只有管理员有权限
  repeated int64 areaIDs =16;//只有管理员有权限
-  repeated int64 groupIDs =17; //如果要更新分组,必须填写groupPurpose
-  repeated string groupIDPaths = 18;//分组ID路径列表
+  map<string,IDsInfo> BelongGroup =17;//key是group的purpose, value是里面包含的分组id
+
   int64  productCategoryID = 11;//产品品类id
   string  productID = 1; //产品id
   string  deviceName = 2; //设备名
@@ -1020,8 +1024,7 @@ message AbnormalLogIndexReq{
   string areaIDPath =15;//只有管理员有权限
   repeated int64 areaIDs =16;//只有管理员有权限
   int64  productCategoryID = 17;//产品品类id
-  repeated int64 groupIDs =18; //如果要更新分组,必须填写groupPurpose
-  repeated string groupIDPaths = 19;//分组ID路径列表
+  map<string,IDsInfo> BelongGroup =18;//key是group的purpose, value是里面包含的分组id
   string  productID = 1; //产品id
   string  deviceName = 2; //设备名
   int64   timeStart = 3;//获取时间的开始(毫秒时间戳)
@@ -1443,7 +1446,7 @@ message DeviceInfo {
   int64 sort =53; //排序
   string groupPurpose =58;//更新的时候使用,将设备该用途下的分组进行更新
   repeated int64 groupIDs =59; //如果要更新分组,必须填写groupPurpose
-  repeated string groupIDPaths = 60;//分组ID路径列表
+  map<string,IDsInfo> BelongGroup =61;//key是group的purpose, value是里面包含的分组id
 
   string deviceImg = 54; //设备图片
   bool isUpdateDeviceImg = 55;//只有这个参数为true的时候才会更新设备图片,传参为图片的file path

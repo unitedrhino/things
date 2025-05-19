@@ -13,6 +13,8 @@ type GroupDeviceRepo struct {
 }
 type (
 	GroupDeviceFilter struct {
+		Propose     string
+		Devs        []devices.Core
 		GroupIDs    []int64
 		ProductID   string
 		DeviceName  string
@@ -87,6 +89,24 @@ func (p GroupDeviceRepo) fmtFilter(ctx context.Context, f GroupDeviceFilter) *go
 		} else {
 			db = db.Preload("Device", "version in ?", f.Versions)
 		}
+	}
+	if f.Propose != "" {
+		subQuery := p.db.Model(&DmGroupInfo{}).Select("id").Where("purpose=?", f.Propose)
+		db = db.Where("group_id  in (?)",
+			subQuery)
+	}
+	if len(f.Devs) != 0 {
+		scope := func(db *gorm.DB) *gorm.DB {
+			for i, d := range f.Devs {
+				if i == 0 {
+					db = db.Where("product_id = ? and device_name = ?", d.ProductID, d.DeviceName)
+					continue
+				}
+				db = db.Or("product_id = ? and device_name = ?", d.ProductID, d.DeviceName)
+			}
+			return db
+		}
+		db = db.Where(scope(db))
 	}
 	//业务过滤条件
 	if len(f.GroupIDs) != 0 {

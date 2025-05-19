@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"gitee.com/unitedrhino/share/conf"
 	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceGroup"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine/hubLogRepo"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -23,7 +24,7 @@ type HubLogRepo struct {
 	asyncInsert *stores.AsyncInsert[Hub]
 }
 
-func NewHubLogRepo(dataSource conf.TSDB) deviceLog.HubRepo {
+func NewHubLogRepo(dataSource conf.TSDB, g []*deviceGroup.GroupDetail) deviceLog.HubRepo {
 	if dataSource.DBType == conf.Tdengine {
 		return hubLogRepo.NewHubLogRepo(dataSource)
 	}
