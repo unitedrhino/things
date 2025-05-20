@@ -55,6 +55,7 @@ func UpdateDevGroupsTags(ctx context.Context, svcCtx *svc.ServiceContext, devs [
 			gg := gp[g.Group.Purpose]
 			gg.IDs = append(gg.IDs, g.GroupID)
 			gg.IDPaths = append(gg.IDPaths, g.Group.IDPath)
+			gp[g.Group.Purpose] = gg
 		}
 		for i := 3; i > 0; i-- {
 			dev := devices.Core{ProductID: g.ProductID, DeviceName: g.DeviceName}

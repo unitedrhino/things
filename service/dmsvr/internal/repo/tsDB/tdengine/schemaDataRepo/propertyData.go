@@ -289,10 +289,14 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 	if partitionBy != "" {
 		pb = "," + pb
 	}
+	ts := "FIRST(`ts`)  AS ts "
+	if filter.NoFirstTs {
+		ts = "`ts` "
+	}
 	if p.Define.Type == schema.DataTypeStruct {
-		sql = sq.Select("FIRST(`ts`) AS ts"+deviceName+pb, d.GetSpecsColumnWithArgFunc(p.Define.Specs, filter.ArgFunc))
+		sql = sq.Select(ts+deviceName+pb, d.GetSpecsColumnWithArgFunc(p.Define.Specs, filter.ArgFunc))
 	} else {
-		sql = sq.Select("FIRST(`ts`) AS ts"+deviceName+pb, fmt.Sprintf("%s(`param`) as param", filter.ArgFunc))
+		sql = sq.Select(ts+deviceName+pb, fmt.Sprintf("%s(`param`) as param", filter.ArgFunc))
 	}
 	if filter.Interval != 0 {
 		var unit = filter.IntervalUnit

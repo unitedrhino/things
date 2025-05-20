@@ -136,6 +136,7 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 		Interval:     in.Interval,
 		IntervalUnit: def.TimeUnit(in.IntervalUnit),
 		PartitionBy:  in.PartitionBy,
+		NoFirstTs:    in.NoFirstTs,
 		ArgFunc:      in.ArgFunc})
 	if err != nil {
 		l.Errorf("%s.GetPropertyDataByID err=%v", utils.FuncName(), err)
@@ -145,17 +146,18 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 		if devData.TimeStamp.IsZero() {
 			continue
 		}
-		if in.Interval != 0 { //如果走了聚合函数,则需要将时间戳取整
-			devData.TimeStamp = devData.TimeStamp.Truncate(def.TimeUnit(in.IntervalUnit).ToDuration(in.Interval))
+		if in.Interval != 0 && !in.NoFirstTs { //如果走了聚合函数,则需要将时间戳取整
+			devData.TimeStamp = def.TimeUnit(in.IntervalUnit).Truncate(devData.TimeStamp, in.Interval)
 		}
 		diData := dm.PropertyLogInfo{
-			DeviceName: devData.DeviceName,
-			Timestamp:  devData.TimeStamp.UnixMilli(),
-			DataID:     devData.Identifier,
-			TenantCode: string(devData.TenantCode),
-			ProjectID:  int64(devData.ProjectID),
-			AreaID:     int64(devData.AreaID),
-			AreaIDPath: string(devData.AreaIDPath),
+			DeviceName:  devData.DeviceName,
+			Timestamp:   devData.TimeStamp.UnixMilli(),
+			DataID:      devData.Identifier,
+			TenantCode:  string(devData.TenantCode),
+			ProjectID:   int64(devData.ProjectID),
+			AreaID:      int64(devData.AreaID),
+			AreaIDPath:  string(devData.AreaIDPath),
+			BelongGroup: utils.CopyMap2[dm.IDsInfo](devData.BelongGroup),
 			//GroupIDs:     devData.GroupIDs,
 			//GroupIDPaths: devData.GroupIDPaths,
 		}

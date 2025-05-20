@@ -75,6 +75,8 @@ type (
 		Fill         string       //指定窗口区间数据缺失的情况下的填充模式
 		ArgFunc      string       //聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考:https://docs.taosdata.com/taos-sql/function
 		PartitionBy  string       //切分数据,可以填写deviceName
+		NoFirstTs    bool         `json:"noFirstTs,optional"` //时间戳填充不填充最早的值,聚合模式使用
+
 	}
 	LatestFilter struct {
 		ProductID  string

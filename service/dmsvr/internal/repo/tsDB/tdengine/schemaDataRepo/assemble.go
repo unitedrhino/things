@@ -3,6 +3,7 @@ package schemaDataRepo
 import (
 	"encoding/json"
 	"gitee.com/unitedrhino/core/share/dataType"
+	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
@@ -49,15 +50,22 @@ func (d *DeviceDataRepo) ToPropertyData(id string, p *schema.Property, db map[st
 				continue
 			}
 			delete(db, k)
+			str := cast.ToString(v)
+			if len(str) == 0 {
+				continue
+			}
+			if data.BelongGroup == nil {
+				data.BelongGroup = map[string]def.IDsInfo{}
+			}
 			if strings.HasSuffix(k, "_ids") {
 				purpose := k[len("group_") : len(k)-len("_ids")]
 				pp := data.BelongGroup[purpose]
-				pp.IDs = utils.StrGenInt64Slice(cast.ToString(v))
+				pp.IDs = utils.StrGenInt64Slice(str)
 				data.BelongGroup[purpose] = pp
 			} else if strings.HasSuffix(k, "_id_paths") {
 				purpose := k[len("group_") : len(k)-len("_id_paths")]
 				pp := data.BelongGroup[purpose]
-				pp.IDPaths = utils.StrGenStrSlice(cast.ToString(v))
+				pp.IDPaths = utils.StrGenStrSlice(str)
 				data.BelongGroup[purpose] = pp
 			}
 		}

@@ -27,7 +27,7 @@ func NewMultiDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Multi
 }
 
 func (l *MultiDeleteLogic) MultiDelete(req *types.GroupDeviceMultiDeleteReq) error {
-	m := make([]*dm.DeviceCore, len(req.List))
+	m := make([]*dm.DeviceCore, 0, len(req.List))
 	for _, v := range req.List {
 		m = append(m, &dm.DeviceCore{
 			ProductID:  v.ProductID,

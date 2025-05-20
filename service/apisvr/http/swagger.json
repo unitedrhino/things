@@ -9035,6 +9035,11 @@
         "partitionBy": {
           "type": "string",
           "description": "切分数据,可以填写deviceName"
+        },
+        "noFirstTs": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "时间戳填充不填充最早的值,聚合模式使用"
         }
       },
       "title": "DeviceMsgPropertyLogIndexReq"

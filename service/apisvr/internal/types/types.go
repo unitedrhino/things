@@ -670,6 +670,7 @@ type DeviceMsgPropertyLogIndexReq struct {
 	Fill              string             `json:"fill,optional"`                       //指定窗口区间数据缺失的情况下的填充模式 参考: https://docs.taosdata.com/reference/taos-sql/distinguished/#fill-%E5%AD%90%E5%8F%A5
 	Order             int64              `json:"order,optional"`                      //时间排序 0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)
 	PartitionBy       string             `json:"partitionBy,optional"`                //切分数据,可以填写deviceName
+	NoFirstTs         bool               `json:"noFirstTs,optional"`                  //时间戳填充不填充最早的值,聚合模式使用
 }
 
 type DeviceMsgPropertyLogInfo struct {
@@ -1086,8 +1087,8 @@ type IDPath struct {
 }
 
 type IDsInfo struct {
-	IDs     []int64  `json:"ids,string,optional"`
-	IDPaths []string `json:"idPaths,optional"`
+	IDs     []int64  `json:"ids,string,optional,omitempty"`
+	IDPaths []string `json:"idPaths,optional,omitempty"`
 }
 
 type OrderBy struct {

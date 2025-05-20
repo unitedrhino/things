@@ -38,13 +38,8 @@ func (l *GroupDeviceMultiDeleteLogic) GroupDeviceMultiDelete(in *dm.GroupDeviceM
 		}
 		relationDB.NewGroupInfoRepo(l.ctx).UpdateGroupDeviceCount(l.ctx, in.GroupID)
 		ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
-			ds, err := relationDB.NewGroupDeviceRepo(l.ctx).FindByFilter(l.ctx, relationDB.GroupDeviceFilter{GroupIDs: []int64{in.GroupID}, WithGroup: true}, nil)
-			if err != nil {
-				logx.WithContext(ctx).Errorf("dm.GroupDeviceMultiCreate err: %v", err)
-				return
-			}
 			var devs []devices.Core
-			for _, v := range ds {
+			for _, v := range in.List {
 				devs = append(devs, devices.Core{ProductID: v.ProductID, DeviceName: v.DeviceName})
 			}
 			err = logic.UpdateDevGroupsTags(ctx, l.svcCtx, devs)
@@ -69,13 +64,8 @@ func (l *GroupDeviceMultiDeleteLogic) GroupDeviceMultiDelete(in *dm.GroupDeviceM
 		return &dm.Empty{}, err
 	}
 	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
-		ds, err := relationDB.NewGroupDeviceRepo(l.ctx).FindByFilter(l.ctx, relationDB.GroupDeviceFilter{GroupIDs: groupIDs, WithGroup: true}, nil)
-		if err != nil {
-			logx.WithContext(ctx).Errorf("dm.GroupDeviceMultiCreate err: %v", err)
-			return
-		}
 		var devs []devices.Core
-		for _, v := range ds {
+		for _, v := range in.List {
 			devs = append(devs, devices.Core{ProductID: v.ProductID, DeviceName: v.DeviceName})
 		}
 		err = logic.UpdateDevGroupsTags(ctx, l.svcCtx, devs)
