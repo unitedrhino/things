@@ -1874,6 +1874,48 @@
         ]
       }
     },
+    "/api/v1/things/device/msg/property-log/multi-index": {
+      "post": {
+        "summary": "批量获取单个id属性历史记录",
+        "operationId": "postApiV1ThingsDeviceMsgProperty-logMulti-index",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/DeviceMsgPropertyMultiIndexResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceMsgPropertyLogMultiIndexReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/msg",
+          "thingsDeviceMsg"
+        ]
+      }
+    },
     "/api/v1/things/device/msg/sdk-log/index": {
       "post": {
         "summary": "获取设备sdk日志",
@@ -8576,13 +8618,11 @@
           "description": "只有管理员有权限"
         },
         "projectID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "只有管理员有权限"
         },
         "areaID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "只有管理员有权限"
         },
         "areaIDPath": {
@@ -8592,8 +8632,7 @@
         "areaIDs": {
           "type": "array",
           "items": {
-            "type": "integer",
-            "format": "int64"
+            "type": "string"
           },
           "description": "只有管理员有权限"
         },
@@ -8949,13 +8988,11 @@
           "description": "只有管理员有权限"
         },
         "projectID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "只有管理员有权限"
         },
         "areaID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "只有管理员有权限"
         },
         "areaIDPath": {
@@ -8965,8 +9002,7 @@
         "areaIDs": {
           "type": "array",
           "items": {
-            "type": "integer",
-            "format": "int64"
+            "type": "string"
           },
           "description": "只有管理员有权限"
         },
@@ -9068,13 +9104,11 @@
           "description": "只有partitionBy 传该参数的时候才会返回"
         },
         "projectID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "只有partitionBy 传该参数的时候才会返回"
         },
         "areaID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "只有partitionBy 传该参数的时候才会返回"
         },
         "areaIDPath": {
@@ -9084,8 +9118,7 @@
         "areaIDs": {
           "type": "array",
           "items": {
-            "type": "integer",
-            "format": "int64"
+            "type": "string"
           },
           "description": "只有partitionBy 传该参数的时候才会返回"
         },
@@ -9120,6 +9153,41 @@
         }
       },
       "title": "DeviceMsgPropertyLogLatestIndexReq"
+    },
+    "DeviceMsgPropertyLogMultiIndexReq": {
+      "type": "object",
+      "properties": {
+        "reqs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceMsgPropertyLogIndexReq"
+          }
+        }
+      },
+      "title": "DeviceMsgPropertyLogMultiIndexReq",
+      "required": [
+        "reqs"
+      ]
+    },
+    "DeviceMsgPropertyMultiIndexResp": {
+      "type": "object",
+      "properties": {
+        "lists": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "invalid",
+              "format": "UNKNOWN"
+            }
+          },
+          "description": "数据"
+        }
+      },
+      "title": "DeviceMsgPropertyMultiIndexResp",
+      "required": [
+        "lists"
+      ]
     },
     "DeviceMsgSdkIndexResp": {
       "type": "object",
@@ -9215,13 +9283,11 @@
           "description": "只有管理员有权限"
         },
         "projectID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "只有管理员有权限"
         },
         "areaID": {
-          "type": "integer",
-          "format": "int64",
+          "type": "string",
           "description": "只有管理员有权限"
         },
         "areaIDPath": {
@@ -9231,8 +9297,7 @@
         "areaIDs": {
           "type": "array",
           "items": {
-            "type": "integer",
-            "format": "int64"
+            "type": "string"
           },
           "description": "只有管理员有权限"
         },

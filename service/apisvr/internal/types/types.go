@@ -564,19 +564,19 @@ type DeviceMoveReq struct {
 }
 
 type DeviceMsgAbnormalLogIndexReq struct {
-	ProductCategoryID int64              `json:"productCategoryID,optional"`     //只有管理员有权限
-	ProjectID         int64              `json:"projectID,optional,omitempty"`   //只有管理员有权限
-	AreaID            int64              `json:"areaID,optional,omitempty"`      //只有管理员有权限
-	AreaIDPath        string             `json:"areaIDPath,optional,omitempty"`  //只有管理员有权限
-	AreaIDs           []int64            `json:"areaIDs,optional,omitempty"`     //只有管理员有权限
-	BelongGroup       map[string]IDsInfo `json:"belongGroup,optional,omitempty"` //key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回
-	ProductID         string             `json:"productID,optional"`             //产品id
-	DeviceName        string             `json:"deviceName,optional"`            //设备名
-	TimeStart         int64              `json:"timeStart,string,optional"`      //获取时间的开始(毫秒时间戳)
-	TimeEnd           int64              `json:"timeEnd,string,optional"`        //时间的结束(毫秒时间戳)
-	Page              *PageInfo          `json:"page,optional"`                  //分页信息
-	Type              string             `json:"type,optional"`                  //异常类型
-	Action            int64              `json:"action,optional"`                //触发1 还是解除2
+	ProductCategoryID int64              `json:"productCategoryID,optional"`          //只有管理员有权限
+	ProjectID         int64              `json:"projectID,string,optional,omitempty"` //只有管理员有权限
+	AreaID            int64              `json:"areaID,string,optional,omitempty"`    //只有管理员有权限
+	AreaIDPath        string             `json:"areaIDPath,optional,omitempty"`       //只有管理员有权限
+	AreaIDs           []int64            `json:"areaIDs,string,optional,omitempty"`   //只有管理员有权限
+	BelongGroup       map[string]IDsInfo `json:"belongGroup,optional,omitempty"`      //key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回
+	ProductID         string             `json:"productID,optional"`                  //产品id
+	DeviceName        string             `json:"deviceName,optional"`                 //设备名
+	TimeStart         int64              `json:"timeStart,string,optional"`           //获取时间的开始(毫秒时间戳)
+	TimeEnd           int64              `json:"timeEnd,string,optional"`             //时间的结束(毫秒时间戳)
+	Page              *PageInfo          `json:"page,optional"`                       //分页信息
+	Type              string             `json:"type,optional"`                       //异常类型
+	Action            int64              `json:"action,optional"`                     //触发1 还是解除2
 }
 
 type DeviceMsgAbnormalLogIndexResp struct {
@@ -651,10 +651,10 @@ type DeviceMsgPropertyIndexResp struct {
 
 type DeviceMsgPropertyLogIndexReq struct {
 	TenantCode        string             `json:"tenantCode,optional,omitempty"`       //只有管理员有权限
-	ProjectID         int64              `json:"projectID,optional,omitempty"`        //只有管理员有权限
-	AreaID            int64              `json:"areaID,optional,omitempty"`           //只有管理员有权限
+	ProjectID         int64              `json:"projectID,string,optional,omitempty"` //只有管理员有权限
+	AreaID            int64              `json:"areaID,string,optional,omitempty"`    //只有管理员有权限
 	AreaIDPath        string             `json:"areaIDPath,optional,omitempty"`       //只有管理员有权限
-	AreaIDs           []int64            `json:"areaIDs,optional,omitempty"`          //只有管理员有权限
+	AreaIDs           []int64            `json:"areaIDs,string,optional,omitempty"`   //只有管理员有权限
 	BelongGroup       map[string]IDsInfo `json:"belongGroup,optional,omitempty"`      //key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回
 	DeviceName        string             `json:"deviceName,optional,omitempty"`       //设备名(不填获取产品下所有设备)
 	DeviceNames       []string           `json:"deviceNames,optional,omitempty"`      //设备名(不填获取产品下所有设备,只有管理员有权限)
@@ -674,22 +674,30 @@ type DeviceMsgPropertyLogIndexReq struct {
 }
 
 type DeviceMsgPropertyLogInfo struct {
-	Timestamp   int64              `json:"timestamp,string"`               //发生时间戳
-	DeviceName  string             `json:"deviceName,omitempty"`           //设备名称
-	DataID      string             `json:"dataID"`                         //获取的具体属性值
-	Value       string             `json:"value,omitempty"`                //获取到的值
-	TenantCode  string             `json:"tenantCode,optional,omitempty"`  //只有partitionBy 传该参数的时候才会返回
-	ProjectID   int64              `json:"projectID,optional,omitempty"`   //只有partitionBy 传该参数的时候才会返回
-	AreaID      int64              `json:"areaID,optional,omitempty"`      //只有partitionBy 传该参数的时候才会返回
-	AreaIDPath  string             `json:"areaIDPath,optional,omitempty"`  //只有partitionBy 传该参数的时候才会返回
-	AreaIDs     []int64            `json:"areaIDs,optional,omitempty"`     //只有partitionBy 传该参数的时候才会返回
-	BelongGroup map[string]IDsInfo `json:"belongGroup,optional,omitempty"` //key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回
+	Timestamp   int64              `json:"timestamp,string"`                    //发生时间戳
+	DeviceName  string             `json:"deviceName,omitempty"`                //设备名称
+	DataID      string             `json:"dataID"`                              //获取的具体属性值
+	Value       string             `json:"value,omitempty"`                     //获取到的值
+	TenantCode  string             `json:"tenantCode,optional,omitempty"`       //只有partitionBy 传该参数的时候才会返回
+	ProjectID   int64              `json:"projectID,string,optional,omitempty"` //只有partitionBy 传该参数的时候才会返回
+	AreaID      int64              `json:"areaID,string,optional,omitempty"`    //只有partitionBy 传该参数的时候才会返回
+	AreaIDPath  string             `json:"areaIDPath,optional,omitempty"`       //只有partitionBy 传该参数的时候才会返回
+	AreaIDs     []int64            `json:"areaIDs,string,optional,omitempty"`   //只有partitionBy 传该参数的时候才会返回
+	BelongGroup map[string]IDsInfo `json:"belongGroup,optional,omitempty"`      //key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回
 }
 
 type DeviceMsgPropertyLogLatestIndexReq struct {
 	DeviceName string   `json:"deviceName,omitempty"`       //设备名
 	ProductID  string   `json:"productID,omitempty"`        //产品id 获取产品id下的所有设备信息
 	DataIDs    []string `json:"dataIDs,optional,omitempty"` //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值
+}
+
+type DeviceMsgPropertyLogMultiIndexReq struct {
+	Reqs []*DeviceMsgPropertyLogIndexReq `json:"reqs"`
+}
+
+type DeviceMsgPropertyMultiIndexResp struct {
+	Lists [][]*DeviceMsgPropertyLogInfo `json:"lists"` //数据
 }
 
 type DeviceMsgSdkIndexResp struct {
@@ -713,18 +721,18 @@ type DeviceMsgSdkLogIndexReq struct {
 }
 
 type DeviceMsgSendLogIndexReq struct {
-	ProductCategoryID int64     `json:"productCategoryID,optional"`      //只有管理员有权限
-	ProjectID         int64     `json:"projectID,optional,omitempty"`    //只有管理员有权限
-	AreaID            int64     `json:"areaID,optional,omitempty"`       //只有管理员有权限
-	AreaIDPath        string    `json:"areaIDPath,optional,omitempty"`   //只有管理员有权限
-	AreaIDs           []int64   `json:"areaIDs,optional,omitempty"`      //只有管理员有权限
-	GroupIDPaths      []string  `json:"groupIDPaths,optional,omitempty"` //只有管理员有权限
-	GroupIDs          []int64   `json:"groupIDs,optional,omitempty"`     //只有管理员有权限
-	ProductID         string    `json:"productID,optional"`              //产品id
-	DeviceName        string    `json:"deviceName,optional"`             //设备名
-	TimeStart         int64     `json:"timeStart,string,optional"`       //获取时间的开始(毫秒时间戳)
-	TimeEnd           int64     `json:"timeEnd,string,optional"`         //时间的结束(毫秒时间戳)
-	Page              *PageInfo `json:"page,optional"`                   //分页信息
+	ProductCategoryID int64     `json:"productCategoryID,optional"`          //只有管理员有权限
+	ProjectID         int64     `json:"projectID,string,optional,omitempty"` //只有管理员有权限
+	AreaID            int64     `json:"areaID,string,optional,omitempty"`    //只有管理员有权限
+	AreaIDPath        string    `json:"areaIDPath,optional,omitempty"`       //只有管理员有权限
+	AreaIDs           []int64   `json:"areaIDs,string,optional,omitempty"`   //只有管理员有权限
+	GroupIDPaths      []string  `json:"groupIDPaths,optional,omitempty"`     //只有管理员有权限
+	GroupIDs          []int64   `json:"groupIDs,optional,omitempty"`         //只有管理员有权限
+	ProductID         string    `json:"productID,optional"`                  //产品id
+	DeviceName        string    `json:"deviceName,optional"`                 //设备名
+	TimeStart         int64     `json:"timeStart,string,optional"`           //获取时间的开始(毫秒时间戳)
+	TimeEnd           int64     `json:"timeEnd,string,optional"`             //时间的结束(毫秒时间戳)
+	Page              *PageInfo `json:"page,optional"`                       //分页信息
 	UserID            int64     `json:"userID,string,optional"`
 	Actions           []string  `json:"actions,optional"`
 	ResultCode        int64     `json:"resultCode,optional"` //请求结果状态,200为成功

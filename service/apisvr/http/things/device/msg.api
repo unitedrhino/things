@@ -32,6 +32,9 @@ service api {
     @doc "获取单个id属性历史记录"
     @handler propertyLogIndex
     post /property-log/index (DeviceMsgPropertyLogIndexReq) returns (DeviceMsgPropertyIndexResp)
+    @doc "批量获取单个id属性历史记录"
+    @handler propertyLogMultiIndex
+    post /property-log/multi-index (DeviceMsgPropertyLogMultiIndexReq) returns (DeviceMsgPropertyMultiIndexResp)
     @doc "获取最新属性记录"
     @handler propertyLatestIndex
     post /property-log-latest/index (DeviceMsgPropertyLogLatestIndexReq) returns (DeviceMsgPropertyIndexResp)
@@ -94,10 +97,10 @@ type (
 
     DeviceMsgSendLogIndexReq  {
         ProductCategoryID int64 `json:"productCategoryID,optional"`//只有管理员有权限
-        ProjectID  int64     `json:"projectID,optional,omitempty"`    //只有管理员有权限
-        AreaID     int64     `json:"areaID,optional,omitempty"`          //只有管理员有权限
+        ProjectID  int64     `json:"projectID,string,optional,omitempty"`    //只有管理员有权限
+        AreaID     int64     `json:"areaID,string,optional,omitempty"`          //只有管理员有权限
         AreaIDPath string    `json:"areaIDPath,optional,omitempty"`   //只有管理员有权限
-        AreaIDs    []int64   `json:"areaIDs,optional,omitempty"` //只有管理员有权限
+        AreaIDs    []int64   `json:"areaIDs,string,optional,omitempty"` //只有管理员有权限
         GroupIDPaths []string    `json:"groupIDPaths,optional,omitempty"`   //只有管理员有权限
         GroupIDs    []int64   `json:"groupIDs,optional,omitempty"` //只有管理员有权限
         ProductID  string    `json:"productID,optional"`     //产品id
@@ -133,10 +136,10 @@ type (
 
     DeviceMsgAbnormalLogIndexReq  {
         ProductCategoryID int64 `json:"productCategoryID,optional"`//只有管理员有权限
-        ProjectID  int64     `json:"projectID,optional,omitempty"`    //只有管理员有权限
-        AreaID     int64     `json:"areaID,optional,omitempty"`          //只有管理员有权限
+        ProjectID  int64     `json:"projectID,string,optional,omitempty"`    //只有管理员有权限
+        AreaID     int64     `json:"areaID,string,optional,omitempty"`          //只有管理员有权限
         AreaIDPath string    `json:"areaIDPath,optional,omitempty"`   //只有管理员有权限
-        AreaIDs    []int64   `json:"areaIDs,optional,omitempty"` //只有管理员有权限
+        AreaIDs    []int64   `json:"areaIDs,string,optional,omitempty"` //只有管理员有权限
         BelongGroup map[string]IDsInfo `json:"belongGroup,optional,omitempty"`//key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回
         ProductID  string    `json:"productID,optional"`     //产品id
         DeviceName string    `json:"deviceName,optional"`   //设备名
@@ -206,10 +209,10 @@ type (
 type (
     DeviceMsgPropertyLogIndexReq  {
         TenantCode string  `json:"tenantCode,optional,omitempty"`//只有管理员有权限
-        ProjectID  int64     `json:"projectID,optional,omitempty"`    //只有管理员有权限
-        AreaID     int64     `json:"areaID,optional,omitempty"`          //只有管理员有权限
+        ProjectID  int64     `json:"projectID,string,optional,omitempty"`    //只有管理员有权限
+        AreaID     int64     `json:"areaID,string,optional,omitempty"`          //只有管理员有权限
         AreaIDPath string    `json:"areaIDPath,optional,omitempty"`   //只有管理员有权限
-        AreaIDs    []int64   `json:"areaIDs,optional,omitempty"` //只有管理员有权限
+        AreaIDs    []int64   `json:"areaIDs,string,optional,omitempty"` //只有管理员有权限
         BelongGroup map[string]IDsInfo `json:"belongGroup,optional,omitempty"`//key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回
         DeviceName string `json:"deviceName,optional,omitempty"`                       //设备名(不填获取产品下所有设备)
         DeviceNames []string `json:"deviceNames,optional,omitempty"`                       //设备名(不填获取产品下所有设备,只有管理员有权限)
@@ -239,6 +242,12 @@ type (
         List []*DeviceMsgPropertyLogInfo `json:"list"`//数据
         PageResp
     }
+    DeviceMsgPropertyLogMultiIndexReq{
+        Reqs []*DeviceMsgPropertyLogIndexReq `json:"reqs"`
+    }
+    DeviceMsgPropertyMultiIndexResp  {
+        Lists [][]*DeviceMsgPropertyLogInfo `json:"lists"`//数据
+    }
 
     DeviceMsgPropertyLogInfo {
         Timestamp int64 `json:"timestamp,string"`               //发生时间戳
@@ -247,10 +256,10 @@ type (
         Value string `json:"value,omitempty"`             //获取到的值
 
         TenantCode string  `json:"tenantCode,optional,omitempty"`//只有partitionBy 传该参数的时候才会返回
-        ProjectID  int64     `json:"projectID,optional,omitempty"`    //只有partitionBy 传该参数的时候才会返回
-        AreaID     int64     `json:"areaID,optional,omitempty"`          //只有partitionBy 传该参数的时候才会返回
+        ProjectID  int64     `json:"projectID,string,optional,omitempty"`    //只有partitionBy 传该参数的时候才会返回
+        AreaID     int64     `json:"areaID,string,optional,omitempty"`          //只有partitionBy 传该参数的时候才会返回
         AreaIDPath string    `json:"areaIDPath,optional,omitempty"`   //只有partitionBy 传该参数的时候才会返回
-        AreaIDs    []int64   `json:"areaIDs,optional,omitempty"` //只有partitionBy 传该参数的时候才会返回
+        AreaIDs    []int64   `json:"areaIDs,string,optional,omitempty"` //只有partitionBy 传该参数的时候才会返回
         BelongGroup map[string]IDsInfo `json:"belongGroup,optional,omitempty"`//key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回
 
     }

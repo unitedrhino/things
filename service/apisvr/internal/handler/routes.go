@@ -404,6 +404,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: thingsdevicemsg.PropertyLogIndexHandler(serverCtx),
 				},
 				{
+					// 批量获取单个id属性历史记录
+					Method:  http.MethodPost,
+					Path:    "/property-log/multi-index",
+					Handler: thingsdevicemsg.PropertyLogMultiIndexHandler(serverCtx),
+				},
+				{
 					// 获取设备sdk日志
 					Method:  http.MethodPost,
 					Path:    "/sdk-log/index",

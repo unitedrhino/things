@@ -667,6 +667,17 @@
         {
           "accessCode": "thingsDeviceMsgFind",
           "method": "POST",
+          "route": "/api/v1/things/device/msg/property-log/multi-index",
+          "name": "批量获取单个id属性历史记录",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all",
+          "recordLogMode": 0
+        },
+        {
+          "accessCode": "thingsDeviceMsgFind",
+          "method": "POST",
           "route": "/api/v1/things/device/msg/sdk-log/index",
           "name": "获取设备sdk日志",
           "isNeedAuth": 2,
