@@ -849,7 +849,7 @@ message PropertyLogIndexReq{
   //    NEXT 填充：使用下一个非 NULL 值填充数据。例如：FILL(NEXT)。
   //  */
   string fill = 10; //填充模式 参考:https://docs.taosdata.com/reference/taos-sql/distinguished/#fill-%E5%AD%90%E5%8F%A5
-  int64 order = 11; //时间排序 0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)
+  int64 order = 11; //时间排序 1:aes(默认,从久到近排序) 2:desc(时间从近到久排序)
   string partitionBy =13;//切分数据,可以填写deviceName
   bool noFirstTs =22;//时间戳填充不填充最早的值,聚合模式使用
 }

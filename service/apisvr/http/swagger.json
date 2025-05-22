@@ -9066,7 +9066,7 @@
         "order": {
           "type": "integer",
           "format": "int64",
-          "description": "时间排序 0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)"
+          "description": "时间排序 1:aes(默认,从久到近排序) 2:desc(时间从近到久排序)"
         },
         "partitionBy": {
           "type": "string",
