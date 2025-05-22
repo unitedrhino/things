@@ -28,6 +28,7 @@ func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogi
 func (l *DeleteLogic) Delete(req *types.UserDeviceShareReadReq) error {
 	_, err := l.svcCtx.UserDevice.UserDeviceShareDelete(l.ctx, &dm.UserDeviceShareReadReq{
 		Id:     req.ID,
+		UseBy:  req.UseBy,
 		Device: things.ToDmDeviceCorePb(req.Device),
 	})
 
