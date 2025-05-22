@@ -22,6 +22,7 @@ func ToSharePb(in *types.UserDeviceShareInfo) *dm.UserDeviceShareInfo {
 		},
 		SharedUserID: in.SharedUserID,
 		AuthType:     in.AuthType,
+		UseBy:        in.UseBy,
 		ProjectID:    in.ProjectID,
 		ExpTime:      utils.ToRpcNullInt64(in.ExpTime),
 		AccessPerm:   utils.CopyMap[dm.SharePerm](in.AccessPerm),
@@ -40,6 +41,7 @@ func ToShareTypes(in *dm.UserDeviceShareInfo, ui *sys.UserInfo) *types.UserDevic
 			DeviceName: in.Device.DeviceName,
 		},
 		AuthType:          in.AuthType,
+		UseBy:             in.UseBy,
 		CreatedTime:       in.CreatedTime,
 		ExpTime:           utils.ToNullInt64(in.ExpTime),
 		SharedUserAccount: in.SharedUserAccount,
@@ -77,6 +79,7 @@ func ToMuitlSharePb(in *types.UserDeviceShareMultiInfo) *dm.UserDeviceShareMulti
 	}
 	return &dm.UserDeviceShareMultiInfo{
 		Devices:    dvs,
+		UseBy:      in.UseBy,
 		AuthType:   in.AuthType,
 		ExpTime:    in.ExpTime,
 		AccessPerm: utils.CopyMap[dm.SharePerm](in.AccessPerm),
@@ -102,6 +105,7 @@ func ToMultiShareTypes(in *dm.UserDeviceShareMultiInfo) *types.UserDeviceShareMu
 			DeviceName:  v.DeviceName,
 			ProductID:   v.ProductID,
 			ProductName: v.ProductName,
+			UseBy:       in.UseBy,
 			DeviceAlias: v.DeviceAlias.GetValue(),
 			ProductImg:  v.ProductImg,
 		})
@@ -111,6 +115,7 @@ func ToMultiShareTypes(in *dm.UserDeviceShareMultiInfo) *types.UserDeviceShareMu
 		AuthType:    in.AuthType,
 		CreatedTime: in.CreatedTime,
 		ExpTime:     in.ExpTime,
+		UseBy:       in.UseBy,
 		AccessPerm:  utils.CopyMap[types.SharePerm](in.AccessPerm),
 		SchemaPerm:  utils.CopyMap[types.SharePerm](in.SchemaPerm),
 	}

@@ -35,8 +35,9 @@ func (l *UserDeviceShareDeleteLogic) UserDeviceShareDelete(in *dm.UserDeviceShar
 		ID:         in.Id,
 		DeviceName: in.Device.GetDeviceName(),
 		ProductID:  in.Device.GetProductID(),
+		UseBy:      in.UseBy,
 	}
-	if in.Id == 0 { //如果是被分享者来获取
+	if in.Id == 0 { //如果是被分享者来获取S
 		f.SharedUserID = uc.UserID
 	}
 	uds, err := relationDB.NewUserDeviceShareRepo(l.ctx).FindOneByFilter(l.ctx, f)

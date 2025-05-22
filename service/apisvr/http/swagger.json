@@ -10200,6 +10200,10 @@
         "deviceAlias": {
           "type": "string",
           "description": "设备别名 读写"
+        },
+        "useBy": {
+          "type": "string",
+          "description": "用途"
         }
       },
       "title": "DeviceShareInfo",
@@ -13761,6 +13765,10 @@
           "type": "string",
           "description": "到期时间"
         },
+        "useBy": {
+          "type": "string",
+          "description": "用途"
+        },
         "user": {
           "$ref": "#/definitions/UserCore",
           "description": "只读,传withUser会赋值"
@@ -13833,6 +13841,10 @@
           "format": "int64",
           "description": "到期时间"
         },
+        "useBy": {
+          "type": "string",
+          "description": "用途"
+        },
         "createdTime": {
           "type": "integer",
           "format": "int64"
@@ -13868,6 +13880,10 @@
           "format": "int64",
           "description": "到期时间"
         },
+        "useBy": {
+          "type": "string",
+          "description": "用途"
+        },
         "createdTime": {
           "type": "integer",
           "format": "int64"
@@ -13890,6 +13906,10 @@
         "id": {
           "type": "integer",
           "format": "int64"
+        },
+        "useBy": {
+          "type": "string",
+          "description": "用途"
         },
         "device": {
           "$ref": "#/definitions/DeviceCore",

@@ -30,6 +30,7 @@ type UserDeviceShareFilter struct {
 	Devices       []*devices.Core
 	ProductID     string
 	DeviceName    string
+	UseBy         string
 	SharedUserID  int64
 	ID            int64
 	IDs           []int64
@@ -50,6 +51,9 @@ func (p UserDeviceShareRepo) fmtFilter(ctx context.Context, f UserDeviceShareFil
 	}
 	if f.ProjectID != 0 {
 		db = db.Where("project_id=?", f.ProjectID)
+	}
+	if f.UseBy != "" {
+		db = db.Where("use_by=?", f.UseBy)
 	}
 	if f.ID != 0 {
 		db = db.Where("id = ?", f.ID)

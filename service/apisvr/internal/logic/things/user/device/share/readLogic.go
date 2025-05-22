@@ -28,6 +28,7 @@ func NewReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReadLogic {
 func (l *ReadLogic) Read(req *types.UserDeviceShareReadReq) (resp *types.UserDeviceShareInfo, err error) {
 	ret, err := l.svcCtx.UserDevice.UserDeviceShareRead(l.ctx, &dm.UserDeviceShareReadReq{
 		Id:     req.ID,
+		UseBy:  req.UseBy,
 		Device: things.ToDmDeviceCorePb(req.Device),
 	})
 	if err != nil {

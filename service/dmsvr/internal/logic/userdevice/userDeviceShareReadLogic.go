@@ -35,6 +35,7 @@ func (l *UserDeviceShareReadLogic) UserDeviceShareRead(in *dm.UserDeviceShareRea
 		ID:         in.Id,
 		DeviceName: in.Device.GetDeviceName(),
 		ProductID:  in.Device.GetProductID(),
+		UseBy:      in.UseBy,
 	}
 	if in.Id == 0 { //如果是被分享者来获取
 		f.SharedUserID = uc.UserID

@@ -79,6 +79,7 @@ type (
 		SchemaPerm map[string ]*SharePerm  `json:"schemaPerm,optional"`//普通功能权限 2:读写权限 3读权限
 		AccessPerm map[string ]*SharePerm  `json:"accessPerm,optional"`//系统功能权限 2:读写权限 3读权限
 		ExpTime *int64 `json:"expTime,optional,string"` //到期时间
+		UseBy  string      `json:"useBy,optional,omitempty"`   //用途
 		User *UserCore `json:"user,optional"` //只读,传withUser会赋值
 		CreatedTime int64  `json:"createdTime,optional"`
 	}
@@ -88,6 +89,7 @@ type (
 		SchemaPerm map[string ]*SharePerm  `json:"schemaPerm,optional"`//普通功能权限 2:读写权限 3读权限
 		AccessPerm map[string ]*SharePerm  `json:"accessPerm,optional"`//系统功能权限 2:读写权限 3读权限
 		ExpTime int64 `json:"expTime,optional"` //到期时间
+		UseBy  string      `json:"useBy,optional,omitempty"`   //用途
 		CreatedTime int64  `json:"createdTime,optional"`
 	}
 	UserDeviceShareMultiAcceptInfo{
@@ -102,6 +104,7 @@ type (
 	}
 	UserDeviceShareReadReq{
 		ID     int64       `json:"id,optional"`
+		UseBy  string      `json:"useBy,optional,omitempty"`   //用途
 		Device *DeviceCore `json:"device,optional"` //设备信息
 	}
 	UserDeviceShareIndexReq{
@@ -119,6 +122,8 @@ type (
 		SchemaPerm map[string ]*SharePerm  `json:"schemaPerm,optional"`//普通功能权限 2:读写权限 3读权限
 		AccessPerm map[string ]*SharePerm  `json:"accessPerm,optional"`//系统功能权限 2:读写权限 3读权限
 		ExpTime int64 `json:"expTime,optional"` //到期时间
+		UseBy  string      `json:"useBy,optional,omitempty"`   //用途
+
 		CreatedTime int64  `json:"createdTime,optional"`
 	}
 	DeviceShareInfo{
@@ -127,6 +132,8 @@ type (
         ProductImg string `json:"productImg,optional,omitempty"`                        //产品图片
         DeviceName string `json:"deviceName"`    //设备名称
         DeviceAlias string `json:"deviceAlias,optional"`                                  //设备别名 读写
+		UseBy  string      `json:"useBy,optional,omitempty"`   //用途
+
 	}
 )
 

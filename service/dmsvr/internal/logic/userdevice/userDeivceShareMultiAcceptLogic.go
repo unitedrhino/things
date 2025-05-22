@@ -58,6 +58,7 @@ func (l *UserDeivceShareMultiAcceptLogic) UserDeivceShareMultiAccept(in *dm.User
 			ProductID:         v.ProductID,
 			AuthType:          multiDevices.AuthType,
 			DeviceName:        v.DeviceName,
+			UseBy:             multiDevices.UseBy,
 			AccessPerm:        utils.CopyMap[relationDB.SharePerm](multiDevices.AccessPerm),
 			SchemaPerm:        utils.CopyMap[relationDB.SharePerm](multiDevices.SchemaPerm),
 			ExpTime:           utils.ToNullTime(multiDevices.ExpTime),

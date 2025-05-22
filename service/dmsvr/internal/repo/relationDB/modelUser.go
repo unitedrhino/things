@@ -35,6 +35,7 @@ type DmUserDeviceShare struct {
 
 	ProjectID  int64                 `gorm:"column:project_id;type:bigint;default:0;NOT NULL"`                                // 分享的设备所属的项目
 	ProductID  string                `gorm:"column:product_id;type:varchar(100);uniqueIndex:product_id_deviceName;NOT NULL"`  // 产品id
+	UseBy      string                `gorm:"column:use_by;type:varchar(100);default:'default'"`                               //用途,默认为default
 	DeviceName string                `gorm:"column:device_name;uniqueIndex:product_id_deviceName;type:varchar(100);NOT NULL"` // 设备名称
 	AuthType   def.AuthType          `gorm:"column:auth_type;type:varchar(100);default:1"`                                    // 权限类型
 	AccessPerm map[string]*SharePerm `gorm:"column:access_prem;type:json;serializer:json;NOT NULL;default:'{}'"`              //操作权限 hubLog:设备消息记录,ota:ota升级权限,deviceTiming:设备定时

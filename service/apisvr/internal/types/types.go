@@ -949,6 +949,7 @@ type DeviceShareInfo struct {
 	ProductImg  string `json:"productImg,optional,omitempty"` //产品图片
 	DeviceName  string `json:"deviceName"`                    //设备名称
 	DeviceAlias string `json:"deviceAlias,optional"`          //设备别名 读写
+	UseBy       string `json:"useBy,optional,omitempty"`      //用途
 }
 
 type FileCore struct {
@@ -1828,11 +1829,12 @@ type UserDeviceShareInfo struct {
 	Device            DeviceCore            `json:"device,optional"`              //设备信息
 	SharedUserID      int64                 `json:"sharedUserID,string,optional"` //分享的对象
 	SharedUserAccount string                `json:"sharedUserAccount,optional"`
-	AuthType          int64                 `json:"authType,optional"`       //授权类型:1:全部授权 2:部分授权
-	SchemaPerm        map[string]*SharePerm `json:"schemaPerm,optional"`     //普通功能权限 2:读写权限 3读权限
-	AccessPerm        map[string]*SharePerm `json:"accessPerm,optional"`     //系统功能权限 2:读写权限 3读权限
-	ExpTime           *int64                `json:"expTime,optional,string"` //到期时间
-	User              *UserCore             `json:"user,optional"`           //只读,传withUser会赋值
+	AuthType          int64                 `json:"authType,optional"`        //授权类型:1:全部授权 2:部分授权
+	SchemaPerm        map[string]*SharePerm `json:"schemaPerm,optional"`      //普通功能权限 2:读写权限 3读权限
+	AccessPerm        map[string]*SharePerm `json:"accessPerm,optional"`      //系统功能权限 2:读写权限 3读权限
+	ExpTime           *int64                `json:"expTime,optional,string"`  //到期时间
+	UseBy             string                `json:"useBy,optional,omitempty"` //用途
+	User              *UserCore             `json:"user,optional"`            //只读,传withUser会赋值
 	CreatedTime       int64                 `json:"createdTime,optional"`
 }
 
@@ -1847,20 +1849,22 @@ type UserDeviceShareMultiDeleteReq struct {
 }
 
 type UserDeviceShareMultiIndexResp struct {
-	Devices     []*DeviceShareInfo    `json:"devices,optional"`    //批量设备信息
-	AuthType    int64                 `json:"authType,optional"`   //授权类型:1:全部授权 2:部分授权
-	SchemaPerm  map[string]*SharePerm `json:"schemaPerm,optional"` //普通功能权限 2:读写权限 3读权限
-	AccessPerm  map[string]*SharePerm `json:"accessPerm,optional"` //系统功能权限 2:读写权限 3读权限
-	ExpTime     int64                 `json:"expTime,optional"`    //到期时间
+	Devices     []*DeviceShareInfo    `json:"devices,optional"`         //批量设备信息
+	AuthType    int64                 `json:"authType,optional"`        //授权类型:1:全部授权 2:部分授权
+	SchemaPerm  map[string]*SharePerm `json:"schemaPerm,optional"`      //普通功能权限 2:读写权限 3读权限
+	AccessPerm  map[string]*SharePerm `json:"accessPerm,optional"`      //系统功能权限 2:读写权限 3读权限
+	ExpTime     int64                 `json:"expTime,optional"`         //到期时间
+	UseBy       string                `json:"useBy,optional,omitempty"` //用途
 	CreatedTime int64                 `json:"createdTime,optional"`
 }
 
 type UserDeviceShareMultiInfo struct {
-	Devices     []*DeviceCore         `json:"devices,optional"`    //批量设备信息
-	AuthType    int64                 `json:"authType,optional"`   //授权类型:1:全部授权 2:部分授权
-	SchemaPerm  map[string]*SharePerm `json:"schemaPerm,optional"` //普通功能权限 2:读写权限 3读权限
-	AccessPerm  map[string]*SharePerm `json:"accessPerm,optional"` //系统功能权限 2:读写权限 3读权限
-	ExpTime     int64                 `json:"expTime,optional"`    //到期时间
+	Devices     []*DeviceCore         `json:"devices,optional"`         //批量设备信息
+	AuthType    int64                 `json:"authType,optional"`        //授权类型:1:全部授权 2:部分授权
+	SchemaPerm  map[string]*SharePerm `json:"schemaPerm,optional"`      //普通功能权限 2:读写权限 3读权限
+	AccessPerm  map[string]*SharePerm `json:"accessPerm,optional"`      //系统功能权限 2:读写权限 3读权限
+	ExpTime     int64                 `json:"expTime,optional"`         //到期时间
+	UseBy       string                `json:"useBy,optional,omitempty"` //用途
 	CreatedTime int64                 `json:"createdTime,optional"`
 }
 
@@ -1870,7 +1874,8 @@ type UserDeviceShareMultiToken struct {
 
 type UserDeviceShareReadReq struct {
 	ID     int64       `json:"id,optional"`
-	Device *DeviceCore `json:"device,optional"` //设备信息
+	UseBy  string      `json:"useBy,optional,omitempty"` //用途
+	Device *DeviceCore `json:"device,optional"`          //设备信息
 }
 
 type WithID struct {
