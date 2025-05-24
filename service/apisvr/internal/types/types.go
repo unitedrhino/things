@@ -1096,7 +1096,7 @@ type IDPath struct {
 }
 
 type IDsInfo struct {
-	IDs     []int64  `json:"ids,string,optional,omitempty"`
+	IDs     []string `json:"ids,optional,omitempty"`
 	IDPaths []string `json:"idPaths,optional,omitempty"`
 }
 

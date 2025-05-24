@@ -57,7 +57,7 @@ type(
         End int64 `json:"end,optional"`           //结束时间 unix时间戳
     }
     IDsInfo{
-        IDs []int64 `json:"ids,string,optional,omitempty"`
+        IDs []string `json:"ids,optional,omitempty"`
         IDPaths []string `json:"idPaths,optional,omitempty"`
     }
     SendOption  {
