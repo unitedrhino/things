@@ -167,3 +167,23 @@ func (s *ProductManageServer) ProductCategorySchemaMultiDelete(ctx context.Conte
 	l := productmanagelogic.NewProductCategorySchemaMultiDeleteLogic(ctx, s.svcCtx)
 	return l.ProductCategorySchemaMultiDelete(in)
 }
+
+func (s *ProductManageServer) ProductInfoMultiImport(ctx context.Context, in *dm.ProductInfoImportReq) (*dm.ImportResp, error) {
+	l := productmanagelogic.NewProductInfoMultiImportLogic(ctx, s.svcCtx)
+	return l.ProductInfoMultiImport(in)
+}
+
+func (s *ProductManageServer) ProductInfoMultiExport(ctx context.Context, in *dm.ProductInfoExportReq) (*dm.ProductInfoExportResp, error) {
+	l := productmanagelogic.NewProductInfoMultiExportLogic(ctx, s.svcCtx)
+	return l.ProductInfoMultiExport(in)
+}
+
+func (s *ProductManageServer) ProductCategoryMultiImport(ctx context.Context, in *dm.ProductCategoryImportReq) (*dm.ImportResp, error) {
+	l := productmanagelogic.NewProductCategoryMultiImportLogic(ctx, s.svcCtx)
+	return l.ProductCategoryMultiImport(in)
+}
+
+func (s *ProductManageServer) ProductCategoryMultiExport(ctx context.Context, in *dm.ProductCategoryExportReq) (*dm.ProductCategoryExportResp, error) {
+	l := productmanagelogic.NewProductCategoryMultiExportLogic(ctx, s.svcCtx)
+	return l.ProductCategoryMultiExport(in)
+}

@@ -51,6 +51,9 @@ service api {
     )
     @handler read
     post /read (WithIDOrCode) returns (ProtocolInfo)
+
+
+
 }
 
 
@@ -156,6 +159,21 @@ service api {
     )
     @handler debug
     post /debug (ProtocolScriptDebugReq) returns (ProtocolScriptDebugResp)
+
+    @doc(
+        summary: "批量导入协议脚本"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
+    @handler multiIimport
+    post /multi-import (ProtocolScriptImportReq) returns (ImportResp)
+    @doc(
+        summary: "批量导出协议脚本"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
+    @handler multiExport
+    post /multi-export (ProtocolScriptExportReq) returns (ProtocolScriptExportResp)
 }
 
 
@@ -212,6 +230,16 @@ type (
     }
     ProtocolSyncDeviceResp{
         DeviceNames []string `json:"deviceNames"` //同步新增的设备ID列表
+    }
+
+    ProtocolScriptImportReq{
+        Scripts string  `json:"scripts"`
+    }
+    ProtocolScriptExportReq{
+        IDs []int64 `json:"ids,string,optional"`
+    }
+    ProtocolScriptExportResp{
+        Scripts string  `json:"scripts"`
     }
 )
 

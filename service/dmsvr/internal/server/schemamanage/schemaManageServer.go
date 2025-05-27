@@ -51,3 +51,13 @@ func (s *SchemaManageServer) CommonSchemaIndex(ctx context.Context, in *dm.Commo
 	l := schemamanagelogic.NewCommonSchemaIndexLogic(ctx, s.svcCtx)
 	return l.CommonSchemaIndex(in)
 }
+
+func (s *SchemaManageServer) CommonSchemaMultiImport(ctx context.Context, in *dm.CommonSchemaImportReq) (*dm.ImportResp, error) {
+	l := schemamanagelogic.NewCommonSchemaMultiImportLogic(ctx, s.svcCtx)
+	return l.CommonSchemaMultiImport(in)
+}
+
+func (s *SchemaManageServer) CommonSchemaMultiExport(ctx context.Context, in *dm.CommonSchemaExportReq) (*dm.CommonSchemaExportResp, error) {
+	l := schemamanagelogic.NewCommonSchemaMultiExportLogic(ctx, s.svcCtx)
+	return l.CommonSchemaMultiExport(in)
+}

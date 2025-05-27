@@ -1295,6 +1295,38 @@
       ],
       "authType": "admin"
     },
+    "thingsProductCategoryOther": {
+      "name": "操作产品品类",
+      "code": "thingsProductCategoryOther",
+      "group": "产品管理",
+      "isNeedAuth": 1,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsProductCategoryOther",
+          "method": "POST",
+          "route": "/api/v1/things/product/category/multi-export",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "other",
+          "desc": "",
+          "authType": "admin",
+          "recordLogMode": 0
+        },
+        {
+          "accessCode": "thingsProductCategoryOther",
+          "method": "POST",
+          "route": "/api/v1/things/product/category/multi-import",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "other",
+          "desc": "",
+          "authType": "admin",
+          "recordLogMode": 0
+        }
+      ],
+      "authType": "admin"
+    },
     "thingsProductInfoAdd": {
       "name": "新增产品",
       "code": "thingsProductInfoAdd",
@@ -1412,6 +1444,28 @@
           "accessCode": "thingsProductInfoOther",
           "method": "POST",
           "route": "/api/v1/things/product/info/init",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "other",
+          "desc": "",
+          "authType": "admin",
+          "recordLogMode": 0
+        },
+        {
+          "accessCode": "thingsProductInfoOther",
+          "method": "POST",
+          "route": "/api/v1/things/product/info/multi-export",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "other",
+          "desc": "",
+          "authType": "admin",
+          "recordLogMode": 0
+        },
+        {
+          "accessCode": "thingsProductInfoOther",
+          "method": "POST",
+          "route": "/api/v1/things/product/info/multi-import",
           "name": "",
           "isNeedAuth": 1,
           "businessType": "other",
@@ -1873,6 +1927,28 @@
           "desc": "",
           "authType": "admin",
           "recordLogMode": 0
+        },
+        {
+          "accessCode": "thingsProtocolScriptOther",
+          "method": "POST",
+          "route": "/api/v1/things/protocol/script/multi-export",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "other",
+          "desc": "",
+          "authType": "admin",
+          "recordLogMode": 0
+        },
+        {
+          "accessCode": "thingsProtocolScriptOther",
+          "method": "POST",
+          "route": "/api/v1/things/protocol/script/multi-import",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "other",
+          "desc": "",
+          "authType": "admin",
+          "recordLogMode": 0
         }
       ],
       "authType": "admin"
@@ -2004,6 +2080,28 @@
           "accessCode": "thingsSchemaCommonOther",
           "method": "POST",
           "route": "/api/v1/things/schema/common/init",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "other",
+          "desc": "",
+          "authType": "admin",
+          "recordLogMode": 0
+        },
+        {
+          "accessCode": "thingsSchemaCommonOther",
+          "method": "POST",
+          "route": "/api/v1/things/schema/common/multi-export",
+          "name": "",
+          "isNeedAuth": 1,
+          "businessType": "other",
+          "desc": "",
+          "authType": "admin",
+          "recordLogMode": 0
+        },
+        {
+          "accessCode": "thingsSchemaCommonOther",
+          "method": "POST",
+          "route": "/api/v1/things/schema/common/multi-import",
           "name": "",
           "isNeedAuth": 1,
           "businessType": "other",

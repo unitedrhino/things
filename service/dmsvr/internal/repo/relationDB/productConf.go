@@ -67,6 +67,10 @@ func (p ProductConfigRepo) Update(ctx context.Context, data *DmProductConfig) er
 	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
+func (p ProductConfigRepo) UpdateWithProducID(ctx context.Context, data *DmProductConfig) error {
+	err := p.db.WithContext(ctx).Omit("id").Where("product_id = ?", data.ProductID).Save(data).Error
+	return stores.ErrFmt(err)
+}
 
 func (p ProductConfigRepo) DeleteByFilter(ctx context.Context, f ProductConfigFilter) error {
 	db := p.fmtFilter(ctx, f)

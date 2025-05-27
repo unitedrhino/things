@@ -66,9 +66,35 @@ service api {
     @doc "获取产品品类物模型列表"
     @handler schemaIndex
     post /schema/index (ProductCategorySchemaIndexReq) returns (ProductCategorySchemaIndexResp)
+
+
+    @doc(
+        summary: "批量导入产品品类"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
+    @handler multiImport
+    post /multi-import (ProductCategoryImportReq) returns (ImportResp)
+    @doc(
+        summary: "批量导出产品品类"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
+    @handler multiExport
+    post /multi-export (ProductCategoryExportReq) returns (ProductCategoryExportResp)
 }
 
 type (
+    ProductCategoryImportReq{
+        Categories string  `json:"categories"`
+    }
+    ProductCategoryExportReq{
+        IDs []int64 `json:"ids,string,optional"`
+    }
+    ProductCategoryExportResp{
+        Categories string  `json:"categories"`
+    }
+
     ProductCategorySchemaIndexReq{
         ProductCategoryID int64    `json:"productCategoryID"`
         WithFather bool  `json:"withFather,optional"`

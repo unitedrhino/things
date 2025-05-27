@@ -25,6 +25,7 @@ type ProductFilter struct {
 	ProtocolConf  map[string]string
 	WithProtocol  bool
 	WithCategory  bool
+	WithConfig    bool
 	ProtocolCode  string
 	ProtocolType  string
 	ProtocolTrans string
@@ -53,6 +54,9 @@ func (p ProductInfoRepo) fmtFilter(ctx context.Context, f ProductFilter) *gorm.D
 	if f.AreaID != 0 {
 		subQuery := p.db.Model(&DmDeviceInfo{}).Distinct("product_id").Select("product_id").Where("area_id=?", f.AreaID)
 		db = db.Where("product_id in (?)", subQuery)
+	}
+	if f.WithConfig {
+		db = db.Preload("Config")
 	}
 	if f.AreaIDPath != "" {
 		subQuery := p.db.Model(&DmDeviceInfo{}).Distinct("product_id").Select("product_id").Where("area_id_path like ?", f.AreaIDPath+"%")

@@ -23,12 +23,13 @@ func NewProductCategoryRepo(in any) *ProductCategoryRepo {
 }
 
 type ProductCategoryFilter struct {
-	Name       string
-	IDPath     string
-	ParentID   int64
-	ID         int64
-	IDs        []int64
-	ProductIDs []string
+	Name        string
+	IDPath      string
+	ParentID    int64
+	ID          int64
+	IDs         []int64
+	ProductIDs  []string
+	WithSchemas bool
 }
 
 func (p ProductCategoryRepo) fmtFilter(ctx context.Context, f ProductCategoryFilter) *gorm.DB {
@@ -38,6 +39,9 @@ func (p ProductCategoryRepo) fmtFilter(ctx context.Context, f ProductCategoryFil
 	}
 	if f.ID != 0 {
 		db = db.Where("id = ?", f.ID)
+	}
+	if f.WithSchemas {
+		db = db.Preload("Schemas")
 	}
 	if len(f.ProductIDs) > 0 {
 		subQuery := p.db.Model(&DmProductInfo{}).Select("category_id").Where("product_id in ?", f.ProductIDs)

@@ -1584,6 +1584,10 @@ const (
 	ProductManage_ProductCategorySchemaMultiUpdate_FullMethodName = "/dm.ProductManage/productCategorySchemaMultiUpdate"
 	ProductManage_ProductCategorySchemaMultiCreate_FullMethodName = "/dm.ProductManage/productCategorySchemaMultiCreate"
 	ProductManage_ProductCategorySchemaMultiDelete_FullMethodName = "/dm.ProductManage/productCategorySchemaMultiDelete"
+	ProductManage_ProductInfoMultiImport_FullMethodName           = "/dm.ProductManage/productInfoMultiImport"
+	ProductManage_ProductInfoMultiExport_FullMethodName           = "/dm.ProductManage/productInfoMultiExport"
+	ProductManage_ProductCategoryMultiImport_FullMethodName       = "/dm.ProductManage/productCategoryMultiImport"
+	ProductManage_ProductCategoryMultiExport_FullMethodName       = "/dm.ProductManage/productCategoryMultiExport"
 )
 
 // ProductManageClient is the client API for ProductManage service.
@@ -1635,6 +1639,10 @@ type ProductManageClient interface {
 	ProductCategorySchemaMultiUpdate(ctx context.Context, in *ProductCategorySchemaMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
 	ProductCategorySchemaMultiCreate(ctx context.Context, in *ProductCategorySchemaMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
 	ProductCategorySchemaMultiDelete(ctx context.Context, in *ProductCategorySchemaMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
+	ProductInfoMultiImport(ctx context.Context, in *ProductInfoImportReq, opts ...grpc.CallOption) (*ImportResp, error)
+	ProductInfoMultiExport(ctx context.Context, in *ProductInfoExportReq, opts ...grpc.CallOption) (*ProductInfoExportResp, error)
+	ProductCategoryMultiImport(ctx context.Context, in *ProductCategoryImportReq, opts ...grpc.CallOption) (*ImportResp, error)
+	ProductCategoryMultiExport(ctx context.Context, in *ProductCategoryExportReq, opts ...grpc.CallOption) (*ProductCategoryExportResp, error)
 }
 
 type productManageClient struct {
@@ -1870,6 +1878,42 @@ func (c *productManageClient) ProductCategorySchemaMultiDelete(ctx context.Conte
 	return out, nil
 }
 
+func (c *productManageClient) ProductInfoMultiImport(ctx context.Context, in *ProductInfoImportReq, opts ...grpc.CallOption) (*ImportResp, error) {
+	out := new(ImportResp)
+	err := c.cc.Invoke(ctx, ProductManage_ProductInfoMultiImport_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productManageClient) ProductInfoMultiExport(ctx context.Context, in *ProductInfoExportReq, opts ...grpc.CallOption) (*ProductInfoExportResp, error) {
+	out := new(ProductInfoExportResp)
+	err := c.cc.Invoke(ctx, ProductManage_ProductInfoMultiExport_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productManageClient) ProductCategoryMultiImport(ctx context.Context, in *ProductCategoryImportReq, opts ...grpc.CallOption) (*ImportResp, error) {
+	out := new(ImportResp)
+	err := c.cc.Invoke(ctx, ProductManage_ProductCategoryMultiImport_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productManageClient) ProductCategoryMultiExport(ctx context.Context, in *ProductCategoryExportReq, opts ...grpc.CallOption) (*ProductCategoryExportResp, error) {
+	out := new(ProductCategoryExportResp)
+	err := c.cc.Invoke(ctx, ProductManage_ProductCategoryMultiExport_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProductManageServer is the server API for ProductManage service.
 // All implementations must embed UnimplementedProductManageServer
 // for forward compatibility
@@ -1919,6 +1963,10 @@ type ProductManageServer interface {
 	ProductCategorySchemaMultiUpdate(context.Context, *ProductCategorySchemaMultiSaveReq) (*Empty, error)
 	ProductCategorySchemaMultiCreate(context.Context, *ProductCategorySchemaMultiSaveReq) (*Empty, error)
 	ProductCategorySchemaMultiDelete(context.Context, *ProductCategorySchemaMultiSaveReq) (*Empty, error)
+	ProductInfoMultiImport(context.Context, *ProductInfoImportReq) (*ImportResp, error)
+	ProductInfoMultiExport(context.Context, *ProductInfoExportReq) (*ProductInfoExportResp, error)
+	ProductCategoryMultiImport(context.Context, *ProductCategoryImportReq) (*ImportResp, error)
+	ProductCategoryMultiExport(context.Context, *ProductCategoryExportReq) (*ProductCategoryExportResp, error)
 	mustEmbedUnimplementedProductManageServer()
 }
 
@@ -2000,6 +2048,18 @@ func (UnimplementedProductManageServer) ProductCategorySchemaMultiCreate(context
 }
 func (UnimplementedProductManageServer) ProductCategorySchemaMultiDelete(context.Context, *ProductCategorySchemaMultiSaveReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductCategorySchemaMultiDelete not implemented")
+}
+func (UnimplementedProductManageServer) ProductInfoMultiImport(context.Context, *ProductInfoImportReq) (*ImportResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductInfoMultiImport not implemented")
+}
+func (UnimplementedProductManageServer) ProductInfoMultiExport(context.Context, *ProductInfoExportReq) (*ProductInfoExportResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductInfoMultiExport not implemented")
+}
+func (UnimplementedProductManageServer) ProductCategoryMultiImport(context.Context, *ProductCategoryImportReq) (*ImportResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductCategoryMultiImport not implemented")
+}
+func (UnimplementedProductManageServer) ProductCategoryMultiExport(context.Context, *ProductCategoryExportReq) (*ProductCategoryExportResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductCategoryMultiExport not implemented")
 }
 func (UnimplementedProductManageServer) mustEmbedUnimplementedProductManageServer() {}
 
@@ -2464,6 +2524,78 @@ func _ProductManage_ProductCategorySchemaMultiDelete_Handler(srv interface{}, ct
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProductManage_ProductInfoMultiImport_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductInfoImportReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductInfoMultiImport(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProductManage_ProductInfoMultiImport_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductInfoMultiImport(ctx, req.(*ProductInfoImportReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductManage_ProductInfoMultiExport_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductInfoExportReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductInfoMultiExport(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProductManage_ProductInfoMultiExport_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductInfoMultiExport(ctx, req.(*ProductInfoExportReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductManage_ProductCategoryMultiImport_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductCategoryImportReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductCategoryMultiImport(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProductManage_ProductCategoryMultiImport_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductCategoryMultiImport(ctx, req.(*ProductCategoryImportReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductManage_ProductCategoryMultiExport_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductCategoryExportReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductManageServer).ProductCategoryMultiExport(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProductManage_ProductCategoryMultiExport_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductManageServer).ProductCategoryMultiExport(ctx, req.(*ProductCategoryExportReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ProductManage_ServiceDesc is the grpc.ServiceDesc for ProductManage service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -2571,17 +2703,35 @@ var ProductManage_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "productCategorySchemaMultiDelete",
 			Handler:    _ProductManage_ProductCategorySchemaMultiDelete_Handler,
 		},
+		{
+			MethodName: "productInfoMultiImport",
+			Handler:    _ProductManage_ProductInfoMultiImport_Handler,
+		},
+		{
+			MethodName: "productInfoMultiExport",
+			Handler:    _ProductManage_ProductInfoMultiExport_Handler,
+		},
+		{
+			MethodName: "productCategoryMultiImport",
+			Handler:    _ProductManage_ProductCategoryMultiImport_Handler,
+		},
+		{
+			MethodName: "productCategoryMultiExport",
+			Handler:    _ProductManage_ProductCategoryMultiExport_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/dm.proto",
 }
 
 const (
-	SchemaManage_CommonSchemaInit_FullMethodName   = "/dm.SchemaManage/commonSchemaInit"
-	SchemaManage_CommonSchemaUpdate_FullMethodName = "/dm.SchemaManage/commonSchemaUpdate"
-	SchemaManage_CommonSchemaCreate_FullMethodName = "/dm.SchemaManage/commonSchemaCreate"
-	SchemaManage_CommonSchemaDelete_FullMethodName = "/dm.SchemaManage/commonSchemaDelete"
-	SchemaManage_CommonSchemaIndex_FullMethodName  = "/dm.SchemaManage/commonSchemaIndex"
+	SchemaManage_CommonSchemaInit_FullMethodName        = "/dm.SchemaManage/commonSchemaInit"
+	SchemaManage_CommonSchemaUpdate_FullMethodName      = "/dm.SchemaManage/commonSchemaUpdate"
+	SchemaManage_CommonSchemaCreate_FullMethodName      = "/dm.SchemaManage/commonSchemaCreate"
+	SchemaManage_CommonSchemaDelete_FullMethodName      = "/dm.SchemaManage/commonSchemaDelete"
+	SchemaManage_CommonSchemaIndex_FullMethodName       = "/dm.SchemaManage/commonSchemaIndex"
+	SchemaManage_CommonSchemaMultiImport_FullMethodName = "/dm.SchemaManage/commonSchemaMultiImport"
+	SchemaManage_CommonSchemaMultiExport_FullMethodName = "/dm.SchemaManage/commonSchemaMultiExport"
 )
 
 // SchemaManageClient is the client API for SchemaManage service.
@@ -2597,6 +2747,8 @@ type SchemaManageClient interface {
 	CommonSchemaDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
 	// 获取产品信息列表
 	CommonSchemaIndex(ctx context.Context, in *CommonSchemaIndexReq, opts ...grpc.CallOption) (*CommonSchemaIndexResp, error)
+	CommonSchemaMultiImport(ctx context.Context, in *CommonSchemaImportReq, opts ...grpc.CallOption) (*ImportResp, error)
+	CommonSchemaMultiExport(ctx context.Context, in *CommonSchemaExportReq, opts ...grpc.CallOption) (*CommonSchemaExportResp, error)
 }
 
 type schemaManageClient struct {
@@ -2652,6 +2804,24 @@ func (c *schemaManageClient) CommonSchemaIndex(ctx context.Context, in *CommonSc
 	return out, nil
 }
 
+func (c *schemaManageClient) CommonSchemaMultiImport(ctx context.Context, in *CommonSchemaImportReq, opts ...grpc.CallOption) (*ImportResp, error) {
+	out := new(ImportResp)
+	err := c.cc.Invoke(ctx, SchemaManage_CommonSchemaMultiImport_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *schemaManageClient) CommonSchemaMultiExport(ctx context.Context, in *CommonSchemaExportReq, opts ...grpc.CallOption) (*CommonSchemaExportResp, error) {
+	out := new(CommonSchemaExportResp)
+	err := c.cc.Invoke(ctx, SchemaManage_CommonSchemaMultiExport_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // SchemaManageServer is the server API for SchemaManage service.
 // All implementations must embed UnimplementedSchemaManageServer
 // for forward compatibility
@@ -2665,6 +2835,8 @@ type SchemaManageServer interface {
 	CommonSchemaDelete(context.Context, *WithID) (*Empty, error)
 	// 获取产品信息列表
 	CommonSchemaIndex(context.Context, *CommonSchemaIndexReq) (*CommonSchemaIndexResp, error)
+	CommonSchemaMultiImport(context.Context, *CommonSchemaImportReq) (*ImportResp, error)
+	CommonSchemaMultiExport(context.Context, *CommonSchemaExportReq) (*CommonSchemaExportResp, error)
 	mustEmbedUnimplementedSchemaManageServer()
 }
 
@@ -2686,6 +2858,12 @@ func (UnimplementedSchemaManageServer) CommonSchemaDelete(context.Context, *With
 }
 func (UnimplementedSchemaManageServer) CommonSchemaIndex(context.Context, *CommonSchemaIndexReq) (*CommonSchemaIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CommonSchemaIndex not implemented")
+}
+func (UnimplementedSchemaManageServer) CommonSchemaMultiImport(context.Context, *CommonSchemaImportReq) (*ImportResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CommonSchemaMultiImport not implemented")
+}
+func (UnimplementedSchemaManageServer) CommonSchemaMultiExport(context.Context, *CommonSchemaExportReq) (*CommonSchemaExportResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CommonSchemaMultiExport not implemented")
 }
 func (UnimplementedSchemaManageServer) mustEmbedUnimplementedSchemaManageServer() {}
 
@@ -2790,6 +2968,42 @@ func _SchemaManage_CommonSchemaIndex_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SchemaManage_CommonSchemaMultiImport_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CommonSchemaImportReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SchemaManageServer).CommonSchemaMultiImport(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SchemaManage_CommonSchemaMultiImport_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SchemaManageServer).CommonSchemaMultiImport(ctx, req.(*CommonSchemaImportReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SchemaManage_CommonSchemaMultiExport_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CommonSchemaExportReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SchemaManageServer).CommonSchemaMultiExport(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SchemaManage_CommonSchemaMultiExport_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SchemaManageServer).CommonSchemaMultiExport(ctx, req.(*CommonSchemaExportReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // SchemaManage_ServiceDesc is the grpc.ServiceDesc for SchemaManage service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -2817,6 +3031,14 @@ var SchemaManage_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "commonSchemaIndex",
 			Handler:    _SchemaManage_CommonSchemaIndex_Handler,
 		},
+		{
+			MethodName: "commonSchemaMultiImport",
+			Handler:    _SchemaManage_CommonSchemaMultiImport_Handler,
+		},
+		{
+			MethodName: "commonSchemaMultiExport",
+			Handler:    _SchemaManage_CommonSchemaMultiExport_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/dm.proto",
@@ -2831,17 +3053,19 @@ const (
 	ProtocolManage_ProtocolServiceUpdate_FullMethodName      = "/dm.ProtocolManage/protocolServiceUpdate"
 	ProtocolManage_ProtocolServiceDelete_FullMethodName      = "/dm.ProtocolManage/protocolServiceDelete"
 	ProtocolManage_ProtocolServiceIndex_FullMethodName       = "/dm.ProtocolManage/protocolServiceIndex"
-	ProtocolManage_ProtocolScriptIndex_FullMethodName        = "/dm.ProtocolManage/ProtocolScriptIndex"
-	ProtocolManage_ProtocolScriptRead_FullMethodName         = "/dm.ProtocolManage/ProtocolScriptRead"
-	ProtocolManage_ProtocolScriptCreate_FullMethodName       = "/dm.ProtocolManage/ProtocolScriptCreate"
-	ProtocolManage_ProtocolScriptUpdate_FullMethodName       = "/dm.ProtocolManage/ProtocolScriptUpdate"
-	ProtocolManage_ProtocolScriptDelete_FullMethodName       = "/dm.ProtocolManage/ProtocolScriptDelete"
-	ProtocolManage_ProtocolScriptDebug_FullMethodName        = "/dm.ProtocolManage/ProtocolScriptDebug"
-	ProtocolManage_ProtocolScriptDeviceIndex_FullMethodName  = "/dm.ProtocolManage/ProtocolScriptDeviceIndex"
-	ProtocolManage_ProtocolScriptDeviceRead_FullMethodName   = "/dm.ProtocolManage/ProtocolScriptDeviceRead"
-	ProtocolManage_ProtocolScriptDeviceCreate_FullMethodName = "/dm.ProtocolManage/ProtocolScriptDeviceCreate"
-	ProtocolManage_ProtocolScriptDeviceUpdate_FullMethodName = "/dm.ProtocolManage/ProtocolScriptDeviceUpdate"
-	ProtocolManage_ProtocolScriptDeviceDelete_FullMethodName = "/dm.ProtocolManage/ProtocolScriptDeviceDelete"
+	ProtocolManage_ProtocolScriptIndex_FullMethodName        = "/dm.ProtocolManage/protocolScriptIndex"
+	ProtocolManage_ProtocolScriptRead_FullMethodName         = "/dm.ProtocolManage/protocolScriptRead"
+	ProtocolManage_ProtocolScriptCreate_FullMethodName       = "/dm.ProtocolManage/protocolScriptCreate"
+	ProtocolManage_ProtocolScriptUpdate_FullMethodName       = "/dm.ProtocolManage/protocolScriptUpdate"
+	ProtocolManage_ProtocolScriptDelete_FullMethodName       = "/dm.ProtocolManage/protocolScriptDelete"
+	ProtocolManage_ProtocolScriptDebug_FullMethodName        = "/dm.ProtocolManage/protocolScriptDebug"
+	ProtocolManage_ProtocolScriptDeviceIndex_FullMethodName  = "/dm.ProtocolManage/protocolScriptDeviceIndex"
+	ProtocolManage_ProtocolScriptDeviceRead_FullMethodName   = "/dm.ProtocolManage/protocolScriptDeviceRead"
+	ProtocolManage_ProtocolScriptDeviceCreate_FullMethodName = "/dm.ProtocolManage/protocolScriptDeviceCreate"
+	ProtocolManage_ProtocolScriptDeviceUpdate_FullMethodName = "/dm.ProtocolManage/protocolScriptDeviceUpdate"
+	ProtocolManage_ProtocolScriptDeviceDelete_FullMethodName = "/dm.ProtocolManage/protocolScriptDeviceDelete"
+	ProtocolManage_ProtocolScriptMultiImport_FullMethodName  = "/dm.ProtocolManage/protocolScriptMultiImport"
+	ProtocolManage_ProtocolScriptMultiExport_FullMethodName  = "/dm.ProtocolManage/protocolScriptMultiExport"
 )
 
 // ProtocolManageClient is the client API for ProtocolManage service.
@@ -2883,6 +3107,8 @@ type ProtocolManageClient interface {
 	ProtocolScriptDeviceUpdate(ctx context.Context, in *ProtocolScriptDevice, opts ...grpc.CallOption) (*Empty, error)
 	// 协议删除
 	ProtocolScriptDeviceDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
+	ProtocolScriptMultiImport(ctx context.Context, in *ProtocolScriptImportReq, opts ...grpc.CallOption) (*ImportResp, error)
+	ProtocolScriptMultiExport(ctx context.Context, in *ProtocolScriptExportReq, opts ...grpc.CallOption) (*ProtocolScriptExportResp, error)
 }
 
 type protocolManageClient struct {
@@ -3064,6 +3290,24 @@ func (c *protocolManageClient) ProtocolScriptDeviceDelete(ctx context.Context, i
 	return out, nil
 }
 
+func (c *protocolManageClient) ProtocolScriptMultiImport(ctx context.Context, in *ProtocolScriptImportReq, opts ...grpc.CallOption) (*ImportResp, error) {
+	out := new(ImportResp)
+	err := c.cc.Invoke(ctx, ProtocolManage_ProtocolScriptMultiImport_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolManageClient) ProtocolScriptMultiExport(ctx context.Context, in *ProtocolScriptExportReq, opts ...grpc.CallOption) (*ProtocolScriptExportResp, error) {
+	out := new(ProtocolScriptExportResp)
+	err := c.cc.Invoke(ctx, ProtocolManage_ProtocolScriptMultiExport_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProtocolManageServer is the server API for ProtocolManage service.
 // All implementations must embed UnimplementedProtocolManageServer
 // for forward compatibility
@@ -3103,6 +3347,8 @@ type ProtocolManageServer interface {
 	ProtocolScriptDeviceUpdate(context.Context, *ProtocolScriptDevice) (*Empty, error)
 	// 协议删除
 	ProtocolScriptDeviceDelete(context.Context, *WithID) (*Empty, error)
+	ProtocolScriptMultiImport(context.Context, *ProtocolScriptImportReq) (*ImportResp, error)
+	ProtocolScriptMultiExport(context.Context, *ProtocolScriptExportReq) (*ProtocolScriptExportResp, error)
 	mustEmbedUnimplementedProtocolManageServer()
 }
 
@@ -3166,6 +3412,12 @@ func (UnimplementedProtocolManageServer) ProtocolScriptDeviceUpdate(context.Cont
 }
 func (UnimplementedProtocolManageServer) ProtocolScriptDeviceDelete(context.Context, *WithID) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProtocolScriptDeviceDelete not implemented")
+}
+func (UnimplementedProtocolManageServer) ProtocolScriptMultiImport(context.Context, *ProtocolScriptImportReq) (*ImportResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProtocolScriptMultiImport not implemented")
+}
+func (UnimplementedProtocolManageServer) ProtocolScriptMultiExport(context.Context, *ProtocolScriptExportReq) (*ProtocolScriptExportResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProtocolScriptMultiExport not implemented")
 }
 func (UnimplementedProtocolManageServer) mustEmbedUnimplementedProtocolManageServer() {}
 
@@ -3522,6 +3774,42 @@ func _ProtocolManage_ProtocolScriptDeviceDelete_Handler(srv interface{}, ctx con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProtocolManage_ProtocolScriptMultiImport_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProtocolScriptImportReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolManageServer).ProtocolScriptMultiImport(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProtocolManage_ProtocolScriptMultiImport_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolManageServer).ProtocolScriptMultiImport(ctx, req.(*ProtocolScriptImportReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtocolManage_ProtocolScriptMultiExport_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProtocolScriptExportReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolManageServer).ProtocolScriptMultiExport(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProtocolManage_ProtocolScriptMultiExport_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolManageServer).ProtocolScriptMultiExport(ctx, req.(*ProtocolScriptExportReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ProtocolManage_ServiceDesc is the grpc.ServiceDesc for ProtocolManage service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -3562,48 +3850,56 @@ var ProtocolManage_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ProtocolManage_ProtocolServiceIndex_Handler,
 		},
 		{
-			MethodName: "ProtocolScriptIndex",
+			MethodName: "protocolScriptIndex",
 			Handler:    _ProtocolManage_ProtocolScriptIndex_Handler,
 		},
 		{
-			MethodName: "ProtocolScriptRead",
+			MethodName: "protocolScriptRead",
 			Handler:    _ProtocolManage_ProtocolScriptRead_Handler,
 		},
 		{
-			MethodName: "ProtocolScriptCreate",
+			MethodName: "protocolScriptCreate",
 			Handler:    _ProtocolManage_ProtocolScriptCreate_Handler,
 		},
 		{
-			MethodName: "ProtocolScriptUpdate",
+			MethodName: "protocolScriptUpdate",
 			Handler:    _ProtocolManage_ProtocolScriptUpdate_Handler,
 		},
 		{
-			MethodName: "ProtocolScriptDelete",
+			MethodName: "protocolScriptDelete",
 			Handler:    _ProtocolManage_ProtocolScriptDelete_Handler,
 		},
 		{
-			MethodName: "ProtocolScriptDebug",
+			MethodName: "protocolScriptDebug",
 			Handler:    _ProtocolManage_ProtocolScriptDebug_Handler,
 		},
 		{
-			MethodName: "ProtocolScriptDeviceIndex",
+			MethodName: "protocolScriptDeviceIndex",
 			Handler:    _ProtocolManage_ProtocolScriptDeviceIndex_Handler,
 		},
 		{
-			MethodName: "ProtocolScriptDeviceRead",
+			MethodName: "protocolScriptDeviceRead",
 			Handler:    _ProtocolManage_ProtocolScriptDeviceRead_Handler,
 		},
 		{
-			MethodName: "ProtocolScriptDeviceCreate",
+			MethodName: "protocolScriptDeviceCreate",
 			Handler:    _ProtocolManage_ProtocolScriptDeviceCreate_Handler,
 		},
 		{
-			MethodName: "ProtocolScriptDeviceUpdate",
+			MethodName: "protocolScriptDeviceUpdate",
 			Handler:    _ProtocolManage_ProtocolScriptDeviceUpdate_Handler,
 		},
 		{
-			MethodName: "ProtocolScriptDeviceDelete",
+			MethodName: "protocolScriptDeviceDelete",
 			Handler:    _ProtocolManage_ProtocolScriptDeviceDelete_Handler,
+		},
+		{
+			MethodName: "protocolScriptMultiImport",
+			Handler:    _ProtocolManage_ProtocolScriptMultiImport_Handler,
+		},
+		{
+			MethodName: "protocolScriptMultiExport",
+			Handler:    _ProtocolManage_ProtocolScriptMultiExport_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -8,9 +8,15 @@ import (
 	coreTopic "gitee.com/unitedrhino/core/share/topics"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceBind"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceGroup"
+	productmanagelogic "gitee.com/unitedrhino/things/service/dmsvr/internal/logic/productmanage"
+	protocolmanagelogic "gitee.com/unitedrhino/things/service/dmsvr/internal/logic/protocolmanage"
+	schemamanagelogic "gitee.com/unitedrhino/things/service/dmsvr/internal/logic/schemamanage"
 	"gitee.com/unitedrhino/things/share/topics"
 	"gitee.com/unitedrhino/things/share/userSubscribe"
 	"google.golang.org/protobuf/types/known/wrapperspb"
+	"os"
+	"path/filepath"
+	"strings"
 	"time"
 
 	"gitee.com/unitedrhino/core/service/timed/timedjobsvr/client/timedmanage"
@@ -41,6 +47,7 @@ import (
 func Init(svcCtx *svc.ServiceContext) {
 	logic.Init(svcCtx)
 	InitCache(svcCtx)
+	TableInit(svcCtx)
 	TimerInit(svcCtx)
 	InitSubscribe(svcCtx)
 	InitEventBus(svcCtx)
@@ -67,8 +74,112 @@ func init() {
 
 }
 
-const Version = "v1.1.0"
-
+func TableInit(svcCtx *svc.ServiceContext) {
+	if !relationDB.NeedInitColumn {
+		return
+	}
+	{
+		root := "./etc/init/schema/"
+		err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			if info.IsDir() {
+				return nil
+			}
+			if !strings.HasSuffix(info.Name(), ".json") {
+				return nil
+			}
+			body, err := os.ReadFile(path)
+			if err != nil {
+				return err
+			}
+			ret, err := schemamanagelogic.NewCommonSchemaMultiImportLogic(ctxs.WithRoot(context.TODO()), svcCtx).CommonSchemaMultiImport(&dm.CommonSchemaImportReq{
+				Schemas: string(body)})
+			logx.Info("CommonSchemaMultiImport", ret, err)
+			return err
+		})
+		if err != nil {
+			logx.Error(err)
+		}
+	}
+	{
+		root := "./etc/init/productCategory/"
+		err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			if info.IsDir() {
+				return nil
+			}
+			if !strings.HasSuffix(info.Name(), ".json") {
+				return nil
+			}
+			body, err := os.ReadFile(path)
+			if err != nil {
+				return err
+			}
+			ret, err := productmanagelogic.NewProductCategoryMultiImportLogic(ctxs.WithRoot(context.TODO()), svcCtx).ProductCategoryMultiImport(&dm.ProductCategoryImportReq{
+				Categories: string(body),
+			})
+			logx.Info("ProductCategoryMultiImport", ret, err)
+			return err
+		})
+		if err != nil {
+			logx.Error(err)
+		}
+	}
+	{
+		root := "./etc/init/protocolScript/"
+		err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			if info.IsDir() {
+				return nil
+			}
+			if !strings.HasSuffix(info.Name(), ".json") {
+				return nil
+			}
+			body, err := os.ReadFile(path)
+			if err != nil {
+				return err
+			}
+			ret, err := protocolmanagelogic.NewProtocolScriptMultiImportLogic(ctxs.WithRoot(context.TODO()), svcCtx).ProtocolScriptMultiImport(&dm.ProtocolScriptImportReq{
+				Scripts: string(body),
+			})
+			logx.Info("ProtocolScriptMultiImport", ret, err)
+			return nil
+		})
+		if err != nil {
+			logx.Error(err)
+		}
+	}
+	{
+		root := "./etc/init/product/"
+		err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			if info.IsDir() {
+				return nil
+			}
+			body, err := os.ReadFile(path)
+			if err != nil {
+				return err
+			}
+			ret, err := productmanagelogic.NewProductInfoMultiImportLogic(ctxs.WithRoot(context.TODO()), svcCtx).ProductInfoMultiImport(&dm.ProductInfoImportReq{
+				Products: string(body),
+			})
+			logx.Info("ProductInfoMultiImport", ret, err)
+			return nil
+		})
+		if err != nil {
+			logx.Error(err)
+		}
+	}
+	return
+}
 func VersionUpdate(svcCtx *svc.ServiceContext) {
 	svcCtx.HubLogRepo.InitProduct(context.Background(), "")
 	svcCtx.SDKLogRepo.InitProduct(context.Background(), "")

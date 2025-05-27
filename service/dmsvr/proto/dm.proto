@@ -215,6 +215,12 @@ service ProductManage{
   rpc productCategorySchemaMultiCreate(ProductCategorySchemaMultiSaveReq) returns(Empty);
   rpc productCategorySchemaMultiDelete(ProductCategorySchemaMultiSaveReq) returns(Empty);
 
+
+  rpc productInfoMultiImport(ProductInfoImportReq) returns(ImportResp); //产品导入
+  rpc productInfoMultiExport(ProductInfoExportReq) returns(ProductInfoExportResp); //产品导出
+
+  rpc productCategoryMultiImport(ProductCategoryImportReq) returns(ImportResp); //产品导入
+  rpc productCategoryMultiExport(ProductCategoryExportReq) returns(ProductCategoryExportResp); //产品导出
 }
 
 //公共物模型管理
@@ -229,6 +235,8 @@ service SchemaManage{
   //获取产品信息列表
   rpc commonSchemaIndex(CommonSchemaIndexReq)     returns (CommonSchemaIndexResp);
 
+  rpc commonSchemaMultiImport(CommonSchemaImportReq) returns(ImportResp); //产品导入
+  rpc commonSchemaMultiExport(CommonSchemaExportReq) returns(CommonSchemaExportResp); //产品导出
 }
 
 service ProtocolManage {
@@ -249,29 +257,32 @@ service ProtocolManage {
   rpc protocolServiceIndex(ProtocolServiceIndexReq)returns(ProtocolServiceIndexResp);
 
   //协议列表
-  rpc ProtocolScriptIndex(ProtocolScriptIndexReq)     returns (ProtocolScriptIndexResp);
+  rpc protocolScriptIndex(ProtocolScriptIndexReq)     returns (ProtocolScriptIndexResp);
   //协议详情
-  rpc ProtocolScriptRead(WithID)     returns (ProtocolScript);
+  rpc protocolScriptRead(WithID)     returns (ProtocolScript);
   //协议创建
-  rpc ProtocolScriptCreate(ProtocolScript)     returns (WithID);
+  rpc protocolScriptCreate(ProtocolScript)     returns (WithID);
   //协议更新
-  rpc ProtocolScriptUpdate(ProtocolScript)     returns (Empty);
+  rpc protocolScriptUpdate(ProtocolScript)     returns (Empty);
   //协议删除
-  rpc ProtocolScriptDelete(WithID)     returns (Empty);
+  rpc protocolScriptDelete(WithID)     returns (Empty);
 
-  rpc ProtocolScriptDebug(ProtocolScriptDebugReq)     returns (ProtocolScriptDebugResp);
+  rpc protocolScriptDebug(ProtocolScriptDebugReq)     returns (ProtocolScriptDebugResp);
 
 
   //协议列表
-  rpc ProtocolScriptDeviceIndex(ProtocolScriptDeviceIndexReq)     returns (ProtocolScriptDeviceIndexResp);
+  rpc protocolScriptDeviceIndex(ProtocolScriptDeviceIndexReq)     returns (ProtocolScriptDeviceIndexResp);
   //协议详情
-  rpc ProtocolScriptDeviceRead(WithID)     returns (ProtocolScriptDevice);
+  rpc protocolScriptDeviceRead(WithID)     returns (ProtocolScriptDevice);
   //协议创建
-  rpc ProtocolScriptDeviceCreate(ProtocolScriptDevice)     returns (WithID);
+  rpc protocolScriptDeviceCreate(ProtocolScriptDevice)     returns (WithID);
   //协议更新
-  rpc ProtocolScriptDeviceUpdate(ProtocolScriptDevice)     returns (Empty);
+  rpc protocolScriptDeviceUpdate(ProtocolScriptDevice)     returns (Empty);
   //协议删除
-  rpc ProtocolScriptDeviceDelete(WithID)     returns (Empty);
+  rpc protocolScriptDeviceDelete(WithID)     returns (Empty);
+
+  rpc protocolScriptMultiImport(ProtocolScriptImportReq) returns(ImportResp); //产品导入
+  rpc protocolScriptMultiExport(ProtocolScriptExportReq) returns(ProtocolScriptExportResp); //产品导出
 }
 
 service DeviceGroup {
@@ -430,6 +441,58 @@ service userDevice{
   rpc userDeivceShareMultiIndex(UserDeviceShareMultiToken)returns(UserDeviceShareMultiInfo);
   //接受批量分享的设备
   rpc userDeivceShareMultiAccept(UserDeviceShareMultiAcceptReq)returns(Empty);
+}
+
+
+message ProductInfoImportReq{
+  string products =2;//产品导出的信息
+}
+
+message ImportResp{
+  int64 total =1;      //导入总接口数
+  int64  errCount =2; //失败数
+  int64  ignoreCount =3; //忽略数
+  int64  succCount =4; //成功数
+}
+
+message  ProductInfoExportReq{
+    repeated string productIDs =1;
+}
+message  ProductInfoExportResp{
+  string products =2;//产品导出的信息
+}
+
+message ProductCategoryImportReq{
+  string categories =1;//品类信息
+}
+
+message  ProductCategoryExportReq{
+  repeated int64 ids =1;//产品导出的详情信息
+}
+message  ProductCategoryExportResp{
+  string categories =1;//品类信息
+}
+
+message CommonSchemaImportReq{
+  string schemas =1;//品类信息
+}
+
+message  CommonSchemaExportReq{
+  repeated string identifiers = 5; //标识符列表
+}
+message  CommonSchemaExportResp{
+  string schemas =1;//品类信息
+}
+
+message ProtocolScriptImportReq{
+  string scripts =1;//脚本信息列表
+}
+
+message  ProtocolScriptExportReq{
+  repeated int64 ids = 5; //标识符列表
+}
+message  ProtocolScriptExportResp{
+  string scripts =1;//脚本信息列表
 }
 
 message OtaModuleInfoIndexReq{

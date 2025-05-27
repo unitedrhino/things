@@ -749,6 +749,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: thingsproductcategory.IndexHandler(serverCtx),
 				},
 				{
+					// 批量导出产品品类
+					Method:  http.MethodPost,
+					Path:    "/multi-export",
+					Handler: thingsproductcategory.MultiExportHandler(serverCtx),
+				},
+				{
+					// 批量导入产品品类
+					Method:  http.MethodPost,
+					Path:    "/multi-import",
+					Handler: thingsproductcategory.MultiImportHandler(serverCtx),
+				},
+				{
 					// 获取产品品类详情
 					Method:  http.MethodPost,
 					Path:    "/read",
@@ -852,6 +864,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/init",
 					Handler: thingsproductinfo.InitHandler(serverCtx),
+				},
+				{
+					// 批量导出产品
+					Method:  http.MethodPost,
+					Path:    "/multi-export",
+					Handler: thingsproductinfo.MultiExportHandler(serverCtx),
+				},
+				{
+					// 批量导入产品
+					Method:  http.MethodPost,
+					Path:    "/multi-import",
+					Handler: thingsproductinfo.MultiIimportHandler(serverCtx),
 				},
 				{
 					// 获取产品详情
@@ -1022,6 +1046,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: thingsprotocolscript.IndexHandler(serverCtx),
 				},
 				{
+					// 批量导出协议脚本
+					Method:  http.MethodPost,
+					Path:    "/multi-export",
+					Handler: thingsprotocolscript.MultiExportHandler(serverCtx),
+				},
+				{
+					// 批量导入协议脚本
+					Method:  http.MethodPost,
+					Path:    "/multi-import",
+					Handler: thingsprotocolscript.MultiIimportHandler(serverCtx),
+				},
+				{
 					// 获取协议脚本详情
 					Method:  http.MethodPost,
 					Path:    "/read",
@@ -1146,6 +1182,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/init",
 					Handler: thingsschemacommon.InitHandler(serverCtx),
+				},
+				{
+					// 批量导出通用物模型
+					Method:  http.MethodPost,
+					Path:    "/multi-export",
+					Handler: thingsschemacommon.MultiExportHandler(serverCtx),
+				},
+				{
+					// 批量导入通用物模型
+					Method:  http.MethodPost,
+					Path:    "/multi-import",
+					Handler: thingsschemacommon.MultiIimportHandler(serverCtx),
 				},
 				{
 					// 更新通用物模型

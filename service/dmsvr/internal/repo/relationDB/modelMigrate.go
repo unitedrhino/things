@@ -13,6 +13,7 @@ import (
 )
 
 var needInitProductConfig bool
+var NeedInitColumn bool
 
 func Migrate(c conf.Database) error {
 	if c.IsInitTable == false {
@@ -21,10 +22,9 @@ func Migrate(c conf.Database) error {
 	ctx := ctxs.WithRoot(context.Background())
 	db := stores.GetCommonConn(ctx)
 
-	var needInitColumn bool
 	if !db.Migrator().HasTable(&DmProtocolInfo{}) {
 		//需要初始化表
-		needInitColumn = true
+		NeedInitColumn = true
 	} else if !db.Migrator().HasTable(&DmProductConfig{}) {
 		needInitProductConfig = true
 	}
@@ -70,7 +70,7 @@ func Migrate(c conf.Database) error {
 		return err
 	}
 
-	if needInitColumn {
+	if NeedInitColumn {
 		return migrateTableColumn()
 	}
 

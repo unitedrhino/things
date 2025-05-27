@@ -50,6 +50,21 @@ service api {
     @doc "获取产品详情"
     @handler read
     post /read (ProductInfoReadReq) returns (ProductInfo)
+
+    @doc(
+        summary: "批量导入产品"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
+    @handler multiIimport
+    post /multi-import (ProductInfoImportReq) returns (ImportResp)
+    @doc(
+        summary: "批量导出产品"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
+    @handler multiExport
+    post /multi-export (ProductInfoExportReq) returns (ProductInfoExportResp)
 }
 
 @server(
@@ -71,6 +86,17 @@ service api {
 }
 
 type (
+
+    ProductInfoImportReq {
+        Products string  `json:"products"`
+    }
+    ProductInfoExportReq {
+        ProductIDs []string `json:"productIDs,optional"`
+    }
+    ProductInfoExportResp {
+        Products string  `json:"products"`
+    }
+
     ProductConfig  {
         ProductID string   `json:"productID"`
         DevInit DevInit  `json:"devInit,optional"`//设备初始化配置

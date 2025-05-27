@@ -22,6 +22,9 @@ type (
 	ActionSendReq                     = dm.ActionSendReq
 	ActionSendResp                    = dm.ActionSendResp
 	CommonSchemaCreateReq             = dm.CommonSchemaCreateReq
+	CommonSchemaExportReq             = dm.CommonSchemaExportReq
+	CommonSchemaExportResp            = dm.CommonSchemaExportResp
+	CommonSchemaImportReq             = dm.CommonSchemaImportReq
 	CommonSchemaIndexReq              = dm.CommonSchemaIndexReq
 	CommonSchemaIndexResp             = dm.CommonSchemaIndexResp
 	CommonSchemaInfo                  = dm.CommonSchemaInfo
@@ -118,6 +121,7 @@ type (
 	IDPath                            = dm.IDPath
 	IDPathWithUpdate                  = dm.IDPathWithUpdate
 	IDsInfo                           = dm.IDsInfo
+	ImportResp                        = dm.ImportResp
 	OtaFirmwareDeviceCancelReq        = dm.OtaFirmwareDeviceCancelReq
 	OtaFirmwareDeviceConfirmReq       = dm.OtaFirmwareDeviceConfirmReq
 	OtaFirmwareDeviceIndexReq         = dm.OtaFirmwareDeviceIndexReq
@@ -148,6 +152,9 @@ type (
 	PageInfo_OrderBy                  = dm.PageInfo_OrderBy
 	Point                             = dm.Point
 	ProductCategory                   = dm.ProductCategory
+	ProductCategoryExportReq          = dm.ProductCategoryExportReq
+	ProductCategoryExportResp         = dm.ProductCategoryExportResp
+	ProductCategoryImportReq          = dm.ProductCategoryImportReq
 	ProductCategoryIndexReq           = dm.ProductCategoryIndexReq
 	ProductCategoryIndexResp          = dm.ProductCategoryIndexResp
 	ProductCategorySchemaIndexReq     = dm.ProductCategorySchemaIndexReq
@@ -159,6 +166,9 @@ type (
 	ProductCustomUi                   = dm.ProductCustomUi
 	ProductInfo                       = dm.ProductInfo
 	ProductInfoDeleteReq              = dm.ProductInfoDeleteReq
+	ProductInfoExportReq              = dm.ProductInfoExportReq
+	ProductInfoExportResp             = dm.ProductInfoExportResp
+	ProductInfoImportReq              = dm.ProductInfoImportReq
 	ProductInfoIndexReq               = dm.ProductInfoIndexReq
 	ProductInfoIndexResp              = dm.ProductInfoIndexResp
 	ProductInfoReadReq                = dm.ProductInfoReadReq
@@ -200,6 +210,9 @@ type (
 	ProtocolScriptDevice              = dm.ProtocolScriptDevice
 	ProtocolScriptDeviceIndexReq      = dm.ProtocolScriptDeviceIndexReq
 	ProtocolScriptDeviceIndexResp     = dm.ProtocolScriptDeviceIndexResp
+	ProtocolScriptExportReq           = dm.ProtocolScriptExportReq
+	ProtocolScriptExportResp          = dm.ProtocolScriptExportResp
+	ProtocolScriptImportReq           = dm.ProtocolScriptImportReq
 	ProtocolScriptIndexReq            = dm.ProtocolScriptIndexReq
 	ProtocolScriptIndexResp           = dm.ProtocolScriptIndexResp
 	ProtocolService                   = dm.ProtocolService

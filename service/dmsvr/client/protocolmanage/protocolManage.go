@@ -22,6 +22,9 @@ type (
 	ActionSendReq                     = dm.ActionSendReq
 	ActionSendResp                    = dm.ActionSendResp
 	CommonSchemaCreateReq             = dm.CommonSchemaCreateReq
+	CommonSchemaExportReq             = dm.CommonSchemaExportReq
+	CommonSchemaExportResp            = dm.CommonSchemaExportResp
+	CommonSchemaImportReq             = dm.CommonSchemaImportReq
 	CommonSchemaIndexReq              = dm.CommonSchemaIndexReq
 	CommonSchemaIndexResp             = dm.CommonSchemaIndexResp
 	CommonSchemaInfo                  = dm.CommonSchemaInfo
@@ -118,6 +121,7 @@ type (
 	IDPath                            = dm.IDPath
 	IDPathWithUpdate                  = dm.IDPathWithUpdate
 	IDsInfo                           = dm.IDsInfo
+	ImportResp                        = dm.ImportResp
 	OtaFirmwareDeviceCancelReq        = dm.OtaFirmwareDeviceCancelReq
 	OtaFirmwareDeviceConfirmReq       = dm.OtaFirmwareDeviceConfirmReq
 	OtaFirmwareDeviceIndexReq         = dm.OtaFirmwareDeviceIndexReq
@@ -148,6 +152,9 @@ type (
 	PageInfo_OrderBy                  = dm.PageInfo_OrderBy
 	Point                             = dm.Point
 	ProductCategory                   = dm.ProductCategory
+	ProductCategoryExportReq          = dm.ProductCategoryExportReq
+	ProductCategoryExportResp         = dm.ProductCategoryExportResp
+	ProductCategoryImportReq          = dm.ProductCategoryImportReq
 	ProductCategoryIndexReq           = dm.ProductCategoryIndexReq
 	ProductCategoryIndexResp          = dm.ProductCategoryIndexResp
 	ProductCategorySchemaIndexReq     = dm.ProductCategorySchemaIndexReq
@@ -159,6 +166,9 @@ type (
 	ProductCustomUi                   = dm.ProductCustomUi
 	ProductInfo                       = dm.ProductInfo
 	ProductInfoDeleteReq              = dm.ProductInfoDeleteReq
+	ProductInfoExportReq              = dm.ProductInfoExportReq
+	ProductInfoExportResp             = dm.ProductInfoExportResp
+	ProductInfoImportReq              = dm.ProductInfoImportReq
 	ProductInfoIndexReq               = dm.ProductInfoIndexReq
 	ProductInfoIndexResp              = dm.ProductInfoIndexResp
 	ProductInfoReadReq                = dm.ProductInfoReadReq
@@ -200,6 +210,9 @@ type (
 	ProtocolScriptDevice              = dm.ProtocolScriptDevice
 	ProtocolScriptDeviceIndexReq      = dm.ProtocolScriptDeviceIndexReq
 	ProtocolScriptDeviceIndexResp     = dm.ProtocolScriptDeviceIndexResp
+	ProtocolScriptExportReq           = dm.ProtocolScriptExportReq
+	ProtocolScriptExportResp          = dm.ProtocolScriptExportResp
+	ProtocolScriptImportReq           = dm.ProtocolScriptImportReq
 	ProtocolScriptIndexReq            = dm.ProtocolScriptIndexReq
 	ProtocolScriptIndexResp           = dm.ProtocolScriptIndexResp
 	ProtocolService                   = dm.ProtocolService
@@ -280,6 +293,8 @@ type (
 		ProtocolScriptDeviceUpdate(ctx context.Context, in *ProtocolScriptDevice, opts ...grpc.CallOption) (*Empty, error)
 		// 协议删除
 		ProtocolScriptDeviceDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error)
+		ProtocolScriptMultiImport(ctx context.Context, in *ProtocolScriptImportReq, opts ...grpc.CallOption) (*ImportResp, error)
+		ProtocolScriptMultiExport(ctx context.Context, in *ProtocolScriptExportReq, opts ...grpc.CallOption) (*ProtocolScriptExportResp, error)
 	}
 
 	defaultProtocolManage struct {
@@ -506,4 +521,22 @@ func (m *defaultProtocolManage) ProtocolScriptDeviceDelete(ctx context.Context, 
 // 协议删除
 func (d *directProtocolManage) ProtocolScriptDeviceDelete(ctx context.Context, in *WithID, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.ProtocolScriptDeviceDelete(ctx, in)
+}
+
+func (m *defaultProtocolManage) ProtocolScriptMultiImport(ctx context.Context, in *ProtocolScriptImportReq, opts ...grpc.CallOption) (*ImportResp, error) {
+	client := dm.NewProtocolManageClient(m.cli.Conn())
+	return client.ProtocolScriptMultiImport(ctx, in, opts...)
+}
+
+func (d *directProtocolManage) ProtocolScriptMultiImport(ctx context.Context, in *ProtocolScriptImportReq, opts ...grpc.CallOption) (*ImportResp, error) {
+	return d.svr.ProtocolScriptMultiImport(ctx, in)
+}
+
+func (m *defaultProtocolManage) ProtocolScriptMultiExport(ctx context.Context, in *ProtocolScriptExportReq, opts ...grpc.CallOption) (*ProtocolScriptExportResp, error) {
+	client := dm.NewProtocolManageClient(m.cli.Conn())
+	return client.ProtocolScriptMultiExport(ctx, in, opts...)
+}
+
+func (d *directProtocolManage) ProtocolScriptMultiExport(ctx context.Context, in *ProtocolScriptExportReq, opts ...grpc.CallOption) (*ProtocolScriptExportResp, error) {
+	return d.svr.ProtocolScriptMultiExport(ctx, in)
 }

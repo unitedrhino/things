@@ -133,3 +133,13 @@ func (s *ProtocolManageServer) ProtocolScriptDeviceDelete(ctx context.Context, i
 	l := protocolmanagelogic.NewProtocolScriptDeviceDeleteLogic(ctx, s.svcCtx)
 	return l.ProtocolScriptDeviceDelete(in)
 }
+
+func (s *ProtocolManageServer) ProtocolScriptMultiImport(ctx context.Context, in *dm.ProtocolScriptImportReq) (*dm.ImportResp, error) {
+	l := protocolmanagelogic.NewProtocolScriptMultiImportLogic(ctx, s.svcCtx)
+	return l.ProtocolScriptMultiImport(in)
+}
+
+func (s *ProtocolManageServer) ProtocolScriptMultiExport(ctx context.Context, in *dm.ProtocolScriptExportReq) (*dm.ProtocolScriptExportResp, error) {
+	l := protocolmanagelogic.NewProtocolScriptMultiExportLogic(ctx, s.svcCtx)
+	return l.ProtocolScriptMultiExport(in)
+}

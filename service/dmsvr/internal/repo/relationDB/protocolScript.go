@@ -23,18 +23,26 @@ func NewProtocolScriptRepo(in any) *ProtocolScriptRepo {
 }
 
 type ProtocolScriptFilter struct {
+	IDs           []int64
 	Name          string
 	Status        int64
 	TriggerDir    int64
 	TriggerTimer  int64
 	TriggerHandle string
 	TriggerType   string
+	WithDevices   bool
 }
 
 func (p ProtocolScriptRepo) fmtFilter(ctx context.Context, f ProtocolScriptFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
 	if f.Name != "" {
 		db = db.Where("name like ?", "%"+f.Name+"%")
+	}
+	if len(f.IDs) != 0 {
+		db = db.Where("id in  ?", f.IDs)
+	}
+	if f.WithDevices {
+		db = db.Preload("Devices")
 	}
 	if f.TriggerHandle != "" {
 		db = db.Where("trigger_handle = ?", f.TriggerHandle)

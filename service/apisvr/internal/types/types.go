@@ -25,6 +25,18 @@ type CommonSchemaDeleteReq struct {
 	ID int64 `json:"id"` //产品id
 }
 
+type CommonSchemaExportReq struct {
+	Identifiers []string `json:"identifiers,optional"`
+}
+
+type CommonSchemaExportResp struct {
+	Schemas string `json:"schemas"`
+}
+
+type CommonSchemaImportReq struct {
+	Schemas string `json:"schemas"`
+}
+
 type CommonSchemaIndexReq struct {
 	Page                      *PageInfo `json:"page,optional"` //分页信息,只获取一个则不填
 	Type                      int64     `json:"type,optional"` //物模型类型 1:property属性 2:event事件 3:action行为
@@ -1100,6 +1112,13 @@ type IDsInfo struct {
 	IDPaths []string `json:"idPaths,optional,omitempty"`
 }
 
+type ImportResp struct {
+	Total       int64 `json:"total"`       //导入总接口数
+	ErrCount    int64 `json:"errCount"`    //失败数
+	IgnoreCount int64 `json:"ignoreCount"` //忽略数
+	SuccCount   int64 `json:"succCount"`   //成功数
+}
+
 type OrderBy struct {
 	Field string `json:"field,optional"` ////排序的字段名
 	Sort  int64  `json:"sort,optional"`  //排序方式：1 从小到大, 2 从大到小
@@ -1332,6 +1351,18 @@ type ProductCategory struct {
 	Children        []*ProductCategory `json:"children,optional"`
 }
 
+type ProductCategoryExportReq struct {
+	IDs []int64 `json:"ids,string,optional"`
+}
+
+type ProductCategoryExportResp struct {
+	Categories string `json:"categories"`
+}
+
+type ProductCategoryImportReq struct {
+	Categories string `json:"categories"`
+}
+
 type ProductCategoryIndexReq struct {
 	Page      *PageInfo `json:"page,optional"` //分页信息,只获取一个则不填
 	Name      string    `json:"name,optional"` //过滤产品名称
@@ -1419,6 +1450,18 @@ type ProductInfo struct {
 
 type ProductInfoDeleteReq struct {
 	ProductID string `json:"productID"` //产品id 只读
+}
+
+type ProductInfoExportReq struct {
+	ProductIDs []string `json:"productIDs,optional"`
+}
+
+type ProductInfoExportResp struct {
+	Products string `json:"products"`
+}
+
+type ProductInfoImportReq struct {
+	Products string `json:"products"`
 }
 
 type ProductInfoIndexReq struct {
@@ -1661,6 +1704,18 @@ type ProtocolScriptDeviceIndexReq struct {
 type ProtocolScriptDeviceIndexResp struct {
 	List  []*ProtocolScriptDevice `json:"list"`           //自定义协议信息
 	Total int64                   `json:"total,optional"` //拥有的总数
+}
+
+type ProtocolScriptExportReq struct {
+	IDs []int64 `json:"ids,string,optional"`
+}
+
+type ProtocolScriptExportResp struct {
+	Scripts string `json:"scripts"`
+}
+
+type ProtocolScriptImportReq struct {
+	Scripts string `json:"scripts"`
 }
 
 type ProtocolScriptIndexReq struct {

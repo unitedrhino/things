@@ -123,4 +123,11 @@ type(
         Path string  `json:"path,optional,omitempty"` //文件的路径
         IsUpdate bool  `json:"isUpdate,optional,omitempty"` //如果要更新该文件,则需要将该参数置为true
     }
+
+    ImportResp{
+        Total  int64 `json:"total"`      //导入总接口数
+        ErrCount  int64 `json:"errCount"` //失败数
+        IgnoreCount  int64 `json:"ignoreCount"` //忽略数
+        SuccCount  int64 `json:"succCount"` //成功数
+    }
 )

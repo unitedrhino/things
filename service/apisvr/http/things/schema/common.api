@@ -48,9 +48,33 @@ service api {
     @doc "获取通用物模型列表"
     @handler index
     post /index (CommonSchemaIndexReq) returns (CommonSchemaIndexResp)
+
+    @doc(
+        summary: "批量导入通用物模型"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
+    @handler multiIimport
+    post /multi-import (CommonSchemaImportReq) returns (ImportResp)
+    @doc(
+        summary: "批量导出通用物模型"
+        authType: "admin"
+        isNeedAuth: "true"
+    )
+    @handler multiExport
+    post /multi-export (CommonSchemaExportReq) returns (CommonSchemaExportResp)
 }
 
 type (
+    CommonSchemaImportReq{
+        Schemas string  `json:"schemas"`
+    }
+    CommonSchemaExportReq{
+        Identifiers []string `json:"identifiers,optional"`
+    }
+    CommonSchemaExportResp{
+        Schemas string  `json:"schemas"`
+    }
     CommonSchemaUpdateReq  {
         *CommonSchemaInfo
     }

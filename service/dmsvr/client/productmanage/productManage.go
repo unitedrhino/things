@@ -22,6 +22,9 @@ type (
 	ActionSendReq                     = dm.ActionSendReq
 	ActionSendResp                    = dm.ActionSendResp
 	CommonSchemaCreateReq             = dm.CommonSchemaCreateReq
+	CommonSchemaExportReq             = dm.CommonSchemaExportReq
+	CommonSchemaExportResp            = dm.CommonSchemaExportResp
+	CommonSchemaImportReq             = dm.CommonSchemaImportReq
 	CommonSchemaIndexReq              = dm.CommonSchemaIndexReq
 	CommonSchemaIndexResp             = dm.CommonSchemaIndexResp
 	CommonSchemaInfo                  = dm.CommonSchemaInfo
@@ -118,6 +121,7 @@ type (
 	IDPath                            = dm.IDPath
 	IDPathWithUpdate                  = dm.IDPathWithUpdate
 	IDsInfo                           = dm.IDsInfo
+	ImportResp                        = dm.ImportResp
 	OtaFirmwareDeviceCancelReq        = dm.OtaFirmwareDeviceCancelReq
 	OtaFirmwareDeviceConfirmReq       = dm.OtaFirmwareDeviceConfirmReq
 	OtaFirmwareDeviceIndexReq         = dm.OtaFirmwareDeviceIndexReq
@@ -148,6 +152,9 @@ type (
 	PageInfo_OrderBy                  = dm.PageInfo_OrderBy
 	Point                             = dm.Point
 	ProductCategory                   = dm.ProductCategory
+	ProductCategoryExportReq          = dm.ProductCategoryExportReq
+	ProductCategoryExportResp         = dm.ProductCategoryExportResp
+	ProductCategoryImportReq          = dm.ProductCategoryImportReq
 	ProductCategoryIndexReq           = dm.ProductCategoryIndexReq
 	ProductCategoryIndexResp          = dm.ProductCategoryIndexResp
 	ProductCategorySchemaIndexReq     = dm.ProductCategorySchemaIndexReq
@@ -159,6 +166,9 @@ type (
 	ProductCustomUi                   = dm.ProductCustomUi
 	ProductInfo                       = dm.ProductInfo
 	ProductInfoDeleteReq              = dm.ProductInfoDeleteReq
+	ProductInfoExportReq              = dm.ProductInfoExportReq
+	ProductInfoExportResp             = dm.ProductInfoExportResp
+	ProductInfoImportReq              = dm.ProductInfoImportReq
 	ProductInfoIndexReq               = dm.ProductInfoIndexReq
 	ProductInfoIndexResp              = dm.ProductInfoIndexResp
 	ProductInfoReadReq                = dm.ProductInfoReadReq
@@ -200,6 +210,9 @@ type (
 	ProtocolScriptDevice              = dm.ProtocolScriptDevice
 	ProtocolScriptDeviceIndexReq      = dm.ProtocolScriptDeviceIndexReq
 	ProtocolScriptDeviceIndexResp     = dm.ProtocolScriptDeviceIndexResp
+	ProtocolScriptExportReq           = dm.ProtocolScriptExportReq
+	ProtocolScriptExportResp          = dm.ProtocolScriptExportResp
+	ProtocolScriptImportReq           = dm.ProtocolScriptImportReq
 	ProtocolScriptIndexReq            = dm.ProtocolScriptIndexReq
 	ProtocolScriptIndexResp           = dm.ProtocolScriptIndexResp
 	ProtocolService                   = dm.ProtocolService
@@ -290,6 +303,10 @@ type (
 		ProductCategorySchemaMultiUpdate(ctx context.Context, in *ProductCategorySchemaMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
 		ProductCategorySchemaMultiCreate(ctx context.Context, in *ProductCategorySchemaMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
 		ProductCategorySchemaMultiDelete(ctx context.Context, in *ProductCategorySchemaMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
+		ProductInfoMultiImport(ctx context.Context, in *ProductInfoImportReq, opts ...grpc.CallOption) (*ImportResp, error)
+		ProductInfoMultiExport(ctx context.Context, in *ProductInfoExportReq, opts ...grpc.CallOption) (*ProductInfoExportResp, error)
+		ProductCategoryMultiImport(ctx context.Context, in *ProductCategoryImportReq, opts ...grpc.CallOption) (*ImportResp, error)
+		ProductCategoryMultiExport(ctx context.Context, in *ProductCategoryExportReq, opts ...grpc.CallOption) (*ProductCategoryExportResp, error)
 	}
 
 	defaultProductManage struct {
@@ -578,4 +595,40 @@ func (m *defaultProductManage) ProductCategorySchemaMultiDelete(ctx context.Cont
 
 func (d *directProductManage) ProductCategorySchemaMultiDelete(ctx context.Context, in *ProductCategorySchemaMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.ProductCategorySchemaMultiDelete(ctx, in)
+}
+
+func (m *defaultProductManage) ProductInfoMultiImport(ctx context.Context, in *ProductInfoImportReq, opts ...grpc.CallOption) (*ImportResp, error) {
+	client := dm.NewProductManageClient(m.cli.Conn())
+	return client.ProductInfoMultiImport(ctx, in, opts...)
+}
+
+func (d *directProductManage) ProductInfoMultiImport(ctx context.Context, in *ProductInfoImportReq, opts ...grpc.CallOption) (*ImportResp, error) {
+	return d.svr.ProductInfoMultiImport(ctx, in)
+}
+
+func (m *defaultProductManage) ProductInfoMultiExport(ctx context.Context, in *ProductInfoExportReq, opts ...grpc.CallOption) (*ProductInfoExportResp, error) {
+	client := dm.NewProductManageClient(m.cli.Conn())
+	return client.ProductInfoMultiExport(ctx, in, opts...)
+}
+
+func (d *directProductManage) ProductInfoMultiExport(ctx context.Context, in *ProductInfoExportReq, opts ...grpc.CallOption) (*ProductInfoExportResp, error) {
+	return d.svr.ProductInfoMultiExport(ctx, in)
+}
+
+func (m *defaultProductManage) ProductCategoryMultiImport(ctx context.Context, in *ProductCategoryImportReq, opts ...grpc.CallOption) (*ImportResp, error) {
+	client := dm.NewProductManageClient(m.cli.Conn())
+	return client.ProductCategoryMultiImport(ctx, in, opts...)
+}
+
+func (d *directProductManage) ProductCategoryMultiImport(ctx context.Context, in *ProductCategoryImportReq, opts ...grpc.CallOption) (*ImportResp, error) {
+	return d.svr.ProductCategoryMultiImport(ctx, in)
+}
+
+func (m *defaultProductManage) ProductCategoryMultiExport(ctx context.Context, in *ProductCategoryExportReq, opts ...grpc.CallOption) (*ProductCategoryExportResp, error) {
+	client := dm.NewProductManageClient(m.cli.Conn())
+	return client.ProductCategoryMultiExport(ctx, in, opts...)
+}
+
+func (d *directProductManage) ProductCategoryMultiExport(ctx context.Context, in *ProductCategoryExportReq, opts ...grpc.CallOption) (*ProductCategoryExportResp, error) {
+	return d.svr.ProductCategoryMultiExport(ctx, in)
 }

@@ -227,14 +227,16 @@ type DevInit struct {
 }
 
 type DmProductCategory struct {
-	ID          int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	Name        string `gorm:"column:name;uniqueIndex:pn;type:varchar(100);NOT NULL"` // 产品品类名称
-	Desc        string `gorm:"column:desc;type:varchar(200)"`                         // 描述
-	HeadImg     string `gorm:"column:head_img;type:varchar(200)"`                     // 图片
-	ParentID    int64  `gorm:"column:parent_id;type:bigint;NOT NULL"`                 // 上级区域ID(雪花ID)
-	IDPath      string `gorm:"column:id_path;type:varchar(100);NOT NULL"`             // 1-2-3-的格式记录顶级区域到当前区域的路径
-	IsLeaf      int64  `gorm:"column:is_leaf;type:bigint;default:1;NOT NULL"`         //是否是叶子节点
-	DeviceCount int64  `gorm:"column:device_count;type:bigint;default:0"`             //该产品品类下的设备数量统计
+	ID          int64                      `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	Name        string                     `gorm:"column:name;uniqueIndex:pn;type:varchar(100);NOT NULL"` // 产品品类名称
+	Desc        string                     `gorm:"column:desc;type:varchar(200)"`                         // 描述
+	HeadImg     string                     `gorm:"column:head_img;type:varchar(200)"`                     // 图片
+	ParentID    int64                      `gorm:"column:parent_id;type:bigint;NOT NULL"`                 // 上级区域ID(雪花ID)
+	IDPath      string                     `gorm:"column:id_path;type:varchar(100);NOT NULL"`             // 1-2-3-的格式记录顶级区域到当前区域的路径
+	IsLeaf      int64                      `gorm:"column:is_leaf;type:bigint;default:1;NOT NULL"`         //是否是叶子节点
+	DeviceCount int64                      `gorm:"column:device_count;type:bigint;default:0"`             //该产品品类下的设备数量统计
+	Children    []*DmProductCategory       `gorm:"foreignKey:ParentID;references:ID;"`
+	Schemas     []*DmProductCategorySchema `gorm:"foreignKey:ProductCategoryID;references:ID;"`
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:pn"`
 }
@@ -307,7 +309,8 @@ type DmProtocolScript struct {
 	Desc          string                `gorm:"column:desc;type:varchar(200)"`                      // 描述
 	Status        def.Bool              `gorm:"column:status;default:1"`                            //状态:是否启用
 	stores.NoDelTime
-	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:name"`
+	DeletedTime stores.DeletedTime        `gorm:"column:deleted_time;default:0;uniqueIndex:name"`
+	Devices     []*DmProtocolScriptDevice `gorm:"foreignKey:ScriptID;references:ID"`
 }
 
 func (m *DmProtocolScript) TableName() string {

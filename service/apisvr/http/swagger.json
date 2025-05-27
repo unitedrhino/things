@@ -3748,6 +3748,90 @@
         ]
       }
     },
+    "/api/v1/things/product/category/multi-export": {
+      "post": {
+        "summary": "批量导出产品品类",
+        "operationId": "postApiV1ThingsProductCategoryMulti-export",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/ProductCategoryExportResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProductCategoryExportReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/product/category",
+          "thingsProductCategory"
+        ]
+      }
+    },
+    "/api/v1/things/product/category/multi-import": {
+      "post": {
+        "summary": "批量导入产品品类",
+        "operationId": "postApiV1ThingsProductCategoryMulti-import",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/ImportResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProductCategoryImportReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/product/category",
+          "thingsProductCategory"
+        ]
+      }
+    },
     "/api/v1/things/product/category/read": {
       "post": {
         "summary": "获取产品品类详情",
@@ -4258,6 +4342,90 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/ProductInitReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/product/info",
+          "thingsProductInfo"
+        ]
+      }
+    },
+    "/api/v1/things/product/info/multi-export": {
+      "post": {
+        "summary": "批量导出产品",
+        "operationId": "postApiV1ThingsProductInfoMulti-export",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/ProductInfoExportResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProductInfoExportReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/product/info",
+          "thingsProductInfo"
+        ]
+      }
+    },
+    "/api/v1/things/product/info/multi-import": {
+      "post": {
+        "summary": "批量导入产品",
+        "operationId": "postApiV1ThingsProductInfoMulti-import",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/ImportResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProductInfoImportReq"
             }
           }
         ],
@@ -5362,6 +5530,90 @@
         ]
       }
     },
+    "/api/v1/things/protocol/script/multi-export": {
+      "post": {
+        "summary": "批量导出协议脚本",
+        "operationId": "postApiV1ThingsProtocolScriptMulti-export",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/ProtocolScriptExportResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProtocolScriptExportReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/protocol/script",
+          "thingsProtocolScript"
+        ]
+      }
+    },
+    "/api/v1/things/protocol/script/multi-import": {
+      "post": {
+        "summary": "批量导入协议脚本",
+        "operationId": "postApiV1ThingsProtocolScriptMulti-import",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/ImportResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProtocolScriptImportReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/protocol/script",
+          "thingsProtocolScript"
+        ]
+      }
+    },
     "/api/v1/things/protocol/script/read": {
       "post": {
         "summary": "获取协议脚本详情",
@@ -5748,6 +6000,90 @@
             }
           }
         },
+        "tags": [
+          "things/schema/common",
+          "thingsSchemaCommon"
+        ]
+      }
+    },
+    "/api/v1/things/schema/common/multi-export": {
+      "post": {
+        "summary": "批量导出通用物模型",
+        "operationId": "postApiV1ThingsSchemaCommonMulti-export",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/CommonSchemaExportResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CommonSchemaExportReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/schema/common",
+          "thingsSchemaCommon"
+        ]
+      }
+    },
+    "/api/v1/things/schema/common/multi-import": {
+      "post": {
+        "summary": "批量导入通用物模型",
+        "operationId": "postApiV1ThingsSchemaCommonMulti-import",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/ImportResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CommonSchemaImportReq"
+            }
+          }
+        ],
         "tags": [
           "things/schema/common",
           "thingsSchemaCommon"
@@ -6453,6 +6789,42 @@
       "title": "CommonSchemaDeleteReq",
       "required": [
         "id"
+      ]
+    },
+    "CommonSchemaExportReq": {
+      "type": "object",
+      "properties": {
+        "identifiers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "CommonSchemaExportReq"
+    },
+    "CommonSchemaExportResp": {
+      "type": "object",
+      "properties": {
+        "schemas": {
+          "type": "string"
+        }
+      },
+      "title": "CommonSchemaExportResp",
+      "required": [
+        "schemas"
+      ]
+    },
+    "CommonSchemaImportReq": {
+      "type": "object",
+      "properties": {
+        "schemas": {
+          "type": "string"
+        }
+      },
+      "title": "CommonSchemaImportReq",
+      "required": [
+        "schemas"
       ]
     },
     "CommonSchemaIndexReq": {
@@ -10804,6 +11176,38 @@
       },
       "title": "IDsInfo"
     },
+    "ImportResp": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "format": "int64",
+          "description": "导入总接口数"
+        },
+        "errCount": {
+          "type": "integer",
+          "format": "int64",
+          "description": "失败数"
+        },
+        "ignoreCount": {
+          "type": "integer",
+          "format": "int64",
+          "description": "忽略数"
+        },
+        "succCount": {
+          "type": "integer",
+          "format": "int64",
+          "description": "成功数"
+        }
+      },
+      "title": "ImportResp",
+      "required": [
+        "total",
+        "errCount",
+        "ignoreCount",
+        "succCount"
+      ]
+    },
     "OrderBy": {
       "type": "object",
       "properties": {
@@ -11805,6 +12209,42 @@
       },
       "title": "ProductCategory"
     },
+    "ProductCategoryExportReq": {
+      "type": "object",
+      "properties": {
+        "ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "ProductCategoryExportReq"
+    },
+    "ProductCategoryExportResp": {
+      "type": "object",
+      "properties": {
+        "categories": {
+          "type": "string"
+        }
+      },
+      "title": "ProductCategoryExportResp",
+      "required": [
+        "categories"
+      ]
+    },
+    "ProductCategoryImportReq": {
+      "type": "object",
+      "properties": {
+        "categories": {
+          "type": "string"
+        }
+      },
+      "title": "ProductCategoryImportReq",
+      "required": [
+        "categories"
+      ]
+    },
     "ProductCategoryIndexReq": {
       "type": "object",
       "properties": {
@@ -12157,6 +12597,42 @@
       "title": "ProductInfoDeleteReq",
       "required": [
         "productID"
+      ]
+    },
+    "ProductInfoExportReq": {
+      "type": "object",
+      "properties": {
+        "productIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "ProductInfoExportReq"
+    },
+    "ProductInfoExportResp": {
+      "type": "object",
+      "properties": {
+        "products": {
+          "type": "string"
+        }
+      },
+      "title": "ProductInfoExportResp",
+      "required": [
+        "products"
+      ]
+    },
+    "ProductInfoImportReq": {
+      "type": "object",
+      "properties": {
+        "products": {
+          "type": "string"
+        }
+      },
+      "title": "ProductInfoImportReq",
+      "required": [
+        "products"
       ]
     },
     "ProductInfoIndexReq": {
@@ -13146,6 +13622,42 @@
       "title": "ProtocolScriptDeviceIndexResp",
       "required": [
         "list"
+      ]
+    },
+    "ProtocolScriptExportReq": {
+      "type": "object",
+      "properties": {
+        "ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "ProtocolScriptExportReq"
+    },
+    "ProtocolScriptExportResp": {
+      "type": "object",
+      "properties": {
+        "scripts": {
+          "type": "string"
+        }
+      },
+      "title": "ProtocolScriptExportResp",
+      "required": [
+        "scripts"
+      ]
+    },
+    "ProtocolScriptImportReq": {
+      "type": "object",
+      "properties": {
+        "scripts": {
+          "type": "string"
+        }
+      },
+      "title": "ProtocolScriptImportReq",
+      "required": [
+        "scripts"
       ]
     },
     "ProtocolScriptIndexReq": {
