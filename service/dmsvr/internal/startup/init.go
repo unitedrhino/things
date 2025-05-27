@@ -92,12 +92,12 @@ func TableInit(svcCtx *svc.ServiceContext) {
 			}
 			body, err := os.ReadFile(path)
 			if err != nil {
-				return err
+				return nil
 			}
 			ret, err := schemamanagelogic.NewCommonSchemaMultiImportLogic(ctxs.WithRoot(context.TODO()), svcCtx).CommonSchemaMultiImport(&dm.CommonSchemaImportReq{
 				Schemas: string(body)})
-			logx.Info("CommonSchemaMultiImport", ret, err)
-			return err
+			logx.Info("CommonSchemaMultiImport ", info.Name(), ret, err)
+			return nil
 		})
 		if err != nil {
 			logx.Error(err)
@@ -117,13 +117,13 @@ func TableInit(svcCtx *svc.ServiceContext) {
 			}
 			body, err := os.ReadFile(path)
 			if err != nil {
-				return err
+				return nil
 			}
 			ret, err := productmanagelogic.NewProductCategoryMultiImportLogic(ctxs.WithRoot(context.TODO()), svcCtx).ProductCategoryMultiImport(&dm.ProductCategoryImportReq{
 				Categories: string(body),
 			})
-			logx.Info("ProductCategoryMultiImport", ret, err)
-			return err
+			logx.Info("ProductCategoryMultiImport ", info.Name(), ret, err)
+			return nil
 		})
 		if err != nil {
 			logx.Error(err)
@@ -148,7 +148,7 @@ func TableInit(svcCtx *svc.ServiceContext) {
 			ret, err := protocolmanagelogic.NewProtocolScriptMultiImportLogic(ctxs.WithRoot(context.TODO()), svcCtx).ProtocolScriptMultiImport(&dm.ProtocolScriptImportReq{
 				Scripts: string(body),
 			})
-			logx.Info("ProtocolScriptMultiImport", ret, err)
+			logx.Info("ProtocolScriptMultiImport ", info.Name(), ret, err)
 			return nil
 		})
 		if err != nil {
@@ -171,7 +171,7 @@ func TableInit(svcCtx *svc.ServiceContext) {
 			ret, err := productmanagelogic.NewProductInfoMultiImportLogic(ctxs.WithRoot(context.TODO()), svcCtx).ProductInfoMultiImport(&dm.ProductInfoImportReq{
 				Products: string(body),
 			})
-			logx.Info("ProductInfoMultiImport", ret, err)
+			logx.Info("ProductInfoMultiImport ", info.Name(), ret, err)
 			return nil
 		})
 		if err != nil {
