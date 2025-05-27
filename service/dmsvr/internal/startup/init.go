@@ -75,10 +75,10 @@ func init() {
 }
 
 func TableInit(svcCtx *svc.ServiceContext) {
-	if !relationDB.NeedInitColumn {
-		return
-	}
-	{
+	ctx := ctxs.WithRoot(nil)
+	total, err := relationDB.NewSchemaInfoRepo(ctx).CountByFilter(ctx, relationDB.SchemaInfoFilter{})
+	logx.Must(err)
+	if total == 0 {
 		root := "./etc/init/schema/"
 		err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 			if err != nil {
@@ -155,7 +155,9 @@ func TableInit(svcCtx *svc.ServiceContext) {
 			logx.Error(err)
 		}
 	}
-	{
+	total, err = relationDB.NewProductInfoRepo(ctx).CountByFilter(ctx, relationDB.ProductFilter{})
+	logx.Must(err)
+	if total == 0 {
 		root := "./etc/init/product/"
 		err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 			if err != nil {
