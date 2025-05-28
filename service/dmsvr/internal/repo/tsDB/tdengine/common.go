@@ -82,7 +82,7 @@ func GroupFilter(sql sq.SelectBuilder, groupConfigs []*deviceGroup.GroupDetail, 
 		if len(bg.IDs) > 0 {
 			sql = sql.Where(stores.ArrayEqToSql("group_"+groupConfig.Value+"_ids", bg.IDs))
 		}
-		if len(bg.IDs) > 0 {
+		if len(bg.IDPaths) > 0 {
 			sql = sql.Where(stores.ArrayEqToSql("group_"+groupConfig.Value+"_id_paths", bg.IDPaths))
 		}
 	}
