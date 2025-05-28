@@ -290,6 +290,9 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 		pb = "," + pb
 	}
 	ts := "FIRST(`ts`)  AS ts "
+	if filter.Interval != 0 {
+		ts = "_wstart AS ts "
+	}
 	if filter.NoFirstTs {
 		ts = "`ts` "
 	}

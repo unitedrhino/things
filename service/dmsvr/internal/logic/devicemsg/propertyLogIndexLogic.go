@@ -149,9 +149,6 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 		if devData.TimeStamp.IsZero() {
 			continue
 		}
-		if in.Interval != 0 && !in.NoFirstTs { //如果走了聚合函数,则需要将时间戳取整
-			devData.TimeStamp = def.TimeUnit(in.IntervalUnit).Truncate(devData.TimeStamp, in.Interval)
-		}
 		diData := dm.PropertyLogInfo{
 			DeviceName:  devData.DeviceName,
 			Timestamp:   devData.TimeStamp.UnixMilli(),
