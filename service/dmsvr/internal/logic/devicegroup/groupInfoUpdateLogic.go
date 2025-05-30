@@ -57,7 +57,7 @@ func (l *GroupInfoUpdateLogic) GroupInfoUpdate(in *dm.GroupInfo) (*dm.Empty, err
 			if v == "" {
 				files[key] = ""
 			}
-			if !oss.IsFilePath(l.svcCtx.Config.OssConf, v) { //传入的不是file path,不更新
+			if !l.svcCtx.OssClient.IsFilePath(v) { //传入的不是file path,不更新
 				files[key] = po.Files[key]
 				continue
 			}
