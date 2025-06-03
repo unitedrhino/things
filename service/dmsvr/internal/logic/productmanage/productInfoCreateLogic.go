@@ -173,6 +173,7 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Empt
 	}
 	return &dm.Empty{}, nil
 }
+
 func (l *ProductInfoCreateLogic) InitProduct(pi *relationDB.DmProductInfo) error {
 	t, _ := schema.NewSchemaTsl([]byte(schema.DefaultSchema))
 	if err := l.svcCtx.SchemaManaRepo.InitProduct(
