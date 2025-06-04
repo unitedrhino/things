@@ -79,7 +79,7 @@ func (l *DeviceGatewayMultiCreateLogic) DeviceGatewayMultiCreate(in *dm.DeviceGa
 						return nil, err
 					}
 				} else {
-					return nil, err
+					return nil, errors.Parameter.AddMsg("只有子设备开启自动注册及绑定级别不为强绑定才可自动创建").AddDetail(err)
 				}
 				di, err = l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: device.ProductID, DeviceNames: []string{device.DeviceName}})
 				if err != nil {
