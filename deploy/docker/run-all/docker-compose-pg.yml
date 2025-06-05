@@ -123,7 +123,7 @@ services:
       - unitedrhino_net
 
   postgres: # 服务名称
-    image: postgis/postgis:17-3.5 # 指定镜像及其版本
+    image: timescale/timescaledb-ha:pg17.5-ts2.20.2-all    # 指定镜像及其版本
     container_name: postgres # 指定容器的名称
     hostname: postgres
     restart: always

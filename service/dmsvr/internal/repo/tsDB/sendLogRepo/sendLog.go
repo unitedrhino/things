@@ -15,7 +15,7 @@ type Send struct {
 }
 
 func (m *Send) TableName() string {
-	return "dm_send_log"
+	return "dm_time_send_log"
 }
 
 type SendLogRepo struct {
@@ -29,7 +29,15 @@ func NewSendLogRepo(dataSource conf.TSDB, g []*deviceGroup.GroupDetail) deviceLo
 	}
 	stores.InitTsConn(dataSource)
 	db := stores.GetTsConn(context.Background())
+	var NeedInitColumn bool
+	if db.Migrator().HasTable(&Send{}) {
+		//需要初始化表
+		NeedInitColumn = true
+	}
 	err := db.AutoMigrate(&Send{})
 	logx.Must(err)
+	if NeedInitColumn && stores.GetTsDBType() == conf.Pgsql {
+		db.Exec("SELECT create_hypertable('dm_time_send_log','ts', chunk_time_interval => interval '1 day'    );")
+	}
 	return &SendLogRepo{db: db, asyncInsert: stores.NewAsyncInsert[Send](db, "")}
 }

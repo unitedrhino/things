@@ -45,10 +45,12 @@ func (l *DeviceGroupMultiCreateLogic) DeviceGroupMultiCreate(in *dm.DeviceGroupM
 
 	for _, g := range gs {
 		gds = append(gds, &relationDB.DmGroupDevice{
-			GroupID:    g.ID,
-			AreaID:     g.AreaID,
-			ProductID:  in.ProductID,
-			DeviceName: in.DeviceName,
+			GroupID:     g.ID,
+			AreaID:      g.AreaID,
+			ProductID:   in.ProductID,
+			DeviceName:  in.DeviceName,
+			GroupIDPath: g.IDPath,
+			Purpose:     g.Purpose,
 		})
 	}
 	err = relationDB.NewGroupDeviceRepo(l.ctx).MultiInsert(l.ctx, gds)

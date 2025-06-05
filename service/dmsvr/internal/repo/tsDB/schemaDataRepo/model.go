@@ -3,23 +3,23 @@ package schemaDataRepo
 import "time"
 
 type Event struct {
-	ProductID  string    `gorm:"column:product_id;type:varchar(100);NOT NULL"`  // 产品id
-	DeviceName string    `gorm:"column:device_name;type:varchar(100);NOT NULL"` // 设备名称
-	Identifier string    `gorm:"column:identifier;type:varchar(100);NOT NULL"`  // 事件id
-	Type       string    `gorm:"column:type;type:varchar(100);NOT NULL"`        // 事件内容
-	Param      string    `gorm:"column:param;type:varchar(256);NOT NULL"`       // 时间戳
-	Timestamp  time.Time `gorm:"column:ts;NOT NULL;"`                           // 操作时间
+	ProductID  string    `gorm:"column:product_id;uniqueIndex:pd_dn_ts;type:varchar(100);NOT NULL"`  // 产品id
+	DeviceName string    `gorm:"column:device_name;uniqueIndex:pd_dn_ts;type:varchar(100);NOT NULL"` // 设备名称
+	Identifier string    `gorm:"column:identifier;uniqueIndex:pd_dn_ts;type:varchar(100);NOT NULL"`  // 事件id
+	Type       string    `gorm:"column:type;type:varchar(100);NOT NULL"`                             // 事件内容
+	Param      string    `gorm:"column:param;type:varchar(256);NOT NULL"`                            // 时间戳
+	Timestamp  time.Time `gorm:"column:ts;uniqueIndex:pd_dn_ts;NOT NULL;"`                           // 操作时间
 }
 
 func (m *Event) TableName() string {
-	return "dm_model_event"
+	return "dm_time_model_event"
 }
 
 type Property struct {
-	ProductID  string    `gorm:"column:product_id;type:varchar(100);NOT NULL"`  // 产品id
-	DeviceName string    `gorm:"column:device_name;type:varchar(100);NOT NULL"` // 设备名称
-	Timestamp  time.Time `gorm:"column:ts;NOT NULL;"`                           // 操作时间
-	Identifier string    `gorm:"column:identifier;type:varchar(100);NOT NULL"`  // 事件id
+	ProductID  string    `gorm:"column:product_id;uniqueIndex:pd_dn_ts;type:varchar(100);NOT NULL"`  // 产品id
+	DeviceName string    `gorm:"column:device_name;uniqueIndex:pd_dn_ts;type:varchar(100);NOT NULL"` // 设备名称
+	Timestamp  time.Time `gorm:"column:ts;uniqueIndex:pd_dn_ts;NOT NULL;"`                           // 操作时间
+	Identifier string    `gorm:"column:identifier;type:varchar(100);NOT NULL"`                       // 事件id
 }
 
 type PropertyString struct {
@@ -28,7 +28,7 @@ type PropertyString struct {
 }
 
 func (m *PropertyString) TableName() string {
-	return "dm_model_property_string"
+	return "dm_time_model_property_string"
 }
 
 type PropertyStringArray struct {
@@ -38,7 +38,7 @@ type PropertyStringArray struct {
 }
 
 func (m *PropertyStringArray) TableName() string {
-	return "dm_model_property_string_array"
+	return "dm_time_model_property_string_array"
 }
 
 type PropertyInt struct {
@@ -47,7 +47,7 @@ type PropertyInt struct {
 }
 
 func (m *PropertyInt) TableName() string {
-	return "dm_model_property_int"
+	return "dm_time_model_property_int"
 }
 
 type PropertyIntArray struct {
@@ -57,7 +57,7 @@ type PropertyIntArray struct {
 }
 
 func (m *PropertyIntArray) TableName() string {
-	return "dm_model_property_int_array"
+	return "dm_time_model_property_int_array"
 }
 
 type PropertyFloat struct {
@@ -66,7 +66,7 @@ type PropertyFloat struct {
 }
 
 func (m *PropertyFloat) TableName() string {
-	return "dm_model_property_float"
+	return "dm_time_model_property_float"
 }
 
 type PropertyFloatArray struct {
@@ -76,7 +76,7 @@ type PropertyFloatArray struct {
 }
 
 func (m *PropertyFloatArray) TableName() string {
-	return "dm_model_property_float_array"
+	return "dm_time_model_property_float_array"
 }
 
 type PropertyTimestamp struct {
@@ -85,7 +85,7 @@ type PropertyTimestamp struct {
 }
 
 func (m *PropertyTimestamp) TableName() string {
-	return "dm_model_property_timestamp"
+	return "dm_time_model_property_timestamp"
 }
 
 type PropertyTimestampArray struct {
@@ -95,7 +95,7 @@ type PropertyTimestampArray struct {
 }
 
 func (m *PropertyTimestampArray) TableName() string {
-	return "dm_model_property_timestamp_array"
+	return "dm_time_model_property_timestamp_array"
 }
 
 type PropertyEnum struct {
@@ -104,7 +104,7 @@ type PropertyEnum struct {
 }
 
 func (m *PropertyEnum) TableName() string {
-	return "dm_model_property_enum"
+	return "dm_time_model_property_enum"
 }
 
 type PropertyEnumArray struct {
@@ -114,7 +114,7 @@ type PropertyEnumArray struct {
 }
 
 func (m *PropertyEnumArray) TableName() string {
-	return "dm_model_property_enum_array"
+	return "dm_time_model_property_enum_array"
 }
 
 type PropertyBool struct {
@@ -123,7 +123,7 @@ type PropertyBool struct {
 }
 
 func (m *PropertyBool) TableName() string {
-	return "dm_model_property_bool"
+	return "dm_time_model_property_bool"
 }
 
 type PropertyBoolArray struct {
@@ -133,7 +133,7 @@ type PropertyBoolArray struct {
 }
 
 func (m *PropertyBoolArray) TableName() string {
-	return "dm_model_property_bool_array"
+	return "dm_time_model_property_bool_array"
 }
 
 type PropertyStruct struct {
@@ -142,7 +142,7 @@ type PropertyStruct struct {
 }
 
 func (m *PropertyStruct) TableName() string {
-	return "dm_model_property_struct"
+	return "dm_time_model_property_struct"
 }
 
 type PropertyStructArray struct {
@@ -152,5 +152,5 @@ type PropertyStructArray struct {
 }
 
 func (m *PropertyStructArray) TableName() string {
-	return "dm_model_property_struct_array"
+	return "dm_time_model_property_struct_array"
 }

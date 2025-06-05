@@ -51,10 +51,12 @@ func (l *DeviceGroupMultiUpdateLogic) DeviceGroupMultiUpdate(in *dm.DeviceGroupM
 	var gds []*relationDB.DmGroupDevice
 	for _, g := range gs {
 		gds = append(gds, &relationDB.DmGroupDevice{
-			GroupID:    g.ID,
-			AreaID:     g.AreaID,
-			ProductID:  in.ProductID,
-			DeviceName: in.DeviceName,
+			GroupID:     g.ID,
+			AreaID:      g.AreaID,
+			ProductID:   in.ProductID,
+			DeviceName:  in.DeviceName,
+			GroupIDPath: g.IDPath,
+			Purpose:     g.Purpose,
 		})
 	}
 	var oldGroupIDs []int64

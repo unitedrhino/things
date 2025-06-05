@@ -129,10 +129,10 @@ func (l *HalfHourHandle) DeviceAbnormalRecover() error { //设备上下线异常
 		}
 		for _, v := range recoverDeviceDetail {
 			l.svcCtx.AbnormalRepo.Insert(l.ctx, &deviceLog.Abnormal{
-				TenantCode: v.TenantCode,
-				ProjectID:  v.ProjectID,
-				AreaID:     v.AreaID,
-				AreaIDPath: v.AreaIDPath,
+				TenantCode: string(v.TenantCode),
+				ProjectID:  int64(v.ProjectID),
+				AreaID:     int64(v.AreaID),
+				AreaIDPath: string(v.AreaIDPath),
 				ProductID:  v.ProductID,
 				DeviceName: v.DeviceName,
 				Action:     def.False,
@@ -188,10 +188,10 @@ func (l *HalfHourHandle) DeviceAbnormalSet() error { //设备上下线异常设�
 		}
 		for _, v := range abnormalDeviceDetail {
 			l.svcCtx.AbnormalRepo.Insert(l.ctx, &deviceLog.Abnormal{
-				TenantCode: v.TenantCode,
-				ProjectID:  v.ProjectID,
-				AreaID:     v.AreaID,
-				AreaIDPath: v.AreaIDPath,
+				TenantCode: string(v.TenantCode),
+				ProjectID:  int64(v.ProjectID),
+				AreaID:     int64(v.AreaID),
+				AreaIDPath: string(v.AreaIDPath),
 				ProductID:  v.ProductID,
 				DeviceName: v.DeviceName,
 				Action:     def.True,

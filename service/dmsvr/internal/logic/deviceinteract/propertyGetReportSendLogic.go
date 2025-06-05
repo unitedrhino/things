@@ -3,7 +3,6 @@ package deviceinteractlogic
 import (
 	"context"
 	"encoding/json"
-	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
@@ -109,10 +108,10 @@ func (l *PropertyGetReportSendLogic) PropertyGetReportSend(in *dm.PropertyGetRep
 			return
 		}
 		do := deviceLog.Send{
-			TenantCode:  dataType.TenantCode(di.TenantCode),
-			ProjectID:   dataType.ProjectID(di.ProjectID),
-			AreaID:      dataType.AreaID(di.AreaID),
-			AreaIDPath:  dataType.AreaIDPath(di.AreaIDPath),
+			TenantCode:  di.TenantCode,
+			ProjectID:   di.ProjectID,
+			AreaID:      di.AreaID,
+			AreaIDPath:  di.AreaIDPath,
 			BelongGroup: utils.CopyMap3[def.IDsInfo](di.BelongGroup),
 			ProductID:   in.ProductID,
 			Action:      "propertyGetReportSend",

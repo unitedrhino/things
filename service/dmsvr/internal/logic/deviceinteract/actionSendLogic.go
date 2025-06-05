@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"gitee.com/unitedrhino/core/service/timed/timedjobsvr/pb/timedjob"
-	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
@@ -107,10 +106,10 @@ func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (ret *dm.ActionSendRe
 				return
 			}
 			_ = l.svcCtx.SendRepo.Insert(ctx, &deviceLog.Send{
-				TenantCode:  dataType.TenantCode(di.TenantCode),
-				ProjectID:   dataType.ProjectID(di.ProjectID),
-				AreaID:      dataType.AreaID(di.AreaID),
-				AreaIDPath:  dataType.AreaIDPath(di.AreaIDPath),
+				TenantCode:  di.TenantCode,
+				ProjectID:   di.ProjectID,
+				AreaID:      di.AreaID,
+				AreaIDPath:  di.AreaIDPath,
 				BelongGroup: utils.CopyMap3[def.IDsInfo](di.BelongGroup),
 				ProductID:   in.ProductID,
 				Account:     uc.Account,

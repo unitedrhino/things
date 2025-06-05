@@ -2,7 +2,6 @@ package devicemsglogic
 
 import (
 	"context"
-	"encoding/json"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
@@ -83,12 +82,17 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 			for _, p := range pis {
 				productIDs = append(productIDs, p.ProductID)
 			}
-			in.ProductID = pis[0].ProductID
+			t, err = l.svcCtx.ProductSchemaRepo.GetData(l.ctx, pis[0].ProductID)
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			t, err = l.svcCtx.ProductSchemaRepo.GetData(l.ctx, in.ProductID)
+			if err != nil {
+				return nil, err
+			}
 		}
-		t, err = l.svcCtx.ProductSchemaRepo.GetData(l.ctx, in.ProductID)
-		if err != nil {
-			return nil, err
-		}
+
 	}
 
 	p, ok := t.Property[in.DataID]
@@ -108,6 +112,7 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 		TimeEnd:   in.TimeEnd,
 		Page:      in.Page.GetPage(),
 		Size:      in.Page.GetSize(),
+		Orders:    []def.OrderBy{},
 	}
 	if !uc.IsAdmin {
 		var lastBind int64
@@ -165,7 +170,7 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 		if param, ok := devData.Param.(string); ok {
 			payload = []byte(param)
 		} else {
-			payload, _ = json.Marshal(devData.Param)
+			payload = []byte(utils.ToString(devData.Param))
 		}
 		diData.Value = string(payload)
 		v, err := p.Define.FmtValue(string(payload))

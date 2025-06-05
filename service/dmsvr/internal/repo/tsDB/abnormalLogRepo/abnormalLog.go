@@ -15,7 +15,7 @@ type Abnormal struct {
 }
 
 func (m *Abnormal) TableName() string {
-	return "dm_abnormal_log"
+	return "dm_time_abnormal_log"
 }
 
 type AbnormalLogRepo struct {
@@ -29,7 +29,15 @@ func NewAbnormalLogRepo(dataSource conf.TSDB, g []*deviceGroup.GroupDetail) devi
 	}
 	stores.InitTsConn(dataSource)
 	db := stores.GetTsConn(context.Background())
+	var NeedInitColumn bool
+	if db.Migrator().HasTable(&Abnormal{}) {
+		//需要初始化表
+		NeedInitColumn = true
+	}
 	err := db.AutoMigrate(&Abnormal{})
 	logx.Must(err)
+	if NeedInitColumn && stores.GetTsDBType() == conf.Pgsql {
+		db.Exec("SELECT create_hypertable('dm_time_abnormal_log','ts', chunk_time_interval => interval '1 day'    );")
+	}
 	return &AbnormalLogRepo{db: db, asyncInsert: stores.NewAsyncInsert[Abnormal](db, "")}
 }

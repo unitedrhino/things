@@ -15,7 +15,7 @@ type Status struct {
 }
 
 func (m *Status) TableName() string {
-	return "dm_status_log"
+	return "dm_time_status_log"
 }
 
 type StatusLogRepo struct {
@@ -29,7 +29,15 @@ func NewStatusLogRepo(dataSource conf.TSDB, g []*deviceGroup.GroupDetail) device
 	}
 	stores.InitTsConn(dataSource)
 	db := stores.GetTsConn(context.Background())
+	var NeedInitColumn bool
+	if db.Migrator().HasTable(&Status{}) {
+		//需要初始化表
+		NeedInitColumn = true
+	}
 	err := db.AutoMigrate(&Status{})
 	logx.Must(err)
+	if NeedInitColumn && stores.GetTsDBType() == conf.Pgsql {
+		db.Exec("SELECT create_hypertable('dm_time_status_log','ts', chunk_time_interval => interval '1 day'    );")
+	}
 	return &StatusLogRepo{db: db, asyncInsert: stores.NewAsyncInsert[Status](db, "")}
 }

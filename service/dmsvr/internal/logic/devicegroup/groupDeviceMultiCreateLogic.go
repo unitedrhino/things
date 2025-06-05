@@ -51,10 +51,12 @@ func (l *GroupDeviceMultiCreateLogic) GroupDeviceMultiCreate(in *dm.GroupDeviceM
 	var devs []devices.Core
 	for _, v := range in.List {
 		list = append(list, &relationDB.DmGroupDevice{
-			GroupID:    in.GroupID,
-			ProductID:  v.ProductID,
-			DeviceName: v.DeviceName,
-			AreaID:     gi.AreaID,
+			GroupID:     in.GroupID,
+			ProductID:   v.ProductID,
+			DeviceName:  v.DeviceName,
+			AreaID:      gi.AreaID,
+			GroupIDPath: gi.IDPath,
+			Purpose:     gi.Purpose,
 		})
 		devs = append(devs, devices.Core{ProductID: v.ProductID, DeviceName: v.DeviceName})
 	}

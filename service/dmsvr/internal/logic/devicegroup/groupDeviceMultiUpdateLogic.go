@@ -44,10 +44,12 @@ func (l *GroupDeviceMultiUpdateLogic) GroupDeviceMultiUpdate(in *dm.GroupDeviceM
 	list := make([]*relationDB.DmGroupDevice, 0, len(in.List))
 	for _, v := range in.List {
 		list = append(list, &relationDB.DmGroupDevice{
-			GroupID:    in.GroupID,
-			ProductID:  v.ProductID,
-			DeviceName: v.DeviceName,
-			AreaID:     gi.AreaID,
+			GroupID:     in.GroupID,
+			ProductID:   v.ProductID,
+			DeviceName:  v.DeviceName,
+			AreaID:      gi.AreaID,
+			GroupIDPath: gi.IDPath,
+			Purpose:     gi.Purpose,
 		})
 	}
 	err = relationDB.NewGroupDeviceRepo(l.ctx).MultiUpdate(l.ctx, in.GroupID, list)

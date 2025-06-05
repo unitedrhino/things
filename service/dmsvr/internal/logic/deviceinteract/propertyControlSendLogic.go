@@ -195,10 +195,10 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 			}
 			for dataID, content := range param {
 				_ = l.svcCtx.SendRepo.Insert(ctx, &deviceLog.Send{
-					TenantCode:  dataType.TenantCode(di.TenantCode),
-					ProjectID:   dataType.ProjectID(di.ProjectID),
-					AreaID:      dataType.AreaID(di.AreaID),
-					AreaIDPath:  dataType.AreaIDPath(di.AreaIDPath),
+					TenantCode:  di.TenantCode,
+					ProjectID:   di.ProjectID,
+					AreaID:      di.AreaID,
+					AreaIDPath:  di.AreaIDPath,
 					BelongGroup: utils.CopyMap3[def.IDsInfo](di.BelongGroup),
 					ProductID:   in.ProductID,
 					Action:      "propertyControlSend",

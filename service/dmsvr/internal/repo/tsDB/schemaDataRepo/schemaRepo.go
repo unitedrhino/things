@@ -2,6 +2,7 @@ package schemaDataRepo
 
 import (
 	"context"
+	"fmt"
 	"gitee.com/unitedrhino/share/caches"
 	"gitee.com/unitedrhino/share/conf"
 	"gitee.com/unitedrhino/share/stores"
@@ -80,6 +81,11 @@ func NewDeviceDataRepo(dataSource conf.TSDB, getProductSchemaModel schema.GetSch
 }
 
 func (d *DeviceDataRepo) Init(ctx context.Context) error {
+	var NeedInitColumn bool
+	if !d.db.Migrator().HasTable(&Event{}) {
+		//需要初始化表
+		NeedInitColumn = true
+	}
 	err := d.db.AutoMigrate(
 		Event{},
 		PropertyTimestamp{},
@@ -98,5 +104,12 @@ func (d *DeviceDataRepo) Init(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+	if NeedInitColumn && stores.GetTsDBType() == conf.Pgsql {
+		d.db.Exec("SELECT create_hypertable('dm_time_model_event','ts', chunk_time_interval => interval '1 day'    );")
+		for _, tb := range TableNames {
+			d.db.Exec(fmt.Sprintf("SELECT create_hypertable('%s','ts', chunk_time_interval => interval '1 day'    );", tb))
+		}
+	}
+
 	return nil
 }

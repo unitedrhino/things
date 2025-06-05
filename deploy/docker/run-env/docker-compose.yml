@@ -52,7 +52,7 @@ services:
       - unitedrhino_net
 
   mariadb:
-    image: docker.unitedrhino.com/unitedrhino/mariadb:11.4.5
+    image: mariadb:lts
     container_name: ienv-mariadb
     hostname: mariadb
     restart: always

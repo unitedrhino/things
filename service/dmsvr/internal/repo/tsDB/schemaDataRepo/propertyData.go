@@ -4,15 +4,20 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"gitee.com/unitedrhino/core/share/dataType"
+	"gitee.com/unitedrhino/share/conf"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
+	"strings"
 	"time"
 )
 
@@ -289,13 +294,20 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 	var (
 		err error
 		db  = d.db.WithContext(ctx).Model(getModel(p.Define))
+		//needJoinAreaID bool
+		//needJoinGroup  bool
 	)
-	if filter.PartitionBy != "" {
-		db = db.Group(filter.PartitionBy)
-	}
+
 	if filter.ArgFunc == "" {
 		if filter.Order != stores.OrderAsc {
 			db = db.Order("ts desc")
+		}
+		if filter.PartitionBy != "" {
+			var selects = ""
+			selects, db = d.handlePartition(filter.PartitionBy, db)
+			if selects != "" {
+				db = db.Select(selects)
+			}
 		}
 	} else {
 		db, err = d.getPropertyArgFuncSelect(ctx, db, p, filter)
@@ -304,6 +316,7 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 		}
 		filter.Page.Size = 0
 	}
+
 	_, num, ok := schema.GetArray(filter.DataID)
 	if ok {
 
@@ -312,82 +325,172 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 	db = d.fillFilter(db, filter)
 	db = filter.Page.FmtSql2(db)
 	var retProperties []*msgThing.PropertyData
-	if p.Define.Type == schema.DataTypeArray {
-		p.Define.Type = p.Define.ArrayInfo.Type
+	var retDatabase = []map[string]any{}
+	err = db.Table(getTableName(p.Define) + " as tb").Find(&retDatabase).Error
+	if err != nil {
+		return nil, stores.ErrFmt(err)
 	}
-	switch p.Define.Type {
-	case schema.DataTypeBool:
-		var ret = []*PropertyBool{}
-		err = db.Find(&ret).Error
-		if err != nil {
-			return nil, stores.ErrFmt(err)
-		}
-		retProperties = utils.CopySlice[msgThing.PropertyData](ret)
-	case schema.DataTypeInt:
-		var ret = []*PropertyInt{}
-		err = db.Find(&ret).Error
-		if err != nil {
-			return nil, stores.ErrFmt(err)
-		}
-		retProperties = utils.CopySlice[msgThing.PropertyData](ret)
-	case schema.DataTypeString:
-		var ret = []*PropertyString{}
-		err = db.Find(&ret).Error
-		if err != nil {
-			return nil, stores.ErrFmt(err)
-		}
-		retProperties = utils.CopySlice[msgThing.PropertyData](ret)
-	case schema.DataTypeStruct:
-		var ret = []*PropertyStruct{}
-		err = db.Find(&ret).Error
-		if err != nil {
-			return nil, stores.ErrFmt(err)
-		}
-		retProperties = utils.CopySlice[msgThing.PropertyData](ret)
-	case schema.DataTypeFloat:
-		var ret = []*PropertyFloat{}
-		err = db.Find(&ret).Error
-		if err != nil {
-			return nil, stores.ErrFmt(err)
-		}
-		retProperties = utils.CopySlice[msgThing.PropertyData](ret)
-	case schema.DataTypeTimestamp:
-		var ret = []*PropertyTimestamp{}
-		err = db.Find(&ret).Error
-		if err != nil {
-			return nil, stores.ErrFmt(err)
-		}
-		retProperties = utils.CopySlice[msgThing.PropertyData](ret)
-	case schema.DataTypeEnum:
-		var ret = []*PropertyEnum{}
-		err = db.Find(&ret).Error
-		if err != nil {
-			return nil, stores.ErrFmt(err)
-		}
-		retProperties = utils.CopySlice[msgThing.PropertyData](ret)
+	for _, v := range retDatabase {
+		retProperties = append(retProperties, d.ToPropertyData(filter.DataID, p, v))
 	}
 	return retProperties, nil
 }
+func (d *DeviceDataRepo) ToPropertyData(id string, p *schema.Property, db map[string]any) *msgThing.PropertyData {
+	data := msgThing.PropertyData{
+		DeviceName: cast.ToString(db["device_name"]),
+		Identifier: id,
+		Param:      db["param"],
+		TimeStamp:  cast.ToTime(db["ts"]),
+	}
+	if b, ok := data.Param.(bool); ok {
+		data.Param = cast.ToInt64(b)
+	}
+	if db["ts_window"] != nil {
+		data.TimeStamp = cast.ToTime(db["ts_window"])
+	}
+	if db["tenant_code"] != nil {
+		data.TenantCode = dataType.TenantCode(cast.ToString(db["tenant_code"]))
+	}
+	if db["project_id"] != nil {
+		data.ProjectID = dataType.ProjectID(cast.ToInt64(db["project_id"]))
+	}
+	if db["area_id"] != nil {
+		data.AreaID = dataType.AreaID(cast.ToInt64(db["area_id"]))
+	}
+	if db["area_id_path"] != nil {
+		data.TenantCode = dataType.TenantCode(cast.ToString(db["area_id_path"]))
+	}
+	if db["group_purpose"] != nil {
+		groupPurpose := cast.ToString(db["group_purpose"])
+		var idsInfo def.IDsInfo
+		if db["group_id"] != nil {
+			idsInfo.IDs = append(idsInfo.IDs, cast.ToInt64(db["group_id"]))
+		}
+		if db["group_id_path"] != nil {
+			idsInfo.IDPaths = append(idsInfo.IDPaths, cast.ToString(db["group_id_path"]))
+		}
+		data.BelongGroup = map[string]def.IDsInfo{
+			groupPurpose: idsInfo,
+		}
+	}
+	return &data
+}
 
+/*
+SELECT
+
+	FROM_UNIXTIME(
+	        UNIX_TIMESTAMP(@start) +
+	        FLOOR((UNIX_TIMESTAMP(ts) - UNIX_TIMESTAMP(@start)) / @interval) * @interval
+	) AS hour_window,
+	device_name,
+	SUM(param) AS total_param
+
+FROM
+
+	dm_time_model_property_float
+
+WHERE
+
+	ts >= @start
+
+GROUP BY
+
+	hour_window, device_name;
+*/
 func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 	ctx context.Context, db *stores.DB, p *schema.Property,
 	filter msgThing.FilterOpt) (*stores.DB, error) {
-
+	var start = "0000-01-01 0:00:00"
+	if filter.Page.TimeStart != 0 {
+		start = time.UnixMilli(filter.Page.TimeStart).Format("2006-01-02 15:04:05")
+	}
+	var selects = ""
+	if filter.PartitionBy != "" {
+		selects, db = d.handlePartition(filter.PartitionBy, db)
+	}
 	if filter.Interval != 0 {
-		db = db.Select("ts", fmt.Sprintf(
-			" DATE_FORMAT(FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(ts) / %v) * %v), '%Y-%m-%d %H:%i:00') AS time_interval"), fmt.Sprintf("%s(`param`) as param", filter.ArgFunc))
-		db = db.Group("time_interval")
+		if filter.IntervalUnit == "" {
+			filter.IntervalUnit = def.TimeUnitS
+		}
+		switch stores.GetTsDBType() {
+		case conf.Pgsql:
+			db = db.Select(selects + fmt.Sprintf(`time_bucket('%v %s', ts)  AS ts_window, %s(param) AS param`,
+				filter.Interval, filter.IntervalUnit.ToPgStr(), filter.ArgFunc))
+		default:
+			interval := int64(filter.IntervalUnit.ToDuration(filter.Interval) / time.Second)
+			db = db.Select(selects + fmt.Sprintf(` FROM_UNIXTIME(UNIX_TIMESTAMP('%s') + FLOOR((UNIX_TIMESTAMP(ts) - UNIX_TIMESTAMP('%s')) / %v) * %v ) AS ts_window, %s(param) AS param`,
+				start, start, interval, interval, filter.ArgFunc))
+		}
+		db = db.Group("ts_window")
 	} else {
-		db = db.Select("ts", fmt.Sprintf("%s(`param`) as param", filter.ArgFunc))
+		db = db.Select(selects+"ts", fmt.Sprintf("%s(param) as param", filter.ArgFunc))
 	}
 	return db, nil
 }
-
+func (d *DeviceDataRepo) handlePartition(partitionBy string, db *stores.DB) (selects string, db2 *stores.DB) {
+	if partitionBy == "" {
+		return "", db
+	}
+	partitionBy = utils.CamelCaseToUdnderscore(partitionBy)
+	ps := strings.Split(partitionBy, ",")
+	var finalp []string
+	for _, p := range ps {
+		if strings.Contains(p, "area_id") {
+			db = db.Joins("left join dm_device_info as di on tb.product_id = di.product_id and tb.device_name = di.device_name")
+			selects += "di.area_id as area_id,"
+			finalp = append(finalp, p)
+		} else if strings.Contains(p, "group") {
+			db = db.Joins("left join dm_group_device as di on tb.product_id = di.product_id and tb.device_name = di.device_name")
+			selects += "di.group_id  as group_id,di.purpose as group_purpose,"
+			finalp = append(finalp, "group_purpose,group_id")
+		} else if p == "device_name" {
+			selects += " tb.device_name as device_name "
+			finalp = append(finalp, p)
+		} else {
+			finalp = append(finalp, p)
+		}
+	}
+	db = db.Group(strings.Join(finalp, ","))
+	return selects, db
+}
 func (d *DeviceDataRepo) fillFilter(
 	db *stores.DB, filter msgThing.FilterOpt) *stores.DB {
-	db = db.Where("product_id=?", filter.ProductID)
 	if len(filter.DeviceNames) != 0 {
-		db = db.Where(fmt.Sprintf("device_name in (%v)", stores.ArrayToSql(filter.DeviceNames)))
+		db = db.Where(fmt.Sprintf("tb.device_name in (%v)", stores.ArrayToSql(filter.DeviceNames)))
+	}
+
+	db = tsDB.GroupFilter2(db, filter.BelongGroup)
+	if len(filter.ProductIDs) != 0 {
+		db = db.Where("tb.product_id IN ?", filter.ProductIDs)
+	} else if filter.ProductID != "" {
+		db = db.Where("tb.product_id = ?", filter.ProductID)
+	}
+	subQuery := d.db.Table("dm_device_info").Model(&relationDB.DmDeviceInfo{}).Select("product_id, device_name")
+	var hasDeviceJoin bool
+	if filter.ProjectID != 0 {
+		subQuery = subQuery.Where("project_id=?", filter.ProjectID)
+		hasDeviceJoin = true
+	}
+	if filter.TenantCode != "" {
+		subQuery = subQuery.Where("tenant_code=?", filter.TenantCode)
+		hasDeviceJoin = true
+	}
+	if filter.AreaID != 0 {
+		subQuery = subQuery.Where("area_id=?", filter.AreaID)
+		hasDeviceJoin = true
+	}
+	if filter.AreaIDPath != "" {
+		subQuery = subQuery.Where("area_id_path like ?", filter.AreaIDPath+"%")
+		hasDeviceJoin = true
+	}
+	if len(filter.AreaIDs) != 0 {
+		subQuery = subQuery.Where("area_id in ?", filter.AreaIDs)
+		hasDeviceJoin = true
+	}
+	if hasDeviceJoin {
+		db = db.Where("(tb.product_id, tb.device_name) in (?)",
+			subQuery)
 	}
 	return db
 }

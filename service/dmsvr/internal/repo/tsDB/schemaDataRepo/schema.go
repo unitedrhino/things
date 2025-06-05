@@ -80,7 +80,7 @@ func getTableName(p schema.Define) string {
 		isArray = true
 		p = *p.ArrayInfo
 	}
-	tableName := fmt.Sprintf("dm_model_property_%s", p.Type)
+	tableName := fmt.Sprintf("dm_time_model_property_%s", p.Type)
 	if isArray {
 		tableName += "_array"
 	}

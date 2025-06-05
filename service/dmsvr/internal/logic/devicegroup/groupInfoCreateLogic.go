@@ -153,10 +153,12 @@ func (l *GroupInfoCreateLogic) GroupInfoCreate(in *dm.GroupInfo) (*dm.WithID, er
 			list := make([]*relationDB.DmGroupDevice, 0, len(in.Devices))
 			for _, v := range in.Devices {
 				list = append(list, &relationDB.DmGroupDevice{
-					GroupID:    po.ID,
-					ProductID:  v.ProductID,
-					DeviceName: v.DeviceName,
-					AreaID:     po.AreaID,
+					GroupID:     po.ID,
+					ProductID:   v.ProductID,
+					DeviceName:  v.DeviceName,
+					AreaID:      po.AreaID,
+					GroupIDPath: po.IDPath,
+					Purpose:     po.Purpose,
 				})
 			}
 			err = relationDB.NewGroupDeviceRepo(tx).MultiInsert(l.ctx, list)

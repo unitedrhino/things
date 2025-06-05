@@ -34,7 +34,7 @@ type DmDeviceInfo struct {
 	ProductID       string              `gorm:"column:product_id;type:varchar(100);uniqueIndex:product_id_deviceName;NOT NULL"`  // 产品id
 	DeviceName      string              `gorm:"column:device_name;uniqueIndex:product_id_deviceName;type:varchar(100);NOT NULL"` // 设备名称
 	DeviceAlias     string              `gorm:"column:device_alias;type:varchar(100);NOT NULL"`                                  // 设备别名
-	Position        stores.Point        `gorm:"column:position;NOT NULL"`                                                        // 设备的位置(默认百度坐标系BD09)
+	Position        stores.Point        `gorm:"column:position;"`                                                                // 设备的位置(默认百度坐标系BD09)
 	RatedPower      int64               `gorm:"column:rated_power;index;type:bigint;NOT NULL;default:0"`                         // 额定功率:单位w/h
 	Secret          string              `gorm:"column:secret;type:varchar(50);NOT NULL"`                                         // 设备秘钥
 	Cert            string              `gorm:"column:cert;type:varchar(512);NOT NULL"`                                          // 设备证书
@@ -452,13 +452,15 @@ func (m *DmGroupInfo) TableName() string {
 
 // 分组与设备关系表
 type DmGroupDevice struct {
-	ID         int64               `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	TenantCode dataType.TenantCode `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"`                                        // 租户编码
-	ProjectID  dataType.ProjectID  `gorm:"column:project_id;index;type:bigint;default:0;NOT NULL"`                                    // 项目ID(雪花ID)
-	AreaID     dataType.AreaID     `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`                    // 项目区域ID(雪花ID)
-	GroupID    int64               `gorm:"column:group_id;uniqueIndex:group_id_product_id_device_name;type:bigint;NOT NULL"`          // 分组ID
-	ProductID  string              `gorm:"column:product_id;uniqueIndex:group_id_product_id_device_name;type:varchar(100);NOT NULL"`  // 产品id
-	DeviceName string              `gorm:"column:device_name;uniqueIndex:group_id_product_id_device_name;type:varchar(100);NOT NULL"` // 设备名称
+	ID          int64               `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	TenantCode  dataType.TenantCode `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"`                                             // 租户编码
+	ProjectID   dataType.ProjectID  `gorm:"column:project_id;index;type:bigint;default:0;NOT NULL"`                                         // 项目ID(雪花ID)
+	AreaID      dataType.AreaID     `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`                         // 项目区域ID(雪花ID)
+	GroupID     int64               `gorm:"column:group_id;uniqueIndex:group_id_product_id_device_name;type:bigint;NOT NULL"`               // 分组ID
+	GroupIDPath string              `gorm:"column:group_id_path;type:varchar(100);default:''"`                                              // 1-2-3-的格式记录顶级区域到当前区域的路径
+	Purpose     string              `gorm:"column:purpose;uniqueIndex:group_id_product_id_device_name;type:varchar(100);default:'default'"` //用途 不填默认为default
+	ProductID   string              `gorm:"column:product_id;uniqueIndex:group_id_product_id_device_name;type:varchar(100);NOT NULL"`       // 产品id
+	DeviceName  string              `gorm:"column:device_name;uniqueIndex:group_id_product_id_device_name;type:varchar(100);NOT NULL"`      // 设备名称
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:group_id_product_id_device_name"`
 	ProductInfo *DmProductInfo     `gorm:"foreignKey:ProductID;references:ProductID"`

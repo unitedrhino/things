@@ -2,7 +2,6 @@ package hubLogRepo
 
 import (
 	"context"
-	"fmt"
 	"gitee.com/unitedrhino/share/conf"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceGroup"
@@ -16,7 +15,7 @@ type Hub struct {
 }
 
 func (m *Hub) TableName() string {
-	return "dm_hub_log"
+	return "dm_time_hub_log"
 }
 
 type HubLogRepo struct {
@@ -30,15 +29,15 @@ func NewHubLogRepo(dataSource conf.TSDB, g []*deviceGroup.GroupDetail) deviceLog
 	}
 	stores.InitTsConn(dataSource)
 	db := stores.GetTsConn(context.Background())
+	var NeedInitColumn bool
+	if db.Migrator().HasTable(&Hub{}) {
+		//需要初始化表
+		NeedInitColumn = true
+	}
 	err := db.AutoMigrate(&Hub{})
 	logx.Must(err)
+	if NeedInitColumn && stores.GetTsDBType() == conf.Pgsql {
+		db.Exec("SELECT create_hypertable('dm_time_hub_log','ts', chunk_time_interval => interval '1 day'    );")
+	}
 	return &HubLogRepo{db: db, asyncInsert: stores.NewAsyncInsert[Hub](db, "")}
-}
-
-func (h *HubLogRepo) GetLogStableName() string {
-	return fmt.Sprintf("`model_common_hublog`")
-}
-
-func (h *HubLogRepo) GetLogTableName(productID, deviceName string) string {
-	return fmt.Sprintf("`device_hublog_%s_%s`", productID, deviceName)
 }
