@@ -47,6 +47,9 @@ func ToDeviceInfo(ctx context.Context, svcCtx *svc.ServiceContext, in *relationD
 			logx.WithContext(ctx).Errorf("%s.SignedGetUrl err:%v", utils.FuncName(), err)
 		}
 	}
+	if in.DeviceImg == "" {
+		in.DeviceImg = ProductImg
+	}
 	if in.File != "" {
 		in.File, err = svcCtx.OssClient.PrivateBucket().SignedGetUrl(ctx, in.File, 60*60, common.OptionKv{})
 		if err != nil {
