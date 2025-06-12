@@ -48,6 +48,12 @@ func (h *HubLogRepo) GetDeviceLog(ctx context.Context, filter deviceLog.HubFilte
 }
 
 func (h *HubLogRepo) Insert(ctx context.Context, data *deviceLog.Hub) error {
+	if len(data.Content) > 1000 {
+		data.Content = data.Content[:1000]
+	}
+	if len(data.RespPayload) > 1000 {
+		data.RespPayload = data.RespPayload[:1000]
+	}
 	h.asyncInsert.AsyncInsert(&Hub{Hub: data})
 	return nil
 }

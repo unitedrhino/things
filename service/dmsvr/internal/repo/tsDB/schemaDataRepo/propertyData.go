@@ -457,7 +457,7 @@ func (d *DeviceDataRepo) handlePartition(partitionBy string, db *stores.DB) (sel
 func (d *DeviceDataRepo) fillFilter(
 	db *stores.DB, filter msgThing.FilterOpt) *stores.DB {
 	if len(filter.DeviceNames) != 0 {
-		db = db.Where(fmt.Sprintf("tb.device_name in (%v)", stores.ArrayToSql(filter.DeviceNames)))
+		db = db.Where("tb.device_name in ?", filter.DeviceNames)
 	}
 
 	db = tsDB.GroupFilter2(db, filter.BelongGroup)

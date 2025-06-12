@@ -21,16 +21,16 @@ const (
 
 type (
 	Hub struct {
-		ProductID   string     `gorm:"column:product_id;type:varchar(100);NOT NULL" json:"productID,omitempty"`     // 产品id
-		DeviceName  string     `gorm:"column:device_name;type:varchar(100);NOT NULL" json:"deviceName,omitempty"`   // 设备名称
-		Content     string     `gorm:"column:content;type:varchar(256);NOT NULL" json:"content,omitempty"`          // 具体信息
-		Topic       string     `gorm:"column:topic;type:varchar(100);NOT NULL" json:"topic,omitempty"`              // 主题
-		Action      ActionType `gorm:"column:action;type:varchar(25);NOT NULL" json:"action,omitempty"`             // 操作类型
-		Timestamp   time.Time  `gorm:"column:ts;NOT NULL;" json:"timestamp"`                                        // 操作时间
-		RequestID   string     `gorm:"column:request_id;type:varchar(100);NOT NULL" json:"requestID,omitempty"`     // 请求ID
-		TraceID     string     `gorm:"column:trace_id;type:varchar(100);NOT NULL" json:"traceID,omitempty"`         // 服务器端事务id
-		ResultCode  int64      `gorm:"column:result_code;type:BIGINT;default:200" json:"resultCode,omitempty"`      // 请求结果状态,200为成功
-		RespPayload string     `gorm:"column:resp_payload;type:varchar(256);NOT NULL" json:"respPayload,omitempty"` //返回的内容
+		ProductID   string     `gorm:"column:product_id;type:varchar(100);NOT NULL" json:"productID,omitempty"`      // 产品id
+		DeviceName  string     `gorm:"column:device_name;type:varchar(100);NOT NULL" json:"deviceName,omitempty"`    // 设备名称
+		Content     string     `gorm:"column:content;type:varchar(1000);NOT NULL" json:"content,omitempty"`          // 具体信息
+		Topic       string     `gorm:"column:topic;type:varchar(100);NOT NULL" json:"topic,omitempty"`               // 主题
+		Action      ActionType `gorm:"column:action;type:varchar(25);NOT NULL" json:"action,omitempty"`              // 操作类型
+		Timestamp   time.Time  `gorm:"column:ts;NOT NULL;" json:"timestamp"`                                         // 操作时间
+		RequestID   string     `gorm:"column:request_id;type:varchar(100);NOT NULL" json:"requestID,omitempty"`      // 请求ID
+		TraceID     string     `gorm:"column:trace_id;type:varchar(100);NOT NULL" json:"traceID,omitempty"`          // 服务器端事务id
+		ResultCode  int64      `gorm:"column:result_code;type:BIGINT;default:200" json:"resultCode,omitempty"`       // 请求结果状态,200为成功
+		RespPayload string     `gorm:"column:resp_payload;type:varchar(1000);NOT NULL" json:"respPayload,omitempty"` //返回的内容
 	}
 	HubFilter struct {
 		ProductID  string   // 产品id
