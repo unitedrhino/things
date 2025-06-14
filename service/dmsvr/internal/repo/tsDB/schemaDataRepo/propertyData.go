@@ -459,7 +459,7 @@ func (d *DeviceDataRepo) fillFilter(ctx context.Context,
 	if len(filter.DeviceNames) != 0 {
 		db = db.Where("tb.device_name in ?", filter.DeviceNames)
 	}
-
+	db = db.Where("tb.identifier=?", filter.DataID)
 	db = tsDB.GroupFilter2(db, filter.BelongGroup)
 	if len(filter.ProductIDs) != 0 {
 		db = db.Where("tb.product_id IN ?", filter.ProductIDs)
@@ -500,7 +500,7 @@ func (d *DeviceDataRepo) GetPropertyCountByID(
 	filter msgThing.FilterOpt) (int64, error) {
 	var (
 		err error
-		db  = d.db.WithContext(ctx).Table(getTableName(p.Define))
+		db  = d.db.WithContext(ctx).Table(getTableName(p.Define) + " as tb")
 	)
 	_, num, ok := schema.GetArray(filter.DataID)
 	if ok {
