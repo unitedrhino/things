@@ -87,7 +87,7 @@ func (p OtaFirmwareInfoRepo) CountByFilter(ctx context.Context, f OtaFirmwareInf
 }
 
 func (g OtaFirmwareInfoRepo) Update(ctx context.Context, data *DmOtaFirmwareInfo) error {
-	err := g.db.WithContext(ctx).Where("`id` = ?", data.ID).Save(data).Error
+	err := g.db.WithContext(ctx).Where("id = ?", data.ID).Save(data).Error
 	return stores.ErrFmt(err)
 }
 
@@ -98,12 +98,12 @@ func (g OtaFirmwareInfoRepo) DeleteByFilter(ctx context.Context, f OtaFirmwareIn
 }
 
 func (g OtaFirmwareInfoRepo) Delete(ctx context.Context, id int64) error {
-	err := g.db.WithContext(ctx).Where("`id` = ?", id).Delete(&DmOtaFirmwareInfo{}).Error
+	err := g.db.WithContext(ctx).Where("id = ?", id).Delete(&DmOtaFirmwareInfo{}).Error
 	return stores.ErrFmt(err)
 }
 func (g OtaFirmwareInfoRepo) FindOne(ctx context.Context, id int64) (*DmOtaFirmwareInfo, error) {
 	var result DmOtaFirmwareInfo
-	err := g.db.WithContext(ctx).Where("`id` = ?", id).First(&result).Error
+	err := g.db.WithContext(ctx).Where("id = ?", id).First(&result).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
