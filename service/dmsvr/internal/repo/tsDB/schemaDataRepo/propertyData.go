@@ -322,7 +322,7 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 
 		db = db.Where("pos=?", num)
 	}
-	db = d.fillFilter(db, filter)
+	db = d.fillFilter(ctx, db, filter)
 	db = filter.Page.FmtSql2(db)
 	var retProperties []*msgThing.PropertyData
 	var retDatabase = []map[string]any{}
@@ -454,7 +454,7 @@ func (d *DeviceDataRepo) handlePartition(partitionBy string, db *stores.DB) (sel
 	db = db.Group(strings.Join(finalp, ","))
 	return selects, db
 }
-func (d *DeviceDataRepo) fillFilter(
+func (d *DeviceDataRepo) fillFilter(ctx context.Context,
 	db *stores.DB, filter msgThing.FilterOpt) *stores.DB {
 	if len(filter.DeviceNames) != 0 {
 		db = db.Where("tb.device_name in ?", filter.DeviceNames)
@@ -466,7 +466,7 @@ func (d *DeviceDataRepo) fillFilter(
 	} else if filter.ProductID != "" {
 		db = db.Where("tb.product_id = ?", filter.ProductID)
 	}
-	subQuery := d.db.Table("dm_device_info").Model(&relationDB.DmDeviceInfo{}).Select("product_id, device_name")
+	subQuery := d.db.WithContext(ctxs.WithDefaultAllProject(ctx)).Table("dm_device_info").Model(&relationDB.DmDeviceInfo{}).Select("product_id, device_name")
 	var hasDeviceJoin bool
 	if filter.ProjectID != 0 {
 		subQuery = subQuery.Where("project_id=?", filter.ProjectID)
@@ -506,7 +506,7 @@ func (d *DeviceDataRepo) GetPropertyCountByID(
 	if ok {
 		db = db.Where("pos=?", num)
 	}
-	db = d.fillFilter(db, filter)
+	db = d.fillFilter(ctx, db, filter)
 	db = filter.Page.FmtSql2(db)
 	var total int64
 	err = db.Count(&total).Error

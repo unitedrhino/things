@@ -45,7 +45,7 @@ func (p *ShadowRepo) MultiUpdate(ctx context.Context, data []*shadow.Info) error
 	for i, d := range data {
 		vals[i] = ToShadowPo(d)
 	}
-	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmDeviceShadow{}).Create(vals).Error
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true, Columns: stores.SetWithPg([]clause.Column{{Name: "product_id"}, {Name: "device_name"}, {Name: "data_id"}}, []clause.Column{})}).Model(&DmDeviceShadow{}).Create(vals).Error
 	return stores.ErrFmt(err)
 }
 func (p *ShadowRepo) fmtFilter(ctx context.Context, f shadow.Filter) *gorm.DB {
