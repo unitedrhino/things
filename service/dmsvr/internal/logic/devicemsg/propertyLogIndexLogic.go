@@ -151,7 +151,7 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 		return nil, err
 	}
 	for _, devData := range dds {
-		if devData.TimeStamp.IsZero() {
+		if devData.TimeStamp.IsZero() && devData.Param == nil {
 			continue
 		}
 		diData := dm.PropertyLogInfo{

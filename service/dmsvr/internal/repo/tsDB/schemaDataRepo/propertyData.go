@@ -409,22 +409,30 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 	if filter.PartitionBy != "" {
 		selects, db = d.handlePartition(filter.PartitionBy, db)
 	}
+	arg := func() string {
+		switch filter.ArgFunc {
+		case "first":
+			return "(ARRAY_AGG(tb.param ORDER BY tb.ts ASC))[1]"
+		default:
+			return fmt.Sprintf("%s(param)", filter.ArgFunc)
+		}
+	}
 	if filter.Interval != 0 {
 		if filter.IntervalUnit == "" {
 			filter.IntervalUnit = def.TimeUnitS
 		}
 		switch stores.GetTsDBType() {
 		case conf.Pgsql:
-			db = db.Select(selects + fmt.Sprintf(`time_bucket('%v %s', ts)  AS ts_window, %s(param) AS param`,
-				filter.Interval, filter.IntervalUnit.ToPgStr(), filter.ArgFunc))
+			db = db.Select(selects + fmt.Sprintf(`time_bucket('%v %s', ts)  AS ts_window, %s AS param`,
+				filter.Interval, filter.IntervalUnit.ToPgStr(), arg()))
 		default:
 			interval := int64(filter.IntervalUnit.ToDuration(filter.Interval) / time.Second)
-			db = db.Select(selects + fmt.Sprintf(` FROM_UNIXTIME(UNIX_TIMESTAMP('%s') + FLOOR((UNIX_TIMESTAMP(ts) - UNIX_TIMESTAMP('%s')) / %v) * %v ) AS ts_window, %s(param) AS param`,
-				start, start, interval, interval, filter.ArgFunc))
+			db = db.Select(selects + fmt.Sprintf(` FROM_UNIXTIME(UNIX_TIMESTAMP('%s') + FLOOR((UNIX_TIMESTAMP(ts) - UNIX_TIMESTAMP('%s')) / %v) * %v ) AS ts_window, %s AS param`,
+				start, start, interval, interval, arg()))
 		}
 		db = db.Group("ts_window")
 	} else {
-		db = db.Select(selects+"ts", fmt.Sprintf("%s(param) as param", filter.ArgFunc))
+		db = db.Select(selects + fmt.Sprintf("%s(param) as param", filter.ArgFunc))
 	}
 	return db, nil
 }
@@ -445,7 +453,7 @@ func (d *DeviceDataRepo) handlePartition(partitionBy string, db *stores.DB) (sel
 			selects += "di.group_id  as group_id,di.purpose as group_purpose,"
 			finalp = append(finalp, "group_purpose,group_id")
 		} else if p == "device_name" {
-			selects += " tb.device_name as device_name "
+			selects += " tb.device_name as device_name, "
 			finalp = append(finalp, p)
 		} else {
 			finalp = append(finalp, p)
