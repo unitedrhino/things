@@ -413,6 +413,8 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 		switch filter.ArgFunc {
 		case "first":
 			return "(ARRAY_AGG(tb.param ORDER BY tb.ts ASC))[1]"
+		case "last":
+			return "(ARRAY_AGG(tb.param ORDER BY tb.ts ASC))[-1]"
 		default:
 			return fmt.Sprintf("%s(param)", filter.ArgFunc)
 		}
