@@ -663,6 +663,30 @@ func DictInit(svcCtx *svc.ServiceContext) {
 		Sort:     1,
 	})
 	{
+		NetType := "deviceNetType"
+		svcCtx.DictM.DictInfoCreate(ctx, &sys.DictInfo{
+			Group: def.DictGroupThings,
+			Name:  "设备网络类型",
+			Code:  NetType,
+		})
+		svcCtx.DictM.DictDetailMultiCreate(ctx, &sys.DictDetailMultiCreateReq{
+			DictCode: NetType,
+			List: []*sys.DictDetail{
+				{Value: "1", Label: "其他", DictCode: NetType, Sort: 1},
+				{Value: "2", Label: "wi-fi", DictCode: NetType, Sort: 1},
+				{Value: "3", Label: "2G/3G/4G", DictCode: NetType, Sort: 1},
+				{Value: "4", Label: "5G", DictCode: NetType, Sort: 1},
+				{Value: "5", Label: "BLE", DictCode: NetType, Sort: 1},
+				{Value: "6", Label: "LoRaWAN", DictCode: NetType, Sort: 1},
+				{Value: "7", Label: "wifi+ble", DictCode: NetType, Sort: 1},
+				{Value: "8", Label: "有线网", DictCode: NetType, Sort: 1},
+				{Value: "9", Label: "4G+BLE", DictCode: NetType, Sort: 1},
+				{Value: "10", Label: "wifi+蓝牙广播", DictCode: NetType, Sort: 1},
+			},
+		})
+	}
+
+	{
 		_, err := svcCtx.DictM.DictInfoCreate(ctx, &sys.DictInfo{
 			Group:      def.DictGroupThings,
 			Name:       "设备操作",
