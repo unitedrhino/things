@@ -418,9 +418,9 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 			return "(ARRAY_AGG(tb.param ORDER BY tb.ts ASC))[1]  AS param"
 		case "last":
 			if filter.NoFirstTs {
-				return "(ARRAY_AGG(tb.param ORDER BY tb.ts ASC))[-1]  AS param, (ARRAY_AGG(tb.ts ORDER BY tb.ts ASC))[-1] AS ts "
+				return "(ARRAY_AGG(tb.param ORDER BY tb.ts desc))[1]  AS param, (ARRAY_AGG(tb.ts ORDER BY tb.ts desc))[1] AS ts "
 			}
-			return "(ARRAY_AGG(tb.param ORDER BY tb.ts ASC))[-1]  AS param"
+			return "(ARRAY_AGG(tb.param ORDER BY tb.ts desc))[1]  AS param"
 		default:
 			return fmt.Sprintf("%s(param)  AS param", filter.ArgFunc)
 		}
