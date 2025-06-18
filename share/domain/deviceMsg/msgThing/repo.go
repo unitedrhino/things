@@ -137,11 +137,12 @@ func (p *PropertyData) String() string {
 
 func (p *PropertyData) Fmt() *PropertyData {
 	switch param := p.Param.(type) {
-	case map[string]any:
+	case map[string]Param:
+		var pp = map[string]any{}
 		for k, v := range param {
-			param[k] = utils.BoolToInt(v)
+			pp[k], _ = v.ToVal()
 		}
-		p.Param = param
+		p.Param = pp
 	default:
 		p.Param = utils.BoolToInt(p.Param)
 	}
