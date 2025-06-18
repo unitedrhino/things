@@ -45,8 +45,8 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 			id := GetArrayID(Identifier, num)
 			ars[schema.GenArray(Identifier, num)] = v
 			switch vv := v.(type) {
-			case map[string]any:
-				paramPlaceholder, paramIds, paramValList, err := stores.GenParams(vv)
+			case map[string]msgThing.Param:
+				paramPlaceholder, paramIds, paramValList, err := GenParams(vv)
 				if err != nil {
 					return err
 				}
@@ -92,8 +92,8 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 
 		ars[property.Identifier] = property.Value
 		switch property.Value.(type) {
-		case map[string]any:
-			paramPlaceholder, paramIds, paramValList, err := stores.GenParams(property.Value.(map[string]any))
+		case map[string]msgThing.Param:
+			paramPlaceholder, paramIds, paramValList, err := GenParams(property.Value.(map[string]msgThing.Param))
 			if err != nil {
 				return "", nil, err
 			}
@@ -157,6 +157,35 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 	}
 
 	return
+}
+
+// GenParams 返回占位符?,?,?,? 参数id名:aa,bbb,ccc 参数值列表
+func GenParams(params map[string]msgThing.Param) (string, string, []any, error) {
+	if len(params) == 0 {
+		//使用这个函数前必须要判断参数的个数是否大于0
+		return "", "", nil, errors.Parameter.AddMsgf("SchemaDataRepo|GenParams|params num == 0")
+	}
+	var (
+		paramPlaceholder = strings.Repeat("?,", len(params))
+		paramValList     []any //参数值列表
+		paramIds         []string
+	)
+	//将最后一个?去除
+	paramPlaceholder = paramPlaceholder[:len(paramPlaceholder)-1]
+	for k, vv := range params {
+		v, _ := vv.ToVal()
+		paramIds = append(paramIds, "`"+k+"`")
+		if _, ok := v.([]any); !ok {
+			paramValList = append(paramValList, v)
+		} else { //如果是数组类型,需要序列化为json
+			param, err := json.Marshal(v)
+			if err != nil {
+				return "", "", nil, errors.System.AddDetail("param json parse failure")
+			}
+			paramValList = append(paramValList, param)
+		}
+	}
+	return paramPlaceholder, strings.Join(paramIds, ","), paramValList, nil
 }
 
 func (d *DeviceDataRepo) genRedisPropertyFirstKey(productID string, deviceName string) string {
@@ -292,8 +321,7 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 	ts := "FIRST(`ts`)  AS ts "
 	if filter.Interval != 0 {
 		ts = "_wstart AS ts "
-	}else
-	if filter.NoFirstTs {
+	} else if filter.NoFirstTs {
 		ts = "`ts` "
 	}
 	if p.Define.Type == schema.DataTypeStruct {
