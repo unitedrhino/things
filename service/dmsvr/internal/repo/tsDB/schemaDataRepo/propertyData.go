@@ -412,11 +412,17 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 	arg := func() string {
 		switch filter.ArgFunc {
 		case "first":
-			return "(ARRAY_AGG(tb.param ORDER BY tb.ts ASC))[1]"
+			if filter.NoFirstTs {
+				return "(ARRAY_AGG(tb.param ORDER BY tb.ts ASC))[1]  AS param, (ARRAY_AGG(tb.ts ORDER BY tb.ts ASC))[1] AS ts "
+			}
+			return "(ARRAY_AGG(tb.param ORDER BY tb.ts ASC))[1]  AS param"
 		case "last":
-			return "(ARRAY_AGG(tb.param ORDER BY tb.ts ASC))[-1]"
+			if filter.NoFirstTs {
+				return "(ARRAY_AGG(tb.param ORDER BY tb.ts ASC))[-1]  AS param, (ARRAY_AGG(tb.ts ORDER BY tb.ts ASC))[-1] AS ts "
+			}
+			return "(ARRAY_AGG(tb.param ORDER BY tb.ts ASC))[-1]  AS param"
 		default:
-			return fmt.Sprintf("%s(param)", filter.ArgFunc)
+			return fmt.Sprintf("%s(param)  AS param", filter.ArgFunc)
 		}
 	}
 	if filter.Interval != 0 {
@@ -425,7 +431,7 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 		}
 		switch stores.GetTsDBType() {
 		case conf.Pgsql:
-			db = db.Select(selects + fmt.Sprintf(`time_bucket('%v %s', ts)  AS ts_window, %s AS param`,
+			db = db.Select(selects + fmt.Sprintf(`time_bucket('%v %s', ts)  AS ts_window, %s `,
 				filter.Interval, filter.IntervalUnit.ToPgStr(), arg()))
 		default:
 			interval := int64(filter.IntervalUnit.ToDuration(filter.Interval) / time.Second)
