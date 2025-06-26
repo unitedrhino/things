@@ -298,7 +298,7 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 	stores.Scan(rows, &datas)
 	retProperties := make([]*msgThing.PropertyData, 0, len(datas))
 	for _, v := range datas {
-		retProperties = append(retProperties, d.ToPropertyData(filter.DataID, p, v))
+		retProperties = append(retProperties, d.ToPropertyData(ctx, filter.DataID, p, v))
 	}
 	return retProperties, err
 }

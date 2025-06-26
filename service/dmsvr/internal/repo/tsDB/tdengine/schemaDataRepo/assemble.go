@@ -1,6 +1,7 @@
 package schemaDataRepo
 
 import (
+	"context"
 	"encoding/json"
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/def"
@@ -8,6 +9,7 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/spf13/cast"
+	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
 )
 
@@ -30,7 +32,18 @@ func ToEventData(db map[string]any) *msgThing.EventData {
 	return &data
 }
 
-func (d *DeviceDataRepo) ToPropertyData(id string, p *schema.Property, db map[string]any) *msgThing.PropertyData {
+func (d *DeviceDataRepo) ToPropertyData(ctx context.Context, id string, p *schema.Property, db map[string]any) (ret *msgThing.PropertyData) {
+	defer func() {
+		if ret == nil {
+			return
+		}
+		pp, err := p.Define.FmtValue(ret.Param)
+		if err != nil {
+			logx.WithContext(ctx).Error("FmtValue", err)
+		} else {
+			ret.Param = pp
+		}
+	}()
 	propertyType := db[PropertyType]
 	fill := func(data *msgThing.PropertyData) {
 		if db["tenant_code"] != nil {

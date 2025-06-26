@@ -331,16 +331,22 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 		return nil, stores.ErrFmt(err)
 	}
 	for _, v := range retDatabase {
-		retProperties = append(retProperties, d.ToPropertyData(filter.DataID, p, v))
+		retProperties = append(retProperties, d.ToPropertyData(ctx, filter.DataID, p, v))
 	}
 	return retProperties, nil
 }
-func (d *DeviceDataRepo) ToPropertyData(id string, p *schema.Property, db map[string]any) *msgThing.PropertyData {
+func (d *DeviceDataRepo) ToPropertyData(ctx context.Context, id string, p *schema.Property, db map[string]any) *msgThing.PropertyData {
 	data := msgThing.PropertyData{
 		DeviceName: cast.ToString(db["device_name"]),
 		Identifier: id,
 		Param:      db["param"],
 		TimeStamp:  cast.ToTime(db["ts"]),
+	}
+	pp, err := p.Define.FmtValue(data.Param)
+	if err != nil {
+		logx.WithContext(ctx).Error("FmtValue", err)
+	} else {
+		data.Param = pp
 	}
 	if b, ok := data.Param.(bool); ok {
 		data.Param = cast.ToInt64(b)
