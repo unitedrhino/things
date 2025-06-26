@@ -221,7 +221,7 @@ func (p OtaFirmwareDeviceRepo) FindOne(ctx context.Context, id int64) (*DmOtaFir
 
 // 批量插入 LightStrategyDevice 记录
 func (p OtaFirmwareDeviceRepo) MultiInsert(ctx context.Context, data []*DmOtaFirmwareDevice) error {
-	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmOtaFirmwareDevice{}).Create(data).Error
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmOtaFirmwareDevice{}).CreateInBatches(data, 200).Error
 	return stores.ErrFmt(err)
 }
 
