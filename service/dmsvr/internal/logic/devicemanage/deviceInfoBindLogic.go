@@ -85,7 +85,7 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 			if !errors.Cmp(err, errors.NotFind) {
 				return nil, err
 			}
-			if !(pi.NetType == def.NetBle && pi.AutoRegister == def.AutoRegAuto) {
+			if !(((pi.NetType == def.NetBle || pi.NetType == 10) && pi.AutoRegister == def.AutoRegAuto) || (pi.AutoRegister == def.AutoRegBind)) {
 				return nil, errors.NotFind
 			}
 			//如果是蓝牙模式并且打开了自动注册,那么绑定的时候需要创建该设备
@@ -167,7 +167,7 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 			Valid: true,
 		}
 	}
-	if pc.NetType == def.NetBle { //蓝牙绑定了就是上线
+	if pc.NetType == def.NetBle || pi.NetType == 10 { //蓝牙绑定了就是上线
 		di.IsOnline = def.True
 		di.Status = def.DeviceStatusOnline
 	}
