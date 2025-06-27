@@ -100,8 +100,8 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 	for _, v := range devicePos {
 		deviceNames = append(deviceNames, v.DeviceName)
 	}
-	var confirmDevices []*devices.Core
-	var clearConfirmDevices []*devices.Core
+	var confirmDevices []string
+	var clearConfirmDevices []string
 
 	err = stores.GetCommonConn(l.ctx).Transaction(func(tx *gorm.DB) error {
 		err = relationDB.NewOtaJobRepo(tx).Insert(l.ctx, &dmOtaJob)
@@ -147,10 +147,7 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 						return err
 					}
 					if status == msgOta.DeviceStatusConfirm {
-						confirmDevices = append(confirmDevices, &devices.Core{
-							ProductID:  device.ProductID,
-							DeviceName: device.DeviceName,
-						})
+						confirmDevices = append(confirmDevices, device.DeviceName)
 					}
 				case msgOta.DeviceStatusConfirm, msgOta.DeviceStatusQueued:
 					if in.IsOverwriteMode != def.True { //如果是不覆盖则直接失败
@@ -164,25 +161,16 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 							return err
 						}
 						if status == msgOta.DeviceStatusConfirm {
-							confirmDevices = append(confirmDevices, &devices.Core{
-								ProductID:  device.ProductID,
-								DeviceName: device.DeviceName,
-							})
+							confirmDevices = append(confirmDevices, device.DeviceName)
 						}
 					}
 				}
 			} else if status == msgOta.DeviceStatusConfirm {
-				confirmDevices = append(confirmDevices, &devices.Core{
-					ProductID:  device.ProductID,
-					DeviceName: device.DeviceName,
-				})
+				confirmDevices = append(confirmDevices, device.DeviceName)
 			}
 
 			if status == msgOta.DeviceStatusQueued { //如果需要执行且不需要确认,则需要将该设备的确认状态清除
-				clearConfirmDevices = append(clearConfirmDevices, &devices.Core{
-					ProductID:  device.ProductID,
-					DeviceName: device.DeviceName,
-				})
+				clearConfirmDevices = append(clearConfirmDevices, device.DeviceName)
 			}
 
 			otaDevices = append(otaDevices, &relationDB.DmOtaFirmwareDevice{
@@ -201,14 +189,14 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 			return err
 		}
 		if len(clearConfirmDevices) > 0 {
-			err = relationDB.NewDeviceInfoRepo(tx).UpdateWithField(l.ctx, relationDB.DeviceFilter{Cores: clearConfirmDevices},
+			err = relationDB.NewDeviceInfoRepo(tx).UpdateWithField(l.ctx, relationDB.DeviceFilter{ProductID: fi.ProductID, DeviceNames: clearConfirmDevices},
 				map[string]any{"need_confirm_job_id": 0, "need_confirm_version": ""})
 			if err != nil {
 				return err
 			}
 		}
 		if len(confirmDevices) > 0 {
-			err = relationDB.NewDeviceInfoRepo(tx).UpdateWithField(l.ctx, relationDB.DeviceFilter{Cores: confirmDevices},
+			err = relationDB.NewDeviceInfoRepo(tx).UpdateWithField(l.ctx, relationDB.DeviceFilter{ProductID: fi.ProductID, DeviceNames: confirmDevices},
 				map[string]any{"need_confirm_job_id": dmOtaJob.ID, "need_confirm_version": fi.Version})
 			if err != nil {
 				return err
@@ -234,7 +222,7 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 	}
 	if len(confirmDevices) > 0 {
 		for _, v := range confirmDevices {
-			err := l.svcCtx.DeviceCache.SetData(l.ctx, *v, nil)
+			err := l.svcCtx.DeviceCache.SetData(l.ctx, devices.Core{ProductID: fi.ProductID, DeviceName: v}, nil)
 			if err != nil {
 				l.Error(err)
 			}
@@ -242,7 +230,7 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 	}
 	if len(clearConfirmDevices) > 0 {
 		for _, v := range clearConfirmDevices {
-			err := l.svcCtx.DeviceCache.SetData(l.ctx, *v, nil)
+			err := l.svcCtx.DeviceCache.SetData(l.ctx, devices.Core{ProductID: fi.ProductID, DeviceName: v}, nil)
 			if err != nil {
 				l.Error(err)
 			}
