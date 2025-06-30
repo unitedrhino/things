@@ -166,7 +166,8 @@ type DmProductInfo struct {
 	NetType          int64                 `gorm:"column:net_type;type:smallint;default:1"`                     // 通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
 	ProtocolCode     string                `gorm:"column:protocol_code;type:varchar(100);default:'urMqtt'"`     // 协议code,默认urMqtt  urMqtt,urHttp,wumei,aliyun,huaweiyun,tuya
 	SubProtocolCode  string                `gorm:"column:sub_protocol_code;type:varchar(100);default:''"`       //子协议,主协议和子协议传输类型必须不相同, 设备控制下发只会发送给主协议, 当设备是音视频设备但是控制协议需要单独走的时候就可以把主协议定义为普通协议,子协议定义为音视频协议,这样就能实现音视频走音视频协议,控制走子协议
-	AutoRegister     int64                 `gorm:"column:auto_register;type:smallint;default:1"`                // 动态注册:1:关闭,2:打开,3:打开并自动创建设备
+	AutoRegister     def.AutoReg           `gorm:"column:auto_register;type:smallint;default:1"`                // 动态注册:1:关闭,2:打开,3:打开并自动创建设备
+	OnlineHandle     int64                 `gorm:"column:online_handle;type:smallint;default:1"`                //在线处理:1: 自动 2: 永远在线
 	DeviceSchemaMode int64                 `gorm:"column:device_schema_mode;type:smallint;default:1"`           // 设备物模型模式:1:关闭,2:设备自动创建3: 设备自动创建及上报无定义自动创建
 	BindLevel        int64                 `gorm:"column:bind_level;type:smallint;default:1"`                   // 绑定级别: 1:强绑定(默认,只有用户解绑之后才能绑定) 2:中绑定(可以通过token强制绑定设备) 3:弱绑定(app可以内部解绑被绑定的设备)
 	Secret           string                `gorm:"column:secret;type:varchar(50)"`                              // 动态注册产品秘钥
@@ -207,9 +208,9 @@ func (m *DmProductID) TableName() string {
 }
 
 type DmProductConfig struct {
-	ID        int64                                      `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	ProductID string                                     `gorm:"column:product_id;type:varchar(100);uniqueIndex:pd;NOT NULL"` // 产品id
-	DevInit   `gorm:"embedded;embeddedPrefix:dev_init_"` //设备初始化配置
+	ID        int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	ProductID string `gorm:"column:product_id;type:varchar(100);uniqueIndex:pd;NOT NULL"` // 产品id
+	DevInit   `gorm:"embedded;embeddedPrefix:dev_init_"`                                  //设备初始化配置
 	stores.NoDelTime
 	Info        *DmProductInfo     `gorm:"foreignKey:product_id;references:product_id"`
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:pd"`

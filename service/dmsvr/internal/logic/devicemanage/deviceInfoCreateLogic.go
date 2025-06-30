@@ -12,6 +12,7 @@ import (
 	"gitee.com/unitedrhino/share/oss"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/product"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
@@ -155,6 +156,10 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 		Distributor:    utils.Copy2[stores.IDPathWithUpdate](in.Distributor),
 		UserID:         def.RootNode,
 		Desc:           in.Desc.GetValue(),
+	}
+	if pi.OnlineHandle == product.OnlineHandleAlways {
+		di.IsOnline = def.True
+		di.Status = di.IsOnline + 1
 	}
 	if pi.Config != nil && pi.Config.DevInit != nil {
 		cfg := pi.Config.DevInit

@@ -140,7 +140,7 @@ func (l *GatewayLogic) HandleRegister(msg *deviceMsg.PublishMsg, resp *msgGatewa
 			return resp, er
 		}
 		for _, pi := range pis.List {
-			if pi.AutoRegister != def.AutoRegAuto {
+			if pi.AutoRegister < def.AutoRegAuto {
 				er := errors.Parameter.AddMsgf("产品:%s 未打开自动注册", pi.ProductName)
 				resp.AddStatus(er, l.dreq.NeedRetMsg())
 				return resp, er

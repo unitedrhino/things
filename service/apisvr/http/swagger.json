@@ -12518,8 +12518,14 @@
         "autoRegister": {
           "type": "integer",
           "format": "int64",
-          "description": "动态注册:1:关闭,2:打开,3:打开并自动创建设备",
-          "maximum": 3
+          "description": "动态注册:1:关闭,2:打开,3:打开并自动创建设备,4:在前面的基础上绑定没有也自动创建",
+          "maximum": 4
+        },
+        "onlineHandle": {
+          "type": "integer",
+          "format": "int64",
+          "description": "在线处理:1: 自动 2: 永远在线",
+          "maximum": 2
         },
         "secret": {
           "type": "string",

@@ -9,6 +9,7 @@ import (
 	"gitee.com/unitedrhino/things/sdk/protocol"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceStatus"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/product"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/application"
@@ -112,6 +113,14 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 		di, err := svcCtx.DeviceCache.GetData(ctx, dev)
 		if err != nil {
 			log.Error(err)
+			return
+		}
+		pi, err := svcCtx.ProductCache.GetData(ctx, di.ProductID)
+		if err != nil {
+			log.Error(err)
+			return
+		}
+		if pi.OnlineHandle != product.OnlineHandleAuto {
 			return
 		}
 		push := func(appMsg application.ConnectMsg, di *dm.DeviceInfo) {

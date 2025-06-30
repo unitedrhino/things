@@ -33,6 +33,9 @@ func ToProductInfo(ctx context.Context, svcCtx *svc.ServiceContext, pi *relation
 	if pi.AutoRegister == def.Unknown {
 		pi.AutoRegister = def.AutoRegClose
 	}
+	if pi.OnlineHandle == def.Unknown {
+		pi.OnlineHandle = def.True
+	}
 	var err error
 	if len(pi.CustomUi) != 0 {
 		for _, v := range pi.CustomUi {

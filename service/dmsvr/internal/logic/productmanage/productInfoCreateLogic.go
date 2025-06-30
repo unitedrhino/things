@@ -85,6 +85,9 @@ func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relatio
 	if in.AutoRegister != def.Unknown {
 		pi.AutoRegister = in.AutoRegister
 	}
+	if in.OnlineHandle != def.Unknown {
+		pi.OnlineHandle = in.OnlineHandle
+	}
 	if in.ProtocolCode != "" {
 		pi.ProtocolCode = in.ProtocolCode
 	} else {

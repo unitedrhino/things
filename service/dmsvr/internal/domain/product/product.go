@@ -16,3 +16,10 @@ const (
 	BindLeveMiddle2 = 2 //中绑定(可以通过token强制绑定设备)
 	BindLeveWeak3   = 3 //弱绑定(app可以内部解绑被绑定的设备)
 )
+
+type OnlineHandle = int64
+
+const (
+	OnlineHandleAuto   = 1 //自动
+	OnlineHandleAlways = 2 //永远在线
+)

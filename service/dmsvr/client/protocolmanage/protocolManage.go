@@ -21,6 +21,7 @@ type (
 	ActionRespReq                     = dm.ActionRespReq
 	ActionSendReq                     = dm.ActionSendReq
 	ActionSendResp                    = dm.ActionSendResp
+	AggInfo                           = dm.AggInfo
 	CommonSchemaCreateReq             = dm.CommonSchemaCreateReq
 	CommonSchemaExportReq             = dm.CommonSchemaExportReq
 	CommonSchemaExportResp            = dm.CommonSchemaExportResp
@@ -184,6 +185,9 @@ type (
 	ProductSchemaTslReadReq           = dm.ProductSchemaTslReadReq
 	ProductSchemaTslReadResp          = dm.ProductSchemaTslReadResp
 	ProductSchemaUpdateReq            = dm.ProductSchemaUpdateReq
+	PropertyAggIndexReq               = dm.PropertyAggIndexReq
+	PropertyAggIndexResp              = dm.PropertyAggIndexResp
+	PropertyAggResp                   = dm.PropertyAggResp
 	PropertyControlMultiSendReq       = dm.PropertyControlMultiSendReq
 	PropertyControlMultiSendResp      = dm.PropertyControlMultiSendResp
 	PropertyControlSendMsg            = dm.PropertyControlSendMsg

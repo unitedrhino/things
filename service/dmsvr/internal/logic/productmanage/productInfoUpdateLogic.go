@@ -129,7 +129,9 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 	if data.AutoRegister != def.Unknown {
 		old.AutoRegister = data.AutoRegister
 	}
-
+	if data.OnlineHandle != def.Unknown {
+		old.OnlineHandle = data.OnlineHandle
+	}
 	if data.ProductName != "" {
 		old.ProductName = data.ProductName
 	}
@@ -219,8 +221,11 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 	if data.ProtocolCode != "" {
 		old.ProtocolCode = data.ProtocolCode
 	}
-	if data.AutoRegister != 0 {
+	if data.AutoRegister != def.Unknown {
 		old.AutoRegister = data.AutoRegister
+	}
+	if data.OnlineHandle != def.Unknown {
+		old.OnlineHandle = data.OnlineHandle
 	}
 	if data.DeviceSchemaMode != 0 {
 		old.DeviceSchemaMode = data.DeviceSchemaMode

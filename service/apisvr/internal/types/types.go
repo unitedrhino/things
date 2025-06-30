@@ -1432,7 +1432,8 @@ type ProductInfo struct {
 	NetType            int64                       `json:"netType,optional"`                      //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网,9:4G+BLE
 	ProtocolCode       string                      `json:"protocolCode,optional"`                 //协议code,默认urMqtt,设备下发只会发送给主协议  urMqtt,urHttp,wumei,aliyun,huaweiyun,tuya
 	SubProtocolCode    *string                     `json:"subProtocolCode,optional"`              //子协议,主协议和子协议传输类型必须不相同, 设备控制下发只会发送给主协议, 当设备是音视频设备但是控制协议需要单独走的时候就可以把主协议定义为普通协议,子协议定义为音视频协议,这样就能实现音视频走音视频协议,控制走子协议
-	AutoRegister       int64                       `json:"autoRegister,optional,range=[0:3]"`     //动态注册:1:关闭,2:打开,3:打开并自动创建设备
+	AutoRegister       int64                       `json:"autoRegister,optional,range=[0:4]"`     //动态注册:1:关闭,2:打开,3:打开并自动创建设备,4:在前面的基础上绑定没有也自动创建
+	OnlineHandle       int64                       `json:"onlineHandle,optional,range=[0:2]"`     //在线处理:1: 自动 2: 永远在线
 	Secret             string                      `json:"secret,optional"`                       //动态注册产品秘钥 只读
 	TrialTime          int64                       `json:"trialTime,optional,string"`             //试用时间(单位为天,为0不限制)
 	Desc               *string                     `json:"desc,optional,optional"`                //描述

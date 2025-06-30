@@ -917,6 +917,42 @@ message PropertyLogIndexReq{
   bool noFirstTs =22;//时间戳填充不填充最早的值,聚合模式使用
 }
 
+message AggInfo {
+  string dataID = 1; //获取的具体标识符的数据(必填)
+  string argFunc =2;
+}
+
+message PropertyAggIndexReq{
+  string tenantCode = 21;//租户号,只有管理员有权限
+  int64 projectID =20;//只有管理员有权限
+  int64 areaID =14;//只有管理员有权限
+  string areaIDPath =15;//只有管理员有权限
+  repeated int64 areaIDs =16;//只有管理员有权限
+  int64  productCategoryID = 17;//产品品类id
+  map<string,IDsInfo> BelongGroup =18;//key是group的purpose, value是里面包含的分组id
+  string deviceName=2;//设备ID
+  repeated string deviceNames=3;
+  string productID = 4; //产品id (必填)
+  repeated AggInfo aggs = 5; //获取的具体标识符的数据(必填)
+  int64 timeStart = 6;//获取时间的开始(毫秒时间戳)
+  int64 timeEnd = 7;//时间的结束(毫秒时间戳)
+  int64 interval = 8;//间隔 如果这个值不为零值 则时间的开始和结束必须有效及聚合函数不应该为空
+  string intervalUnit = 12;//间隔单位 a (毫秒,默认), d (天), h (小时), m (分钟), n (月), s (秒), u (微秒), w (周), y (年)
+  string fill = 10; //填充模式 参考:https://docs.taosdata.com/reference/taos-sql/distinguished/#fill-%E5%AD%90%E5%8F%A5
+  int64 order = 11; //时间排序 1:aes(默认,从久到近排序) 2:desc(时间从近到久排序)
+  string partitionBy =13;//切分数据,可以填写deviceName
+  bool noFirstTs =22;//时间戳填充不填充最早的值,聚合模式使用
+}
+
+/*获取对应日志信息*/
+message PropertyAggIndexResp{
+  repeated PropertyAggResp list = 2;
+}
+
+message PropertyAggResp{
+
+}
+
 /*获取对应日志信息*/
 message PropertyLogLatestIndexReq{
   string productID = 2; //产品id (必填)
@@ -1543,7 +1579,7 @@ message ProductInfo{
   int64   netType = 7;//通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
   string protocolCode =8;//协议code,默认urMqtt,设备下发只会发送给主协议  urMqtt,urHttp,wumei,aliyun,huaweiyun,tuya
   google.protobuf.StringValue subProtocolCode =24;//子协议,主协议和子协议传输类型必须不相同, 设备控制下发只会发送给主协议, 当设备是音视频设备但是控制协议需要单独走的时候就可以把主协议定义为普通协议,子协议定义为音视频协议,这样就能实现音视频走音视频协议,控制走子协议
-  int64   autoRegister = 9;//动态注册:1:关闭,2:打开,3:打开并自动创建设备
+  int64   autoRegister = 9;//动态注册:1:关闭,2:打开,3:打开并自动创建设备,4:在前面的基础上绑定没有也自动创建
   string   secret = 10;//动态注册产品秘钥 只读
   google.protobuf.StringValue   desc = 11;//描述
   map<string, string> tags = 13; //产品标签
@@ -1561,6 +1597,7 @@ message ProductInfo{
   int64 deviceSchemaMode =22;// 设备物模型模式:1:关闭,2:设备自动创建3: 设备自动创建及上报无定义自动创建
   int64 bindLevel = 23;//绑定级别: 1:强绑定(默认,只有用户解绑之后才能绑定) 2:中绑定(可以通过token强制绑定设备) 3:弱绑定(app可以内部解绑被绑定的设备)
   ProductConfig config =30;//产品配置
+  int64 onlineHandle   =40;              //1: 自动 2: 永远在线
 }
 
 message ProductCustomUi{
