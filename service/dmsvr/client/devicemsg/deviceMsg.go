@@ -21,7 +21,6 @@ type (
 	ActionRespReq                     = dm.ActionRespReq
 	ActionSendReq                     = dm.ActionSendReq
 	ActionSendResp                    = dm.ActionSendResp
-	AggInfo                           = dm.AggInfo
 	CommonSchemaCreateReq             = dm.CommonSchemaCreateReq
 	CommonSchemaExportReq             = dm.CommonSchemaExportReq
 	CommonSchemaExportResp            = dm.CommonSchemaExportResp
@@ -185,9 +184,12 @@ type (
 	ProductSchemaTslReadReq           = dm.ProductSchemaTslReadReq
 	ProductSchemaTslReadResp          = dm.ProductSchemaTslReadResp
 	ProductSchemaUpdateReq            = dm.ProductSchemaUpdateReq
+	PropertyAgg                       = dm.PropertyAgg
 	PropertyAggIndexReq               = dm.PropertyAggIndexReq
 	PropertyAggIndexResp              = dm.PropertyAggIndexResp
 	PropertyAggResp                   = dm.PropertyAggResp
+	PropertyAggRespDataDetail         = dm.PropertyAggRespDataDetail
+	PropertyAggRespDetail             = dm.PropertyAggRespDetail
 	PropertyControlMultiSendReq       = dm.PropertyControlMultiSendReq
 	PropertyControlMultiSendResp      = dm.PropertyControlMultiSendResp
 	PropertyControlSendMsg            = dm.PropertyControlSendMsg
@@ -275,6 +277,7 @@ type (
 		PropertyLogLatestIndex2(ctx context.Context, in *PropertyLogLatestIndex2Req, opts ...grpc.CallOption) (*PropertyLogIndexResp, error)
 		// 获取设备数据信息
 		PropertyLogIndex(ctx context.Context, in *PropertyLogIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error)
+		PropertyAggIndex(ctx context.Context, in *PropertyAggIndexReq, opts ...grpc.CallOption) (*PropertyAggIndexResp, error)
 		// 获取设备数据信息
 		EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventLogIndexResp, error)
 		// 获取设备影子列表
@@ -393,6 +396,15 @@ func (m *defaultDeviceMsg) PropertyLogIndex(ctx context.Context, in *PropertyLog
 // 获取设备数据信息
 func (d *directDeviceMsg) PropertyLogIndex(ctx context.Context, in *PropertyLogIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error) {
 	return d.svr.PropertyLogIndex(ctx, in)
+}
+
+func (m *defaultDeviceMsg) PropertyAggIndex(ctx context.Context, in *PropertyAggIndexReq, opts ...grpc.CallOption) (*PropertyAggIndexResp, error) {
+	client := dm.NewDeviceMsgClient(m.cli.Conn())
+	return client.PropertyAggIndex(ctx, in, opts...)
+}
+
+func (d *directDeviceMsg) PropertyAggIndex(ctx context.Context, in *PropertyAggIndexReq, opts ...grpc.CallOption) (*PropertyAggIndexResp, error) {
+	return d.svr.PropertyAggIndex(ctx, in)
 }
 
 // 获取设备数据信息

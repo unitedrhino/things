@@ -303,12 +303,20 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 			db = db.Order("ts desc")
 		}
 		if filter.PartitionBy != "" {
-			var selects = ""
-			selects, db = d.handlePartition(filter.PartitionBy, db)
+			var (
+				selects = ""
+				groups  = ""
+			)
+
+			selects, groups, db = d.handlePartition(filter.PartitionBy, db)
 			if selects != "" {
 				db = db.Select(selects)
 			}
+			if groups != "" {
+				db = db.Group(groups)
+			}
 		}
+		db = db.Table(getTableName(p.Define) + " as tb")
 	} else {
 		db, err = d.getPropertyArgFuncSelect(ctx, db, p, filter)
 		if err != nil {
@@ -326,21 +334,21 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 	db = filter.Page.FmtSql2(db)
 	var retProperties []*msgThing.PropertyData
 	var retDatabase = []map[string]any{}
-	err = db.Table(getTableName(p.Define) + " as tb").Find(&retDatabase).Error
+	err = db.Find(&retDatabase).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
 	for _, v := range retDatabase {
-		retProperties = append(retProperties, d.ToPropertyData(ctx, filter.DataID, p, v))
+		retProperties = append(retProperties, d.ToPropertyData(ctx, filter.NoFirstTs, filter.DataID, p, v))
 	}
 	return retProperties, nil
 }
-func (d *DeviceDataRepo) ToPropertyData(ctx context.Context, id string, p *schema.Property, db map[string]any) *msgThing.PropertyData {
+func (d *DeviceDataRepo) ToPropertyData(ctx context.Context, noFirstTs bool, id string, p *schema.Property, db map[string]any) *msgThing.PropertyData {
 	data := msgThing.PropertyData{
 		DeviceName: cast.ToString(db["device_name"]),
 		Identifier: id,
 		Param:      db["param"],
-		TimeStamp:  cast.ToTime(db["ts"]),
+		TimeStamp:  cast.ToTime(db["ts_window"]),
 	}
 	pp, err := p.Define.FmtValue(data.Param)
 	if err != nil {
@@ -351,8 +359,8 @@ func (d *DeviceDataRepo) ToPropertyData(ctx context.Context, id string, p *schem
 	if b, ok := data.Param.(bool); ok {
 		data.Param = cast.ToInt64(b)
 	}
-	if db["ts_window"] != nil {
-		data.TimeStamp = cast.ToTime(db["ts_window"])
+	if db["ts"] != nil && noFirstTs {
+		data.TimeStamp = cast.ToTime(db["ts"])
 	}
 	if db["tenant_code"] != nil {
 		data.TenantCode = dataType.TenantCode(cast.ToString(db["tenant_code"]))
@@ -411,48 +419,84 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 	if filter.Page.TimeStart != 0 {
 		start = time.UnixMilli(filter.Page.TimeStart).Format("2006-01-02 15:04:05")
 	}
-	var selects = ""
+	var (
+		selects = ""
+		groups  = ""
+	)
 	if filter.PartitionBy != "" {
-		selects, db = d.handlePartition(filter.PartitionBy, db)
+		selects, groups, db = d.handlePartition(filter.PartitionBy, db)
 	}
-	arg := func() string {
+	arg := func(ts, param string) string {
+		if ts == "" {
+			ts = "ts"
+		}
+		if param == "" {
+			param = "param"
+		}
 		switch filter.ArgFunc {
 		case "first":
 			if filter.NoFirstTs {
-				return "(ARRAY_AGG(tb.param ORDER BY tb.ts ASC))[1]  AS param, (ARRAY_AGG(tb.ts ORDER BY tb.ts ASC))[1] AS ts "
+				return fmt.Sprintf("(ARRAY_AGG(tb.%s ORDER BY tb.%s ASC))[1]  AS param, (ARRAY_AGG(tb.%s ORDER BY tb.%s ASC))[1] AS ts ",
+					param, ts, ts, ts)
 			}
-			return "(ARRAY_AGG(tb.param ORDER BY tb.ts ASC))[1]  AS param"
+			return fmt.Sprintf("(ARRAY_AGG(tb.%s ORDER BY tb.%s ASC))[1]  AS param", param, ts)
 		case "last":
 			if filter.NoFirstTs {
-				return "(ARRAY_AGG(tb.param ORDER BY tb.ts desc))[1]  AS param, (ARRAY_AGG(tb.ts ORDER BY tb.ts desc))[1] AS ts "
+				return fmt.Sprintf("(ARRAY_AGG(tb.%s ORDER BY tb.%s desc))[1]  AS param, (ARRAY_AGG(tb.%s ORDER BY tb.%s desc))[1] AS ts ",
+					param, ts, ts, ts)
 			}
-			return "(ARRAY_AGG(tb.param ORDER BY tb.ts desc))[1]  AS param"
+			return fmt.Sprintf("(ARRAY_AGG(tb.%s ORDER BY tb.%s desc))[1]  AS param", param, ts)
 		default:
-			return fmt.Sprintf("%s(param)  AS param", filter.ArgFunc)
+			return fmt.Sprintf("%s(%s)  AS param", filter.ArgFunc, param)
 		}
 	}
 	if filter.Interval != 0 {
 		if filter.IntervalUnit == "" {
 			filter.IntervalUnit = def.TimeUnitS
 		}
-		switch stores.GetTsDBType() {
-		case conf.Pgsql:
-			db = db.Select(selects + fmt.Sprintf(`time_bucket('%v %s', ts)  AS ts_window, %s `,
-				filter.Interval, filter.IntervalUnit.ToPgStr(), arg()))
-		default:
-			interval := int64(filter.IntervalUnit.ToDuration(filter.Interval) / time.Second)
-			db = db.Select(selects + fmt.Sprintf(` FROM_UNIXTIME(UNIX_TIMESTAMP('%s') + FLOOR((UNIX_TIMESTAMP(ts) - UNIX_TIMESTAMP('%s')) / %v) * %v ) AS ts_window, %s AS param`,
-				start, start, interval, interval, arg()))
+
+		if stores.GetTsDBType() == conf.Pgsql && utils.SliceIn(filter.ArgFunc, "first", "last", "min", "max", "count", "sum") &&
+			utils.SliceIn(filter.IntervalUnit, def.TimeUnitD, def.TimeUnitH, def.TimeUnitN, def.TimeUnitW, def.TimeUnitY) {
+			//pg的 timescale走视图优化
+			switch filter.IntervalUnit {
+			case def.TimeUnitD, def.TimeUnitH:
+				db = db.Table(getTableName(p.Define) + "_" + filter.IntervalUnit.ToPgStr() + " as tb")
+				if filter.NoFirstTs && utils.SliceIn(filter.ArgFunc, "first", "last", "min", "max") {
+					db = db.Select(selects + fmt.Sprintf(`ts as ts_window, %s_ts as ts, %s_param as param `, filter.ArgFunc, filter.ArgFunc))
+				} else {
+					db = db.Select(selects + fmt.Sprintf(`ts as ts_window, %s_param as param `, filter.ArgFunc))
+				}
+				groups = ""
+			default:
+				db = db.Select(selects + fmt.Sprintf(`time_bucket('%v %s', ts)  AS ts_window, %s `,
+					filter.Interval, filter.IntervalUnit.ToPgStr(), arg(filter.ArgFunc+"_ts", filter.ArgFunc+"_param")))
+				db = db.Table(getTableName(p.Define) + "_day as tb").Group("ts_window")
+			}
+		} else {
+			db = db.Table(getTableName(p.Define) + " as tb")
+			switch stores.GetTsDBType() {
+			case conf.Pgsql:
+				db = db.Select(selects + fmt.Sprintf(`time_bucket('%v %s', ts)  AS ts_window, %s `,
+					filter.Interval, filter.IntervalUnit.ToPgStr(), arg("", "")))
+			default:
+				interval := int64(filter.IntervalUnit.ToDuration(filter.Interval) / time.Second)
+				db = db.Select(selects + fmt.Sprintf(` FROM_UNIXTIME(UNIX_TIMESTAMP('%s') + FLOOR((UNIX_TIMESTAMP(ts) - UNIX_TIMESTAMP('%s')) / %v) * %v ) AS ts_window, %s AS param`,
+					start, start, interval, interval, arg("", "")))
+			}
+			db = db.Group("ts_window")
 		}
-		db = db.Group("ts_window")
+
 	} else {
-		db = db.Select(selects + fmt.Sprintf("%s(param) as param", filter.ArgFunc))
+		db = db.Table(getTableName(p.Define) + " as tb").Select(selects + fmt.Sprintf("%s(param) as param", filter.ArgFunc))
+	}
+	if groups != "" {
+		db = db.Group(groups)
 	}
 	return db, nil
 }
-func (d *DeviceDataRepo) handlePartition(partitionBy string, db *stores.DB) (selects string, db2 *stores.DB) {
+func (d *DeviceDataRepo) handlePartition(partitionBy string, db *stores.DB) (selects string, groups string, db2 *stores.DB) {
 	if partitionBy == "" {
-		return "", db
+		return "", "", db
 	}
 	partitionBy = utils.CamelCaseToUdnderscore(partitionBy)
 	ps := strings.Split(partitionBy, ",")
@@ -473,8 +517,7 @@ func (d *DeviceDataRepo) handlePartition(partitionBy string, db *stores.DB) (sel
 			finalp = append(finalp, p)
 		}
 	}
-	db = db.Group(strings.Join(finalp, ","))
-	return selects, db
+	return selects, strings.Join(finalp, ","), db
 }
 func (d *DeviceDataRepo) fillFilter(ctx context.Context,
 	db *stores.DB, filter msgThing.FilterOpt) *stores.DB {

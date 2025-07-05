@@ -7,6 +7,7 @@ import (
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/product"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/productCustom"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/protocol"
 	"gitee.com/unitedrhino/things/share/devices"
@@ -169,7 +170,7 @@ type DmProductInfo struct {
 	AutoRegister     def.AutoReg           `gorm:"column:auto_register;type:smallint;default:1"`                // 动态注册:1:关闭,2:打开,3:打开并自动创建设备
 	OnlineHandle     int64                 `gorm:"column:online_handle;type:smallint;default:1"`                //在线处理:1: 自动 2: 永远在线
 	DeviceSchemaMode int64                 `gorm:"column:device_schema_mode;type:smallint;default:1"`           // 设备物模型模式:1:关闭,2:设备自动创建3: 设备自动创建及上报无定义自动创建
-	BindLevel        int64                 `gorm:"column:bind_level;type:smallint;default:1"`                   // 绑定级别: 1:强绑定(默认,只有用户解绑之后才能绑定) 2:中绑定(可以通过token强制绑定设备) 3:弱绑定(app可以内部解绑被绑定的设备)
+	BindLevel        product.BindLevel     `gorm:"column:bind_level;type:smallint;default:1"`                   // 绑定级别: 1:强绑定(默认,只有用户解绑之后才能绑定) 2:中绑定(可以通过token强制绑定设备) 3:弱绑定(app可以内部解绑被绑定的设备)
 	Secret           string                `gorm:"column:secret;type:varchar(50)"`                              // 动态注册产品秘钥
 	Desc             string                `gorm:"column:desc;type:varchar(200)"`                               // 描述
 	TrialTime        int64                 `gorm:"column:trial_time"`                                           //试用时间(单位为天,为0不限制)
@@ -184,7 +185,6 @@ type DmProductInfo struct {
 	Config      *DmProductConfig   `gorm:"foreignKey:ProductID;references:ProductID"` // 添加外键
 	Protocol    *DmProtocolInfo    `gorm:"foreignKey:Code;references:ProtocolCode"`
 	SubProtocol *DmProtocolInfo    `gorm:"foreignKey:Code;references:SubProtocolCode"`
-
 	//Devices []*DmDeviceInfo    `gorm:"foreignKey:ProductID;references:ProductID"` // 添加外键
 	CustomUi map[string]*ProductCustomUi `gorm:"column:customUi;type:json;serializer:json;NOT NULL;default:'{}'"`
 }
@@ -208,9 +208,9 @@ func (m *DmProductID) TableName() string {
 }
 
 type DmProductConfig struct {
-	ID        int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	ProductID string `gorm:"column:product_id;type:varchar(100);uniqueIndex:pd;NOT NULL"` // 产品id
-	DevInit   `gorm:"embedded;embeddedPrefix:dev_init_"`                                  //设备初始化配置
+	ID        int64                                      `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	ProductID string                                     `gorm:"column:product_id;type:varchar(100);uniqueIndex:pd;NOT NULL"` // 产品id
+	DevInit   `gorm:"embedded;embeddedPrefix:dev_init_"` //设备初始化配置
 	stores.NoDelTime
 	Info        *DmProductInfo     `gorm:"foreignKey:product_id;references:product_id"`
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:pd"`

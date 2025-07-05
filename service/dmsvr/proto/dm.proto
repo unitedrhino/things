@@ -331,6 +331,8 @@ service DeviceMsg {
 
   //获取设备数据信息
   rpc propertyLogIndex(PropertyLogIndexReq)     returns (PropertyLogIndexResp);
+  rpc propertyAggIndex(PropertyAggIndexReq)     returns (PropertyAggIndexResp);
+
   //获取设备数据信息
   rpc eventLogIndex(EventLogIndexReq)     returns (EventLogIndexResp);
   //获取设备影子列表
@@ -917,11 +919,13 @@ message PropertyLogIndexReq{
   bool noFirstTs =22;//时间戳填充不填充最早的值,聚合模式使用
 }
 
-message AggInfo {
-  string dataID = 1; //获取的具体标识符的数据(必填)
-  string argFunc =2;
-}
 
+message PropertyAgg{
+  string dataID = 1; //获取的具体标识符的数据(必填)
+  repeated string argFuncs = 2;//聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考:https://docs.taosdata.com/reference/taos-sql/function
+  string fill = 3; //填充模式 参考:https://docs.taosdata.com/reference/taos-sql/distinguished/#fill-%E5%AD%90%E5%8F%A5
+  bool noFirstTs =4;//时间戳填充不填充最早的值,聚合模式使用
+}
 message PropertyAggIndexReq{
   string tenantCode = 21;//租户号,只有管理员有权限
   int64 projectID =20;//只有管理员有权限
@@ -933,15 +937,13 @@ message PropertyAggIndexReq{
   string deviceName=2;//设备ID
   repeated string deviceNames=3;
   string productID = 4; //产品id (必填)
-  repeated AggInfo aggs = 5; //获取的具体标识符的数据(必填)
   int64 timeStart = 6;//获取时间的开始(毫秒时间戳)
   int64 timeEnd = 7;//时间的结束(毫秒时间戳)
   int64 interval = 8;//间隔 如果这个值不为零值 则时间的开始和结束必须有效及聚合函数不应该为空
   string intervalUnit = 12;//间隔单位 a (毫秒,默认), d (天), h (小时), m (分钟), n (月), s (秒), u (微秒), w (周), y (年)
-  string fill = 10; //填充模式 参考:https://docs.taosdata.com/reference/taos-sql/distinguished/#fill-%E5%AD%90%E5%8F%A5
   int64 order = 11; //时间排序 1:aes(默认,从久到近排序) 2:desc(时间从近到久排序)
   string partitionBy =13;//切分数据,可以填写deviceName
-  bool noFirstTs =22;//时间戳填充不填充最早的值,聚合模式使用
+  repeated PropertyAgg aggs =10;// 聚合参数
 }
 
 /*获取对应日志信息*/
@@ -950,7 +952,24 @@ message PropertyAggIndexResp{
 }
 
 message PropertyAggResp{
+  string productID = 5;//产品名称
+  string deviceName = 2;//设备名称
+  repeated PropertyAggRespDetail values = 4;//获取到的值
+  string tenantCode = 7;//租户号,只有partitionBy 传该参数的时候才会返回
+  int64 projectID = 8;//租户号,只有partitionBy 传该参数的时候才会返回
+  int64 areaID =9;//租户号,只有partitionBy 传该参数的时候才会返回
+  string areaIDPath =10;//租户号,只有partitionBy 传该参数的时候才会返回
+  map<string,IDsInfo> belongGroup =18;//key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回
 
+}
+message PropertyAggRespDetail{
+  string dataID = 1;//属性id
+  int64 timeWindow = 2;//发生时间戳(毫秒时间戳)
+  map<string,PropertyAggRespDataDetail> values = 4;//key是聚合函数
+}
+message PropertyAggRespDataDetail{
+  int64 timestamp = 1;//发生时间戳(毫秒时间戳)
+  string value = 4;//获取到的值
 }
 
 /*获取对应日志信息*/
@@ -976,7 +995,7 @@ message PropertyLogInfo{
   int64 projectID = 8;//租户号,只有partitionBy 传该参数的时候才会返回
   int64 areaID =9;//租户号,只有partitionBy 传该参数的时候才会返回
   string areaIDPath =10;//租户号,只有partitionBy 传该参数的时候才会返回
-  map<string,IDsInfo> BelongGroup =18;//key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回
+  map<string,IDsInfo> belongGroup =18;//key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回
 
 }
 
@@ -1703,8 +1722,10 @@ message DeviceInfoIndexReq{
   map<string, string> tagsLike = 46;//key tag过滤查询,模糊查询 为tag的名,value为tag对应的值
   int64 range = 6; //过滤条件:取距离坐标点固定范围内的设备
   Point Position = 7;   //设备定位,默认百度坐标系
+  int64 areaID =36;
   repeated int64 areaIDs = 8;//区域ids
   string areaIDPath=32; //区域路径过滤
+  repeated string areaIDPaths=34; //区域路径过滤
   string deviceAlias = 9; //过滤条件:模糊查询 设备别名
   int64 isOnline = 10; //在线状态过滤  1离线 2在线
   int64  productCategoryID = 11;//产品品类id
@@ -1720,6 +1741,9 @@ message DeviceInfoIndexReq{
   repeated int64 deviceTypes =21;
   DeviceCore gateway = 17;//获取网关下子设备列表
   int64 groupID =18;
+  repeated int64 groupIDs =55;
+  string groupIDPath =56;
+  repeated string groupIDPaths =57;
   int64 notGroupID =19;
   int64 parentGroupID = 42;
   string groupPurpose =45;//设备分组用途 不填默认为default

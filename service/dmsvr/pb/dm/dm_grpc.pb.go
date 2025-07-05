@@ -4519,6 +4519,7 @@ const (
 	DeviceMsg_PropertyLogLatestIndex_FullMethodName  = "/dm.DeviceMsg/propertyLogLatestIndex"
 	DeviceMsg_PropertyLogLatestIndex2_FullMethodName = "/dm.DeviceMsg/propertyLogLatestIndex2"
 	DeviceMsg_PropertyLogIndex_FullMethodName        = "/dm.DeviceMsg/propertyLogIndex"
+	DeviceMsg_PropertyAggIndex_FullMethodName        = "/dm.DeviceMsg/propertyAggIndex"
 	DeviceMsg_EventLogIndex_FullMethodName           = "/dm.DeviceMsg/eventLogIndex"
 	DeviceMsg_ShadowIndex_FullMethodName             = "/dm.DeviceMsg/shadowIndex"
 	DeviceMsg_GatewayCanBindIndex_FullMethodName     = "/dm.DeviceMsg/gatewayCanBindIndex"
@@ -4541,6 +4542,7 @@ type DeviceMsgClient interface {
 	PropertyLogLatestIndex2(ctx context.Context, in *PropertyLogLatestIndex2Req, opts ...grpc.CallOption) (*PropertyLogIndexResp, error)
 	// 获取设备数据信息
 	PropertyLogIndex(ctx context.Context, in *PropertyLogIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error)
+	PropertyAggIndex(ctx context.Context, in *PropertyAggIndexReq, opts ...grpc.CallOption) (*PropertyAggIndexResp, error)
 	// 获取设备数据信息
 	EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventLogIndexResp, error)
 	// 获取设备影子列表
@@ -4638,6 +4640,15 @@ func (c *deviceMsgClient) PropertyLogIndex(ctx context.Context, in *PropertyLogI
 	return out, nil
 }
 
+func (c *deviceMsgClient) PropertyAggIndex(ctx context.Context, in *PropertyAggIndexReq, opts ...grpc.CallOption) (*PropertyAggIndexResp, error) {
+	out := new(PropertyAggIndexResp)
+	err := c.cc.Invoke(ctx, DeviceMsg_PropertyAggIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *deviceMsgClient) EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventLogIndexResp, error) {
 	out := new(EventLogIndexResp)
 	err := c.cc.Invoke(ctx, DeviceMsg_EventLogIndex_FullMethodName, in, out, opts...)
@@ -4682,6 +4693,7 @@ type DeviceMsgServer interface {
 	PropertyLogLatestIndex2(context.Context, *PropertyLogLatestIndex2Req) (*PropertyLogIndexResp, error)
 	// 获取设备数据信息
 	PropertyLogIndex(context.Context, *PropertyLogIndexReq) (*PropertyLogIndexResp, error)
+	PropertyAggIndex(context.Context, *PropertyAggIndexReq) (*PropertyAggIndexResp, error)
 	// 获取设备数据信息
 	EventLogIndex(context.Context, *EventLogIndexReq) (*EventLogIndexResp, error)
 	// 获取设备影子列表
@@ -4721,6 +4733,9 @@ func (UnimplementedDeviceMsgServer) PropertyLogLatestIndex2(context.Context, *Pr
 }
 func (UnimplementedDeviceMsgServer) PropertyLogIndex(context.Context, *PropertyLogIndexReq) (*PropertyLogIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PropertyLogIndex not implemented")
+}
+func (UnimplementedDeviceMsgServer) PropertyAggIndex(context.Context, *PropertyAggIndexReq) (*PropertyAggIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PropertyAggIndex not implemented")
 }
 func (UnimplementedDeviceMsgServer) EventLogIndex(context.Context, *EventLogIndexReq) (*EventLogIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EventLogIndex not implemented")
@@ -4906,6 +4921,24 @@ func _DeviceMsg_PropertyLogIndex_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DeviceMsg_PropertyAggIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PropertyAggIndexReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceMsgServer).PropertyAggIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceMsg_PropertyAggIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceMsgServer).PropertyAggIndex(ctx, req.(*PropertyAggIndexReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _DeviceMsg_EventLogIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(EventLogIndexReq)
 	if err := dec(in); err != nil {
@@ -5002,6 +5035,10 @@ var DeviceMsg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "propertyLogIndex",
 			Handler:    _DeviceMsg_PropertyLogIndex_Handler,
+		},
+		{
+			MethodName: "propertyAggIndex",
+			Handler:    _DeviceMsg_PropertyAggIndex_Handler,
 		},
 		{
 			MethodName: "eventLogIndex",

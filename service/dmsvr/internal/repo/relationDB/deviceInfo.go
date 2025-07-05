@@ -22,7 +22,10 @@ type (
 		ProjectIDs         []int64
 		ProductID          string
 		ProductIDs         []string
+		AreaID             int64
 		AreaIDs            []int64
+		AreaIDPath         string
+		AreaIDPaths        []string
 		NotAreaIDs         []int64
 		DeviceName         string
 		DeviceNames        []string
@@ -50,9 +53,11 @@ type (
 		DeviceType         int64
 		DeviceTypes        []int64
 		GroupID            int64
+		GroupIDs           []int64
+		GroupIDPath        string
+		GroupIDPaths       []string
 		ParentGroupID      int64
 		GroupName          string
-		GroupIDs           []int64
 		UserID             int64
 		UserIDs            []int64
 		NotGroupID         int64
@@ -62,7 +67,6 @@ type (
 		RatedPower         *stores.Cmp
 		ExpTime            *stores.Cmp
 		Rssi               *stores.Cmp
-		AreaIDPath         string
 		HasOwner           int64 //是否被人拥有
 		NeedConfirmJobID   int64
 		NeedConfirmVersion string
@@ -91,6 +95,13 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	}
 	if f.AreaIDPath != "" {
 		db = db.Where("area_id_path like ?", f.AreaIDPath+"%")
+	}
+	if len(f.AreaIDPaths) != 0 {
+		or := db
+		for _, v := range f.AreaIDPaths {
+			or = or.Or("area_id_path like ?", v+"%")
+		}
+		db = db.Where(or)
 	}
 	if f.WithManufacturer {
 		db = db.Preload("Manufacturer")
@@ -132,6 +143,9 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	}
 	if len(f.AreaIDs) != 0 {
 		db = db.Where("area_id in ?", f.AreaIDs)
+	}
+	if f.AreaID != 0 {
+		db = db.Where("area_id = ?", f.AreaID)
 	}
 	if f.NotAreaID != 0 {
 		db = db.Where("area_id != ?", f.NotAreaID)
@@ -265,6 +279,19 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 		groupFilter = true
 		groupSubQuery = groupSubQuery.Where("group_id in ?", f.GroupIDs)
 	}
+	if f.GroupIDPath != "" {
+		groupFilter = true
+		groupSubQuery = groupSubQuery.Where("group_id_path like ?", f.GroupIDPath+"%")
+	}
+	if len(f.GroupIDPaths) != 0 {
+		groupFilter = true
+		or := groupSubQuery
+		for _, v := range f.GroupIDPaths {
+			or = or.Or("group_id_path like ?", v+"%")
+		}
+		groupSubQuery = groupSubQuery.Where(or)
+	}
+
 	if f.ParentGroupID != 0 || f.GroupName != "" {
 		groupFilter = true
 		subQuery := d.db.Model(&DmGroupInfo{}).Select("id")

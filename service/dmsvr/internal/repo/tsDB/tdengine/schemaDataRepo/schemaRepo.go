@@ -31,6 +31,11 @@ type DeviceDataRepo struct {
 	groupConfigs []*deviceGroup.GroupDetail
 }
 
+func (d *DeviceDataRepo) GetPropertyAgg(ctx context.Context, m *schema.Model, filter msgThing.FilterAggOpt) ([]*msgThing.PropertyData2, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func NewDeviceDataRepo(dataSource conf.TSDB, getProductSchemaModel schema.GetSchemaModel,
 	getDeviceSchemaModel schema.GetSchemaModel, kv kv.Store, g []*deviceGroup.GroupDetail) msgThing.SchemaDataRepo {
 	td, err := clients.NewTDengine(dataSource)

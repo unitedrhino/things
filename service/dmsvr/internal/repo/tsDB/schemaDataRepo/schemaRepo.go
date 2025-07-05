@@ -13,6 +13,7 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	schema "gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/zeromicro/go-zero/core/stores/kv"
+	"strings"
 )
 
 const (
@@ -100,6 +101,8 @@ func (d *DeviceDataRepo) Init(ctx context.Context) error {
 		PropertyFloat{},
 		PropertyStruct{},
 		PropertyStructArray{},
+		PropertyEnum{},
+		PropertyEnumArray{},
 	)
 	if err != nil {
 		return err
@@ -107,9 +110,44 @@ func (d *DeviceDataRepo) Init(ctx context.Context) error {
 	if NeedInitColumn && stores.GetTsDBType() == conf.Pgsql {
 		d.db.Exec("SELECT create_hypertable('dm_time_model_event','ts', chunk_time_interval => interval '1 day'    );")
 		for _, tb := range TableNames {
-			d.db.Exec(fmt.Sprintf("SELECT create_hypertable('%s','ts', chunk_time_interval => interval '1 day'    );", tb))
+			d.db.Exec(fmt.Sprintf("SELECT create_hypertable('%s','ts', chunk_time_interval => interval '1 day');", tb))
+			d.db.Exec(fmt.Sprintf("SELECT add_dimension('%s', by_hash('device_name', 2));", tb))
+			d.db.Exec(fmt.Sprintf("SELECT add_dimension('%s', by_hash('identifier', 2));", tb))
+			d.db.Exec(fmt.Sprintf("CREATE UNIQUE INDEX IF NOT EXISTS idx_unique ON %s( product_id, device_name, identifier,ts);", tb))
+			if strings.HasSuffix(tb, "bool") {
+				d.db.Exec(fmt.Sprintf(viewBoolTemplate, tb, "day", "day", tb))
+				d.db.Exec(fmt.Sprintf(viewBoolTemplate, tb, "hour", "hour", tb))
+			} else {
+				d.db.Exec(fmt.Sprintf(viewTemplate, tb, "day", "day", tb))
+				d.db.Exec(fmt.Sprintf(viewTemplate, tb, "hour", "hour", tb))
+			}
 		}
 	}
 
 	return nil
 }
+
+const (
+	viewTemplate = `CREATE MATERIALIZED VIEW if not exists %s_%s(product_id,device_name,identifier,ts,first_ts,first_param,last_ts,last_param, max_ts,max_param,min_ts,min_param, sum_param, count_param,avg_param )
+			WITH (timescaledb.continuous) AS
+			SELECT product_id,device_name,identifier,time_bucket('1%s', ts) as ts_window,
+				(ARRAY_AGG(ts ORDER BY ts ASC))[1]    AS first_ts,
+				(ARRAY_AGG(param ORDER BY ts ASC))[1] AS first_param,
+				(ARRAY_AGG(ts ORDER BY ts desc))[1]    AS last_ts,
+				(ARRAY_AGG(param ORDER BY ts desc))[1] AS last_param,
+       (ARRAY_AGG(ts ORDER BY param desc))[1]    AS max_ts,
+       (ARRAY_AGG(param ORDER BY param desc))[1] AS max_param,
+       (ARRAY_AGG(ts ORDER BY param ASC))[1]    AS min_ts,
+       (ARRAY_AGG(param ORDER BY param ASC))[1] AS min_param, sum(param),count(param),avg(param)
+			FROM %s
+			GROUP BY product_id,device_name,identifier,ts_window;`
+	viewBoolTemplate = `CREATE MATERIALIZED VIEW if not exists %s_%s(product_id,device_name,identifier,ts,first_ts,first_param,last_ts,last_param, count_param,avg_param )
+			WITH (timescaledb.continuous) AS
+			SELECT product_id,device_name,identifier,time_bucket('1%s', ts) as ts_window,
+				(ARRAY_AGG(ts ORDER BY ts ASC))[1]    AS first_ts,
+				(ARRAY_AGG(param ORDER BY ts ASC))[1] AS first_param,
+				(ARRAY_AGG(ts ORDER BY ts desc))[1]    AS last_ts,
+				(ARRAY_AGG(param ORDER BY ts desc))[1] AS last_param,count(param),avg(param)
+			FROM %s
+			GROUP BY product_id,device_name,identifier,ts_window;`
+)

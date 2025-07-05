@@ -32,6 +32,7 @@ func BindChange(ctx context.Context, svcCtx *svc.ServiceContext, pi *dm.ProductI
 	if pi == nil {
 		var err error
 		pi, err = svcCtx.ProductCache.GetData(ctx, dev.ProductID)
+		logx.WithContext(ctx).Error(dev.ProductID, err)
 		if err != nil {
 			return err
 		}

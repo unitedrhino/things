@@ -24,12 +24,29 @@ type (
 		AreaID      dataType.AreaID        `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`    // 项目区域ID(雪花ID)
 		AreaIDPath  dataType.AreaIDPath    `gorm:"column:area_id_path;type:varchar(100);default:'';NOT NULL"`                 // 项目区域ID路径(雪花ID)
 		BelongGroup map[string]def.IDsInfo `gorm:"column:belong_group;type:json;serializer:json;default:'{}'"`
-
-		DeviceName string    `gorm:"column:device_name;type:varchar(50);NOT NULL" json:"deviceName"`
-		Identifier string    `gorm:"column:identifier;type:varchar(50);NOT NULL" json:"identifier"` //标识符
-		Param      any       `gorm:"column:param;type:varchar(256);NOT NULL" json:"param" `         //一个属性的参数
-		TimeStamp  time.Time `gorm:"column:ts;NOT NULL;" json:"timeStamp"`                          //时间戳
+		DeviceName  string                 `gorm:"column:device_name;type:varchar(50);NOT NULL" json:"deviceName"`
+		Identifier  string                 `gorm:"column:identifier;type:varchar(50);NOT NULL" json:"identifier"` //标识符
+		Param       any                    `gorm:"column:param;type:varchar(256);NOT NULL" json:"param" `         //一个属性的参数
+		TimeStamp   time.Time              `gorm:"column:ts;NOT NULL;" json:"timeStamp"`                          //时间戳
 	}
+	PropertyData2 struct {
+		TenantCode  dataType.TenantCode    `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"`                        // 租户编码
+		ProjectID   dataType.ProjectID     `gorm:"column:project_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"` // 项目ID(雪花ID)
+		AreaID      dataType.AreaID        `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`    // 项目区域ID(雪花ID)
+		AreaIDPath  dataType.AreaIDPath    `gorm:"column:area_id_path;type:varchar(100);default:'';NOT NULL"`                 // 项目区域ID路径(雪花ID)
+		BelongGroup map[string]def.IDsInfo `gorm:"column:belong_group;type:json;serializer:json;default:'{}'"`
+		Values      []PropertyAggData      `gorm:"-"` //key是聚合函数
+	}
+	PropertyAggData struct {
+		Identifier string                        `gorm:"column:identifier;type:varchar(50);NOT NULL" json:"identifier"` //标识符
+		TsWindow   time.Time                     `gorm:"column:ts_window;NOT NULL;" json:"timeStamp"`                   //时间戳
+		Values     map[string]PropertyDataDetail `gorm:"-"`                                                             //key是聚合函数
+	}
+	PropertyDataDetail struct {
+		Param     any       `gorm:"column:param;type:varchar(256);NOT NULL" json:"param" ` //一个属性的参数
+		TimeStamp time.Time `gorm:"column:ts;NOT NULL;" json:"timeStamp"`                  //时间戳
+	}
+
 	// EventData 事件数据
 	EventData struct {
 		TenantCode  dataType.TenantCode    `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"`                        // 租户编码
@@ -68,15 +85,52 @@ type (
 		//DeviceName  string
 		DeviceNames  []string
 		DataID       string
-		Types        []string     //事件类型: 信息:info  告警alert  故障:fault
-		Order        stores.Order //0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)
+		Types        []string      //事件类型: 信息:info  告警alert  故障:fault
+		Order        stores.Order  //0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)
+		Interval     int64         //间隔(单位毫秒) 如果这个值不为零值 则时间的开始和结束必须有效及聚合函数不应该为空
+		IntervalUnit def.TimeUnit  //间隔单位 a (毫秒,默认), d (天), h (小时), m (分钟), n (月), s (秒), u (微秒), w (周), y (年)
+		Fill         string        //指定窗口区间数据缺失的情况下的填充模式
+		ArgFunc      string        //聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考:https://docs.taosdata.com/taos-sql/function
+		PartitionBy  string        //切分数据,可以填写deviceName
+		NoFirstTs    bool          `json:"noFirstTs,optional"` //时间戳填充不填充最早的值,聚合模式使用
+		Aggs         []PropertyAgg `json:"aggs,optional"`
+	}
+	Filter struct {
+		TenantCode   string
+		ProjectID    int64  `json:"projectID,omitempty"`
+		AreaID       int64  `json:"areaID,omitempty"`
+		AreaIDPath   string `json:"areaIDPath,omitempty"`
+		BelongGroup  map[string]def.IDsInfo
+		AreaIDs      []int64      `json:"areaIDs"`
 		Interval     int64        //间隔(单位毫秒) 如果这个值不为零值 则时间的开始和结束必须有效及聚合函数不应该为空
 		IntervalUnit def.TimeUnit //间隔单位 a (毫秒,默认), d (天), h (小时), m (分钟), n (月), s (秒), u (微秒), w (周), y (年)
-		Fill         string       //指定窗口区间数据缺失的情况下的填充模式
-		ArgFunc      string       //聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考:https://docs.taosdata.com/taos-sql/function
-		PartitionBy  string       //切分数据,可以填写deviceName
-		NoFirstTs    bool         `json:"noFirstTs,optional"` //时间戳填充不填充最早的值,聚合模式使用
 
+		ProductID  string
+		ProductIDs []string
+		//DeviceName  string
+		DeviceNames []string
+
+		PartitionBy string //切分数据,可以填写deviceName
+
+	}
+
+	FilterAggOpt struct {
+		Filter
+		TimeStart int64         `json:"timeStart"`
+		TimeEnd   int64         `json:"timeEnd"`
+		Aggs      []PropertyAgg `json:"aggs,optional"`
+	}
+	PropertyAgg struct {
+		DataID    string
+		ArgFuncs  []string //聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考:https://docs.taosdata.com/taos-sql/function
+		Fill      string   //指定窗口区间数据缺失的情况下的填充模式
+		NoFirstTs bool     `json:"noFirstTs,optional"` //时间戳填充不填充最早的值,聚合模式使用
+	}
+	PropertyAgg2 struct {
+		DataID    string
+		ArgFunc   string //聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考:https://docs.taosdata.com/taos-sql/function
+		Fill      string //指定窗口区间数据缺失的情况下的填充模式
+		NoFirstTs bool   `json:"noFirstTs,optional"` //时间戳填充不填充最早的值,聚合模式使用
 	}
 	LatestFilter struct {
 		ProductID  string
@@ -106,6 +160,7 @@ type (
 		// GetEventDataWithID 根据事件id获取事件信息
 		GetEventDataByFilter(ctx context.Context, filter FilterOpt) ([]*EventData, error)
 		GetEventCountByFilter(ctx context.Context, filter FilterOpt) (int64, error)
+		GetPropertyAgg(ctx context.Context, m *schema.Model, filter FilterAggOpt) ([]*PropertyData2, error)
 		// GetPropertyDataByID 根据属性id获取属性信息
 		GetPropertyDataByID(ctx context.Context, p *schema.Property, filter FilterOpt) ([]*PropertyData, error)
 		GetLatestPropertyDataByID(ctx context.Context, p *schema.Property, filter LatestFilter) (*PropertyData, error)

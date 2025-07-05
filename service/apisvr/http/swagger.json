@@ -1790,6 +1790,48 @@
         ]
       }
     },
+    "/api/v1/things/device/msg/property-agg/index": {
+      "post": {
+        "summary": "聚合属性历史记录",
+        "operationId": "postApiV1ThingsDeviceMsgProperty-aggIndex",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/DeviceMsgPropertyAggIndexResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceMsgPropertyAggIndexReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/msg",
+          "thingsDeviceMsg"
+        ]
+      }
+    },
     "/api/v1/things/device/msg/property-log-latest/index": {
       "post": {
         "summary": "获取最新属性记录",
@@ -7943,6 +7985,10 @@
             "type": "string"
           }
         },
+        "areaID": {
+          "type": "string",
+          "description": "项目区域ids"
+        },
         "areaIDs": {
           "type": "array",
           "items": {
@@ -7952,6 +7998,13 @@
         },
         "areaIDPath": {
           "type": "string",
+          "description": "区域路径过滤"
+        },
+        "areaIDPaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
           "description": "区域路径过滤"
         },
         "isOnline": {
@@ -7997,6 +8050,21 @@
           "description": "过滤网关"
         },
         "groupID": {
+          "type": "string"
+        },
+        "groupIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "groupIDPaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "groupIDPath": {
           "type": "string"
         },
         "notGroupID": {
@@ -9320,6 +9388,194 @@
         "content",
         "resultCode",
         "respPayload"
+      ]
+    },
+    "DeviceMsgPropertyAgg": {
+      "type": "object",
+      "properties": {
+        "dataID": {
+          "type": "string",
+          "description": "获取的具体标识符的数据"
+        },
+        "argFuncs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考: https:docs.taosdata.com/reference/taos-sql/function/#apercentile"
+        },
+        "fill": {
+          "type": "string",
+          "description": "指定窗口区间数据缺失的情况下的填充模式 参考: https:docs.taosdata.com/reference/taos-sql/distinguished/#fill-%E5%AD%90%E5%8F%A5"
+        },
+        "noFirstTs": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "时间戳填充不填充最早的值,聚合模式使用"
+        }
+      },
+      "title": "DeviceMsgPropertyAgg",
+      "required": [
+        "argFuncs"
+      ]
+    },
+    "DeviceMsgPropertyAggIndexReq": {
+      "type": "object",
+      "properties": {
+        "tenantCode": {
+          "type": "string",
+          "description": "只有管理员有权限"
+        },
+        "projectID": {
+          "type": "string",
+          "description": "只有管理员有权限"
+        },
+        "areaID": {
+          "type": "string",
+          "description": "只有管理员有权限"
+        },
+        "areaIDPath": {
+          "type": "string",
+          "description": "只有管理员有权限"
+        },
+        "areaIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "只有管理员有权限"
+        },
+        "belongGroup": {
+          "type": "object",
+          "description": "key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回"
+        },
+        "deviceName": {
+          "type": "string",
+          "description": "设备名(不填获取产品下所有设备)"
+        },
+        "deviceNames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "设备名(不填获取产品下所有设备,只有管理员有权限)"
+        },
+        "productID": {
+          "type": "string",
+          "description": "产品id 获取产品id下的所有设备信息"
+        },
+        "productCategoryID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "产品品类id,通用物模型有效"
+        },
+        "timeStart": {
+          "type": "string",
+          "description": "获取时间的开始"
+        },
+        "timeEnd": {
+          "type": "string",
+          "description": "时间的结束"
+        },
+        "partitionBy": {
+          "type": "string",
+          "description": "切分数据,可以填写deviceName"
+        },
+        "aggs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceMsgPropertyAgg"
+          },
+          "description": "聚合对象"
+        }
+      },
+      "title": "DeviceMsgPropertyAggIndexReq",
+      "required": [
+        "aggs"
+      ]
+    },
+    "DeviceMsgPropertyAggIndexResp": {
+      "type": "object",
+      "properties": {},
+      "title": "DeviceMsgPropertyAggIndexResp"
+    },
+    "DeviceMsgPropertyAggResp": {
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "description": "发生时间戳"
+        },
+        "deviceName": {
+          "type": "string",
+          "description": "设备名称"
+        },
+        "tenantCode": {
+          "type": "string",
+          "description": "只有partitionBy 传该参数的时候才会返回"
+        },
+        "projectID": {
+          "type": "string",
+          "description": "只有partitionBy 传该参数的时候才会返回"
+        },
+        "areaID": {
+          "type": "string",
+          "description": "只有partitionBy 传该参数的时候才会返回"
+        },
+        "areaIDPath": {
+          "type": "string",
+          "description": "只有partitionBy 传该参数的时候才会返回"
+        },
+        "areaIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "只有partitionBy 传该参数的时候才会返回"
+        },
+        "belongGroup": {
+          "type": "object",
+          "description": "key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回"
+        }
+      },
+      "title": "DeviceMsgPropertyAggResp",
+      "required": [
+        "timestamp"
+      ]
+    },
+    "DeviceMsgPropertyAggRespDataDetail": {
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "description": "发生时间戳"
+        },
+        "value": {
+          "type": "string",
+          "description": "获取到的值"
+        }
+      },
+      "title": "DeviceMsgPropertyAggRespDataDetail",
+      "required": [
+        "timestamp"
+      ]
+    },
+    "DeviceMsgPropertyAggRespDetail": {
+      "type": "object",
+      "properties": {
+        "dataID": {
+          "type": "string",
+          "description": "获取的具体属性值"
+        },
+        "values": {
+          "type": "object",
+          "description": "key是聚合函数"
+        }
+      },
+      "title": "DeviceMsgPropertyAggRespDetail",
+      "required": [
+        "dataID",
+        "values"
       ]
     },
     "DeviceMsgPropertyIndexResp": {

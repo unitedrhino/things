@@ -16,10 +16,10 @@ func (m *Event) TableName() string {
 }
 
 type Property struct {
-	ProductID  string    `gorm:"column:product_id;uniqueIndex:pd_dn_ts;type:varchar(100);NOT NULL"`  // 产品id
-	DeviceName string    `gorm:"column:device_name;uniqueIndex:pd_dn_ts;type:varchar(100);NOT NULL"` // 设备名称
-	Timestamp  time.Time `gorm:"column:ts;uniqueIndex:pd_dn_ts;NOT NULL;"`                           // 操作时间
-	Identifier string    `gorm:"column:identifier;type:varchar(100);NOT NULL"`                       // 事件id
+	ProductID  string    `gorm:"column:product_id;type:varchar(100);NOT NULL"`  // 产品id
+	DeviceName string    `gorm:"column:device_name;type:varchar(100);NOT NULL"` // 设备名称
+	Timestamp  time.Time `gorm:"column:ts;NOT NULL;"`                           // 操作时间
+	Identifier string    `gorm:"column:identifier;type:varchar(100);NOT NULL"`  // 事件id
 }
 
 type PropertyString struct {
