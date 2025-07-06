@@ -13,7 +13,6 @@ import (
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -94,6 +93,8 @@ func (l *PropertyAggIndexLogic) PropertyAggIndex(in *dm.PropertyAggIndexReq) (*d
 	}
 
 	dds, err := dd.GetPropertyAgg(l.ctx, t, msgThing.FilterAggOpt{
+		TimeStart: in.TimeStart,
+		TimeEnd:   in.TimeEnd,
 		Filter: msgThing.Filter{
 			ProductID:    in.ProductID,
 			ProductIDs:   productIDs,
@@ -111,55 +112,35 @@ func (l *PropertyAggIndexLogic) PropertyAggIndex(in *dm.PropertyAggIndexReq) (*d
 		l.Errorf("%s.GetPropertyDataByID err=%v", utils.FuncName(), err)
 		return nil, err
 	}
-	l.Error(dds)
-	//for _, devData := range dds {
-	//	diData := dm.PropertyLogInfo{
-	//		DeviceName:  devData.DeviceName,
-	//		Timestamp:   devData.TimeStamp.UnixMilli(),
-	//		DataID:      devData.Identifier,
-	//		TenantCode:  string(devData.TenantCode),
-	//		ProjectID:   int64(devData.ProjectID),
-	//		AreaID:      int64(devData.AreaID),
-	//		AreaIDPath:  string(devData.AreaIDPath),
-	//		BelongGroup: utils.CopyMap2[dm.IDsInfo](devData.BelongGroup),
-	//		//GroupIDs:     devData.GroupIDs,
-	//		//GroupIDPaths: devData.GroupIDPaths,
-	//	}
-	//	var payload []byte
-	//	if param, ok := devData.Param.(string); ok {
-	//		payload = []byte(param)
-	//	} else {
-	//		payload = []byte(utils.ToString(devData.Param))
-	//	}
-	//	diData.Value = string(payload)
-	//	v, err := p.Define.FmtValue(string(payload))
-	//	if err == nil {
-	//		diData.Value = cast.ToString(v)
-	//	}
-	//	diDatas = append(diDatas, &diData)
-	//}
-	//if in.ArgFunc == "" && in.Interval == 0 {
-	//	total, err = dd.GetPropertyCountByID(l.ctx, p, msgThing.FilterOpt{
-	//		Page: def.PageInfo2{
-	//			TimeStart: in.TimeStart,
-	//			TimeEnd:   in.TimeEnd,
-	//			Page:      in.Page.GetPage(),
-	//			Size:      in.Page.GetSize(),
-	//		},
-	//		AreaIDs:      in.AreaIDs,
-	//		AreaID:       in.AreaID,
-	//		AreaIDPath:   in.AreaIDPath,
-	//		ProductID:    in.ProductID,
-	//		DataID:       in.DataID,
-	//		DeviceNames:  in.DeviceNames,
-	//		Interval:     in.Interval,
-	//		BelongGroup:  utils.CopyMap3[def.IDsInfo](in.BelongGroup),
-	//		IntervalUnit: def.TimeUnit(in.IntervalUnit),
-	//		ArgFunc:      in.ArgFunc})
-	//	if err != nil {
-	//		l.Errorf("%s.GetPropertyCountByID err=%v", utils.FuncName(), err)
-	//		return nil, err
-	//	}
-	//}
-	return &dm.PropertyAggIndexResp{}, nil
+	var diDatas []*dm.PropertyAggResp
+	for _, devData := range dds {
+		diData := dm.PropertyAggResp{
+			DeviceName:  devData.DeviceName,
+			TenantCode:  string(devData.TenantCode),
+			ProjectID:   int64(devData.ProjectID),
+			AreaID:      int64(devData.AreaID),
+			AreaIDPath:  string(devData.AreaIDPath),
+			BelongGroup: utils.CopyMap2[dm.IDsInfo](devData.BelongGroup),
+		}
+		for _, v1 := range devData.Values {
+			var dv = dm.PropertyAggRespDetail{DataID: v1.Identifier, TimeWindow: v1.TsWindow.UnixMilli(), Values: map[string]*dm.PropertyAggRespDataDetail{}}
+			for k2, v2 := range v1.Values {
+				dv2 := dm.PropertyAggRespDataDetail{Timestamp: v2.TimeStamp.UnixMilli()}
+				if dv2.Timestamp < 0 {
+					dv2.Timestamp = 0
+				}
+				var payload []byte
+				if param, ok := v2.Param.(string); ok {
+					payload = []byte(param)
+				} else {
+					payload = []byte(utils.ToString(v2.Param))
+				}
+				dv2.Value = string(payload)
+				dv.Values[k2] = &dv2
+			}
+			diData.Values = append(diData.Values, &dv)
+		}
+		diDatas = append(diDatas, &diData)
+	}
+	return &dm.PropertyAggIndexResp{List: diDatas}, nil
 }

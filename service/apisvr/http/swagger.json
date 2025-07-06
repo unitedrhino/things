@@ -9445,6 +9445,15 @@
           },
           "description": "只有管理员有权限"
         },
+        "interval": {
+          "type": "integer",
+          "format": "int64",
+          "description": "间隔 如果这个值不为零值 则时间的开始和结束必须有效及聚合函数不应该为空"
+        },
+        "intervalUnit": {
+          "type": "string",
+          "description": "间隔单位 a (毫秒,默认), d (天), h (小时), m (分钟), n (月), s (秒), u (微秒), w (周), y (年)  则时间的开始和结束必须有效及聚合函数不应该为空"
+        },
         "belongGroup": {
           "type": "object",
           "description": "key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回"
@@ -9496,16 +9505,22 @@
     },
     "DeviceMsgPropertyAggIndexResp": {
       "type": "object",
-      "properties": {},
-      "title": "DeviceMsgPropertyAggIndexResp"
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceMsgPropertyAggResp"
+          }
+        }
+      },
+      "title": "DeviceMsgPropertyAggIndexResp",
+      "required": [
+        "list"
+      ]
     },
     "DeviceMsgPropertyAggResp": {
       "type": "object",
       "properties": {
-        "timestamp": {
-          "type": "string",
-          "description": "发生时间戳"
-        },
         "deviceName": {
           "type": "string",
           "description": "设备名称"
@@ -9536,11 +9551,17 @@
         "belongGroup": {
           "type": "object",
           "description": "key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceMsgPropertyAggRespDetail"
+          }
         }
       },
       "title": "DeviceMsgPropertyAggResp",
       "required": [
-        "timestamp"
+        "values"
       ]
     },
     "DeviceMsgPropertyAggRespDataDetail": {
@@ -9555,10 +9576,7 @@
           "description": "获取到的值"
         }
       },
-      "title": "DeviceMsgPropertyAggRespDataDetail",
-      "required": [
-        "timestamp"
-      ]
+      "title": "DeviceMsgPropertyAggRespDataDetail"
     },
     "DeviceMsgPropertyAggRespDetail": {
       "type": "object",
@@ -9566,6 +9584,10 @@
         "dataID": {
           "type": "string",
           "description": "获取的具体属性值"
+        },
+        "timeWindow": {
+          "type": "string",
+          "description": "发生时间窗口"
         },
         "values": {
           "type": "object",
@@ -9575,6 +9597,7 @@
       "title": "DeviceMsgPropertyAggRespDetail",
       "required": [
         "dataID",
+        "timeWindow",
         "values"
       ]
     },

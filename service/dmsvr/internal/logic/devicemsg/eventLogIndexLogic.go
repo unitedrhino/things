@@ -76,10 +76,13 @@ func (l *EventLogIndexLogic) EventLogIndex(in *dm.EventLogIndexReq) (*dm.EventLo
 	}
 
 	dds, err := dd.GetEventDataByFilter(l.ctx, msgThing.FilterOpt{
-		Page:        page,
-		ProductID:   in.ProductID,
-		DeviceNames: in.DeviceNames,
-		DataID:      in.DataID})
+		Page: page,
+		Filter: msgThing.Filter{
+			ProductID:   in.ProductID,
+			DeviceNames: in.DeviceNames,
+		},
+
+		DataID: in.DataID})
 	if err != nil {
 		l.Errorf("%s.GetEventDataByFilter err=%v", utils.FuncName(), err)
 		return nil, errors.System.AddDetail(err)
@@ -105,9 +108,11 @@ func (l *EventLogIndexLogic) EventLogIndex(in *dm.EventLogIndexReq) (*dm.EventLo
 			Page:      in.Page.GetPage(),
 			Size:      in.Page.GetSize(),
 		},
-		ProductID:   in.ProductID,
-		DeviceNames: in.DeviceNames,
-		DataID:      in.DataID})
+		Filter: msgThing.Filter{
+			ProductID:   in.ProductID,
+			DeviceNames: in.DeviceNames,
+		},
+		DataID: in.DataID})
 	if err != nil {
 		l.Errorf("%s.GetEventCountByFilter err=%v", utils.FuncName(), err)
 		return nil, errors.System.AddDetail(err)

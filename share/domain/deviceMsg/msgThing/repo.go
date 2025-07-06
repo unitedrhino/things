@@ -35,7 +35,8 @@ type (
 		AreaID      dataType.AreaID        `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`    // 项目区域ID(雪花ID)
 		AreaIDPath  dataType.AreaIDPath    `gorm:"column:area_id_path;type:varchar(100);default:'';NOT NULL"`                 // 项目区域ID路径(雪花ID)
 		BelongGroup map[string]def.IDsInfo `gorm:"column:belong_group;type:json;serializer:json;default:'{}'"`
-		Values      []PropertyAggData      `gorm:"-"` //key是聚合函数
+		DeviceName  string                 `gorm:"column:device_name;type:varchar(50);NOT NULL" json:"deviceName"`
+		Values      []PropertyAggData      `gorm:"-"`
 	}
 	PropertyAggData struct {
 		Identifier string                        `gorm:"column:identifier;type:varchar(50);NOT NULL" json:"identifier"` //标识符
@@ -72,30 +73,16 @@ type (
 	*/
 	FilterOpt struct {
 		Page def.PageInfo2
+		Filter
+		DataID    string
+		Fill      string       //指定窗口区间数据缺失的情况下的填充模式
+		ArgFunc   string       //聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考:https://docs.taosdata.com/taos-sql/function
+		NoFirstTs bool         `json:"noFirstTs,optional"` //时间戳填充不填充最早的值,聚合模式使用
+		Order     stores.Order //0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)
 
-		TenantCode  string
-		ProjectID   int64  `json:"projectID,omitempty"`
-		AreaID      int64  `json:"areaID,omitempty"`
-		AreaIDPath  string `json:"areaIDPath,omitempty"`
-		BelongGroup map[string]def.IDsInfo
-		AreaIDs     []int64 `json:"areaIDs"`
-
-		ProductID  string
-		ProductIDs []string
-		//DeviceName  string
-		DeviceNames  []string
-		DataID       string
-		Types        []string      //事件类型: 信息:info  告警alert  故障:fault
-		Order        stores.Order  //0:aes(默认,从久到近排序) 1:desc(时间从近到久排序)
-		Interval     int64         //间隔(单位毫秒) 如果这个值不为零值 则时间的开始和结束必须有效及聚合函数不应该为空
-		IntervalUnit def.TimeUnit  //间隔单位 a (毫秒,默认), d (天), h (小时), m (分钟), n (月), s (秒), u (微秒), w (周), y (年)
-		Fill         string        //指定窗口区间数据缺失的情况下的填充模式
-		ArgFunc      string        //聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考:https://docs.taosdata.com/taos-sql/function
-		PartitionBy  string        //切分数据,可以填写deviceName
-		NoFirstTs    bool          `json:"noFirstTs,optional"` //时间戳填充不填充最早的值,聚合模式使用
-		Aggs         []PropertyAgg `json:"aggs,optional"`
 	}
 	Filter struct {
+		Types        []string //事件类型: 信息:info  告警alert  故障:fault
 		TenantCode   string
 		ProjectID    int64  `json:"projectID,omitempty"`
 		AreaID       int64  `json:"areaID,omitempty"`
@@ -104,9 +91,8 @@ type (
 		AreaIDs      []int64      `json:"areaIDs"`
 		Interval     int64        //间隔(单位毫秒) 如果这个值不为零值 则时间的开始和结束必须有效及聚合函数不应该为空
 		IntervalUnit def.TimeUnit //间隔单位 a (毫秒,默认), d (天), h (小时), m (分钟), n (月), s (秒), u (微秒), w (周), y (年)
-
-		ProductID  string
-		ProductIDs []string
+		ProductID    string
+		ProductIDs   []string
 		//DeviceName  string
 		DeviceNames []string
 

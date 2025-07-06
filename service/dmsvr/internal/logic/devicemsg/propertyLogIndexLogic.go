@@ -130,22 +130,24 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 		}
 	}
 	dds, err := dd.GetPropertyDataByID(l.ctx, p, msgThing.FilterOpt{
-		Page:         page,
-		ProductID:    in.ProductID,
-		ProductIDs:   productIDs,
-		DeviceNames:  in.DeviceNames,
-		BelongGroup:  utils.CopyMap3[def.IDsInfo](in.BelongGroup),
-		Order:        in.Order,
-		DataID:       in.DataID,
-		AreaIDs:      in.AreaIDs,
-		AreaID:       in.AreaID,
-		AreaIDPath:   in.AreaIDPath,
-		Fill:         in.Fill,
-		Interval:     in.Interval,
-		IntervalUnit: def.TimeUnit(in.IntervalUnit),
-		PartitionBy:  in.PartitionBy,
-		NoFirstTs:    in.NoFirstTs,
-		ArgFunc:      in.ArgFunc})
+		Page: page,
+		Filter: msgThing.Filter{
+			ProductID:    in.ProductID,
+			ProductIDs:   productIDs,
+			DeviceNames:  in.DeviceNames,
+			BelongGroup:  utils.CopyMap3[def.IDsInfo](in.BelongGroup),
+			AreaIDs:      in.AreaIDs,
+			AreaID:       in.AreaID,
+			AreaIDPath:   in.AreaIDPath,
+			Interval:     in.Interval,
+			IntervalUnit: def.TimeUnit(in.IntervalUnit),
+			PartitionBy:  in.PartitionBy,
+		},
+		Order:     in.Order,
+		DataID:    in.DataID,
+		Fill:      in.Fill,
+		NoFirstTs: in.NoFirstTs,
+		ArgFunc:   in.ArgFunc})
 	if err != nil {
 		l.Errorf("%s.GetPropertyDataByID err=%v", utils.FuncName(), err)
 		return nil, err
@@ -187,16 +189,18 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 				Page:      in.Page.GetPage(),
 				Size:      in.Page.GetSize(),
 			},
-			AreaIDs:      in.AreaIDs,
-			AreaID:       in.AreaID,
-			AreaIDPath:   in.AreaIDPath,
-			ProductID:    in.ProductID,
-			DataID:       in.DataID,
-			DeviceNames:  in.DeviceNames,
-			Interval:     in.Interval,
-			BelongGroup:  utils.CopyMap3[def.IDsInfo](in.BelongGroup),
-			IntervalUnit: def.TimeUnit(in.IntervalUnit),
-			ArgFunc:      in.ArgFunc})
+			Filter: msgThing.Filter{
+				AreaIDs:      in.AreaIDs,
+				AreaID:       in.AreaID,
+				AreaIDPath:   in.AreaIDPath,
+				ProductID:    in.ProductID,
+				DeviceNames:  in.DeviceNames,
+				Interval:     in.Interval,
+				BelongGroup:  utils.CopyMap3[def.IDsInfo](in.BelongGroup),
+				IntervalUnit: def.TimeUnit(in.IntervalUnit),
+			},
+			DataID:  in.DataID,
+			ArgFunc: in.ArgFunc})
 		if err != nil {
 			l.Errorf("%s.GetPropertyCountByID err=%v", utils.FuncName(), err)
 			return nil, err

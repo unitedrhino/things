@@ -27,6 +27,6 @@ func NewPropertyAggIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 func (l *PropertyAggIndexLogic) PropertyAggIndex(req *types.DeviceMsgPropertyAggIndexReq) (resp *types.DeviceMsgPropertyAggIndexResp, err error) {
-	l.svcCtx.DeviceMsg.PropertyAggIndex(l.ctx, utils.Copy[dm.PropertyAggIndexReq](req))
-	return
+	ret, err := l.svcCtx.DeviceMsg.PropertyAggIndex(l.ctx, utils.Copy[dm.PropertyAggIndexReq](req))
+	return utils.Copy[types.DeviceMsgPropertyAggIndexResp](ret), err
 }

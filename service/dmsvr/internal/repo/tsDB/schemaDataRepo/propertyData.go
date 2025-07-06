@@ -250,11 +250,15 @@ func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schem
 	//如果缓存里没有查到,需要从db里查
 	dds, err := d.GetPropertyDataByID(ctx, p,
 		msgThing.FilterOpt{
-			Page:        def.PageInfo2{Size: 1},
-			ProductID:   filter.ProductID,
-			DeviceNames: []string{filter.DeviceName},
-			DataID:      filter.DataID,
-			Order:       stores.OrderDesc})
+			Filter: msgThing.Filter{
+				ProductID:   filter.ProductID,
+				DeviceNames: []string{filter.DeviceName},
+			},
+			Page: def.PageInfo2{Size: 1},
+
+			DataID: filter.DataID,
+			Order:  stores.OrderDesc,
+		})
 	if len(dds) == 0 || err != nil {
 		return nil, err
 	}
@@ -304,12 +308,12 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 		}
 		if filter.PartitionBy != "" {
 			var (
-				selects = ""
+				selects []string
 				groups  = ""
 			)
 
 			selects, groups, db = d.handlePartition(filter.PartitionBy, db)
-			if selects != "" {
+			if len(selects) != 0 {
 				db = db.Select(selects)
 			}
 			if groups != "" {
@@ -330,7 +334,8 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 
 		db = db.Where("pos=?", num)
 	}
-	db = d.fillFilter(ctx, db, filter)
+	db = db.Where("tb.identifier=?", filter.DataID)
+	db = d.fillFilter(ctx, db, filter.Filter)
 	db = filter.Page.FmtSql2(db)
 	var retProperties []*msgThing.PropertyData
 	var retDatabase = []map[string]any{}
@@ -372,7 +377,7 @@ func (d *DeviceDataRepo) ToPropertyData(ctx context.Context, noFirstTs bool, id 
 		data.AreaID = dataType.AreaID(cast.ToInt64(db["area_id"]))
 	}
 	if db["area_id_path"] != nil {
-		data.TenantCode = dataType.TenantCode(cast.ToString(db["area_id_path"]))
+		data.AreaIDPath = dataType.AreaIDPath(cast.ToString(db["area_id_path"]))
 	}
 	if db["group_purpose"] != nil {
 		groupPurpose := cast.ToString(db["group_purpose"])
@@ -420,7 +425,7 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 		start = time.UnixMilli(filter.Page.TimeStart).Format("2006-01-02 15:04:05")
 	}
 	var (
-		selects = ""
+		selects []string
 		groups  = ""
 	)
 	if filter.PartitionBy != "" {
@@ -462,41 +467,52 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 			case def.TimeUnitD, def.TimeUnitH:
 				db = db.Table(getTableName(p.Define) + "_" + filter.IntervalUnit.ToPgStr() + " as tb")
 				if filter.NoFirstTs && utils.SliceIn(filter.ArgFunc, "first", "last", "min", "max") {
-					db = db.Select(selects + fmt.Sprintf(`ts as ts_window, %s_ts as ts, %s_param as param `, filter.ArgFunc, filter.ArgFunc))
+					selects = append(selects, fmt.Sprintf(`ts as ts_window, %s_ts as ts, %s_param as param `, filter.ArgFunc, filter.ArgFunc))
+					db = db.Select(selects)
 				} else {
-					db = db.Select(selects + fmt.Sprintf(`ts as ts_window, %s_param as param `, filter.ArgFunc))
+					selects = append(selects, fmt.Sprintf(`ts as ts_window, %s_param as param `, filter.ArgFunc))
+
+					db = db.Select(selects)
 				}
 				groups = ""
 			default:
-				db = db.Select(selects + fmt.Sprintf(`time_bucket('%v %s', ts)  AS ts_window, %s `,
+				selects = append(selects, fmt.Sprintf(`time_bucket('%v %s', ts)  AS ts_window, %s `,
 					filter.Interval, filter.IntervalUnit.ToPgStr(), arg(filter.ArgFunc+"_ts", filter.ArgFunc+"_param")))
+
+				db = db.Select(selects)
 				db = db.Table(getTableName(p.Define) + "_day as tb").Group("ts_window")
 			}
 		} else {
 			db = db.Table(getTableName(p.Define) + " as tb")
 			switch stores.GetTsDBType() {
 			case conf.Pgsql:
-				db = db.Select(selects + fmt.Sprintf(`time_bucket('%v %s', ts)  AS ts_window, %s `,
+				selects = append(selects, fmt.Sprintf(`time_bucket('%v %s', ts)  AS ts_window, %s `,
 					filter.Interval, filter.IntervalUnit.ToPgStr(), arg("", "")))
+
+				db = db.Select(selects)
 			default:
 				interval := int64(filter.IntervalUnit.ToDuration(filter.Interval) / time.Second)
-				db = db.Select(selects + fmt.Sprintf(` FROM_UNIXTIME(UNIX_TIMESTAMP('%s') + FLOOR((UNIX_TIMESTAMP(ts) - UNIX_TIMESTAMP('%s')) / %v) * %v ) AS ts_window, %s AS param`,
+				selects = append(selects, fmt.Sprintf(` FROM_UNIXTIME(UNIX_TIMESTAMP('%s') + FLOOR((UNIX_TIMESTAMP(ts) - UNIX_TIMESTAMP('%s')) / %v) * %v ) AS ts_window, %s AS param`,
 					start, start, interval, interval, arg("", "")))
+
+				db = db.Select(selects)
 			}
 			db = db.Group("ts_window")
 		}
 
 	} else {
-		db = db.Table(getTableName(p.Define) + " as tb").Select(selects + fmt.Sprintf("%s(param) as param", filter.ArgFunc))
+		selects = append(selects, fmt.Sprintf("%s(param) as param", filter.ArgFunc))
+
+		db = db.Table(getTableName(p.Define) + " as tb").Select(selects)
 	}
 	if groups != "" {
 		db = db.Group(groups)
 	}
 	return db, nil
 }
-func (d *DeviceDataRepo) handlePartition(partitionBy string, db *stores.DB) (selects string, groups string, db2 *stores.DB) {
+func (d *DeviceDataRepo) handlePartition(partitionBy string, db *stores.DB) (selects []string, groups string, db2 *stores.DB) {
 	if partitionBy == "" {
-		return "", "", db
+		return nil, "", db
 	}
 	partitionBy = utils.CamelCaseToUdnderscore(partitionBy)
 	ps := strings.Split(partitionBy, ",")
@@ -504,14 +520,15 @@ func (d *DeviceDataRepo) handlePartition(partitionBy string, db *stores.DB) (sel
 	for _, p := range ps {
 		if strings.Contains(p, "area_id") {
 			db = db.Joins("left join dm_device_info as di on tb.product_id = di.product_id and tb.device_name = di.device_name")
-			selects += "di.area_id as area_id,"
+			selects = append(selects, "di.area_id as area_id")
 			finalp = append(finalp, p)
 		} else if strings.Contains(p, "group") {
 			db = db.Joins("left join dm_group_device as di on tb.product_id = di.product_id and tb.device_name = di.device_name")
-			selects += "di.group_id  as group_id,di.purpose as group_purpose,"
+			selects = append(selects, "di.group_id  as group_id,di.purpose as group_purpose")
+
 			finalp = append(finalp, "group_purpose,group_id")
 		} else if p == "device_name" {
-			selects += " tb.device_name as device_name, "
+			selects = append(selects, " tb.device_name as device_name")
 			finalp = append(finalp, p)
 		} else {
 			finalp = append(finalp, p)
@@ -520,11 +537,10 @@ func (d *DeviceDataRepo) handlePartition(partitionBy string, db *stores.DB) (sel
 	return selects, strings.Join(finalp, ","), db
 }
 func (d *DeviceDataRepo) fillFilter(ctx context.Context,
-	db *stores.DB, filter msgThing.FilterOpt) *stores.DB {
+	db *stores.DB, filter msgThing.Filter) *stores.DB {
 	if len(filter.DeviceNames) != 0 {
 		db = db.Where("tb.device_name in ?", filter.DeviceNames)
 	}
-	db = db.Where("tb.identifier=?", filter.DataID)
 	db = tsDB.GroupFilter2(db, filter.BelongGroup)
 	if len(filter.ProductIDs) != 0 {
 		db = db.Where("tb.product_id IN ?", filter.ProductIDs)
@@ -571,7 +587,8 @@ func (d *DeviceDataRepo) GetPropertyCountByID(
 	if ok {
 		db = db.Where("pos=?", num)
 	}
-	db = d.fillFilter(ctx, db, filter)
+	db = db.Where("tb.identifier=?", filter.DataID)
+	db = d.fillFilter(ctx, db, filter.Filter)
 	db = filter.Page.FmtSql2(db)
 	var total int64
 	err = db.Count(&total).Error

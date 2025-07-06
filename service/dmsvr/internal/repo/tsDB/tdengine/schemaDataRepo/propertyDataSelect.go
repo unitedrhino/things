@@ -32,11 +32,13 @@ func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schem
 	//如果缓存里没有查到,需要从db里查
 	dds, err := d.GetPropertyDataByID(ctx, p,
 		msgThing.FilterOpt{
-			Page:        def.PageInfo2{Size: 1},
-			ProductID:   filter.ProductID,
-			DeviceNames: []string{filter.DeviceName},
-			DataID:      filter.DataID,
-			Order:       stores.OrderDesc})
+			Filter: msgThing.Filter{
+				ProductID:   filter.ProductID,
+				DeviceNames: []string{filter.DeviceName},
+			},
+			Page:   def.PageInfo2{Size: 1},
+			DataID: filter.DataID,
+			Order:  stores.OrderDesc})
 	if len(dds) == 0 || err != nil {
 		return nil, err
 	}

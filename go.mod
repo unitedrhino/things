@@ -9,7 +9,7 @@ toolchain go1.23.8
 
 require (
 	gitee.com/unitedrhino/core v1.4.4
-	gitee.com/unitedrhino/share v1.4.25
+	gitee.com/unitedrhino/share v1.4.26
 	gitee.com/unitedrhino/squirrel v1.20.7
 	github.com/dgraph-io/ristretto v0.1.1
 	github.com/dop251/goja v0.0.0-20231024180952-594410467bc6
@@ -152,7 +152,6 @@ require (
 	github.com/silenceper/wechat/v2 v2.1.5 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
-	github.com/spf13/pflag v1.0.6 // indirect
 	github.com/suifengtec/gocoord v0.0.0-20210116135606-a0cd8c71c959 // indirect
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.985 // indirect
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms v1.0.898 // indirect
@@ -184,7 +183,6 @@ require (
 	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/crypto v0.38.0 // indirect
 	golang.org/x/exp v0.0.0-20250506013437-ce4c2cf36ca6 // indirect
-	golang.org/x/image v0.24.0 // indirect
 	golang.org/x/net v0.40.0 // indirect
 	golang.org/x/oauth2 v0.24.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect
