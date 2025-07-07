@@ -39,6 +39,7 @@ func (l *OneHourHandle) Handle() error { //产品品类设备数量统计
 	}
 	return nil
 }
+
 func (l *OneHourHandle) DeviceStatic() error { //区域下的设备数量统计
 	err := func() error {
 		ret, err := l.svcCtx.AreaM.AreaInfoIndex(l.ctx, &sys.AreaInfoIndexReq{})

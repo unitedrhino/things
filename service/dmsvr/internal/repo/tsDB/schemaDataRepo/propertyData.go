@@ -357,6 +357,7 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 	}
 	return retProperties, nil
 }
+
 func (d *DeviceDataRepo) ToPropertyData(ctx context.Context, noFirstTs bool, id string, p *schema.Property, db map[string]any) *msgThing.PropertyData {
 	data := msgThing.PropertyData{
 		DeviceName: cast.ToString(db["device_name"]),

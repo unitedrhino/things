@@ -2,11 +2,14 @@ package staticEvent
 
 import (
 	"context"
+	"fmt"
+	"gitee.com/unitedrhino/share/conf"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/schemaDataRepo"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/share/devices"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -30,7 +33,7 @@ func NewHalfHourHandle(ctx context.Context, svcCtx *svc.ServiceContext) *HalfHou
 
 func (l *HalfHourHandle) Handle() error { //产品品类设备数量统计
 	w := sync.WaitGroup{}
-	w.Add(5)
+	w.Add(6)
 	utils.Go(l.ctx, func() {
 		defer w.Done()
 		err := l.ProductCategoryStatic()
@@ -38,7 +41,13 @@ func (l *HalfHourHandle) Handle() error { //产品品类设备数量统计
 			l.Error(err)
 		}
 	})
-
+	utils.Go(l.ctx, func() {
+		defer w.Done()
+		err := l.TimescaleHandle()
+		if err != nil {
+			l.Error(err)
+		}
+	})
 	utils.Go(l.ctx, func() {
 		defer w.Done()
 		err := l.DeviceExp()
@@ -68,6 +77,21 @@ func (l *HalfHourHandle) Handle() error { //产品品类设备数量统计
 		}
 	})
 	w.Wait()
+	return nil
+}
+
+// 参考: https://docs.tigerdata.com/api/latest/continuous-aggregates/refresh_continuous_aggregate/
+func (l *HalfHourHandle) TimescaleHandle() error { //timescale 视图更新
+	if stores.GetTsDBType() != conf.Pgsql {
+		return nil
+	}
+	tomorrow := time.Now().AddDate(0, 0, 1).Format("2006-01-02")
+	yesterday := time.Now().AddDate(0, 0, -1).Format("2006-01-02")
+	var template = fmt.Sprintf("CALL refresh_continuous_aggregate('%%s', '%s', '%s', force => TRUE);", yesterday, tomorrow)
+	for _, tbName := range schemaDataRepo.TableNames {
+		stores.GetTsConn(l.ctx).Exec(fmt.Sprintf(template, tbName+"_day"))
+		stores.GetTsConn(l.ctx).Exec(fmt.Sprintf(template, tbName+"_hour"))
+	}
 	return nil
 }
 

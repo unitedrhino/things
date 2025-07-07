@@ -132,10 +132,12 @@ func migrateTableColumn() error {
 	//if err := db.CreateInBatches(&MigrateManufacturerInfo, 100).Error; err != nil {
 	//	return err
 	//}
-	if err := db.Create(&DmProductID{ID: 100}).Error; err != nil {
-		return err
+	if err := db.CreateInBatches([]DmProductID{{ID: 100}}, 100).Error; err != nil {
+		logx.Error(err)
 	}
-	db.Create(&DmGroupInfo{ID: 10}) //分组前几个是特殊ID,不能使用,给他占位了
+	if err := db.CreateInBatches([]DmGroupInfo{{ID: 10}}, 100).Error; err != nil {
+		logx.Error(err)
+	}
 
 	return nil
 }
