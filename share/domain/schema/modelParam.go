@@ -5,13 +5,24 @@ import (
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"github.com/spf13/cast"
+	"math"
 )
 
 func (d *Define) FmtValue(val any) (any, error) {
 	switch d.Type {
 	case DataTypeBool:
 		return cast.ToInt64E(val)
-	case DataTypeInt, DataTypeEnum, DataTypeTimestamp:
+	case DataTypeInt:
+		if num, err := cast.ToInt64E(val); err != nil {
+			return nil, errors.Parameter.AddDetail(val)
+		} else {
+			step := cast.ToInt64(d.Step)
+			if step != 0 {
+				num = num / step * step
+			}
+			return num, nil
+		}
+	case DataTypeEnum, DataTypeTimestamp:
 		if num, err := cast.ToInt64E(val); err != nil {
 			num2, er := cast.ToFloat64E(val)
 			if er != nil {
@@ -27,8 +38,12 @@ func (d *Define) FmtValue(val any) (any, error) {
 		}
 	case DataTypeFloat:
 		if num, err := cast.ToFloat64E(val); err != nil {
-			return nil, errors.Parameter.AddDetail(err)
+			return nil, errors.Parameter.AddDetail(val)
 		} else {
+			step := cast.ToFloat64(d.Step)
+			if step != 0 && !math.IsNaN(step) && !math.IsInf(step, 0) {
+				num = utils.StepFloat(num, step)
+			}
 			return num, nil
 		}
 	case DataTypeString:

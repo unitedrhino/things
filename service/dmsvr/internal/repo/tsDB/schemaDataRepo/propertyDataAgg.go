@@ -14,6 +14,7 @@ import (
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -32,46 +33,49 @@ func (d *DeviceDataRepo) GetPropertyAgg(ctx context.Context, m *schema.Model, fi
 		}
 	}
 	var retMap = map[string]msgThing.PropertyData2{}
-	//var wait sync.WaitGroup
+	var mutex sync.Mutex
+	var wait sync.WaitGroup
 	for _, agg := range filter.Aggs {
-		//	wait.Add(1)
-		//	utils.Go(ctx, func() {
-		//		defer wait.Done()
-		var (
-			err  error
-			p, _ = m.Property[agg.DataID]
-			db   = d.db.WithContext(ctx).Model(getModel(p.Define))
-			//needJoinAreaID bool
-			//needJoinGroup  bool
-		)
-		db, err = d.getPropertyArgFuncSelect2(ctx, db, p, agg, filter)
-		if err != nil {
-			logx.WithContext(ctx).Errorf(err.Error())
-			return nil, err
-		}
-		_, num, ok := schema.GetArray(agg.DataID)
-		if ok {
-			db = db.Where("pos=?", num)
-		}
-		if filter.TimeStart > 0 {
-			db = db.Where("ts>=?", time.UnixMilli(filter.TimeStart))
-		}
-		if filter.TimeEnd > 0 {
-			db = db.Where("ts<=?", time.UnixMilli(filter.TimeEnd))
-		}
-		db = db.Where("tb.identifier=?", agg.DataID)
-		db = d.fillFilter(ctx, db, filter.Filter)
-		//db = filter.Page.FmtSql2(db)
-		var retDatabase = []map[string]any{}
-		err = db.Find(&retDatabase).Error
-		if err != nil {
-			logx.WithContext(ctx).Error(err)
-			return nil, err
-		}
-		retMap = d.ToPropertyData2(ctx, agg, m, retDatabase, retMap)
+		wait.Add(1)
+		utils.Go(ctx, func() {
+			defer wait.Done()
+			var (
+				err  error
+				p, _ = m.Property[agg.DataID]
+				db   = d.db.WithContext(ctx).Model(getModel(p.Define))
+				//needJoinAreaID bool
+				//needJoinGroup  bool
+			)
+			db, err = d.getPropertyArgFuncSelect2(ctx, db, p, agg, filter)
+			if err != nil {
+				logx.WithContext(ctx).Errorf(err.Error())
+				return
+			}
+			_, num, ok := schema.GetArray(agg.DataID)
+			if ok {
+				db = db.Where("pos=?", num)
+			}
+			if filter.TimeStart > 0 {
+				db = db.Where("ts>=?", time.UnixMilli(filter.TimeStart))
+			}
+			if filter.TimeEnd > 0 {
+				db = db.Where("ts<=?", time.UnixMilli(filter.TimeEnd))
+			}
+			db = db.Where("tb.identifier=?", agg.DataID)
+			db = d.fillFilter(ctx, db, filter.Filter)
+			//db = filter.Page.FmtSql2(db)
+			var retDatabase = []map[string]any{}
+			err = db.Find(&retDatabase).Error
+			if err != nil {
+				logx.WithContext(ctx).Error(err)
+				return
+			}
+			mutex.Lock()
+			defer mutex.Unlock()
+			retMap = d.ToPropertyData2(ctx, agg, m, retDatabase, retMap)
+		})
 	}
-
-	//wait.Wait()
+	wait.Wait()
 	return utils.MapVToSlice2(retMap), err
 }
 

@@ -237,6 +237,7 @@ func (d *DeviceDataRepo) genRedisPropertyKey(productID string, deviceName string
 }
 func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schema.Property, filter msgThing.LatestFilter) (*msgThing.PropertyData, error) {
 	retStr, err := d.kv.HgetCtx(ctx, d.genRedisPropertyKey(filter.ProductID, filter.DeviceName), filter.DataID)
+
 	if err != nil && !errors.Cmp(stores.ErrFmt(err), errors.NotFind) {
 		logx.WithContext(ctx).Error(err)
 	}
@@ -244,6 +245,10 @@ func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schem
 		var ret msgThing.PropertyData
 		err = json.Unmarshal([]byte(retStr), &ret)
 		if err == nil {
+			vv, er := msgThing.GetVal(&p.Define, ret.Param)
+			if er == nil {
+				ret.Param = vv
+			}
 			return &ret, nil
 		}
 	}
@@ -261,6 +266,10 @@ func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schem
 		})
 	if len(dds) == 0 || err != nil {
 		return nil, err
+	}
+	vv, er := msgThing.GetVal(&p.Define, dds[0].Param)
+	if er == nil {
+		dds[0].Param = vv
 	}
 	d.kv.HsetCtx(ctx, d.genRedisPropertyKey(filter.ProductID, filter.DeviceName), filter.DataID, dds[0].String())
 	return dds[0], nil
@@ -364,7 +373,7 @@ func (d *DeviceDataRepo) ToPropertyData(ctx context.Context, noFirstTs bool, id 
 	if b, ok := data.Param.(bool); ok {
 		data.Param = cast.ToInt64(b)
 	}
-	if db["ts"] != nil && noFirstTs {
+	if db["ts"] != nil && (noFirstTs || data.TimeStamp.IsZero()) {
 		data.TimeStamp = cast.ToTime(db["ts"])
 	}
 	if db["tenant_code"] != nil {
@@ -465,23 +474,15 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 			//pg的 timescale走视图优化
 			switch filter.IntervalUnit {
 			case def.TimeUnitD, def.TimeUnitH:
+				selects = append(selects, "ts as ts_window")
 				db = db.Table(getTableName(p.Define) + "_" + filter.IntervalUnit.ToPgStr() + " as tb")
-				if filter.NoFirstTs && utils.SliceIn(filter.ArgFunc, "first", "last", "min", "max") {
-					selects = append(selects, fmt.Sprintf(`ts as ts_window, %s_ts as ts, %s_param as param `, filter.ArgFunc, filter.ArgFunc))
-					db = db.Select(selects)
-				} else {
-					selects = append(selects, fmt.Sprintf(`ts as ts_window, %s_param as param `, filter.ArgFunc))
-
-					db = db.Select(selects)
-				}
-				groups = ""
 			default:
-				selects = append(selects, fmt.Sprintf(`time_bucket('%v %s', ts)  AS ts_window, %s `,
-					filter.Interval, filter.IntervalUnit.ToPgStr(), arg(filter.ArgFunc+"_ts", filter.ArgFunc+"_param")))
-
-				db = db.Select(selects)
-				db = db.Table(getTableName(p.Define) + "_day as tb").Group("ts_window")
+				selects = append(selects, fmt.Sprintf(`time_bucket('%v %s', ts)  AS ts_window`,
+					filter.Interval, filter.IntervalUnit.ToPgStr()))
+				db = db.Table(getTableName(p.Define) + "_day as tb")
 			}
+			selects = append(selects, arg(filter.ArgFunc+"_ts", filter.ArgFunc+"_param"))
+			db = db.Select(selects).Group("ts_window")
 		} else {
 			db = db.Table(getTableName(p.Define) + " as tb")
 			switch stores.GetTsDBType() {

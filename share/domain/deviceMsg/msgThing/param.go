@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/spf13/cast"
 	"math"
@@ -184,7 +185,7 @@ func GetVal(d *schema.Define, val any) (any, error) {
 			}
 			step := cast.ToFloat64(d.Step)
 			if step != 0 && !math.IsNaN(step) && !math.IsInf(step, 0) {
-				num = math.Floor(num/step) * step
+				num = utils.StepFloat(num, step)
 			}
 			return num, nil
 		}

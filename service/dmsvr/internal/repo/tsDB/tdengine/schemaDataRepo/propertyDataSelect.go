@@ -26,6 +26,10 @@ func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schem
 		var ret msgThing.PropertyData
 		err = json.Unmarshal([]byte(retStr), &ret)
 		if err == nil {
+			vv, er := msgThing.GetVal(&p.Define, ret.Param)
+			if er == nil {
+				ret.Param = vv
+			}
 			return &ret, nil
 		}
 	}
@@ -41,6 +45,10 @@ func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schem
 			Order:  stores.OrderDesc})
 	if len(dds) == 0 || err != nil {
 		return nil, err
+	}
+	vv, er := msgThing.GetVal(&p.Define, dds[0].Param)
+	if er == nil {
+		dds[0].Param = vv
 	}
 	d.kv.HsetCtx(ctx, d.genRedisPropertyKey(filter.ProductID, filter.DeviceName), filter.DataID, dds[0].String())
 	return dds[0], nil
@@ -83,7 +91,7 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 		sql = sql.Where("`_num`=?", num)
 	}
 	sql = sql.From(d.GetPropertyStableName(p, filter.ProductID, dataID))
-	sql = d.fillFilter(sql, filter)
+	sql = d.fillFilter(sql, filter.Filter)
 	sql = filter.Page.FmtSql(sql)
 
 	sqlStr, value, err := sql.ToSql()
@@ -146,7 +154,7 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 }
 
 func (d *DeviceDataRepo) fillFilter(
-	sql sq.SelectBuilder, filter msgThing.FilterOpt) sq.SelectBuilder {
+	sql sq.SelectBuilder, filter msgThing.Filter) sq.SelectBuilder {
 	if len(filter.DeviceNames) != 0 {
 		sql = sql.Where(fmt.Sprintf("`device_name` in (%v)", stores.ArrayToSql(filter.DeviceNames)))
 	}
@@ -189,7 +197,7 @@ func (d *DeviceDataRepo) GetPropertyCountByID(
 		sqlData = sqlData.Where("`_num`=?", num)
 	}
 	sqlData = sqlData.From(d.GetPropertyStableName(p, filter.ProductID, dataID))
-	sqlData = d.fillFilter(sqlData, filter)
+	sqlData = d.fillFilter(sqlData, filter.Filter)
 	sqlData = filter.Page.FmtWhere(sqlData)
 	sqlStr, value, err := sqlData.ToSql()
 	if err != nil {
