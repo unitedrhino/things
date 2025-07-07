@@ -34,8 +34,8 @@ func (l *ProtocolScriptMultiImportLogic) ProtocolScriptMultiImport(in *dm.Protoc
 	var resp = dm.ImportResp{Total: int64(len(scripts))}
 	for _, s := range scripts {
 		ds := s.Devices
-		s.Devices = nil
 		s.ID = 0
+		s.Devices = nil
 		s.CreatedBy = 0
 		s.UpdatedBy = 0
 		err = relationDB.NewProtocolScriptRepo(l.ctx).Insert(l.ctx, s)
