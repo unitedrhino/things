@@ -37,7 +37,7 @@ func NewDeviceInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 
 // 删除设备
 func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*dm.Empty, error) {
-	if err := ctxs.IsRoot(l.ctx); err != nil {
+	if err := ctxs.IsAdmin(l.ctx); err != nil {
 		return nil, err
 	}
 	l.ctx = ctxs.WithDefaultAllProject(l.ctx)

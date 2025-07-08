@@ -126,7 +126,8 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 	//projectID := stores.ProjectID(uc.ProjectID)
 	areaID := dataType.AreaID(def.NotClassified)
 	//if projectID <= def.NotClassified { //如果没有传项目,则分配到未分类项目中
-	ti, err := l.svcCtx.TenantCache.GetData(l.ctx, def.TenantCodeDefault)
+	tenantCode := uc.TenantCode
+	ti, err := l.svcCtx.TenantCache.GetData(l.ctx, tenantCode)
 	if err != nil {
 		return nil, err
 	}
@@ -134,14 +135,13 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 	if ti.DefaultAreaID != 0 {
 		areaID = dataType.AreaID(ti.DefaultAreaID)
 	}
-	if ctxs.IsRoot(l.ctx) == nil {
-		if in.ProjectID != 0 {
-			projectID = dataType.ProjectID(in.ProjectID)
-		}
-		if in.AreaID != 0 {
-			areaID = dataType.AreaID(in.AreaID)
-		}
+	if in.ProjectID != 0 {
+		projectID = dataType.ProjectID(in.ProjectID)
 	}
+	if in.AreaID != 0 {
+		areaID = dataType.AreaID(in.AreaID)
+	}
+
 	//}
 	di := relationDB.DmDeviceInfo{
 		ProjectID:      projectID,
@@ -247,30 +247,29 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 		di.Phone = utils.AnyToNullString(in.Phone)
 	}
 	var gateway *dm.DeviceInfo
-	if ctxs.IsRoot(l.ctx) == nil {
-		if in.Status != 0 {
-			di.Status = in.Status
-		}
-		if in.IsOnline != 0 {
-			di.IsOnline = in.IsOnline
-			di.Status = di.IsOnline + 1
-			if di.IsOnline == def.True {
-				di.FirstLogin = sql.NullTime{
-					Time:  time.Now(),
-					Valid: true,
-				}
-			}
-		}
-		if in.Gateway != nil {
-			g, _ := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: in.Gateway.ProductID, DeviceName: in.Gateway.DeviceName})
-			if g != nil && g.DeviceType == def.DeviceTypeGateway {
-				gateway = g
-				di.TenantCode = dataType.TenantCode(g.TenantCode)
-				di.ProjectID = dataType.ProjectID(g.ProjectID)
-				di.AreaID = dataType.AreaID(g.AreaID)
+	if in.Status != 0 {
+		di.Status = in.Status
+	}
+	if in.IsOnline != 0 {
+		di.IsOnline = in.IsOnline
+		di.Status = di.IsOnline + 1
+		if di.IsOnline == def.True {
+			di.FirstLogin = sql.NullTime{
+				Time:  time.Now(),
+				Valid: true,
 			}
 		}
 	}
+	if in.Gateway != nil {
+		g, _ := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: in.Gateway.ProductID, DeviceName: in.Gateway.DeviceName})
+		if g != nil && g.DeviceType == def.DeviceTypeGateway {
+			gateway = g
+			di.TenantCode = dataType.TenantCode(g.TenantCode)
+			di.ProjectID = dataType.ProjectID(g.ProjectID)
+			di.AreaID = dataType.AreaID(g.AreaID)
+		}
+	}
+
 	if in.DeviceImg != "" { //如果填了参数且不等于原来的,说明修改头像,需要处理
 		nwePath := oss.GenFilePath(l.ctx, l.svcCtx.Config.Name, oss.BusinessDeviceManage, oss.SceneDeviceImg, fmt.Sprintf("%s/%s/%s", in.ProductID, in.DeviceName, oss.GetFileNameWithPath(in.DeviceImg)))
 		path, err := l.svcCtx.OssClient.PrivateBucket().CopyFromTempBucket(in.DeviceImg, nwePath)
