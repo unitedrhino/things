@@ -50,6 +50,9 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceInfoUnbindReq) (*d
 	if err != nil {
 		return nil, err
 	}
+	if di.ProjectID <= def.NotClassified {
+		return nil, errors.DeviceNotBound.WithMsg("设备已解绑")
+	}
 	uc := ctxs.GetUserCtxNoNil(l.ctx)
 	pi, err := l.svcCtx.ProjectM.ProjectInfoRead(l.ctx, &sys.ProjectWithID{ProjectID: int64(di.ProjectID)})
 	if err != nil && !errors.Cmp(err, errors.NotFind) { //解绑的时候家庭已经不存在了也需要能正确解绑

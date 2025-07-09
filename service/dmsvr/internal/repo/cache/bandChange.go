@@ -20,9 +20,9 @@ func NewBindChange(store kv.Store) *BindChange {
 	return &BindChange{cache: store}
 }
 
-func (d *BindChange) Set(ctx context.Context, dev devices.Core, projectID int64) (bool, error) {
-	ok, err := d.cache.SetnxExCtx(ctx, genBindChangeKey(dev), cast.ToString(projectID), 240)
-	return ok, err
+func (d *BindChange) Set(ctx context.Context, dev devices.Core, projectID int64) error {
+	err := d.cache.SetexCtx(ctx, genBindChangeKey(dev), cast.ToString(projectID), 240)
+	return err
 }
 
 func (d *BindChange) Get(ctx context.Context, dev devices.Core) int64 {

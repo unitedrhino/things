@@ -134,7 +134,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 		UserID = in.UserID
 	case DeviceTransferToProject:
 		ProjectID = dataType.ProjectID(in.ProjectID)
-		if in.AreaID != 0 {
+		if in.AreaID > def.NotClassified {
 			ai, err := l.svcCtx.AreaCache.GetData(l.ctx, in.AreaID)
 			if err != nil {
 				return nil, err

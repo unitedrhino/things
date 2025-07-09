@@ -14,23 +14,6 @@ packback: buildback toremote
 
 
 
-build.front:
-	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>$@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@mkdir -p ./cmd/core/dist/app/things
-	@cd module/front/things  && yarn install && yarn run build && cp -rf ./dist/* ../../../cmd/core/dist/app/things
-
-
-
-build.core:
-	@mkdir -p ./cmd/core
-	@cd module/core && make buildone
-	@cp -rf module/core/cmd/* ./cmd/core
-
-build.coreback:
-	@mkdir -p ./cmd/core
-	@cd module/core && make buildback
-	@cp -rf module/core/cmd/* ./cmd/core
-
 toremote:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>tormote cmd<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	@rsync -r -v ./cmd/* root@47.94.112.109:/root/run
