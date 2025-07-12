@@ -16,6 +16,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"sync"
+	"time"
 )
 
 type Config = config.Config
@@ -39,6 +40,7 @@ func GetSvcCtx() *svc.ServiceContext {
 
 	// 让 svcCtx 先返回，延迟执行 mqtt client 的 connect 操作.
 	utils.Go(context.Background(), func() {
+		time.Sleep(time.Second * 2) //其他服务初始化好emq鉴权才能成功
 		postInitOnce.Do(func() {
 			startup.PostInit(svcCtx)
 		})

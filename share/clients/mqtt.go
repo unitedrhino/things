@@ -33,6 +33,7 @@ type MqttClient struct {
 func NewMqttClient(conf *conf.MqttConf) (mcs *MqttClient, err error) {
 	mqttInitOnce.Do(func() {
 		var clients []mqtt.Client
+		var start = time.Now()
 		for len(clients) < conf.ConnNum {
 			var (
 				mc mqtt.Client
@@ -40,6 +41,7 @@ func NewMqttClient(conf *conf.MqttConf) (mcs *MqttClient, err error) {
 			var tryTime = 5
 			for i := tryTime; i > 0; i-- {
 				mc, err = initMqtt(conf)
+				logx.Infof("mqtt_client initMqtt2 mc:%v err:%v", mc, err)
 				if err != nil { //出现并发情况的时候可能联犀的http还没启动完毕
 					logx.Errorf("mqtt_client 连接失败 重试剩余次数:%v", i-1)
 					time.Sleep(time.Second * time.Duration(tryTime) / time.Duration(i))
@@ -54,7 +56,7 @@ func NewMqttClient(conf *conf.MqttConf) (mcs *MqttClient, err error) {
 			clients = append(clients, mc)
 			var cli = MqttClient{clients: clients, cfg: conf}
 			mqttClient = &cli
-
+			logx.Infof("mqtt_client 连接完成 clientNum:%v use:%s", len(clients), time.Now().Sub(start))
 		}
 	})
 	return mqttClient, err
@@ -90,31 +92,35 @@ func initMqtt(conf *conf.MqttConf) (mc mqtt.Client, err error) {
 		opts.AddBroker(broker)
 	}
 	uuid := uuid.NewString()
-	opts.SetClientID(conf.ClientID + "_" + uuid).SetUsername(conf.User).SetPassword(conf.Pass)
+	clientID := conf.ClientID + "_" + uuid
+	logx.Infof("mqtt_client initMqtt conf:%#v clientID:%v brokers:%#v stack=%s", conf, clientID, opts.Servers, utils.Stack(1, 10))
+	opts.SetClientID(clientID).SetUsername(conf.User).SetPassword(conf.Pass)
 	opts.SetOnConnectHandler(func(client mqtt.Client) {
-		logx.Info("mqtt_client Connected")
+		logx.Infof("mqtt_client Connected clientID:%v", clientID)
 		if mqttSetOnConnectHandler != nil {
 			mqttSetOnConnectHandler(client)
 		}
+	})
+	opts.SetReconnectingHandler(func(client mqtt.Client, options *mqtt.ClientOptions) {
+		logx.Infof("mqtt_client Reconnecting clientID:%#v", options)
 	})
 
 	opts.SetAutoReconnect(true).SetMaxReconnectInterval(30 * time.Second) //意外离线的重连参数
 	opts.SetConnectRetry(true).SetConnectRetryInterval(5 * time.Second)   //首次连接的重连参数
 
 	opts.SetConnectionAttemptHandler(func(broker *url.URL, tlsCfg *tls.Config) *tls.Config {
-		logx.Infof("mqtt_client 正在尝试连接 broker:%v", utils.Fmt(broker))
+		logx.Infof("mqtt_client 正在尝试连接 broker:%v clientID:%v", utils.Fmt(broker), clientID)
 		return tlsCfg
 	})
 	opts.SetConnectionLostHandler(func(client mqtt.Client, err error) {
-		logx.Errorf("mqtt_client 连接丢失 err:%v", utils.Fmt(err))
+		logx.Errorf("mqtt_client 连接丢失 err:%v  clientID:%v", utils.Fmt(err), clientID)
 	})
 	mc = mqtt.NewClient(opts)
 	er2 := mc.Connect().WaitTimeout(5 * time.Second)
 	if er2 == false {
-		logx.Info("mqtt_client 连接失败")
+		logx.Errorf("mqtt_client 连接失败超时")
 		err = fmt.Errorf("mqtt_client 连接失败")
-		mc.Disconnect(1000000)
-		return
+		return nil, err
 	}
 	return
 }

@@ -33,6 +33,7 @@ func (l *DisconnectedLogic) Handle(msg *deviceStatus.ConnectMsg) error {
 	dev := msg.Device
 	ld, err := deviceAuth.GetClientIDInfo(msg.ClientID)
 	if err != nil && dev.DeviceName == "" {
+		l.Error(dev, err)
 		return err
 	}
 	if dev.DeviceName == "" {
