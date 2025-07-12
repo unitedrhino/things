@@ -41,14 +41,14 @@ func NewMqttClient(conf *conf.MqttConf) (mcs *MqttClient, err error) {
 			for i := tryTime; i > 0; i-- {
 				mc, err = initMqtt(conf)
 				if err != nil { //出现并发情况的时候可能联犀的http还没启动完毕
-					logx.Errorf("mqtt 连接失败 重试剩余次数:%v", i-1)
+					logx.Errorf("mqtt_client 连接失败 重试剩余次数:%v", i-1)
 					time.Sleep(time.Second * time.Duration(tryTime) / time.Duration(i))
 					continue
 				}
 				break
 			}
 			if err != nil {
-				logx.Errorf("mqtt 连接失败 conf:%#v  err:%v", conf, err)
+				logx.Errorf("mqtt_client 连接失败 conf:%#v  err:%v", conf, err)
 				os.Exit(-1)
 			}
 			clients = append(clients, mc)
@@ -69,6 +69,7 @@ func (m MqttClient) Subscribe(cli mqtt.Client, topic string, qos byte, callback 
 	if cli != nil {
 		clients = []mqtt.Client{cli}
 	}
+	logx.Infof("mqtt_client_subscribe clientNum:%v topic:%v", len(clients), topic)
 	for _, c := range clients {
 		err := c.Subscribe(topic, qos, callback).Error()
 		if err != nil {
@@ -91,7 +92,7 @@ func initMqtt(conf *conf.MqttConf) (mc mqtt.Client, err error) {
 	uuid := uuid.NewString()
 	opts.SetClientID(conf.ClientID + "_" + uuid).SetUsername(conf.User).SetPassword(conf.Pass)
 	opts.SetOnConnectHandler(func(client mqtt.Client) {
-		logx.Info("mqtt client Connected")
+		logx.Info("mqtt_client Connected")
 		if mqttSetOnConnectHandler != nil {
 			mqttSetOnConnectHandler(client)
 		}
@@ -101,17 +102,18 @@ func initMqtt(conf *conf.MqttConf) (mc mqtt.Client, err error) {
 	opts.SetConnectRetry(true).SetConnectRetryInterval(5 * time.Second)   //首次连接的重连参数
 
 	opts.SetConnectionAttemptHandler(func(broker *url.URL, tlsCfg *tls.Config) *tls.Config {
-		logx.Infof("mqtt 正在尝试连接 broker:%v", utils.Fmt(broker))
+		logx.Infof("mqtt_client 正在尝试连接 broker:%v", utils.Fmt(broker))
 		return tlsCfg
 	})
 	opts.SetConnectionLostHandler(func(client mqtt.Client, err error) {
-		logx.Errorf("mqtt 连接丢失 err:%v", utils.Fmt(err))
+		logx.Errorf("mqtt_client 连接丢失 err:%v", utils.Fmt(err))
 	})
 	mc = mqtt.NewClient(opts)
 	er2 := mc.Connect().WaitTimeout(5 * time.Second)
 	if er2 == false {
-		logx.Info("mqtt 连接失败")
-		err = fmt.Errorf("mqtt 连接失败")
+		logx.Info("mqtt_client 连接失败")
+		err = fmt.Errorf("mqtt_client 连接失败")
+		mc.Disconnect(1000000)
 		return
 	}
 	return

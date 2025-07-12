@@ -129,7 +129,8 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 	ts := "FIRST(`ts`)  AS ts "
 	if filter.Interval != 0 {
 		ts = "_wstart AS ts "
-	} else if filter.NoFirstTs {
+	}
+	if filter.NoFirstTs {
 		ts = "`ts` "
 	}
 	if p.Define.Type == schema.DataTypeStruct {
