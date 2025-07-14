@@ -64,8 +64,10 @@ services:
       - etcd
       - redis
       - emqx
-#    volumes:
-#      - ../conf/core/etc:/unitedrhino/etc
+    volumes:
+      - ../conf/oss:/oss
+      - ../conf/core/etc/init:/unitedrhino/etc/init
+#      - ../conf/core/dist:/unitedrhino/dist
     environment:
       - confSuffix=${confSuffix}
       - isInitTable=${isInitTable}
