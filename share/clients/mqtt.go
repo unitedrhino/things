@@ -103,6 +103,9 @@ func initMqtt(conf *conf.MqttConf) (mc mqtt.Client, err error) {
 	})
 	opts.SetReconnectingHandler(func(client mqtt.Client, options *mqtt.ClientOptions) {
 		logx.Infof("mqtt_client Reconnecting clientID:%#v", options)
+		if mqttSetOnConnectHandler != nil {
+			mqttSetOnConnectHandler(client)
+		}
 	})
 
 	opts.SetAutoReconnect(true).SetMaxReconnectInterval(30 * time.Second) //意外离线的重连参数

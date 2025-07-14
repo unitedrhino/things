@@ -18,7 +18,8 @@ services:
       - "9081:9081" # dmsvr rpc端口
     volumes:
       - ../conf/oss:/oss
-#      - ../conf/things/etc:/unitedrhino/etc
+      - ../conf/things/etc/init:/unitedrhino/etc/init
+    #      - ../conf/things/etc:/unitedrhino/etc
     depends_on:
       - tdengine
       - nats-server
