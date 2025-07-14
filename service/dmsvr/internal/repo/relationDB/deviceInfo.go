@@ -9,6 +9,7 @@ import (
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gorm.io/gorm"
+	"time"
 )
 
 type DeviceInfoRepo struct {
@@ -427,8 +428,9 @@ func (d DeviceInfoRepo) UpdateWithField(ctx context.Context, f DeviceFilter, upd
 func (d DeviceInfoRepo) UpdateOfflineStatus(ctx context.Context, f DeviceFilter) error {
 	db := d.fmtFilter(ctx, f)
 	err := db.Model(&DmDeviceInfo{}).Updates(map[string]any{
-		"is_online": def.False,
-		"status":    def.DeviceStatusOffline,
+		"is_online":    def.False,
+		"status":       def.DeviceStatusOffline,
+		"last_offline": time.Now(),
 	}).Error
 	return stores.ErrFmt(err)
 }

@@ -128,7 +128,7 @@ func (o *CheckEvent) Check(isAll bool) error {
 			}
 			delete(devs, c)
 			//给3分钟的缓冲时间
-			if di.IsOnline != def.True && (di.LastLogin == 0 || time.Unix(di.LastLogin, 0).Before(time.Now().Add(-time.Minute*3))) {
+			if di.IsOnline != def.True && (di.LastLogin == 0 || time.Unix(di.LastOffline, 0).Before(time.Now().Add(-time.Minute*3))) {
 				needOnlineDevices = append(needOnlineDevices, &dm.DeviceOnlineMultiFix{
 					Device: &dm.DeviceCore{
 						ProductID:  di.ProductID,

@@ -7715,6 +7715,10 @@
           "type": "string",
           "description": "最后上线时间 只读"
         },
+        "lastOffline": {
+          "type": "string",
+          "description": "最后下线时间 只读"
+        },
         "expTime": {
           "type": "string",
           "description": "到期时间"
@@ -7788,6 +7792,10 @@
         "lastIp": {
           "type": "string",
           "description": "最后登录的ip地址"
+        },
+        "lastLocalIp": {
+          "type": "string",
+          "description": "最后登录局域网的ip地址"
         },
         "sort": {
           "type": "integer",

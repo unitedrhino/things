@@ -249,6 +249,9 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 	if data.RatedPower != 0 {
 		old.RatedPower = data.RatedPower
 	}
+	if uc.IsAdmin && data.LastLocalIp != "" {
+		old.LastLocalIp = data.LastLocalIp
+	}
 	if uc.IsAdmin && data.IsOnline != def.Unknown {
 		old.IsOnline = data.IsOnline
 		if old.Status <= def.DeviceStatusOffline {

@@ -1540,6 +1540,7 @@ message DeviceInfo {
   int64 firstBind = 37; //第一次绑定的时间
   int64 lastBind =50;//最后一次绑定时间
   int64 lastLogin = 19; //最后上线时间 只读
+  int64 lastOffline = 62; //最后离线时间 只读
   int64 logLevel = 20; // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
   google.protobuf.StringValue  deviceAlias = 21; //设备别名 读写
   int64 mobileOperator = 22;//移动运营商:1)移动 2)联通 3)电信 4)广电
@@ -1562,6 +1563,7 @@ message DeviceInfo {
   string productImg = 43; //产品图片
   int64   categoryID = 44;//产品品类
   string lastIp = 49;//最后登录的ip,只读
+  string lastLocalIp = 63;//最后的局域网ip,只读
   google.protobuf.StringValue desc=47;
   IDPathWithUpdate dept =52;//过滤分销商的数据
   DeviceInfo Gateway =46;//子设备绑定的网关

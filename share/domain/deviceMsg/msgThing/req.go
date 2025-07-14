@@ -44,6 +44,7 @@ type (
 		Rssi           *int64            `json:"rssi,omitempty"`
 		Iccid          *string           `json:"iccid"`
 		ProjectID      string            `json:"projectID"`
+		LocalIp        string            `json:"localIp"` //局域网ip
 	}
 	PackReport struct {
 		*deviceMsg.CommonMsg

@@ -58,6 +58,7 @@ func ToDmDevicesInfoReq(diDeviceBasicInfoDo *msgThing.DeviceBasicInfo) (dmDevice
 		MobileOperator: diDeviceBasicInfoDo.MobileOperator,
 		SoftInfo:       diDeviceBasicInfoDo.SoftInfo,
 		Position:       position,
+		LastLocalIp:    diDeviceBasicInfoDo.LocalIp,
 		Tags:           diDeviceBasicInfoDo.Tags,
 		Rssi:           utils.ToRpcNullInt64(diDeviceBasicInfoDo.Rssi),
 		Iccid:          utils.ToRpcNullString(diDeviceBasicInfoDo.Iccid),

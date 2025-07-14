@@ -61,6 +61,7 @@ type DmDeviceInfo struct {
 	IsOnline           int64                  `gorm:"column:is_online;type:smallint;default:2;NOT NULL"`                        // 是否在线,1是2否
 	FirstLogin         sql.NullTime           `gorm:"column:first_login"`                                                       // 激活时间
 	LastLogin          sql.NullTime           `gorm:"column:last_login"`                                                        // 最后上线时间
+	LastOffline        sql.NullTime           `gorm:"column:last_offline"`                                                      // 最后下线线时间
 	FirstBind          sql.NullTime           `gorm:"column:first_bind"`                                                        // 首次绑定时间
 	LastBind           sql.NullTime           `gorm:"column:last_bind"`                                                         // 最后一次绑定时间
 	LogLevel           int64                  `gorm:"column:log_level;type:smallint;default:1;NOT NULL"`                        // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
@@ -72,6 +73,7 @@ type DmDeviceInfo struct {
 	NeedConfirmJobID   int64                  `gorm:"column:need_confirm_job_id;type:smallint;default:0;"`                      // 需要app确认升级的任务ID,为0是没有
 	NeedConfirmVersion string                 `gorm:"column:need_confirm_version;type:varchar(128);default:'';"`                // 待确认升级的版本
 	LastIp             string                 `gorm:"column:last_ip;type:varchar(128);default:'';"`                             // 最后登录的ip地址
+	LastLocalIp        string                 `gorm:"column:last_local_ip;type:varchar(128);default:'';"`                       // 局域网的ip地址
 	BelongGroup        map[string]def.IDsInfo `gorm:"column:belong_group;type:json;serializer:json;default:'{}'"`
 	stores.NoDelTime
 	Desc        string                  `gorm:"column:desc;type:varchar(200)"`        // 描述
