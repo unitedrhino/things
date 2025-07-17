@@ -97,7 +97,7 @@ func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*re
 		po.ExtendConfig = cs.ExtendConfig
 	}
 
-	if err = logic.CheckAffordance(&po.DmSchemaCore, cs); err != nil {
+	if err = logic.CheckAffordance(po.Identifier, &po.DmSchemaCore, cs); err != nil {
 		return nil, err
 	}
 	return po, nil
@@ -116,7 +116,7 @@ func (l *ProductSchemaCreateLogic) ProductSchemaCreate(in *dm.ProductSchemaCreat
 	}
 
 	if schema.AffordanceType(po.Type) == schema.AffordanceTypeProperty && po.Tag == int64(schema.TagCustom) {
-		if err := l.svcCtx.SchemaManaRepo.CreateProperty(l.ctx, relationDB.ToPropertyDo(&po.DmSchemaCore), in.Info.ProductID); err != nil {
+		if err := l.svcCtx.SchemaManaRepo.CreateProperty(l.ctx, relationDB.ToPropertyDo(po.Identifier, &po.DmSchemaCore), in.Info.ProductID); err != nil {
 			l.Errorf("%s.CreateProperty failure,err:%v", utils.FuncName(), err)
 			return nil, errors.Database.AddDetail(err)
 		}

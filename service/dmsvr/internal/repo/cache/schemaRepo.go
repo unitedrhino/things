@@ -41,6 +41,7 @@ func (s SchemaRepo) TslImport(ctx context.Context, productID string, schemaInfo 
 	for _, item := range schemaInfo.Property {
 		err = db.Insert(ctx, &relationDB.DmSchemaInfo{
 			ProductID:    productID,
+			Identifier:   item.Identifier,
 			DmSchemaCore: relationDB.ToPropertyPo(item),
 		})
 		if err != nil {
@@ -50,6 +51,7 @@ func (s SchemaRepo) TslImport(ctx context.Context, productID string, schemaInfo 
 	for _, item := range schemaInfo.Event {
 		err = db.Insert(ctx, &relationDB.DmSchemaInfo{
 			ProductID:    productID,
+			Identifier:   item.Identifier,
 			DmSchemaCore: relationDB.ToEventPo(item),
 		})
 		if err != nil {
@@ -59,6 +61,7 @@ func (s SchemaRepo) TslImport(ctx context.Context, productID string, schemaInfo 
 	for _, item := range schemaInfo.Action {
 		err = db.Insert(ctx, &relationDB.DmSchemaInfo{
 			ProductID:    productID,
+			Identifier:   item.Identifier,
 			DmSchemaCore: relationDB.ToActionPo(item),
 		})
 		if err != nil {

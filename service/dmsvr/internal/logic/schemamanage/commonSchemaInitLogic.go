@@ -35,7 +35,7 @@ func (l *CommonSchemaInitLogic) CommonSchemaInit(in *dm.Empty) (*dm.Empty, error
 		return nil, err
 	}
 	for _, po := range pos {
-		if err := l.svcCtx.SchemaManaRepo.CreateProperty(l.ctx, relationDB.ToPropertyDo(&po.DmSchemaCore), ""); err != nil {
+		if err := l.svcCtx.SchemaManaRepo.CreateProperty(l.ctx, relationDB.ToPropertyDo(po.Identifier, &po.DmSchemaCore), ""); err != nil {
 			l.Errorf("%s.CreateProperty failure,err:%v", utils.FuncName(), err)
 			continue
 		}

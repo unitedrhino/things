@@ -18,7 +18,6 @@ func ToPropertyPo(in *schema.Property) DmSchemaCore {
 	defineStr, _ := json.Marshal(define)
 	return DmSchemaCore{
 		Type:         int64(schema.AffordanceTypeProperty),
-		Identifier:   in.Identifier,
 		Name:         in.Name,
 		ExtendConfig: in.ExtendConfig,
 		Desc:         in.Desc,
@@ -28,9 +27,9 @@ func ToPropertyPo(in *schema.Property) DmSchemaCore {
 	}
 }
 
-func ToCommonParam(in *DmSchemaCore) schema.CommonParam {
+func ToCommonParam(identifier string, in *DmSchemaCore) schema.CommonParam {
 	return schema.CommonParam{
-		Identifier:        in.Identifier,
+		Identifier:        identifier,
 		Name:              in.Name,
 		Desc:              in.Desc,
 		ExtendConfig:      in.ExtendConfig,
@@ -45,11 +44,11 @@ func ToCommonParam(in *DmSchemaCore) schema.CommonParam {
 	}
 }
 
-func ToPropertyDo(in *DmSchemaCore) *schema.Property {
+func ToPropertyDo(identifier string, in *DmSchemaCore) *schema.Property {
 	affordance := schema.PropertyAffordance{}
 	_ = json.Unmarshal([]byte(in.Affordance), &affordance)
 	do := &schema.Property{
-		CommonParam: ToCommonParam(in),
+		CommonParam: ToCommonParam(identifier, in),
 		Define:      affordance.Define,
 		Mode:        affordance.Mode,
 		IsUseShadow: affordance.IsUseShadow,
@@ -69,7 +68,6 @@ func ToEventPo(in *schema.Event) DmSchemaCore {
 	defineStr, _ := json.Marshal(define)
 	return DmSchemaCore{
 		Type:              int64(schema.AffordanceTypeEvent),
-		Identifier:        in.Identifier,
 		Name:              in.Name,
 		Desc:              in.Desc,
 		ExtendConfig:      in.ExtendConfig,
@@ -86,11 +84,11 @@ func ToEventPo(in *schema.Event) DmSchemaCore {
 	}
 }
 
-func ToEventDo(in *DmSchemaCore) *schema.Event {
+func ToEventDo(identifier string, in *DmSchemaCore) *schema.Event {
 	affordance := schema.EventAffordance{}
 	_ = json.Unmarshal([]byte(in.Affordance), &affordance)
 	do := &schema.Event{
-		CommonParam: ToCommonParam(in),
+		CommonParam: ToCommonParam(identifier, in),
 		Type:        affordance.Type,
 		Params:      affordance.Params,
 	}
@@ -107,7 +105,6 @@ func ToActionPo(in *schema.Action) DmSchemaCore {
 	}
 	defineStr, _ := json.Marshal(define)
 	return DmSchemaCore{
-		Identifier:        in.Identifier,
 		Type:              int64(schema.AffordanceTypeAction),
 		Name:              in.Name,
 		ExtendConfig:      in.ExtendConfig,
@@ -154,11 +151,11 @@ func ToAffordancePo(in any) string {
 	return string(defineStr)
 }
 
-func ToActionDo(in *DmSchemaCore) *schema.Action {
+func ToActionDo(identifier string, in *DmSchemaCore) *schema.Action {
 	affordance := schema.ActionAffordance{}
 	_ = json.Unmarshal([]byte(in.Affordance), &affordance)
 	do := &schema.Action{
-		CommonParam: ToCommonParam(in),
+		CommonParam: ToCommonParam(identifier, in),
 		Input:       affordance.Input,
 		Output:      affordance.Output,
 		Dir:         affordance.Dir,
@@ -179,11 +176,11 @@ func ToSchemaDo(productID string, in []*DmSchemaInfo) *schema.Model {
 	for _, v := range in {
 		switch schema.AffordanceType(v.Type) {
 		case schema.AffordanceTypeProperty:
-			model.Properties = append(model.Properties, *ToPropertyDo(&v.DmSchemaCore))
+			model.Properties = append(model.Properties, *ToPropertyDo(v.Identifier, &v.DmSchemaCore))
 		case schema.AffordanceTypeEvent:
-			model.Events = append(model.Events, *ToEventDo(&v.DmSchemaCore))
+			model.Events = append(model.Events, *ToEventDo(v.Identifier, &v.DmSchemaCore))
 		case schema.AffordanceTypeAction:
-			model.Actions = append(model.Actions, *ToActionDo(&v.DmSchemaCore))
+			model.Actions = append(model.Actions, *ToActionDo(v.Identifier, &v.DmSchemaCore))
 		}
 	}
 	model.ValidateWithFmt()
@@ -200,11 +197,11 @@ func ToDeviceSchemaDo(productID string, in []*DmDeviceSchema) *schema.Model {
 	for _, v := range in {
 		switch schema.AffordanceType(v.Type) {
 		case schema.AffordanceTypeProperty:
-			model.Properties = append(model.Properties, *ToPropertyDo(&v.DmSchemaCore))
+			model.Properties = append(model.Properties, *ToPropertyDo(v.Identifier, &v.DmSchemaCore))
 		case schema.AffordanceTypeEvent:
-			model.Events = append(model.Events, *ToEventDo(&v.DmSchemaCore))
+			model.Events = append(model.Events, *ToEventDo(v.Identifier, &v.DmSchemaCore))
 		case schema.AffordanceTypeAction:
-			model.Actions = append(model.Actions, *ToActionDo(&v.DmSchemaCore))
+			model.Actions = append(model.Actions, *ToActionDo(v.Identifier, &v.DmSchemaCore))
 		}
 	}
 	model.ValidateWithFmt()
@@ -219,11 +216,11 @@ func CommonToSchemaDo(in []*DmCommonSchema) *schema.Model {
 	for _, v := range in {
 		switch schema.AffordanceType(v.Type) {
 		case schema.AffordanceTypeProperty:
-			model.Properties = append(model.Properties, *ToPropertyDo(&v.DmSchemaCore))
+			model.Properties = append(model.Properties, *ToPropertyDo(v.Identifier, &v.DmSchemaCore))
 		case schema.AffordanceTypeEvent:
-			model.Events = append(model.Events, *ToEventDo(&v.DmSchemaCore))
+			model.Events = append(model.Events, *ToEventDo(v.Identifier, &v.DmSchemaCore))
 		case schema.AffordanceTypeAction:
-			model.Actions = append(model.Actions, *ToActionDo(&v.DmSchemaCore))
+			model.Actions = append(model.Actions, *ToActionDo(v.Identifier, &v.DmSchemaCore))
 		}
 	}
 	model.ValidateWithFmt()

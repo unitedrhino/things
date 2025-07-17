@@ -5,7 +5,7 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/schema"
 )
 
-func CheckAffordance(po *relationDB.DmSchemaCore, cs *relationDB.DmCommonSchema) error {
+func CheckAffordance(identifier string, po *relationDB.DmSchemaCore, cs *relationDB.DmCommonSchema) error {
 	var affordance interface {
 		ValidateWithFmt() error
 	}
@@ -15,9 +15,9 @@ func CheckAffordance(po *relationDB.DmSchemaCore, cs *relationDB.DmCommonSchema)
 			do    *schema.Event
 			tmpDo *schema.Event
 		)
-		do = relationDB.ToEventDo(po)
+		do = relationDB.ToEventDo(identifier, po)
 		if cs != nil {
-			tmpDo = relationDB.ToEventDo(&cs.DmSchemaCore)
+			tmpDo = relationDB.ToEventDo(identifier, &cs.DmSchemaCore)
 		}
 		affordance = schema.EventFromCommonSchema(do, tmpDo)
 	case schema.AffordanceTypeProperty:
@@ -25,9 +25,9 @@ func CheckAffordance(po *relationDB.DmSchemaCore, cs *relationDB.DmCommonSchema)
 			do    *schema.Property
 			tmpDo *schema.Property
 		)
-		do = relationDB.ToPropertyDo(po)
+		do = relationDB.ToPropertyDo(identifier, po)
 		if cs != nil {
-			tmpDo = relationDB.ToPropertyDo(&cs.DmSchemaCore)
+			tmpDo = relationDB.ToPropertyDo(identifier, &cs.DmSchemaCore)
 		}
 		affordance = schema.PropertyFromCommonSchema(do, tmpDo)
 	case schema.AffordanceTypeAction:
@@ -35,9 +35,9 @@ func CheckAffordance(po *relationDB.DmSchemaCore, cs *relationDB.DmCommonSchema)
 			do    *schema.Action
 			tmpDo *schema.Action
 		)
-		do = relationDB.ToActionDo(po)
+		do = relationDB.ToActionDo(identifier, po)
 		if cs != nil {
-			tmpDo = relationDB.ToActionDo(&cs.DmSchemaCore)
+			tmpDo = relationDB.ToActionDo(identifier, &cs.DmSchemaCore)
 		}
 		affordance = schema.ActionFromCommonSchema(do, tmpDo)
 	}

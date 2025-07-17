@@ -155,6 +155,7 @@ func (p SchemaInfoRepo) MultiInsert2(ctx context.Context, productID string, devi
 		datas = append(datas, &DmSchemaInfo{
 			ProductID:    productID,
 			DeviceName:   utils.AnyToNullString(deviceName),
+			Identifier:   item.Identifier,
 			DmSchemaCore: ToPropertyPo(item),
 		})
 	}
@@ -162,6 +163,7 @@ func (p SchemaInfoRepo) MultiInsert2(ctx context.Context, productID string, devi
 		datas = append(datas, &DmSchemaInfo{
 			ProductID:    productID,
 			DeviceName:   utils.AnyToNullString(deviceName),
+			Identifier:   item.Identifier,
 			DmSchemaCore: ToEventPo(item),
 		})
 	}
@@ -169,6 +171,7 @@ func (p SchemaInfoRepo) MultiInsert2(ctx context.Context, productID string, devi
 		datas = append(datas, &DmSchemaInfo{
 			ProductID:    productID,
 			DeviceName:   utils.AnyToNullString(deviceName),
+			Identifier:   item.Identifier,
 			DmSchemaCore: ToActionPo(item),
 		})
 	}
@@ -183,6 +186,7 @@ func (p SchemaInfoRepo) MultiUpdate(ctx context.Context, productID string, devic
 		datas = append(datas, &DmSchemaInfo{
 			ProductID:    productID,
 			DeviceName:   utils.AnyToNullString(deviceName),
+			Identifier:   item.Identifier,
 			DmSchemaCore: ToPropertyPo(item),
 		})
 	}
@@ -191,6 +195,7 @@ func (p SchemaInfoRepo) MultiUpdate(ctx context.Context, productID string, devic
 		datas = append(datas, &DmSchemaInfo{
 			ProductID:    productID,
 			DeviceName:   utils.AnyToNullString(deviceName),
+			Identifier:   item.Identifier,
 			DmSchemaCore: ToEventPo(item),
 		})
 	}
@@ -199,6 +204,7 @@ func (p SchemaInfoRepo) MultiUpdate(ctx context.Context, productID string, devic
 		datas = append(datas, &DmSchemaInfo{
 			ProductID:    productID,
 			DeviceName:   utils.AnyToNullString(deviceName),
+			Identifier:   item.Identifier,
 			DmSchemaCore: ToActionPo(item),
 		})
 	}

@@ -94,7 +94,7 @@ func (l *ProductSchemaUpdateLogic) ruleCheck(in *dm.ProductSchemaUpdateReq) (*re
 	if in.Info.ExtendConfig != "" {
 		po.ExtendConfig = newPo.ExtendConfig
 	}
-	if err := commonschemalogic.CheckAffordance(&newPo.DmSchemaCore); err != nil {
+	if err := commonschemalogic.CheckAffordance(po.Identifier, &newPo.DmSchemaCore); err != nil {
 		return nil, nil, err
 	}
 	return po, newPo, nil
@@ -111,14 +111,14 @@ func (l *ProductSchemaUpdateLogic) ProductSchemaUpdate(in *dm.ProductSchemaUpdat
 	}
 	if schema.AffordanceType(po.Type) == schema.AffordanceTypeProperty {
 		if err := l.svcCtx.SchemaManaRepo.DeleteProperty(
-			l.ctx, relationDB.ToPropertyDo(&po.DmSchemaCore), in.Info.ProductID, in.Info.Identifier); err != nil {
+			l.ctx, relationDB.ToPropertyDo(po.Identifier, &po.DmSchemaCore), in.Info.ProductID, in.Info.Identifier); err != nil {
 			l.Errorf("%s.DeleteProperty failure,err:%v", utils.FuncName(), err)
 			return nil, errors.Database.AddDetail(err)
 		}
 	}
 	if schema.AffordanceType(newPo.Type) == schema.AffordanceTypeProperty {
 		if err := l.svcCtx.SchemaManaRepo.CreateProperty(
-			l.ctx, relationDB.ToPropertyDo(&newPo.DmSchemaCore), in.Info.ProductID); err != nil {
+			l.ctx, relationDB.ToPropertyDo(po.Identifier, &newPo.DmSchemaCore), in.Info.ProductID); err != nil {
 			l.Errorf("%s.CreateProperty failure,err:%v", utils.FuncName(), err)
 			return nil, errors.Database.AddDetail(err)
 		}

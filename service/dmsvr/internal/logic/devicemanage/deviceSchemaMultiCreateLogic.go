@@ -64,7 +64,7 @@ func (l *DeviceSchemaMultiCreateLogic) ruleCheck(in *dm.DeviceSchemaMultiCreateR
 
 		po := utils.Copy[relationDB.DmDeviceSchema](v)
 		po.Tag = schema.TagDevice
-		if err = logic.CheckAffordance(&po.DmSchemaCore, nil); err != nil {
+		if err = logic.CheckAffordance(po.Identifier, &po.DmSchemaCore, nil); err != nil {
 			return nil, err
 		}
 		ret = append(ret, po)

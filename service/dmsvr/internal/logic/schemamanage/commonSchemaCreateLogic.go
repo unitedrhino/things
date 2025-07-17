@@ -45,7 +45,7 @@ func (l *CommonSchemaCreateLogic) ruleCheck(in *dm.CommonSchemaCreateReq) (*rela
 			if po.ExtendConfig == "" {
 				po.ExtendConfig = "{}"
 			}
-			if err := CheckAffordance(&po.DmSchemaCore); err != nil {
+			if err := CheckAffordance(po.Identifier, &po.DmSchemaCore); err != nil {
 				return nil, err
 			}
 			return po, nil
@@ -67,7 +67,7 @@ func (l *CommonSchemaCreateLogic) CommonSchemaCreate(in *dm.CommonSchemaCreateRe
 	}
 
 	if schema.AffordanceType(po.Type) == schema.AffordanceTypeProperty {
-		if err := l.svcCtx.SchemaManaRepo.CreateProperty(l.ctx, relationDB.ToPropertyDo(&po.DmSchemaCore), ""); err != nil {
+		if err := l.svcCtx.SchemaManaRepo.CreateProperty(l.ctx, relationDB.ToPropertyDo(po.Identifier, &po.DmSchemaCore), ""); err != nil {
 			l.Errorf("%s.CreateProperty failure,err:%v", utils.FuncName(), err)
 			return nil, errors.Database.AddDetail(err)
 		}
