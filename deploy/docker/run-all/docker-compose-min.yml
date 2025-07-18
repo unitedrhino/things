@@ -6,6 +6,7 @@ networks:
     ipam:
       config:
         - subnet: 172.20.0.0/16
+
 services:
   things:
     image: docker.unitedrhino.com/unitedrhino/things:latest
@@ -14,31 +15,28 @@ services:
     restart: always
     ports:
       - "7788:7788"
-      - "17788:17788"
+      - "17788:17788" #监控端口
       - "9081:9081" # dmsvr rpc端口
     volumes:
       - ../conf/oss:/oss
       - ../conf/things/etc/init:/unitedrhino/etc/init
       - ../conf/things/etc:/unitedrhino/etc
     depends_on:
-      - tdengine
+      - postgres
       - nats-server
       - etcd
       - redis
-      - emqx
       - core
     environment:
-      - confSuffix=${confSuffix}
+      - confSuffix=MinDocker
       - devOpenApiApiKey=${devOpenApiApiKey} #emq的秘钥配置,参考: https://doc.unitedrhino.com/pages/24d647/#%E8%AE%BE%E5%A4%87%E5%9C%A8%E7%BA%BF%E7%8A%B6%E6%80%81%E6%A0%A1%E5%87%86-%E5%8F%AF%E9%80%89
       - devOpenApiSecretKey=${devOpenApiSecretKey} #如上
       - OssCustomHost=${OssCustomHost} #ota升级给设备的路径,需要外网可以访问,替换ip即可
       - isInitTable=${isInitTable}
-      - dbType=${dbType}
-      - dbDSN=${dbDSN}
 #      - dbType=pgsql #pgsql打开这个配置和下面pgsql的容器注释
 #      - dbDSN=postgres://postgres:password@postgres:5432/postgres
-      - tsDBDSN=${tsDBDSN}
-      - tsDBDriver=${tsDBDriver}
+#      - tsDBDSN=${tsDBDSN}
+#      - tsDBDriver=${tsDBDriver}
 #      - tsDBDSN=root:taosdata@ws(tdengine:6041)/ithings?readBufferSize=5242880 # ws模式,性能更好,但是需要提前初始化数据库
 #      - tsDBDriver=taosWS
     logging:
@@ -55,25 +53,27 @@ services:
     restart: always
     ports:
       - "7777:7777"
-      - "17777:17777"
+      - "17777:17777" #监控端口
       - "9180:9180" # sys rpc 端口
       - "3256:3256" # timedJob 端口
     depends_on:
-      - tdengine
+      - postgres
       - nats-server
       - etcd
       - redis
-      - emqx
     volumes:
       - ../conf/oss:/oss
       - ../conf/core/etc:/unitedrhino/etc
       - ../conf/core/etc/init:/unitedrhino/etc/init
-#      - ../conf/core/dist:/unitedrhino/dist
+    #      - ../conf/core/dist:/unitedrhino/dist
     environment:
-      - confSuffix=${confSuffix}
+      - confSuffix=MinDocker
       - isInitTable=${isInitTable}
-      - dbType=${dbType}
-      - dbDSN=${dbDSN}
+#      - dbType=mysql
+#      - dbDSN=root:password@tcp(mariadb:3306)/iThings?charset=utf8mb4&collation=utf8mb4_bin&parseTime=true&loc=Asia%2FShanghai
+#      - dbType=pgsql #pgsql打开这个配置和下面pgsql的容器注释
+#      - dbDSN=postgres://postgres:password@postgres:5432/postgres
+
     logging:
       options:
         max-size: "50M"
@@ -81,7 +81,6 @@ services:
       driver: json-file
     networks:
       - unitedrhino_net
-
   nats-server:
     image: nats:latest
     container_name: nats
@@ -123,25 +122,26 @@ services:
     networks:
       - unitedrhino_net
 
-  mariadb:
-    image:  docker.unitedrhino.com/unitedrhino/mariadb:11.4.5
-    container_name: mariadb
-    hostname: mariadb
+  postgres: # 服务名称
+    image: timescale/timescaledb-ha:pg17    # 指定镜像及其版本
+    container_name: postgres # 指定容器的名称
+    hostname: postgres
     restart: always
-    ports:
-      - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      TZ: Asia/Shanghai
-    volumes:
-      - ../conf/mysql/sql:/docker-entrypoint-initdb.d
-      - ../conf/mysql/data:/var/lib/mysql
-      - ../conf/mysql/user:/var/user
+      POSTGRES_PASSWORD: password
+      PGDATA: /pgdata
+      #POSTGRES_DB: default
+    ports: # 端口映射
+      - "5432:5432"
+    user: "root"
+    volumes: # 数据持久化的配置
+      - ../conf/pgsql/data:/pgdata
+      - ../conf/pgsql/log:/var/log/postgresql
+      - ../conf/pgsql/sql:/docker-entrypoint-initdb.d
     logging:
       options:
-        max-size: "50M"
-        max-file: "10"
-      driver: json-file
+        max-size: "10m"
+        max-file: "3"
     networks:
       - unitedrhino_net
 
@@ -162,73 +162,3 @@ services:
     volumes:
       - ../conf/redis:/usr/local/etc/redis
       - ../conf/redis/data:/data
-  tdengine:
-    image: tdengine/tdengine:latest
-    container_name: tdengine
-    hostname: tdengine
-    ports:
-      - "6030:6030"
-      - "6035:6035"
-      - "6041:6041"
-      - "6060:6060"
-      - "6030-6040:6030-6040/udp"
-    restart: always
-    tty: true
-    logging:
-      options:
-        max-size: "50M"
-        max-file: "10"
-      driver: json-file
-    networks:
-      - unitedrhino_net
-    volumes:
-      - /etc/localtime:/etc/localtime
-      - ../conf/taos/dnode/data:/var/lib/taos
-      - ../conf/taos/dnode/log:/var/log/taos
-  emqx:
-    image: emqx/emqx:5.4.0
-    container_name: emqx
-    hostname: emqx
-    restart: always
-    ports:
-      - "1883:1883"
-      - "8083:8083"
-      - "8883:8883"
-      - "8084:8084"
-      - "18083:18083"
-    volumes:
-      - /etc/localtime:/etc/localtime
-      - ../conf/emqx5/etc:/opt/emqx/etc
-    environment:
-      - EMQX_NAME=emqx
-      - EMQX_HOST=emqx
-    logging:
-      options:
-        max-size: "50M"
-        max-file: "10"
-      driver: json-file
-    networks:
-      - unitedrhino_net
-
-  minio:
-    image: minio/minio:latest
-    hostname: minio
-    container_name: minio
-    ports:
-      - "9000:9000"
-      - "9090:9090" # 控制台端口
-    restart: always
-    command: server --console-address ':9090' /data  #指定容器中的目录 /data
-    environment:
-      MINIO_ROOT_USER: root
-      MINIO_ROOT_PASSWORD: password #大于等于8位
-    logging:
-      options:
-        max-size: "50M" # 最大文件上传限制
-        max-file: "10"
-      driver: json-file
-    volumes:
-      - ../conf/minio/data:/data               #映射当前目录下的data目录至容器内/data目录
-      - ../conf/minio/config:/root/.minio/     #映射配置目录
-    networks:
-      - unitedrhino_net

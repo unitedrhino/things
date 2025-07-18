@@ -36,6 +36,11 @@ DmRpc:
   Mode: direct
   Conf:
     Timeout: 1000000
+UdRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000
 SysRpc:
   Enable: true
   Mode: grpc
@@ -50,12 +55,6 @@ TimedJobRpc:
     Timeout: 1000000
     Endpoints:
       - localhost:3256
-
-UdRpc:
-  Enable: true
-  Mode: direct
-  Conf:
-    Timeout: 1000000
 
 OssConf:
   OssType: local
