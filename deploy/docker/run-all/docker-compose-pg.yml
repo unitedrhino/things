@@ -19,7 +19,8 @@ services:
       - "9081:9081" # dmsvr rpc端口
     volumes:
       - ../conf/oss:/oss
-    #      - ../conf/things/etc:/unitedrhino/etc
+      - ../conf/things/etc:/unitedrhino/etc
+      - ../conf/things/etc/init:/unitedrhino/etc/init
     depends_on:
       - tdengine
       - nats-server
@@ -64,7 +65,7 @@ services:
       - emqx
     volumes:
       - ../conf/oss:/oss
-    #      - ../conf/core/etc:/unitedrhino/etc
+      - ../conf/core/etc:/unitedrhino/etc
     #      - ../conf/core/dist:/unitedrhino/dist
     environment:
       - confSuffix=${confSuffix}
@@ -129,12 +130,15 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: password
+      PGDATA: /pgdata
       #POSTGRES_DB: default
+    user: "root"
     ports: # 端口映射
       - "5432:5432"
     volumes: # 数据持久化的配置
       - ../conf/pgsql/data:/var/lib/postgresql/data
       - ../conf/pgsql/log:/var/log/postgresql
+      - ../conf/pgsql/sql:/docker-entrypoint-initdb.d
     logging:
       options:
         max-size: "10m"
@@ -167,7 +171,7 @@ services:
       - "6030:6030"
       - "6035:6035"
       - "6041:6041"
-      - "6060:6060"
+      - "6060:6060" # web访问后台
       - "6030-6040:6030-6040/udp"
     restart: always
     tty: true

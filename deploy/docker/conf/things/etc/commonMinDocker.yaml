@@ -5,6 +5,10 @@ CpuThreshold: 0
 Timeout: 1000000
 Log:
   Encoding: plain
+ProxyService:
+  Aisvr: false
+  Lowcodesvr: true
+  Mqttsvr: true
 Etcd:
   Hosts:
     - etcd:2379
@@ -14,12 +18,14 @@ CacheRedis:
   - Host: redis:6379
     Pass:
     Type: node
+Database:
+  DBType: pgsql
+  DSN: postgres://postgres:password@postgres:5432/postgres
+
 TSDB:
-  Driver: taosRestful
-  DSN: root:taosdata@http(tdengine:6041)/ithings?readBufferSize=52428800
-#  DSN: root:taosdata@ws(tdengine:6041)/ithings?readBufferSize=52428800
-#  Driver: taosSql
-#  DSN: root:taosdata@tcp(localhost:6030)/ithings
+  DBType: pgsql
+  DSN: postgres://postgres:password@postgres:5432/postgres
+
 AuthWhite:
   Users:
     - UserName: dgsvr
@@ -36,16 +42,12 @@ AuthWhite:
     - 172.20.0.0/16
 
 OssConf:
-  OssType: minio
+  OssType: local
   PublicBucketName: ithings-public
   PrivateBucketName: ithings-private
   TemporaryBucketName: ithings-temporary
-  AccessKeyID: root
-  AccessKeySecret: password
-  Location: minio:9000
   ConnectTimeout: 6000
   ReadWriteTimeout: 60000
-  UseSSL: false
 
 DgRpc:
   Enable: true
@@ -62,7 +64,6 @@ UdRpc:
   Mode: direct
   Conf:
     Timeout: 1000000
-
 TimedJobRpc:
   Enable: true
   Mode: grpc
