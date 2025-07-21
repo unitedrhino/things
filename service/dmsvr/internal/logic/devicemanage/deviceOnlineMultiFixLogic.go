@@ -78,8 +78,9 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 	)
 
 	var log = logx.WithContext(ctx)
-
+	log.Infof("HandleOnlineFix:%v", insertList)
 	handleMsg := func(msg *deviceStatus.ConnectMsg) {
+		log.Infof("handleMsg:%v", msg)
 		status := int64(def.ConnectedStatus)
 		if msg.Action == devices.ActionDisconnected {
 			status = def.DisConnectedStatus
@@ -93,7 +94,7 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 		} else {
 			ld, err = deviceAuth.GetClientIDInfo(msg.ClientID)
 			if err != nil {
-				log.Error(err)
+				log.Error(msg, err)
 				return
 			}
 		}
@@ -112,7 +113,7 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 		}
 		di, err := svcCtx.DeviceCache.GetData(ctx, dev)
 		if err != nil {
-			log.Error(err)
+			log.Error(msg, err)
 			return
 		}
 		pi, err := svcCtx.ProductCache.GetData(ctx, di.ProductID)
@@ -132,13 +133,13 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 			})
 			if err != nil {
 				log.Errorf("%s.HubLogRepo.insert productID:%v deviceName:%v err:%v",
-					utils.FuncName(), ld.ProductID, ld.DeviceName, err)
+					utils.FuncName(), appMsg.Device.ProductID, appMsg.Device.DeviceName, err)
 			}
 
 			err = svcCtx.PubApp.DeviceStatusDisConnected(ctx, appMsg)
 			if err != nil {
 				log.Errorf("%s.pubApp productID:%v deviceName:%v err:%v",
-					utils.FuncName(), ld.ProductID, ld.DeviceName, err)
+					utils.FuncName(), appMsg.Device.ProductID, appMsg.Device.DeviceName, err)
 			}
 			err = svcCtx.WebHook.Publish(svcCtx.WithDeviceTenant(ctx, appMsg.Device), func() string {
 				if status == def.ConnectedStatus {
@@ -147,12 +148,12 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 				return sysExport.CodeDmDeviceDisConn
 			}(), appMsg)
 			if err != nil {
-				log.Error(err)
+				log.Info(appMsg, err)
 			}
 			if di == nil {
 				di, err = svcCtx.DeviceCache.GetData(ctx, dev)
 				if err != nil {
-					log.Error(err)
+					log.Error(dev, err)
 					return
 				}
 			}
@@ -166,7 +167,7 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 				"areaID":    cast.ToString(di.AreaID),
 			})
 			if err != nil {
-				log.Error(err)
+				log.Error(appMsg, err)
 			}
 		}
 		if status == def.ConnectedStatus {
@@ -177,11 +178,11 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 			err = relationDB.NewDeviceInfoRepo(ctx).UpdateWithField(ctx,
 				relationDB.DeviceFilter{Cores: []*devices.Core{&dev}}, updates)
 			if err != nil {
-				log.Error(err)
+				log.Error(dev, err)
 			}
 			err = svcCtx.DeviceCache.SetData(ctx, dev, nil)
 			if err != nil {
-				log.Error(err)
+				log.Error(dev, err)
 			}
 			if di.IsOnline != def.True {
 				push(appMsg, di)
@@ -193,7 +194,7 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 					subDevs, err := relationDB.NewGatewayDeviceRepo(ctx).FindByFilter(ctx,
 						relationDB.GatewayDeviceFilter{Gateway: &dev}, nil)
 					if err != nil {
-						log.Error(err)
+						log.Error(dev, err)
 					} else {
 						for _, v := range subDevs {
 							app := appMsg
@@ -236,5 +237,6 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 			}
 		}
 	}
+
 	return nil
 }
