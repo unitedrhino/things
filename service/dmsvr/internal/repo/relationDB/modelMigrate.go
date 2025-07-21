@@ -135,7 +135,7 @@ func migrateTableColumn() error {
 	if err := db.CreateInBatches([]DmProductID{{ID: 100}}, 100).Error; err != nil {
 		logx.Error(err)
 	}
-	if err := db.CreateInBatches([]DmGroupInfo{{ID: 10}}, 100).Error; err != nil {
+	if err := db.CreateInBatches([]DmGroupInfo{{ID: 1}, {ID: 2}, {ID: 3}}, 100).Error; err != nil {
 		logx.Error(err)
 	}
 
