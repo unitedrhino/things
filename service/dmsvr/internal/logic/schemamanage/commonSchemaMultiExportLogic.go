@@ -26,7 +26,7 @@ func NewCommonSchemaMultiExportLogic(ctx context.Context, svcCtx *svc.ServiceCon
 }
 
 func (l *CommonSchemaMultiExportLogic) CommonSchemaMultiExport(in *dm.CommonSchemaExportReq) (*dm.CommonSchemaExportResp, error) {
-	pos, err := relationDB.NewCommonSchemaRepo(l.ctx).FindByFilter(l.ctx, relationDB.CommonSchemaFilter{}, nil)
+	pos, err := relationDB.NewCommonSchemaRepo(l.ctx).FindByFilter(l.ctx, relationDB.CommonSchemaFilter{Identifiers: in.Identifiers}, nil)
 	if err != nil {
 		return nil, err
 	}
