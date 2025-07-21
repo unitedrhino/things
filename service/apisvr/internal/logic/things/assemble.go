@@ -143,6 +143,8 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 		IsUpdateFile:       v.IsUpdateFile,
 		DeviceImg:          v.DeviceImg,
 		File:               v.File,
+		LastLocalIp:        v.LastLocalIp,
+		LastOffline:        v.LastOffline,
 		IsEnable:           v.IsEnable,
 		Imei:               v.Imei,                        //IMEI号信息 只读
 		Mac:                v.Mac,                         //MAC号信息 只读

@@ -83,7 +83,7 @@ func (l *CommonSchemaUpdateLogic) ruleCheck(in *dm.CommonSchemaUpdateReq) (*rela
 			newPo.ExtendConfig = "{}"
 		}
 	}
-	if err := CheckAffordance(&newPo.DmSchemaCore); err != nil {
+	if err := CheckAffordance(newPo.Identifier, &newPo.DmSchemaCore); err != nil {
 		return nil, nil, schemaIsUpdate, err
 	}
 	return po, newPo, schemaIsUpdate, nil
@@ -108,7 +108,7 @@ func (l *CommonSchemaUpdateLogic) CommonSchemaUpdate(in *dm.CommonSchemaUpdateRe
 		}
 		if schema.AffordanceType(newPo.Type) == schema.AffordanceTypeProperty {
 			if err := l.svcCtx.SchemaManaRepo.CreateProperty(
-				l.ctx, relationDB.ToPropertyDo(&newPo.DmSchemaCore), ""); err != nil {
+				l.ctx, relationDB.ToPropertyDo(newPo.Identifier, &newPo.DmSchemaCore), ""); err != nil {
 				l.Errorf("%s.CreateProperty failure,err:%v", utils.FuncName(), err)
 				return nil, errors.Database.AddDetail(err)
 			}

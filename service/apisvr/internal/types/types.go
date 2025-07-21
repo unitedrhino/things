@@ -256,6 +256,7 @@ type DeviceInfo struct {
 	FirstBind          int64                              `json:"firstBind,optional,string,omitempty"`
 	LastBind           int64                              `json:"lastBind,optional,string,omitempty"`      //最后绑定时间 只读
 	LastLogin          int64                              `json:"lastLogin,optional,string,omitempty"`     //最后上线时间 只读
+	LastOffline        int64                              `json:"lastOffline,optional,string,omitempty"`   //最后下线时间 只读
 	ExpTime            *int64                             `json:"expTime,optional,string,omitempty"`       //到期时间
 	LogLevel           int64                              `json:"logLevel,optional,range=[0:5],omitempty"` // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试  读写
 	Rssi               int64                              `json:"rssi,optional,omitempty"`                 //信号强度
@@ -272,6 +273,7 @@ type DeviceInfo struct {
 	NeedConfirmVersion string                             `json:"needConfirmVersion,optional,omitempty"`   //待确认升级的版本
 	UserID             int64                              `json:"userID,string,optional,omitempty"`
 	LastIp             string                             `json:"lastIp,optional,omitempty"`            //最后登录的ip地址
+	LastLocalIp        string                             `json:"lastLocalIp,optional,omitempty"`       //最后登录局域网的ip地址
 	Sort               int64                              `json:"sort,optional,omitempty"`              //排序
 	DeviceImg          string                             `json:"deviceImg,omitempty,optional"`         //设备图片
 	IsUpdateDeviceImg  bool                               `json:"isUpdateDeviceImg,omitempty,optional"` //只有这个参数为true的时候才会更新设备图片,传参为设备图片的file path

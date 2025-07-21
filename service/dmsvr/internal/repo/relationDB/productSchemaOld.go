@@ -179,18 +179,21 @@ func (p ProductSchemaOldRepo) MultiUpdate(ctx context.Context, productID string,
 	for _, item := range schemaInfo.Property {
 		datas = append(datas, &DmProductSchema{
 			ProductID:    productID,
+			Identifier:   item.Identifier,
 			DmSchemaCore: ToPropertyPo(item),
 		})
 	}
 	for _, item := range schemaInfo.Event {
 		datas = append(datas, &DmProductSchema{
 			ProductID:    productID,
+			Identifier:   item.Identifier,
 			DmSchemaCore: ToEventPo(item),
 		})
 	}
 	for _, item := range schemaInfo.Action {
 		datas = append(datas, &DmProductSchema{
 			ProductID:    productID,
+			Identifier:   item.Identifier,
 			DmSchemaCore: ToActionPo(item),
 		})
 	}

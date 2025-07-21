@@ -16,9 +16,6 @@ Map:
   AccessKey: baf440efe599a5cf45d1da812f59f48f
   AccessSecret: 0d055d5aed204f9f53895652ec53b322
 
-
-
-
 Sms:
   Enable: true
   Mode: ali

@@ -194,6 +194,7 @@ func (p ProductSchemaRepo) MultiUpdate(ctx context.Context, productID string, sc
 		idents = append(idents, item.Identifier)
 		datas = append(datas, &DmSchemaInfo{
 			ProductID:    productID,
+			Identifier:   item.Identifier,
 			DmSchemaCore: ToPropertyPo(item),
 		})
 	}
@@ -201,6 +202,7 @@ func (p ProductSchemaRepo) MultiUpdate(ctx context.Context, productID string, sc
 		idents = append(idents, item.Identifier)
 		datas = append(datas, &DmSchemaInfo{
 			ProductID:    productID,
+			Identifier:   item.Identifier,
 			DmSchemaCore: ToEventPo(item),
 		})
 	}
@@ -208,6 +210,7 @@ func (p ProductSchemaRepo) MultiUpdate(ctx context.Context, productID string, sc
 		idents = append(idents, item.Identifier)
 		datas = append(datas, &DmSchemaInfo{
 			ProductID:    productID,
+			Identifier:   item.Identifier,
 			DmSchemaCore: ToActionPo(item),
 		})
 	}

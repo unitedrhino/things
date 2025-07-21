@@ -56,13 +56,15 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: password
+      PGDATA: /pgdata
       #POSTGRES_DB: default
+    user: "root"
     ports: # 端口映射
       - "5432:5432"
     volumes: # 数据持久化的配置
-      - ../conf/pgsql/sql:/docker-entrypoint-initdb.d
       - ../conf/pgsql/data:/var/lib/postgresql/data
       - ../conf/pgsql/log:/var/log/postgresql
+      - ../conf/pgsql/sql:/docker-entrypoint-initdb.d
     logging:
       options:
         max-size: "10m"

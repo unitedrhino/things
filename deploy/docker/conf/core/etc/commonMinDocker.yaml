@@ -1,0 +1,50 @@
+Host: 0.0.0.0
+CpuThreshold: 0
+Timeout: 1000000
+MaxBytes: 1000000000
+Log:
+  Encoding: plain
+  #Mode: file
+Etcd:
+  Hosts:
+    - etcd:2379
+  Key:
+Event:
+  Nats:
+    Url: nats://nats:4222
+CacheRedis:
+  - Host: redis:6379
+    Pass:
+    Type: node
+Middlewares:
+  Prometheus: false
+Database:
+  DBType: pgsql
+  DSN: postgres://postgres:password@postgres:5432/postgres
+
+SysRpc:
+  Enable: true
+  Mode: direct
+  RunProxy: true
+  Conf:
+    Timeout: 1000000
+TimedJobRpc:
+  Enable: true
+  Mode: direct
+  RunProxy: true
+  Conf:
+    Timeout: 1000000
+TimedSchedulerRpc:
+  Enable: true
+  Mode: direct
+  RunProxy: true
+  Conf:
+    Timeout: 1000000
+
+OssConf:
+  OssType: local # 如果不需要minio,可以填写local,默认存储路径为 ../oss
+  PublicBucketName: ithings-public
+  PrivateBucketName: ithings-private
+  TemporaryBucketName: ithings-temporary
+  ConnectTimeout: 6000
+  ReadWriteTimeout: 60000

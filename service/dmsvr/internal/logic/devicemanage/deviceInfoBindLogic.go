@@ -203,6 +203,10 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 	if er != nil {
 		l.Error(er)
 	}
+	er = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoBind, &dev)
+	if er != nil {
+		l.Error(er)
+	}
 	BindChange(l.ctx, l.svcCtx, pi, dev, int64(di.ProjectID))
 	return &dm.Empty{}, err
 }

@@ -91,6 +91,8 @@ func ToDeviceInfo(ctx context.Context, svcCtx *svc.ServiceContext, in *relationD
 		ExpTime:            utils.TimeToNullInt(in.ExpTime),
 		File:               in.File,
 		DeviceImg:          in.DeviceImg,
+		LastOffline:        utils.GetNullTime(in.LastOffline),
+		LastLocalIp:        in.LastLocalIp,
 		LogLevel:           in.LogLevel,
 		CreatedTime:        in.CreatedTime.Unix(),
 		ProtocolConf:       in.ProtocolConf,

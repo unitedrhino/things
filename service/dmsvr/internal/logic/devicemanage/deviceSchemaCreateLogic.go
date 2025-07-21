@@ -68,7 +68,7 @@ func (l *DeviceSchemaCreateLogic) DeviceSchemaCreate(in *dm.DeviceSchema) (*dm.E
 
 	po := utils.Copy[relationDB.DmDeviceSchema](in)
 	po.Tag = schema.TagDevice
-	if err = logic.CheckAffordance(&po.DmSchemaCore, nil); err != nil {
+	if err = logic.CheckAffordance(po.Identifier, &po.DmSchemaCore, nil); err != nil {
 		return nil, err
 	}
 	err = relationDB.NewDeviceSchemaRepo(l.ctx).Insert(l.ctx, po)

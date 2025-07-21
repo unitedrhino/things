@@ -2,6 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
+	"encoding/json"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
@@ -28,7 +29,7 @@ func NewProductInfoMultiImportLogic(ctx context.Context, svcCtx *svc.ServiceCont
 
 func (l *ProductInfoMultiImportLogic) ProductInfoMultiImport(in *dm.ProductInfoImportReq) (*dm.ImportResp, error) {
 	var infos []ProductExportInfo
-	err := DecompressStruct(in.Products, &infos)
+	err := json.Unmarshal([]byte(in.Products), &infos)
 	if err != nil {
 		return nil, err
 	}

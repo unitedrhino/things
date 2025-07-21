@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/gob"
+	"encoding/json"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -45,8 +46,8 @@ func (l *ProductInfoMultiExportLogic) ProductInfoMultiExport(in *dm.ProductInfoE
 		}
 		infos = append(infos, ProductExportInfo{Tls: model.String(), Info: v})
 	}
-	ps, err := CompressStruct(infos)
-	return &dm.ProductInfoExportResp{Products: ps}, err
+	ps, err := json.Marshal(infos)
+	return &dm.ProductInfoExportResp{Products: string(ps)}, err
 }
 
 func CompressStruct(data interface{}) (string, error) {

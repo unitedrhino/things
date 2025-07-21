@@ -227,7 +227,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		logx.Error("NewPubDev err", err)
 		os.Exit(-1)
 	}
-	pa, err := pubApp.NewPubApp(c.Event)
+	pa, err := pubApp.NewPubApp(serverMsg)
 	if err != nil {
 		logx.Error("NewPubApp err", err)
 		os.Exit(-1)

@@ -1,0 +1,164 @@
+version: '3.2'
+# Network
+networks:
+  unitedrhino_net:
+    name: unitedrhino_net
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+services:
+  things:
+    image: docker.unitedrhino.com/unitedrhino/things:latest
+    container_name: things
+    hostname: things
+    restart: always
+    ports:
+      - "7788:7788"
+      - "17788:17788" #监控端口
+      - "9081:9081" # dmsvr rpc端口
+    volumes:
+      - ../conf/oss:/oss
+      - ../conf/things/etc/init:/unitedrhino/etc/init
+      - ../conf/things/etc:/unitedrhino/etc
+    depends_on:
+      - postgres
+      - nats-server
+      - etcd
+      - redis
+      - core
+    environment:
+      - confSuffix=MinDocker
+      - devOpenApiApiKey=${devOpenApiApiKey} #emq的秘钥配置,参考: https://doc.unitedrhino.com/pages/24d647/#%E8%AE%BE%E5%A4%87%E5%9C%A8%E7%BA%BF%E7%8A%B6%E6%80%81%E6%A0%A1%E5%87%86-%E5%8F%AF%E9%80%89
+      - devOpenApiSecretKey=${devOpenApiSecretKey} #如上
+      - OssCustomHost=${OssCustomHost} #ota升级给设备的路径,需要外网可以访问,替换ip即可
+      - isInitTable=${isInitTable}
+#      - dbType=pgsql #pgsql打开这个配置和下面pgsql的容器注释
+#      - dbDSN=postgres://postgres:password@postgres:5432/postgres
+#      - tsDBDSN=${tsDBDSN}
+#      - tsDBDriver=${tsDBDriver}
+#      - tsDBDSN=root:taosdata@ws(tdengine:6041)/ithings?readBufferSize=5242880 # ws模式,性能更好,但是需要提前初始化数据库
+#      - tsDBDriver=taosWS
+    logging:
+      options:
+        max-size: "50M"
+        max-file: "10"
+      driver: json-file
+    networks:
+      - unitedrhino_net
+  core:
+    image: docker.unitedrhino.com/unitedrhino/core:latest
+    container_name: core
+    hostname: core
+    restart: always
+    ports:
+      - "7777:7777"
+      - "17777:17777" #监控端口
+      - "9180:9180" # sys rpc 端口
+      - "3256:3256" # timedJob 端口
+    depends_on:
+      - postgres
+      - nats-server
+      - etcd
+      - redis
+    volumes:
+      - ../conf/oss:/oss
+      - ../conf/core/etc:/unitedrhino/etc
+      - ../conf/core/etc/init:/unitedrhino/etc/init
+    #      - ../conf/core/dist:/unitedrhino/dist
+    environment:
+      - confSuffix=MinDocker
+      - isInitTable=${isInitTable}
+#      - dbType=mysql
+#      - dbDSN=root:password@tcp(mariadb:3306)/iThings?charset=utf8mb4&collation=utf8mb4_bin&parseTime=true&loc=Asia%2FShanghai
+#      - dbType=pgsql #pgsql打开这个配置和下面pgsql的容器注释
+#      - dbDSN=postgres://postgres:password@postgres:5432/postgres
+
+    logging:
+      options:
+        max-size: "50M"
+        max-file: "10"
+      driver: json-file
+    networks:
+      - unitedrhino_net
+  nats-server:
+    image: nats:latest
+    container_name: nats
+    hostname: nats
+    restart: always
+    command: --jetstream  -m 8222 #启用jetstream
+    ports:
+      - "4222:4222"
+      - "6222:6222" #
+      - "8222:8222" # http监控端口
+    logging:
+      options:
+        max-size: "50M"
+        max-file: "10"
+      driver: json-file
+    networks:
+      - unitedrhino_net
+
+  etcd:
+    image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:bitnami-etcd-3.5
+    container_name: etcd-v3
+    hostname: etcd
+    restart: always
+    ports:
+      - "2379:2379"
+      - "2380:2380"
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes # 允许不用密码登录
+      - ETCD_NAME=etcd                                     # etcd 的名字
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd:2380  # 列出这个成员的伙伴 URL 以便通告给集群的其他成员
+      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380           # 用于监听伙伴通讯的URL列表
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379         # 用于监听客户端通讯的URL列表
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379        # 列出这个成员的客户端URL，通告给集群中的其他成员
+    logging:
+      options:
+        max-size: "50M"
+        max-file: "10"
+      driver: json-file
+    networks:
+      - unitedrhino_net
+
+  postgres: # 服务名称
+    image: timescale/timescaledb-ha:pg17    # 指定镜像及其版本
+    container_name: postgres # 指定容器的名称
+    hostname: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+      PGDATA: /pgdata
+      #POSTGRES_DB: default
+    ports: # 端口映射
+      - "5432:5432"
+    user: "root"
+    volumes: # 数据持久化的配置
+      - ../conf/pgsql/data:/pgdata
+      - ../conf/pgsql/log:/var/log/postgresql
+      - ../conf/pgsql/sql:/docker-entrypoint-initdb.d
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - unitedrhino_net
+
+  redis:
+    image: registry.cn-qingdao.aliyuncs.com/ithings-open/ithings-open:redis-7-alpine
+    container_name: redis
+    hostname: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    logging:
+      options:
+        max-size: "50M"
+        max-file: "10"
+      driver: json-file
+    networks:
+      - unitedrhino_net
+    volumes:
+      - ../conf/redis:/usr/local/etc/redis
+      - ../conf/redis/data:/data

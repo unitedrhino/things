@@ -83,7 +83,7 @@ func (l *DeviceSchemaUpdateLogic) DeviceSchemaUpdate(in *dm.DeviceSchema) (*dm.E
 	if in.ExtendConfig != "" {
 		po.ExtendConfig = newPo.ExtendConfig
 	}
-	if err := commonschemalogic.CheckAffordance(&newPo.DmSchemaCore); err != nil {
+	if err := commonschemalogic.CheckAffordance(po.Identifier, &newPo.DmSchemaCore); err != nil {
 		return nil, err
 	}
 	err = relationDB.NewDeviceSchemaRepo(l.ctx).Update(l.ctx, po)
