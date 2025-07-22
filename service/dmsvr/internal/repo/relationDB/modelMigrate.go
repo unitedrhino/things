@@ -132,10 +132,10 @@ func migrateTableColumn() error {
 	//if err := db.CreateInBatches(&MigrateManufacturerInfo, 100).Error; err != nil {
 	//	return err
 	//}
-	if err := db.CreateInBatches([]DmProductID{{ID: 100}}, 100).Error; err != nil {
-		logx.Error(err)
+	for i := 0; i < 100; i++ {
+		NewProductIDRepo(db).GenID(ctxs.WithRoot(context.Background()))
 	}
-	if err := db.CreateInBatches([]DmGroupInfo{{ID: 1}, {ID: 2}, {ID: 3}}, 100).Error; err != nil {
+	if err := db.CreateInBatches([]DmGroupInfo{{DeletedTime: 666}, {DeletedTime: 777}, {DeletedTime: 888}}, 100).Error; err != nil {
 		logx.Error(err)
 	}
 
