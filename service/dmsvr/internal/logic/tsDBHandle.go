@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
@@ -11,16 +12,18 @@ import (
 )
 
 func UpdateDevice(ctx context.Context, svcCtx *svc.ServiceContext, devs []*devices.Core, affiliation devices.Affiliation) error {
-	svcCtx.AbnormalRepo.UpdateDevice(ctx, devs, affiliation)
-	svcCtx.SendRepo.UpdateDevice(ctx, devs, affiliation)
-	for _, dev := range devs {
-		s, err := svcCtx.DeviceSchemaRepo.GetData(ctx, *dev)
-		if err != nil {
-			logx.WithContext(ctx).Error(err.Error())
-			continue
+	ctxs.GoNewCtx(ctx, func(ctx context.Context) {
+		svcCtx.AbnormalRepo.UpdateDevice(ctx, devs, affiliation)
+		svcCtx.SendRepo.UpdateDevice(ctx, devs, affiliation)
+		for _, dev := range devs {
+			s, err := svcCtx.DeviceSchemaRepo.GetData(ctx, *dev)
+			if err != nil {
+				logx.WithContext(ctx).Error(err.Error())
+				continue
+			}
+			svcCtx.SchemaManaRepo.UpdateDevice(ctx, *dev, s, affiliation)
 		}
-		svcCtx.SchemaManaRepo.UpdateDevice(ctx, *dev, s, affiliation)
-	}
+	})
 
 	return nil
 }
