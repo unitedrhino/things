@@ -154,7 +154,7 @@ func (tp *Param) ToVal() (any, error) {
 func GetVal(d *schema.Define, val any) (any, error) {
 	switch d.Type {
 	case schema.DataTypeBool:
-		return cast.ToBoolE(val)
+		return cast.ToInt64E(val)
 	case schema.DataTypeInt:
 		if num, err := cast.ToInt64E(val); err != nil {
 			return nil, errors.Parameter.AddDetail(val)
