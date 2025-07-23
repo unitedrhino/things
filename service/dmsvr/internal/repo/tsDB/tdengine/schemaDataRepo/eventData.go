@@ -20,7 +20,7 @@ func (d *DeviceDataRepo) InsertEventData(ctx context.Context, productID string,
 	}
 	tagKeys, tagVals := tdengine.GenTagsParams(defaultTags, d.groupConfigs, event.BelongGroup)
 	sql := fmt.Sprintf(
-		" %s using %s (%s)tags('%s','%s','%s',%d,%d,'%s' '%s') (`ts`,`event_id`,`event_type`, `param`) values (?,?,?,?);",
+		" %s using %s (%s)tags('%s','%s','%s',%d,%d,'%s'  %s) (`ts`,`event_id`,`event_type`, `param`) values (?,?,?,?);",
 		d.GetEventTableName(productID, deviceName), d.GetEventStableName(), tagKeys, productID, deviceName,
 		event.TenantCode, event.ProjectID, event.AreaID, event.AreaIDPath, tagVals)
 	//if _, err := d.t.ExecContext(ctx, sql, event.TimeStamp, event.Identifier, event.Type, param); err != nil {
