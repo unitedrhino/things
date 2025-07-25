@@ -1,0 +1,89 @@
+#设备管理模块配置-dmsvr
+Name: dm.rpc
+ListenOn: 0.0.0.0:9081
+CpuThreshold: 0
+Timeout: 1000000
+Log:
+  Encoding: plain
+ProxyService:
+  Aisvr: false
+  Lowcodesvr: true
+  Mqttsvr: true
+Etcd:
+  Hosts:
+    - etcd:2379
+  Key: dm.rpc
+  #Mode: file
+CacheRedis:
+  - Host: redis:6379
+    Pass:
+    Type: node
+Database:
+  DBType: pgsql
+  DSN: postgres://postgres:password@postgres:5432/postgres
+
+TSDB:
+  DBType: pgsql
+  DSN: postgres://postgres:password@postgres:5432/postgres
+
+AuthWhite:
+  Users:
+    - UserName: dgsvr
+      Password: iThings
+    - UserName: pwumeisvr
+      Password: iThings
+    - UserName: paliMqttsvr
+      Password: iThings
+  IpRange:
+    - 127.0.0.1
+    - 172.18.0.1
+    - 172.20.0.1
+    - 192.168.1.1
+    - 172.20.0.0/16
+
+OssConf:
+  OssType: local
+  PublicBucketName: ithings-public
+  PrivateBucketName: ithings-private
+  TemporaryBucketName: ithings-temporary
+  ConnectTimeout: 6000
+  ReadWriteTimeout: 60000
+
+DgRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000
+DmRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000
+UdRpc:
+  Enable: true
+  Mode: direct
+  Conf:
+    Timeout: 1000000
+TimedJobRpc:
+  Enable: true
+  Mode: grpc
+  Conf:
+    Timeout: 1000000
+    Etcd:
+      Hosts:
+        - etcd:2379
+      Key: timedjob.rpc
+
+SysRpc:
+  Enable: true
+  Mode: grpc
+  Conf:
+    Timeout: 1000000
+    Etcd:
+      Hosts:
+        - etcd:2379
+      Key: sys.rpc
+
+Event:
+  Nats:
+    Url: nats://nats:4222
