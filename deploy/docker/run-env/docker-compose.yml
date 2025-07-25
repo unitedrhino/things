@@ -34,8 +34,8 @@ services:
     ports:
       - "2379:2379"
       - "2380:2380"
-    volumes:
-      - ../conf/etcd:/bitnami/etcd
+#    volumes:
+#      - ../conf/etcd:/bitnami/etcd
     environment:
       - ALLOW_NONE_AUTHENTICATION=yes # 允许不用密码登录
       - ETCD_NAME=etcd                                     # etcd 的名字
