@@ -2,41 +2,42 @@ Host: 0.0.0.0
 CpuThreshold: 0
 Timeout: 1000000
 MaxBytes: 1000000000
-Etcd:
-  Hosts:
-    - etcd:2379
-  Key:
 Log:
   Encoding: plain
   #Mode: file
 CacheRedis:
-  - Host: redis:6379
+  - Host: 127.0.0.1:6379
     Pass:
     Type: node
 Middlewares:
   Prometheus: false
 Database:
   DBType: mysql
-  DSN: root:password@tcp(mariadb:3306)/iThings?charset=utf8mb4&collation=utf8mb4_bin&parseTime=true&loc=Asia%2FShanghai
+  DSN: root:password@tcp(localhost:3306)/iThings?charset=utf8mb4&collation=utf8mb4_bin&parseTime=true&loc=Asia%2FShanghai
 #  DBType: pgsql
-#  DSN: postgres://postgres:password@mariadb:5432/postgres
+#  DSN: postgres://postgres:password@localhost:5432/postgres
 
 TSDB:
   Driver: taosRestful
-  DSN: root:taosdata@http(tdengine:6041)/ithings?readBufferSize=5242880
-#  DSN: root:taosdata@ws(tdengine:6041)/ithings?readBufferSize=5242880
+  DSN: root:taosdata@http(localhost:6041)/ithings?readBufferSize=5242880
+#  DSN: root:taosdata@ws(localhost:6041)/ithings?readBufferSize=5242880
 #  Driver: taosSql
-#  DSN: root:taosdata@tcp(tdengine:6030)/ithings
+#  DSN: root:taosdata@tcp(localhost:6030)/ithings
 #  DBType: mysql
-#  DSN: root:password@tcp(tdengine:3306)/iThings-ts?charset=utf8mb4&collation=utf8mb4_bin&parseTime=true&loc=Asia%2FShanghai
+#  DSN: root:password@tcp(localhost:3306)/iThings-ts?charset=utf8mb4&collation=utf8mb4_bin&parseTime=true&loc=Asia%2FShanghai
+
+
+
 
 DgRpc:
   Enable: true
+  RunProxy: false
   Mode: direct
   Conf:
     Timeout: 1000000
 DmRpc:
   Enable: true
+  RunProxy: false
   Mode: direct
   Conf:
     Timeout: 1000000
@@ -45,25 +46,20 @@ SysRpc:
   Mode: grpc
   Conf:
     Timeout: 1000000
-    Etcd:
-      Key: sys.rpc
+    Endpoints:
+      - localhost:9180
 TimedJobRpc:
   Enable: true
   Mode: grpc
   Conf:
     Timeout: 1000000
-    Etcd:
-      Key: timedjob.rpc
-TimedSchedulerRpc:
-  Enable: true
-  Mode: grpc
-  Conf:
-    Timeout: 1000000
-    Etcd:
-      Key: timedscheduler.rpc
+    Endpoints:
+      - localhost:3256
+
 UdRpc:
   Enable: true
   Mode: direct
+  RunProxy: false
   Conf:
     Timeout: 1000000
 
@@ -74,29 +70,14 @@ OssConf:
   TemporaryBucketName: ithings-temporary
   AccessKeyID: root
   AccessKeySecret: password
-  Location: minio:9000
+  Location: 127.0.0.1:9000
   ConnectTimeout: 6000
   ReadWriteTimeout: 60000
   UseSSL: false
 
-AuthWhite:
-  Users:
-    - UserName: dgsvr
-      Password: iThings
-    - UserName: pwumeisvr
-      Password: iThings
-    - UserName: paliMqttsvr
-      Password: iThings
-  IpRange:
-    - 127.0.0.1
-    - 172.18.0.1
-    - 172.20.0.1
-    - 192.168.1.1
-    - 172.20.0.0/16
-
 Event:
   Nats:
-    Url: nats://nats:4222
+    Url: nats://127.0.0.1:4222
 #Telemetry:
 #  Name: thingsvr
 #  Endpoint: http://localhost:14268/api/traces

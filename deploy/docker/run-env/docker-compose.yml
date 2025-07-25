@@ -16,8 +16,8 @@ services:
     command: --jetstream  -m 8222 #启用jetstream
     ports:
       - "4222:4222"
-      - "6222:6222"#
-      - "8222:8222"#http监控端口
+      - "6222:6222" #
+      - "8222:8222" #http监控端口
     logging:
       options:
         max-size: "50M"
@@ -34,8 +34,8 @@ services:
     ports:
       - "2379:2379"
       - "2380:2380"
-    volumes:
-      - ../conf/etcd:/bitnami/etcd
+#    volumes:
+#      - ../conf/etcd:/bitnami/etcd
     environment:
       - ALLOW_NONE_AUTHENTICATION=yes # 允许不用密码登录
       - ETCD_NAME=etcd                                     # etcd 的名字
