@@ -2,7 +2,7 @@ package schema
 
 import (
 	"fmt"
-	"github.com/spf13/cast"
+	"gitee.com/unitedrhino/share/utils"
 	"strings"
 )
 
@@ -15,5 +15,5 @@ func GetArray(identifier string) (ident string, num int, ok bool) {
 	if !ok {
 		return identifier, 0, false
 	}
-	return b, cast.ToInt(a), ok
+	return b, utils.ToInt(a), ok
 }
