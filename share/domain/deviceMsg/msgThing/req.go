@@ -90,12 +90,11 @@ func (d *Req) VerifyReqParam(t *schema.Model, tt schema.ParamType) (map[string]P
 
 	switch tt {
 	case schema.ParamProperty:
+		var hasArray bool
 		for k, v := range d.Params {
 			p, ok := t.Property[k]
-			var b string
-			var num int
 			if ok == false {
-				b, num, ok = schema.GetArray(k)
+				b, _, ok := schema.GetArray(k)
 				if !ok {
 					continue
 				}
@@ -106,6 +105,7 @@ func (d *Req) VerifyReqParam(t *schema.Model, tt schema.ParamType) (map[string]P
 					continue
 				}
 			}
+			hasArray = true
 			tp := Param{
 				Identifier: p.Identifier,
 				Name:       p.Name,
@@ -116,10 +116,22 @@ func (d *Req) VerifyReqParam(t *schema.Model, tt schema.ParamType) (map[string]P
 
 			err := tp.SetByDefine(&p.Define, v)
 			if err == nil {
-				getParam[schema.GenArray(b, num)] = tp
+				getParam[k] = tp
 			} else if !errors.Cmp(err, errors.NotFind) {
 				return nil, errors.Fmt(err).AddDetail(p.Identifier)
 			}
+		}
+		if hasArray {
+			var param = map[string]Param{}
+			for k, v := range getParam {
+				b, num, ok := schema.GetArray(k)
+				if !ok {
+					param[k] = v
+					continue
+				}
+				param[schema.GenArray(b, num)] = v
+			}
+			getParam = param
 		}
 	case schema.ParamEvent:
 		p, ok := t.Event[d.EventID]
