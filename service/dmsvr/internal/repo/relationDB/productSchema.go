@@ -182,7 +182,8 @@ func (p ProductSchemaRepo) CountByFilter(ctx context.Context, f ProductSchemaFil
 
 // 批量插入 LightStrategyDevice 记录
 func (p ProductSchemaRepo) MultiInsert(ctx context.Context, data []*DmSchemaInfo) error {
-	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmSchemaInfo{}).Create(data).Error
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true,
+		Columns: stores.SetColumnsWithPg(p.db, &DmSchemaInfo{}, "idx_dm_schema_info_identifier")}).Model(&DmSchemaInfo{}).Create(data).Error
 	return stores.ErrFmt(err)
 }
 

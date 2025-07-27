@@ -79,7 +79,8 @@ func (m GatewayDeviceRepo) MultiInsert(ctx context.Context, gateway *devices.Cor
 			DeviceName:        v.DeviceName,
 		})
 	}
-	err := m.db.WithContext(ctx).Clauses(clause.OnConflict{DoNothing: true}).Model(&DmGatewayDevice{}).Create(data).Error
+	err := m.db.WithContext(ctx).Clauses(clause.OnConflict{DoNothing: true,
+		Columns: stores.SetColumnsWithPg(m.db, &DmGatewayDevice{}, "idx_dm_gateway_device_gpi_pdn_pi_dn")}).Model(&DmGatewayDevice{}).Create(data).Error
 	return stores.ErrFmt(err)
 }
 

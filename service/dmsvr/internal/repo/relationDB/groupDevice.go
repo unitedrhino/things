@@ -31,7 +31,8 @@ func NewGroupDeviceRepo(in any) *GroupDeviceRepo {
 
 // 批量插入 LightStrategyDevice 记录
 func (m GroupDeviceRepo) MultiInsert(ctx context.Context, data []*DmGroupDevice) error {
-	err := m.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmGroupDevice{}).Create(data).Error
+	err := m.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true,
+		Columns: stores.SetColumnsWithPg(m.db, &DmGroupDevice{}, "idx_dm_group_device_group_id_product_id_device_name")}).Model(&DmGroupDevice{}).Create(data).Error
 	return stores.ErrFmt(err)
 }
 

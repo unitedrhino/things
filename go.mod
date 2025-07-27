@@ -8,8 +8,8 @@ toolchain go1.23.8
 //gitee.com/unitedrhino/share => ../share
 
 require (
-	gitee.com/unitedrhino/core v1.4.4
-	gitee.com/unitedrhino/share v1.5.0
+	gitee.com/unitedrhino/core v1.5.0
+	gitee.com/unitedrhino/share v1.5.1
 	gitee.com/unitedrhino/squirrel v1.20.7
 	github.com/dgraph-io/ristretto v0.1.1
 	github.com/dop251/goja v0.0.0-20231024180952-594410467bc6
@@ -85,7 +85,6 @@ require (
 	github.com/go-sourcemap/sourcemap v2.1.3+incompatible // indirect
 	github.com/go-sql-driver/mysql v1.9.0 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
-	github.com/gogf/gf/v2 v2.7.2 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.2 // indirect
 	github.com/golang/glog v1.2.3 // indirect

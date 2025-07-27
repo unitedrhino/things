@@ -150,7 +150,8 @@ func (p DeviceSchemaRepo) CountByFilter(ctx context.Context, f DeviceSchemaFilte
 
 // 批量插入 LightStrategyDevice 记录
 func (p DeviceSchemaRepo) MultiInsert(ctx context.Context, data []*DmDeviceSchema) error {
-	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmDeviceSchema{}).Create(data).Error
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true,
+		Columns: stores.SetColumnsWithPg(p.db, &DmDeviceSchema{}, "idx_dm_schema_info_identifier")}).Model(&DmDeviceSchema{}).Create(data).Error
 	return stores.ErrFmt(err)
 }
 
@@ -184,7 +185,8 @@ func (p DeviceSchemaRepo) MultiInsert2(ctx context.Context, productID string, de
 			DmSchemaCore: ToActionPo(item),
 		})
 	}
-	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{DoNothing: true}).Model(&DmDeviceSchema{}).CreateInBatches(datas, 100).Error
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{DoNothing: true,
+		Columns: stores.SetColumnsWithPg(p.db, &DmDeviceSchema{}, "idx_dm_schema_info_identifier")}).Model(&DmDeviceSchema{}).CreateInBatches(datas, 100).Error
 	return stores.ErrFmt(err)
 }
 

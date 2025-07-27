@@ -89,7 +89,8 @@ func (p DeviceMsgCountRepo) FindOne(ctx context.Context, id int64) (*DmDeviceMsg
 
 // 批量插入 LightStrategyDevice 记录
 func (p DeviceMsgCountRepo) MultiInsert(ctx context.Context, data []*DmDeviceMsgCount) error {
-	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmDeviceMsgCount{}).Create(data).Error
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true,
+		Columns: stores.SetColumnsWithPg(p.db, &DmDeviceMsgCount{}, "idx_dm_device_msg_count_date_type")}).Model(&DmDeviceMsgCount{}).Create(data).Error
 	return stores.ErrFmt(err)
 }
 

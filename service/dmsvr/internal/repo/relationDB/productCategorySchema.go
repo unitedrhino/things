@@ -99,7 +99,8 @@ func (p ProductCategorySchemaRepo) FindOne(ctx context.Context, id int64) (*DmPr
 
 // 批量插入 LightStrategyDevice 记录
 func (p ProductCategorySchemaRepo) MultiInsert(ctx context.Context, data []*DmProductCategorySchema) error {
-	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmProductCategorySchema{}).Create(data).Error
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true,
+		Columns: stores.SetColumnsWithPg(p.db, &DmProductCategorySchema{}, "idx_dm_product_category_schema_pn")}).Model(&DmProductCategorySchema{}).Create(data).Error
 	return stores.ErrFmt(err)
 }
 
