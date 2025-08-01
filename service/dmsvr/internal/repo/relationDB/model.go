@@ -401,20 +401,20 @@ func (m *DmSchemaInfo) TableName() string {
 }
 
 type DmSchemaCore struct {
-	Tag               schema.Tag `gorm:"column:tag;type:smallint;default:1"`                        // 物模型标签 1:自定义 2:可选 3:必选  必选不可删除
-	Type              int64      `gorm:"column:type;index:product_id_type;type:smallint;default:1"` // 物模型类型 1:property属性 2:event事件 3:action行为
-	ExtendConfig      string     `gorm:"column:extend_config;type:text"`                            //拓展参数
-	Required          int64      `gorm:"column:required;type:smallint;default:2"`                   // 是否必须,1是 2否
-	Name              string     `gorm:"column:name;type:varchar(100);NOT NULL"`                    // 功能名称
-	Desc              string     `gorm:"column:desc;type:varchar(200)"`                             // 描述
-	IsCanSceneLinkage int64      `gorm:"column:is_can_scene_linkage;type:smallint;default:1"`       // 是否放到场景联动中
-	FuncGroup         int64      `gorm:"column:func_group;type:smallint;default:1"`                 // 功能分类: 1:普通功能 2:系统功能
-	ControlMode       int64      `gorm:"column:control_mode;type:smallint;default:1"`               //控制模式: 1: 可以群控,可以单控  2:只能单控
-	UserPerm          int64      `gorm:"column:user_auth;type:smallint;default:3"`                  //用户权限操作: 1:r(只读) 3:rw(可读可写)
-	IsHistory         int64      `gorm:"column:is_history;type:smallint;default:1"`                 // 是否存储历史记录
-	IsPassword        int64      `gorm:"column:is_password;type:smallint;default:2"`                //是否是密码类型
-	Affordance        string     `gorm:"column:affordance;type:json;NOT NULL"`                      // 各类型的自定义功能定义
-	Order             int64      `gorm:"column:order;type:BIGINT;default:1;NOT NULL"`               // 左侧table排序序号
+	Tag               schema.Tag        `gorm:"column:tag;type:smallint;default:1"`                        // 物模型标签 1:自定义 2:可选 3:必选  必选不可删除
+	Type              int64             `gorm:"column:type;index:product_id_type;type:smallint;default:1"` // 物模型类型 1:property属性 2:event事件 3:action行为
+	ExtendConfig      string            `gorm:"column:extend_config;type:text"`                            //拓展参数
+	Required          int64             `gorm:"column:required;type:smallint;default:2"`                   // 是否必须,1是 2否
+	Name              string            `gorm:"column:name;type:varchar(100);NOT NULL"`                    // 功能名称
+	Desc              string            `gorm:"column:desc;type:varchar(200)"`                             // 描述
+	IsCanSceneLinkage int64             `gorm:"column:is_can_scene_linkage;type:smallint;default:1"`       // 是否放到场景联动中
+	FuncGroup         int64             `gorm:"column:func_group;type:smallint;default:1"`                 // 功能分类: 1:普通功能 2:系统功能
+	ControlMode       int64             `gorm:"column:control_mode;type:smallint;default:1"`               //控制模式: 1: 可以群控,可以单控  2:只能单控
+	UserPerm          int64             `gorm:"column:user_auth;type:smallint;default:3"`                  //用户权限操作: 1:r(只读) 3:rw(可读可写)
+	RecordMode        schema.RecordMode `gorm:"column:record_mode;type:smallint;default:1"`                //1(默认) 记录历史记录 2 只记录差异值 3 不记录历史记录
+	IsPassword        int64             `gorm:"column:is_password;type:smallint;default:2"`                //是否是密码类型
+	Affordance        string            `gorm:"column:affordance;type:json;NOT NULL"`                      // 各类型的自定义功能定义
+	Order             int64             `gorm:"column:order;type:BIGINT;default:1;NOT NULL"`               // 左侧table排序序号
 }
 
 // 通用物模型表

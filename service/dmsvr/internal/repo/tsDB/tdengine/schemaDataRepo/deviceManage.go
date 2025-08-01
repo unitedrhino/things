@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/schema"
@@ -52,7 +53,7 @@ func (d *DeviceDataRepo) DeleteDevice(
 	if err != nil {
 		return err
 	}
-	_, err = d.kv.DelCtx(ctx, d.genRedisPropertyKey(productID, deviceName), d.genRedisPropertyFirstKey(productID, deviceName))
+	_, err = d.kv.DelCtx(ctx, tsDB.GenRedisPropertyLastKey(productID, deviceName), tsDB.GenRedisPropertyFirstKey(productID, deviceName))
 	return err
 }
 func GetArrayID(id string, num int) string {
@@ -114,7 +115,7 @@ func (d *DeviceDataRepo) DeleteDeviceProperty(ctx context.Context, productID str
 			return err
 		}
 	}
-	_, err := d.kv.DelCtx(ctx, d.genRedisPropertyKey(productID, deviceName), d.genRedisPropertyFirstKey(productID, deviceName))
+	_, err := d.kv.DelCtx(ctx, tsDB.GenRedisPropertyLastKey(productID, deviceName), tsDB.GenRedisPropertyFirstKey(productID, deviceName))
 	return err
 }
 

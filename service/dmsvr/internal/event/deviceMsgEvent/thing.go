@@ -472,7 +472,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 				})
 			}
 		}
-		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).Infof("%s.DeviceThingPropertyReport startTime:%v",
+		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).Debugf("%s.DeviceThingPropertyReport startTime:%v",
 			utils.FuncName(), startTime)
 	})
 	utils.Go(ctx, func() {
@@ -502,7 +502,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 				"areaID":    cast.ToString(di.AreaID),
 			})
 		}
-		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).Infof("%s.DeviceThingPropertyReport startTime:%v",
+		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).Debugf("%s.DeviceThingPropertyReport startTime:%v",
 			utils.FuncName(), startTime)
 	})
 

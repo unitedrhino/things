@@ -126,7 +126,7 @@ type (
         IsCanSceneLinkage int64  `json:"isCanSceneLinkage,optional"` //是否可以场景联动
         FuncGroup int64 `json:"funcGroup,optional"`// 功能分类: 1:普通功能 2:系统功能
         UserPerm int64 `json:"userPerm,optional"`//用户权限操作: 1:r(只读) 3:rw(可读可写)
-        IsHistory int64 `json:"isHistory,optional"`// 是否存储历史记录
+        RecordMode int64 `json:"recordMode,optional"`// 1(默认) 记录历史记录 2 只记录差异值 3 不记录历史记录
         IsPassword int64 `json:"isPassword,optional"` //是否是密码类型,密码类型需要加掩码
         Order int64 `json:"order,optional"`// 排序
         ControlMode int64 `json:"controlMode,optional"`//控制模式: 1: 可以群控,可以单控  2:只能单控

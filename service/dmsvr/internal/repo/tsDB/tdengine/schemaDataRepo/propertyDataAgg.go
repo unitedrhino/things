@@ -32,7 +32,7 @@ func (d *DeviceDataRepo) GetPropertyAgg(ctx context.Context, m *schema.Model, fi
 	if len(filter.Aggs) == 0 {
 		return nil, errors.Parameter.AddMsg("至少填写一个聚合函数")
 	}
-	for _, agg := range filter.Aggs { //暂时不考虑数组类型
+	for _, agg := range filter.Aggs { //todo 暂时不考虑数组类型
 		_, ok := m.Property[agg.DataID]
 		if !ok {
 			return nil, errors.Parameter.AddMsgf("属性未定义:%v", agg.DataID)

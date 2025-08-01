@@ -37,6 +37,14 @@ const (
 	TagDevice   Tag = 4 //设备物模型
 )
 
+type RecordMode = int64
+
+const (
+	RecordModeAll  RecordMode = 1 //全部记录
+	RecordModeAuto RecordMode = 2 //只记录差异值
+	RecordModeNone RecordMode = 3 //不记录
+)
+
 // 属性读写类型: r(只读) rw(可读可写)
 type PropertyMode string
 

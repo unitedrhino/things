@@ -72,8 +72,8 @@ func (l *DeviceSchemaUpdateLogic) DeviceSchemaUpdate(in *dm.DeviceSchema) (*dm.E
 		po.UserPerm = newPo.UserPerm
 	}
 
-	if in.IsHistory != 0 {
-		po.IsHistory = newPo.IsHistory
+	if in.RecordMode != 0 {
+		po.RecordMode = newPo.RecordMode
 	}
 
 	if in.Order != 0 {

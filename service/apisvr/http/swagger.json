@@ -7049,10 +7049,10 @@
           "format": "int64",
           "description": "用户权限操作: 1:r(只读) 3:rw(可读可写)"
         },
-        "isHistory": {
+        "recordMode": {
           "type": "integer",
           "format": "int64",
-          "description": " 是否存储历史记录"
+          "description": " 1(默认) 记录历史记录 2 只记录差异值 3 不记录历史记录"
         },
         "isPassword": {
           "type": "integer",
@@ -10590,10 +10590,10 @@
           "format": "int64",
           "description": "用户权限操作: 1:r(只读) 3:rw(可读可写)"
         },
-        "isHistory": {
+        "recordMode": {
           "type": "integer",
           "format": "int64",
-          "description": " 是否存储历史记录"
+          "description": " 1(默认) 记录历史记录 2 只记录差异值 3 不记录历史记录"
         },
         "isPassword": {
           "type": "integer",
@@ -13418,10 +13418,10 @@
           "format": "int64",
           "description": "用户权限操作: 1:r(只读) 3:rw(可读可写)"
         },
-        "isHistory": {
+        "recordMode": {
           "type": "integer",
           "format": "int64",
-          "description": " 是否存储历史记录"
+          "description": " 1(默认) 记录历史记录 2 只记录差异值 3 不记录历史记录"
         },
         "isPassword": {
           "type": "integer",

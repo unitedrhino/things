@@ -59,7 +59,7 @@ func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*re
 		po.FuncGroup = cs.FuncGroup
 		po.ControlMode = cs.ControlMode
 		po.UserPerm = cs.UserPerm
-		po.IsHistory = cs.IsHistory
+		po.RecordMode = cs.RecordMode
 		po.IsPassword = cs.IsPassword
 	}
 	if po.Name == "" {
@@ -84,8 +84,8 @@ func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*re
 	if po.UserPerm != 0 && cs != nil {
 		po.UserPerm = cs.UserPerm
 	}
-	if po.IsHistory == 0 && cs != nil {
-		po.IsHistory = cs.IsHistory
+	if po.RecordMode == 0 && cs != nil {
+		po.RecordMode = cs.RecordMode
 	}
 	if po.Order == 0 && cs != nil {
 		po.Order = cs.Order

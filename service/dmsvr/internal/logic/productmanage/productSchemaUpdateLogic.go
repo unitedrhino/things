@@ -81,8 +81,8 @@ func (l *ProductSchemaUpdateLogic) ruleCheck(in *dm.ProductSchemaUpdateReq) (*re
 		po.UserPerm = newPo.UserPerm
 	}
 
-	if in.Info.IsHistory != 0 && po.Tag == schema.TagCustom {
-		po.IsHistory = newPo.IsHistory
+	if in.Info.RecordMode != 0 && po.Tag == schema.TagCustom {
+		po.RecordMode = newPo.RecordMode
 	}
 
 	if in.Info.Order != 0 {

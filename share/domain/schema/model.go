@@ -24,20 +24,20 @@ type (
 		Action     ActionMap   `json:"-"`                    //内部使用,使用map加速匹配,key为id
 	}
 	CommonParam struct {
-		Identifier        string   `json:"identifier"`        //标识符 (统一)
-		Tag               Tag      `json:"tag"`               //物模型标签 1:自定义 2:可选 3:必选  必选不可删除
-		Name              string   `json:"name"`              //功能名称
-		Desc              string   `json:"desc"`              //描述
-		Required          bool     `json:"required"`          //是否必须
-		ExtendConfig      string   `json:"extendConfig"`      //拓展参数,json格式
-		IsCanSceneLinkage int64    `json:"isCanSceneLinkage"` //是否支持场景联动控制 (统一)
-		IsShareAuthPerm   int64    `json:"isShareAuthPerm"`   // 分享是否需要校验权限 (统一)
-		FuncGroup         int64    `json:"funcGroup"`         // 功能分类: 1:普通功能 2:系统功能
-		ControlMode       int64    `json:"controlMode"`       //控制模式: 1: 可以群控,可以单控  2:只能单控
-		UserPerm          int64    `json:"userPerm"`          //用户权限操作: 1:r(只读) 3:rw(可读可写)
-		IsHistory         def.Bool `json:"isHistory"`         // 是否存储历史记录
-		IsPassword        def.Bool `json:"isPassword"`        //是否是密码类型,密码类型需要加掩码
-		Order             int64    `json:"order"`             //排序
+		Identifier        string     `json:"identifier"`        //标识符 (统一)
+		Tag               Tag        `json:"tag"`               //物模型标签 1:自定义 2:可选 3:必选  必选不可删除
+		Name              string     `json:"name"`              //功能名称
+		Desc              string     `json:"desc"`              //描述
+		Required          bool       `json:"required"`          //是否必须
+		ExtendConfig      string     `json:"extendConfig"`      //拓展参数,json格式
+		IsCanSceneLinkage int64      `json:"isCanSceneLinkage"` //是否支持场景联动控制 (统一)
+		IsShareAuthPerm   int64      `json:"isShareAuthPerm"`   // 分享是否需要校验权限 (统一)
+		FuncGroup         int64      `json:"funcGroup"`         // 功能分类: 1:普通功能 2:系统功能
+		ControlMode       int64      `json:"controlMode"`       //控制模式: 1: 可以群控,可以单控  2:只能单控
+		UserPerm          int64      `json:"userPerm"`          //用户权限操作: 1:r(只读) 3:rw(可读可写)
+		RecordMode        RecordMode `json:"recordMode"`        // 1(默认) 记录历史记录 2 只记录差异值 3 不记录历史记录
+		IsPassword        def.Bool   `json:"isPassword"`        //是否是密码类型,密码类型需要加掩码
+		Order             int64      `json:"order"`             //排序
 	}
 	/*配置信息*/
 	Profile struct {

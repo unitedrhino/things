@@ -13,6 +13,7 @@ import (
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB"
+	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/spf13/cast"
@@ -37,20 +38,26 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 	case schema.DataTypeArray:
 		genArrSql := func(Identifier string, num int, v any) error {
 			ars[schema.GenArray(Identifier, num)] = v
-			if optional.OnlyCache {
-				if property.Define.ArrayInfo.Type == schema.DataTypeStruct {
-					vv, ok := property.Value.(map[string]msgThing.Param)
-					if !ok {
-						return errors.Parameter.AddMsg("结构体类型传参错误")
-					}
-					vvv, err := msgThing.ToVal(vv)
-					if err != nil {
-						return err
-					}
-					ars[schema.GenArray(Identifier, num)] = vvv
+			if property.Define.ArrayInfo.Type == schema.DataTypeStruct {
+				vv, ok := property.Value.(map[string]msgThing.Param)
+				if !ok {
+					return errors.Parameter.AddMsg("结构体类型传参错误")
 				}
+				vvv, err := msgThing.ToVal(vv)
+				if err != nil {
+					return err
+				}
+				ars[schema.GenArray(Identifier, num)] = vvv
+			}
+			if optional.OnlyCache || !tsDB.CheckIsChange(ctx, d.kv, devices.Core{
+				ProductID: productID, DeviceName: deviceName}, p, msgThing.PropertyData{
+				Identifier: schema.GenArray(Identifier, num),
+				Param:      ars[schema.GenArray(Identifier, num)],
+				TimeStamp:  timestamp,
+			}) {
 				return nil
 			}
+
 			id := GetArrayID(Identifier, num)
 			pp := Property{
 				ProductID:  productID,
@@ -60,18 +67,9 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 			}
 			switch property.Define.ArrayInfo.Type {
 			case schema.DataTypeStruct:
-				vv, ok := property.Value.(map[string]msgThing.Param)
-				if !ok {
-					return errors.Parameter.AddMsg("结构体类型传参错误")
-				}
-				vvv, err := msgThing.ToVal(vv)
-				if err != nil {
-					return err
-				}
-				ars[property.Identifier] = vvv
 				d.asyncPropertyStructArray.AsyncInsert(&PropertyStructArray{
 					Property: pp,
-					Param:    vvv,
+					Param:    ars[schema.GenArray(Identifier, num)].(map[string]any),
 					Pos:      int64(num),
 				})
 			case schema.DataTypeBool:
@@ -122,29 +120,7 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 		}
 	default:
 		ars[property.Identifier] = property.Value
-		if optional.OnlyCache {
-			if property.Define.Type == schema.DataTypeStruct {
-				vv, ok := property.Value.(map[string]msgThing.Param)
-				if !ok {
-					return errors.Parameter.AddMsg("结构体类型传参错误")
-				}
-				vvv, err := msgThing.ToVal(vv)
-				if err != nil {
-					return err
-				}
-				ars[property.Identifier] = vvv
-			}
-			break
-		}
-
-		pp := Property{
-			ProductID:  productID,
-			DeviceName: deviceName,
-			Timestamp:  timestamp,
-			Identifier: property.Identifier,
-		}
-		switch property.Define.Type {
-		case schema.DataTypeStruct:
+		if property.Define.Type == schema.DataTypeStruct {
 			vv, ok := property.Value.(map[string]msgThing.Param)
 			if !ok {
 				return errors.Parameter.AddMsg("结构体类型传参错误")
@@ -154,9 +130,26 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 				return err
 			}
 			ars[property.Identifier] = vvv
+		}
+		if optional.OnlyCache || !tsDB.CheckIsChange(ctx, d.kv, devices.Core{
+			ProductID: productID, DeviceName: deviceName}, p, msgThing.PropertyData{
+			Identifier: property.Identifier,
+			Param:      ars[property.Identifier],
+			TimeStamp:  timestamp,
+		}) {
+			break
+		}
+		pp := Property{
+			ProductID:  productID,
+			DeviceName: deviceName,
+			Timestamp:  timestamp,
+			Identifier: property.Identifier,
+		}
+		switch property.Define.Type {
+		case schema.DataTypeStruct:
 			d.asyncPropertyStruct.AsyncInsert(&PropertyStruct{
 				Property: pp,
-				Param:    vvv,
+				Param:    ars[property.Identifier].(map[string]any),
 			})
 		case schema.DataTypeBool:
 			d.asyncPropertyBool.AsyncInsert(&PropertyBool{
@@ -193,11 +186,11 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 				TimeStamp:  timestamp,
 			}
 			data.Fmt()
-			err = d.kv.Hset(d.genRedisPropertyKey(productID, deviceName), k, data.String())
+			err = d.kv.Hset(tsDB.GenRedisPropertyLastKey(productID, deviceName), k, data.String())
 			if err != nil {
 				log.Error(err)
 			}
-			retStr, err := d.kv.Hget(d.genRedisPropertyFirstKey(productID, deviceName), k)
+			retStr, err := d.kv.Hget(tsDB.GenRedisPropertyFirstKey(productID, deviceName), k)
 			if err != nil && !errors.Cmp(stores.ErrFmt(err), errors.NotFind) {
 				log.Error(err)
 				continue
@@ -213,7 +206,7 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 			}
 
 			//到这里都是不相等或者之前没有记录的
-			err = d.kv.Hset(d.genRedisPropertyFirstKey(productID, deviceName), k, data.String())
+			err = d.kv.Hset(tsDB.GenRedisPropertyFirstKey(productID, deviceName), k, data.String())
 			if err != nil {
 				log.Error(err)
 			}
@@ -228,15 +221,8 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 	return
 }
 
-func (d *DeviceDataRepo) genRedisPropertyFirstKey(productID string, deviceName string) string {
-	return fmt.Sprintf("device:thing:property:first:%s:%s", productID, deviceName)
-}
-
-func (d *DeviceDataRepo) genRedisPropertyKey(productID string, deviceName string) string {
-	return fmt.Sprintf("device:thing:property:last:%s:%s", productID, deviceName)
-}
 func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schema.Property, filter msgThing.LatestFilter) (*msgThing.PropertyData, error) {
-	retStr, err := d.kv.HgetCtx(ctx, d.genRedisPropertyKey(filter.ProductID, filter.DeviceName), filter.DataID)
+	retStr, err := d.kv.HgetCtx(ctx, tsDB.GenRedisPropertyLastKey(filter.ProductID, filter.DeviceName), filter.DataID)
 
 	if err != nil && !errors.Cmp(stores.ErrFmt(err), errors.NotFind) {
 		logx.WithContext(ctx).Error(err)
@@ -271,7 +257,7 @@ func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schem
 	if er == nil {
 		dds[0].Param = vv
 	}
-	d.kv.HsetCtx(ctx, d.genRedisPropertyKey(filter.ProductID, filter.DeviceName), filter.DataID, dds[0].String())
+	d.kv.HsetCtx(ctx, tsDB.GenRedisPropertyLastKey(filter.ProductID, filter.DeviceName), filter.DataID, dds[0].String())
 	return dds[0], nil
 
 }

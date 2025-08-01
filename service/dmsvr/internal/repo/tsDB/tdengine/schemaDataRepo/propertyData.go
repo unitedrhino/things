@@ -9,7 +9,9 @@ import (
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/shadow"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine"
+	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -20,10 +22,41 @@ import (
 func (d *DeviceDataRepo) InsertPropertyData(ctx context.Context, t *schema.Property, productID string, deviceName string,
 	property *msgThing.Param, timestamp time.Time, optional msgThing.Optional) error {
 	sql, args, err := d.GenInsertPropertySql(ctx, t, productID, deviceName, property, timestamp, optional)
-	if err != nil {
+	if err != nil || sql == "" {
 		return err
 	}
 	d.t.AsyncInsert(sql, args...)
+	return nil
+}
+
+func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Model, productID string, deviceName string,
+	params map[string]msgThing.Param, timestamp time.Time, optional msgThing.Optional) error {
+	var startTime = time.Now()
+	defer func() {
+		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).
+			Infof("DeviceDataRepo.InsertPropertiesData")
+	}()
+	var sp = map[string]any{}
+	for identifier, param := range params {
+		p := t.Property[param.Identifier]
+		//入库
+		param.Identifier = identifier
+		sql1, args1, err := d.GenInsertPropertySql(ctx, p, productID, deviceName, &param, timestamp, optional)
+		if err != nil {
+			return errors.Database.AddDetailf(
+				"DeviceDataRepo.InsertPropertiesData.InsertPropertyData identifier:%v param:%v err:%v",
+				identifier, param, err)
+		}
+		if !optional.OnlyCache && sql1 != "" {
+			d.t.AsyncInsert(sql1, args1...)
+		}
+		if len(sql1) > 0 {
+			sp[identifier], _ = param.ToVal()
+		}
+	}
+	if len(sp) != 0 {
+		relationDB.NewShadowRepo(ctx).AsyncUpdate(ctx, shadow.NewInfo(productID, deviceName, sp, &timestamp))
+	}
 	return nil
 }
 
@@ -39,7 +72,16 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 			tagKeys, tagVals := tdengine.GenTagsParams(ts, d.groupConfigs, optional.BelongGroup)
 
 			id := GetArrayID(Identifier, num)
-			ars[schema.GenArray(Identifier, num)] = v
+			k := schema.GenArray(Identifier, num)
+			ars[k] = v
+
+			if !tsDB.CheckIsChange(ctx, d.kv, devices.Core{ProductID: productID, DeviceName: deviceName}, p, msgThing.PropertyData{
+				Identifier: k,
+				Param:      v,
+				TimeStamp:  timestamp,
+			}) { //如果为false,则无需更新
+				return nil
+			}
 			switch vv := v.(type) {
 			case map[string]msgThing.Param:
 				paramPlaceholder, paramIds, paramValList, err := GenParams(vv)
@@ -82,11 +124,19 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 			}
 		}
 	default:
+
+		ars[property.Identifier] = property.Value
+		if !tsDB.CheckIsChange(ctx, d.kv, devices.Core{ProductID: productID, DeviceName: deviceName}, p, msgThing.PropertyData{
+			Identifier: property.Identifier,
+			Param:      property.Value,
+			TimeStamp:  timestamp,
+		}) { //如果为false,则无需更新
+			break
+		}
 		ts := "`product_id`,`device_name`,`" + PropertyType + "` ," +
 			" `tenant_code`  ,`project_id` ,`area_id` ,`area_id_path` "
 		tagKeys, tagVals := tdengine.GenTagsParams(ts, d.groupConfigs, optional.BelongGroup)
 
-		ars[property.Identifier] = property.Value
 		switch property.Value.(type) {
 		case map[string]msgThing.Param:
 			paramPlaceholder, paramIds, paramValList, err := GenParams(property.Value.(map[string]msgThing.Param))
@@ -120,11 +170,11 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 				TimeStamp:  timestamp,
 			}
 			data.Fmt()
-			err = d.kv.Hset(d.genRedisPropertyKey(productID, deviceName), k, data.String())
+			err = d.kv.Hset(tsDB.GenRedisPropertyLastKey(productID, deviceName), k, data.String())
 			if err != nil {
 				log.Error(err)
 			}
-			retStr, err := d.kv.Hget(d.genRedisPropertyFirstKey(productID, deviceName), k)
+			retStr, err := d.kv.Hget(tsDB.GenRedisPropertyFirstKey(productID, deviceName), k)
 			if err != nil && !errors.Cmp(stores.ErrFmt(err), errors.NotFind) {
 				log.Error(err)
 				continue
@@ -140,7 +190,7 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 			}
 
 			//到这里都是不相等或者之前没有记录的
-			err = d.kv.Hset(d.genRedisPropertyFirstKey(productID, deviceName), k, data.String())
+			err = d.kv.Hset(tsDB.GenRedisPropertyFirstKey(productID, deviceName), k, data.String())
 			if err != nil {
 				log.Error(err)
 			}
@@ -182,41 +232,4 @@ func GenParams(params map[string]msgThing.Param) (string, string, []any, error) 
 		}
 	}
 	return paramPlaceholder, strings.Join(paramIds, ","), paramValList, nil
-}
-
-func (d *DeviceDataRepo) genRedisPropertyFirstKey(productID string, deviceName string) string {
-	return fmt.Sprintf("device:thing:property:first:%s:%s", productID, deviceName)
-}
-
-func (d *DeviceDataRepo) genRedisPropertyKey(productID string, deviceName string) string {
-	return fmt.Sprintf("device:thing:property:last:%s:%s", productID, deviceName)
-}
-
-func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Model, productID string, deviceName string,
-	params map[string]msgThing.Param, timestamp time.Time, optional msgThing.Optional) error {
-	var startTime = time.Now()
-	defer func() {
-		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).
-			Infof("DeviceDataRepo.InsertPropertiesData")
-	}()
-	var sp = map[string]any{}
-	for identifier, param := range params {
-		p := t.Property[param.Identifier]
-		//入库
-		param.Identifier = identifier
-		sql1, args1, err := d.GenInsertPropertySql(ctx, p, productID, deviceName, &param, timestamp, optional)
-		if err != nil {
-			return errors.Database.AddDetailf(
-				"DeviceDataRepo.InsertPropertiesData.InsertPropertyData identifier:%v param:%v err:%v",
-				identifier, param, err)
-		}
-		if !optional.OnlyCache {
-			d.t.AsyncInsert(sql1, args1...)
-		}
-		sp[identifier], _ = param.ToVal()
-	}
-	if len(sp) != 0 {
-		relationDB.NewShadowRepo(ctx).AsyncUpdate(ctx, shadow.NewInfo(productID, deviceName, sp, &timestamp))
-	}
-	return nil
 }
