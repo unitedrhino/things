@@ -26,12 +26,12 @@ func GenRedisPropertyLastKey(productID string, deviceName string) string {
 
 // 如果改变了才记录
 func CheckIsChange(ctx context.Context, kv kv.Store, dev devices.Core, p *schema.Property, data msgThing.PropertyData) bool {
-	//if p.RecordMode == schema.RecordModeAll || p.RecordMode == 0 {
-	//	return true
-	//}
-	//if p.RecordMode == schema.RecordModeNone {
-	//	return false
-	//}
+	if p.RecordMode == schema.RecordModeAll || p.RecordMode == 0 {
+		return true
+	}
+	if p.RecordMode == schema.RecordModeNone {
+		return false
+	}
 	data.Fmt()
 	retStr, err := kv.Hget(GenRedisPropertyLastKey(dev.ProductID, dev.DeviceName), data.Identifier)
 	if err != nil || retStr == "" {
