@@ -86,6 +86,12 @@ func (m *DmDeviceInfo) TableName() string {
 	return "dm_device_info"
 }
 
+type ConnParam struct {
+	ClientID string `json:"clientID"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
 // 设备信息表
 type DmDeviceMsgCount struct {
 	ID   int64             `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`

@@ -149,6 +149,8 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 				optional.AreaID, optional.AreaIDPath, tagVals,
 				paramIds, paramPlaceholder)
 			args = append([]any{timestamp}, paramValList...)
+			ars[property.Identifier], _ = msgThing.ToVal(property.Value.(map[string]msgThing.Param))
+
 		default:
 			var (
 				param = property.Value

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
@@ -83,12 +84,12 @@ func (d *DeviceDataRepo) GetEventDataByFilter(
 	filter msgThing.FilterOpt) ([]*msgThing.EventData, error) {
 	db := d.fmtSql(ctx, d.db, filter)
 	db = filter.Page.FmtSql2(db)
-	var list []*msgThing.EventData
+	var list []*Event
 	err := db.Model(Event{}).Find(&list).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
-	return list, stores.ErrFmt(err)
+	return utils.CopySlice[msgThing.EventData](list), stores.ErrFmt(err)
 }
 
 func (d *DeviceDataRepo) GetEventCountByFilter(

@@ -224,28 +224,14 @@ func GetVal(d *schema.Define, val any) (any, error) {
 			return ret, nil
 		}
 	case schema.DataTypeStruct:
-		if strut, ok := val.(map[string]any); !ok {
-			return nil, errors.Parameter.AddDetail(val)
-		} else {
-			getParam := make(map[string]Param, len(strut))
-			for k, v := range strut {
-				sv, ok := d.Spec[k]
-				if ok == false {
-					continue
-				}
-				tp := Param{
-					Identifier: sv.Identifier,
-					Name:       sv.Name,
-				}
-				err := tp.SetByDefine(&sv.DataType, v)
-				if err == nil {
-					getParam[k] = tp
-				} else if !errors.Cmp(err, errors.NotFind) {
-					return nil, errors.Fmt(err).AddDetail(sv.Identifier)
-				}
-			}
-			return getParam, nil
+		switch val.(type) {
+		case map[string]any:
+			return val, nil
+		case map[string]Param:
+			return getParamVal(d, val)
 		}
+		return nil, errors.Parameter.AddDetail(val)
+
 	case schema.DataTypeArray:
 		if arr, ok := val.([]any); !ok { //如果是指定id的方式
 			return GetVal(d.ArrayInfo, val)
