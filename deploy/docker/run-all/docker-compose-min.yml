@@ -123,7 +123,7 @@ services:
       - unitedrhino_net
 
   postgres: # 服务名称
-    image: registry.cn-qingdao.aliyuncs.com/unitedrhino/timescaledb-ha:latest    # 指定镜像及其版本
+    image: timescale/timescaledb-ha:pg17    # 指定镜像及其版本
     container_name: postgres # 指定容器的名称
     hostname: postgres
     restart: always
