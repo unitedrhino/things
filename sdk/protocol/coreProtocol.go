@@ -3,6 +3,9 @@ package protocol
 import (
 	"context"
 	"fmt"
+	"sync"
+	"time"
+
 	"gitee.com/unitedrhino/core/service/timed/timedjobsvr/client/timedmanage"
 	"gitee.com/unitedrhino/share/conf"
 	"gitee.com/unitedrhino/share/ctxs"
@@ -28,8 +31,6 @@ import (
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	"sync"
-	"time"
 )
 
 type CoreSvrClient struct {
@@ -59,14 +60,22 @@ type CoreProtocol struct {
 	rpcServer               *zrpc.RpcServer
 	rpcRegisters            []func(grpcServer *grpc.Server)
 	rpcConf                 zrpc.RpcServerConf
+	ctx                     context.Context
+	cancels                 []func()
 }
 
 type CoreProtocolConf struct {
-	ServerName string
-	DmClient   zrpc.Client
-	TimedM     zrpc.Client
-	NodeID     int64
-	Port       int64
+	ServerName     string
+	DmClient       zrpc.Client
+	TimedM         zrpc.Client
+	Tm             timedmanage.TimedManage
+	ProductM       productmanage.ProductManage
+	DeviceM        devicemanage.DeviceManage
+	ProtocolM      protocolmanage.ProtocolManage
+	DeviceMsg      devicemsg.DeviceMsg
+	DeviceInteract deviceinteract.DeviceInteract
+	NodeID         int64
+	Port           int64
 }
 
 func NewCoreProtocol(c conf.EventConf, pi *dm.ProtocolInfo, pc *CoreProtocolConf) (*CoreProtocol, error) {
@@ -74,43 +83,55 @@ func NewCoreProtocol(c conf.EventConf, pi *dm.ProtocolInfo, pc *CoreProtocolConf
 	if err != nil {
 		return nil, err
 	}
-	pm := productmanage.NewProductManage(pc.DmClient)
-	di := devicemanage.NewDeviceManage(pc.DmClient)
-	ps, err := dmExport.NewProductSchemaCache(pm, e)
+	if pc.ProductM == nil {
+		pc.ProductM = productmanage.NewProductManage(pc.DmClient)
+	}
+	if pc.DeviceM == nil {
+		pc.DeviceM = devicemanage.NewDeviceManage(pc.DmClient)
+	}
+	if pc.ProtocolM == nil {
+		pc.ProtocolM = protocolmanage.NewProtocolManage(pc.DmClient)
+	}
+	if pc.DeviceMsg == nil {
+		pc.DeviceMsg = devicemsg.NewDeviceMsg(pc.DmClient)
+	}
+	if pc.DeviceInteract == nil {
+		pc.DeviceInteract = deviceinteract.NewDeviceInteract(pc.DmClient)
+	}
+	if pc.Tm == nil {
+		pc.Tm = timedmanage.NewTimedManage(pc.TimedM)
+	}
+	ps, err := dmExport.NewProductSchemaCache(pc.ProductM, e)
 	if err != nil {
 		return nil, err
 	}
-	sc, err := dmExport.NewDeviceSchemaCache(di, ps, e)
+	sc, err := dmExport.NewDeviceSchemaCache(pc.DeviceM, ps, e)
 	if err != nil {
 		return nil, err
 	}
-	dc, err := dmExport.NewDeviceInfoCache(di, e)
+	dc, err := dmExport.NewDeviceInfoCache(pc.DeviceM, e)
 	if err != nil {
 		return nil, err
 	}
-	pic, err := dmExport.NewProductInfoCache(pm, e)
+	pic, err := dmExport.NewProductInfoCache(pc.ProductM, e)
 	if err != nil {
 		return nil, err
 	}
 
-	var timedM timedmanage.TimedManage
-	if pc.TimedM != nil {
-		timedM = timedmanage.NewTimedManage(pc.TimedM)
-	}
 	return &CoreProtocol{
 		FastEvent:  e,
 		Pi:         pi,
 		ServerName: pc.ServerName,
 		CoreSvrClient: CoreSvrClient{
-			ProtocolM:      protocolmanage.NewProtocolManage(pc.DmClient),
-			ProductM:       pm,
+			ProtocolM:      pc.ProtocolM,
+			ProductM:       pc.ProductM,
 			SchemaCache:    sc,
 			DeviceCache:    dc,
 			ProductCache:   pic,
-			DeviceM:        di,
-			TimedM:         timedM,
-			DeviceMsg:      devicemsg.NewDeviceMsg(pc.DmClient),
-			DeviceInteract: deviceinteract.NewDeviceInteract(pc.DmClient),
+			DeviceM:        pc.DeviceM,
+			TimedM:         pc.Tm,
+			DeviceMsg:      pc.DeviceMsg,
+			DeviceInteract: pc.DeviceInteract,
 		},
 	}, nil
 }
@@ -121,6 +142,9 @@ func (p *CoreProtocol) Start() error {
 	if err != nil && !errors.Cmp(errors.Fmt(err), errors.Duplicate) {
 		logx.Must(err)
 	}
+	ctx, cancel := context.WithCancel(ctxs.WithRoot(nil))
+	p.ctx = ctx
+	p.cancels = append(p.cancels, cancel)
 	utils.Go(ctx, func() {
 		run := func() {
 			_, err := p.ProtocolM.ProtocolServiceUpdate(ctx, &dm.ProtocolService{
@@ -135,11 +159,15 @@ func (p *CoreProtocol) Start() error {
 		}
 		run()
 		tick := time.Tick(time.Minute)
-		for _ = range tick {
-			run()
+		for {
+			select {
+			case <-tick:
+				run()
+			case <-p.ctx.Done():
+				return
+			}
 		}
 	})
-
 	err = p.FastEvent.Start()
 	if err != nil {
 		return err
@@ -155,12 +183,24 @@ func (p *CoreProtocol) Start() error {
 				}
 			})
 			defer s.Stop()
+			p.cancels = append(p.cancels, s.Stop)
 			s.AddUnaryInterceptors(interceptors.Ctxs, interceptors.Error)
 			p.rpcServer = s
 			s.Start()
 		})
 	}
 	return nil
+}
+func (p *CoreProtocol) AddStopHandle(h ...func()) {
+	p.cancels = append(p.cancels, h...)
+}
+
+func (p *CoreProtocol) Stop() {
+	for _, f := range p.cancels {
+		if f != nil {
+			f()
+		}
+	}
 }
 
 func (p *CoreProtocol) RunTimerHandles() {
