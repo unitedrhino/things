@@ -2,6 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
@@ -32,7 +33,7 @@ func NewProductSchemaCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext
 	}
 }
 
-func (l *ProductSchemaCreateLogic) ruleCheck(in *dm.ProductSchemaCreateReq) (*relationDB.DmSchemaInfo, error) {
+func (l *ProductSchemaCreateLogic) RuleCheck(in *dm.ProductSchemaCreateReq) (*relationDB.DmSchemaInfo, error) {
 	_, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.Info.ProductID}})
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {
@@ -109,18 +110,12 @@ func (l *ProductSchemaCreateLogic) ProductSchemaCreate(in *dm.ProductSchemaCreat
 		return nil, err
 	}
 	l.Infof("%s req=%v", utils.FuncName(), utils.Fmt(in))
-	po, err := l.ruleCheck(in)
+	po, err := l.RuleCheck(in)
 	if err != nil {
-		l.Errorf("ruleCheck err:%v", err)
+		l.Errorf("RuleCheck err:%v", err)
 		return nil, err
 	}
 
-	if schema.AffordanceType(po.Type) == schema.AffordanceTypeProperty && po.Tag == int64(schema.TagCustom) {
-		if err := l.svcCtx.SchemaManaRepo.CreateProperty(l.ctx, relationDB.ToPropertyDo(po.Identifier, &po.DmSchemaCore), in.Info.ProductID); err != nil {
-			l.Errorf("%s.CreateProperty failure,err:%v", utils.FuncName(), err)
-			return nil, errors.Database.AddDetail(err)
-		}
-	}
 	err = l.PsDB.Insert(l.ctx, po)
 	if err != nil {
 		return nil, err
