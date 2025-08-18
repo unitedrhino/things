@@ -62,42 +62,37 @@ func (l *ProductSchemaCreateLogic) RuleCheck(in *dm.ProductSchemaCreateReq) (*re
 		po.UserPerm = cs.UserPerm
 		po.RecordMode = cs.RecordMode
 		po.IsPassword = cs.IsPassword
-	}
-	if po.Name == "" {
-		if cs == nil {
-			return nil, errors.Parameter.AddMsg("功能名称不能为空")
+		if po.Name == "" {
+			po.Name = cs.Name
 		}
-		po.Name = cs.Name
+		if po.Required == 0 {
+			po.Required = cs.Required
+		}
+		if po.IsCanSceneLinkage == 0 {
+			po.IsCanSceneLinkage = cs.IsCanSceneLinkage
+		}
+		if po.FuncGroup == 0 {
+			po.FuncGroup = cs.FuncGroup
+		}
+		if po.ControlMode == 0 {
+			po.ControlMode = cs.ControlMode
+		}
+		if po.UserPerm != 0 {
+			po.UserPerm = cs.UserPerm
+		}
+		if po.RecordMode == 0 {
+			po.RecordMode = cs.RecordMode
+		}
+		if po.Order == 0 {
+			po.Order = cs.Order
+		}
+		if po.IsPassword == 0 {
+			po.IsPassword = cs.IsPassword
+		}
+		if po.ExtendConfig == "" {
+			po.ExtendConfig = cs.ExtendConfig
+		}
 	}
-	if po.Required == 0 && cs != nil {
-		po.Required = cs.Required
-	}
-
-	if po.IsCanSceneLinkage == 0 && cs != nil {
-		po.IsCanSceneLinkage = cs.IsCanSceneLinkage
-	}
-	if po.FuncGroup == 0 && cs != nil {
-		po.FuncGroup = cs.FuncGroup
-	}
-	if po.ControlMode == 0 && cs != nil {
-		po.ControlMode = cs.ControlMode
-	}
-	if po.UserPerm != 0 && cs != nil {
-		po.UserPerm = cs.UserPerm
-	}
-	if po.RecordMode == 0 && cs != nil {
-		po.RecordMode = cs.RecordMode
-	}
-	if po.Order == 0 && cs != nil {
-		po.Order = cs.Order
-	}
-	if po.IsPassword == 0 && cs != nil {
-		po.IsPassword = cs.IsPassword
-	}
-	if po.ExtendConfig == "" && cs != nil {
-		po.ExtendConfig = cs.ExtendConfig
-	}
-
 	if err = logic.CheckAffordance(po.Identifier, &po.DmSchemaCore, cs); err != nil {
 		return nil, err
 	}
@@ -115,7 +110,12 @@ func (l *ProductSchemaCreateLogic) ProductSchemaCreate(in *dm.ProductSchemaCreat
 		l.Errorf("RuleCheck err:%v", err)
 		return nil, err
 	}
-
+	if schema.AffordanceType(po.Type) == schema.AffordanceTypeProperty && po.Tag == int64(schema.TagCustom) {
+		if err := l.svcCtx.SchemaManaRepo.CreateProperty(l.ctx, relationDB.ToPropertyDo(po.Identifier, &po.DmSchemaCore), po.ProductID); err != nil {
+			l.Errorf("%s.CreateProperty failure,err:%v", utils.FuncName(), err)
+			return nil, errors.Database.AddDetail(err)
+		}
+	}
 	err = l.PsDB.Insert(l.ctx, po)
 	if err != nil {
 		return nil, err

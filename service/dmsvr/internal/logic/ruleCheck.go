@@ -5,7 +5,9 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/schema"
 )
 
-func CheckAffordance(identifier string, po *relationDB.DmSchemaCore, cs *relationDB.DmCommonSchema) error {
+type CheckOption = func(do any) error
+
+func CheckAffordance(identifier string, po *relationDB.DmSchemaCore, cs *relationDB.DmCommonSchema, checkOptions ...CheckOption) error {
 	var affordance interface {
 		ValidateWithFmt() error
 	}
@@ -43,6 +45,11 @@ func CheckAffordance(identifier string, po *relationDB.DmSchemaCore, cs *relatio
 	}
 	if err := affordance.ValidateWithFmt(); err != nil {
 		return err
+	}
+	for _, checkOption := range checkOptions {
+		if err := checkOption(affordance); err != nil {
+			return err
+		}
 	}
 	po.Affordance = relationDB.ToAffordancePo(affordance)
 	return nil

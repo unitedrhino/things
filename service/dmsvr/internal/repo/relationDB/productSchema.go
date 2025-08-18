@@ -2,6 +2,7 @@ package relationDB
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/share/domain/schema"
@@ -38,7 +39,7 @@ func NewProductSchemaRepo(in any) *ProductSchemaRepo {
 }
 
 func (p ProductSchemaRepo) filter(db *gorm.DB, f ProductSchemaFilter) *gorm.DB {
-	db = db.Where("tag !=?", schema.TagDevice)
+	db = db.Where("tag !=?", schema.TagDeviceCustom)
 
 	if f.IsCanSceneLinkage != 0 {
 		db = db.Where("is_can_scene_linkage = ?", f.IsCanSceneLinkage)
@@ -94,7 +95,7 @@ func (p ProductSchemaRepo) fmtFilter(ctx context.Context, f ProductSchemaFilter)
 }
 func (p ProductSchemaRepo) Insert(ctx context.Context, data *DmSchemaInfo) error {
 	err := p.db.Transaction(func(tx *gorm.DB) error {
-		err := NewSchemaInfoRepo(tx).DeleteByFilter(ctx, SchemaInfoFilter{ProductID: data.ProductID, Tag: schema.TagDevice, Identifiers: []string{data.Identifier}})
+		err := NewSchemaInfoRepo(tx).DeleteByFilter(ctx, SchemaInfoFilter{ProductID: data.ProductID, Tag: schema.TagDeviceCustom, Identifiers: []string{data.Identifier}})
 		if err != nil {
 			return err
 		}
@@ -182,8 +183,29 @@ func (p ProductSchemaRepo) CountByFilter(ctx context.Context, f ProductSchemaFil
 
 // 批量插入 LightStrategyDevice 记录
 func (p ProductSchemaRepo) MultiInsert(ctx context.Context, data []*DmSchemaInfo) error {
-	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true,
-		Columns: stores.SetColumnsWithPg(p.db, &DmSchemaInfo{}, "idx_dm_schema_info_identifier")}).Model(&DmSchemaInfo{}).Create(data).Error
+	var pmap = make(map[string][]string)
+	for _, item := range data {
+		p := pmap[item.ProductID]
+		if p == nil {
+			pmap[item.ProductID] = []string{item.Identifier}
+			continue
+		}
+		pmap[item.ProductID] = append(p, item.Identifier)
+	}
+	err := p.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		err := tx.Clauses(clause.OnConflict{UpdateAll: true,
+			Columns: stores.SetColumnsWithPg(p.db, &DmSchemaInfo{}, "idx_dm_schema_info_identifier")}).Model(&DmSchemaInfo{}).Create(data).Error
+		if err != nil {
+			return err
+		}
+		for productID, ids := range pmap { //如果定义了设备物模型,需要清除
+			err = NewDeviceSchemaRepo(tx).DeleteByFilter(ctx, DeviceSchemaFilter{ProductID: productID, Identifiers: ids})
+			if err != nil {
+				return err
+			}
+		}
+		return err
+	})
 	return stores.ErrFmt(err)
 }
 
@@ -228,7 +250,7 @@ func (p ProductSchemaRepo) MultiUpdate(ctx context.Context, productID string, sc
 			}
 		}
 		//如果定义了产品级的,需要删除设备级的
-		err = NewSchemaInfoRepo(tx).DeleteByFilter(ctx, SchemaInfoFilter{ProductID: productID, Tag: schema.TagDevice,
+		err = NewSchemaInfoRepo(tx).DeleteByFilter(ctx, SchemaInfoFilter{ProductID: productID, Tag: schema.TagDeviceCustom,
 			Identifiers: idents})
 		if err != nil {
 			return err

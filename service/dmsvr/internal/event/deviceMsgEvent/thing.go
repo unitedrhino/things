@@ -351,7 +351,7 @@ func (l *ThingLogic) DeviceSchemaReportAutoCreate(mode product.DeviceSchemaMode,
 		switch vv := v.(type) {
 		case string:
 			needAddProperties = append(needAddProperties, schema.Property{
-				CommonParam: schema.CommonParam{Identifier: k, Tag: schema.TagDevice, Name: k, Desc: "设备上报自动创建"},
+				CommonParam: schema.CommonParam{Identifier: k, Tag: schema.TagDeviceCustom, Name: k, Desc: "设备上报自动创建"},
 				Mode:        schema.PropertyModeR,
 				Define:      schema.Define{Type: schema.DataTypeString, Min: "0", Max: "999"},
 			})
@@ -359,20 +359,20 @@ func (l *ThingLogic) DeviceSchemaReportAutoCreate(mode product.DeviceSchemaMode,
 			_, err := vv.Int64()
 			if err != nil || mode == product.DeviceSchemaModeReportAutoCreateUseFloat {
 				needAddProperties = append(needAddProperties, schema.Property{
-					CommonParam: schema.CommonParam{Identifier: k, Tag: schema.TagDevice, Name: k, Desc: "设备上报自动创建"},
+					CommonParam: schema.CommonParam{Identifier: k, Tag: schema.TagDeviceCustom, Name: k, Desc: "设备上报自动创建"},
 					Mode:        schema.PropertyModeR,
 					Define:      schema.Define{Type: schema.DataTypeFloat, Min: cast.ToString(schema.DefineIntMin), Step: "0.001", Max: cast.ToString(schema.DefineIntMax)},
 				})
 			} else {
 				needAddProperties = append(needAddProperties, schema.Property{
-					CommonParam: schema.CommonParam{Identifier: k, Tag: schema.TagDevice, Name: k, Desc: "设备上报自动创建"},
+					CommonParam: schema.CommonParam{Identifier: k, Tag: schema.TagDeviceCustom, Name: k, Desc: "设备上报自动创建"},
 					Mode:        schema.PropertyModeR,
 					Define:      schema.Define{Type: schema.DataTypeInt, Min: cast.ToString(schema.DefineIntMin), Step: "1", Max: cast.ToString(schema.DefineIntMax)},
 				})
 			}
 		case bool:
 			needAddProperties = append(needAddProperties, schema.Property{
-				CommonParam: schema.CommonParam{Identifier: k, Tag: schema.TagDevice, Name: k, Desc: "设备上报自动创建"},
+				CommonParam: schema.CommonParam{Identifier: k, Tag: schema.TagDeviceCustom, Name: k, Desc: "设备上报自动创建"},
 				Mode:        schema.PropertyModeR,
 				Define:      schema.Define{Type: schema.DataTypeBool, Mapping: map[string]string{"0": "关", "1": "开"}},
 			})

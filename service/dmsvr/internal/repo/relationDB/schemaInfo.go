@@ -182,7 +182,7 @@ func (p SchemaInfoRepo) MultiInsert2(ctx context.Context, productID string, devi
 func (p SchemaInfoRepo) MultiUpdate(ctx context.Context, productID string, deviceName string, schemaInfo *schema.Model) error {
 	var datas []*DmSchemaInfo
 	for _, item := range schemaInfo.Property {
-		item.Tag = schema.TagDevice
+		item.Tag = schema.TagDeviceCustom
 		datas = append(datas, &DmSchemaInfo{
 			ProductID:    productID,
 			DeviceName:   utils.AnyToNullString(deviceName),
@@ -191,7 +191,7 @@ func (p SchemaInfoRepo) MultiUpdate(ctx context.Context, productID string, devic
 		})
 	}
 	for _, item := range schemaInfo.Event {
-		item.Tag = schema.TagDevice
+		item.Tag = schema.TagDeviceCustom
 		datas = append(datas, &DmSchemaInfo{
 			ProductID:    productID,
 			DeviceName:   utils.AnyToNullString(deviceName),
@@ -200,7 +200,7 @@ func (p SchemaInfoRepo) MultiUpdate(ctx context.Context, productID string, devic
 		})
 	}
 	for _, item := range schemaInfo.Action {
-		item.Tag = schema.TagDevice
+		item.Tag = schema.TagDeviceCustom
 		datas = append(datas, &DmSchemaInfo{
 			ProductID:    productID,
 			DeviceName:   utils.AnyToNullString(deviceName),

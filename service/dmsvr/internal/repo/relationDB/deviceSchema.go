@@ -2,6 +2,7 @@ package relationDB
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"gorm.io/gorm"
@@ -37,15 +38,16 @@ func NewDeviceSchemaRepo(in any) *DeviceSchemaRepo {
 	return &DeviceSchemaRepo{db: stores.GetCommonConn(in)}
 }
 
+var deviceTag = []schema.Tag{schema.TagDeviceCustom, schema.TagDeviceOptional}
+
 func (p DeviceSchemaRepo) filter(db *gorm.DB, f DeviceSchemaFilter) *gorm.DB {
 	if !f.WithProductSchema {
 		db = db.Where("product_id=?", f.ProductID)
 		db = db.Where("device_name=?", f.DeviceName)
-		db = db.Where("tag=?", schema.TagDevice)
+		db = db.Where("tag in ?", deviceTag)
 	} else {
-		db = db.Where("product_id=? and device_name=? and tag=?", f.ProductID, f.DeviceName, schema.TagDevice).
-			Or("product_id=? and tag !=?", f.ProductID, schema.TagDevice)
-
+		db = db.Where("product_id=? and device_name=? and tag in ?", f.ProductID, f.DeviceName, deviceTag).
+			Or("product_id=? and tag not in ?", f.ProductID, deviceTag)
 	}
 
 	if f.IsCanSceneLinkage != 0 {
@@ -159,7 +161,7 @@ func (p DeviceSchemaRepo) MultiInsert(ctx context.Context, data []*DmDeviceSchem
 func (p DeviceSchemaRepo) MultiInsert2(ctx context.Context, productID string, deviceName string, schemaInfo *schema.Model) error {
 	var datas []*DmDeviceSchema
 	for _, item := range schemaInfo.Property {
-		item.Tag = schema.TagDevice
+		item.Tag = schema.TagDeviceCustom
 		datas = append(datas, &DmDeviceSchema{
 			ProductID:    productID,
 			DeviceName:   deviceName,
@@ -168,7 +170,7 @@ func (p DeviceSchemaRepo) MultiInsert2(ctx context.Context, productID string, de
 		})
 	}
 	for _, item := range schemaInfo.Event {
-		item.Tag = schema.TagDevice
+		item.Tag = schema.TagDeviceCustom
 		datas = append(datas, &DmDeviceSchema{
 			ProductID:    productID,
 			DeviceName:   deviceName,
@@ -177,7 +179,7 @@ func (p DeviceSchemaRepo) MultiInsert2(ctx context.Context, productID string, de
 		})
 	}
 	for _, item := range schemaInfo.Action {
-		item.Tag = schema.TagDevice
+		item.Tag = schema.TagDeviceCustom
 		datas = append(datas, &DmDeviceSchema{
 			ProductID:    productID,
 			DeviceName:   deviceName,
@@ -193,7 +195,7 @@ func (p DeviceSchemaRepo) MultiInsert2(ctx context.Context, productID string, de
 func (p DeviceSchemaRepo) MultiUpdate(ctx context.Context, productID string, deviceName string, schemaInfo *schema.Model) error {
 	var datas []*DmDeviceSchema
 	for _, item := range schemaInfo.Property {
-		item.Tag = schema.TagDevice
+		item.Tag = schema.TagDeviceCustom
 		datas = append(datas, &DmDeviceSchema{
 			ProductID:    productID,
 			DeviceName:   deviceName,
@@ -202,7 +204,7 @@ func (p DeviceSchemaRepo) MultiUpdate(ctx context.Context, productID string, dev
 		})
 	}
 	for _, item := range schemaInfo.Event {
-		item.Tag = schema.TagDevice
+		item.Tag = schema.TagDeviceCustom
 		datas = append(datas, &DmDeviceSchema{
 			ProductID:    productID,
 			DeviceName:   deviceName,
@@ -211,7 +213,7 @@ func (p DeviceSchemaRepo) MultiUpdate(ctx context.Context, productID string, dev
 		})
 	}
 	for _, item := range schemaInfo.Action {
-		item.Tag = schema.TagDevice
+		item.Tag = schema.TagDeviceCustom
 		datas = append(datas, &DmDeviceSchema{
 			ProductID:    productID,
 			DeviceName:   deviceName,

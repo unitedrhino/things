@@ -2,10 +2,11 @@ package schemaDataRepo
 
 import (
 	"fmt"
+	"strings"
+
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/spf13/cast"
-	"strings"
 )
 
 type SchemaStore struct {
@@ -31,7 +32,7 @@ func (S *SchemaStore) GetPropertyStableName(p *schema.Property, productID, ident
 	if p != nil && p.Tag == schema.TagCustom && productID != "" {
 		return fmt.Sprintf("`model_custom_property_%s_%s`", productID, identifier)
 	}
-	if p != nil && p.Tag == schema.TagDevice {
+	if p != nil && p.Tag == schema.TagDeviceCustom {
 		switch p.Define.Type {
 		case schema.DataTypeBool:
 			return S.GetDeviceStableBoolName()

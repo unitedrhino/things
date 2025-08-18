@@ -4,6 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
+	"time"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
@@ -15,8 +18,6 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/zeromicro/go-zero/core/logx"
-	"strings"
-	"time"
 )
 
 func (d *DeviceDataRepo) InsertPropertyData(ctx context.Context, t *schema.Property, productID string, deviceName string,
@@ -83,8 +84,17 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 				return nil
 			}
 			switch vv := v.(type) {
-			case map[string]msgThing.Param:
-				paramPlaceholder, paramIds, paramValList, err := GenParams(vv)
+			case map[string]msgThing.Param, map[string]any:
+				var paramPlaceholder string
+				var paramIds string
+				var paramValList []any
+				var err error
+				switch v2 := v.(type) {
+				case map[string]msgThing.Param:
+					paramPlaceholder, paramIds, paramValList, err = GenParams(v2)
+				case map[string]any:
+					paramPlaceholder, paramIds, paramValList, err = GenParams2(v2)
+				}
 				if err != nil {
 					return err
 				}
@@ -222,6 +232,34 @@ func GenParams(params map[string]msgThing.Param) (string, string, []any, error) 
 	paramPlaceholder = paramPlaceholder[:len(paramPlaceholder)-1]
 	for k, vv := range params {
 		v, _ := vv.ToVal()
+		paramIds = append(paramIds, "`"+k+"`")
+		if _, ok := v.([]any); !ok {
+			paramValList = append(paramValList, v)
+		} else { //如果是数组类型,需要序列化为json
+			param, err := json.Marshal(v)
+			if err != nil {
+				return "", "", nil, errors.System.AddDetail("param json parse failure")
+			}
+			paramValList = append(paramValList, param)
+		}
+	}
+	return paramPlaceholder, strings.Join(paramIds, ","), paramValList, nil
+}
+
+func GenParams2(params map[string]any) (string, string, []any, error) {
+	if len(params) == 0 {
+		//使用这个函数前必须要判断参数的个数是否大于0
+		return "", "", nil, errors.Parameter.AddMsgf("SchemaDataRepo|GenParams|params num == 0")
+	}
+	var (
+		paramPlaceholder = strings.Repeat("?,", len(params))
+		paramValList     []any //参数值列表
+		paramIds         []string
+	)
+	//将最后一个?去除
+	paramPlaceholder = paramPlaceholder[:len(paramPlaceholder)-1]
+	for k, vv := range params {
+		v := vv
 		paramIds = append(paramIds, "`"+k+"`")
 		if _, ok := v.([]any); !ok {
 			paramValList = append(paramValList, v)

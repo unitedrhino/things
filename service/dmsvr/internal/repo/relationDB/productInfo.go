@@ -170,7 +170,7 @@ func (p ProductInfoRepo) Insert(ctx context.Context, data *DmProductInfo) error 
 				})
 			}
 			//如果定义了产品级的,需要删除设备级的
-			err = NewSchemaInfoRepo(tx).DeleteByFilter(ctx, SchemaInfoFilter{ProductID: data.ProductID, Tag: schema.TagDevice, Identifiers: idents})
+			err = NewSchemaInfoRepo(tx).DeleteByFilter(ctx, SchemaInfoFilter{ProductID: data.ProductID, Tag: schema.TagDeviceCustom, Identifiers: idents})
 			if err != nil {
 				return err
 			}

@@ -2,6 +2,7 @@ package devicemanagelogic
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
@@ -30,8 +31,8 @@ func NewDeviceSchemaMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceCon
 	}
 }
 
-func (l *DeviceSchemaMultiCreateLogic) ruleCheck(in *dm.DeviceSchemaMultiCreateReq) (ret []*relationDB.DmDeviceSchema, err error) {
-	_, err = relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(l.ctx,
+func ruleCheck(ctx context.Context, svcCtx *svc.ServiceContext, in *dm.DeviceSchemaMultiCreateReq) (ret []*relationDB.DmDeviceSchema, err error) {
+	_, err = relationDB.NewDeviceInfoRepo(ctx).FindOneByFilter(ctx,
 		relationDB.DeviceFilter{ProductID: in.ProductID, DeviceNames: []string{in.DeviceName}})
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {
@@ -39,32 +40,95 @@ func (l *DeviceSchemaMultiCreateLogic) ruleCheck(in *dm.DeviceSchemaMultiCreateR
 		}
 		return nil, err
 	}
-	s, err := l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
+	s, err := svcCtx.DeviceSchemaRepo.GetData(ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
 	if err != nil {
 		return nil, err
 	}
 	for _, v := range in.List {
+		var checkOptions []logic.CheckOption
+		po := utils.Copy[relationDB.DmDeviceSchema](v)
 		switch schema.AffordanceType(v.Type) {
 		case schema.AffordanceTypeProperty:
 			_, ok := s.Property[v.Identifier]
 			if ok {
 				continue
 			}
+			if po.Tag != schema.TagDeviceOptional {
+				checkOptions = append(checkOptions, func(do any) error {
+					s := do.(*schema.Property)
+					if utils.SliceIn(s.Define.Type, schema.DataTypeArray, schema.DataTypeStruct) {
+						return errors.Parameter.AddMsgf("自定义物模型中不支持数组或结构体:%v", v.Identifier)
+					}
+					return nil
+				})
+				po.Type = schema.TagDeviceCustom
+			}
+
 		case schema.AffordanceTypeAction:
+			if v.Tag != schema.TagDeviceOptional {
+				continue
+			}
 			_, ok := s.Action[v.Identifier]
 			if ok {
 				continue
 			}
+			po.Tag = schema.TagDeviceOptional
 		case schema.AffordanceTypeEvent:
+			if v.Tag != schema.TagDeviceOptional {
+				continue
+			}
 			_, ok := s.Event[v.Identifier]
 			if ok {
 				continue
 			}
+			po.Tag = schema.TagDeviceOptional
+		}
+		if v.Tag == schema.TagDeviceOptional {
+			//如果导入的是通用物模型
+			var cs *relationDB.DmCommonSchema
+			cs, err = relationDB.NewCommonSchemaRepo(ctx).FindOneByFilter(ctx, relationDB.CommonSchemaFilter{Identifiers: []string{v.Identifier}})
+			if err != nil {
+				return nil, err
+			}
+			po.IsCanSceneLinkage = cs.IsCanSceneLinkage
+			po.FuncGroup = cs.FuncGroup
+			po.ControlMode = cs.ControlMode
+			po.UserPerm = cs.UserPerm
+			po.RecordMode = cs.RecordMode
+			po.IsPassword = cs.IsPassword
+			if po.Name == "" {
+				po.Name = cs.Name
+			}
+			if po.Required == 0 {
+				po.Required = cs.Required
+			}
+			if po.IsCanSceneLinkage == 0 {
+				po.IsCanSceneLinkage = cs.IsCanSceneLinkage
+			}
+			if po.FuncGroup == 0 {
+				po.FuncGroup = cs.FuncGroup
+			}
+			if po.ControlMode == 0 {
+				po.ControlMode = cs.ControlMode
+			}
+			if po.UserPerm != 0 {
+				po.UserPerm = cs.UserPerm
+			}
+			if po.RecordMode == 0 {
+				po.RecordMode = cs.RecordMode
+			}
+			if po.Order == 0 {
+				po.Order = cs.Order
+			}
+			if po.IsPassword == 0 {
+				po.IsPassword = cs.IsPassword
+			}
+			if po.ExtendConfig == "" {
+				po.ExtendConfig = cs.ExtendConfig
+			}
 		}
 
-		po := utils.Copy[relationDB.DmDeviceSchema](v)
-		po.Tag = schema.TagDevice
-		if err = logic.CheckAffordance(po.Identifier, &po.DmSchemaCore, nil); err != nil {
+		if err = logic.CheckAffordance(po.Identifier, &po.DmSchemaCore, nil, checkOptions...); err != nil {
 			return nil, err
 		}
 		ret = append(ret, po)
@@ -78,7 +142,7 @@ func (l *DeviceSchemaMultiCreateLogic) DeviceSchemaMultiCreate(in *dm.DeviceSche
 		return nil, err
 	}
 	l.ctx = ctxs.WithAllProject(l.ctx)
-	pos, err := l.ruleCheck(in)
+	pos, err := ruleCheck(l.ctx, l.svcCtx, in)
 	if err != nil {
 		return nil, err
 	}
