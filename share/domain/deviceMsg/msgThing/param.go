@@ -3,11 +3,12 @@ package msgThing
 import (
 	"encoding/json"
 	"fmt"
+	"math"
+
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/spf13/cast"
-	"math"
 )
 
 const (
@@ -104,18 +105,26 @@ func getParamVal(def *schema.Define, value any) (any, error) {
 		}
 		return 0, nil
 	case schema.DataTypeStruct:
-		v, ok := value.(map[string]Param)
-		if ok == false {
+		switch value.(type) {
+		case map[string]Param:
+			v, ok := value.(map[string]Param)
+			if ok == false {
+				return nil, errors.Parameter.AddMsgf("struct Param is not find")
+			}
+			val := make(map[string]any, len(v)+1)
+			for _, tp := range v {
+				val[tp.Identifier], err = tp.ToVal()
+				if err != nil {
+					return nil, err
+				}
+			}
+			return val, nil
+		case map[string]any:
+			return value, nil
+		default:
 			return nil, errors.Parameter.AddMsgf("struct Param is not find")
 		}
-		val := make(map[string]any, len(v)+1)
-		for _, tp := range v {
-			val[tp.Identifier], err = tp.ToVal()
-			if err != nil {
-				return nil, err
-			}
-		}
-		return val, nil
+
 	case schema.DataTypeArray:
 		array, ok := value.([]any)
 		if ok == false {
