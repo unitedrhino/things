@@ -186,7 +186,7 @@ services:
       - ../conf/taos/dnode/data:/var/lib/taos
       - ../conf/taos/dnode/log:/var/log/taos
   emqx:
-    image: emqx/emqx:5.4.0
+    image: emqx/emqx:5.8
     container_name: emqx
     hostname: emqx
     restart: always
@@ -232,3 +232,18 @@ services:
       - ../conf/minio/config:/root/.minio/     #映射配置目录
     networks:
       - unitedrhino_net
+
+#  monibuca:
+#    image: langhuihui/monibuca:v5
+#    container_name: monibuca
+#    restart: always
+#    ports:
+#      - "1935:1935"    # RTMP 端口
+#      - "6000:6000"    # 自定义端口
+#      - "8180:8080"    # HTTP 端口
+#      - "554:554"      # RTSP 端口
+#      - "50051:50051"  # gRPC 端口
+#      - "5060:5060/udp" # SIP UDP 端口
+#    #      - "9000:9000"    # 自定义端口
+#    networks:
+#      - unitedrhino_net

@@ -8,7 +8,7 @@ start:
 
 update:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>$@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-	@docker compose pull
+	@docker compose pull core things
 	@docker compose down core
 	@docker compose down things
 	@docker compose up -d

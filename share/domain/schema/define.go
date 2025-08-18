@@ -31,10 +31,11 @@ const (
 type Tag = int64
 
 const (
-	TagCustom   Tag = 1 //自定义
-	TagOptional Tag = 2 //可选
-	TagRequired Tag = 3 //必选 必选不可删除
-	TagDevice   Tag = 4 //设备物模型
+	TagCustom         Tag = 1 //自定义
+	TagOptional       Tag = 2 //可选
+	TagRequired       Tag = 3 //必选 必选不可删除
+	TagDeviceCustom   Tag = 4 //设备自定义物模型
+	TagDeviceOptional Tag = 5 //设备自选物模型
 )
 
 type RecordMode = int64
