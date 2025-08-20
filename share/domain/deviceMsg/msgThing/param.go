@@ -87,7 +87,11 @@ func IsParamValEq(d *schema.Define, v1 any, v2 any) bool {
 			return false
 		}
 		for k, v := range v1m {
-			if !IsParamValEq(&d.Spec[k].DataType, v, v2m[k]) {
+			s := d.Spec[k]
+			if s == nil {
+				continue
+			}
+			if !IsParamValEq(&s.DataType, v, v2m[k]) {
 				return false
 			}
 		}

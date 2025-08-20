@@ -71,7 +71,7 @@ func (m MqttClient) Subscribe(cli mqtt.Client, topic string, qos byte, callback 
 	if cli != nil {
 		clients = []mqtt.Client{cli}
 	}
-	logx.Infof("mqtt_client_subscribe clientNum:%v topic:%v", len(clients), topic)
+	logx.Infof("mqttClientSubscribe clientNum:%v topic:%v", len(clients), topic)
 	for _, c := range clients {
 		err := c.Subscribe(topic, qos, callback).Error()
 		if err != nil {
