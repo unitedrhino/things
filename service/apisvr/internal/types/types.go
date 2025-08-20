@@ -942,8 +942,8 @@ type DeviceRegisterResp struct {
 }
 
 type DeviceSchema struct {
-	ProductID         string  `json:"productID"` //产品id 只读
-	DeviceName        string  `json:"deviceName"`
+	ProductID         string  `json:"productID,optional"` //产品id 只读
+	DeviceName        string  `json:"deviceName,optional"`
 	Type              int64   `json:"type"`                       //物模型类型 1:property属性 2:event事件 3:action行为
 	Tag               int64   `json:"tag"`                        //物模型标签 1:自定义 2:可选 3:必选  必选不可删除
 	Identifier        string  `json:"identifier"`                 //标识符

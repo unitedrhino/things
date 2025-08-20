@@ -10613,8 +10613,6 @@
       },
       "title": "DeviceSchema",
       "required": [
-        "productID",
-        "deviceName",
         "type",
         "tag",
         "identifier"

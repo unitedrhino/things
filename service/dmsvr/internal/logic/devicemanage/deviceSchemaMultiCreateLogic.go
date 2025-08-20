@@ -47,6 +47,8 @@ func ruleCheck(ctx context.Context, svcCtx *svc.ServiceContext, in *dm.DeviceSch
 	for _, v := range in.List {
 		var checkOptions []logic.CheckOption
 		po := utils.Copy[relationDB.DmDeviceSchema](v)
+		po.ProductID = in.ProductID
+		po.DeviceName = in.DeviceName
 		switch schema.AffordanceType(v.Type) {
 		case schema.AffordanceTypeProperty:
 			_, ok := s.Property[v.Identifier]
@@ -61,7 +63,7 @@ func ruleCheck(ctx context.Context, svcCtx *svc.ServiceContext, in *dm.DeviceSch
 					}
 					return nil
 				})
-				po.Type = schema.TagDeviceCustom
+				po.Tag = schema.TagDeviceCustom
 			}
 
 		case schema.AffordanceTypeAction:
@@ -84,47 +86,64 @@ func ruleCheck(ctx context.Context, svcCtx *svc.ServiceContext, in *dm.DeviceSch
 			po.Tag = schema.TagDeviceOptional
 		}
 		if v.Tag == schema.TagDeviceOptional {
-			//如果导入的是通用物模型
-			var cs *relationDB.DmCommonSchema
-			cs, err = relationDB.NewCommonSchemaRepo(ctx).FindOneByFilter(ctx, relationDB.CommonSchemaFilter{Identifiers: []string{v.Identifier}})
+			err := func() error {
+				//如果导入的是通用物模型
+				var cs *relationDB.DmCommonSchema
+				cs, err = relationDB.NewCommonSchemaRepo(ctx).FindOneByFilter(ctx, relationDB.CommonSchemaFilter{Identifiers: []string{v.Identifier}})
+				if err != nil {
+					return err
+				}
+				if cs == nil { //如果通用物模型里面没有,则变成自定义物模型
+					v.Tag = schema.TagDeviceCustom
+					checkOptions = append(checkOptions, func(do any) error {
+						s := do.(*schema.Property)
+						if utils.SliceIn(s.Define.Type, schema.DataTypeArray, schema.DataTypeStruct) {
+							return errors.Parameter.AddMsgf("自定义物模型中不支持数组或结构体:%v", v.Identifier)
+						}
+						return nil
+					})
+					return nil
+				}
+				po.IsCanSceneLinkage = cs.IsCanSceneLinkage
+				po.FuncGroup = cs.FuncGroup
+				po.ControlMode = cs.ControlMode
+				po.UserPerm = cs.UserPerm
+				po.RecordMode = cs.RecordMode
+				po.IsPassword = cs.IsPassword
+				if po.Name == "" {
+					po.Name = cs.Name
+				}
+				if po.Required == 0 {
+					po.Required = cs.Required
+				}
+				if po.IsCanSceneLinkage == 0 {
+					po.IsCanSceneLinkage = cs.IsCanSceneLinkage
+				}
+				if po.FuncGroup == 0 {
+					po.FuncGroup = cs.FuncGroup
+				}
+				if po.ControlMode == 0 {
+					po.ControlMode = cs.ControlMode
+				}
+				if po.UserPerm != 0 {
+					po.UserPerm = cs.UserPerm
+				}
+				if po.RecordMode == 0 {
+					po.RecordMode = cs.RecordMode
+				}
+				if po.Order == 0 {
+					po.Order = cs.Order
+				}
+				if po.IsPassword == 0 {
+					po.IsPassword = cs.IsPassword
+				}
+				if po.ExtendConfig == "" {
+					po.ExtendConfig = cs.ExtendConfig
+				}
+				return nil
+			}()
 			if err != nil {
 				return nil, err
-			}
-			po.IsCanSceneLinkage = cs.IsCanSceneLinkage
-			po.FuncGroup = cs.FuncGroup
-			po.ControlMode = cs.ControlMode
-			po.UserPerm = cs.UserPerm
-			po.RecordMode = cs.RecordMode
-			po.IsPassword = cs.IsPassword
-			if po.Name == "" {
-				po.Name = cs.Name
-			}
-			if po.Required == 0 {
-				po.Required = cs.Required
-			}
-			if po.IsCanSceneLinkage == 0 {
-				po.IsCanSceneLinkage = cs.IsCanSceneLinkage
-			}
-			if po.FuncGroup == 0 {
-				po.FuncGroup = cs.FuncGroup
-			}
-			if po.ControlMode == 0 {
-				po.ControlMode = cs.ControlMode
-			}
-			if po.UserPerm != 0 {
-				po.UserPerm = cs.UserPerm
-			}
-			if po.RecordMode == 0 {
-				po.RecordMode = cs.RecordMode
-			}
-			if po.Order == 0 {
-				po.Order = cs.Order
-			}
-			if po.IsPassword == 0 {
-				po.IsPassword = cs.IsPassword
-			}
-			if po.ExtendConfig == "" {
-				po.ExtendConfig = cs.ExtendConfig
 			}
 		}
 

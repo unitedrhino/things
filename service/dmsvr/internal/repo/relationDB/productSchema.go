@@ -39,7 +39,7 @@ func NewProductSchemaRepo(in any) *ProductSchemaRepo {
 }
 
 func (p ProductSchemaRepo) filter(db *gorm.DB, f ProductSchemaFilter) *gorm.DB {
-	db = db.Where("tag !=?", schema.TagDeviceCustom)
+	db = db.Where("tag in ?", []schema.Tag{schema.TagCustom, schema.TagOptional, schema.TagRequired})
 
 	if f.IsCanSceneLinkage != 0 {
 		db = db.Where("is_can_scene_linkage = ?", f.IsCanSceneLinkage)
