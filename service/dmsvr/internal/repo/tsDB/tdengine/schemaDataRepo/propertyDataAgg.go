@@ -3,6 +3,8 @@ package schemaDataRepo
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
@@ -13,7 +15,6 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
-	"strings"
 )
 
 type PropertyAggStu struct {
@@ -35,7 +36,11 @@ func (d *DeviceDataRepo) GetPropertyAgg(ctx context.Context, m *schema.Model, fi
 	for _, agg := range filter.Aggs { //todo 暂时不考虑数组类型
 		_, ok := m.Property[agg.DataID]
 		if !ok {
-			return nil, errors.Parameter.AddMsgf("属性未定义:%v", agg.DataID)
+			id, _, ok := schema.GetArray(agg.DataID)
+			_, ok = m.Property[id]
+			if !ok {
+				return nil, errors.Parameter.AddMsg("标识符未找到")
+			}
 		}
 	}
 	var retMap = map[string]msgThing.PropertyData2{}
@@ -43,20 +48,21 @@ func (d *DeviceDataRepo) GetPropertyAgg(ctx context.Context, m *schema.Model, fi
 	for _, agg := range filter.Aggs { //暂时不考虑数组类型
 		p, ok := m.Property[agg.DataID]
 		if !ok {
-			return nil, errors.Parameter.AddMsgf("属性未定义:%v", agg.DataID)
+			id, _, ok := schema.GetArray(agg.DataID)
+			p, ok = m.Property[id]
+			if !ok {
+				return nil, errors.Parameter.AddMsg("标识符未找到")
+			}
 		}
+
 		sql, err := d.getPropertyArgFuncSelect2(ctx, p, agg, filter)
 		if err != nil {
 			logx.WithContext(ctx).Errorf(err.Error())
 			return nil, err
 		}
-		dataID := agg.DataID
-		id, num, ok := schema.GetArray(agg.DataID)
-		if ok {
-			dataID = id
-			sql = sql.Where("`_num`=?", num)
-		}
-		sql = sql.From(d.GetPropertyStableName(p, filter.ProductID, dataID))
+		id, _, ok := schema.GetArray(agg.DataID)
+		sql = schema.WhereArray2(sql, agg.DataID, "`_num`")
+		sql = sql.From(d.GetPropertyStableName(p, filter.ProductID, id))
 		sql = d.fillFilter(sql, filter.Filter)
 		sql = page.FmtSql(sql)
 		sqlStr, value, err := sql.ToSql()
@@ -71,7 +77,17 @@ func (d *DeviceDataRepo) GetPropertyAgg(ctx context.Context, m *schema.Model, fi
 		}
 		var datas []map[string]any
 		stores.Scan(rows, &datas)
-		retMap = d.ToPropertyData2(ctx, agg, m, datas, retMap)
+		sdef := p.Define
+		if sdef.Type == schema.DataTypeArray {
+			sdef = *sdef.ArrayInfo
+		}
+		if sdef.Type == schema.DataTypeStruct { //todo 暂未支持
+			dd, _ := schema.ParseDataID(agg.DataID)
+			if dd != nil && dd.Column != "" {
+				sdef = sdef.Spec[dd.Column].DataType
+			}
+		}
+		retMap = d.ToPropertyData2(ctx, agg, &sdef, datas, retMap)
 	}
 
 	return utils.MapVToSlice2(retMap), err
@@ -88,16 +104,27 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect2(
 	if partitionBy != "" {
 		selects = append(selects, partitionBy)
 	}
-	if p.Define.Type == schema.DataTypeStruct { //todo 暂未支持
-	} else {
+	getOnCol := func(col string) {
 		for _, argFunc := range agg.ArgFuncs {
 			//pg的 timescale走视图优化
 			if agg.NoFirstTs && utils.SliceIn(argFunc, "first", "last", "min", "max") {
-				selects = append(selects, fmt.Sprintf(` %s(param) as %s_param,cols(%s(param),ts) as %s_ts `, argFunc, argFunc, argFunc, argFunc))
+				selects = append(selects, fmt.Sprintf(` %s(%s) as %s_param,cols(%s(%s),ts) as %s_ts `, argFunc, col, argFunc, argFunc, col, argFunc))
 			} else {
-				selects = append(selects, fmt.Sprintf(` %s(param) as %s_param `, argFunc, argFunc))
+				selects = append(selects, fmt.Sprintf(` %s(%s) as %s_param `, argFunc, col, argFunc))
 			}
 		}
+	}
+	sdef := p.Define
+	if sdef.Type == schema.DataTypeArray {
+		sdef = *sdef.ArrayInfo
+	}
+	if sdef.Type == schema.DataTypeStruct { //todo 暂未支持
+		dd, _ := schema.ParseDataID(agg.DataID)
+		if dd != nil && dd.Column != "" {
+			getOnCol(dd.Column)
+		}
+	} else {
+		getOnCol("param")
 	}
 	sql = sq.Select(selects...)
 	if filter.Interval != 0 {
@@ -115,7 +142,7 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect2(
 	}
 	return sql, nil
 }
-func (d *DeviceDataRepo) ToPropertyData2(ctx context.Context, agg msgThing.PropertyAgg, m *schema.Model, dbs []map[string]any, retMap map[string]msgThing.PropertyData2) map[string]msgThing.PropertyData2 {
+func (d *DeviceDataRepo) ToPropertyData2(ctx context.Context, agg msgThing.PropertyAgg, p *schema.Define, dbs []map[string]any, retMap map[string]msgThing.PropertyData2) map[string]msgThing.PropertyData2 {
 	for _, db := range dbs {
 		data := msgThing.PropertyData2{
 			DeviceName: cast.ToString(db["device_name"]),
@@ -158,7 +185,6 @@ func (d *DeviceDataRepo) ToPropertyData2(ctx context.Context, agg msgThing.Prope
 			TsWindow:   cast.ToTime(db["ts_window"]),
 			Values:     map[string]msgThing.PropertyDataDetail{},
 		}
-		p := m.Property[agg.DataID]
 		for k, v := range db {
 			if strings.HasSuffix(k, "_param") {
 				argFunc := k[:len(k)-len("_param")]
@@ -166,7 +192,7 @@ func (d *DeviceDataRepo) ToPropertyData2(ctx context.Context, agg msgThing.Prope
 					Param:     v,
 					TimeStamp: cast.ToTime(db[argFunc+"_ts"]),
 				}
-				pp, err := p.Define.FmtValue(vv.Param)
+				pp, err := p.FmtValue(vv.Param)
 				if err != nil {
 					logx.WithContext(ctx).Error("FmtValue", err)
 				} else {

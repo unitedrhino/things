@@ -3,6 +3,8 @@ package schemaDataRepo
 import (
 	"context"
 	"encoding/json"
+	"strings"
+
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/utils"
@@ -10,7 +12,6 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
-	"strings"
 )
 
 func ToEventData(db map[string]any) *msgThing.EventData {
@@ -44,7 +45,10 @@ func (d *DeviceDataRepo) ToPropertyData(ctx context.Context, id string, p *schem
 			ret.Param = pp
 		}
 	}()
-	propertyType := db[PropertyType]
+	propertyType := p.Define.Type
+	if propertyType == schema.DataTypeArray {
+		propertyType = p.Define.ArrayInfo.Type
+	}
 	fill := func(data *msgThing.PropertyData) {
 		if db["tenant_code"] != nil {
 			data.TenantCode = dataType.TenantCode(cast.ToString(db["tenant_code"]))
@@ -91,11 +95,11 @@ func (d *DeviceDataRepo) ToPropertyData(ctx context.Context, id string, p *schem
 		delete(db, PropertyType)
 	}
 	switch propertyType {
-	case string(schema.DataTypeStruct):
+	case schema.DataTypeStruct:
 		data := msgThing.PropertyData{
 			DeviceName: cast.ToString(db["device_name"]),
 			Identifier: id,
-			Param:      nil,
+			Param:      cast.ToString(utils.BoolToInt(db["param"])),
 			TimeStamp:  cast.ToTime(db["ts"]),
 		}
 
@@ -104,33 +108,12 @@ func (d *DeviceDataRepo) ToPropertyData(ctx context.Context, id string, p *schem
 		for k, v := range db {
 			db[k] = utils.BoolToInt(v)
 		}
-		data.Param = db
-		return &data
-	case string(schema.DataTypeArray):
-		switch p.Define.ArrayInfo.Type {
-		case schema.DataTypeStruct:
-			data := msgThing.PropertyData{
-				Identifier: id,
-				DeviceName: cast.ToString(db["device_name"]),
-				TimeStamp:  cast.ToTime(db["ts"]),
-			}
-			fill(&data)
-			delete(db, "_num")
-			for k, v := range db {
-				db[k] = utils.BoolToInt(v)
-			}
-			data.Param = db
-			return &data
-		default:
-			data := msgThing.PropertyData{
-				Identifier: id,
-				DeviceName: cast.ToString(db["device_name"]),
-				Param:      cast.ToString(utils.BoolToInt(db["param"])),
-				TimeStamp:  cast.ToTime(db["ts"]),
-			}
-			fill(&data)
+		_, ok := db["param"]
+		if len(db) == 1 && ok {
 			return &data
 		}
+		data.Param = db
+		return &data
 	default:
 		data := msgThing.PropertyData{
 			Identifier: id,

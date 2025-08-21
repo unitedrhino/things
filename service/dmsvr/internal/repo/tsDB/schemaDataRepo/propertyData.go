@@ -4,6 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
+	"time"
+
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/conf"
 	"gitee.com/unitedrhino/share/ctxs"
@@ -18,8 +21,6 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
-	"strings"
-	"time"
 )
 
 func (d *DeviceDataRepo) InsertPropertyData(ctx context.Context, t *schema.Property, productID string, deviceName string,
@@ -571,10 +572,7 @@ func (d *DeviceDataRepo) GetPropertyCountByID(
 		err error
 		db  = d.db.WithContext(ctx).Table(getTableName(p.Define) + " as tb")
 	)
-	_, num, ok := schema.GetArray(filter.DataID)
-	if ok {
-		db = db.Where("pos=?", num)
-	}
+	db = schema.WhereArray(db, filter.DataID, "pos")
 	db = db.Where("tb.identifier=?", filter.DataID)
 	db = d.fillFilter(ctx, db, filter.Filter)
 	db = filter.Page.FmtSql2(db)
