@@ -2,7 +2,9 @@ package devicemsglogic
 
 import (
 	"context"
-	"encoding/json"
+	"sync"
+	"time"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
@@ -11,8 +13,6 @@ import (
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
-	"sync"
-	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -104,17 +104,26 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 					Value:     utils.ToString(v),
 				}
 			} else {
+				sdef := property.Define
+				if sdef.Type == schema.DataTypeArray {
+					sdef = *sdef.ArrayInfo
+				}
+				if sdef.Type == schema.DataTypeStruct {
+					dd, _ := schema.ParseDataID(dataID)
+					if dd != nil && dd.Column != "" {
+						sdef = sdef.Spec[dd.Column].DataType
+					}
+				}
 				diData = dm.PropertyLogInfo{
 					Timestamp: data.TimeStamp.UnixMilli(),
 					DataID:    data.Identifier,
 				}
-				var payload []byte
-				if param, ok := data.Param.(string); ok {
-					payload = []byte(param)
+				v, err := sdef.FmtValue(data.Param)
+				if err == nil {
+					diData.Value = utils.ToString(v)
 				} else {
-					payload, _ = json.Marshal(data.Param)
+					diData.Value = utils.ToString(data.Param)
 				}
-				diData.Value = string(payload)
 			}
 			diData.DataName = property.Name
 			mutex.Lock()

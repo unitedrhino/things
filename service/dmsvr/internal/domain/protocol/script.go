@@ -117,6 +117,7 @@ func NewScriptTrans() *ScriptTrans {
 		"ToStringSlice":          reflect.ValueOf(utils.ToStringSlice),
 		"ToIntSlice":             reflect.ValueOf(utils.ToIntSlice),
 		"ToDurationSlice":        reflect.ValueOf(utils.ToDurationSlice),
+		"Fmt":                    reflect.ValueOf(utils.Fmt),
 	})
 	ctx := ctxs.WithRoot(context.Background())
 	utils.Go(ctx, func() {
@@ -269,19 +270,20 @@ func (s *ScriptTrans) UpAfterTrans(ctx context.Context, req *deviceMsg.PublishMs
 		return nil
 	}
 	sort.Sort(scripts)
-	logs := make([]string, 0)
 	for _, script := range scripts {
 		log, err := s.RespMsgRun(ctx, req, resp, script.Script)
 		if err != nil {
 			continue
 		}
+		logs := make([]string, 0)
 		for _, l := range log {
 			logs = append(logs, fmt.Sprintf("%s:[%s]  ", script.Name, l))
 		}
+		if len(logs) > 0 {
+			logx.WithContext(ctx).Infof("UpAfterTrans脚本:%s 执行日志为:%s", script.Name, logs)
+		}
 	}
-	if len(logs) > 0 {
-		logx.WithContext(ctx).Infof("脚本执行日志为:%s", logs)
-	}
+
 	return nil
 }
 
@@ -310,23 +312,24 @@ func (s *ScriptTrans) UpBeforeTrans(ctx context.Context, msg *deviceMsg.PublishM
 		return &out
 	}
 	sort.Sort(scripts)
-	logs := make([]string, 0)
 	for _, script := range scripts {
 		newMsg, log, err := s.PublishMsgRun(ctx, &out, script.Script)
 		if err != nil {
 			logx.WithContext(ctx).Error(err)
 			continue
 		}
+		logs := make([]string, 0)
 		for _, l := range log {
 			logs = append(logs, fmt.Sprintf("%s:[%s]  ", script.Name, l))
+		}
+		if len(logs) > 0 {
+			logx.WithContext(ctx).Infof("UpBeforeTrans脚本:%s 执行日志为:%s", script.Name, logs)
 		}
 		if newMsg != nil {
 			out = *newMsg
 		}
 	}
-	if len(logs) > 0 {
-		logx.WithContext(ctx).Infof("脚本执行日志为:%s", logs)
-	}
+
 	return &out
 }
 
@@ -355,22 +358,22 @@ func (s *ScriptTrans) DownBeforeTrans(ctx context.Context, msg *deviceMsg.Publis
 		return &out
 	}
 	sort.Sort(scripts)
-	logs := make([]string, 0)
 	for _, script := range scripts {
 		newMsg, log, err := s.PublishMsgRun(ctx, &out, script.Script)
 		if err != nil {
 			logx.WithContext(ctx).Error(err)
 			continue
 		}
+		logs := make([]string, 0)
 		for _, l := range log {
 			logs = append(logs, fmt.Sprintf("%s:[%s]  ", script.Name, l))
+		}
+		if len(logs) > 0 {
+			logx.WithContext(ctx).Infof("DownBeforeTrans脚本:%s 执行日志为:%s", script.Name, logs)
 		}
 		if newMsg != nil {
 			out = *newMsg
 		}
-	}
-	if len(logs) > 0 {
-		logx.WithContext(ctx).Infof("脚本执行日志为:%s", logs)
 	}
 	return &out
 }

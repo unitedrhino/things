@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/eventBus"
-	"gitee.com/unitedrhino/share/events/topics"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"gitee.com/unitedrhino/things/share/domain/protocols"
+	"gitee.com/unitedrhino/things/share/topics"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )

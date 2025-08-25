@@ -71,8 +71,8 @@ func (l *CommonSchemaUpdateLogic) ruleCheck(in *dm.CommonSchemaUpdateReq) (*rela
 	if in.Info.UserPerm == 0 {
 		newPo.UserPerm = po.UserPerm
 	}
-	if in.Info.IsHistory == 0 {
-		newPo.IsHistory = po.IsHistory
+	if in.Info.RecordMode == 0 {
+		newPo.RecordMode = po.RecordMode
 	}
 	if in.Info.IsPassword == 0 {
 		newPo.IsPassword = po.IsPassword

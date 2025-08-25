@@ -2,6 +2,7 @@ package devicemsglogic
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
@@ -13,7 +14,6 @@ import (
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
-	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -98,12 +98,8 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 	p, ok := t.Property[in.DataID]
 	if !ok {
 		id, _, ok := schema.GetArray(in.DataID)
-		if ok {
-			p, ok = t.Property[id]
-			if !ok {
-				return nil, errors.Parameter.AddMsg("标识符未找到")
-			}
-		} else {
+		p, ok = t.Property[id]
+		if !ok {
 			return nil, errors.Parameter.AddMsg("标识符未找到")
 		}
 	}
@@ -152,6 +148,16 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 		l.Errorf("%s.GetPropertyDataByID err=%v", utils.FuncName(), err)
 		return nil, err
 	}
+	sdef := p.Define
+	if sdef.Type == schema.DataTypeArray {
+		sdef = *sdef.ArrayInfo
+	}
+	if sdef.Type == schema.DataTypeStruct {
+		dd, _ := schema.ParseDataID(in.DataID)
+		if dd != nil && dd.Column != "" {
+			sdef = sdef.Spec[dd.Column].DataType
+		}
+	}
 	for _, devData := range dds {
 		if devData.TimeStamp.IsZero() && devData.Param == nil {
 			continue
@@ -168,16 +174,12 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 			//GroupIDs:     devData.GroupIDs,
 			//GroupIDPaths: devData.GroupIDPaths,
 		}
-		var payload []byte
-		if param, ok := devData.Param.(string); ok {
-			payload = []byte(param)
-		} else {
-			payload = []byte(utils.ToString(devData.Param))
-		}
-		diData.Value = string(payload)
-		v, err := p.Define.FmtValue(string(payload))
+
+		v, err := sdef.FmtValue(devData.Param)
 		if err == nil {
-			diData.Value = cast.ToString(v)
+			diData.Value = utils.ToString(v)
+		} else {
+			diData.Value = utils.ToString(devData.Param)
 		}
 		diDatas = append(diDatas, &diData)
 	}

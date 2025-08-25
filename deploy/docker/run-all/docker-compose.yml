@@ -6,6 +6,14 @@ networks:
     ipam:
       config:
         - subnet: 172.20.0.0/16
+# 定义命名卷
+volumes:
+  front_dist_volume:  # 卷名，与上面的挂载对应
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '../conf/core/dist'  # 卷数据实际存储的宿主机路径
 services:
   things:
     image: docker.unitedrhino.com/unitedrhino/things:latest
@@ -68,7 +76,7 @@ services:
       - ../conf/oss:/oss
       - ../conf/core/etc:/unitedrhino/etc
       - ../conf/core/etc/init:/unitedrhino/etc/init
-#      - ../conf/core/dist:/unitedrhino/dist
+      - front_dist_volume:/unitedrhino/dist
     environment:
       - confSuffix=${confSuffix}
       - isInitTable=${isInitTable}
@@ -186,7 +194,7 @@ services:
       - ../conf/taos/dnode/data:/var/lib/taos
       - ../conf/taos/dnode/log:/var/log/taos
   emqx:
-    image: emqx/emqx:5.4.0
+    image: emqx/emqx:5.8
     container_name: emqx
     hostname: emqx
     restart: always
@@ -232,3 +240,18 @@ services:
       - ../conf/minio/config:/root/.minio/     #映射配置目录
     networks:
       - unitedrhino_net
+
+#  monibuca:
+#    image: langhuihui/monibuca:v5
+#    container_name: monibuca
+#    restart: always
+#    ports:
+#      - "1935:1935"    # RTMP 端口
+#      - "6000:6000"    # 自定义端口
+#      - "8180:8080"    # HTTP 端口
+#      - "554:554"      # RTSP 端口
+#      - "50051:50051"  # gRPC 端口
+#      - "5060:5060/udp" # SIP UDP 端口
+#    #      - "9000:9000"    # 自定义端口
+#    networks:
+#      - unitedrhino_net

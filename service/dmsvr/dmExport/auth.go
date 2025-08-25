@@ -2,13 +2,14 @@ package dmExport
 
 import (
 	"context"
+	"strings"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/userShared"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/schema"
-	"strings"
 )
 
 func SchemaAccess(ctx context.Context, dc DeviceCacheT, usc UserShareCacheT, authType def.AuthType, dev devices.Core, param map[string]any) (outParam map[string]any, err error) {

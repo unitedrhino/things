@@ -59,6 +59,8 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 	var dis []*relationDB.DmDeviceInfo
 	var changeAreaIDPaths = map[string]struct{}{}
 	var projectIDSet = map[int64]struct{}{}
+	var changeTenantCode bool
+	var oldTenantCode string
 	if in.Device != nil && in.Device.ProductID != "" {
 		di, err := diDB.FindOneByFilter(ctxs.WithDefaultRoot(l.ctx), relationDB.DeviceFilter{
 			ProductID:   in.Device.ProductID,
@@ -85,12 +87,11 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 		if di.ProjectID <= def.NotClassified && uc.IsAdmin {
 			continue
 		}
-		pi, err := l.svcCtx.ProjectCache.GetData(l.ctx, int64(di.ProjectID))
-		if err != nil {
-			return nil, err
+		if oldTenantCode == "" {
+			oldTenantCode = string(di.TenantCode)
 		}
-		if pi.AdminUserID != pi.AdminUserID {
-			return nil, errors.Permissions
+		if oldTenantCode != string(di.TenantCode) {
+			changeTenantCode = true
 		}
 		changeAreaIDPaths[string(di.AreaIDPath)] = struct{}{}
 		projectIDSet[int64(di.ProjectID)] = struct{}{}
@@ -158,6 +159,9 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 	default:
 		return nil, errors.Parameter.AddMsgf("transferTo not supprt:%v", in.TransferTo)
 	}
+	if ctxs.IsRoot(l.ctx) != nil && (pi.TenantCode != oldTenantCode || changeTenantCode == true) {
+		return nil, errors.Permissions.AddMsg("非超管不能转移到其他租户")
+	}
 	if in.IsCleanData == def.True {
 		for _, di := range dis {
 			err := DeleteDeviceTimeData(l.ctx, l.svcCtx, di.ProductID, di.DeviceName, DeleteModeThing)
@@ -169,7 +173,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 	var devs = utils.CopySlice[devices.Core](dis)
 
 	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
-		err := relationDB.NewUserDeviceShareRepo(tx).DeleteByFilter(l.ctx, relationDB.UserDeviceShareFilter{
+		err := relationDB.NewUserDeviceShareRepo(tx).DeleteByFilter(ctxs.WithRoot(l.ctx), relationDB.UserDeviceShareFilter{
 			Devices: devs,
 		})
 		if err != nil {
@@ -190,7 +194,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 			"area_id_path": AreaIDPath,
 		}
 		var tc string
-		if pi.TenantCode != uc.TenantCode {
+		if pi.TenantCode != oldTenantCode || changeTenantCode == true {
 			ctx = ctxs.WithRoot(l.ctx)
 			param["tenant_code"] = pi.TenantCode
 			tc = pi.TenantCode

@@ -124,7 +124,7 @@ services:
       - unitedrhino_net
 
   postgres: # 服务名称
-    image: timescale/timescaledb-ha:pg17.5-ts2.20.2-all    # 指定镜像及其版本
+    image: timescale/timescaledb-ha:pg17    # 指定镜像及其版本
     container_name: postgres # 指定容器的名称
     hostname: postgres
     restart: always
@@ -187,7 +187,7 @@ services:
       - ../conf/taos/dnode/data:/var/lib/taos
       - ../conf/taos/dnode/log:/var/log/taos
   emqx:
-    image: emqx/emqx:5.4.0
+    image: emqx/emqx:5.8
     container_name: emqx
     hostname: emqx
     restart: always

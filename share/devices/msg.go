@@ -5,10 +5,11 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"gitee.com/unitedrhino/share/utils"
 	"sync/atomic"
 	"unicode"
 	"unicode/utf8"
+
+	"gitee.com/unitedrhino/share/utils"
 )
 
 type Action = string
@@ -37,7 +38,7 @@ type (
 				internal_error：格式错误的消息或其他未知错误。
 		*/
 		Reason     string `json:"reason"`
-		Action     Action `json:"action"` //登录 onLogin 登出 onLogout
+		Action     Action `json:"action"` //登录 connected 登出 disconnected
 		ProductID  string `json:"productID"`
 		DeviceName string `json:"deviceName"`
 	}

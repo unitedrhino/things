@@ -2,10 +2,12 @@ package schemaDataRepo
 
 import (
 	"fmt"
+	"strings"
+
+	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/spf13/cast"
-	"strings"
 )
 
 type SchemaStore struct {
@@ -22,6 +24,9 @@ func (S *SchemaStore) GetSpecsCreateColumn(s schema.Specs) string {
 func (S *SchemaStore) GetSpecsColumnWithArgFunc(s schema.Specs, argFunc string) string {
 	var column []string
 	for _, v := range s {
+		if utils.SliceIn(v.DataType.Type, schema.DataTypeString, schema.DataTypeBool, schema.DataTypeBool) {
+			continue
+		}
 		column = append(column, fmt.Sprintf("%s(`%s`) as %s", argFunc, v.Identifier, v.Identifier))
 	}
 	return strings.Join(column, ",")
@@ -31,7 +36,7 @@ func (S *SchemaStore) GetPropertyStableName(p *schema.Property, productID, ident
 	if p != nil && p.Tag == schema.TagCustom && productID != "" {
 		return fmt.Sprintf("`model_custom_property_%s_%s`", productID, identifier)
 	}
-	if p != nil && p.Tag == schema.TagDevice {
+	if p != nil && p.Tag == schema.TagDeviceCustom {
 		switch p.Define.Type {
 		case schema.DataTypeBool:
 			return S.GetDeviceStableBoolName()

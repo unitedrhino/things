@@ -2,6 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
@@ -143,11 +144,7 @@ func (l *ProductCategorySchemaMultiCreateLogic) ProductCategorySchemaMultiCreate
 						DmSchemaCore: identifier.DmSchemaCore,
 					})
 				}
-				//如果定义了产品级的,需要删除设备级的
-				err = relationDB.NewSchemaInfoRepo(tx).DeleteByFilter(l.ctx, relationDB.SchemaInfoFilter{ProductIDs: addProductIDs, Tag: schema.TagDevice, Identifiers: []string{identifier.Identifier}})
-				if err != nil {
-					return err
-				}
+
 				return psDB.MultiInsert(ctx, schemas)
 			})
 			if err != nil {

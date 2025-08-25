@@ -4,10 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"math"
+
 	"gitee.com/unitedrhino/share/caches"
 	"gitee.com/unitedrhino/share/conf"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/share/eventBus"
 	"gitee.com/unitedrhino/share/events/topics"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -17,7 +20,6 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/core/timex"
-	"math"
 
 	"strings"
 	"time"
@@ -176,26 +178,33 @@ func DeleteDeviceActivity(ctx context.Context, dev devices.Core) {
 }
 
 func (m *MqttProtocol) ReportDevConn(ctx context.Context, do devices.DevConn) error {
-	dev := devices.Core{
-		ProductID:  do.ProductID,
-		DeviceName: do.DeviceName,
+	return ReportDevMqttConn(ctx, m.FastEvent, do, true)
+}
+
+func ReportDevMqttConn(ctx context.Context, e *eventBus.FastEvent, do devices.DevConn, isMqttDevice bool) error {
+	if isMqttDevice {
+		dev := devices.Core{
+			ProductID:  do.ProductID,
+			DeviceName: do.DeviceName,
+		}
+		err := caches.GetStore().Hset(DeviceMqttDevice, GenDeviceTopicKey(dev), utils.MarshalNoErr(do))
+		if err != nil {
+			logx.Error(err)
+		}
+		err = caches.GetStore().Hset(DeviceMqttClientID, do.ClientID, utils.MarshalNoErr(dev))
+		if err != nil {
+			logx.Error(err)
+		}
 	}
-	err := caches.GetStore().Hset(DeviceMqttDevice, GenDeviceTopicKey(dev), utils.MarshalNoErr(do))
-	if err != nil {
-		logx.Error(err)
-	}
-	err = caches.GetStore().Hset(DeviceMqttClientID, do.ClientID, utils.MarshalNoErr(dev))
-	if err != nil {
-		logx.Error(err)
-	}
+	var err error
 	do.ClientID = fmt.Sprintf("%s&%s", do.ProductID, do.DeviceName)
 	switch do.Action {
 	case devices.ActionConnected:
-		err = m.FastEvent.Publish(ctx, topics.DeviceUpStatusConnected, do)
+		err = e.Publish(ctx, topics.DeviceUpStatusConnected, do)
 	case devices.ActionDisconnected:
-		err = m.FastEvent.Publish(ctx, topics.DeviceUpStatusDisconnected, do)
+		err = e.Publish(ctx, topics.DeviceUpStatusDisconnected, do)
 	default:
-		panic("not support conn type")
+		return errors.Permissions.AddMsg("not support conn type")
 	}
 	if err != nil {
 		logx.Errorf("%s.publish  err:%v", utils.FuncName(), err)
@@ -242,34 +251,39 @@ func (m *MqttProtocol) SubscribeDevConn(handle ConnHandle) error {
 		//	logx.Errorf("忽略的下线状态:%v", utils.Fmt(do))
 		//	return nil
 		//}
-		dev := devices.Core{
-			ProductID:  newDo.ProductID,
-			DeviceName: newDo.DeviceName,
-		}
-		err = caches.GetStore().Hset(DeviceMqttDevice, GenDeviceTopicKey(dev), utils.MarshalNoErr(do))
-		if err != nil {
-			logx.Error(err)
-		}
-		err = caches.GetStore().Hset(DeviceMqttClientID, do.ClientID, utils.MarshalNoErr(dev))
-		if err != nil {
-			logx.Error(err)
-		}
-		newDo.ClientID = fmt.Sprintf("%s&%s", newDo.ProductID, newDo.DeviceName)
-		switch do.Action {
-		case devices.ActionConnected:
-			err = m.FastEvent.Publish(ctx, topics.DeviceUpStatusConnected, newDo)
-		case devices.ActionDisconnected:
-			err = m.FastEvent.Publish(ctx, topics.DeviceUpStatusDisconnected, newDo)
-		default:
-			panic("not support conn type")
-		}
-		if err != nil {
-			logx.Errorf("%s.publish  err:%v", utils.FuncName(), err)
-			return err
-		}
+		err = m.ReportDevConn(ctx, newDo)
 		return err
 	}
 	return nil
+}
+
+func (m *MqttProtocol) PublishDevConn(ctx context.Context, newDo devices.DevConn) error {
+	dev := devices.Core{
+		ProductID:  newDo.ProductID,
+		DeviceName: newDo.DeviceName,
+	}
+	err := caches.GetStore().Hset(DeviceMqttDevice, GenDeviceTopicKey(dev), utils.MarshalNoErr(newDo))
+	if err != nil {
+		logx.Error(err)
+	}
+	err = caches.GetStore().Hset(DeviceMqttClientID, newDo.ClientID, utils.MarshalNoErr(dev))
+	if err != nil {
+		logx.Error(err)
+	}
+	newDo.ClientID = fmt.Sprintf("%s&%s", newDo.ProductID, newDo.DeviceName)
+	switch newDo.Action {
+	case devices.ActionConnected:
+		err = m.FastEvent.Publish(ctx, topics.DeviceUpStatusConnected, newDo)
+	case devices.ActionDisconnected:
+		err = m.FastEvent.Publish(ctx, topics.DeviceUpStatusDisconnected, newDo)
+	default:
+		panic("not support conn type")
+	}
+	if err != nil {
+		logx.Errorf("%s.publish  err:%v", utils.FuncName(), err)
+		return err
+	}
+	return err
 }
 
 func (m *MqttProtocol) subscribeWithFunc(cli mqtt.Client, topic string, handle func(ctx context.Context, topic string, payload []byte) error) error {

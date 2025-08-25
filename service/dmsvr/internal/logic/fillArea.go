@@ -83,12 +83,10 @@ func FillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, areaID
 	return nil
 }
 
-var projectIDChan chan []int64
-var areaIDPathChan chan []string
+var projectIDChan = make(chan []int64, 100000)
+var areaIDPathChan = make(chan []string, 100000)
 
 func Init(svcCtx *svc.ServiceContext) {
-	projectIDChan = make(chan []int64, 100000)
-	areaIDPathChan = make(chan []string, 100000)
 	utils.Go(context.Background(), func() {
 		tick := time.Tick(time.Second)
 		execProjectIDs := make([]int64, 0, 500)

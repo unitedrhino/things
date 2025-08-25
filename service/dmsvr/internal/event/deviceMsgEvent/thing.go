@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"time"
+
 	"gitee.com/unitedrhino/core/service/syssvr/sysExport"
 	"gitee.com/unitedrhino/core/service/timed/timedjobsvr/client/timedmanage"
 	"gitee.com/unitedrhino/core/share/dataType"
@@ -38,7 +40,6 @@ import (
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
-	"time"
 )
 
 type ThingLogic struct {
@@ -341,16 +342,36 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 
 func (l *ThingLogic) DeviceSchemaReportAutoCreate(mode product.DeviceSchemaMode, productID, deviceName string, params map[string]any, tp map[string]msgThing.Param) (err error) {
 	var needAddProperties []schema.Property
+	var kmap = make(map[string]*schema.Property)
+	var ks []string
+	for k := range params {
+		ks = append(ks, k)
+	}
+	ss, err := relationDB.NewCommonSchemaRepo(l.ctx).FindByFilter(l.ctx, relationDB.CommonSchemaFilter{Identifiers: ks}, nil)
+	if err != nil {
+		l.Error(err, ks)
+	} else {
+		for _, v := range ss {
+			kmap[v.Identifier] = relationDB.ToPropertyDo(v.Identifier, &v.DmSchemaCore)
+		}
+	}
 	for k, v := range params {
 		if tp != nil {
 			if _, ok := tp[k]; ok {
 				continue
 			}
 		}
+		ss := kmap[k]
+		if ss != nil { //有通用物模型定义优先选用通用物模型
+			ss.Desc = "设备上报自动创建"
+			ss.Tag = schema.TagDeviceOptional
+			needAddProperties = append(needAddProperties, *ss)
+			continue
+		}
 		switch vv := v.(type) {
 		case string:
 			needAddProperties = append(needAddProperties, schema.Property{
-				CommonParam: schema.CommonParam{Identifier: k, Tag: schema.TagDevice, Name: k, Desc: "设备上报自动创建"},
+				CommonParam: schema.CommonParam{Identifier: k, Tag: schema.TagDeviceCustom, Name: k, Desc: "设备上报自动创建"},
 				Mode:        schema.PropertyModeR,
 				Define:      schema.Define{Type: schema.DataTypeString, Min: "0", Max: "999"},
 			})
@@ -358,20 +379,20 @@ func (l *ThingLogic) DeviceSchemaReportAutoCreate(mode product.DeviceSchemaMode,
 			_, err := vv.Int64()
 			if err != nil || mode == product.DeviceSchemaModeReportAutoCreateUseFloat {
 				needAddProperties = append(needAddProperties, schema.Property{
-					CommonParam: schema.CommonParam{Identifier: k, Tag: schema.TagDevice, Name: k, Desc: "设备上报自动创建"},
+					CommonParam: schema.CommonParam{Identifier: k, Tag: schema.TagDeviceCustom, Name: k, Desc: "设备上报自动创建"},
 					Mode:        schema.PropertyModeR,
 					Define:      schema.Define{Type: schema.DataTypeFloat, Min: cast.ToString(schema.DefineIntMin), Step: "0.001", Max: cast.ToString(schema.DefineIntMax)},
 				})
 			} else {
 				needAddProperties = append(needAddProperties, schema.Property{
-					CommonParam: schema.CommonParam{Identifier: k, Tag: schema.TagDevice, Name: k, Desc: "设备上报自动创建"},
+					CommonParam: schema.CommonParam{Identifier: k, Tag: schema.TagDeviceCustom, Name: k, Desc: "设备上报自动创建"},
 					Mode:        schema.PropertyModeR,
 					Define:      schema.Define{Type: schema.DataTypeInt, Min: cast.ToString(schema.DefineIntMin), Step: "1", Max: cast.ToString(schema.DefineIntMax)},
 				})
 			}
 		case bool:
 			needAddProperties = append(needAddProperties, schema.Property{
-				CommonParam: schema.CommonParam{Identifier: k, Tag: schema.TagDevice, Name: k, Desc: "设备上报自动创建"},
+				CommonParam: schema.CommonParam{Identifier: k, Tag: schema.TagDeviceCustom, Name: k, Desc: "设备上报自动创建"},
 				Mode:        schema.PropertyModeR,
 				Define:      schema.Define{Type: schema.DataTypeBool, Mapping: map[string]string{"0": "关", "1": "开"}},
 			})
@@ -472,7 +493,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 				})
 			}
 		}
-		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).Infof("%s.DeviceThingPropertyReport startTime:%v",
+		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).Debugf("%s.DeviceThingPropertyReport startTime:%v",
 			utils.FuncName(), startTime)
 	})
 	utils.Go(ctx, func() {
@@ -502,7 +523,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 				"areaID":    cast.ToString(di.AreaID),
 			})
 		}
-		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).Infof("%s.DeviceThingPropertyReport startTime:%v",
+		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).Debugf("%s.DeviceThingPropertyReport startTime:%v",
 			utils.FuncName(), startTime)
 	})
 

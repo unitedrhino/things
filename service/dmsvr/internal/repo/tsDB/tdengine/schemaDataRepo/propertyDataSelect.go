@@ -5,20 +5,22 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"strings"
+
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	sq "gitee.com/unitedrhino/squirrel"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/zeromicro/go-zero/core/logx"
-	"strings"
 )
 
 func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schema.Property, filter msgThing.LatestFilter) (*msgThing.PropertyData, error) {
-	retStr, err := d.kv.HgetCtx(ctx, d.genRedisPropertyKey(filter.ProductID, filter.DeviceName), filter.DataID)
+	retStr, err := d.kv.HgetCtx(ctx, tsDB.GenRedisPropertyLastKey(filter.ProductID, filter.DeviceName), filter.DataID)
 	if err != nil && !errors.Cmp(stores.ErrFmt(err), errors.NotFind) {
 		logx.WithContext(ctx).Error(err)
 	}
@@ -46,11 +48,7 @@ func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schem
 	if len(dds) == 0 || err != nil {
 		return nil, err
 	}
-	vv, er := msgThing.GetVal(&p.Define, dds[0].Param)
-	if er == nil {
-		dds[0].Param = vv
-	}
-	d.kv.HsetCtx(ctx, d.genRedisPropertyKey(filter.ProductID, filter.DeviceName), filter.DataID, dds[0].String())
+	d.kv.HsetCtx(ctx, tsDB.GenRedisPropertyLastKey(filter.ProductID, filter.DeviceName), filter.DataID, dds[0].String())
 	return dds[0], nil
 
 }
@@ -73,9 +71,25 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 	)
 
 	if filter.ArgFunc == "" {
-		sql = sq.Select("*")
-		if filter.Order != stores.OrderAsc {
-			sql = sql.OrderBy("`ts` desc")
+		h := func() bool {
+			sdef := p.Define
+			if sdef.Type == schema.DataTypeArray {
+				sdef = *sdef.ArrayInfo
+			}
+			if sdef.Type == schema.DataTypeStruct {
+				dd, _ := schema.ParseDataID(filter.DataID)
+				if dd != nil && dd.Column != "" {
+					sql = sq.Select("`ts`,`device_name`", fmt.Sprintf("`%s` as param", dd.Column))
+					return true
+				}
+			}
+			return false
+		}()
+		if !h {
+			sql = sq.Select("*")
+			if filter.Order != stores.OrderAsc {
+				sql = sql.OrderBy("`ts` desc")
+			}
 		}
 	} else {
 		sql, err = d.getPropertyArgFuncSelect(ctx, p, filter)
@@ -84,13 +98,10 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 		}
 		filter.Page.Size = 0
 	}
-	dataID := filter.DataID
-	id, num, ok := schema.GetArray(filter.DataID)
-	if ok {
-		dataID = id
-		sql = sql.Where("`_num`=?", num)
-	}
-	sql = sql.From(d.GetPropertyStableName(p, filter.ProductID, dataID))
+	sql = schema.WhereArray2(sql, filter.DataID, "`_num`")
+	id, _, _ := schema.GetArray(filter.DataID)
+
+	sql = sql.From(d.GetPropertyStableName(p, filter.ProductID, id))
 	sql = d.fillFilter(sql, filter.Filter)
 	sql = filter.Page.FmtSql(sql)
 
@@ -133,8 +144,17 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 	if filter.NoFirstTs {
 		ts = "`ts` "
 	}
-	if p.Define.Type == schema.DataTypeStruct {
-		sql = sq.Select(ts+deviceName+pb, d.GetSpecsColumnWithArgFunc(p.Define.Specs, filter.ArgFunc))
+	sdef := p.Define
+	if sdef.Type == schema.DataTypeArray {
+		sdef = *sdef.ArrayInfo
+	}
+	if sdef.Type == schema.DataTypeStruct {
+		dd, _ := schema.ParseDataID(filter.DataID)
+		if dd != nil && dd.Column != "" {
+			sql = sq.Select(ts+deviceName+pb, fmt.Sprintf("%s(`%s`) as param", filter.ArgFunc, dd.Column))
+		} else {
+			sql = sq.Select(ts+deviceName+pb, d.GetSpecsColumnWithArgFunc(sdef.Specs, filter.ArgFunc))
+		}
 	} else {
 		sql = sq.Select(ts+deviceName+pb, fmt.Sprintf("%s(`param`) as param", filter.ArgFunc))
 	}

@@ -123,7 +123,7 @@ func (p ProductSchemaOldRepo) UpdateWithCommon(ctx context.Context, common *DmCo
 			FuncGroup:         common.FuncGroup,
 			ControlMode:       common.ControlMode,
 			UserPerm:          common.UserPerm,
-			IsHistory:         common.IsHistory,
+			RecordMode:        common.RecordMode,
 			Affordance:        common.Affordance,
 		},
 	}

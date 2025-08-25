@@ -3,11 +3,12 @@ package msgThing
 import (
 	"encoding/json"
 	"fmt"
+	"math"
+
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/spf13/cast"
-	"math"
 )
 
 const (
@@ -86,7 +87,11 @@ func IsParamValEq(d *schema.Define, v1 any, v2 any) bool {
 			return false
 		}
 		for k, v := range v1m {
-			if !IsParamValEq(&d.Spec[k].DataType, v, v2m[k]) {
+			s := d.Spec[k]
+			if s == nil {
+				continue
+			}
+			if !IsParamValEq(&s.DataType, v, v2m[k]) {
 				return false
 			}
 		}
@@ -104,18 +109,26 @@ func getParamVal(def *schema.Define, value any) (any, error) {
 		}
 		return 0, nil
 	case schema.DataTypeStruct:
-		v, ok := value.(map[string]Param)
-		if ok == false {
+		switch value.(type) {
+		case map[string]Param:
+			v, ok := value.(map[string]Param)
+			if ok == false {
+				return nil, errors.Parameter.AddMsgf("struct Param is not find")
+			}
+			val := make(map[string]any, len(v)+1)
+			for _, tp := range v {
+				val[tp.Identifier], err = tp.ToVal()
+				if err != nil {
+					return nil, err
+				}
+			}
+			return val, nil
+		case map[string]any:
+			return value, nil
+		default:
 			return nil, errors.Parameter.AddMsgf("struct Param is not find")
 		}
-		val := make(map[string]any, len(v)+1)
-		for _, tp := range v {
-			val[tp.Identifier], err = tp.ToVal()
-			if err != nil {
-				return nil, err
-			}
-		}
-		return val, nil
+
 	case schema.DataTypeArray:
 		array, ok := value.([]any)
 		if ok == false {
@@ -224,28 +237,14 @@ func GetVal(d *schema.Define, val any) (any, error) {
 			return ret, nil
 		}
 	case schema.DataTypeStruct:
-		if strut, ok := val.(map[string]any); !ok {
-			return nil, errors.Parameter.AddDetail(val)
-		} else {
-			getParam := make(map[string]Param, len(strut))
-			for k, v := range strut {
-				sv, ok := d.Spec[k]
-				if ok == false {
-					continue
-				}
-				tp := Param{
-					Identifier: sv.Identifier,
-					Name:       sv.Name,
-				}
-				err := tp.SetByDefine(&sv.DataType, v)
-				if err == nil {
-					getParam[k] = tp
-				} else if !errors.Cmp(err, errors.NotFind) {
-					return nil, errors.Fmt(err).AddDetail(sv.Identifier)
-				}
-			}
-			return getParam, nil
+		switch val.(type) {
+		case map[string]any:
+			return val, nil
+		case map[string]Param:
+			return getParamVal(d, val)
 		}
+		return nil, errors.Parameter.AddDetail(val)
+
 	case schema.DataTypeArray:
 		if arr, ok := val.([]any); !ok { //如果是指定id的方式
 			return GetVal(d.ArrayInfo, val)

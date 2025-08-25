@@ -112,6 +112,7 @@ func (p UserDeviceCollectRepo) FindOne(ctx context.Context, id int64) (*DmUserDe
 
 // 批量插入 LightStrategyDevice 记录
 func (p UserDeviceCollectRepo) MultiInsert(ctx context.Context, data []*DmUserDeviceCollect) error {
-	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmUserDeviceCollect{}).Create(data).Error
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true,
+		Columns: stores.SetColumnsWithPg(p.db, &DmUserDeviceCollect{}, "idx_dm_user_device_collect_product_id_deviceName")}).Model(&DmUserDeviceCollect{}).Create(data).Error
 	return stores.ErrFmt(err)
 }
