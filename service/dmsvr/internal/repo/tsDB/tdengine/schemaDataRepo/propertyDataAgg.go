@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/def"
@@ -108,9 +109,9 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect2(
 		for _, argFunc := range agg.ArgFuncs {
 			//pg的 timescale走视图优化
 			if agg.NoFirstTs && utils.SliceIn(argFunc, "first", "last", "min", "max") {
-				selects = append(selects, fmt.Sprintf(` %s(%s) as %s_param,cols(%s(%s),ts) as %s_ts `, argFunc, col, argFunc, argFunc, col, argFunc))
+				selects = append(selects, fmt.Sprintf(" %s(`%s`) as %s_param,cols(%s(`%s`),ts) as %s_ts ", argFunc, col, argFunc, argFunc, col, argFunc))
 			} else {
-				selects = append(selects, fmt.Sprintf(` %s(%s) as %s_param `, argFunc, col, argFunc))
+				selects = append(selects, fmt.Sprintf(" %s(`%s`) as %s_param ", argFunc, col, argFunc))
 			}
 		}
 	}
@@ -122,6 +123,8 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect2(
 		dd, _ := schema.ParseDataID(agg.DataID)
 		if dd != nil && dd.Column != "" {
 			getOnCol(dd.Column)
+		} else {
+			selects = append(selects, d.GetSpecsColumnWithArgFunc2(sdef.Specs, agg))
 		}
 	} else {
 		getOnCol("param")
@@ -142,7 +145,14 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect2(
 	}
 	return sql, nil
 }
+
+type structH struct {
+	Ts     time.Time
+	Values map[string]any
+}
+
 func (d *DeviceDataRepo) ToPropertyData2(ctx context.Context, agg msgThing.PropertyAgg, p *schema.Define, dbs []map[string]any, retMap map[string]msgThing.PropertyData2) map[string]msgThing.PropertyData2 {
+	dd, _ := schema.ParseDataID(agg.DataID)
 	for _, db := range dbs {
 		data := msgThing.PropertyData2{
 			DeviceName: cast.ToString(db["device_name"]),
@@ -185,28 +195,85 @@ func (d *DeviceDataRepo) ToPropertyData2(ctx context.Context, agg msgThing.Prope
 			TsWindow:   cast.ToTime(db["ts_window"]),
 			Values:     map[string]msgThing.PropertyDataDetail{},
 		}
-		for k, v := range db {
-			if strings.HasSuffix(k, "_param") {
-				argFunc := k[:len(k)-len("_param")]
-				vv := msgThing.PropertyDataDetail{
-					Param:     v,
-					TimeStamp: cast.ToTime(db[argFunc+"_ts"]),
+		if p.Type == schema.DataTypeStruct && dd != nil && dd.Column == "" { //获取结构体所有字段
+			var argCache = map[string]*structH{}
+			for k, v := range db {
+				if strings.HasSuffix(k, "_ts") {
+					argFunc := k[:len(k)-len("_ts")]
+					if argCache[argFunc] == nil {
+						argCache[argFunc] = &structH{Values: map[string]any{}}
+					}
+					argCache[argFunc].Ts = cast.ToTime(v)
+					continue
 				}
-				pp, err := p.FmtValue(vv.Param)
-				if err != nil {
-					logx.WithContext(ctx).Error("FmtValue", err)
-				} else {
-					vv.Param = pp
+				if strings.HasSuffix(k, "_param") { // dataID_argFunc_param
+					keys := strings.Split(k, "_")
+					if len(keys) < 3 {
+						continue
+					}
+					argFunc := keys[len(keys)-2]
+					if argCache[argFunc] == nil {
+						argCache[argFunc] = &structH{Values: map[string]any{}}
+					}
+					dataID := strings.Join(keys[:len(keys)-2], "_")
+					sp := p.Spec[dataID]
+					if sp == nil {
+						for pk, spp := range p.Spec {
+							if strings.ToLower(pk) == dataID {
+								sp = spp
+								dataID = pk
+							}
+						}
+						if sp == nil {
+							continue
+						}
+					}
+					pp, err := sp.DataType.FmtValue(v)
+					if err != nil {
+						logx.WithContext(ctx).Error("FmtValue", err)
+					} else {
+						v = pp
+					}
+					if b, ok := v.(bool); ok {
+						v = cast.ToInt64(b)
+					}
+					if ts, ok := db[argFunc+"ts"]; ok {
+						v = cast.ToTime(ts)
+					}
+					argCache[argFunc].Values[dataID] = v
 				}
-				if b, ok := vv.Param.(bool); ok {
-					vv.Param = cast.ToInt64(b)
+			}
+			for k, v := range argCache {
+				value.Values[k] = msgThing.PropertyDataDetail{
+					Param:     v.Values,
+					TimeStamp: v.Ts,
 				}
-				if ts, ok := db[argFunc+"ts"]; ok {
-					vv.TimeStamp = cast.ToTime(ts)
+			}
+		} else {
+			for k, v := range db {
+				if strings.HasSuffix(k, "_param") {
+					argFunc := k[:len(k)-len("_param")]
+					vv := msgThing.PropertyDataDetail{
+						Param:     v,
+						TimeStamp: cast.ToTime(db[argFunc+"_ts"]),
+					}
+					pp, err := p.FmtValue(vv.Param)
+					if err != nil {
+						logx.WithContext(ctx).Error("FmtValue", err)
+					} else {
+						vv.Param = pp
+					}
+					if b, ok := vv.Param.(bool); ok {
+						vv.Param = cast.ToInt64(b)
+					}
+					if ts, ok := db[argFunc+"ts"]; ok {
+						vv.TimeStamp = cast.ToTime(ts)
+					}
+					value.Values[argFunc] = vv
 				}
-				value.Values[argFunc] = vv
 			}
 		}
+
 		ret.Values = append(ret.Values, value)
 		retMap[key] = ret
 	}

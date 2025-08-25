@@ -304,56 +304,57 @@ type DeviceInfoDeleteReq struct {
 }
 
 type DeviceInfoIndexReq struct {
-	Page               *PageInfo                 `json:"page,optional"` //分页信息 只获取一个则不填
-	TenantCode         string                    `json:"tenantCode,optional"`
-	ProductID          string                    `json:"productID,optional"`            //产品id 为空时获取所有产品
-	ProductIDs         []string                  `json:"productIDs,optional"`           //产品id 为空时获取所有产品
-	DeviceName         string                    `json:"deviceName,optional"`           //过滤条件:模糊查询 设备名
-	DeviceNames        []string                  `json:"deviceNames,optional"`          //过滤条件:精准查询 设备名
-	ExpTime            *CompareInt64             `json:"expTime,optional"`              //到期时间
-	RatedPower         *CompareInt64             `json:"ratedPower,optional"`           //额定功率:单位w/h
-	Rssi               *CompareInt64             `json:"rssi,optional"`                 //信号强度
-	DeviceAlias        string                    `json:"deviceAlias,optional"`          //过滤条件:模糊查询 设备别名
-	DeviceTypes        []int64                   `json:"deviceTypes,optional"`          //设备类型:1:设备,2:网关,3:子设备//设备类型:1:设备,2:网关,3:子设备
-	Position           *Point                    `json:"position,optional"`             //设备定位,默认百度坐标系，用于获取以该点为中心，Range范围内的设备列表，与Range连用
-	Range              int64                     `json:"range,optional"`                //过滤条件:距离坐标点固定范围内的设备 单位：米
-	Tags               []*Tag                    `json:"tags,optional"`                 // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
-	WithProperties     []string                  `json:"withProperties,optional"`       //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表,如果没有匹配的则不会返回
-	WithProfiles       []string                  `json:"withProfiles,optional"`         //
-	AreaID             int64                     `json:"areaID,string,optional"`        //项目区域ids
-	AreaIDs            []int64                   `json:"areaIDs,string,optional"`       //项目区域ids
-	AreaIDPath         string                    `json:"areaIDPath,optional"`           //区域路径过滤
-	AreaIDPaths        []string                  `json:"areaIDPaths,optional"`          //区域路径过滤
-	IsOnline           int64                     `json:"isOnline,optional,range=[0:2]"` // 在线状态过滤  1离线 2在线
-	ProductCategoryID  int64                     `json:"productCategoryID,optional"`
-	ProductCategoryIDs []int64                   `json:"productCategoryIDs,optional"`
-	WithShared         int64                     `json:"withShared,optional,range=[0:2]"`  // 过滤分享的设备1: 同时获取分享的设备 2:只获取分享的设备
-	WithCollect        int64                     `json:"withCollect,optional,range=[0:2]"` // 过滤收藏的设备(这里只获取收藏的设备) 1: 同时获取收藏的设备 2:只获取收藏的设备
-	Versions           []string                  `json:"versions,optional"`
-	NotVersion         string                    `json:"notVersion,optional"`
-	Gateway            *DeviceCore               `json:"gateway,optional"` //过滤网关
-	GroupID            int64                     `json:"groupID,optional,string"`
-	GroupIDs           []int64                   `json:"groupIDs,optional,string"`
-	GroupIDPaths       []string                  `json:"groupIDPaths,optional"`
-	GroupIDPath        string                    `json:"groupIDPath,optional"`
-	NotGroupID         int64                     `json:"notGroupID,optional,string"`
-	ParentGroupID      int64                     `json:"parentGroupID,optional,string"`
-	GroupPurpose       string                    `json:"groupPurpose,optional"` //设备分组用途 不填默认为default
-	GroupName          string                    `json:"groupName,optional"`
-	NotAreaID          int64                     `json:"notAreaID,optional,string"`
-	Devices            []*DeviceCore             `json:"devices,optional"`
-	Status             int64                     `json:"status,optional"` //设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)
-	Statuses           []int64                   `json:"statuses,optional"`
-	WithOwner          bool                      `json:"withOwner,optional"`   //同时获取拥有人的信息
-	WithGateway        bool                      `json:"withGateway,optional"` //同时返回子设备绑定的网关信息
-	HasOwner           int64                     `json:"hasOwner,optional"`    //是否被人拥有,1为是 2为否
-	UserID             int64                     `json:"userID,string,optional"`
-	NetType            int64                     `json:"netType,optional,range=[0:8]"` //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
-	WithArea           bool                      `json:"withArea,optional"`            //同时返回区域信息
-	IsOnlyCore         bool                      `json:"isOnlyCore,optional"`          //只返回核心信息
-	Iccid              string                    `json:"iccid,optional,omitempty"`     //SIM卡卡号
-	WithGroups         []string                  `json:"withGroups,optional"`
-	Property           map[string]*CompareString `json:"property,optional"` //设备最新属性过滤,key为属性的id,如果是结构体则key为 aaa.bbb 数组为aaa.1
+	Page                *PageInfo                 `json:"page,optional"` //分页信息 只获取一个则不填
+	TenantCode          string                    `json:"tenantCode,optional"`
+	ProductID           string                    `json:"productID,optional"`            //产品id 为空时获取所有产品
+	ProductIDs          []string                  `json:"productIDs,optional"`           //产品id 为空时获取所有产品
+	DeviceName          string                    `json:"deviceName,optional"`           //过滤条件:模糊查询 设备名
+	DeviceNames         []string                  `json:"deviceNames,optional"`          //过滤条件:精准查询 设备名
+	ExpTime             *CompareInt64             `json:"expTime,optional"`              //到期时间
+	RatedPower          *CompareInt64             `json:"ratedPower,optional"`           //额定功率:单位w/h
+	Rssi                *CompareInt64             `json:"rssi,optional"`                 //信号强度
+	DeviceAlias         string                    `json:"deviceAlias,optional"`          //过滤条件:模糊查询 设备别名
+	DeviceTypes         []int64                   `json:"deviceTypes,optional"`          //设备类型:1:设备,2:网关,3:子设备//设备类型:1:设备,2:网关,3:子设备
+	Position            *Point                    `json:"position,optional"`             //设备定位,默认百度坐标系，用于获取以该点为中心，Range范围内的设备列表，与Range连用
+	Range               int64                     `json:"range,optional"`                //过滤条件:距离坐标点固定范围内的设备 单位：米
+	Tags                []*Tag                    `json:"tags,optional"`                 // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
+	WithProperties      []string                  `json:"withProperties,optional"`       //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表,如果没有匹配的则不会返回
+	PropertyIgnoreEmpty bool                      `json:"propertyIgnoreEmpty,optional"`  // 设备属性是否忽略空值,空值是否返回
+	WithProfiles        []string                  `json:"withProfiles,optional"`         //
+	AreaID              int64                     `json:"areaID,string,optional"`        //项目区域ids
+	AreaIDs             []int64                   `json:"areaIDs,string,optional"`       //项目区域ids
+	AreaIDPath          string                    `json:"areaIDPath,optional"`           //区域路径过滤
+	AreaIDPaths         []string                  `json:"areaIDPaths,optional"`          //区域路径过滤
+	IsOnline            int64                     `json:"isOnline,optional,range=[0:2]"` // 在线状态过滤  1离线 2在线
+	ProductCategoryID   int64                     `json:"productCategoryID,optional"`
+	ProductCategoryIDs  []int64                   `json:"productCategoryIDs,optional"`
+	WithShared          int64                     `json:"withShared,optional,range=[0:2]"`  // 过滤分享的设备1: 同时获取分享的设备 2:只获取分享的设备
+	WithCollect         int64                     `json:"withCollect,optional,range=[0:2]"` // 过滤收藏的设备(这里只获取收藏的设备) 1: 同时获取收藏的设备 2:只获取收藏的设备
+	Versions            []string                  `json:"versions,optional"`
+	NotVersion          string                    `json:"notVersion,optional"`
+	Gateway             *DeviceCore               `json:"gateway,optional"` //过滤网关
+	GroupID             int64                     `json:"groupID,optional,string"`
+	GroupIDs            []int64                   `json:"groupIDs,optional,string"`
+	GroupIDPaths        []string                  `json:"groupIDPaths,optional"`
+	GroupIDPath         string                    `json:"groupIDPath,optional"`
+	NotGroupID          int64                     `json:"notGroupID,optional,string"`
+	ParentGroupID       int64                     `json:"parentGroupID,optional,string"`
+	GroupPurpose        string                    `json:"groupPurpose,optional"` //设备分组用途 不填默认为default
+	GroupName           string                    `json:"groupName,optional"`
+	NotAreaID           int64                     `json:"notAreaID,optional,string"`
+	Devices             []*DeviceCore             `json:"devices,optional"`
+	Status              int64                     `json:"status,optional"` //设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)
+	Statuses            []int64                   `json:"statuses,optional"`
+	WithOwner           bool                      `json:"withOwner,optional"`   //同时获取拥有人的信息
+	WithGateway         bool                      `json:"withGateway,optional"` //同时返回子设备绑定的网关信息
+	HasOwner            int64                     `json:"hasOwner,optional"`    //是否被人拥有,1为是 2为否
+	UserID              int64                     `json:"userID,string,optional"`
+	NetType             int64                     `json:"netType,optional,range=[0:8]"` //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
+	WithArea            bool                      `json:"withArea,optional"`            //同时返回区域信息
+	IsOnlyCore          bool                      `json:"isOnlyCore,optional"`          //只返回核心信息
+	Iccid               string                    `json:"iccid,optional,omitempty"`     //SIM卡卡号
+	WithGroups          []string                  `json:"withGroups,optional"`
+	Property            map[string]*CompareString `json:"property,optional"` //设备最新属性过滤,key为属性的id,如果是结构体则key为 aaa.bbb 数组为aaa.1
 }
 
 type DeviceInfoIndexResp struct {
@@ -377,13 +378,14 @@ type DeviceInfoMultiUpdateReq struct {
 }
 
 type DeviceInfoReadReq struct {
-	ProductID      string   `json:"productID,optional"`      //产品id 为空时获取所有产品
-	DeviceName     string   `json:"deviceName"`              //设备名称 读写
-	WithProperties []string `json:"withProperties,optional"` //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表
-	WithProfiles   []string `json:"withProfiles,optional"`   //
-	WithOwner      bool     `json:"withOwner,optional"`      //同时获取拥有人的信息
-	WithGateway    bool     `json:"withGateway,optional"`    //同时返回子设备绑定的网关信息
-	WithArea       bool     `json:"withArea,optional"`       //同时返回区域信息
+	ProductID           string   `json:"productID,optional"`           //产品id 为空时获取所有产品
+	DeviceName          string   `json:"deviceName"`                   //设备名称 读写
+	WithProperties      []string `json:"withProperties,optional"`      //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表
+	PropertyIgnoreEmpty bool     `json:"propertyIgnoreEmpty,optional"` // 设备属性是否忽略空值,空值是否返回
+	WithProfiles        []string `json:"withProfiles,optional"`        //
+	WithOwner           bool     `json:"withOwner,optional"`           //同时获取拥有人的信息
+	WithGateway         bool     `json:"withGateway,optional"`         //同时返回子设备绑定的网关信息
+	WithArea            bool     `json:"withArea,optional"`            //同时返回区域信息
 }
 
 type DeviceInfoSaveReq struct {
@@ -758,9 +760,10 @@ type DeviceMsgPropertyLogInfo struct {
 }
 
 type DeviceMsgPropertyLogLatestIndexReq struct {
-	DeviceName string   `json:"deviceName,omitempty"`       //设备名
-	ProductID  string   `json:"productID,omitempty"`        //产品id 获取产品id下的所有设备信息
-	DataIDs    []string `json:"dataIDs,optional,omitempty"` //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值
+	DeviceName  string   `json:"deviceName,omitempty"`       //设备名
+	ProductID   string   `json:"productID,omitempty"`        //产品id 获取产品id下的所有设备信息
+	DataIDs     []string `json:"dataIDs,optional,omitempty"` //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值
+	IgnoreEmpty bool     `json:"ignoreEmpty,optional"`       // 设备属性是否忽略空值,空值是否返回
 }
 
 type DeviceMsgPropertyLogMultiIndexReq struct {

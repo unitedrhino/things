@@ -86,16 +86,14 @@ func ParseDataID(identifier string) (*DataIDInfo, error) {
 		if err != nil {
 			if arrs[1] == "*" {
 				return &DataIDInfo{
-					ID:     arrs[0],
-					Column: arrs[1],
+					ID: arrs[0],
 				}, nil
 			}
 			nums, err := utils.ParseNumberString(arrs[1])
 			if err == nil {
 				return &DataIDInfo{
-					ID:     arrs[0],
-					Column: arrs[1],
-					Nums:   nums,
+					ID:   arrs[0],
+					Nums: nums,
 				}, nil
 			}
 			return &DataIDInfo{
@@ -104,9 +102,8 @@ func ParseDataID(identifier string) (*DataIDInfo, error) {
 			}, nil
 		}
 		return &DataIDInfo{
-			ID:     arrs[0],
-			Column: arrs[1],
-			Nums:   []int64{num},
+			ID:   arrs[0],
+			Nums: []int64{num},
 		}, nil
 	case 3:
 		num, err := cast.ToInt64E(arrs[1])

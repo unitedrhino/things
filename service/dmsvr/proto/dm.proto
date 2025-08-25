@@ -977,6 +977,7 @@ message PropertyLogLatestIndexReq{
   string productID = 2; //产品id (必填)
   string deviceName = 1; //设备名(必填)
   repeated string dataIDs = 3; //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值
+  bool ignoreEmpty = 5;// 设备属性是否忽略空值,空值是否返回
 }
 
 message PropertyLogLatestIndex2Req{
@@ -1763,7 +1764,7 @@ message DeviceInfoIndexReq{
   string protocolCode =51;//协议查询
   CompareInt64 rssi=52;
   IDPath dept =53;//过滤分销商的数据
-  map<string,CompareString> Property =54;//设备最新属性过滤,key为属性的id,如果是结构体则key为 aaa.bbb 数组为aaa.1
+  map<string,CompareString> property =54;//设备最新属性过滤,key为属性的id,如果是结构体则key为 aaa.bbb 数组为aaa.1
 }
 
 message DeviceInfoIndexResp{

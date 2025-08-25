@@ -274,6 +274,7 @@ type (
         ProductID string `json:"productID,optional"`                                     //产品id 为空时获取所有产品
         DeviceName string `json:"deviceName"`                                            //设备名称 读写
         WithProperties []string `json:"withProperties,optional"`   //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表
+        PropertyIgnoreEmpty bool `json:"propertyIgnoreEmpty,optional"`// 设备属性是否忽略空值,空值是否返回
         WithProfiles []string `json:"withProfiles,optional"` //
         WithOwner bool  `json:"withOwner,optional"`//同时获取拥有人的信息
         WithGateway bool  `json:"withGateway,optional"`//同时返回子设备绑定的网关信息
@@ -318,6 +319,7 @@ type (
         Range int64 `json:"range,optional"`               //过滤条件:距离坐标点固定范围内的设备 单位：米
         Tags []*Tag `json:"tags,optional"`                // key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
         WithProperties []string `json:"withProperties,optional"`   //如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表,如果没有匹配的则不会返回
+        PropertyIgnoreEmpty bool `json:"propertyIgnoreEmpty,optional"`// 设备属性是否忽略空值,空值是否返回
         WithProfiles []string `json:"withProfiles,optional"` //
         AreaID int64 `json:"areaID,string,optional"`                  //项目区域ids
         AreaIDs []int64 `json:"areaIDs,string,optional"`                  //项目区域ids

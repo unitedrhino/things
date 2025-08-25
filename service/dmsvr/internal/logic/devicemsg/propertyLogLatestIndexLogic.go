@@ -93,6 +93,9 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 				}
 			}
 			if data == nil {
+				if in.IgnoreEmpty {
+					return
+				}
 				v, err := property.Define.GetDefaultValue()
 				if err != nil {
 					l.Errorf("%s.GetDefaultValue err=%v", utils.FuncName(), utils.Fmt(err))

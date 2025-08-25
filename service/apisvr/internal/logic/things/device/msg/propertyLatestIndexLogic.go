@@ -2,6 +2,7 @@ package msg
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
@@ -28,11 +29,7 @@ func NewPropertyLatestIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext
 }
 
 func (l *PropertyLatestIndexLogic) PropertyLatestIndex(req *types.DeviceMsgPropertyLogLatestIndexReq) (resp *types.DeviceMsgPropertyIndexResp, err error) {
-	dmResp, err := l.svcCtx.DeviceMsg.PropertyLogLatestIndex(l.ctx, &dm.PropertyLogLatestIndexReq{
-		DeviceName: req.DeviceName,
-		ProductID:  req.ProductID,
-		DataIDs:    req.DataIDs,
-	})
+	dmResp, err := l.svcCtx.DeviceMsg.PropertyLogLatestIndex(l.ctx, utils.Copy[dm.PropertyLogLatestIndexReq](req))
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.GetDeviceData req=%v err=%+v", utils.FuncName(), req, er)
