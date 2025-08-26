@@ -55,6 +55,9 @@ func ruleCheck(ctx context.Context, svcCtx *svc.ServiceContext, in *dm.DeviceSch
 			if ok {
 				continue
 			}
+			if po.Tag == schema.TagOptional { //通用物模型里选取的
+				po.Tag = schema.TagDeviceOptional
+			}
 			if po.Tag != schema.TagDeviceOptional {
 				checkOptions = append(checkOptions, func(do any) error {
 					s := do.(*schema.Property)
@@ -85,7 +88,7 @@ func ruleCheck(ctx context.Context, svcCtx *svc.ServiceContext, in *dm.DeviceSch
 			}
 			po.Tag = schema.TagDeviceOptional
 		}
-		if v.Tag == schema.TagDeviceOptional {
+		if po.Tag == schema.TagDeviceOptional {
 			err := func() error {
 				//如果导入的是通用物模型
 				var cs *relationDB.DmCommonSchema
@@ -94,7 +97,7 @@ func ruleCheck(ctx context.Context, svcCtx *svc.ServiceContext, in *dm.DeviceSch
 					return err
 				}
 				if cs == nil { //如果通用物模型里面没有,则变成自定义物模型
-					v.Tag = schema.TagDeviceCustom
+					po.Tag = schema.TagDeviceCustom
 					checkOptions = append(checkOptions, func(do any) error {
 						s := do.(*schema.Property)
 						if utils.SliceIn(s.Define.Type, schema.DataTypeArray, schema.DataTypeStruct) {

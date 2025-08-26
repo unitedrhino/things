@@ -2,6 +2,7 @@ package schema
 
 import (
 	"encoding/json"
+
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/utils"
 
@@ -19,7 +20,7 @@ const (
 	DefineIntMax     = 9999999999999
 	DefineIntMin     = -9999999999999
 	DefineStringMax  = 2048
-	DefineArrayMax   = 256
+	DefineArrayMax   = 1024
 	DefineSpecsLen   = 20
 	ParamsLen        = 20
 )
