@@ -9,19 +9,14 @@
 
 **联犀** 是一款基于 Go 语言开发的商业级 SaaS 云原生微服务物联网平台，原生多租户多应用，自带完整的小程序，云边协同，可以适用于各种场景，降低企业的开发维护成本。
 
-<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 12px; color: white; margin: 20px 0;">
-  <h3 style="margin: 0 0 15px 0; color: white;">🎯 为什么选择联犀？</h3>
-  <ul style="margin: 0; padding-left: 20px;">
-    <li>✅ <strong>开箱即用</strong>：完整的物联网解决方案，无需从零搭建</li>
-    <li>✅ <strong>成本低廉</strong>：相比自建平台，节省 80% 开发成本</li>
-    <li>✅ <strong>快速上线</strong>：从项目启动到产品上线，仅需数周时间</li>
-    <li>✅ <strong>持续更新</strong>：活跃的开源社区，功能持续迭代优化</li>
-  </ul>
-</div>
+### 🎯 为什么选择联犀？
+
+- ✅ **开箱即用**：完整的物联网解决方案，无需从零搭建
+- ✅ **成本低廉**：相比自建平台，节省 80% 开发成本
+- ✅ **快速上线**：从项目启动到产品上线，仅需数周时间
+- ✅ **持续更新**：活跃的开源社区，功能持续迭代优化
 
 > 📖 [完整文档](https://doc.unitedrhino.com/) | 🌐 [在线体验](https://doc.unitedrhino.com/use/ezkveztg/) | 💬 [加入社区](https://doc.unitedrhino.com/community/)
-
-
 
 ---
 
@@ -57,29 +52,29 @@
 
 ### 物联网模块架构设计
 
-<img src="./doc/assets/物联网.png" alt="物联网架构" style="max-width: 100%; height: auto;"/>
+![物联网架构](./doc/assets/物联网.png)
 
 ### SaaS中台架构设计
 
-<img src="./doc/assets/SaaS平台.png" alt="SaaS平台架构" style="max-width: 100%; height: auto;"/>
+![SaaS平台架构](./doc/assets/SaaS平台.png)
 
 ### 部署架构图
 
-<img src="./doc/assets/部署架构图.png" alt="部署架构" style="max-width: 100%; height: auto;"/>
+![部署架构](./doc/assets/部署架构图.png)
 
 ## 部分示例
 
 ### 低代码
 
-<img src="./doc/assets/低代码.png" alt="低代码" style="max-width: 100%; height: auto;"/>
+![低代码](./doc/assets/低代码.png)
 
 ### 组态大屏
 
-<img src="./doc/assets/组态大屏.png" alt="组态大屏" style="max-width: 100%; height: auto;"/>
+![组态大屏](./doc/assets/组态大屏.png)
 
 ### 设备地图
 
-<img src="./doc/assets/设备地图.png" alt="设备地图" style="max-width: 100%; height: auto;"/>
+![设备地图](./doc/assets/设备地图.png)
 
 ## 💎 产品价值
 
@@ -90,35 +85,14 @@
 | **数据价值** | 私有化部署，数据自主管理，无需担心公有云服务中断或成本问题 |
 | **解决方案底座** | 作为行业解决方案的数字底座，支持多行业共用物联网平台，沉淀行业经验和产品方案 |
 
-## 🎖️ ## 🎖️ 谁在使用我们的产品？（部分）
+## 🎖️ 谁在使用我们的产品？（部分）
 
-<div style="display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; margin: 30px 0; padding: 20px 0;">
-  <div style="flex: 1 1 calc(33.333% - 30px); min-width: 200px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
-    <img src="./doc/assets/useBy/福建合创网络科技有限公司.png" alt="福建合创网络科技有限公司" style="max-width: 120px; height: 60px; object-fit: contain; margin-bottom: 10px;"/>
-    <p style="margin: 0; font-size: 14px; color: #666;">福建合创网络科技有限公司</p>
-  </div>
-  <div style="flex: 1 1 calc(33.333% - 30px); min-width: 200px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
-    <img src="./doc/assets/useBy/深圳市易百珑科技有限公司.svg" alt="深圳市易百珑科技有限公司" style="max-width: 120px; height: 60px; object-fit: contain; margin-bottom: 10px;"/>
-    <p style="margin: 0; font-size: 14px; color: #666;">深圳市易百珑科技有限公司</p>
-  </div>
-  <div style="flex: 1 1 calc(33.333% - 30px); min-width: 200px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
-    <img src="./doc/assets/useBy/联远智维.jpg" alt="联远智维" style="max-width: 120px; height: 60px; object-fit: contain; margin-bottom: 10px;"/>
-    <p style="margin: 0; font-size: 14px; color: #666;">联远智维</p>
-  </div>
-  <div style="flex: 1 1 calc(33.333% - 30px); min-width: 200px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
-    <img src="./doc/assets/useBy/常州飞诺医疗技术有限公司.png" alt="常州飞诺医疗技术有限公司" style="max-width: 120px; height: 60px; object-fit: contain; margin-bottom: 10px;"/>
-    <p style="margin: 0; font-size: 14px; color: #666;">常州飞诺医疗技术有限公司</p>
-  </div>
-  <div style="flex: 1 1 calc(33.333% - 30px); min-width: 200px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
-    <img src="./doc/assets/useBy/重庆图浩科技.jpg" alt="重庆图浩科技" style="max-width: 120px; height: 60px; object-fit: contain; margin-bottom: 10px;"/>
-    <p style="margin: 0; font-size: 14px; color: #666;">重庆图浩科技</p>
-  </div>
-  <div style="flex: 1 1 calc(33.333% - 30px); min-width: 200px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
-    <img src="./doc/assets/useBy/杭州伟立讯.png" alt="杭州伟立讯" style="max-width: 120px; height: 60px; object-fit: contain; margin-bottom: 10px;"/>
-    <p style="margin: 0; font-size: 14px; color: #666;">杭州伟立讯</p>
-  </div>
-</div>
+### 合作伙伴展示
 
+|   |   |   |
+|---------|---------|---------|
+| ![福建合创网络科技有限公司](./doc/assets/useBy/福建合创网络科技有限公司.png)<br/>福建合创网络科技有限公司 | ![深圳市易百珑科技有限公司](./doc/assets/useBy/深圳市易百珑科技有限公司.svg)<br/>深圳市易百珑科技有限公司 | ![联远智维](./doc/assets/useBy/联远智维.jpg)<br/>联远智维 |
+| ![常州飞诺医疗技术有限公司](./doc/assets/useBy/常州飞诺医疗技术有限公司.png)<br/>常州飞诺医疗技术有限公司 | ![重庆图浩科技](./doc/assets/useBy/重庆图浩科技.jpg)<br/>重庆图浩科技 | ![杭州伟立讯](./doc/assets/useBy/杭州伟立讯.png)<br/>杭州伟立讯 |
 
 ## 🛠️ 技术栈
 
@@ -146,11 +120,10 @@
 
 想要快速体验联犀的强大功能？我们为你准备了完整的演示环境！
 
-<div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #007bff; margin: 20px 0;">
-  <h4 style="margin: 0 0 10px 0; color: #007bff;">🌟 在线演示环境</h4>
-  <p style="margin: 0 0 15px 0;">无需安装，立即体验联犀的完整功能</p>
-  <a href="https://doc.unitedrhino.com/use/ezkveztg/" style="background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">🚀 立即体验</a>
-</div>
+#### 🌟 在线演示环境
+无需安装，立即体验联犀的完整功能
+
+[🚀 立即体验](https://doc.unitedrhino.com/use/ezkveztg/)
 
 ### 📋 环境要求
 - **Go**: 1.19+
@@ -160,11 +133,10 @@
 
 ### 🛠️ 快速部署
 
-<div style="background: #e8f5e8; padding: 20px; border-radius: 8px; border-left: 4px solid #28a745; margin: 20px 0;">
-  <h4 style="margin: 0 0 10px 0; color: #28a745;">📚 详细部署指南</h4>
-  <p style="margin: 0 0 15px 0;">从环境准备到服务启动，一步步带你完成部署</p>
-  <a href="https://doc.unitedrhino.com/use/046431/" style="background: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">📖 查看部署文档</a>
-</div>
+#### 📚 详细部署指南
+从环境准备到服务启动，一步步带你完成部署
+
+[📖 查看部署文档](https://doc.unitedrhino.com/use/046431/)
 
 ### 💡 遇到问题？
 
@@ -172,11 +144,10 @@
 - **🐛 提交 Issue**: [GitHub Issues](https://github.com/unitedrhino/things/issues)
 - **💬 加入社区**: 扫码加入微信群，获得技术支持
 
-<div style="background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107; margin: 20px 0;">
-  <h4 style="margin: 0 0 10px 0; color: #856404;">💡 快速获取帮助</h4>
-  <p style="margin: 0 0 10px 0; color: #856404;">遇到技术问题？我们的微信群里有 500+ 物联网开发者，随时为你解答！</p>
-  <p style="margin: 0; color: #856404;"><strong>扫码加入微信群 → 获得即时技术支持</strong></p>
-</div>
+#### 💡 快速获取帮助
+遇到技术问题？我们的微信群里有 500+ 物联网开发者，随时为你解答！
+
+**扫码加入微信群 → 获得即时技术支持**
 
 ## 🤝 开源社区
 
@@ -188,9 +159,7 @@
 
 感谢所有已经做出贡献的人!
 
-<a href="https://github.com/unitedrhino/things/graphs/contributors">
-  <img src="https://contributors-img.web.app/image?repo=unitedrhino/things" alt="贡献者" />
-</a>
+[![贡献者](https://contributors-img.web.app/image?repo=unitedrhino/things)](https://github.com/unitedrhino/things/graphs/contributors)
 
 ## 💬 加入我们的社区
 
@@ -207,7 +176,7 @@
 
 > 💬 **群内已有 500+ 物联网开发者，期待你的加入！**
 
-<img src="./doc/assets/企业微信二维码.png" alt="企业微信二维码" style="width: 200px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"/>
+![企业微信二维码](./doc/assets/企业微信二维码.png)
 
 **扫码加入，开启你的物联网之旅！**
 
@@ -215,7 +184,7 @@
 
 关注公众号，获取更多精彩内容：
 
-<img src="./doc/assets/公众号.jpg" alt="公众号" style="width: 200px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"/>
+![公众号](./doc/assets/公众号.jpg)
 
 ### 🌟 社区活动
 
@@ -232,11 +201,9 @@
 
 ## ⭐ 收藏项目
 
-<img src="https://starchart.cc/unitedrhino/things.svg" alt="Star History" />
+![Star History](https://starchart.cc/unitedrhino/things.svg)
 
-::: tip 💡 提示
-如需关注最新版本变化，请移步：[Gitee](https://gitee.com/unitedrhino/things)
-:::
+> 💡 **提示**: 如需关注最新版本变化，请移步：[Gitee](https://gitee.com/unitedrhino/things)
 
 ## 📄 许可证
 
@@ -244,13 +211,12 @@
 
 ---
 
-<div style="text-align: center; margin-top: 50px; padding: 30px; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); border-radius: 12px;">
-  <h3 style="margin: 0 0 20px 0; color: #333;">🚀 开始你的物联网之旅</h3>
-  <p style="margin: 0 0 15px 0; color: #666; font-size: 16px;">如果这个项目对您有帮助，请给我们一个 ⭐ Star</p>
-  <p style="margin: 0 0 20px 0; color: #666;">💬 加入我们的社区，与 500+ 物联网开发者一起交流学习</p>
-  <div style="display: flex; justify-content: center; gap: 20px; margin-top: 20px;">
-    <a href="https://github.com/unitedrhino/things" style="background: #333; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">⭐ Star on GitHub</a>
-    <a href="https://gitee.com/unitedrhino/things" style="background: #c71d23; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">⭐ Star on Gitee</a>
-  </div>
-  <p style="margin: 20px 0 0 0; color: #999; font-size: 14px;">Made with ❤️ by 联犀团队</p>
-</div>
+## 🚀 开始你的物联网之旅
+
+如果这个项目对您有帮助，请给我们一个 ⭐ Star
+
+💬 加入我们的社区，与 500+ 物联网开发者一起交流学习
+
+[⭐ Star on GitHub](https://github.com/unitedrhino/things) | [⭐ Star on Gitee](https://gitee.com/unitedrhino/things)
+
+*Made with ❤️ by 联犀团队*
