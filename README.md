@@ -90,34 +90,35 @@
 | **数据价值** | 私有化部署，数据自主管理，无需担心公有云服务中断或成本问题 |
 | **解决方案底座** | 作为行业解决方案的数字底座，支持多行业共用物联网平台，沉淀行业经验和产品方案 |
 
-## 🎖️ 谁在使用我们的产品？（部分）
+## 🎖️ ## 🎖️ 谁在使用我们的产品？（部分）
 
-<div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin: 30px 0;">
-  <div style="text-align: center;">
-    <img src="./doc/assets/useBy/福建合创网络科技有限公司.png" alt="福建合创网络科技有限公司" style="width: 120px; height: 60px; object-fit: contain;"/>
-    <p>福建合创网络科技有限公司</p>
+<div style="display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; margin: 30px 0; padding: 20px 0;">
+  <div style="flex: 1 1 calc(33.333% - 30px); min-width: 200px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
+    <img src="./doc/assets/useBy/福建合创网络科技有限公司.png" alt="福建合创网络科技有限公司" style="max-width: 120px; height: 60px; object-fit: contain; margin-bottom: 10px;"/>
+    <p style="margin: 0; font-size: 14px; color: #666;">福建合创网络科技有限公司</p>
   </div>
-  <div style="text-align: center;">
-    <img src="./doc/assets/useBy/深圳市易百珑科技有限公司.svg" alt="深圳市易百珑科技有限公司" style="width: 120px; height: 60px; object-fit: contain;"/>
-    <p>深圳市易百珑科技有限公司</p>
+  <div style="flex: 1 1 calc(33.333% - 30px); min-width: 200px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
+    <img src="./doc/assets/useBy/深圳市易百珑科技有限公司.svg" alt="深圳市易百珑科技有限公司" style="max-width: 120px; height: 60px; object-fit: contain; margin-bottom: 10px;"/>
+    <p style="margin: 0; font-size: 14px; color: #666;">深圳市易百珑科技有限公司</p>
   </div>
-  <div style="text-align: center;">
-    <img src="./doc/assets/useBy/联远智维.jpg" alt="联远智维" style="width: 120px; height: 60px; object-fit: contain;"/>
-    <p>联远智维</p>
+  <div style="flex: 1 1 calc(33.333% - 30px); min-width: 200px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
+    <img src="./doc/assets/useBy/联远智维.jpg" alt="联远智维" style="max-width: 120px; height: 60px; object-fit: contain; margin-bottom: 10px;"/>
+    <p style="margin: 0; font-size: 14px; color: #666;">联远智维</p>
   </div>
-  <div style="text-align: center;">
-    <img src="./doc/assets/useBy/常州飞诺医疗技术有限公司.png" alt="常州飞诺医疗技术有限公司" style="width: 120px; height: 60px; object-fit: contain;"/>
-    <p>常州飞诺医疗技术有限公司</p>
+  <div style="flex: 1 1 calc(33.333% - 30px); min-width: 200px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
+    <img src="./doc/assets/useBy/常州飞诺医疗技术有限公司.png" alt="常州飞诺医疗技术有限公司" style="max-width: 120px; height: 60px; object-fit: contain; margin-bottom: 10px;"/>
+    <p style="margin: 0; font-size: 14px; color: #666;">常州飞诺医疗技术有限公司</p>
   </div>
-  <div style="text-align: center;">
-    <img src="./doc/assets/useBy/重庆图浩科技.jpg" alt="重庆图浩科技" style="width: 120px; height: 60px; object-fit: contain;"/>
-    <p>重庆图浩科技</p>
+  <div style="flex: 1 1 calc(33.333% - 30px); min-width: 200px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
+    <img src="./doc/assets/useBy/重庆图浩科技.jpg" alt="重庆图浩科技" style="max-width: 120px; height: 60px; object-fit: contain; margin-bottom: 10px;"/>
+    <p style="margin: 0; font-size: 14px; color: #666;">重庆图浩科技</p>
   </div>
-  <div style="text-align: center;">
-    <img src="./doc/assets/useBy/杭州伟立讯.png" alt="杭州伟立讯" style="width: 120px; height: 60px; object-fit: contain;"/>
-    <p>杭州伟立讯</p>
+  <div style="flex: 1 1 calc(33.333% - 30px); min-width: 200px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
+    <img src="./doc/assets/useBy/杭州伟立讯.png" alt="杭州伟立讯" style="max-width: 120px; height: 60px; object-fit: contain; margin-bottom: 10px;"/>
+    <p style="margin: 0; font-size: 14px; color: #666;">杭州伟立讯</p>
   </div>
 </div>
+
 
 ## 🛠️ 技术栈
 
