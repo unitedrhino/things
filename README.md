@@ -16,7 +16,7 @@
 - ✅ **快速上线**：从项目启动到产品上线，仅需数周时间
 - ✅ **持续更新**：活跃的开源社区，功能持续迭代优化
 
-> 📖 [完整文档](https://doc.unitedrhino.com/) | 🌐 [在线体验](https://doc.unitedrhino.com/use/ezkveztg/) | 💬 [加入社区](https://doc.unitedrhino.com/community/)
+> 📖 [完整文档](https://doc.unitedrhino.com/) | 🌐 [在线体验](https://doc.unitedrhino.com/use/ezkveztg/) 
 
 ---
 
