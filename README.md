@@ -149,6 +149,28 @@
 
 **扫码加入微信群 → 获得即时技术支持**
 
+## 💬 联系我们
+
+### 📱 微信交流群
+
+> 💬 **群内已有 500+ 物联网开发者，期待你的加入！**
+
+![企业微信二维码](./doc/assets/企业微信二维码.png)
+
+**扫码加入，开启你的物联网之旅！**
+
+### 📢 公众号
+
+关注公众号，获取更多精彩内容：
+
+![公众号](./doc/assets/公众号.jpg)
+
+### 📞 其他联系方式
+
+- **微信**: godLei6
+- **官网**: [https://doc.unitedrhino.com/](https://doc.unitedrhino.com/)
+- **GitHub Issues**: [提交问题反馈](https://github.com/unitedrhino/things/issues)
+
 ## 🤝 开源社区
 
 - **GitHub**: [联犀 GitHub](https://github.com/unitedrhino/things)
@@ -172,32 +194,12 @@
 - **🎁 专属福利**：群内用户专享的技术支持、优先体验新功能
 - **📈 职业发展**：结识行业同仁，拓展人脉资源
 
-### 📱 微信交流群
-
-> 💬 **群内已有 500+ 物联网开发者，期待你的加入！**
-
-![企业微信二维码](./doc/assets/企业微信二维码.png)
-
-**扫码加入，开启你的物联网之旅！**
-
-### 📢 公众号
-
-关注公众号，获取更多精彩内容：
-
-![公众号](./doc/assets/公众号.jpg)
-
 ### 🌟 社区活动
 
 - **每周技术分享**：邀请行业专家分享物联网前沿技术
 - **产品体验官**：优先体验新功能，反馈建议
 - **开源贡献者计划**：参与开源项目，获得专属荣誉
 - **线下技术沙龙**：定期举办线下交流活动
-
-### 📞 其他联系方式
-
-- **微信**: godLei6
-- **官网**: [https://doc.unitedrhino.com/](https://doc.unitedrhino.com/)
-- **GitHub Issues**: [提交问题反馈](https://github.com/unitedrhino/things/issues)
 
 ## ⭐ 收藏项目
 
