@@ -37,7 +37,7 @@ func (l *ProductSchemaMultiCreateLogic) ProductSchemaMultiCreate(in *dm.ProductS
 	}
 	createLogic := NewProductSchemaCreateLogic(l.ctx, l.svcCtx)
 	var errGroup errgroup.Group
-	var pos []*relationDB.DmSchemaInfo
+	var pos []*relationDB.DmProductSchema
 	for _, v := range in.List {
 		info := v
 		info.ProductID = in.ProductID

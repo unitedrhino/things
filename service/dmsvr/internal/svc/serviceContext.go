@@ -129,7 +129,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			if err != nil {
 				return nil, err
 			}
-			schemaModel := relationDB.ToSchemaDo(key, dbSchemas)
+			schemaModel := relationDB.ToSchemaDo(key, utils.CopySlice[relationDB.DmSchemaInfo](dbSchemas))
 			schemaModel.ValidateWithFmt()
 			return schemaModel, nil
 		},

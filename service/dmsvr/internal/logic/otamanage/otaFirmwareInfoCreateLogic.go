@@ -3,6 +3,8 @@ package otamanagelogic
 import (
 	"context"
 	"fmt"
+
+	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
@@ -34,38 +36,41 @@ func NewOtaFirmwareInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceConte
 	}
 }
 
-func (l *OtaFirmwareInfoCreateLogic) CheckOtaFirmwareInfo(in *dm.OtaFirmwareInfoCreateReq) (bool, error) {
+func (l *OtaFirmwareInfoCreateLogic) CheckOtaFirmwareInfo(in *dm.OtaFirmwareInfoCreateReq) (*dm.ProductInfo, error) {
 	//查询升级包是否存在
 	logx.Infof("relationDB:%+v", relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
-	_, err := l.svcCtx.ProductCache.GetData(l.ctx, in.ProductID)
+	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, in.ProductID)
 	if errors.Cmp(err, errors.NotFind) {
 		l.Errorf("not find product id:" + in.ProductID)
-		return false, nil
+		return pi, err
 	} else if err != nil {
-		return false, nil
+		return pi, err
 	}
-	fsize, err := l.OfDB.CountByFilter(l.ctx, relationDB.OtaFirmwareInfoFilter{
+	if ctxs.CanHandleTenantCommon(l.ctx, pi.TenantCode) {
+		return pi, errors.Parameter.AddMsg("无权操作该固件")
+	}
+	fsize, err := l.OfDB.CountByFilter(ctxs.WithRoot(l.ctx), relationDB.OtaFirmwareInfoFilter{
 		Version:   in.Version,
 		ProductID: in.ProductID,
 	})
 	if fsize == 0 {
-		return true, nil
+		return pi, nil
 	} else if err != nil {
-		return true, err
+		return pi, err
 	}
 	if in.ModuleCode != "" && in.ModuleCode != msgOta.ModuleCodeDefault {
 		module, err := relationDB.NewOtaModuleInfoRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.OtaModuleInfoFilter{Code: in.ModuleCode})
 		if err != nil {
-			return false, err
+			return pi, err
 		}
 		if module.ProductID != in.ProductID {
-			return false, errors.Parameter.AddMsg("选择的模块产品和升级包的产品不一致")
+			return pi, errors.Parameter.AddMsg("选择的模块产品和升级包的产品不一致")
 		}
 	} else {
 		in.ModuleCode = msgOta.ModuleCodeDefault
 	}
 
-	return true, errors.Parameter.WithMsg(fmt.Sprintf("%s版本的升级包已经存在", in.Version))
+	return pi, errors.Parameter.WithMsg(fmt.Sprintf("%s版本的升级包已经存在", in.Version))
 }
 
 // 添加升级包
@@ -79,13 +84,9 @@ func (l *OtaFirmwareInfoCreateLogic) OtaFirmwareInfoCreate(in *dm.OtaFirmwareInf
 	logx.Infof("ctx:%+v", l.ctx)
 	var fileDB = relationDB.NewOtaFirmwareFileRepo(l.ctx)
 	logx.Infof("%+v", in)
-	find, err := l.CheckOtaFirmwareInfo(in)
-	if errors.Cmp(err, errors.Parameter) {
-		return nil, err
-	} else if err != nil {
+	pi, err := l.CheckOtaFirmwareInfo(in)
+	if err != nil {
 		l.Errorf("AddDevice|CheckProduct|in=%v\n", in)
-		return nil, err
-	} else if find == false {
 		return nil, err
 	}
 	var totalSize int64
@@ -114,6 +115,7 @@ func (l *OtaFirmwareInfoCreateLogic) OtaFirmwareInfoCreate(in *dm.OtaFirmwareInf
 		}
 	}
 	di := relationDB.DmOtaFirmwareInfo{
+		TenantCode:     dataType.TenantCodeWitCommon(pi.TenantCode),
 		ProductID:      in.ProductID,
 		Version:        in.Version,
 		Name:           in.Name,

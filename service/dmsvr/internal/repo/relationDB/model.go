@@ -399,6 +399,7 @@ func (m *DmDeviceSchema) TableName() string {
 // 产品物模型表
 type DmSchemaInfo struct {
 	ID         int64          `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	TenantCode string         `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'__common__'"`                                                    // 租户编码
 	ProductID  string         `gorm:"column:product_id;uniqueIndex:idx_dm_schema_info_identifier;index:product_id_type;type:varchar(100);NOT NULL"`      // 产品id
 	DeviceName sql.NullString `gorm:"column:device_name;uniqueIndex:idx_dm_schema_info_identifier;index:product_id_type;type:varchar(100);default:null"` // 产品id
 	Identifier string         `gorm:"column:identifier;uniqueIndex:idx_dm_schema_info_identifier;type:varchar(100);NOT NULL"`                            // 标识符

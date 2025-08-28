@@ -38,6 +38,7 @@ func (l *ProductCategorySchemaMultiUpdateLogic) ProductCategorySchemaMultiUpdate
 	}
 	pcDB := relationDB.NewProductCategoryRepo(l.ctx)
 	var productIDs []string
+	var productMap = map[string]*relationDB.DmProductInfo{}
 	{
 		var productCategoryIDs = []int64{in.ProductCategoryID}
 		if in.ProductCategoryID != def.RootNode {
@@ -49,11 +50,15 @@ func (l *ProductCategorySchemaMultiUpdateLogic) ProductCategorySchemaMultiUpdate
 		} else { //root节点要处理所有产品
 			productCategoryIDs = []int64{}
 		}
-		ps, err := relationDB.NewProductInfoRepo(l.ctx).FindByFilter(l.ctx, relationDB.ProductFilter{CategoryIDs: productCategoryIDs}, nil)
+		var err error
+		products, err := relationDB.NewProductInfoRepo(l.ctx).FindByFilter(l.ctx, relationDB.ProductFilter{CategoryIDs: productCategoryIDs}, nil)
 		if err != nil {
 			return nil, err
 		}
-		productIDs = utils.ToSliceWithFunc(ps, func(in *relationDB.DmProductInfo) string {
+		for _, v := range products {
+			productMap[v.ProductID] = v
+		}
+		productIDs = utils.ToSliceWithFunc(products, func(in *relationDB.DmProductInfo) string {
 			return in.ProductID
 		})
 	}
@@ -110,7 +115,7 @@ func (l *ProductCategorySchemaMultiUpdateLogic) ProductCategorySchemaMultiUpdate
 					return err
 				}
 				findProducts = utils.SliceToSet(ps)
-				var schemas []*relationDB.DmSchemaInfo
+				var schemas []*relationDB.DmProductSchema
 				var addProductIDs []string
 
 				for _, v := range adds {
@@ -119,7 +124,8 @@ func (l *ProductCategorySchemaMultiUpdateLogic) ProductCategorySchemaMultiUpdate
 					}
 					addProductIDs = append(addProductIDs, v)
 					//如果没有这个物模型需要新增
-					schemas = append(schemas, &relationDB.DmSchemaInfo{
+					schemas = append(schemas, &relationDB.DmProductSchema{
+						TenantCode:   productMap[v].TenantCode,
 						ProductID:    v,
 						DmSchemaCore: identifier.DmSchemaCore,
 					})

@@ -93,7 +93,7 @@ func (p ProductSchemaRepo) fmtFilter(ctx context.Context, f ProductSchemaFilter)
 	db := p.db.WithContext(ctx)
 	return p.filter(db, f)
 }
-func (p ProductSchemaRepo) Insert(ctx context.Context, data *DmSchemaInfo) error {
+func (p ProductSchemaRepo) Insert(ctx context.Context, data *DmProductSchema) error {
 	err := p.db.Transaction(func(tx *gorm.DB) error {
 		err := NewSchemaInfoRepo(tx).DeleteByFilter(ctx, SchemaInfoFilter{ProductID: data.ProductID, Tag: schema.TagDeviceCustom, Identifiers: []string{data.Identifier}})
 		if err != nil {
@@ -209,7 +209,7 @@ func (p ProductSchemaRepo) MultiInsert(ctx context.Context, data []*DmProductSch
 	return stores.ErrFmt(err)
 }
 
-func (p ProductSchemaRepo) MultiUpdate(ctx context.Context, pi DmProductInfo, schemaInfo *schema.Model) error {
+func (p ProductSchemaRepo) MultiUpdate(ctx context.Context, pi *DmProductInfo, schemaInfo *schema.Model) error {
 	var datas []*DmProductSchema
 	var idents []string
 

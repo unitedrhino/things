@@ -2,6 +2,8 @@ package relationDB
 
 import (
 	"database/sql"
+
+	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgOta"
 )
@@ -43,21 +45,22 @@ func (m *DmOtaFirmwareFile) TableName() string {
 
 // 产品固件升级包信息表
 type DmOtaFirmwareInfo struct {
-	ID             int64                `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	ProductID      string               `gorm:"column:product_id;type:varchar(100);uniqueIndex:idx_dm_ota_firmware_info_tc_un;NOT NULL"` // 产品id
-	Version        string               `gorm:"column:version;type:varchar(64);uniqueIndex:idx_dm_ota_firmware_info_tc_un"`              // 固件版本
-	SrcVersion     string               `gorm:"column:src_version;type:varchar(64)"`                                                     // 待升级版本号
-	Name           string               `gorm:"column:name;type:varchar(64)"`                                                            // 固件名称
-	ModuleCode     string               `gorm:"column:module_code;type:varchar(64)"`                                                     // 固件名称
-	Desc           string               `gorm:"column:desc;type:varchar(200)"`                                                           // 描述
-	Status         int64                `gorm:"column:status;type:bigint;NOT NULL"`                                                      //升级包状态，-1：不需要验证，0：未验证，1：已验证，2：验证中，3：验证失败
-	TotalSize      int64                `gorm:"column:total_size;type:bigint;NOT NULL"`                                                  // 升级包总大小
-	IsDiff         int64                `gorm:"column:is_diff;type:smallint;default:1;NOT NULL"`                                         // 是否差分包,1:整包,2:差分
-	SignMethod     string               `gorm:"column:sign_method;type:varchar(20);NOT NULL"`                                            // 签名方式:MD5/SHA256
-	Extra          string               `gorm:"column:extra;type:varchar(256)"`                                                          // 自定义推送参数
-	IsNeedToVerify int64                `gorm:"column:is_need_to_verify;type:smallint;default:2;NOT NULL"`                               // 是否需要验证
-	Files          []*DmOtaFirmwareFile `gorm:"foreignKey:FirmwareID;references:ID"`
-	Jobs           []*DmOtaFirmwareJob  `gorm:"foreignKey:FirmwareID;references:ID"`
+	TenantCode     dataType.TenantCodeWitCommon `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'__common__'"` // 租户编码
+	ID             int64                        `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	ProductID      string                       `gorm:"column:product_id;type:varchar(100);uniqueIndex:idx_dm_ota_firmware_info_tc_un;NOT NULL"` // 产品id
+	Version        string                       `gorm:"column:version;type:varchar(64);uniqueIndex:idx_dm_ota_firmware_info_tc_un"`              // 固件版本
+	SrcVersion     string                       `gorm:"column:src_version;type:varchar(64)"`                                                     // 待升级版本号
+	Name           string                       `gorm:"column:name;type:varchar(64)"`                                                            // 固件名称
+	ModuleCode     string                       `gorm:"column:module_code;type:varchar(64)"`                                                     // 固件名称
+	Desc           string                       `gorm:"column:desc;type:varchar(200)"`                                                           // 描述
+	Status         int64                        `gorm:"column:status;type:bigint;NOT NULL"`                                                      //升级包状态，-1：不需要验证，0：未验证，1：已验证，2：验证中，3：验证失败
+	TotalSize      int64                        `gorm:"column:total_size;type:bigint;NOT NULL"`                                                  // 升级包总大小
+	IsDiff         int64                        `gorm:"column:is_diff;type:smallint;default:1;NOT NULL"`                                         // 是否差分包,1:整包,2:差分
+	SignMethod     string                       `gorm:"column:sign_method;type:varchar(20);NOT NULL"`                                            // 签名方式:MD5/SHA256
+	Extra          string                       `gorm:"column:extra;type:varchar(256)"`                                                          // 自定义推送参数
+	IsNeedToVerify int64                        `gorm:"column:is_need_to_verify;type:smallint;default:2;NOT NULL"`                               // 是否需要验证
+	Files          []*DmOtaFirmwareFile         `gorm:"foreignKey:FirmwareID;references:ID"`
+	Jobs           []*DmOtaFirmwareJob          `gorm:"foreignKey:FirmwareID;references:ID"`
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:idx_dm_ota_firmware_info_tc_un;"`
 }
@@ -68,12 +71,13 @@ func (m *DmOtaFirmwareInfo) TableName() string {
 
 // DMOTAjob 表示OTA升级任务的信息
 type DmOtaFirmwareJob struct {
-	ID          int64              `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
-	FirmwareID  int64              `gorm:"column:firmware_id"`                           // 升级包ID，升级包的唯一标识符。
-	ProductID   string             `gorm:"column:product_id;type:varchar(100);NOT NULL"` // 产品id
-	Type        int64              `gorm:"column:type"`                                  // 升级包所属产品的JobType。 验证升级包:1  批量升级:2
-	Status      int64              `gorm:"column:status"`                                // 批次状态,计划中:1  执行中:2  已完成:3  已取消:4
-	UpgradeType msgOta.UpgradeType `gorm:"column:upgrade_type"`                          // 升级策略，1-静态，2-动态
+	TenantCode  dataType.TenantCode `gorm:"column:tenant_code;uniqueIndex:idx_dm_group_info_tc_ac;default:default;type:VARCHAR(50);NOT NULL"` // 租户编码
+	ID          int64               `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
+	FirmwareID  int64               `gorm:"column:firmware_id"`                           // 升级包ID，升级包的唯一标识符。
+	ProductID   string              `gorm:"column:product_id;type:varchar(100);NOT NULL"` // 产品id
+	Type        int64               `gorm:"column:type"`                                  // 升级包所属产品的JobType。 验证升级包:1  批量升级:2
+	Status      int64               `gorm:"column:status"`                                // 批次状态,计划中:1  执行中:2  已完成:3  已取消:4
+	UpgradeType msgOta.UpgradeType  `gorm:"column:upgrade_type"`                          // 升级策略，1-静态，2-动态
 
 	/*
 		待升级版本号列表。
@@ -164,18 +168,19 @@ type DmOtaFirmwareJobStatic struct {
 }
 
 type DmOtaFirmwareDevice struct {
-	ID              int64               `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
-	FirmwareID      int64               `gorm:"column:firmware_id;uniqueIndex:idx_dm_ota_firmware_device_tc_un"`                                                                        // 升级包ID
-	SrcVersion      string              `gorm:"column:src_version;type:varchar(125)"`                                                                                                   // 设备的原固件版本
-	DestVersion     string              `gorm:"column:dest_version;type:varchar(125)"`                                                                                                  // 设备的目标固件版本
-	JobID           int64               `gorm:"column:job_id;index:idx_dm_ota_firmware_device_job_deleted_device;uniqueIndex:idx_dm_ota_firmware_device_tc_un;type:BIGINT" `            // 升级批次ID
-	ProductID       string              `gorm:"column:product_id;type:varchar(20);uniqueIndex:idx_dm_ota_firmware_device_tc_un"`                                                        // 设备所属产品的productID
-	DeviceName      string              `gorm:"column:device_name;index:idx_dm_ota_firmware_device_job_deleted_device;type:varchar(100);uniqueIndex:idx_dm_ota_firmware_device_tc_un" ` // 设备名称
-	Step            int64               `gorm:"column:step;type:BIGINT"`                                                                                                                // 当前的升级进度  0-100%    -1：升级失败。-2：下载失败。-3：校验失败。-4：烧写失败。
-	Detail          string              `gorm:"column:detail;type:varchar(256)"`                                                                                                        //详情
-	Status          msgOta.DeviceStatus `gorm:"column:status;index;type:BIGINT"`                                                                                                        // 设备升级作业状态。1：待确认。 2：待推送。 3：已推送。  4：升级中。 5:升级成功 6: 升级失败. 7:已取消
-	PushTime        sql.NullTime        `gorm:"column:push_time"`                                                                                                                       //推送时间
-	LastFailureTime sql.NullTime        `gorm:"column:last_failure_time"`                                                                                                               //最后失败时间
+	TenantCode      dataType.TenantCodeWitCommon `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'__common__'"` // 租户编码
+	ID              int64                        `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
+	FirmwareID      int64                        `gorm:"column:firmware_id;uniqueIndex:idx_dm_ota_firmware_device_tc_un"`                                                                        // 升级包ID
+	SrcVersion      string                       `gorm:"column:src_version;type:varchar(125)"`                                                                                                   // 设备的原固件版本
+	DestVersion     string                       `gorm:"column:dest_version;type:varchar(125)"`                                                                                                  // 设备的目标固件版本
+	JobID           int64                        `gorm:"column:job_id;index:idx_dm_ota_firmware_device_job_deleted_device;uniqueIndex:idx_dm_ota_firmware_device_tc_un;type:BIGINT" `            // 升级批次ID
+	ProductID       string                       `gorm:"column:product_id;type:varchar(20);uniqueIndex:idx_dm_ota_firmware_device_tc_un"`                                                        // 设备所属产品的productID
+	DeviceName      string                       `gorm:"column:device_name;index:idx_dm_ota_firmware_device_job_deleted_device;type:varchar(100);uniqueIndex:idx_dm_ota_firmware_device_tc_un" ` // 设备名称
+	Step            int64                        `gorm:"column:step;type:BIGINT"`                                                                                                                // 当前的升级进度  0-100%    -1：升级失败。-2：下载失败。-3：校验失败。-4：烧写失败。
+	Detail          string                       `gorm:"column:detail;type:varchar(256)"`                                                                                                        //详情
+	Status          msgOta.DeviceStatus          `gorm:"column:status;index;type:BIGINT"`                                                                                                        // 设备升级作业状态。1：待确认。 2：待推送。 3：已推送。  4：升级中。 5:升级成功 6: 升级失败. 7:已取消
+	PushTime        sql.NullTime                 `gorm:"column:push_time"`                                                                                                                       //推送时间
+	LastFailureTime sql.NullTime                 `gorm:"column:last_failure_time"`                                                                                                               //最后失败时间
 	stores.NoDelTime
 	RetryCount  int64                `gorm:"column:retry_count;default:0"` // 自动重试次数
 	DeletedTime stores.DeletedTime   `gorm:"column:deleted_time;default:0;index:idx_dm_ota_firmware_device_job_deleted_device;uniqueIndex:idx_dm_ota_firmware_device_tc_un;"`

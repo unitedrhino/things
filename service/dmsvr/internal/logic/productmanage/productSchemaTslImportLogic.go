@@ -2,6 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
@@ -37,7 +38,7 @@ func (l *ProductSchemaTslImportLogic) ProductSchemaTslImport(in *dm.ProductSchem
 		return nil, err
 	}
 	l.Infof("%s req:%v", utils.FuncName(), in)
-	_, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
+	pi, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {
 			return nil, errors.Parameter.AddDetail("not find ProductID id:" + cast.ToString(in.ProductID))
@@ -55,7 +56,7 @@ func (l *ProductSchemaTslImportLogic) ProductSchemaTslImport(in *dm.ProductSchem
 		if err != nil {
 			return nil, err
 		}
-		oldT := relationDB.ToSchemaDo(in.ProductID, dbSchemas)
+		oldT := relationDB.ToSchemaDo(in.ProductID, utils.CopySlice[relationDB.DmSchemaInfo](dbSchemas))
 		if err := l.svcCtx.SchemaManaRepo.DeleteProduct(l.ctx, oldT, in.ProductID); err != nil {
 			l.Errorf("%s.SchemaManaRepo.InitProduct failure,err:%v", utils.FuncName(), err)
 			return nil, err
@@ -64,7 +65,7 @@ func (l *ProductSchemaTslImportLogic) ProductSchemaTslImport(in *dm.ProductSchem
 			l.Errorf("%s.SchemaManaRepo.InitProduct failure,err:%v", utils.FuncName(), err)
 			return nil, err
 		}
-		if err := db.MultiUpdate(l.ctx, in.ProductID, t); err != nil {
+		if err := db.MultiUpdate(l.ctx, pi, t); err != nil {
 			l.Errorf("%s.db.MultiUpdate failure,err:%v", utils.FuncName(), err)
 			return nil, err
 		}
