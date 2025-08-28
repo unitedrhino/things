@@ -2,6 +2,7 @@ package info
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/logic"
@@ -29,6 +30,7 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 
 func (l *IndexLogic) Index(req *types.ProductInfoIndexReq) (resp *types.ProductInfoIndexResp, err error) {
 	dmReq := &dm.ProductInfoIndexReq{
+		TenantCode:   req.TenantCode,
 		DeviceType:   req.DeviceType, //产品id
 		ProductName:  req.ProductName,
 		ProductIDs:   req.ProductIDs,

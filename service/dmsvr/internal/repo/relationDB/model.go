@@ -3,6 +3,8 @@ package relationDB
 import (
 	"context"
 	"database/sql"
+	"time"
+
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/stores"
@@ -15,7 +17,6 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"
-	"time"
 )
 
 type DmExample struct {
@@ -164,29 +165,30 @@ func (m *DmDeviceProfile) TableName() string {
 
 // 产品信息表
 type DmProductInfo struct {
-	ID               int64                 `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	ProductID        string                `gorm:"column:product_id;type:varchar(100);uniqueIndex:idx_dm_product_info_pd;NOT NULL"` // 产品id
-	ProductName      string                `gorm:"column:product_name;type:varchar(100);NOT NULL"`                                  // 产品名称
-	ProductImg       string                `gorm:"column:product_img;type:varchar(200)"`                                            // 产品图片
-	ProductType      int64                 `gorm:"column:product_type;type:smallint;default:1"`                                     // 产品状态:1:开发中,2:审核中,3:已发布
-	AuthMode         int64                 `gorm:"column:auth_mode;type:smallint;default:1"`                                        // 认证方式:1:账密认证,2:秘钥认证
-	DeviceType       int64                 `gorm:"column:device_type;index;type:smallint;default:1"`                                // 设备类型:1:设备,2:网关,3:子设备
-	CategoryID       int64                 `gorm:"column:category_id;type:integer;default:2"`                                       // 产品品类 2:未分类
-	NetType          int64                 `gorm:"column:net_type;type:smallint;default:1"`                                         // 通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
-	ProtocolCode     string                `gorm:"column:protocol_code;type:varchar(100);default:'urMqtt'"`                         // 协议code,默认urMqtt  urMqtt,urHttp,wumei,aliyun,huaweiyun,tuya
-	SubProtocolCode  string                `gorm:"column:sub_protocol_code;type:varchar(100);default:''"`                           //子协议,主协议和子协议传输类型必须不相同, 设备控制下发只会发送给主协议, 当设备是音视频设备但是控制协议需要单独走的时候就可以把主协议定义为普通协议,子协议定义为音视频协议,这样就能实现音视频走音视频协议,控制走子协议
-	AutoRegister     def.AutoReg           `gorm:"column:auto_register;type:smallint;default:1"`                                    // 动态注册:1:关闭,2:打开,3:打开并自动创建设备
-	OnlineHandle     int64                 `gorm:"column:online_handle;type:smallint;default:1"`                                    //在线处理:1: 自动 2: 永远在线
-	DeviceSchemaMode int64                 `gorm:"column:device_schema_mode;type:smallint;default:1"`                               // 设备物模型模式:1:关闭,2:设备自动创建3: 设备自动创建及上报无定义自动创建
-	BindLevel        product.BindLevel     `gorm:"column:bind_level;type:smallint;default:1"`                                       // 绑定级别: 1:强绑定(默认,只有用户解绑之后才能绑定) 2:中绑定(可以通过token强制绑定设备) 3:弱绑定(app可以内部解绑被绑定的设备)
-	Secret           string                `gorm:"column:secret;type:varchar(50)"`                                                  // 动态注册产品秘钥
-	Desc             string                `gorm:"column:desc;type:varchar(200)"`                                                   // 描述
-	TrialTime        int64                 `gorm:"column:trial_time"`                                                               //试用时间(单位为天,为0不限制)
-	Status           devices.ProductStatus `gorm:"column:status;type:smallint;default:1"`
-	SceneMode        string                `gorm:"column:scene_mode;type:varchar(20);default:rw"`                   // 场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
-	Tags             map[string]string     `gorm:"column:tags;type:json;serializer:json;default:'{}'"`              // 产品标签
-	ProtocolConf     map[string]string     `gorm:"column:protocol_conf;type:json;serializer:json;default:'{}'"`     // 自定义协议配置
-	SubProtocolConf  map[string]string     `gorm:"column:sub_protocol_conf;type:json;serializer:json;default:'{}'"` // 子模块自定义协议配置
+	TenantCode       dataType.TenantCodeWitCommon `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'__common__'"` // 租户编码
+	ID               int64                        `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	ProductID        string                       `gorm:"column:product_id;type:varchar(100);uniqueIndex:idx_dm_product_info_pd;NOT NULL"` // 产品id
+	ProductName      string                       `gorm:"column:product_name;type:varchar(100);NOT NULL"`                                  // 产品名称
+	ProductImg       string                       `gorm:"column:product_img;type:varchar(200)"`                                            // 产品图片
+	ProductType      int64                        `gorm:"column:product_type;type:smallint;default:1"`                                     // 产品状态:1:开发中,2:审核中,3:已发布
+	AuthMode         int64                        `gorm:"column:auth_mode;type:smallint;default:1"`                                        // 认证方式:1:账密认证,2:秘钥认证
+	DeviceType       int64                        `gorm:"column:device_type;index;type:smallint;default:1"`                                // 设备类型:1:设备,2:网关,3:子设备
+	CategoryID       int64                        `gorm:"column:category_id;type:integer;default:2"`                                       // 产品品类 2:未分类
+	NetType          int64                        `gorm:"column:net_type;type:smallint;default:1"`                                         // 通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
+	ProtocolCode     string                       `gorm:"column:protocol_code;type:varchar(100);default:'urMqtt'"`                         // 协议code,默认urMqtt  urMqtt,urHttp,wumei,aliyun,huaweiyun,tuya
+	SubProtocolCode  string                       `gorm:"column:sub_protocol_code;type:varchar(100);default:''"`                           //子协议,主协议和子协议传输类型必须不相同, 设备控制下发只会发送给主协议, 当设备是音视频设备但是控制协议需要单独走的时候就可以把主协议定义为普通协议,子协议定义为音视频协议,这样就能实现音视频走音视频协议,控制走子协议
+	AutoRegister     def.AutoReg                  `gorm:"column:auto_register;type:smallint;default:1"`                                    // 动态注册:1:关闭,2:打开,3:打开并自动创建设备
+	OnlineHandle     int64                        `gorm:"column:online_handle;type:smallint;default:1"`                                    //在线处理:1: 自动 2: 永远在线
+	DeviceSchemaMode int64                        `gorm:"column:device_schema_mode;type:smallint;default:1"`                               // 设备物模型模式:1:关闭,2:设备自动创建3: 设备自动创建及上报无定义自动创建
+	BindLevel        product.BindLevel            `gorm:"column:bind_level;type:smallint;default:1"`                                       // 绑定级别: 1:强绑定(默认,只有用户解绑之后才能绑定) 2:中绑定(可以通过token强制绑定设备) 3:弱绑定(app可以内部解绑被绑定的设备)
+	Secret           string                       `gorm:"column:secret;type:varchar(50)"`                                                  // 动态注册产品秘钥
+	Desc             string                       `gorm:"column:desc;type:varchar(200)"`                                                   // 描述
+	TrialTime        int64                        `gorm:"column:trial_time"`                                                               //试用时间(单位为天,为0不限制)
+	Status           devices.ProductStatus        `gorm:"column:status;type:smallint;default:1"`
+	SceneMode        string                       `gorm:"column:scene_mode;type:varchar(20);default:rw"`                   // 场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
+	Tags             map[string]string            `gorm:"column:tags;type:json;serializer:json;default:'{}'"`              // 产品标签
+	ProtocolConf     map[string]string            `gorm:"column:protocol_conf;type:json;serializer:json;default:'{}'"`     // 自定义协议配置
+	SubProtocolConf  map[string]string            `gorm:"column:sub_protocol_conf;type:json;serializer:json;default:'{}'"` // 子模块自定义协议配置
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:idx_dm_product_info_pd"`
 	Category    *DmProductCategory `gorm:"foreignKey:ID;references:CategoryID"`       // 添加外键
@@ -216,9 +218,9 @@ func (m *DmProductID) TableName() string {
 }
 
 type DmProductConfig struct {
-	ID        int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	ProductID string `gorm:"column:product_id;type:varchar(100);uniqueIndex:idx_dm_product_config_pd;NOT NULL"` // 产品id
-	DevInit   `gorm:"embedded;embeddedPrefix:dev_init_"`                                                        //设备初始化配置
+	ID        int64                                      `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	ProductID string                                     `gorm:"column:product_id;type:varchar(100);uniqueIndex:idx_dm_product_config_pd;NOT NULL"` // 产品id
+	DevInit   `gorm:"embedded;embeddedPrefix:dev_init_"` //设备初始化配置
 	stores.NoDelTime
 	Info        *DmProductInfo     `gorm:"foreignKey:product_id;references:product_id"`
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:idx_dm_product_config_pd"`
@@ -305,8 +307,9 @@ func (m *DmProtocolService) TableName() string {
 
 // 协议插件
 type DmProtocolScript struct {
-	ID   int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	Name string `gorm:"column:name;uniqueIndex:idx_dm_protocol_script_name;type:varchar(100);not null"` //转换名称
+	TenantCode dataType.TenantCode `gorm:"column:tenant_code;index;uniqueIndex:idx_dm_protocol_script_name;type:VARCHAR(50);default:'__common __'"` // 租户编码
+	ID         int64               `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	Name       string              `gorm:"column:name;uniqueIndex:idx_dm_protocol_script_name;type:varchar(100);not null"` //转换名称
 	//ProductIDs    []string          `gorm:"column:product_ids;type:json;serializer:json;default:'[]'"` // 产品id
 	//Devices       []devices.Core    `gorm:"column:devices;type:json;serializer:json;default:'[]'"`     //设备触发
 	TriggerDir    protocol.TriggerDir   `gorm:"column:trigger_dir;not null"`                        //up down
@@ -328,6 +331,7 @@ func (m *DmProtocolScript) TableName() string {
 
 // 协议插件
 type DmProtocolScriptDevice struct {
+	TenantCode dataType.TenantCode `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'default'"` // 租户编码
 	ID         int64               `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	TriggerSrc protocol.TriggerSrc `gorm:"column:trigger_src;"`                             //product:1 device:2
 	ProductID  string              `gorm:"column:product_id;type:varchar(100);not null"`    // 产品id
@@ -363,9 +367,10 @@ func (m *DmProductCustom) TableName() string {
 
 // 产品物模型表
 type DmProductSchema struct {
-	ID         int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	ProductID  string `gorm:"column:product_id;uniqueIndex:idx_dm_product_schema_identifier;index:product_id_type;type:varchar(100);NOT NULL"` // 产品id
-	Identifier string `gorm:"column:identifier;uniqueIndex:idx_dm_product_schema_identifier;type:varchar(100);NOT NULL"`                       // 标识符
+	TenantCode dataType.TenantCodeWitCommon `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'__common__'"` // 租户编码
+	ID         int64                        `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	ProductID  string                       `gorm:"column:product_id;uniqueIndex:idx_dm_product_schema_identifier;index:product_id_type;type:varchar(100);NOT NULL"` // 产品id
+	Identifier string                       `gorm:"column:identifier;uniqueIndex:idx_dm_product_schema_identifier;type:varchar(100);NOT NULL"`                       // 标识符
 	DmSchemaCore
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:idx_dm_product_schema_identifier"`

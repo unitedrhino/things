@@ -148,13 +148,13 @@ func (p ProductSchemaRepo) UpdateWithCommon(ctx context.Context, common *DmCommo
 
 func (p ProductSchemaRepo) DeleteByFilter(ctx context.Context, f ProductSchemaFilter) error {
 	db := p.fmtFilter(ctx, f)
-	err := db.Delete(&DmSchemaInfo{}).Error
+	err := db.Delete(&DmProductSchema{}).Error
 	return stores.ErrFmt(err)
 }
 
-func (p ProductSchemaRepo) FindByFilter(ctx context.Context, f ProductSchemaFilter, page *stores.PageInfo) ([]*DmSchemaInfo, error) {
-	var results []*DmSchemaInfo
-	db := p.fmtFilter(ctx, f).Model(&DmSchemaInfo{})
+func (p ProductSchemaRepo) FindByFilter(ctx context.Context, f ProductSchemaFilter, page *stores.PageInfo) ([]*DmProductSchema, error) {
+	var results []*DmProductSchema
+	db := p.fmtFilter(ctx, f).Model(&DmProductSchema{})
 	db = page.ToGorm(db)
 	err := db.Find(&results).Error
 	if err != nil {
@@ -163,26 +163,26 @@ func (p ProductSchemaRepo) FindByFilter(ctx context.Context, f ProductSchemaFilt
 	return results, nil
 }
 func (p ProductSchemaRepo) FindProductIDByFilter(ctx context.Context, f ProductSchemaFilter) ([]string, error) {
-	var results []*DmSchemaInfo
-	db := p.fmtFilter(ctx, f).Model(&DmSchemaInfo{})
+	var results []*DmProductSchema
+	db := p.fmtFilter(ctx, f).Model(&DmProductSchema{})
 	err := db.Select("ProductID").Find(&results).Error
 	if err != nil {
 		return nil, stores.ErrFmt(err)
 	}
-	return utils.ToSliceWithFunc(results, func(in *DmSchemaInfo) string {
+	return utils.ToSliceWithFunc(results, func(in *DmProductSchema) string {
 		return in.ProductID
 	}), nil
 
 }
 
 func (p ProductSchemaRepo) CountByFilter(ctx context.Context, f ProductSchemaFilter) (size int64, err error) {
-	db := p.fmtFilter(ctx, f).Model(&DmSchemaInfo{})
+	db := p.fmtFilter(ctx, f).Model(&DmProductSchema{})
 	err = db.Count(&size).Error
 	return size, stores.ErrFmt(err)
 }
 
 // 批量插入 LightStrategyDevice 记录
-func (p ProductSchemaRepo) MultiInsert(ctx context.Context, data []*DmSchemaInfo) error {
+func (p ProductSchemaRepo) MultiInsert(ctx context.Context, data []*DmProductSchema) error {
 	var pmap = make(map[string][]string)
 	for _, item := range data {
 		p := pmap[item.ProductID]
@@ -209,37 +209,40 @@ func (p ProductSchemaRepo) MultiInsert(ctx context.Context, data []*DmSchemaInfo
 	return stores.ErrFmt(err)
 }
 
-func (p ProductSchemaRepo) MultiUpdate(ctx context.Context, productID string, schemaInfo *schema.Model) error {
-	var datas []*DmSchemaInfo
+func (p ProductSchemaRepo) MultiUpdate(ctx context.Context, pi DmProductInfo, schemaInfo *schema.Model) error {
+	var datas []*DmProductSchema
 	var idents []string
 
 	for _, item := range schemaInfo.Property {
 		idents = append(idents, item.Identifier)
-		datas = append(datas, &DmSchemaInfo{
-			ProductID:    productID,
+		datas = append(datas, &DmProductSchema{
+			TenantCode:   pi.TenantCode,
+			ProductID:    pi.ProductID,
 			Identifier:   item.Identifier,
 			DmSchemaCore: ToPropertyPo(item),
 		})
 	}
 	for _, item := range schemaInfo.Event {
 		idents = append(idents, item.Identifier)
-		datas = append(datas, &DmSchemaInfo{
-			ProductID:    productID,
+		datas = append(datas, &DmProductSchema{
+			TenantCode:   pi.TenantCode,
+			ProductID:    pi.ProductID,
 			Identifier:   item.Identifier,
 			DmSchemaCore: ToEventPo(item),
 		})
 	}
 	for _, item := range schemaInfo.Action {
 		idents = append(idents, item.Identifier)
-		datas = append(datas, &DmSchemaInfo{
-			ProductID:    productID,
+		datas = append(datas, &DmProductSchema{
+			TenantCode:   pi.TenantCode,
+			ProductID:    pi.ProductID,
 			Identifier:   item.Identifier,
 			DmSchemaCore: ToActionPo(item),
 		})
 	}
 	err := p.db.Transaction(func(tx *gorm.DB) error {
 		rm := NewProductSchemaRepo(tx)
-		err := rm.DeleteByFilter(ctx, ProductSchemaFilter{ProductID: productID})
+		err := rm.DeleteByFilter(ctx, ProductSchemaFilter{ProductID: pi.ProductID})
 		if err != nil {
 			return err
 		}
@@ -250,7 +253,7 @@ func (p ProductSchemaRepo) MultiUpdate(ctx context.Context, productID string, sc
 			}
 		}
 		//如果定义了产品级的,需要删除设备级的
-		err = NewSchemaInfoRepo(tx).DeleteByFilter(ctx, SchemaInfoFilter{ProductID: productID, Tag: schema.TagDeviceCustom,
+		err = NewSchemaInfoRepo(tx).DeleteByFilter(ctx, SchemaInfoFilter{ProductID: pi.ProductID, Tag: schema.TagDeviceCustom,
 			Identifiers: idents})
 		if err != nil {
 			return err

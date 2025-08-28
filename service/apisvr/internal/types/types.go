@@ -1482,6 +1482,7 @@ type ProductCustomUi struct {
 }
 
 type ProductInfo struct {
+	TenantCode         string                      `json:"tenantCode,optional"`                   //租户号,__common__ 为公共的产品,公共的大家都可以看,但是只有default可以修改
 	CreatedTime        int64                       `json:"createdTime,optional,string"`           //创建时间 只读
 	ProductID          string                      `json:"productID,optional"`                    //产品id 只读
 	ProductName        string                      `json:"productName,optional"`                  //产品名称
@@ -1529,6 +1530,7 @@ type ProductInfoImportReq struct {
 
 type ProductInfoIndexReq struct {
 	Page         *PageInfo `json:"page,optional"`                   //分页信息,只获取一个则不填
+	TenantCode   string    `json:"tenantCode,optional"`             //租户号过滤,__common__ 为公共的产品,公共的大家都可以看
 	ProductName  string    `json:"productName,optional"`            //过滤产品名称
 	DeviceType   int64     `json:"deviceType,optional,range=[0:3]"` //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
 	DeviceTypes  []int64   `json:"deviceTypes,optional"`            //设备类型:1:设备,2:网关,3:子设备//设备类型:1:设备,2:网关,3:子设备
