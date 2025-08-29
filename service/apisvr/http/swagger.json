@@ -7940,6 +7940,10 @@
           },
           "description": "过滤条件:精准查询 设备名"
         },
+        "deviceNameOrAlias": {
+          "type": "string",
+          "description": "过滤条件:模糊查询 设备名或别名"
+        },
         "expTime": {
           "$ref": "#/definitions/CompareInt64",
           "description": "到期时间"

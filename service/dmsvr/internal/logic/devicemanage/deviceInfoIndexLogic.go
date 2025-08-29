@@ -2,6 +2,7 @@ package devicemanagelogic
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/stores"
@@ -61,6 +62,7 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		AreaIDPath:         in.AreaIDPath,
 		DeviceName:         in.DeviceName,
 		DeviceNames:        in.DeviceNames,
+		DeviceNameOrAlias:  in.DeviceNameOrAlias,
 		Gateway:            utils.Copy[devices.Core](in.Gateway),
 		Cores:              cores,
 		Iccid:              in.Iccid,

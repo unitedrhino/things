@@ -3,13 +3,14 @@ package relationDB
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gorm.io/gorm"
-	"time"
 )
 
 type DeviceInfoRepo struct {
@@ -30,6 +31,7 @@ type (
 		NotAreaIDs         []int64
 		DeviceName         string
 		DeviceNames        []string
+		DeviceNameOrAlias  string
 		Tags               map[string]string
 		TagsLike           map[string]string
 		LastLoginTime      *def.TimeRange
@@ -159,6 +161,9 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	}
 	if f.DeviceName != "" {
 		db = db.Where("device_name like ?", "%"+f.DeviceName+"%")
+	}
+	if f.DeviceNameOrAlias != "" {
+		db = db.Where("device_name like ? or device_alias like ?", "%"+f.DeviceNameOrAlias+"%", "%"+f.DeviceNameOrAlias+"%")
 	}
 	//db = f.Agency.Filter("agency", db)
 	if f.Device != nil {
