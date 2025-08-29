@@ -310,6 +310,7 @@ type DeviceInfoIndexReq struct {
 	ProductIDs          []string                  `json:"productIDs,optional"`           //产品id 为空时获取所有产品
 	DeviceName          string                    `json:"deviceName,optional"`           //过滤条件:模糊查询 设备名
 	DeviceNames         []string                  `json:"deviceNames,optional"`          //过滤条件:精准查询 设备名
+	DeviceNameOrAlias   string                    `json:"deviceNameOrAlias,optional"`    //过滤条件:模糊查询 设备名或别名
 	ExpTime             *CompareInt64             `json:"expTime,optional"`              //到期时间
 	RatedPower          *CompareInt64             `json:"ratedPower,optional"`           //额定功率:单位w/h
 	Rssi                *CompareInt64             `json:"rssi,optional"`                 //信号强度
