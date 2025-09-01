@@ -19,7 +19,7 @@ type (
 	SDKFilter struct {
 		ProductID  string // 产品id
 		DeviceName string // 设备名称
-		LogLevel   int    //日志等级
+		LogLevel   int64  //日志等级
 	}
 	SDKRepo interface {
 		GetDeviceSDKLog(ctx context.Context, filter SDKFilter, page def.PageInfo2) ([]*SDK, error)

@@ -2,6 +2,7 @@ package info
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
@@ -30,11 +31,9 @@ func (l *UpdateLogic) Update(req *types.DeviceInfo) error {
 	in.Status = 0
 	in.Rssi = nil
 	in.ProjectID = 0
-	in.LogLevel = 0
 	in.Version = nil
 	in.SoftInfo = ""
 	in.HardInfo = ""
-	in.IsEnable = 0
 	in.IsOnline = 0
 	in.MobileOperator = 0
 	in.Phone = nil

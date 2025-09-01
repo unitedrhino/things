@@ -2,6 +2,7 @@ package devicemsglogic
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
@@ -41,7 +42,7 @@ func (l *SdkLogIndexLogic) SdkLogIndex(in *dm.SdkLogIndexReq) (*dm.SdkLogIndexRe
 	filter := deviceLog.SDKFilter{
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
-		LogLevel:   int(in.LogLevel),
+		LogLevel:   in.LogLevel,
 	}
 	page := def.PageInfo2{
 		TimeStart: in.TimeStart,
