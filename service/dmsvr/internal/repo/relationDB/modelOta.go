@@ -71,7 +71,7 @@ func (m *DmOtaFirmwareInfo) TableName() string {
 
 // DMOTAjob 表示OTA升级任务的信息
 type DmOtaFirmwareJob struct {
-	TenantCode  dataType.TenantCode `gorm:"column:tenant_code;uniqueIndex:idx_dm_group_info_tc_ac;default:default;type:VARCHAR(50);NOT NULL"` // 租户编码
+	TenantCode  dataType.TenantCode `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"` // 租户编码
 	ID          int64               `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
 	FirmwareID  int64               `gorm:"column:firmware_id"`                           // 升级包ID，升级包的唯一标识符。
 	ProductID   string              `gorm:"column:product_id;type:varchar(100);NOT NULL"` // 产品id
