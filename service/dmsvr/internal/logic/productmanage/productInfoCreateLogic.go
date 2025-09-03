@@ -3,11 +3,12 @@ package productmanagelogic
 import (
 	"context"
 	"fmt"
+	"regexp"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/protocol"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/share/topics"
-	"regexp"
 
 	"gitee.com/unitedrhino/share/oss"
 
@@ -202,6 +203,11 @@ func (l *ProductInfoCreateLogic) InitProduct(pi *relationDB.DmProductInfo) error
 	if err := l.svcCtx.SendRepo.InitProduct(
 		l.ctx, pi.ProductID); err != nil {
 		l.Errorf("%s.SendRepo.InitProduct failure,err:%v", utils.FuncName(), err)
+		return errors.Database.AddDetail(err)
+	}
+	if err := l.svcCtx.AbnormalRepo.InitProduct(
+		l.ctx, pi.ProductID); err != nil {
+		l.Errorf("%s.AbnormalRepo.InitProduct failure,err:%v", utils.FuncName(), err)
 		return errors.Database.AddDetail(err)
 	}
 	return nil
