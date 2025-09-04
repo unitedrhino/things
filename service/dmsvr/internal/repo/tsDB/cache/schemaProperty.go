@@ -153,6 +153,28 @@ func (p *PropertyCacheManager) GetPropertyLastRecord(ctx context.Context, produc
 	return &data, nil
 }
 
+// GetPropertyAllLastRecord 获取设备所有属性的最后记录
+func (p *PropertyCacheManager) GetPropertyAllLastRecord(ctx context.Context, productID, deviceName string) ([]*msgThing.PropertyData, error) {
+	// 获取所有最后记录
+	lastRecords, err := p.kv.Hgetall(GenRedisPropertyLastKey(productID, deviceName))
+	if err != nil {
+		return nil, err
+	}
+
+	var result []*msgThing.PropertyData
+	for _, dataStr := range lastRecords {
+		var data msgThing.PropertyData
+		err = json.Unmarshal([]byte(dataStr), &data)
+		if err != nil {
+			logx.WithContext(ctx).Errorf("解析属性记录失败: %v", err)
+			continue
+		}
+		result = append(result, &data)
+	}
+
+	return result, nil
+}
+
 // ClearPropertyCache 清除设备属性缓存
 func (p *PropertyCacheManager) ClearPropertyCache(ctx context.Context, productID, deviceName string) error {
 	_, err := p.kv.DelCtx(ctx, GenRedisPropertyLastKey(productID, deviceName), GenRedisPropertyFirstKey(productID, deviceName))

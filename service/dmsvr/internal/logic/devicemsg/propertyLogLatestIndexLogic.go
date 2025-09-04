@@ -60,7 +60,6 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 		dataMap = temp.Property.GetMapWithIDs(in.DataIDs...)
 	}
 	total = len(dataMap)
-	wait := sync.WaitGroup{}
 	mutex := sync.Mutex{}
 	var lastBind int64
 	uc := ctxs.GetUserCtxNoNil(l.ctx)
@@ -71,21 +70,19 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 		}
 		lastBind = di.LastBind
 	}
+	var dp = make(map[string]*msgThing.PropertyData)
+	datas, err := dd.GetLatestAllPropertyData(l.ctx, in.ProductID, in.DeviceName)
+	if err != nil {
+		l.Error(err)
+	} else {
+		for _, v := range datas {
+			dp[v.Identifier] = v
+		}
+	}
 	for k, v := range dataMap {
 		property := v
 		dataID := k
-		wait.Add(1)
-		utils.Go(l.ctx, func() {
-			defer wait.Done()
-			data, err := dd.GetLatestPropertyDataByID(l.ctx, property, msgThing.LatestFilter{
-				ProductID:  in.ProductID,
-				DeviceName: in.DeviceName,
-				DataID:     dataID,
-			})
-			if err != nil {
-				l.Errorf("%s.GetLatestPropertyDataByID err=%v", utils.FuncName(), utils.Fmt(err))
-				return
-			}
+		handleData := func(data *msgThing.PropertyData) {
 			var diData dm.PropertyLogInfo
 			if data != nil && lastBind != 0 {
 				if data.TimeStamp.Before(time.Unix(lastBind, 0)) {
@@ -133,9 +130,9 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 			defer mutex.Unlock()
 			diDatas = append(diDatas, &diData)
 			l.Debugf("%s.get data=%+v", utils.FuncName(), diData)
-		})
+		}
+		handleData(dp[dataID])
 	}
-	wait.Wait()
 	return &dm.PropertyLogIndexResp{
 		Total: int64(total),
 		List:  diDatas,

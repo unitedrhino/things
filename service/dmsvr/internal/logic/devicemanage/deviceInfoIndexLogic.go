@@ -155,6 +155,5 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 			}
 		}
 	}
-
 	return &dm.DeviceInfoIndexResp{List: info, Total: size}, nil
 }
