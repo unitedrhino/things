@@ -3,7 +3,7 @@ package schemaDataRepo
 import (
 	"context"
 	"encoding/json"
-	"fmt"
+
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
@@ -35,13 +35,13 @@ func (d *DeviceDataRepo) fmtSql(ctx context.Context, db *stores.DB, filter msgTh
 		db = db.Where("product_id=? ", filter.ProductID)
 	}
 	if len(filter.DeviceNames) != 0 {
-		db = db.Where(fmt.Sprintf("device_name= (%v)", stores.ArrayToSql(filter.DeviceNames)))
+		db = db.Where("device_name in ?", filter.DeviceNames)
 	}
 	if filter.DataID != "" {
 		db = db.Where("identifier=? ", filter.DataID)
 	}
 	if len(filter.Types) != 0 {
-		db = db.Where(fmt.Sprintf("%s = (%v)", stores.Col("type"), stores.ArrayToSql(filter.Types)))
+		db = db.Where(stores.Col("type")+" in ?", filter.Types)
 	}
 
 	db = tsDB.GroupFilter(db, filter.BelongGroup)

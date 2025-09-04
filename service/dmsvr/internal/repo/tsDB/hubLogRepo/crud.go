@@ -2,7 +2,7 @@ package hubLogRepo
 
 import (
 	"context"
-	"fmt"
+
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
@@ -23,10 +23,10 @@ func (h *HubLogRepo) fillFilter(ctx context.Context, db *stores.DB, filter devic
 		db = db.Where("request_id=?", filter.RequestID)
 	}
 	if len(filter.Actions) != 0 {
-		db = db.Where(fmt.Sprintf("action in (%v)", stores.ArrayToSql(filter.Actions)))
+		db = db.Where("action in ?", filter.Actions)
 	}
 	if len(filter.Topics) != 0 {
-		db = db.Where(fmt.Sprintf("topic in (%v)", stores.ArrayToSql(filter.Topics)))
+		db = db.Where("topic in ?", filter.Topics)
 	}
 	return db
 }

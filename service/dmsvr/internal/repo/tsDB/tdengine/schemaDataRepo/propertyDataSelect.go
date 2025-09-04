@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"time"
 
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
@@ -27,7 +28,7 @@ func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schem
 	if retStr != "" {
 		var ret msgThing.PropertyData
 		err = json.Unmarshal([]byte(retStr), &ret)
-		if err == nil {
+		if err == nil && ret.TimeStamp.After(time.Now().Add(-time.Hour*24)) { //只保留一个小时
 			vv, er := msgThing.GetVal(&p.Define, ret.Param)
 			if er == nil {
 				ret.Param = vv

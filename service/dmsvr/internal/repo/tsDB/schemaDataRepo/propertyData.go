@@ -231,7 +231,7 @@ func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schem
 	if retStr != "" {
 		var ret msgThing.PropertyData
 		err = json.Unmarshal([]byte(retStr), &ret)
-		if err == nil {
+		if err == nil && ret.TimeStamp.After(time.Now().Add(-time.Hour*24)) { //todo 后面要修改成 定时去随机删除下缓存
 			vv, er := msgThing.GetVal(&p.Define, ret.Param)
 			if er == nil {
 				ret.Param = vv
