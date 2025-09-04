@@ -2,7 +2,6 @@ package schemaDataRepo
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -50,7 +49,7 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 				}
 				ars[schema.GenArray(Identifier, num)] = vvv
 			}
-			if optional.OnlyCache || !tsDB.CheckIsChange(ctx, d.kv, devices.Core{
+			if optional.OnlyCache || !d.cacheManager.CheckIsChange(ctx, devices.Core{
 				ProductID: productID, DeviceName: deviceName}, p, msgThing.PropertyData{
 				Identifier: schema.GenArray(Identifier, num),
 				Param:      ars[schema.GenArray(Identifier, num)],
@@ -132,7 +131,7 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 			}
 			ars[property.Identifier] = vvv
 		}
-		if optional.OnlyCache || !tsDB.CheckIsChange(ctx, d.kv, devices.Core{
+		if optional.OnlyCache || !d.cacheManager.CheckIsChange(ctx, devices.Core{
 			ProductID: productID, DeviceName: deviceName}, p, msgThing.PropertyData{
 			Identifier: property.Identifier,
 			Param:      ars[property.Identifier],
@@ -179,38 +178,10 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 		}
 	}
 	f := func(ctx context.Context) {
-		log := logx.WithContext(ctx)
-		for k, v := range ars {
-			var data = msgThing.PropertyData{
-				Identifier: k,
-				Param:      v,
-				TimeStamp:  timestamp,
-			}
-			data.Fmt()
-			err = d.kv.Hset(tsDB.GenRedisPropertyLastKey(productID, deviceName), k, data.String())
-			if err != nil {
-				log.Error(err)
-			}
-			retStr, err := d.kv.Hget(tsDB.GenRedisPropertyFirstKey(productID, deviceName), k)
-			if err != nil && !errors.Cmp(stores.ErrFmt(err), errors.NotFind) {
-				log.Error(err)
-				continue
-			}
-			if retStr != "" {
-				var ret msgThing.PropertyData
-				err = json.Unmarshal([]byte(retStr), &ret)
-				if err != nil {
-					log.Error(err)
-				} else if msgThing.IsParamValEq(&p.Define, v, ret.Param) { //相等不记录
-					continue
-				}
-			}
-
-			//到这里都是不相等或者之前没有记录的
-			err = d.kv.Hset(tsDB.GenRedisPropertyFirstKey(productID, deviceName), k, data.String())
-			if err != nil {
-				log.Error(err)
-			}
+		// 使用缓存管理器更新属性缓存
+		err := d.cacheManager.UpdatePropertyCache(ctx, productID, deviceName, p, ars, timestamp)
+		if err != nil {
+			logx.WithContext(ctx).Errorf("更新属性缓存失败: %v", err)
 		}
 	}
 	if !optional.Sync {
@@ -223,21 +194,17 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 }
 
 func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schema.Property, filter msgThing.LatestFilter) (*msgThing.PropertyData, error) {
-	retStr, err := d.kv.HgetCtx(ctx, tsDB.GenRedisPropertyLastKey(filter.ProductID, filter.DeviceName), filter.DataID)
-
-	if err != nil && !errors.Cmp(stores.ErrFmt(err), errors.NotFind) {
+	// 使用缓存管理器获取最后记录
+	ret, err := d.cacheManager.GetPropertyLastRecord(ctx, filter.ProductID, filter.DeviceName, filter.DataID)
+	if err != nil {
 		logx.WithContext(ctx).Error(err)
 	}
-	if retStr != "" {
-		var ret msgThing.PropertyData
-		err = json.Unmarshal([]byte(retStr), &ret)
-		if err == nil && ret.TimeStamp.After(time.Now().Add(-time.Hour*24)) { //todo 后面要修改成 定时去随机删除下缓存
-			vv, er := msgThing.GetVal(&p.Define, ret.Param)
-			if er == nil {
-				ret.Param = vv
-			}
-			return &ret, nil
+	if ret != nil && ret.TimeStamp.After(time.Now().Add(-time.Hour*24)) { //todo 后面要修改成 定时去随机删除下缓存
+		vv, er := msgThing.GetVal(&p.Define, ret.Param)
+		if er == nil {
+			ret.Param = vv
 		}
+		return ret, nil
 	}
 	//如果缓存里没有查到,需要从db里查
 	dds, err := d.GetPropertyDataByID(ctx, p,
@@ -258,7 +225,11 @@ func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schem
 	if er == nil {
 		dds[0].Param = vv
 	}
-	d.kv.HsetCtx(ctx, tsDB.GenRedisPropertyLastKey(filter.ProductID, filter.DeviceName), filter.DataID, dds[0].String())
+	// 更新缓存
+	err = d.cacheManager.UpdatePropertyCache(ctx, filter.ProductID, filter.DeviceName, p, map[string]any{filter.DataID: dds[0].Param}, dds[0].TimeStamp)
+	if err != nil {
+		logx.WithContext(ctx).Errorf("更新属性缓存失败: %v", err)
+	}
 	return dds[0], nil
 
 }

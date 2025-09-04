@@ -9,10 +9,6 @@ import (
 
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
-	"gitee.com/unitedrhino/share/stores"
-	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/shadow"
-	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
-	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
@@ -55,9 +51,9 @@ func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Mod
 			sp[identifier], _ = param.ToVal()
 		}
 	}
-	if len(sp) != 0 {
-		relationDB.NewShadowRepo(ctx).AsyncUpdate(ctx, shadow.NewInfo(productID, deviceName, sp, &timestamp))
-	}
+	//if len(sp) != 0 {
+	//relationDB.NewShadowRepo(ctx).AsyncUpdate(ctx, shadow.NewInfo(productID, deviceName, sp, &timestamp))
+	//}
 	return nil
 }
 
@@ -76,7 +72,8 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 			k := schema.GenArray(Identifier, num)
 			ars[k] = v
 
-			if !tsDB.CheckIsChange(ctx, d.kv, devices.Core{ProductID: productID, DeviceName: deviceName}, p, msgThing.PropertyData{
+			// 使用缓存管理器检查是否需要更新
+			if !d.cacheManager.CheckIsChange(ctx, devices.Core{ProductID: productID, DeviceName: deviceName}, p, msgThing.PropertyData{
 				Identifier: k,
 				Param:      v,
 				TimeStamp:  timestamp,
@@ -136,7 +133,8 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 	default:
 
 		ars[property.Identifier] = property.Value
-		if !tsDB.CheckIsChange(ctx, d.kv, devices.Core{ProductID: productID, DeviceName: deviceName}, p, msgThing.PropertyData{
+		// 使用缓存管理器检查是否需要更新
+		if !d.cacheManager.CheckIsChange(ctx, devices.Core{ProductID: productID, DeviceName: deviceName}, p, msgThing.PropertyData{
 			Identifier: property.Identifier,
 			Param:      property.Value,
 			TimeStamp:  timestamp,
@@ -174,38 +172,10 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 		}
 	}
 	f := func(ctx context.Context) {
-		log := logx.WithContext(ctx)
-		for k, v := range ars {
-			var data = msgThing.PropertyData{
-				Identifier: k,
-				Param:      v,
-				TimeStamp:  timestamp,
-			}
-			data.Fmt()
-			err = d.kv.Hset(tsDB.GenRedisPropertyLastKey(productID, deviceName), k, data.String())
-			if err != nil {
-				log.Error(err)
-			}
-			retStr, err := d.kv.Hget(tsDB.GenRedisPropertyFirstKey(productID, deviceName), k)
-			if err != nil && !errors.Cmp(stores.ErrFmt(err), errors.NotFind) {
-				log.Error(err)
-				continue
-			}
-			if retStr != "" {
-				var ret msgThing.PropertyData
-				err = json.Unmarshal([]byte(retStr), &ret)
-				if err != nil {
-					log.Error(err)
-				} else if msgThing.IsParamValEq(&p.Define, v, ret.Param) { //相等不记录
-					continue
-				}
-			}
-
-			//到这里都是不相等或者之前没有记录的
-			err = d.kv.Hset(tsDB.GenRedisPropertyFirstKey(productID, deviceName), k, data.String())
-			if err != nil {
-				log.Error(err)
-			}
+		// 使用缓存管理器更新属性缓存
+		err := d.cacheManager.UpdatePropertyCache(ctx, productID, deviceName, p, ars, timestamp)
+		if err != nil {
+			logx.WithContext(ctx).Errorf("更新属性缓存失败: %v", err)
 		}
 	}
 	if !optional.Sync {

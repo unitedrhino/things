@@ -3,11 +3,14 @@ package schemaDataRepo
 import (
 	"context"
 	"fmt"
+	"os"
+
 	"gitee.com/unitedrhino/share/caches"
 	"gitee.com/unitedrhino/share/clients"
 	"gitee.com/unitedrhino/share/conf"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceGroup"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/cache"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/share/devices"
@@ -15,7 +18,6 @@ import (
 	schema "gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/kv"
-	"os"
 )
 
 const (
@@ -29,6 +31,7 @@ type DeviceDataRepo struct {
 	SchemaStore
 	kv           kv.Store
 	groupConfigs []*deviceGroup.GroupDetail
+	cacheManager *cache.PropertyCacheManager
 }
 
 func NewDeviceDataRepo(dataSource conf.TSDB, getProductSchemaModel schema.GetSchemaModel,
@@ -39,7 +42,8 @@ func NewDeviceDataRepo(dataSource conf.TSDB, getProductSchemaModel schema.GetSch
 		os.Exit(-1)
 	}
 	return &DeviceDataRepo{t: td, getProductSchemaModel: getProductSchemaModel,
-		getDeviceSchemaModel: getDeviceSchemaModel, kv: kv, groupConfigs: g}
+		getDeviceSchemaModel: getDeviceSchemaModel, kv: kv, groupConfigs: g,
+		cacheManager: cache.NewPropertyCacheManager(kv)}
 }
 
 func (d *DeviceDataRepo) VersionUpdate(ctx context.Context, version string, dc *caches.Cache[dm.DeviceInfo, devices.Core]) error {

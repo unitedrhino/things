@@ -3,7 +3,6 @@ package schemaDataRepo
 import (
 	"context"
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -13,7 +12,6 @@ import (
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	sq "gitee.com/unitedrhino/squirrel"
-	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
@@ -21,20 +19,17 @@ import (
 )
 
 func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schema.Property, filter msgThing.LatestFilter) (*msgThing.PropertyData, error) {
-	retStr, err := d.kv.HgetCtx(ctx, tsDB.GenRedisPropertyLastKey(filter.ProductID, filter.DeviceName), filter.DataID)
-	if err != nil && !errors.Cmp(stores.ErrFmt(err), errors.NotFind) {
+	// 使用缓存管理器获取最后记录
+	ret, err := d.cacheManager.GetPropertyLastRecord(ctx, filter.ProductID, filter.DeviceName, filter.DataID)
+	if err != nil {
 		logx.WithContext(ctx).Error(err)
 	}
-	if retStr != "" {
-		var ret msgThing.PropertyData
-		err = json.Unmarshal([]byte(retStr), &ret)
-		if err == nil && ret.TimeStamp.After(time.Now().Add(-time.Hour*24)) { //只保留一个小时
-			vv, er := msgThing.GetVal(&p.Define, ret.Param)
-			if er == nil {
-				ret.Param = vv
-			}
-			return &ret, nil
+	if ret != nil && ret.TimeStamp.After(time.Now().Add(-time.Hour*24)) { //只保留一个小时
+		vv, er := msgThing.GetVal(&p.Define, ret.Param)
+		if er == nil {
+			ret.Param = vv
 		}
+		return ret, nil
 	}
 	//如果缓存里没有查到,需要从db里查
 	dds, err := d.GetPropertyDataByID(ctx, p,
@@ -49,7 +44,11 @@ func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schem
 	if len(dds) == 0 || err != nil {
 		return nil, err
 	}
-	d.kv.HsetCtx(ctx, tsDB.GenRedisPropertyLastKey(filter.ProductID, filter.DeviceName), filter.DataID, dds[0].String())
+	// 更新缓存
+	err = d.cacheManager.UpdatePropertyCache(ctx, filter.ProductID, filter.DeviceName, p, map[string]any{filter.DataID: dds[0].Param}, dds[0].TimeStamp)
+	if err != nil {
+		logx.WithContext(ctx).Errorf("更新属性缓存失败: %v", err)
+	}
 	return dds[0], nil
 
 }
