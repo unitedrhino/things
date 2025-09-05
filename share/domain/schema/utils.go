@@ -53,7 +53,7 @@ func WhereArray2(db sq.SelectBuilder, identifier string, pos string) sq.SelectBu
 		}
 		return db
 	}
-	db.Where(fmt.Sprintf("%s = ?", pos), num)
+	db = db.Where(fmt.Sprintf("%s = ?", pos), num)
 	return db
 }
 func GetArray(identifier string) (ident string, num int, ok bool) {
