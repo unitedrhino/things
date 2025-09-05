@@ -105,7 +105,7 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 	}
 	sql = schema.WhereArray2(sql, filter.DataID, "`_num`")
 	id, _, _ := schema.GetArray(filter.DataID)
-
+	sql = sql.Where("`_data_id`=?", id)
 	sql = sql.From(d.GetPropertyStableName(p, filter.ProductID, id))
 	sql = d.fillFilter(sql, filter.Filter)
 	sql = filter.Page.FmtSql(sql)
@@ -223,6 +223,7 @@ func (d *DeviceDataRepo) GetPropertyCountByID(
 		sqlData = sqlData.Where("`_num`=?", num)
 	}
 	sqlData = sqlData.From(d.GetPropertyStableName(p, filter.ProductID, dataID))
+	sqlData = sqlData.Where("`_data_id`=?", id)
 	sqlData = d.fillFilter(sqlData, filter.Filter)
 	sqlData = filter.Page.FmtWhere(sqlData)
 	sqlStr, value, err := sqlData.ToSql()

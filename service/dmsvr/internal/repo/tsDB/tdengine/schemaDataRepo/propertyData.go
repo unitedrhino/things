@@ -64,7 +64,7 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 	switch property.Define.Type {
 	case schema.DataTypeArray:
 		genArrSql := func(Identifier string, num int, v any) error {
-			ts := "`product_id` ,`device_name` ,`_num`,`" + PropertyType + "`," +
+			ts := "`product_id` ,`device_name` ,`_data_id`,`_num`,`" + PropertyType + "`," +
 				" `tenant_code` ,`project_id` ,`area_id`,`area_id_path`"
 			tagKeys, tagVals := tdengine.GenTagsParams(ts, d.groupConfigs, optional.BelongGroup)
 
@@ -95,17 +95,17 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 				if err != nil {
 					return err
 				}
-				sql += fmt.Sprintf(" %s using %s (%s)tags('%s','%s',%d,'%s','%s',%d,%d,'%s' %s) (`ts`, %s) values (?,%s) ",
+				sql += fmt.Sprintf(" %s using %s (%s)tags('%s','%s','%s',%d,'%s','%s',%d,%d,'%s' %s) (`ts`, %s) values (?,%s) ",
 					d.GetPropertyTableName(productID, deviceName, id),
-					d.GetPropertyStableName(p, productID, Identifier), tagKeys, productID, deviceName, num, p.Define.Type, optional.TenantCode, optional.ProjectID,
+					d.GetPropertyStableName(p, productID, Identifier), tagKeys, productID, deviceName, Identifier, num, p.Define.Type, optional.TenantCode, optional.ProjectID,
 					optional.AreaID, optional.AreaIDPath, tagVals,
 					paramIds, paramPlaceholder)
 				args = append([]any{timestamp}, paramValList...)
 			default:
-				sql += fmt.Sprintf(" %s using %s (%s)tags('%s','%s',%d,'%s','%s',%d,%d,'%s' %s)(`ts`, `param`) values (?,?) ",
+				sql += fmt.Sprintf(" %s using %s (%s)tags('%s','%s','%s',%d,'%s','%s',%d,%d,'%s' %s)(`ts`, `param`) values (?,?) ",
 					d.GetPropertyTableName(productID, deviceName, id),
 					d.GetPropertyStableName(p, productID, Identifier), tagKeys,
-					productID, deviceName, num, p.Define.Type, optional.TenantCode, optional.ProjectID,
+					productID, deviceName, Identifier, num, p.Define.Type, optional.TenantCode, optional.ProjectID,
 					optional.AreaID, optional.AreaIDPath, tagVals)
 				args = append(args, timestamp, vv)
 			}
@@ -141,7 +141,7 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 		}) { //如果为false,则无需更新
 			break
 		}
-		ts := "`product_id`,`device_name`,`" + PropertyType + "` ," +
+		ts := "`product_id`,`device_name`,`_data_id`,`" + PropertyType + "` ," +
 			" `tenant_code`  ,`project_id` ,`area_id` ,`area_id_path` "
 		tagKeys, tagVals := tdengine.GenTagsParams(ts, d.groupConfigs, optional.BelongGroup)
 
@@ -151,9 +151,9 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 			if err != nil {
 				return "", nil, err
 			}
-			sql = fmt.Sprintf(" %s using %s (%s)tags('%s','%s','%s','%s',%d,%d,'%s' %s) (`ts`, %s) values (?,%s) ",
+			sql = fmt.Sprintf(" %s using %s (%s)tags('%s','%s','%s','%s','%s',%d,%d,'%s' %s) (`ts`, %s) values (?,%s) ",
 				d.GetPropertyTableName(productID, deviceName, property.Identifier),
-				d.GetPropertyStableName(p, productID, property.Identifier), tagKeys, productID, deviceName, p.Define.Type, optional.TenantCode, optional.ProjectID,
+				d.GetPropertyStableName(p, productID, property.Identifier), tagKeys, productID, deviceName, property.Identifier, p.Define.Type, optional.TenantCode, optional.ProjectID,
 				optional.AreaID, optional.AreaIDPath, tagVals,
 				paramIds, paramPlaceholder)
 			args = append([]any{timestamp}, paramValList...)
@@ -163,10 +163,10 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 			var (
 				param = property.Value
 			)
-			sql = fmt.Sprintf(" %s using %s (%s)tags('%s','%s','%s','%s',%d,%d,'%s' %s)(`ts`, `param`) values (?,?) ",
+			sql = fmt.Sprintf(" %s using %s (%s)tags('%s','%s','%s','%s','%s',%d,%d,'%s' %s)(`ts`, `param`) values (?,?) ",
 				d.GetPropertyTableName(productID, deviceName, property.Identifier),
 				d.GetPropertyStableName(p, productID, property.Identifier), tagKeys,
-				productID, deviceName, p.Define.Type, optional.TenantCode, optional.ProjectID,
+				productID, deviceName, property.Identifier, p.Define.Type, optional.TenantCode, optional.ProjectID,
 				optional.AreaID, optional.AreaIDPath, tagVals)
 			args = append(args, timestamp, param)
 		}

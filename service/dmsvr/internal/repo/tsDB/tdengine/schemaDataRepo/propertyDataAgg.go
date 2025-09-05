@@ -63,6 +63,7 @@ func (d *DeviceDataRepo) GetPropertyAgg(ctx context.Context, m *schema.Model, fi
 		}
 		id, _, ok := schema.GetArray(agg.DataID)
 		sql = schema.WhereArray2(sql, agg.DataID, "`_num`")
+		sql = sql.Where("`_data_id`=?", id)
 		sql = sql.From(d.GetPropertyStableName(p, filter.ProductID, id))
 		sql = d.fillFilter(sql, filter.Filter)
 		sql = page.FmtSql(sql)
