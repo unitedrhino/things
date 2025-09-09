@@ -188,6 +188,7 @@ func VersionUpdate(svcCtx *svc.ServiceContext) {
 	svcCtx.SDKLogRepo.InitProduct(context.Background(), "")
 	svcCtx.StatusRepo.InitProduct(context.Background(), "")
 	svcCtx.SendRepo.InitProduct(context.Background(), "")
+	svcCtx.AbnormalRepo.InitProduct(context.Background(), "")
 	svcCtx.AbnormalRepo.VersionUpdate(context.Background(), "")
 	svcCtx.SendRepo.VersionUpdate(context.Background(), "")
 	svcCtx.SchemaManaRepo.VersionUpdate(context.Background(), "", svcCtx.DeviceCache)

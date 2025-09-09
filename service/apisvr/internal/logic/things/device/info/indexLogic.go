@@ -2,13 +2,14 @@ package info
 
 import (
 	"context"
+	"sync"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/logic/things"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
-	"sync"
 
 	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/types"
@@ -46,7 +47,7 @@ func (l *IndexLogic) Index(req *types.DeviceInfoIndexReq) (resp *types.DeviceInf
 		info := v
 		utils.Go(l.ctx, func() {
 			defer wait.Done()
-			pi := things.InfoToApi(l.ctx, l.svcCtx, info, things.DeviceInfoWith{Area: req.WithArea, WithGroups: req.WithGroups, Owner: req.WithOwner, Properties: req.WithProperties, Profiles: req.WithProfiles})
+			pi := things.InfoToApi(l.ctx, l.svcCtx, info, things.DeviceInfoWith{Area: req.WithArea, WithGroups: req.WithGroups, Owner: req.WithOwner, Properties: req.WithProperties, PropertyIgnoreEmpty: req.PropertyIgnoreEmpty, Profiles: req.WithProfiles})
 			mutex.Lock()
 			defer mutex.Unlock()
 			piMap[pi.ID] = pi

@@ -7940,6 +7940,10 @@
           },
           "description": "过滤条件:精准查询 设备名"
         },
+        "deviceNameOrAlias": {
+          "type": "string",
+          "description": "过滤条件:模糊查询 设备名或别名"
+        },
         "expTime": {
           "$ref": "#/definitions/CompareInt64",
           "description": "到期时间"
@@ -7986,6 +7990,11 @@
             "type": "string"
           },
           "description": "如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表,如果没有匹配的则不会返回"
+        },
+        "propertyIgnoreEmpty": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": " 设备属性是否忽略空值,空值是否返回"
         },
         "withProfiles": {
           "type": "array",
@@ -8262,6 +8271,11 @@
             "type": "string"
           },
           "description": "如果不为nil,如果为空,获取设备所有最新属性 如果传了属性列表,则会返回属性列表"
+        },
+        "propertyIgnoreEmpty": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": " 设备属性是否忽略空值,空值是否返回"
         },
         "withProfiles": {
           "type": "array",
@@ -9809,6 +9823,11 @@
             "type": "string"
           },
           "description": "获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值"
+        },
+        "ignoreEmpty": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": " 设备属性是否忽略空值,空值是否返回"
         }
       },
       "title": "DeviceMsgPropertyLogLatestIndexReq"

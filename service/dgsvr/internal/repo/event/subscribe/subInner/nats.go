@@ -3,6 +3,8 @@ package subInner
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"gitee.com/unitedrhino/share/clients"
 	"gitee.com/unitedrhino/share/conf"
 	"gitee.com/unitedrhino/share/ctxs"
@@ -34,7 +36,7 @@ func newNatsClient(conf conf.EventConf, nodeID int64) (SubInner, error) {
 func (n *NatsClient) SubToDevMsg(handle Handle) error {
 	topic := fmt.Sprintf(topics.DeviceDownAll, protocols.ProtocolCodeUrMqtt)
 	_, err := n.client.QueueSubscribe(topic, ThingsDDDeliverGroup,
-		func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
+		func(ctx context.Context, ts time.Time, msg []byte, natsMsg *nats.Msg) error {
 			//给设备回包之前，将链路信息span推送至jaeger
 			_, span := ctxs.StartSpan(ctx, topic, "")
 			info := devices.GetPublish(msg)

@@ -284,6 +284,7 @@ type (
         DeviceName string `json:"deviceName,omitempty"`                       //设备名
         ProductID string `json:"productID,omitempty"`                         //产品id 获取产品id下的所有设备信息
         DataIDs []string `json:"dataIDs,optional,omitempty"`                      //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值
+        IgnoreEmpty bool `json:"ignoreEmpty,optional"`// 设备属性是否忽略空值,空值是否返回
     }
 
     //设备的日志数据

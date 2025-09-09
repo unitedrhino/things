@@ -43,7 +43,7 @@ const (
 	ApplicationDeviceReportThingPropertyV2 = "application.v2.device.%s.%s.report.thing.property"
 	// ApplicationDeviceReportThingEvent 设备物模型事件上报通知 中间两个是产品id和设备名称,最后两个是事件类型和事件id
 	ApplicationDeviceReportThingEvent = "application.device.%s.%s.report.thing.event.%s.%s"
-	// ApplicationDeviceReportThingAction 设备物模型事件上报通知 中间两个是产品id和设备名称,最后三个是actionID,请求类型(req resp)和调用方向
+	// ApplicationDeviceReportThingAction 设备物模型行为上报通知 中间两个是产品id和设备名称,最后三个是actionID,请求类型(req resp)和调用方向
 	ApplicationDeviceReportThingAction = "application.device.%s.%s.report.thing.action.%s.%s.%s"
 	// ApplicationDeviceReportThingPropertyDevice 设备物模型属性上报通知 中间两个是产品id和设备名称
 	ApplicationDeviceReportThingPropertyDevice = "application.device.%s.%s.report.thing.property"

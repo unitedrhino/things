@@ -977,6 +977,7 @@ message PropertyLogLatestIndexReq{
   string productID = 2; //产品id (必填)
   string deviceName = 1; //设备名(必填)
   repeated string dataIDs = 3; //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值
+  bool ignoreEmpty = 5;// 设备属性是否忽略空值,空值是否返回
 }
 
 message PropertyLogLatestIndex2Req{
@@ -1551,7 +1552,7 @@ message DeviceInfo {
   int64  ratedPower =28;// 额定功率:单位w/h
   map<string,string>protocolConf =29;
   map<string,string>subProtocolConf =51;
-  int64 status =30 ;//设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中)
+  int64 status =30 ;//设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中) 5-设备到期
   int64 isEnable =31;//是否启用
   int64  deviceType = 33; //设备类型:1:设备,2:网关,3:子设备
   int64 netType =35;//网络类型
@@ -1720,6 +1721,7 @@ message DeviceInfoIndexReq{
   repeated string  productIDs = 23; //过滤条件: 产品id
   string deviceName = 3;//过滤条件:模糊查询 设备名
   repeated string deviceNames = 4;//过滤条件:精准查询 设备名
+  string deviceNameOrAlias = 58;//过滤条件:模糊查询 设备名或别名
   map<string, string> tags = 5;//key tag过滤查询,非模糊查询 为tag的名,value为tag对应的值
   map<string, string> tagsLike = 46;//key tag过滤查询,模糊查询 为tag的名,value为tag对应的值
   int64 range = 6; //过滤条件:取距离坐标点固定范围内的设备
@@ -1763,7 +1765,7 @@ message DeviceInfoIndexReq{
   string protocolCode =51;//协议查询
   CompareInt64 rssi=52;
   IDPath dept =53;//过滤分销商的数据
-  map<string,CompareString> Property =54;//设备最新属性过滤,key为属性的id,如果是结构体则key为 aaa.bbb 数组为aaa.1
+  map<string,CompareString> property =54;//设备最新属性过滤,key为属性的id,如果是结构体则key为 aaa.bbb 数组为aaa.1
 }
 
 message DeviceInfoIndexResp{

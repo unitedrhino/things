@@ -91,6 +91,7 @@ func (d *DeviceDataRepo) ToPropertyData(ctx context.Context, id string, p *schem
 		delete(db, "tenant_code")
 		delete(db, "project_id")
 		delete(db, "area_id")
+		delete(db, "data_id")
 		delete(db, "area_id_path")
 		delete(db, PropertyType)
 	}

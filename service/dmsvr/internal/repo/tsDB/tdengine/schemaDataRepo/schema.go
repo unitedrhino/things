@@ -6,6 +6,7 @@ import (
 
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine"
+	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/spf13/cast"
 )
@@ -30,6 +31,27 @@ func (S *SchemaStore) GetSpecsColumnWithArgFunc(s schema.Specs, argFunc string) 
 		column = append(column, fmt.Sprintf("%s(`%s`) as %s", argFunc, v.Identifier, v.Identifier))
 	}
 	return strings.Join(column, ",")
+}
+
+func (S *SchemaStore) GetSpecsColumnWithArgFunc2(s schema.Specs, agg msgThing.PropertyAgg) string {
+	var selects []string
+	var tsHandle = map[string]bool{}
+	for _, v := range s {
+		if utils.SliceIn(v.DataType.Type, schema.DataTypeString, schema.DataTypeBool, schema.DataTypeBool) {
+			continue
+		}
+		for _, argFunc := range agg.ArgFuncs {
+			//pg的 timescale走视图优化
+			if agg.NoFirstTs && utils.SliceIn(argFunc, "first", "last") {
+				if !tsHandle[argFunc] {
+					selects = append(selects, fmt.Sprintf("  %s(`ts`) as %s_ts ", argFunc, argFunc))
+				}
+				tsHandle[argFunc] = true
+			}
+			selects = append(selects, fmt.Sprintf(" %s(`%s`) as %s_%s_param ", argFunc, v.Identifier, v.Identifier, argFunc))
+		}
+	}
+	return strings.Join(selects, ",")
 }
 
 func (S *SchemaStore) GetPropertyStableName(p *schema.Property, productID, identifier string) string {

@@ -2,6 +2,7 @@ package things
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/logic"
@@ -12,12 +13,13 @@ import (
 )
 
 type DeviceInfoWith struct {
-	Properties []string
-	Profiles   []string
-	WithGroups []string
-	Owner      bool
-	Area       bool
-	IsOnlyCore bool
+	Properties          []string
+	PropertyIgnoreEmpty bool // 设备属性是否忽略空值,空值是否返回
+	Profiles            []string
+	WithGroups          []string
+	Owner               bool
+	Area                bool
+	IsOnlyCore          bool
 }
 
 func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo, w DeviceInfoWith) *types.DeviceInfo {
@@ -55,9 +57,10 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 	if w.Properties != nil {
 		func() {
 			resp, err := svcCtx.DeviceMsg.PropertyLogLatestIndex(ctx, &dm.PropertyLogLatestIndexReq{
-				ProductID:  v.ProductID,
-				DeviceName: v.DeviceName,
-				DataIDs:    w.Properties,
+				ProductID:   v.ProductID,
+				DeviceName:  v.DeviceName,
+				DataIDs:     w.Properties,
+				IgnoreEmpty: w.PropertyIgnoreEmpty,
 			})
 			if err != nil {
 				logx.WithContext(ctx).Errorf("%s.PropertyLatestIndex err:%v", utils.FuncName(), err)

@@ -3,6 +3,9 @@ package svc
 import (
 	"context"
 	"encoding/json"
+	"os"
+	"time"
+
 	"gitee.com/unitedrhino/core/service/syssvr/client/areamanage"
 	"gitee.com/unitedrhino/core/service/syssvr/client/common"
 	"gitee.com/unitedrhino/core/service/syssvr/client/datamanage"
@@ -45,9 +48,8 @@ import (
 	"gitee.com/unitedrhino/things/share/topics"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/kv"
+	"github.com/zeromicro/go-zero/core/syncx"
 	"github.com/zeromicro/go-zero/zrpc"
-	"os"
-	"time"
 )
 
 type ServiceContext struct {
@@ -138,6 +140,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		ExpireTime: 10 * time.Minute,
 	})
 	logx.Must(err)
+	var sf = syncx.NewSingleFlight()
 	getDeviceSchemaModel, err := caches.NewCache(caches.CacheConfig[schema.Model, devices.Core]{
 		KeyType:   topics.ServerCacheKeyDmDeviceSchema,
 		FastEvent: serverMsg,
@@ -156,16 +159,19 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			return schemaModel, nil
 		},
 		Fmt: func(ctx context.Context, key devices.Core, data *schema.Model) *schema.Model {
-			ps, err := getProductSchemaModel.GetData(ctx, key.ProductID)
-			if err != nil {
-				logx.WithContext(ctx).Error(err)
-			}
-			newOne := data.Copy().Aggregation(ps)
-			err = newOne.ValidateWithFmt()
-			if err != nil {
-				logx.WithContext(ctx).Error(err)
-			}
-			return newOne
+			v, _ := sf.Do(key.ProductID, func() (any, error) {
+				ps, err := getProductSchemaModel.GetData(ctx, key.ProductID)
+				if err != nil {
+					logx.WithContext(ctx).Error(err)
+				}
+				newOne := data.Copy().Aggregation(ps)
+				err = newOne.ValidateWithFmt()
+				if err != nil {
+					logx.WithContext(ctx).Error(err)
+				}
+				return newOne, nil
+			})
+			return v.(*schema.Model)
 		},
 		ExpireTime: 20 * time.Minute,
 	})

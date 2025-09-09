@@ -2,6 +2,7 @@ package schemaDataRepo
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 )
@@ -30,8 +31,9 @@ func (d *DeviceDataRepo) CreateProperty(ctx context.Context, p *schema.Property,
 	return nil
 }
 func (d *DeviceDataRepo) DeleteProperty(ctx context.Context, p *schema.Property, productID string, identifier string) error {
-	err := d.db.WithContext(ctx).Table(getTableName(p.Define)).Where("product_id = ? AND identifier = ?", productID, identifier).Delete(&Property{}).Error
-	return stores.ErrFmt(err)
+	return nil
+	//err := d.db.WithContext(ctx).Table(getTableName(p.Define)).Where("product_id = ? AND identifier = ?", productID, identifier).Delete(&Property{}).Error
+	//return stores.ErrFmt(err)
 }
 
 func (d *DeviceDataRepo) UpdateProperty(

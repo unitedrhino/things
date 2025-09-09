@@ -3,6 +3,7 @@ package schemaDataRepo
 import (
 	"context"
 	"fmt"
+
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine"
@@ -134,7 +135,7 @@ func (d *DeviceDataRepo) createPropertyStable(
 	var sql string
 	switch p.Define.Type {
 	case schema.DataTypeStruct:
-		ts := "`product_id` BINARY(50),`device_name` BINARY(50),`" + PropertyType + "` BINARY(50)," +
+		ts := "`product_id` BINARY(50),`device_name` BINARY(50),`_data_id` BINARY(250),`" + PropertyType + "` BINARY(50)," +
 			" `tenant_code`  BINARY(50),`project_id` BIGINT,`area_id` BIGINT,`area_id_path`  BINARY(50)"
 		sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp, %s)"+
 			" TAGS (%s);",
@@ -146,7 +147,7 @@ func (d *DeviceDataRepo) createPropertyStable(
 		arrayInfo := p.Define.ArrayInfo
 		switch arrayInfo.Type {
 		case schema.DataTypeStruct:
-			ts := "`product_id` BINARY(50),`device_name` BINARY(50),`_num` BIGINT,`" + PropertyType + "` BINARY(50)," +
+			ts := "`product_id` BINARY(50),`device_name` BINARY(50),`_data_id` BINARY(250),`_num` BIGINT,`" + PropertyType + "` BINARY(50)," +
 				" `tenant_code`  BINARY(50),`project_id` BIGINT,`area_id` BIGINT,`area_id_path`  BINARY(50)"
 			sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp, %s)"+
 				" TAGS (%s);",
@@ -155,7 +156,7 @@ func (d *DeviceDataRepo) createPropertyStable(
 				return errors.Database.AddDetail(err)
 			}
 		default:
-			ts := "`product_id` BINARY(50),`device_name` BINARY(50),`_num` BIGINT,`" + PropertyType + "` BINARY(50)," +
+			ts := "`product_id` BINARY(50),`device_name` BINARY(50),`_data_id` BINARY(250),`_num` BIGINT,`" + PropertyType + "` BINARY(50)," +
 				" `tenant_code`  BINARY(50),`project_id` BIGINT,`area_id` BIGINT,`area_id_path`  BINARY(50)"
 			sql = fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp,`param` %s)"+
 				" TAGS (%s);",
@@ -165,7 +166,7 @@ func (d *DeviceDataRepo) createPropertyStable(
 			}
 		}
 	default:
-		ts := "`product_id` BINARY(50),`device_name` BINARY(50),`" + PropertyType + "` BINARY(50)," +
+		ts := "`product_id` BINARY(50),`device_name` BINARY(50),`_data_id` BINARY(250),`" + PropertyType + "` BINARY(50)," +
 			" `tenant_code`  BINARY(50),`project_id` BIGINT,`area_id` BIGINT,`area_id_path`  BINARY(50)"
 		sql = fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s (`ts` timestamp,`param` %s)"+
 			" TAGS (%s);",

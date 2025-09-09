@@ -3,6 +3,8 @@ package server
 import (
 	"context"
 	"encoding/json"
+	"time"
+
 	"gitee.com/unitedrhino/share/clients"
 	"gitee.com/unitedrhino/share/conf"
 	"gitee.com/unitedrhino/share/events/topics"
@@ -30,7 +32,7 @@ func newNatsClient(conf conf.EventConf, nodeID int64) (*NatsClient, error) {
 
 func (n *NatsClient) Subscribe(handle Handle) error {
 	_, err := n.client.QueueSubscribe(topics.DmActionCheckDelay, natsJsConsumerName,
-		func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
+		func(ctx context.Context, ts time.Time, msg []byte, natsMsg *nats.Msg) error {
 			tempInfo := deviceMsg.PublishMsg{}
 			err := json.Unmarshal(msg, &tempInfo)
 			if err != nil {

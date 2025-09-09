@@ -3,11 +3,15 @@ package schemaDataRepo
 import (
 	"context"
 	"fmt"
+	"os"
+	"strings"
+
 	"gitee.com/unitedrhino/share/caches"
 	"gitee.com/unitedrhino/share/clients"
 	"gitee.com/unitedrhino/share/conf"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceGroup"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/cache"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/share/devices"
@@ -15,7 +19,6 @@ import (
 	schema "gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/kv"
-	"os"
 )
 
 const (
@@ -29,6 +32,7 @@ type DeviceDataRepo struct {
 	SchemaStore
 	kv           kv.Store
 	groupConfigs []*deviceGroup.GroupDetail
+	cacheManager *cache.PropertyCacheManager
 }
 
 func NewDeviceDataRepo(dataSource conf.TSDB, getProductSchemaModel schema.GetSchemaModel,
@@ -39,7 +43,8 @@ func NewDeviceDataRepo(dataSource conf.TSDB, getProductSchemaModel schema.GetSch
 		os.Exit(-1)
 	}
 	return &DeviceDataRepo{t: td, getProductSchemaModel: getProductSchemaModel,
-		getDeviceSchemaModel: getDeviceSchemaModel, kv: kv, groupConfigs: g}
+		getDeviceSchemaModel: getDeviceSchemaModel, kv: kv, groupConfigs: g,
+		cacheManager: cache.NewPropertyCacheManager(kv)}
 }
 
 func (d *DeviceDataRepo) VersionUpdate(ctx context.Context, version string, dc *caches.Cache[dm.DeviceInfo, devices.Core]) error {
@@ -67,73 +72,52 @@ func (d *DeviceDataRepo) VersionUpdate(ctx context.Context, version string, dc *
 			}
 		}
 	}
-	if desc["tenant_code"] != nil {
-		return nil
-	}
-	{
+	if desc["_data_id"] == nil {
 		tbs, err := d.t.STables(ctx, "_property_")
 		if err != nil {
 			return err
 		}
 		for _, tb := range tbs {
-			_, err = d.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG `tenant_code`  BINARY(50) ;", tb))
+			_, err = d.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG `_data_id` BINARY(250) ;", tb))
 			if err != nil {
 				continue
 			}
-			_, err = d.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG  `project_id` BIGINT ;", tb))
+		}
+		{
+			tbs, err := d.t.Tables(ctx, "device_property_")
 			if err != nil {
-				continue
+				return err
 			}
-			_, err = d.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG  `area_id` BIGINT  ;", tb))
-			if err != nil {
-				continue
-			}
-			_, err = d.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG `area_id_path`  BINARY(50) ;", tb))
-			if err != nil {
-				continue
-			}
-			for _, g := range d.groupConfigs {
-				_, err = d.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG `group_%s_ids`  BINARY(250) ;", tb, g.Value))
+			var dataMap = map[string][]string{}
+			for _, tb := range tbs {
+				ts, err := d.t.TableTags(ctx, tb)
 				if err != nil {
+					logx.WithContext(ctx).Errorf("get tags err: %v", err)
 					continue
 				}
-				_, err = d.t.ExecContext(ctx, fmt.Sprintf("ALTER STABLE `%s` ADD TAG `group_%s_id_paths`  BINARY(250) ;", tb, g.Value))
+				prefix := fmt.Sprintf("device_property_%s_%s_", ts["product_id"], ts["device_name"])
+				dataID := strings.TrimPrefix(tb, prefix)
+				if ts["property_type"] == "array" {
+					datas := strings.Split(dataID, "_")
+					datas = datas[:len(datas)-1]
+					dataID = strings.Join(datas, "_")
+				}
+				if dataMap[dataID] == nil {
+					dataMap[dataID] = []string{}
+				}
+				dataMap[dataID] = append(dataMap[dataID], tb)
+
+			}
+			for dataID, tb := range dataMap {
+				err = tdengine.AlterTag(ctx, d.t, tb, map[string]any{"_data_id": dataID})
 				if err != nil {
+					logx.WithContext(ctx).Error(err.Error())
 					continue
 				}
 			}
 		}
 	}
-	{
-		tbs, err := d.t.Tables(ctx, "device_property_")
-		if err != nil {
-			return err
-		}
-		for _, tb := range tbs {
-			ts, err := d.t.TableTags(ctx, tb)
-			if err != nil {
-				logx.WithContext(ctx).Errorf("get tags err: %v", err)
-				continue
-			}
-			dev := devices.Core{ProductID: ts["product_id"], DeviceName: ts["device_name"]}
-			di, err := dc.GetData(ctx, dev)
-			if err != nil {
-				logx.WithContext(ctx).Error(err.Error())
-				continue
-			}
-			err = tdengine.AlterTag(ctx, d.t, []string{tb}, tdengine.AffiliationToMap(devices.Affiliation{
-				TenantCode:  di.TenantCode,
-				ProjectID:   di.ProjectID,
-				AreaID:      di.AreaID,
-				AreaIDPath:  di.AreaIDPath,
-				BelongGroup: tdengine.ToBelongGroup(di.BelongGroup),
-			}, d.groupConfigs))
-			if err != nil {
-				logx.WithContext(ctx).Error(err.Error())
-				continue
-			}
-		}
-	}
+
 	return nil
 }
 
@@ -148,7 +132,7 @@ func (d *DeviceDataRepo) Init(ctx context.Context) error {
 			return errors.Database.AddDetail(err)
 		}
 	}
-	ts := "`product_id` BINARY(50),`device_name` BINARY(50),`" + PropertyType + "` BINARY(50)," +
+	ts := "`product_id` BINARY(50),`device_name` BINARY(50),`_data_id` BINARY(250),`" + PropertyType + "` BINARY(50)," +
 		" `tenant_code`  BINARY(50),`project_id` BIGINT,`area_id` BIGINT,`area_id_path`  BINARY(50)"
 	tags := tdengine.GenTagsDef(ts, d.groupConfigs)
 	genDeviceStable := func(tb string, def schema.Define) error {

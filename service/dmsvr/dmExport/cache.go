@@ -3,10 +3,9 @@ package dmExport
 import (
 	"context"
 	"encoding/json"
-	"gitee.com/unitedrhino/share/errors"
-	"gitee.com/unitedrhino/things/share/topics"
 
 	"gitee.com/unitedrhino/share/caches"
+	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/eventBus"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/devicemanage"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/productmanage"
@@ -15,6 +14,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/schema"
+	"gitee.com/unitedrhino/things/share/topics"
 )
 
 type ProductCacheT = *caches.Cache[dm.ProductInfo, string]

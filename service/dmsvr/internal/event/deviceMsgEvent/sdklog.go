@@ -2,10 +2,12 @@ package deviceMsgEvent
 
 import (
 	"context"
+	"time"
+
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
 	devicemanage "gitee.com/unitedrhino/things/service/dmsvr/internal/server/devicemanage"
+	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgSdkLog"
-	"time"
 
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
@@ -75,7 +77,7 @@ func (l *SDKLogLogic) Handle(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.Publ
 
 // 获取设备上传的调试日志内容
 func (l *SDKLogLogic) ReportLogContent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.PublishMsg, err error) {
-	ld, err := devicemanage.NewDeviceManageServer(l.svcCtx).DeviceInfoRead(l.ctx, &dm.DeviceInfoReadReq{
+	ld, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
 		ProductID:  msg.ProductID,
 		DeviceName: msg.DeviceName,
 	})

@@ -3,6 +3,8 @@ package msgThing
 
 import (
 	"context"
+	"time"
+
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/caches"
 	"gitee.com/unitedrhino/share/def"
@@ -13,7 +15,6 @@ import (
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/zeromicro/go-zero/core/jsonx"
-	"time"
 )
 
 type (
@@ -150,6 +151,7 @@ type (
 		// GetPropertyDataByID 根据属性id获取属性信息
 		GetPropertyDataByID(ctx context.Context, p *schema.Property, filter FilterOpt) ([]*PropertyData, error)
 		GetLatestPropertyDataByID(ctx context.Context, p *schema.Property, filter LatestFilter) (*PropertyData, error)
+		GetLatestAllPropertyData(ctx context.Context, productID, deviceName string) ([]*PropertyData, error)
 		GetPropertyCountByID(ctx context.Context, p *schema.Property, filter FilterOpt) (int64, error)
 		// InitProduct 初始化产品的物模型相关表及日志记录表
 		InitProduct(ctx context.Context, t *schema.Model, productID string) error
