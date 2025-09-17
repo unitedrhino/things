@@ -2,6 +2,8 @@ package devicemanagelogic
 
 import (
 	"context"
+	"time"
+
 	"gitee.com/unitedrhino/core/service/syssvr/sysExport"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
@@ -16,7 +18,6 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/deviceAuth"
 	"gitee.com/unitedrhino/things/share/userSubscribe"
 	"github.com/spf13/cast"
-	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -80,6 +81,9 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 	var log = logx.WithContext(ctx)
 
 	handleMsg := func(msg *deviceStatus.ConnectMsg) {
+		if msg.Timestamp.IsZero() {
+			msg.Timestamp = time.Now()
+		}
 		status := int64(def.ConnectedStatus)
 		if msg.Action == devices.ActionDisconnected {
 			status = def.DisConnectedStatus

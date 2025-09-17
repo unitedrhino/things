@@ -22,10 +22,10 @@ const (
 type (
 	// DevConn ddsvr 发布设备 连接和断连 的结构体
 	DevConn struct {
-		UserName  string `json:"username"`
+		UserName  string `json:"username"`  //选填
 		Timestamp int64  `json:"timestamp"` //毫秒时间戳
-		Address   string `json:"addr"`
-		ClientID  string `json:"clientID"`
+		Address   string `json:"addr"`      //选填
+		ClientID  string `json:"clientID"`  //如果填写了下面的产品和设备ID,这个可以不填
 		/*
 			https://www.emqx.com/en/blog/emqx-mqtt-broker-connection-troubleshooting
 				normal：客户端主动断开连接；
@@ -57,6 +57,13 @@ type (
 	// InnerPublish 用于其他服务 发送给ddsvr 转发给设备的
 	InnerPublish = DevPublish
 )
+
+func IsOnlineToAction(in bool) Action {
+	if in == true {
+		return ActionConnected
+	}
+	return ActionDisconnected
+}
 
 // IsLikelyText 判断字节切片是否更可能是文本
 func IsLikelyText(b []byte) bool {
