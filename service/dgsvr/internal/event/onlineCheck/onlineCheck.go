@@ -3,6 +3,8 @@ package onlineCheck
 import (
 	"context"
 	"encoding/json"
+	"time"
+
 	"gitee.com/unitedrhino/share/caches"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/utils"
@@ -14,7 +16,6 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/protocols"
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.uber.org/atomic"
-	"time"
 )
 
 type CheckEvent struct {
@@ -43,26 +44,38 @@ func (o *CheckEvent) Check(isAll bool) error {
 
 	var devs = map[devices.Core]struct{}{}
 	var err error
+	pis, err := o.svcCtx.ProductM.ProductInfoIndex(o.ctx, &dm.ProductInfoIndexReq{ProtocolTrans: protocols.ProtocolMqtt})
+	if err != nil {
+		return err
+	}
+	if len(pis.List) == 0 {
+		return nil
+	}
+	var pSet = map[string]struct{}{}
+	var productIDs []string
+	for _, pi := range pis.List {
+		if pi.OnlineHandle == 1 {
+			continue
+		}
+		productIDs = append(productIDs, pi.ProductID)
+		pSet[pi.ProductID] = struct{}{}
+	}
 	if !isAll {
-		devs, err = protocol.GetActivityDevices(o.ctx)
+		devs2, err := protocol.GetActivityDevices(o.ctx)
 		if err != nil {
 			logx.WithContext(o.ctx).Error(err)
 			return err
+		}
+		for dev := range devs2 {
+			if _, ok := pSet[dev.ProductID]; !ok {
+				continue
+			}
+			devs[dev] = struct{}{}
 		}
 	} else {
 		var page int64 = 0
 		var limit int64 = 500
 		var total int64 = 999999
-		pis, err := o.svcCtx.ProductM.ProductInfoIndex(o.ctx, &dm.ProductInfoIndexReq{ProtocolTrans: protocols.ProtocolMqtt})
-		if err != nil {
-			return err
-		}
-		if len(pis.List) == 0 {
-			return nil
-		}
-		productIDs := utils.ToSliceWithFunc(pis.List, func(in *dm.ProductInfo) string {
-			return in.ProductID
-		})
 		for page*limit < total {
 			page++
 			ret, err := o.svcCtx.DeviceM.DeviceInfoIndex(o.ctx, &dm.DeviceInfoIndexReq{IsOnline: def.True, ProductIDs: productIDs, Page: &dm.PageInfo{
@@ -127,6 +140,9 @@ func (o *CheckEvent) Check(isAll bool) error {
 				continue
 			}
 			delete(devs, c)
+			if _, ok := pSet[dev.ProductID]; !ok {
+				continue
+			}
 			//给3分钟的缓冲时间
 			if di.IsOnline != def.True && (di.LastLogin == 0 || time.Unix(di.LastOffline, 0).Before(time.Now().Add(-time.Minute*3))) {
 				needOnlineDevices = append(needOnlineDevices, &dm.DeviceOnlineMultiFix{
@@ -146,6 +162,9 @@ func (o *CheckEvent) Check(isAll bool) error {
 		for dev := range devs {
 			di, err := o.svcCtx.DeviceCache.GetData(o.ctx, dev)
 			if err != nil || di.DeviceType == def.DeviceTypeSubset {
+				continue
+			}
+			if _, ok := pSet[dev.ProductID]; !ok {
 				continue
 			}
 			if di.IsOnline == def.True {

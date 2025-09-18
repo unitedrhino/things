@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
+
 	"gitee.com/unitedrhino/core/service/timed/timedjobsvr/client/timedmanage"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
@@ -21,7 +23,6 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/protocols"
 	"gitee.com/unitedrhino/things/share/topics"
 	"github.com/zeromicro/go-zero/core/logx"
-	"time"
 )
 
 func Init(svcCtx *svc.ServiceContext) {
@@ -94,7 +95,7 @@ func TimerInit(svcCtx *svc.ServiceContext) {
 	_, err := svcCtx.TimedM.TaskInfoCreate(ctx, &timedmanage.TaskInfo{
 		GroupCode: def.TimedUnitedRhinoQueueGroupCode,                               //组编码
 		Type:      1,                                                                //任务类型 1 定时任务 2 延时任务
-		Name:      "联犀协议网关定时处理",                                                     // 任务名称
+		Name:      "联犀协议网关定时处理",                                           // 任务名称
 		Code:      "iThingsDgOnlineTimer",                                           //任务编码
 		Params:    fmt.Sprintf(`{"topic":"%s","payload":""}`, topics.DgOnlineTimer), // 任务参数,延时任务如果没有传任务参数会拿数据库的参数来执行
 		CronExpr:  "@every 5m",                                                      // cron执行表达式
@@ -107,7 +108,7 @@ func TimerInit(svcCtx *svc.ServiceContext) {
 	_, err = svcCtx.TimedM.TaskInfoCreate(ctx, &timedmanage.TaskInfo{
 		GroupCode: def.TimedUnitedRhinoQueueGroupCode,                                //组编码
 		Type:      1,                                                                 //任务类型 1 定时任务 2 延时任务
-		Name:      "联犀协议网关定时处理全局",                                                    // 任务名称
+		Name:      "联犀协议网关定时处理全局",                                        // 任务名称
 		Code:      "iThingsDgOnlineTimer2",                                           //任务编码
 		Params:    fmt.Sprintf(`{"topic":"%s","payload":""}`, topics.DgOnlineTimer2), // 任务参数,延时任务如果没有传任务参数会拿数据库的参数来执行
 		CronExpr:  "@every 8h",                                                       // cron执行表达式
