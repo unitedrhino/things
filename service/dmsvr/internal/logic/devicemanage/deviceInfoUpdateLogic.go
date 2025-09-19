@@ -149,7 +149,8 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 					DeviceNames: []string{old.DeviceName},
 					DestVersion: data.Version.GetValue(),
 					Statues: []int64{msgOta.DeviceStatusConfirm, msgOta.DeviceStatusQueued,
-						msgOta.DeviceStatusNotified, msgOta.DeviceStatusInProgress},
+						msgOta.DeviceStatusNotified, msgOta.DeviceStatusInProgress,
+						msgOta.DeviceStatusCanceled, msgOta.DeviceStatusFailure}, //除了成功的都过滤出来
 				}, nil)
 				if err != nil {
 					if !errors.Cmp(err, errors.NotFind) {
@@ -158,34 +159,31 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 				} else {
 					var once sync.Once
 					for _, df := range dfs {
-						if df.DestVersion == data.Version.GetValue() { //版本号一致才是升级成功
-							df.Step = 100
-							df.Status = msgOta.DeviceStatusSuccess
-							df.Detail = "升级成功"
-							err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).Update(l.ctx, df)
-							if err != nil {
-								return err
-							}
-							old.NeedConfirmVersion = ""
-							old.NeedConfirmJobID = 0
-							once.Do(func() {
-								appMsg := application.OtaReport{
-									Device:    devices.Core{ProductID: old.ProductID, DeviceName: old.DeviceName},
-									Timestamp: time.Now().UnixMilli(), Status: df.Status, Detail: df.Detail, Step: df.Step,
-								}
-								err = l.svcCtx.UserSubscribe.Publish(l.ctx, userSubscribe.DeviceOtaReport, appMsg, map[string]any{
-									"productID":  old.ProductID,
-									"deviceName": old.DeviceName,
-								}, map[string]any{
-									"projectID": old.ProjectID,
-								}, map[string]any{
-									"projectID": cast.ToString(old.ProjectID),
-									"areaID":    cast.ToString(old.AreaID),
-								})
-							})
+						df.Step = 100
+						df.Status = msgOta.DeviceStatusSuccess
+						df.Detail = "升级成功"
+						err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).Update(l.ctx, df)
+						if err != nil {
+							return err
 						}
+						old.NeedConfirmVersion = ""
+						old.NeedConfirmJobID = 0
+						once.Do(func() {
+							appMsg := application.OtaReport{
+								Device:    devices.Core{ProductID: old.ProductID, DeviceName: old.DeviceName},
+								Timestamp: time.Now().UnixMilli(), Status: df.Status, Detail: df.Detail, Step: df.Step,
+							}
+							err = l.svcCtx.UserSubscribe.Publish(l.ctx, userSubscribe.DeviceOtaReport, appMsg, map[string]any{
+								"productID":  old.ProductID,
+								"deviceName": old.DeviceName,
+							}, map[string]any{
+								"projectID": old.ProjectID,
+							}, map[string]any{
+								"projectID": cast.ToString(old.ProjectID),
+								"areaID":    cast.ToString(old.AreaID),
+							})
+						})
 					}
-
 				}
 			} else {
 				//检查是否有待升级的任务并推送
