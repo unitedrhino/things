@@ -2,6 +2,7 @@ package schema
 
 import (
 	"encoding/json"
+	"regexp"
 
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/utils"
@@ -203,16 +204,27 @@ func (p *Property) ValidateWithFmt() error {
 	return p.Define.ValidateWithFmt()
 }
 
+// ValidateString 校验字符串是否只包含英文大小写字母、数字、下划线(_)和连字符(-)
+func validateIDString(s string) bool {
+	// 正则表达式: ^表示开头, $表示结尾, [A-Za-z0-9_-]表示允许的字符集, +表示至少一个字符
+	re := regexp.MustCompile(`^[A-Za-z0-9_-]+$`)
+	return re.MatchString(s)
+}
+
 func IDValidate(id string) error {
 	if len(id) > IDLen || len(id) == 0 {
 		return errors.Parameter.WithMsgf(
-			"标识符的第一个字符不能是数字，支持英文、数字、下划线的组合，最多不超过%v个字符,标识符:%v", IDLen, id)
+			"标识符的第一个字符不能是数字，支持英文、数字、下划线、-的组合，最多不超过%v个字符,标识符:%v", IDLen, id)
 	}
 	if IDFFormatCheck {
 		if !(id[0] <= '9' || id[0] >= '0') {
 			return errors.Parameter.WithMsgf(
-				"标识符的第一个字符不能是数字，支持英文、数字、下划线的组合，最多不超过%v个字符,标识符:%v", IDLen, id)
+				"标识符的第一个字符不能是数字，支持英文、数字、下划线、-的组合，最多不超过%v个字符,标识符:%v", IDLen, id)
 		}
+	}
+	if !validateIDString(id) {
+		return errors.Parameter.WithMsgf(
+			"标识符的第一个字符不能是数字，支持英文、数字、下划线、-的组合，最多不超过%v个字符,标识符:%v", IDLen, id)
 	}
 	return nil
 }
