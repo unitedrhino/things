@@ -2,7 +2,13 @@ package startup
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+	"reflect"
+
 	"gitee.com/unitedrhino/share/def"
+	"gitee.com/unitedrhino/share/utils"
+	sdkProtocol "gitee.com/unitedrhino/things/sdk/protocol"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/deviceinteract"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/devicemanage"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/devicemsg"
@@ -22,12 +28,12 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgSdkLog"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
+	"gitee.com/unitedrhino/things/share/topics"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/share/devices"
 	"github.com/zeromicro/go-zero/core/logx"
-	"reflect"
 )
 
 func ScriptInit(svcCtx *svc.ServiceContext) {
@@ -228,6 +234,20 @@ func dmSymbolInit(svcCtx *svc.ServiceContext) map[string]reflect.Value {
 		}),
 		"SchemaGet": reflect.ValueOf(func(ctx context.Context, productID string, deviceName string) (*schema.Model, error) {
 			return svcCtx.DeviceSchemaRepo.GetData(ctx, devices.Core{ProductID: productID, DeviceName: deviceName})
+		}),
+		"DevPubMsg": reflect.ValueOf(func(ctx context.Context, publishMsg *devices.DevPublish) error {
+			sdkProtocol.UpdateDeviceActivity(ctx, devices.Core{
+				ProductID:  publishMsg.ProductID,
+				DeviceName: publishMsg.DeviceName,
+			})
+			pubStr, _ := json.Marshal(publishMsg)
+			err := svcCtx.FastEvent.Publish(ctx,
+				fmt.Sprintf(topics.DeviceUpMsg, publishMsg.Handle, publishMsg.ProductID, publishMsg.DeviceName), pubStr)
+			if err != nil {
+				logx.Errorf("%s.publish  err:%v", utils.FuncName(), err)
+				return err
+			}
+			return err
 		}),
 		"DeviceMsg":                         reflect.ValueOf(devicemsg.NewDirectDeviceMsg(svcCtx, devicemsgServer.NewDeviceMsgServer(svcCtx))),
 		"DeviceInteract":                    reflect.ValueOf(deviceinteract.NewDirectDeviceInteract(svcCtx, deviceinteractServer.NewDeviceInteractServer(svcCtx))),

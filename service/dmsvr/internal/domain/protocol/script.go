@@ -4,6 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"reflect"
+	"sort"
+	"sync"
+	"time"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
@@ -14,10 +19,6 @@ import (
 	"github.com/traefik/yaegi/interp"
 	"github.com/traefik/yaegi/stdlib"
 	"github.com/zeromicro/go-zero/core/logx"
-	"reflect"
-	"sort"
-	"sync"
-	"time"
 )
 
 type ScriptInfo struct {
@@ -212,11 +213,11 @@ func (s *ScriptTrans) RespMsgRun(ctx context.Context, req *deviceMsg.PublishMsg,
 	}()
 	handle, logs, err := s.GetFunc(ctx, script, "Handle")
 	if err != nil {
-		return nil, errors.Parameter.AddMsg("结构体中需要定义: func Handle(context.Context, *dm.PublishMsg) *dm.PublishMsg")
+		return nil, errors.Parameter.AddMsgf("脚本定义错误:%s", err.Error())
 	}
 	fn, ok := handle.(func(context.Context, *deviceMsg.PublishMsg, *deviceMsg.PublishMsg))
 	if !ok {
-		return nil, errors.Parameter.AddMsg("结构体中需要定义: func Handle(context.Context, *dm.PublishMsg) *dm.PublishMsg")
+		return nil, errors.Parameter.AddMsg("结构体中需要定义: func Handle(context.Context,func(context.Context, *deviceMsg.PublishMsg, *deviceMsg.PublishMsg))")
 	}
 	fn(ctx, req, resp)
 	return *logs, nil

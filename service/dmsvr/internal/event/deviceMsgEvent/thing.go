@@ -429,9 +429,6 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), err
 	}
-	if msg.DeviceName == "test112" {
-		tp = tp
-	}
 	if len(req.Params) > len(tp) { //存在上报了未定义的属性
 		pd, err := l.svcCtx.ProductCache.GetData(l.ctx, msg.ProductID)
 		if err != nil {
