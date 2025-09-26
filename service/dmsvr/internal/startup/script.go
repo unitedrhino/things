@@ -145,6 +145,14 @@ func ScriptLoad(svcCtx *svc.ServiceContext) {
 						trans.DeviceUpBeforeCache = before
 					}()
 				}
+				after := up[protocol.TriggerTimerAfter]
+				if len(after) > 0 {
+					func() {
+						trans.DeviceUpAfterMutex.Lock()
+						defer trans.DeviceUpAfterMutex.Unlock()
+						trans.DeviceUpAfterCache = after
+					}()
+				}
 			}
 			if len(down) > 0 {
 				before := down[protocol.TriggerTimerBefore]
@@ -153,6 +161,14 @@ func ScriptLoad(svcCtx *svc.ServiceContext) {
 						trans.DeviceDownBeforeMutex.Lock()
 						defer trans.DeviceDownBeforeMutex.Unlock()
 						trans.DeviceDownBeforeCache = before
+					}()
+				}
+				after := down[protocol.TriggerTimerAfter]
+				if len(after) > 0 {
+					func() {
+						trans.DeviceDownAfterMutex.Lock()
+						defer trans.DeviceDownAfterMutex.Unlock()
+						trans.DeviceDownAfterCache = after
 					}()
 				}
 			}
@@ -169,6 +185,14 @@ func ScriptLoad(svcCtx *svc.ServiceContext) {
 						trans.ProductUpBeforeCache = before
 					}()
 				}
+				after := up[protocol.TriggerTimerAfter]
+				if len(after) > 0 {
+					func() {
+						trans.ProductUpAfterMutex.Lock()
+						defer trans.ProductUpAfterMutex.Unlock()
+						trans.ProductUpAfterCache = after
+					}()
+				}
 			}
 			if len(down) > 0 {
 				before := down[protocol.TriggerTimerBefore]
@@ -177,6 +201,14 @@ func ScriptLoad(svcCtx *svc.ServiceContext) {
 						trans.ProductDownBeforeMutex.Lock()
 						defer trans.ProductDownBeforeMutex.Unlock()
 						trans.ProductDownBeforeCache = before
+					}()
+				}
+				after := down[protocol.TriggerTimerAfter]
+				if len(after) > 0 {
+					func() {
+						trans.ProductDownAfterMutex.Lock()
+						defer trans.ProductDownAfterMutex.Unlock()
+						trans.ProductDownAfterCache = after
 					}()
 				}
 			}

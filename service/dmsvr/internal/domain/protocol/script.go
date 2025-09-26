@@ -53,7 +53,10 @@ type ScriptTrans struct {
 	ProductUpAfterCache    map[string]map[devices.MsgHandle]map[string]ScriptInfos       //第一级是
 	DeviceUpAfterCache     map[devices.Core]map[devices.MsgHandle]map[string]ScriptInfos //第一级是
 	ProductDownBeforeCache map[string]map[devices.MsgHandle]map[string]ScriptInfos       //第一级是
+	ProductDownAfterCache  map[string]map[devices.MsgHandle]map[string]ScriptInfos       //第一级是
 	DeviceDownBeforeCache  map[devices.Core]map[devices.MsgHandle]map[string]ScriptInfos //第一级是
+	DeviceDownAfterCache   map[devices.Core]map[devices.MsgHandle]map[string]ScriptInfos //第一级是
+
 	ProductUpBeforeMutex   sync.RWMutex
 	DeviceUpBeforeMutex    sync.RWMutex
 	ProductUpAfterMutex    sync.RWMutex
@@ -250,18 +253,18 @@ func (s *ScriptTrans) UpAfterTrans(ctx context.Context, req *deviceMsg.PublishMs
 	//todo 后面需要加上缓存
 	var scripts ScriptInfos
 	func() {
-		s.ProductUpBeforeMutex.RLock()
-		defer s.ProductUpBeforeMutex.RUnlock()
-		pc, ok := s.ProductUpBeforeCache[req.ProductID]
+		s.ProductUpAfterMutex.RLock()
+		defer s.ProductUpAfterMutex.RUnlock()
+		pc, ok := s.ProductUpAfterCache[req.ProductID]
 		if ok {
 			script := s.GetScripts(ctx, pc, req)
 			scripts = append(scripts, script...)
 		}
 	}()
 	func() {
-		s.DeviceUpBeforeMutex.RLock()
-		defer s.DeviceUpBeforeMutex.RUnlock()
-		dc, ok := s.DeviceUpBeforeCache[devices.Core{ProductID: req.ProductID, DeviceName: req.DeviceName}]
+		s.DeviceUpAfterMutex.RLock()
+		defer s.DeviceUpAfterMutex.RUnlock()
+		dc, ok := s.DeviceUpAfterCache[devices.Core{ProductID: req.ProductID, DeviceName: req.DeviceName}]
 		if ok {
 			script := s.GetScripts(ctx, dc, req)
 			scripts = append(scripts, script...)
