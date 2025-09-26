@@ -141,6 +141,7 @@ func (l *ProductCategorySchemaMultiCreateLogic) ProductCategorySchemaMultiCreate
 					//如果没有这个物模型需要新增
 					schemas = append(schemas, &relationDB.DmSchemaInfo{
 						ProductID:    v,
+						Identifier:   identifier.Identifier,
 						DmSchemaCore: identifier.DmSchemaCore,
 					})
 				}
