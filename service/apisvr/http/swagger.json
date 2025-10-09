@@ -12764,7 +12764,7 @@
       "properties": {
         "tenantCode": {
           "type": "string",
-          "description": "租户号,__common__ 为公共的产品,公共的大家都可以看,但是只有default可以修改"
+          "description": "租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改"
         },
         "createdTime": {
           "type": "string",
@@ -12957,7 +12957,7 @@
         },
         "tenantCode": {
           "type": "string",
-          "description": "租户号过滤,__common__ 为公共的产品,公共的大家都可以看"
+          "description": "租户号过滤,common 为公共的产品,公共的大家都可以看"
         },
         "productName": {
           "type": "string",

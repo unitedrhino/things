@@ -165,7 +165,7 @@ func (m *DmDeviceProfile) TableName() string {
 
 // 产品信息表
 type DmProductInfo struct {
-	TenantCode       dataType.TenantCodeWitCommon `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'__common__'"` // 租户编码
+	TenantCode       dataType.TenantCodeWitCommon `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'common'"` // 租户编码
 	ID               int64                        `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	ProductID        string                       `gorm:"column:product_id;type:varchar(100);uniqueIndex:idx_dm_product_info_pd;NOT NULL"` // 产品id
 	ProductName      string                       `gorm:"column:product_name;type:varchar(100);NOT NULL"`                                  // 产品名称
@@ -218,9 +218,9 @@ func (m *DmProductID) TableName() string {
 }
 
 type DmProductConfig struct {
-	ID        int64                                      `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	ProductID string                                     `gorm:"column:product_id;type:varchar(100);uniqueIndex:idx_dm_product_config_pd;NOT NULL"` // 产品id
-	DevInit   `gorm:"embedded;embeddedPrefix:dev_init_"` //设备初始化配置
+	ID        int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	ProductID string `gorm:"column:product_id;type:varchar(100);uniqueIndex:idx_dm_product_config_pd;NOT NULL"` // 产品id
+	DevInit   `gorm:"embedded;embeddedPrefix:dev_init_"`                                                        //设备初始化配置
 	stores.NoDelTime
 	Info        *DmProductInfo     `gorm:"foreignKey:product_id;references:product_id"`
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:idx_dm_product_config_pd"`
@@ -367,7 +367,7 @@ func (m *DmProductCustom) TableName() string {
 
 // 产品物模型表
 type DmProductSchema struct {
-	TenantCode dataType.TenantCodeWitCommon `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'__common__'"` // 租户编码
+	TenantCode dataType.TenantCodeWitCommon `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'common'"` // 租户编码
 	ID         int64                        `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	ProductID  string                       `gorm:"column:product_id;uniqueIndex:idx_dm_product_schema_identifier;index:product_id_type;type:varchar(100);NOT NULL"` // 产品id
 	Identifier string                       `gorm:"column:identifier;uniqueIndex:idx_dm_product_schema_identifier;type:varchar(100);NOT NULL"`                       // 标识符
@@ -399,7 +399,7 @@ func (m *DmDeviceSchema) TableName() string {
 // 产品物模型表
 type DmSchemaInfo struct {
 	ID         int64          `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	TenantCode string         `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'__common__'"`                                                    // 租户编码
+	TenantCode string         `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'common'"`                                                        // 租户编码
 	ProductID  string         `gorm:"column:product_id;uniqueIndex:idx_dm_schema_info_identifier;index:product_id_type;type:varchar(100);NOT NULL"`      // 产品id
 	DeviceName sql.NullString `gorm:"column:device_name;uniqueIndex:idx_dm_schema_info_identifier;index:product_id_type;type:varchar(100);default:null"` // 产品id
 	Identifier string         `gorm:"column:identifier;uniqueIndex:idx_dm_schema_info_identifier;type:varchar(100);NOT NULL"`                            // 标识符

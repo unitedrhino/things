@@ -53,6 +53,10 @@ func (l *ProductInfoCreateLogic) CheckProduct(in *dm.ProductInfo) (bool, error) 
 	if errors.Cmp(err, errors.NotFind) {
 		return false, nil
 	}
+	uc := ctxs.GetUserCtxNoNil(l.ctx)
+	if !uc.IsRoot() && in.TenantCode != "" && in.TenantCode != uc.TenantCode {
+		return false, errors.Permissions.AddMsg("普通租户只能创建自己租户下的产品")
+	}
 	return false, err
 }
 
@@ -86,6 +90,9 @@ func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relatio
 		DeviceSchemaMode: in.DeviceSchemaMode,
 		BindLevel:        in.BindLevel,
 		SubProtocolCode:  in.SubProtocolCode.GetValue(),
+	}
+	if pi.TenantCode == "" {
+		pi.TenantCode = dataType.TenantCodeWitCommon(ctxs.GetUserCtxNoNil(l.ctx).TenantCode)
 	}
 	if in.AutoRegister != def.Unknown {
 		pi.AutoRegister = in.AutoRegister
@@ -133,7 +140,7 @@ func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relatio
 
 // 新增设备
 func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Empty, error) {
-	if err := ctxs.IsRoot(l.ctx); err != nil {
+	if err := ctxs.IsAdmin(l.ctx); err != nil {
 		return nil, err
 	}
 	find, err := l.CheckProduct(in)
@@ -167,7 +174,7 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Empt
 		return nil, err
 	}
 
-	var schemas []*relationDB.DmSchemaInfo
+	var schemas []*relationDB.DmProductSchema
 	if pi.CategoryID != 0 && pi.CategoryID != def.NotClassified { //如果选择了产品品类,需要获取该品类的物模型并绑定
 		var categoryIDs = []int64{def.RootNode}
 		if pi.CategoryID != def.RootNode {
@@ -187,7 +194,8 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Empt
 		}
 		for _, pcs := range pcss {
 			pcs.Tag = schema.TagRequired
-			schemas = append(schemas, &relationDB.DmSchemaInfo{
+			schemas = append(schemas, &relationDB.DmProductSchema{
+				TenantCode:   pi.TenantCode,
 				ProductID:    pi.ProductID,
 				DmSchemaCore: pcs.DmSchemaCore,
 			})

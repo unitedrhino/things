@@ -11577,7 +11577,7 @@ type ProductInfo struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	TenantCode         string                      `protobuf:"bytes,26,opt,name=tenantCode,proto3" json:"tenantCode,omitempty"`                                                                             //租户号,__common__ 为公共的产品,公共的大家都可以看,但是只有default可以修改
+	TenantCode         string                      `protobuf:"bytes,26,opt,name=tenantCode,proto3" json:"tenantCode,omitempty"`                                                                             //租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改
 	CreatedTime        int64                       `protobuf:"varint,1,opt,name=createdTime,proto3" json:"createdTime,omitempty"`                                                                           //创建时间 只读
 	ProductID          string                      `protobuf:"bytes,2,opt,name=productID,proto3" json:"productID,omitempty"`                                                                                //产品id 只读
 	ProductName        string                      `protobuf:"bytes,3,opt,name=productName,proto3" json:"productName,omitempty"`                                                                            //产品名称
@@ -12022,7 +12022,7 @@ type ProductInfoIndexReq struct {
 	unknownFields protoimpl.UnknownFields
 
 	Page          *PageInfo         `protobuf:"bytes,1,opt,name=page,proto3" json:"page,omitempty"`              //分页信息 只获取一个则不填
-	TenantCode    string            `protobuf:"bytes,27,opt,name=tenantCode,proto3" json:"tenantCode,omitempty"` //租户号,__common__ 为公共的产品,公共的大家都可以看,但是只有default可以修改
+	TenantCode    string            `protobuf:"bytes,27,opt,name=tenantCode,proto3" json:"tenantCode,omitempty"` //租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改
 	DeviceType    int64             `protobuf:"varint,2,opt,name=deviceType,proto3" json:"deviceType,omitempty"` //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
 	DeviceTypes   []int64           `protobuf:"varint,10,rep,packed,name=deviceTypes,proto3" json:"deviceTypes,omitempty"`
 	ProductName   string            `protobuf:"bytes,3,opt,name=productName,proto3" json:"productName,omitempty"`                                                                                           //过滤条件: 产品名称

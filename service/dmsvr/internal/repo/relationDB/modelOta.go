@@ -45,7 +45,7 @@ func (m *DmOtaFirmwareFile) TableName() string {
 
 // 产品固件升级包信息表
 type DmOtaFirmwareInfo struct {
-	TenantCode     dataType.TenantCodeWitCommon `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'__common__'"` // 租户编码
+	TenantCode     dataType.TenantCodeWitCommon `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'common'"` // 租户编码
 	ID             int64                        `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	ProductID      string                       `gorm:"column:product_id;type:varchar(100);uniqueIndex:idx_dm_ota_firmware_info_tc_un;NOT NULL"` // 产品id
 	Version        string                       `gorm:"column:version;type:varchar(64);uniqueIndex:idx_dm_ota_firmware_info_tc_un"`              // 固件版本
@@ -168,7 +168,7 @@ type DmOtaFirmwareJobStatic struct {
 }
 
 type DmOtaFirmwareDevice struct {
-	TenantCode      dataType.TenantCodeWitCommon `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'__common__'"` // 租户编码
+	TenantCode      dataType.TenantCodeWitCommon `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'common'"` // 租户编码
 	ID              int64                        `gorm:"column:id;type:BIGINT;primary_key;AUTO_INCREMENT"`
 	FirmwareID      int64                        `gorm:"column:firmware_id;uniqueIndex:idx_dm_ota_firmware_device_tc_un"`                                                                        // 升级包ID
 	SrcVersion      string                       `gorm:"column:src_version;type:varchar(125)"`                                                                                                   // 设备的原固件版本
