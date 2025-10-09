@@ -12762,6 +12762,10 @@
     "ProductInfo": {
       "type": "object",
       "properties": {
+        "tenantCode": {
+          "type": "string",
+          "description": "租户号,__common__ 为公共的产品,公共的大家都可以看,但是只有default可以修改"
+        },
         "createdTime": {
           "type": "string",
           "description": "创建时间 只读"
@@ -12950,6 +12954,10 @@
         "page": {
           "$ref": "#/definitions/PageInfo",
           "description": "分页信息,只获取一个则不填"
+        },
+        "tenantCode": {
+          "type": "string",
+          "description": "租户号过滤,__common__ 为公共的产品,公共的大家都可以看"
         },
         "productName": {
           "type": "string",

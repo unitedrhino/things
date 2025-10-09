@@ -4,6 +4,9 @@ import (
 	"archive/zip"
 	"context"
 	"fmt"
+	"os"
+	"strings"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
@@ -17,8 +20,6 @@ import (
 	"gitee.com/unitedrhino/things/share/topics"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
-	"os"
-	"strings"
 )
 
 type ProductInfoUpdateLogic struct {
@@ -235,7 +236,7 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 
 // 更新设备
 func (l *ProductInfoUpdateLogic) ProductInfoUpdate(in *dm.ProductInfo) (*dm.Empty, error) {
-	if err := ctxs.IsRoot(l.ctx); err != nil {
+	if err := ctxs.IsAdmin(l.ctx); err != nil {
 		return nil, err
 	}
 	po, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})

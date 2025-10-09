@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"regexp"
 
+	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/protocol"
@@ -45,7 +46,7 @@ func NewProductInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 发现返回true 没有返回false
 */
 func (l *ProductInfoCreateLogic) CheckProduct(in *dm.ProductInfo) (bool, error) {
-	_, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductNames: []string{in.ProductName}})
+	_, err := l.PiDB.FindOneByFilter(ctxs.WithRoot(l.ctx), relationDB.ProductFilter{ProductNames: []string{in.ProductName}})
 	if err == nil {
 		return true, nil
 	}
@@ -59,7 +60,7 @@ func (l *ProductInfoCreateLogic) CheckProduct(in *dm.ProductInfo) (bool, error) 
 检测productid,发现返回true 没有返回false
 */
 func (l *ProductInfoCreateLogic) CheckProductID(in *dm.ProductInfo) (bool, error) {
-	_, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
+	_, err := l.PiDB.FindOneByFilter(ctxs.WithRoot(l.ctx), relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
 	if err == nil {
 		return true, nil
 	}
@@ -74,6 +75,7 @@ func (l *ProductInfoCreateLogic) CheckProductID(in *dm.ProductInfo) (bool, error
 */
 func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relationDB.DmProductInfo, error) {
 	pi := &relationDB.DmProductInfo{
+		TenantCode:       dataType.TenantCodeWitCommon(in.TenantCode),
 		ProductID:        in.ProductID,   // 产品id
 		ProductName:      in.ProductName, // 产品名称
 		Desc:             in.Desc.GetValue(),

@@ -2,7 +2,9 @@ package otamanagelogic
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/ctxs"
+	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 
@@ -39,6 +41,9 @@ func (l *OtaFirmwareInfoUpdateLogic) OtaFirmwareInfoUpdate(in *dm.OtaFirmwareInf
 	otaFirmware, err := l.OfDB.FindOneByFilter(l.ctx, relationDB.OtaFirmwareInfoFilter{ID: in.Id})
 	if err != nil {
 		return nil, err
+	}
+	if !ctxs.CanHandleTenantCommon(l.ctx, otaFirmware.TenantCode) {
+		return nil, errors.Permissions
 	}
 	//更新相关字段
 	otaFirmware.Desc = in.Desc

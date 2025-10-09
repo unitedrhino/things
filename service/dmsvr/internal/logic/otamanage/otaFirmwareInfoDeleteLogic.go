@@ -2,6 +2,7 @@ package otamanagelogic
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/oss/common"
@@ -39,11 +40,6 @@ func NewOtaFirmwareInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceConte
 
 // 删除升级包
 func (l *OtaFirmwareInfoDeleteLogic) OtaFirmwareInfoDelete(in *dm.WithID) (*dm.Empty, error) {
-	//todo debug
-	//if err := ctxs.IsRoot(l.ctx); err != nil {
-	//	return nil, err
-	//}
-	l.ctx = ctxs.WithRoot(l.ctx)
 	fi, err := l.OfDB.FindOneByFilter(l.ctx, relationDB.OtaFirmwareInfoFilter{ID: in.Id, WithFiles: true})
 	if errors.Cmp(err, errors.NotFind) {
 		l.Errorf("not find firmware id:" + cast.ToString(in.Id))
@@ -51,7 +47,9 @@ func (l *OtaFirmwareInfoDeleteLogic) OtaFirmwareInfoDelete(in *dm.WithID) (*dm.E
 	} else if err != nil {
 		return nil, err
 	}
-
+	if !ctxs.CanHandleTenantCommon(l.ctx, fi.TenantCode) {
+		return nil, errors.Permissions
+	}
 	//开启事务
 	db := stores.GetCommonConn(l.ctx)
 	err = db.Transaction(func(tx *gorm.DB) error {
