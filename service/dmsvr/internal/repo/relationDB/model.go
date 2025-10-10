@@ -218,9 +218,9 @@ func (m *DmProductID) TableName() string {
 }
 
 type DmProductConfig struct {
-	ID        int64                                      `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	ProductID string                                     `gorm:"column:product_id;type:varchar(100);uniqueIndex:idx_dm_product_config_pd;NOT NULL"` // 产品id
-	DevInit   `gorm:"embedded;embeddedPrefix:dev_init_"` //设备初始化配置
+	ID        int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	ProductID string `gorm:"column:product_id;type:varchar(100);uniqueIndex:idx_dm_product_config_pd;NOT NULL"` // 产品id
+	DevInit   `gorm:"embedded;embeddedPrefix:dev_init_"`                                                        //设备初始化配置
 	stores.NoDelTime
 	Info        *DmProductInfo     `gorm:"foreignKey:product_id;references:product_id"`
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:idx_dm_product_config_pd"`
@@ -378,7 +378,7 @@ type DmProductSchema struct {
 }
 
 func (m *DmProductSchema) TableName() string {
-	return "dm_product_schema"
+	return "dm_schema_info"
 }
 
 // 产品物模型表
