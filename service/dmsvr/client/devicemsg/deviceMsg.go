@@ -185,6 +185,8 @@ type (
 	ProductSchemaTslReadResp          = dm.ProductSchemaTslReadResp
 	ProductSchemaUpdateReq            = dm.ProductSchemaUpdateReq
 	PropertyAgg                       = dm.PropertyAgg
+	PropertyAgg2                      = dm.PropertyAgg2
+	PropertyAgg2IndexReq              = dm.PropertyAgg2IndexReq
 	PropertyAggIndexReq               = dm.PropertyAggIndexReq
 	PropertyAggIndexResp              = dm.PropertyAggIndexResp
 	PropertyAggResp                   = dm.PropertyAggResp
@@ -278,6 +280,7 @@ type (
 		// 获取设备数据信息
 		PropertyLogIndex(ctx context.Context, in *PropertyLogIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error)
 		PropertyAggIndex(ctx context.Context, in *PropertyAggIndexReq, opts ...grpc.CallOption) (*PropertyAggIndexResp, error)
+		PropertyAgg2Index(ctx context.Context, in *PropertyAgg2IndexReq, opts ...grpc.CallOption) (*PropertyAggIndexResp, error)
 		// 获取设备数据信息
 		EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventLogIndexResp, error)
 		// 获取设备影子列表
@@ -405,6 +408,15 @@ func (m *defaultDeviceMsg) PropertyAggIndex(ctx context.Context, in *PropertyAgg
 
 func (d *directDeviceMsg) PropertyAggIndex(ctx context.Context, in *PropertyAggIndexReq, opts ...grpc.CallOption) (*PropertyAggIndexResp, error) {
 	return d.svr.PropertyAggIndex(ctx, in)
+}
+
+func (m *defaultDeviceMsg) PropertyAgg2Index(ctx context.Context, in *PropertyAgg2IndexReq, opts ...grpc.CallOption) (*PropertyAggIndexResp, error) {
+	client := dm.NewDeviceMsgClient(m.cli.Conn())
+	return client.PropertyAgg2Index(ctx, in, opts...)
+}
+
+func (d *directDeviceMsg) PropertyAgg2Index(ctx context.Context, in *PropertyAgg2IndexReq, opts ...grpc.CallOption) (*PropertyAggIndexResp, error) {
+	return d.svr.PropertyAgg2Index(ctx, in)
 }
 
 // 获取设备数据信息

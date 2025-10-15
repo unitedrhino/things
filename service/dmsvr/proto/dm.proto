@@ -332,6 +332,7 @@ service DeviceMsg {
   //获取设备数据信息
   rpc propertyLogIndex(PropertyLogIndexReq)     returns (PropertyLogIndexResp);
   rpc propertyAggIndex(PropertyAggIndexReq)     returns (PropertyAggIndexResp);
+  rpc propertyAgg2Index(PropertyAgg2IndexReq)     returns (PropertyAggIndexResp);
 
   //获取设备数据信息
   rpc eventLogIndex(EventLogIndexReq)     returns (EventLogIndexResp);
@@ -926,6 +927,14 @@ message PropertyAgg{
   string fill = 3; //填充模式 参考:https://docs.taosdata.com/reference/taos-sql/distinguished/#fill-%E5%AD%90%E5%8F%A5
   bool noFirstTs =4;//时间戳填充不填充最早的值,聚合模式使用
 }
+
+message PropertyAgg2{
+  DeviceCore device =1;//多设备获取
+  string dataID = 2; //获取的具体标识符的数据(必填)
+  repeated string argFuncs = 3;//聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考:https://docs.taosdata.com/reference/taos-sql/function
+  string fill = 4; //填充模式 参考:https://docs.taosdata.com/reference/taos-sql/distinguished/#fill-%E5%AD%90%E5%8F%A5
+  bool noFirstTs =5;//时间戳填充不填充最早的值,聚合模式使用
+}
 message PropertyAggIndexReq{
   string tenantCode = 21;//租户号,只有管理员有权限
   int64 projectID =20;//只有管理员有权限
@@ -946,6 +955,16 @@ message PropertyAggIndexReq{
   repeated PropertyAgg aggs =10;// 聚合参数
 }
 
+message PropertyAgg2IndexReq{
+  int64 timeStart = 6;//获取时间的开始(毫秒时间戳)
+  int64 timeEnd = 7;//时间的结束(毫秒时间戳)
+  int64 interval = 8;//间隔 如果这个值不为零值 则时间的开始和结束必须有效及聚合函数不应该为空
+  string intervalUnit = 12;//间隔单位 a (毫秒,默认), d (天), h (小时), m (分钟), n (月), s (秒), u (微秒), w (周), y (年)
+  int64 order = 11; //时间排序 1:aes(默认,从久到近排序) 2:desc(时间从近到久排序)
+  string partitionBy =13;//切分数据,可以填写deviceName
+  repeated PropertyAgg2 aggs =10;// 聚合参数
+}
+
 /*获取对应日志信息*/
 message PropertyAggIndexResp{
   repeated PropertyAggResp list = 2;
@@ -964,6 +983,7 @@ message PropertyAggResp{
 }
 message PropertyAggRespDetail{
   string dataID = 1;//属性id
+  string dataName =3;//属性名称
   int64 timeWindow = 2;//发生时间戳(毫秒时间戳)
   map<string,PropertyAggRespDataDetail> values = 4;//key是聚合函数
 }

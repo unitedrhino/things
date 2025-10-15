@@ -398,6 +398,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: thingsdevicemsg.PropertyAggIndexHandler(serverCtx),
 				},
 				{
+					// 聚合属性历史记录,设备维度
+					Method:  http.MethodPost,
+					Path:    "/property-agg2/index",
+					Handler: thingsdevicemsg.PropertyAgg2IndexHandler(serverCtx),
+				},
+				{
 					// 获取最新属性记录
 					Method:  http.MethodPost,
 					Path:    "/property-log-latest/index",

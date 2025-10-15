@@ -120,7 +120,7 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect2(
 	if sdef.Type == schema.DataTypeArray {
 		sdef = *sdef.ArrayInfo
 	}
-	if sdef.Type == schema.DataTypeStruct { //todo 暂未支持
+	if sdef.Type == schema.DataTypeStruct {
 		dd, _ := schema.ParseDataID(agg.DataID)
 		if dd != nil && dd.Column != "" {
 			getOnCol(dd.Column)

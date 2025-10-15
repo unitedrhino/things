@@ -2,9 +2,11 @@ package msg
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/types"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -33,5 +35,6 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(req *types.DeviceMsgPropertyLog
 		l.Errorf("%s.rpc.GetDeviceData req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
-	return utils.Copy[types.DeviceMsgPropertyIndexResp](dmResp), nil
+	return &types.DeviceMsgPropertyIndexResp{List: utils.CopySlice[types.DeviceMsgPropertyLogInfo](dmResp.List), PageResp: logic.ToPageResp(req.Page, dmResp.Total)}, err
+
 }

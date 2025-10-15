@@ -132,7 +132,11 @@ func (l *PropertyAggIndexLogic) PropertyAggIndex(in *dm.PropertyAggIndexReq) (*d
 			BelongGroup: utils.CopyMap2[dm.IDsInfo](devData.BelongGroup),
 		}
 		for _, v1 := range devData.Values {
-			var dv = dm.PropertyAggRespDetail{DataID: v1.Identifier, TimeWindow: v1.TsWindow.UnixMilli(), Values: map[string]*dm.PropertyAggRespDataDetail{}}
+			var dv = dm.PropertyAggRespDetail{
+				DataID:     v1.Identifier,
+				DataName:   schema.GetDataName(t, v1.Identifier),
+				TimeWindow: v1.TsWindow.UnixMilli(),
+				Values:     map[string]*dm.PropertyAggRespDataDetail{}}
 			for k2, v2 := range v1.Values {
 				dv2 := dm.PropertyAggRespDataDetail{Timestamp: v2.TimeStamp.UnixMilli()}
 				if dv2.Timestamp < 0 {

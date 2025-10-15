@@ -115,7 +115,7 @@ func (l *OtaFirmwareInfoCreateLogic) OtaFirmwareInfoCreate(in *dm.OtaFirmwareInf
 		}
 	}
 	di := relationDB.DmOtaFirmwareInfo{
-		TenantCode:     dataType.TenantCodeWitCommon(pi.TenantCode),
+		TenantCode:     dataType.TenantCodeWithCommonR(pi.TenantCode),
 		ProductID:      in.ProductID,
 		Version:        in.Version,
 		Name:           in.Name,

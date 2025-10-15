@@ -656,6 +656,17 @@
         {
           "accessCode": "thingsDeviceMsgFind",
           "method": "POST",
+          "route": "/api/v1/things/device/msg/property-agg2/index",
+          "name": "聚合属性历史记录,设备维度",
+          "isNeedAuth": 2,
+          "businessType": "find",
+          "desc": "",
+          "authType": "all",
+          "recordLogMode": 0
+        },
+        {
+          "accessCode": "thingsDeviceMsgFind",
+          "method": "POST",
           "route": "/api/v1/things/device/msg/property-log-latest/index",
           "name": "获取最新属性记录",
           "isNeedAuth": 2,
