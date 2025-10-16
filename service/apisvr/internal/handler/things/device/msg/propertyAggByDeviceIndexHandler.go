@@ -11,16 +11,16 @@ import (
 )
 
 // 聚合属性历史记录,设备维度
-func PropertyAgg2IndexHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func PropertyAggByDeviceIndexHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.DeviceMsgPropertyAgg2IndexReq
+		var req types.DeviceMsgPropertyAggByDeviceIndexReq
 		if err := httpx.Parse(r, &req); err != nil {
 			result.Http(w, r, nil, errors.Parameter.WithMsg("入参不正确:"+err.Error()))
 			return
 		}
 
-		l := msg.NewPropertyAgg2IndexLogic(r.Context(), svcCtx)
-		resp, err := l.PropertyAgg2Index(&req)
+		l := msg.NewPropertyAggByDeviceIndexLogic(r.Context(), svcCtx)
+		resp, err := l.PropertyAggByDeviceIndex(&req)
 		result.Http(w, r, resp, err)
 	}
 }

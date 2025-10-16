@@ -1790,6 +1790,48 @@
         ]
       }
     },
+    "/api/v1/things/device/msg/property-agg/by-device/index": {
+      "post": {
+        "summary": "聚合属性历史记录,设备维度",
+        "operationId": "postApiV1ThingsDeviceMsgProperty-aggBy-deviceIndex",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/DeviceMsgPropertyAggIndexResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceMsgPropertyAggByDeviceIndexReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/msg",
+          "thingsDeviceMsg"
+        ]
+      }
+    },
     "/api/v1/things/device/msg/property-agg/index": {
       "post": {
         "summary": "聚合属性历史记录",
@@ -1823,48 +1865,6 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/DeviceMsgPropertyAggIndexReq"
-            }
-          }
-        ],
-        "tags": [
-          "things/device/msg",
-          "thingsDeviceMsg"
-        ]
-      }
-    },
-    "/api/v1/things/device/msg/property-agg2/index": {
-      "post": {
-        "summary": "聚合属性历史记录,设备维度",
-        "operationId": "postApiV1ThingsDeviceMsgProperty-agg2Index",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "default": "200",
-                  "title": "返回code"
-                },
-                "msg": {
-                  "type": "string",
-                  "title": "返回的消息"
-                },
-                "data": {
-                  "$ref": "#/definitions/DeviceMsgPropertyAggIndexResp"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/DeviceMsgPropertyAgg2IndexReq"
             }
           }
         ],
@@ -9483,7 +9483,7 @@
         "argFuncs"
       ]
     },
-    "DeviceMsgPropertyAgg2": {
+    "DeviceMsgPropertyAggByDevice": {
       "type": "object",
       "properties": {
         "device": {
@@ -9511,13 +9511,13 @@
           "description": "时间戳填充不填充最早的值,聚合模式使用"
         }
       },
-      "title": "DeviceMsgPropertyAgg2",
+      "title": "DeviceMsgPropertyAggByDevice",
       "required": [
         "device",
         "argFuncs"
       ]
     },
-    "DeviceMsgPropertyAgg2IndexReq": {
+    "DeviceMsgPropertyAggByDeviceIndexReq": {
       "type": "object",
       "properties": {
         "interval": {
@@ -9544,12 +9544,12 @@
         "aggs": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/DeviceMsgPropertyAgg2"
+            "$ref": "#/definitions/DeviceMsgPropertyAggByDevice"
           },
           "description": "聚合对象"
         }
       },
-      "title": "DeviceMsgPropertyAgg2IndexReq",
+      "title": "DeviceMsgPropertyAggByDeviceIndexReq",
       "required": [
         "aggs"
       ]

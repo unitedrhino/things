@@ -4510,20 +4510,20 @@ var RemoteConfig_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	DeviceMsg_SdkLogIndex_FullMethodName             = "/dm.DeviceMsg/sdkLogIndex"
-	DeviceMsg_HubLogIndex_FullMethodName             = "/dm.DeviceMsg/hubLogIndex"
-	DeviceMsg_SendLogIndex_FullMethodName            = "/dm.DeviceMsg/sendLogIndex"
-	DeviceMsg_StatusLogIndex_FullMethodName          = "/dm.DeviceMsg/statusLogIndex"
-	DeviceMsg_AbnormalLogIndex_FullMethodName        = "/dm.DeviceMsg/abnormalLogIndex"
-	DeviceMsg_AbnormalLogCreate_FullMethodName       = "/dm.DeviceMsg/abnormalLogCreate"
-	DeviceMsg_PropertyLogLatestIndex_FullMethodName  = "/dm.DeviceMsg/propertyLogLatestIndex"
-	DeviceMsg_PropertyLogLatestIndex2_FullMethodName = "/dm.DeviceMsg/propertyLogLatestIndex2"
-	DeviceMsg_PropertyLogIndex_FullMethodName        = "/dm.DeviceMsg/propertyLogIndex"
-	DeviceMsg_PropertyAggIndex_FullMethodName        = "/dm.DeviceMsg/propertyAggIndex"
-	DeviceMsg_PropertyAgg2Index_FullMethodName       = "/dm.DeviceMsg/propertyAgg2Index"
-	DeviceMsg_EventLogIndex_FullMethodName           = "/dm.DeviceMsg/eventLogIndex"
-	DeviceMsg_ShadowIndex_FullMethodName             = "/dm.DeviceMsg/shadowIndex"
-	DeviceMsg_GatewayCanBindIndex_FullMethodName     = "/dm.DeviceMsg/gatewayCanBindIndex"
+	DeviceMsg_SdkLogIndex_FullMethodName              = "/dm.DeviceMsg/sdkLogIndex"
+	DeviceMsg_HubLogIndex_FullMethodName              = "/dm.DeviceMsg/hubLogIndex"
+	DeviceMsg_SendLogIndex_FullMethodName             = "/dm.DeviceMsg/sendLogIndex"
+	DeviceMsg_StatusLogIndex_FullMethodName           = "/dm.DeviceMsg/statusLogIndex"
+	DeviceMsg_AbnormalLogIndex_FullMethodName         = "/dm.DeviceMsg/abnormalLogIndex"
+	DeviceMsg_AbnormalLogCreate_FullMethodName        = "/dm.DeviceMsg/abnormalLogCreate"
+	DeviceMsg_PropertyLogLatestIndex_FullMethodName   = "/dm.DeviceMsg/propertyLogLatestIndex"
+	DeviceMsg_PropertyLogLatestIndex2_FullMethodName  = "/dm.DeviceMsg/propertyLogLatestIndex2"
+	DeviceMsg_PropertyLogIndex_FullMethodName         = "/dm.DeviceMsg/propertyLogIndex"
+	DeviceMsg_PropertyAggIndex_FullMethodName         = "/dm.DeviceMsg/propertyAggIndex"
+	DeviceMsg_PropertyAggByDeviceIndex_FullMethodName = "/dm.DeviceMsg/propertyAggByDeviceIndex"
+	DeviceMsg_EventLogIndex_FullMethodName            = "/dm.DeviceMsg/eventLogIndex"
+	DeviceMsg_ShadowIndex_FullMethodName              = "/dm.DeviceMsg/shadowIndex"
+	DeviceMsg_GatewayCanBindIndex_FullMethodName      = "/dm.DeviceMsg/gatewayCanBindIndex"
 )
 
 // DeviceMsgClient is the client API for DeviceMsg service.
@@ -4544,7 +4544,7 @@ type DeviceMsgClient interface {
 	// 获取设备数据信息
 	PropertyLogIndex(ctx context.Context, in *PropertyLogIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error)
 	PropertyAggIndex(ctx context.Context, in *PropertyAggIndexReq, opts ...grpc.CallOption) (*PropertyAggIndexResp, error)
-	PropertyAgg2Index(ctx context.Context, in *PropertyAgg2IndexReq, opts ...grpc.CallOption) (*PropertyAggIndexResp, error)
+	PropertyAggByDeviceIndex(ctx context.Context, in *PropertyAggByDeviceIndexReq, opts ...grpc.CallOption) (*PropertyAggIndexResp, error)
 	// 获取设备数据信息
 	EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventLogIndexResp, error)
 	// 获取设备影子列表
@@ -4651,9 +4651,9 @@ func (c *deviceMsgClient) PropertyAggIndex(ctx context.Context, in *PropertyAggI
 	return out, nil
 }
 
-func (c *deviceMsgClient) PropertyAgg2Index(ctx context.Context, in *PropertyAgg2IndexReq, opts ...grpc.CallOption) (*PropertyAggIndexResp, error) {
+func (c *deviceMsgClient) PropertyAggByDeviceIndex(ctx context.Context, in *PropertyAggByDeviceIndexReq, opts ...grpc.CallOption) (*PropertyAggIndexResp, error) {
 	out := new(PropertyAggIndexResp)
-	err := c.cc.Invoke(ctx, DeviceMsg_PropertyAgg2Index_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, DeviceMsg_PropertyAggByDeviceIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -4705,7 +4705,7 @@ type DeviceMsgServer interface {
 	// 获取设备数据信息
 	PropertyLogIndex(context.Context, *PropertyLogIndexReq) (*PropertyLogIndexResp, error)
 	PropertyAggIndex(context.Context, *PropertyAggIndexReq) (*PropertyAggIndexResp, error)
-	PropertyAgg2Index(context.Context, *PropertyAgg2IndexReq) (*PropertyAggIndexResp, error)
+	PropertyAggByDeviceIndex(context.Context, *PropertyAggByDeviceIndexReq) (*PropertyAggIndexResp, error)
 	// 获取设备数据信息
 	EventLogIndex(context.Context, *EventLogIndexReq) (*EventLogIndexResp, error)
 	// 获取设备影子列表
@@ -4749,8 +4749,8 @@ func (UnimplementedDeviceMsgServer) PropertyLogIndex(context.Context, *PropertyL
 func (UnimplementedDeviceMsgServer) PropertyAggIndex(context.Context, *PropertyAggIndexReq) (*PropertyAggIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PropertyAggIndex not implemented")
 }
-func (UnimplementedDeviceMsgServer) PropertyAgg2Index(context.Context, *PropertyAgg2IndexReq) (*PropertyAggIndexResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PropertyAgg2Index not implemented")
+func (UnimplementedDeviceMsgServer) PropertyAggByDeviceIndex(context.Context, *PropertyAggByDeviceIndexReq) (*PropertyAggIndexResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PropertyAggByDeviceIndex not implemented")
 }
 func (UnimplementedDeviceMsgServer) EventLogIndex(context.Context, *EventLogIndexReq) (*EventLogIndexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EventLogIndex not implemented")
@@ -4954,20 +4954,20 @@ func _DeviceMsg_PropertyAggIndex_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DeviceMsg_PropertyAgg2Index_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PropertyAgg2IndexReq)
+func _DeviceMsg_PropertyAggByDeviceIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PropertyAggByDeviceIndexReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DeviceMsgServer).PropertyAgg2Index(ctx, in)
+		return srv.(DeviceMsgServer).PropertyAggByDeviceIndex(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: DeviceMsg_PropertyAgg2Index_FullMethodName,
+		FullMethod: DeviceMsg_PropertyAggByDeviceIndex_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeviceMsgServer).PropertyAgg2Index(ctx, req.(*PropertyAgg2IndexReq))
+		return srv.(DeviceMsgServer).PropertyAggByDeviceIndex(ctx, req.(*PropertyAggByDeviceIndexReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -5074,8 +5074,8 @@ var DeviceMsg_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _DeviceMsg_PropertyAggIndex_Handler,
 		},
 		{
-			MethodName: "propertyAgg2Index",
-			Handler:    _DeviceMsg_PropertyAgg2Index_Handler,
+			MethodName: "propertyAggByDeviceIndex",
+			Handler:    _DeviceMsg_PropertyAggByDeviceIndex_Handler,
 		},
 		{
 			MethodName: "eventLogIndex",

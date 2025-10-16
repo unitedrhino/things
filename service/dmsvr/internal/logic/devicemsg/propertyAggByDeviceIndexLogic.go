@@ -18,21 +18,21 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type PropertyAgg2IndexLogic struct {
+type PropertyAggByDeviceIndexLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewPropertyAgg2IndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PropertyAgg2IndexLogic {
-	return &PropertyAgg2IndexLogic{
+func NewPropertyAggByDeviceIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PropertyAggByDeviceIndexLogic {
+	return &PropertyAggByDeviceIndexLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *PropertyAgg2IndexLogic) PropertyAgg2Index(in *dm.PropertyAgg2IndexReq) (*dm.PropertyAggIndexResp, error) {
+func (l *PropertyAggByDeviceIndexLogic) PropertyAggByDeviceIndex(in *dm.PropertyAggByDeviceIndexReq) (*dm.PropertyAggIndexResp, error) {
 	var (
 		//diDatas    []*dm.PropertyLogInfo
 		dd  = l.svcCtx.SchemaManaRepo

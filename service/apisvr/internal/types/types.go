@@ -673,7 +673,7 @@ type DeviceMsgPropertyAgg struct {
 	NoFirstTs bool     `json:"noFirstTs,optional"` //时间戳填充不填充最早的值,聚合模式使用
 }
 
-type DeviceMsgPropertyAgg2 struct {
+type DeviceMsgPropertyAggByDevice struct {
 	Device    DeviceCore `json:"device"`             //设备信息
 	DataID    string     `json:"dataID,omitempty"`   //获取的具体标识符的数据
 	ArgFuncs  []string   `json:"argFuncs"`           //聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考: https://docs.taosdata.com/reference/taos-sql/function/#apercentile
@@ -681,13 +681,13 @@ type DeviceMsgPropertyAgg2 struct {
 	NoFirstTs bool       `json:"noFirstTs,optional"` //时间戳填充不填充最早的值,聚合模式使用
 }
 
-type DeviceMsgPropertyAgg2IndexReq struct {
-	Interval     int64                    `json:"interval,optional"`                   //间隔 如果这个值不为零值 则时间的开始和结束必须有效及聚合函数不应该为空
-	IntervalUnit string                   `json:"intervalUnit,optional"`               //间隔单位 a (毫秒,默认), d (天), h (小时), m (分钟), n (月), s (秒), u (微秒), w (周), y (年)  则时间的开始和结束必须有效及聚合函数不应该为空
-	TimeStart    int64                    `json:"timeStart,string,optional,omitempty"` //获取时间的开始
-	TimeEnd      int64                    `json:"timeEnd,string,optional,omitempty"`   //时间的结束
-	PartitionBy  string                   `json:"partitionBy,optional"`                //切分数据,可以填写deviceName
-	Aggs         []*DeviceMsgPropertyAgg2 `json:"aggs"`                                //聚合对象
+type DeviceMsgPropertyAggByDeviceIndexReq struct {
+	Interval     int64                           `json:"interval,optional"`                   //间隔 如果这个值不为零值 则时间的开始和结束必须有效及聚合函数不应该为空
+	IntervalUnit string                          `json:"intervalUnit,optional"`               //间隔单位 a (毫秒,默认), d (天), h (小时), m (分钟), n (月), s (秒), u (微秒), w (周), y (年)  则时间的开始和结束必须有效及聚合函数不应该为空
+	TimeStart    int64                           `json:"timeStart,string,optional,omitempty"` //获取时间的开始
+	TimeEnd      int64                           `json:"timeEnd,string,optional,omitempty"`   //时间的结束
+	PartitionBy  string                          `json:"partitionBy,optional"`                //切分数据,可以填写deviceName
+	Aggs         []*DeviceMsgPropertyAggByDevice `json:"aggs"`                                //聚合对象
 }
 
 type DeviceMsgPropertyAggIndexReq struct {

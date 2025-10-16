@@ -645,8 +645,8 @@
         {
           "accessCode": "thingsDeviceMsgFind",
           "method": "POST",
-          "route": "/api/v1/things/device/msg/property-agg/index",
-          "name": "聚合属性历史记录",
+          "route": "/api/v1/things/device/msg/property-agg/by-device/index",
+          "name": "聚合属性历史记录,设备维度",
           "isNeedAuth": 2,
           "businessType": "find",
           "desc": "",
@@ -656,8 +656,8 @@
         {
           "accessCode": "thingsDeviceMsgFind",
           "method": "POST",
-          "route": "/api/v1/things/device/msg/property-agg2/index",
-          "name": "聚合属性历史记录,设备维度",
+          "route": "/api/v1/things/device/msg/property-agg/index",
+          "name": "聚合属性历史记录",
           "isNeedAuth": 2,
           "businessType": "find",
           "desc": "",
