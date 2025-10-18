@@ -524,6 +524,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		}
 		return otaEvent.NewOtaEvent(svcCtx, ctxs.WithRoot(ctx)).DeviceUpgradePush()
 	})
+
 	logx.Must(err)
 	err = svcCtx.FastEvent.QueueSubscribe(topics.DmDeviceOnlineStatusChange, func(ctx context.Context, t time.Time, body []byte) error {
 		if t.Before(time.Now().Add(-time.Second * 2)) { //2秒之前的跳过

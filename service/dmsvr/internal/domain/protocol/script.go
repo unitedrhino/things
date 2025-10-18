@@ -22,6 +22,7 @@ import (
 )
 
 type ScriptInfo struct {
+	TenantCode string
 	Name       string
 	Priority   int64
 	ScriptLang int64
@@ -275,7 +276,7 @@ func (s *ScriptTrans) UpAfterTrans(ctx context.Context, req *deviceMsg.PublishMs
 	}
 	sort.Sort(scripts)
 	for _, script := range scripts {
-		log, err := s.RespMsgRun(ctx, req, resp, script.Script)
+		log, err := s.RespMsgRun(ctxs.BindTenantCode(ctx, script.TenantCode, 0), req, resp, script.Script)
 		if err != nil {
 			continue
 		}
@@ -317,7 +318,7 @@ func (s *ScriptTrans) UpBeforeTrans(ctx context.Context, msg *deviceMsg.PublishM
 	}
 	sort.Sort(scripts)
 	for _, script := range scripts {
-		newMsg, log, err := s.PublishMsgRun(ctx, &out, script.Script)
+		newMsg, log, err := s.PublishMsgRun(ctxs.BindTenantCode(ctx, script.TenantCode, 0), &out, script.Script)
 		if err != nil {
 			logx.WithContext(ctx).Error(err)
 			continue
@@ -363,7 +364,7 @@ func (s *ScriptTrans) DownBeforeTrans(ctx context.Context, msg *deviceMsg.Publis
 	}
 	sort.Sort(scripts)
 	for _, script := range scripts {
-		newMsg, log, err := s.PublishMsgRun(ctx, &out, script.Script)
+		newMsg, log, err := s.PublishMsgRun(ctxs.BindTenantCode(ctx, script.TenantCode, 0), &out, script.Script)
 		if err != nil {
 			logx.WithContext(ctx).Error(err)
 			continue

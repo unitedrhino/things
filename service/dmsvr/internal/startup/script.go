@@ -62,6 +62,7 @@ func ScriptLoad(svcCtx *svc.ServiceContext) {
 				continue
 			}
 			si := protocol.ScriptInfo{
+				TenantCode: string(sd.TenantCode),
 				Name:       sd.Script.Name,
 				Priority:   sd.Priority,
 				ScriptLang: sd.Script.ScriptLang,

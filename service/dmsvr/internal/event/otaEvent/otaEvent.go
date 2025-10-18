@@ -2,6 +2,9 @@ package otaEvent
 
 import (
 	"context"
+	"sync"
+	"time"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
@@ -17,8 +20,6 @@ import (
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"
-	"sync"
-	"time"
 )
 
 type OtaEvent struct {
@@ -185,37 +186,77 @@ func (l *OtaEvent) DevicesTimeout(jobInfos []*relationDB.DmOtaFirmwareJob) error
 		if jobInfo.UpgradeType == msgOta.DynamicUpgrade { //动态的需要将后面符合升级标准的加进去
 			if time.Now().Second() < 5 { //一分钟执行一次
 				dynamicUpgradeJob = append(dynamicUpgradeJob, jobInfo)
-
 			}
 		}
-		func() { //完成任务
-			total, err := stores.WithNoDebug(l.ctx, relationDB.NewOtaFirmwareDeviceRepo).CountByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
-				FirmwareID: jobInfo.FirmwareID,
-				JobID:      jobInfo.ID,
-			})
-			if err != nil {
-				l.Error(err)
-				return
-			}
-			finished, err := stores.WithNoDebug(l.ctx, relationDB.NewOtaFirmwareDeviceRepo).CountByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
-				FirmwareID: jobInfo.FirmwareID,
-				JobID:      jobInfo.ID,
-				Statues:    []int64{msgOta.DeviceStatusCanceled, msgOta.DeviceStatusSuccess},
-			})
-			if err != nil {
-				l.Error(err)
-				return
-			}
-			if total == finished { //任务完成
-				newJob := *jobInfo
-				newJob.Status = msgOta.JobStatusCompleted
-				err = stores.WithNoDebug(l.ctx, relationDB.NewOtaJobRepo).Update(l.ctx, &newJob)
+		if jobInfo.UpgradeType == msgOta.StaticUpgrade {
+			func() { //完成任务
+				total, err := stores.WithNoDebug(l.ctx, relationDB.NewOtaFirmwareDeviceRepo).CountByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
+					FirmwareID: jobInfo.FirmwareID,
+					JobID:      jobInfo.ID,
+				})
 				if err != nil {
 					l.Error(err)
 					return
 				}
-			}
-		}()
+				if jobInfo.Type == msgOta.ValidateUpgrade {
+					finished, err := stores.WithNoDebug(l.ctx, relationDB.NewOtaFirmwareDeviceRepo).CountByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
+						FirmwareID: jobInfo.FirmwareID,
+						JobID:      jobInfo.ID,
+						Statues:    []int64{msgOta.DeviceStatusSuccess},
+					})
+					if err != nil {
+						l.Error(err)
+						return
+					}
+					if total == finished { //任务完成
+						newJob := *jobInfo
+						newJob.Status = msgOta.JobStatusCompleted
+						err = relationDB.NewOtaJobRepo(l.ctx).Update(l.ctx, &newJob)
+						if err != nil {
+							l.Error(err)
+							return
+						}
+						if jobInfo.Firmware != nil {
+							jobInfo.Firmware.Status = msgOta.OtaFirmwareStatusVerified
+							err = relationDB.NewOtaFirmwareInfoRepo(l.ctx).Update(l.ctx, jobInfo.Firmware)
+							if err != nil {
+								l.Error(err)
+								return
+							}
+						}
+						return
+					}
+				}
+				finished, err := stores.WithNoDebug(l.ctx, relationDB.NewOtaFirmwareDeviceRepo).CountByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
+					FirmwareID: jobInfo.FirmwareID,
+					JobID:      jobInfo.ID,
+					Statues:    []int64{msgOta.DeviceStatusCanceled, msgOta.DeviceStatusSuccess},
+				})
+				if err != nil {
+					l.Error(err)
+					return
+				}
+				if total == finished { //任务完成
+					newJob := *jobInfo
+					newJob.Status = msgOta.JobStatusCompleted
+					err = relationDB.NewOtaJobRepo(l.ctx).Update(l.ctx, &newJob)
+					if err != nil {
+						l.Error(err)
+						return
+					}
+					if jobInfo.Type == msgOta.ValidateUpgrade && jobInfo.Firmware != nil {
+						jobInfo.Firmware.Status = msgOta.OtaFirmwareStatusVerificationFailed
+						err = relationDB.NewOtaFirmwareInfoRepo(l.ctx).Update(l.ctx, jobInfo.Firmware)
+						if err != nil {
+							l.Error(err)
+							return
+						}
+					}
+				}
+
+			}()
+		}
+
 	}
 
 	if len(expFail) > 0 { //处理超时设备,置为失败
@@ -343,6 +384,7 @@ func (l *OtaEvent) AddDevice(dmOtaJob *relationDB.DmOtaFirmwareJob) error {
 		oldDevices, err := otDB.FindByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
 			ProductID:   dmOtaJob.ProductID,
 			DeviceNames: deviceNames,
+			WithJob:     true,
 			Statues: []int64{
 				msgOta.DeviceStatusConfirm, msgOta.DeviceStatusInProgress, msgOta.DeviceStatusQueued, msgOta.DeviceStatusNotified, msgOta.DeviceStatusFailure},
 		}, nil)
