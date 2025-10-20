@@ -2,12 +2,16 @@ package dmdirect
 
 import (
 	"fmt"
+
+	"gitee.com/unitedrhino/share/i18ns"
 	"gitee.com/unitedrhino/share/interceptors"
 	"gitee.com/unitedrhino/share/services"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/config"
 	devicegroup "gitee.com/unitedrhino/things/service/dmsvr/internal/server/devicegroup"
 	userdevice "gitee.com/unitedrhino/things/service/dmsvr/internal/server/userdevice"
+
+	"sync"
 
 	deviceinteract "gitee.com/unitedrhino/things/service/dmsvr/internal/server/deviceinteract"
 	devicemanage "gitee.com/unitedrhino/things/service/dmsvr/internal/server/devicemanage"
@@ -22,7 +26,6 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	"sync"
 )
 
 type Config = config.Config
@@ -37,6 +40,8 @@ var (
 func GetSvcCtx() *svc.ServiceContext {
 	svcOnce.Do(func() {
 		utils.ConfMustLoad("etc/dm.yaml", &c)
+		i18ns.InitWithFS("etc/i18n")
+
 		svcCtx = svc.NewServiceContext(c)
 		startup.Init(svcCtx)
 		logx.Infof("enabled dmsvr")

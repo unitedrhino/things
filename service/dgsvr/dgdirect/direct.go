@@ -3,6 +3,10 @@ package dgdirect
 import (
 	"context"
 	"fmt"
+	"sync"
+	"time"
+
+	"gitee.com/unitedrhino/share/i18ns"
 	"gitee.com/unitedrhino/share/interceptors"
 	"gitee.com/unitedrhino/share/services"
 	"gitee.com/unitedrhino/share/utils"
@@ -15,8 +19,6 @@ import (
 	"github.com/zeromicro/go-zero/core/service"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	"sync"
-	"time"
 )
 
 type Config = config.Config
@@ -32,6 +34,7 @@ var (
 func GetSvcCtx() *svc.ServiceContext {
 	svcOnce.Do(func() {
 		utils.ConfMustLoad("etc/dg.yaml", &c)
+		i18ns.InitWithFS("etc/i18n")
 		svcCtx = svc.NewServiceContext(c)
 
 		startup.Init(svcCtx)
