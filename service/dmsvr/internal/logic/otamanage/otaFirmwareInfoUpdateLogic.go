@@ -42,7 +42,7 @@ func (l *OtaFirmwareInfoUpdateLogic) OtaFirmwareInfoUpdate(in *dm.OtaFirmwareInf
 	if err != nil {
 		return nil, err
 	}
-	if !ctxs.CanHandleTenantCommon(l.ctx, otaFirmware.TenantCode) {
+	if !ctxs.CanHandTenant(l.ctx, otaFirmware.TenantCode) {
 		return nil, errors.Permissions
 	}
 	//更新相关字段

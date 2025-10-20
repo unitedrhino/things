@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+
+	"gitee.com/unitedrhino/share/i18ns"
 	"gitee.com/unitedrhino/share/interceptors"
 	"gitee.com/unitedrhino/share/services"
 
@@ -22,6 +24,8 @@ func main() {
 	defer utils.Recover(context.Background())
 	var c config.Config
 	utils.ConfMustLoad("etc/protocolSync.yaml", &c)
+	i18ns.InitWithFS("etc/i18n")
+
 	svcCtx := svc.NewServiceContext(c)
 	startup.Init(svcCtx)
 	s := services.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {

@@ -1,6 +1,7 @@
 package export
 
 import (
+	"gitee.com/unitedrhino/share/i18ns"
 	"gitee.com/unitedrhino/share/services"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/config"
@@ -26,6 +27,8 @@ var (
 
 func NewApi(apiCtx ApiCtx) ApiCtx {
 	utils.ConfMustLoad("etc/api.yaml", &c)
+	i18ns.InitWithFS("etc/i18n")
+
 	apiCtx = runApi(apiCtx)
 	return apiCtx
 }

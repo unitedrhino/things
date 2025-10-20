@@ -46,7 +46,7 @@ func (l *OtaFirmwareInfoCreateLogic) CheckOtaFirmwareInfo(in *dm.OtaFirmwareInfo
 	} else if err != nil {
 		return pi, err
 	}
-	if ctxs.CanHandleTenantCommon(l.ctx, pi.TenantCode) {
+	if !ctxs.CanHandTenant(l.ctx, pi.TenantCode) {
 		return pi, errors.Parameter.AddMsg("无权操作该固件")
 	}
 	fsize, err := l.OfDB.CountByFilter(ctxs.WithRoot(l.ctx), relationDB.OtaFirmwareInfoFilter{

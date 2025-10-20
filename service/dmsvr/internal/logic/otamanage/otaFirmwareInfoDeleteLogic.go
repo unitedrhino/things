@@ -47,7 +47,7 @@ func (l *OtaFirmwareInfoDeleteLogic) OtaFirmwareInfoDelete(in *dm.WithID) (*dm.E
 	} else if err != nil {
 		return nil, err
 	}
-	if !ctxs.CanHandleTenantCommon(l.ctx, fi.TenantCode) {
+	if !ctxs.CanHandTenant(l.ctx, fi.TenantCode) {
 		return nil, errors.Permissions
 	}
 	//开启事务

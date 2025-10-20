@@ -56,7 +56,7 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 	} else if err != nil {
 		return nil, err
 	}
-	if !ctxs.CanHandleTenantCommon(l.ctx, fi.TenantCode) {
+	if !ctxs.CanHandTenant(l.ctx, fi.TenantCode) {
 		return nil, errors.Permissions
 	}
 	if fi.TenantCode != def.TenantCodeCommon {
