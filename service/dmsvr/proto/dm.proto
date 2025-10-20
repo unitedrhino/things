@@ -332,6 +332,7 @@ service DeviceMsg {
   //获取设备数据信息
   rpc propertyLogIndex(PropertyLogIndexReq)     returns (PropertyLogIndexResp);
   rpc propertyAggIndex(PropertyAggIndexReq)     returns (PropertyAggIndexResp);
+  rpc propertyAggByDeviceIndex(PropertyAggByDeviceIndexReq)     returns (PropertyAggIndexResp);
 
   //获取设备数据信息
   rpc eventLogIndex(EventLogIndexReq)     returns (EventLogIndexResp);
@@ -926,6 +927,14 @@ message PropertyAgg{
   string fill = 3; //填充模式 参考:https://docs.taosdata.com/reference/taos-sql/distinguished/#fill-%E5%AD%90%E5%8F%A5
   bool noFirstTs =4;//时间戳填充不填充最早的值,聚合模式使用
 }
+
+message PropertyAggByDevice{
+  DeviceCore device =1;//多设备获取
+  string dataID = 2; //获取的具体标识符的数据(必填)
+  repeated string argFuncs = 3;//聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考:https://docs.taosdata.com/reference/taos-sql/function
+  string fill = 4; //填充模式 参考:https://docs.taosdata.com/reference/taos-sql/distinguished/#fill-%E5%AD%90%E5%8F%A5
+  bool noFirstTs =5;//时间戳填充不填充最早的值,聚合模式使用
+}
 message PropertyAggIndexReq{
   string tenantCode = 21;//租户号,只有管理员有权限
   int64 projectID =20;//只有管理员有权限
@@ -946,6 +955,16 @@ message PropertyAggIndexReq{
   repeated PropertyAgg aggs =10;// 聚合参数
 }
 
+message PropertyAggByDeviceIndexReq{
+  int64 timeStart = 6;//获取时间的开始(毫秒时间戳)
+  int64 timeEnd = 7;//时间的结束(毫秒时间戳)
+  int64 interval = 8;//间隔 如果这个值不为零值 则时间的开始和结束必须有效及聚合函数不应该为空
+  string intervalUnit = 12;//间隔单位 a (毫秒,默认), d (天), h (小时), m (分钟), n (月), s (秒), u (微秒), w (周), y (年)
+  int64 order = 11; //时间排序 1:aes(默认,从久到近排序) 2:desc(时间从近到久排序)
+  string partitionBy =13;//切分数据,可以填写deviceName
+  repeated PropertyAggByDevice aggs =10;// 聚合参数
+}
+
 /*获取对应日志信息*/
 message PropertyAggIndexResp{
   repeated PropertyAggResp list = 2;
@@ -964,6 +983,7 @@ message PropertyAggResp{
 }
 message PropertyAggRespDetail{
   string dataID = 1;//属性id
+  string dataName =3;//属性名称
   int64 timeWindow = 2;//发生时间戳(毫秒时间戳)
   map<string,PropertyAggRespDataDetail> values = 4;//key是聚合函数
 }
@@ -1592,6 +1612,7 @@ message DevInit{
 }
 
 message ProductInfo{
+  string tenantCode =26;//租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改
   int64   createdTime = 1; //创建时间 只读
   string   productID = 2; //产品id 只读
   string  productName = 3; //产品名称
@@ -1640,6 +1661,7 @@ message ProductInfoReadReq{
 
 message ProductInfoIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填
+  string tenantCode =27;//租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改
   int64  deviceType = 2; //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
   repeated int64 deviceTypes =10;
   string  productName = 3; //过滤条件: 产品名称
@@ -1902,6 +1924,7 @@ message ProductSchemaIndexResp{
 }
 
 message ProductSchemaInfo{
+  string tenantCode = 18;
   string productID = 1; //产品id  必填
   int64 type = 2;         //物模型类型 1:property属性 2:event事件 3:action行为
   int64 tag = 3;         //物模型标签 1:自定义 2:可选 3:必选  必选不可删除

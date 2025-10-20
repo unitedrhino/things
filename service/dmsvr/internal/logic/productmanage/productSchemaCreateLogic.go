@@ -3,6 +3,7 @@ package productmanagelogic
 import (
 	"context"
 
+	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
@@ -33,8 +34,8 @@ func NewProductSchemaCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext
 	}
 }
 
-func (l *ProductSchemaCreateLogic) RuleCheck(in *dm.ProductSchemaCreateReq) (*relationDB.DmSchemaInfo, error) {
-	_, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.Info.ProductID}})
+func (l *ProductSchemaCreateLogic) RuleCheck(in *dm.ProductSchemaCreateReq) (*relationDB.DmProductSchema, error) {
+	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, in.Info.ProductID)
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {
 			return nil, errors.Parameter.AddMsgf("找不到该产品:%v", in.Info.ProductID)
@@ -48,8 +49,8 @@ func (l *ProductSchemaCreateLogic) RuleCheck(in *dm.ProductSchemaCreateReq) (*re
 		return nil, errors.Duplicate.AddMsgf("标识符在该产品中已经被使用:%s", in.Info.Identifier)
 	}
 
-	po := logic.ToProductSchemaPo(in.Info)
-
+	po := utils.Copy[relationDB.DmProductSchema](in.Info)
+	po.TenantCode = dataType.TenantCodeWithCommonR(pi.TenantCode)
 	var cs *relationDB.DmCommonSchema
 	if in.Info.Tag != int64(schema.TagCustom) {
 		cs, err = relationDB.NewCommonSchemaRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.CommonSchemaFilter{Identifiers: []string{in.Info.Identifier}})

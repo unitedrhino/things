@@ -236,6 +236,9 @@ func (p *CoreProtocol) DevPubMsg(ctx context.Context, publishMsg *devices.DevPub
 		ProductID:  publishMsg.ProductID,
 		DeviceName: publishMsg.DeviceName,
 	})
+	if publishMsg.Timestamp == 0 {
+		publishMsg.Timestamp = time.Now().UnixMilli()
+	}
 	err := p.FastEvent.Publish(ctx, fmt.Sprintf(topics.DeviceUpMsg, publishMsg.Handle, publishMsg.ProductID, publishMsg.DeviceName), utils.MarshalNoErr(publishMsg))
 	if err != nil {
 		logx.WithContext(ctx).Errorf("devPublishToCloud  err:%v", err)
@@ -265,7 +268,7 @@ func (p *CoreProtocol) RegisterTimerHandler(f func(ctx context.Context, t time.T
 		_, err := p.TimedM.TaskInfoCreate(ctx, &timedmanage.TaskInfo{
 			GroupCode: def.TimedUnitedRhinoQueueGroupCode,                            //组编码
 			Type:      1,                                                             //任务类型 1 定时任务 2 延时任务
-			Name:      fmt.Sprintf("自定义协议-%s-定时任务-数据同步", p.Pi.Name),     // 任务名称
+			Name:      fmt.Sprintf("自定义协议-%s-定时任务-数据同步", p.Pi.Name),                  // 任务名称
 			Code:      p.genCode(),                                                   //任务编码
 			Params:    fmt.Sprintf(`{"topic":"%s","payload":""}`, p.genTimerTopic()), // 任务参数,延时任务如果没有传任务参数会拿数据库的参数来执行
 			CronExpr:  "@every 10m",                                                  // cron执行表达式
@@ -346,6 +349,9 @@ func (p *CoreProtocol) GetDevProtocolConf(ctx context.Context, di *dm.DeviceInfo
 
 func (p *CoreProtocol) ReportDevConn(ctx context.Context, conn devices.DevConn) (err error) {
 	logx.WithContext(ctx).Infof("ReportDevConn msg:%v", conn)
+	if conn.Timestamp == 0 {
+		conn.Timestamp = time.Now().UnixMilli()
+	}
 	switch conn.Action {
 	case devices.ActionConnected:
 		err = p.FastEvent.Publish(ctx, topics.DeviceUpStatusConnected, conn)

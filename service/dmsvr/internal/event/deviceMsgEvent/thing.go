@@ -342,10 +342,12 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 
 func (l *ThingLogic) DeviceSchemaReportAutoCreate(mode product.DeviceSchemaMode, productID, deviceName string, params map[string]any, tp map[string]msgThing.Param) (err error) {
 	var needAddProperties []schema.Property
+	var addSet = map[string]struct{}{}
 	var kmap = make(map[string]*schema.Property)
 	var ks []string
 	for k := range params {
-		ks = append(ks, k)
+		id, _, _ := schema.GetArray(k)
+		ks = append(ks, id)
 	}
 	ss, err := relationDB.NewCommonSchemaRepo(l.ctx).FindByFilter(l.ctx, relationDB.CommonSchemaFilter{Identifiers: ks}, nil)
 	if err != nil {
@@ -361,13 +363,19 @@ func (l *ThingLogic) DeviceSchemaReportAutoCreate(mode product.DeviceSchemaMode,
 				continue
 			}
 		}
-		ss := kmap[k]
+		id, _, _ := schema.GetArray(k)
+		ss := kmap[id]
 		if ss != nil { //有通用物模型定义优先选用通用物模型
+			if _, ok := addSet[ss.Identifier]; ok {
+				continue
+			}
 			ss.Desc = "设备上报自动创建"
 			ss.Tag = schema.TagDeviceOptional
 			needAddProperties = append(needAddProperties, *ss)
+			addSet[ss.Identifier] = struct{}{}
 			continue
 		}
+		addSet[k] = struct{}{}
 		switch vv := v.(type) {
 		case string:
 			needAddProperties = append(needAddProperties, schema.Property{

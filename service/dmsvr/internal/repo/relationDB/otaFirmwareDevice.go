@@ -2,11 +2,12 @@ package relationDB
 
 import (
 	"context"
+	"time"
+
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgOta"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
-	"time"
 )
 
 /*
@@ -73,7 +74,7 @@ func (p OtaFirmwareDeviceRepo) fmtFilter(ctx context.Context, f OtaFirmwareDevic
 		db = db.Where("product_id = ?", f.ProductID)
 	}
 	if f.DeviceName != "" {
-		db = db.Where("device_name like ?", "%"+f.DeviceName+"%")
+		db = db.Where("device_name = ?", f.DeviceName)
 	}
 	if len(f.DeviceNames) != 0 {
 		db = db.Where("device_name in ?", f.DeviceNames)

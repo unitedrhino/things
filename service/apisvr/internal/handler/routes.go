@@ -392,6 +392,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: thingsdevicemsg.HubLogIndexHandler(serverCtx),
 				},
 				{
+					// 聚合属性历史记录,设备维度
+					Method:  http.MethodPost,
+					Path:    "/property-agg/by-device/index",
+					Handler: thingsdevicemsg.PropertyAggByDeviceIndexHandler(serverCtx),
+				},
+				{
 					// 聚合属性历史记录
 					Method:  http.MethodPost,
 					Path:    "/property-agg/index",

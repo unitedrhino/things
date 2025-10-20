@@ -185,6 +185,8 @@ type (
 	ProductSchemaTslReadResp          = dm.ProductSchemaTslReadResp
 	ProductSchemaUpdateReq            = dm.ProductSchemaUpdateReq
 	PropertyAgg                       = dm.PropertyAgg
+	PropertyAggByDevice               = dm.PropertyAggByDevice
+	PropertyAggByDeviceIndexReq       = dm.PropertyAggByDeviceIndexReq
 	PropertyAggIndexReq               = dm.PropertyAggIndexReq
 	PropertyAggIndexResp              = dm.PropertyAggIndexResp
 	PropertyAggResp                   = dm.PropertyAggResp

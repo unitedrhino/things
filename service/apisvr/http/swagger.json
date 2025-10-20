@@ -1790,6 +1790,48 @@
         ]
       }
     },
+    "/api/v1/things/device/msg/property-agg/by-device/index": {
+      "post": {
+        "summary": "聚合属性历史记录,设备维度",
+        "operationId": "postApiV1ThingsDeviceMsgProperty-aggBy-deviceIndex",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/DeviceMsgPropertyAggIndexResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceMsgPropertyAggByDeviceIndexReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/msg",
+          "thingsDeviceMsg"
+        ]
+      }
+    },
     "/api/v1/things/device/msg/property-agg/index": {
       "post": {
         "summary": "聚合属性历史记录",
@@ -9441,6 +9483,77 @@
         "argFuncs"
       ]
     },
+    "DeviceMsgPropertyAggByDevice": {
+      "type": "object",
+      "properties": {
+        "device": {
+          "$ref": "#/definitions/DeviceCore",
+          "description": "设备信息"
+        },
+        "dataID": {
+          "type": "string",
+          "description": "获取的具体标识符的数据"
+        },
+        "argFuncs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考: https:docs.taosdata.com/reference/taos-sql/function/#apercentile"
+        },
+        "fill": {
+          "type": "string",
+          "description": "指定窗口区间数据缺失的情况下的填充模式 参考: https:docs.taosdata.com/reference/taos-sql/distinguished/#fill-%E5%AD%90%E5%8F%A5"
+        },
+        "noFirstTs": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "时间戳填充不填充最早的值,聚合模式使用"
+        }
+      },
+      "title": "DeviceMsgPropertyAggByDevice",
+      "required": [
+        "device",
+        "argFuncs"
+      ]
+    },
+    "DeviceMsgPropertyAggByDeviceIndexReq": {
+      "type": "object",
+      "properties": {
+        "interval": {
+          "type": "integer",
+          "format": "int64",
+          "description": "间隔 如果这个值不为零值 则时间的开始和结束必须有效及聚合函数不应该为空"
+        },
+        "intervalUnit": {
+          "type": "string",
+          "description": "间隔单位 a (毫秒,默认), d (天), h (小时), m (分钟), n (月), s (秒), u (微秒), w (周), y (年)  则时间的开始和结束必须有效及聚合函数不应该为空"
+        },
+        "timeStart": {
+          "type": "string",
+          "description": "获取时间的开始"
+        },
+        "timeEnd": {
+          "type": "string",
+          "description": "时间的结束"
+        },
+        "partitionBy": {
+          "type": "string",
+          "description": "切分数据,可以填写deviceName"
+        },
+        "aggs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceMsgPropertyAggByDevice"
+          },
+          "description": "聚合对象"
+        }
+      },
+      "title": "DeviceMsgPropertyAggByDeviceIndexReq",
+      "required": [
+        "aggs"
+      ]
+    },
     "DeviceMsgPropertyAggIndexReq": {
       "type": "object",
       "properties": {
@@ -9543,6 +9656,9 @@
     "DeviceMsgPropertyAggResp": {
       "type": "object",
       "properties": {
+        "productID": {
+          "type": "string"
+        },
         "deviceName": {
           "type": "string",
           "description": "设备名称"
@@ -9605,7 +9721,11 @@
       "properties": {
         "dataID": {
           "type": "string",
-          "description": "获取的具体属性值"
+          "description": "属性ID"
+        },
+        "dataName": {
+          "type": "string",
+          "description": "属性名称"
         },
         "timeWindow": {
           "type": "string",
@@ -9619,6 +9739,7 @@
       "title": "DeviceMsgPropertyAggRespDetail",
       "required": [
         "dataID",
+        "dataName",
         "timeWindow",
         "values"
       ]
@@ -9766,7 +9887,11 @@
         },
         "dataID": {
           "type": "string",
-          "description": "获取的具体属性值"
+          "description": "属性ID"
+        },
+        "dataName": {
+          "type": "string",
+          "description": "属性名称"
         },
         "value": {
           "type": "string",
@@ -9803,7 +9928,8 @@
       "title": "DeviceMsgPropertyLogInfo",
       "required": [
         "timestamp",
-        "dataID"
+        "dataID",
+        "dataName"
       ]
     },
     "DeviceMsgPropertyLogLatestIndexReq": {
@@ -12762,6 +12888,10 @@
     "ProductInfo": {
       "type": "object",
       "properties": {
+        "tenantCode": {
+          "type": "string",
+          "description": "租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改"
+        },
         "createdTime": {
           "type": "string",
           "description": "创建时间 只读"
@@ -12950,6 +13080,10 @@
         "page": {
           "$ref": "#/definitions/PageInfo",
           "description": "分页信息,只获取一个则不填"
+        },
+        "tenantCode": {
+          "type": "string",
+          "description": "租户号过滤,common 为公共的产品,公共的大家都可以看"
         },
         "productName": {
           "type": "string",

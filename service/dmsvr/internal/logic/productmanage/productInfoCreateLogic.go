@@ -5,10 +5,13 @@ import (
 	"fmt"
 	"regexp"
 
+	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
+	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/protocol"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/share/topics"
+	"gorm.io/gorm"
 
 	"gitee.com/unitedrhino/share/oss"
 
@@ -43,12 +46,16 @@ func NewProductInfoCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 发现返回true 没有返回false
 */
 func (l *ProductInfoCreateLogic) CheckProduct(in *dm.ProductInfo) (bool, error) {
-	_, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductNames: []string{in.ProductName}})
+	_, err := l.PiDB.FindOneByFilter(ctxs.WithRoot(l.ctx), relationDB.ProductFilter{ProductNames: []string{in.ProductName}})
 	if err == nil {
 		return true, nil
 	}
 	if errors.Cmp(err, errors.NotFind) {
 		return false, nil
+	}
+	uc := ctxs.GetUserCtxNoNil(l.ctx)
+	if !uc.IsRoot() && in.TenantCode != "" && in.TenantCode != uc.TenantCode {
+		return false, errors.Permissions.AddMsg("普通租户只能创建自己租户下的产品")
 	}
 	return false, err
 }
@@ -57,7 +64,7 @@ func (l *ProductInfoCreateLogic) CheckProduct(in *dm.ProductInfo) (bool, error) 
 检测productid,发现返回true 没有返回false
 */
 func (l *ProductInfoCreateLogic) CheckProductID(in *dm.ProductInfo) (bool, error) {
-	_, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
+	_, err := l.PiDB.FindOneByFilter(ctxs.WithRoot(l.ctx), relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
 	if err == nil {
 		return true, nil
 	}
@@ -72,6 +79,7 @@ func (l *ProductInfoCreateLogic) CheckProductID(in *dm.ProductInfo) (bool, error
 */
 func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relationDB.DmProductInfo, error) {
 	pi := &relationDB.DmProductInfo{
+		TenantCode:       dataType.TenantCodeWithCommonR(in.TenantCode),
 		ProductID:        in.ProductID,   // 产品id
 		ProductName:      in.ProductName, // 产品名称
 		Desc:             in.Desc.GetValue(),
@@ -82,6 +90,9 @@ func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relatio
 		DeviceSchemaMode: in.DeviceSchemaMode,
 		BindLevel:        in.BindLevel,
 		SubProtocolCode:  in.SubProtocolCode.GetValue(),
+	}
+	if pi.TenantCode == "" {
+		pi.TenantCode = dataType.TenantCodeWithCommonR(ctxs.GetUserCtxNoNil(l.ctx).TenantCode)
 	}
 	if in.AutoRegister != def.Unknown {
 		pi.AutoRegister = in.AutoRegister
@@ -129,7 +140,7 @@ func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relatio
 
 // 新增设备
 func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Empty, error) {
-	if err := ctxs.IsRoot(l.ctx); err != nil {
+	if err := ctxs.IsAdmin(l.ctx); err != nil {
 		return nil, err
 	}
 	find, err := l.CheckProduct(in)
@@ -162,11 +173,52 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Empt
 	if err != nil {
 		return nil, err
 	}
+
+	var schemas []*relationDB.DmProductSchema
+	if pi.CategoryID != 0 && pi.CategoryID != def.NotClassified { //如果选择了产品品类,需要获取该品类的物模型并绑定
+		var categoryIDs = []int64{def.RootNode}
+		if pi.CategoryID != def.RootNode {
+			pcs, err := relationDB.NewProductCategoryRepo(l.ctx).FindOne(l.ctx, pi.CategoryID)
+			if err != nil {
+				return nil, err
+			}
+			if pcs.IDPath != "" {
+				categoryIDs = append(categoryIDs, utils.GetIDPath(pcs.IDPath)...)
+			}
+		}
+		pcss, err := relationDB.NewCommonSchemaRepo(l.ctx).FindByFilter(l.ctx, relationDB.CommonSchemaFilter{
+			ProductCategoryIDs: categoryIDs,
+		}, nil)
+		if err != nil {
+			return nil, err
+		}
+		for _, pcs := range pcss {
+			pcs.Tag = schema.TagRequired
+			schemas = append(schemas, &relationDB.DmProductSchema{
+				TenantCode:   pi.TenantCode,
+				ProductID:    pi.ProductID,
+				DmSchemaCore: pcs.DmSchemaCore,
+			})
+		}
+	}
+
 	err = l.InitProduct(pi)
 	if err != nil {
 		return nil, err
 	}
-	err = relationDB.NewProductInfoRepo(l.ctx).Insert(l.ctx, pi)
+	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+		err = relationDB.NewProductInfoRepo(tx).Insert(l.ctx, pi)
+		if err != nil {
+			return err
+		}
+		if len(schemas) != 0 {
+			err = relationDB.NewProductSchemaRepo(tx).MultiInsert(l.ctx, schemas)
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	})
 	if err != nil {
 		l.Errorf("%s.Insert err=%+v", utils.FuncName(), err)
 		return nil, err

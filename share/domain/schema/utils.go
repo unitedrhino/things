@@ -71,6 +71,7 @@ func GetArray(identifier string) (ident string, num int, ok bool) {
 type DataIDInfo struct {
 	ID     string
 	Nums   []int64
+	NumStr string
 	Column string
 }
 
@@ -86,14 +87,16 @@ func ParseDataID(identifier string) (*DataIDInfo, error) {
 		if err != nil {
 			if arrs[1] == "*" {
 				return &DataIDInfo{
-					ID: arrs[0],
+					ID:     arrs[0],
+					NumStr: arrs[1],
 				}, nil
 			}
 			nums, err := utils.ParseNumberString(arrs[1])
 			if err == nil {
 				return &DataIDInfo{
-					ID:   arrs[0],
-					Nums: nums,
+					ID:     arrs[0],
+					Nums:   nums,
+					NumStr: arrs[1],
 				}, nil
 			}
 			return &DataIDInfo{
@@ -102,8 +105,9 @@ func ParseDataID(identifier string) (*DataIDInfo, error) {
 			}, nil
 		}
 		return &DataIDInfo{
-			ID:   arrs[0],
-			Nums: []int64{num},
+			ID:     arrs[0],
+			Nums:   []int64{num},
+			NumStr: arrs[1],
 		}, nil
 	case 3:
 		num, err := cast.ToInt64E(arrs[1])
@@ -112,6 +116,7 @@ func ParseDataID(identifier string) (*DataIDInfo, error) {
 				return &DataIDInfo{
 					ID:     arrs[0],
 					Column: arrs[2],
+					NumStr: arrs[1],
 				}, nil
 			}
 			nums, err := utils.ParseNumberString(arrs[1])
@@ -121,14 +126,48 @@ func ParseDataID(identifier string) (*DataIDInfo, error) {
 			return &DataIDInfo{
 				ID:     arrs[0],
 				Nums:   nums,
+				NumStr: arrs[1],
 				Column: arrs[2],
 			}, nil
 		}
 		return &DataIDInfo{
 			ID:     arrs[0],
 			Nums:   []int64{num},
+			NumStr: arrs[1],
 			Column: arrs[2],
 		}, nil
 	}
 	return &DataIDInfo{ID: identifier}, errors.Parameter.AddMsgf("get:%v,need:dataID or dataID.num or dataID.num.column", identifier)
+}
+
+func GetDataName(m *Model, dataID string) string {
+	d, err := ParseDataID(dataID)
+	if err != nil {
+		return dataID
+	}
+	p := m.Property[d.ID]
+	if p == nil {
+		return dataID
+	}
+	ret := p.Name
+	num := d.NumStr
+	if num != "" {
+		num = "." + num
+	}
+	def := &p.Define
+	if len(d.Nums) > 0 && p.Define.Type == DataTypeArray {
+		def = def.ArrayInfo
+		ret = ret + num
+		num = ""
+	}
+	if d.Column != "" {
+		if def.Type == DataTypeStruct {
+			pp := def.Spec[d.Column]
+			if pp == nil {
+				return ret
+			}
+			return ret + "." + pp.Name + num
+		}
+	}
+	return ret + num
 }

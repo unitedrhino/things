@@ -77,6 +77,11 @@ func (s *DeviceMsgServer) PropertyAggIndex(ctx context.Context, in *dm.PropertyA
 	return l.PropertyAggIndex(in)
 }
 
+func (s *DeviceMsgServer) PropertyAggByDeviceIndex(ctx context.Context, in *dm.PropertyAggByDeviceIndexReq) (*dm.PropertyAggIndexResp, error) {
+	l := devicemsglogic.NewPropertyAggByDeviceIndexLogic(ctx, s.svcCtx)
+	return l.PropertyAggByDeviceIndex(in)
+}
+
 // 获取设备数据信息
 func (s *DeviceMsgServer) EventLogIndex(ctx context.Context, in *dm.EventLogIndexReq) (*dm.EventLogIndexResp, error) {
 	l := devicemsglogic.NewEventLogIndexLogic(ctx, s.svcCtx)

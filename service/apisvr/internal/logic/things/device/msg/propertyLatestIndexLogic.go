@@ -37,11 +37,7 @@ func (l *PropertyLatestIndexLogic) PropertyLatestIndex(req *types.DeviceMsgPrope
 	}
 	info := make([]*types.DeviceMsgPropertyLogInfo, 0, len(dmResp.List))
 	for _, v := range dmResp.List {
-		info = append(info, &types.DeviceMsgPropertyLogInfo{
-			Timestamp: v.Timestamp,
-			DataID:    v.DataID,
-			Value:     v.Value,
-		})
+		info = append(info, utils.Copy[types.DeviceMsgPropertyLogInfo](v))
 	}
 	return &types.DeviceMsgPropertyIndexResp{
 		PageResp: logic.ToPageResp(nil, dmResp.Total),

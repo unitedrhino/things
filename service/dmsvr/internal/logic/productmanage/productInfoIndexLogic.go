@@ -2,6 +2,8 @@ package productmanagelogic
 
 import (
 	"context"
+	"time"
+
 	"gitee.com/unitedrhino/share/caches"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
@@ -9,7 +11,6 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/share/devices"
-	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -60,6 +61,7 @@ func (l *ProductInfoIndexLogic) ProductInfoIndex(in *dm.ProductInfoIndexReq) (*d
 	)
 
 	filter := relationDB.ProductFilter{
+		TenantCode:  in.TenantCode,
 		CategoryIDs: in.CategoryIDs,
 		AreaIDPath:  in.AreaIDPath, ProtocolType: in.ProtocolType, ProtocolTrans: in.ProtocolTrans,
 		SceneMode: in.SceneMode, SceneModes: in.SceneModes, DeviceType: in.DeviceType, DeviceTypes: in.DeviceTypes, ProductName: in.ProductName, ProtocolCode: in.ProtocolCode,

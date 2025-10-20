@@ -2,6 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
@@ -44,9 +45,5 @@ func (l *ProductSchemaIndexLogic) ProductSchemaIndex(in *dm.ProductSchemaIndexRe
 	if err != nil {
 		return nil, err
 	}
-	list := make([]*dm.ProductSchemaInfo, 0, len(schemas))
-	for _, s := range schemas {
-		list = append(list, logic.ToProductSchemaRpc(s))
-	}
-	return &dm.ProductSchemaIndexResp{List: list, Total: total}, nil
+	return &dm.ProductSchemaIndexResp{List: utils.CopySlice[dm.ProductSchemaInfo](schemas), Total: total}, nil
 }

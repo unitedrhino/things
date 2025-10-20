@@ -3,6 +3,7 @@ package relationDB
 import (
 	"context"
 	"fmt"
+
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
@@ -16,6 +17,7 @@ type ProductInfoRepo struct {
 }
 
 type ProductFilter struct {
+	TenantCode    string
 	DeviceType    int64
 	DeviceTypes   []int64
 	ProductName   string
@@ -45,6 +47,9 @@ func NewProductInfoRepo(in any) *ProductInfoRepo {
 
 func (p ProductInfoRepo) fmtFilter(ctx context.Context, f ProductFilter) *gorm.DB {
 	db := p.db.WithContext(ctx)
+	if f.TenantCode != "" {
+		db = db.Where("tenant_code = ?", f.TenantCode)
+	}
 	if f.DeviceType != 0 {
 		db = db.Where("device_type=?", f.DeviceType)
 	}
@@ -158,13 +163,14 @@ func (p ProductInfoRepo) Insert(ctx context.Context, data *DmProductInfo) error 
 			if len(ids) == 0 {
 				return nil
 			}
-			var schemas []*DmSchemaInfo
+			var schemas []*DmProductSchema
 			var idents []string
 			for _, v := range ids {
 				v.ID = 0
 				v.Tag = schema.TagRequired
 				idents = append(idents, v.Identifier)
-				schemas = append(schemas, &DmSchemaInfo{
+				schemas = append(schemas, &DmProductSchema{ //公共物模型只有公共的
+					TenantCode:   data.TenantCode,
 					ProductID:    data.ProductID,
 					DmSchemaCore: v.DmSchemaCore,
 				})

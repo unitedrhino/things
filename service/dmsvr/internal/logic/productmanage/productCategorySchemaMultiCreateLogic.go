@@ -38,6 +38,7 @@ func (l *ProductCategorySchemaMultiCreateLogic) ProductCategorySchemaMultiCreate
 	}
 	pcDB := relationDB.NewProductCategoryRepo(l.ctx)
 	var productIDs []string
+	var products []*relationDB.DmProductInfo
 	{
 		var productCategoryIDs = []int64{in.ProductCategoryID}
 		var idPath string
@@ -57,11 +58,11 @@ func (l *ProductCategorySchemaMultiCreateLogic) ProductCategorySchemaMultiCreate
 		productCategoryIDs = append(productCategoryIDs, utils.ToSliceWithFunc(pcs, func(in *relationDB.DmProductCategory) int64 {
 			return in.ID
 		})...)
-		ps, err := relationDB.NewProductInfoRepo(l.ctx).FindByFilter(l.ctx, relationDB.ProductFilter{CategoryIDs: productCategoryIDs}, nil)
+		products, err = relationDB.NewProductInfoRepo(l.ctx).FindByFilter(l.ctx, relationDB.ProductFilter{CategoryIDs: productCategoryIDs}, nil)
 		if err != nil {
 			return nil, err
 		}
-		productIDs = utils.ToSliceWithFunc(ps, func(in *relationDB.DmProductInfo) string {
+		productIDs = utils.ToSliceWithFunc(products, func(in *relationDB.DmProductInfo) string {
 			return in.ProductID
 		})
 	}
@@ -131,16 +132,17 @@ func (l *ProductCategorySchemaMultiCreateLogic) ProductCategorySchemaMultiCreate
 					return err
 				}
 				findProducts = utils.SliceToSet(ps)
-				var schemas []*relationDB.DmSchemaInfo
+				var schemas []*relationDB.DmProductSchema
 				var addProductIDs []string
-				for _, v := range productIDs {
-					if _, ok := findProducts[v]; ok {
+				for _, p := range products {
+					if _, ok := findProducts[p.ProductID]; ok {
 						continue
 					}
-					addProductIDs = append(addProductIDs, v)
+					addProductIDs = append(addProductIDs, p.ProductID)
 					//如果没有这个物模型需要新增
-					schemas = append(schemas, &relationDB.DmSchemaInfo{
-						ProductID:    v,
+					schemas = append(schemas, &relationDB.DmProductSchema{
+						TenantCode:   p.TenantCode,
+						ProductID:    p.ProductID,
 						DmSchemaCore: identifier.DmSchemaCore,
 					})
 				}

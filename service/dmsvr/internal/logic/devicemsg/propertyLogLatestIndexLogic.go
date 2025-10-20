@@ -101,6 +101,7 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 				diData = dm.PropertyLogInfo{
 					Timestamp: 0,
 					DataID:    dataID,
+					DataName:  schema.GetDataName(temp, dataID),
 					Value:     utils.ToString(v),
 				}
 			} else {
@@ -117,6 +118,7 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 				diData = dm.PropertyLogInfo{
 					Timestamp: data.TimeStamp.UnixMilli(),
 					DataID:    data.Identifier,
+					DataName:  schema.GetDataName(temp, data.Identifier),
 				}
 				v, err := sdef.FmtValue(data.Param)
 				if err == nil {
@@ -125,7 +127,6 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 					diData.Value = utils.ToString(data.Param)
 				}
 			}
-			diData.DataName = property.Name
 			mutex.Lock()
 			defer mutex.Unlock()
 			diDatas = append(diDatas, &diData)

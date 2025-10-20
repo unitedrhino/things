@@ -166,6 +166,7 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 			DeviceName:  devData.DeviceName,
 			Timestamp:   devData.TimeStamp.UnixMilli(),
 			DataID:      devData.Identifier,
+			DataName:    schema.GetDataName(t, devData.Identifier),
 			TenantCode:  string(devData.TenantCode),
 			ProjectID:   int64(devData.ProjectID),
 			AreaID:      int64(devData.AreaID),

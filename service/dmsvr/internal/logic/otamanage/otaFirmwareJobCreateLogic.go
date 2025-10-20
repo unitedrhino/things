@@ -2,6 +2,7 @@ package otamanagelogic
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/core/service/timed/timedjobsvr/pb/timedjob"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
@@ -47,12 +48,32 @@ func NewOtaFirmwareJobCreateLogic(ctx context.Context, svcCtx *svc.ServiceContex
 
 // 创建静态升级批次
 func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobInfo) (*dm.WithID, error) {
-	if err := ctxs.IsRoot(l.ctx); err != nil {
+
+	fi, err := l.OfDB.FindOneByFilter(l.ctx, relationDB.OtaFirmwareInfoFilter{ID: in.FirmwareID, WithFiles: true})
+	if errors.Cmp(err, errors.NotFind) {
+		l.Errorf("not find firmware id:" + cast.ToString(in.Id))
+		return nil, err
+	} else if err != nil {
 		return nil, err
 	}
-	l.ctx = ctxs.WithRoot(l.ctx)
+	if !ctxs.CanHandleTenantCommon(l.ctx, fi.TenantCode) {
+		return nil, errors.Permissions
+	}
+	if fi.TenantCode != def.TenantCodeCommon {
+		in.TenantCodes = append(in.TenantCodes, ctxs.GetUserCtxNoNil(l.ctx).TenantCode)
+	} else { //如果是common,则可以从所有租户里获取
+		l.ctx = ctxs.WithRoot(l.ctx)
+	}
 	if in.UpgradeType == msgOta.DynamicUpgrade && len(in.SrcVersions) == 0 {
 		return nil, errors.Parameter.AddMsg("动态升级需要填写待升级的版本")
+	}
+	if in.Type == msgOta.ValidateUpgrade {
+		if fi.IsNeedToVerify != def.True {
+			return nil, errors.Parameter.AddMsg("该固件无需验证升级包")
+		}
+		if fi.Status == msgOta.OtaFirmwareStatusVerified {
+			return nil, errors.Parameter.AddMsg("该固件已验证成功")
+		}
 	}
 	if in.UpgradeType == msgOta.DynamicUpgrade { //同一个固件下只能有一个动态升级包
 		total, err := relationDB.NewOtaJobRepo(l.ctx).CountByFilter(l.ctx, relationDB.OtaJobFilter{
@@ -68,7 +89,7 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 		}
 	}
 	var dmOtaJob relationDB.DmOtaFirmwareJob
-	err := utils.CopyE(&dmOtaJob, &in)
+	err = utils.CopyE(&dmOtaJob, &in)
 	if err != nil {
 		l.Errorf("%s.CopyE StaticUpgradeJob err=%v", utils.FuncName(), err)
 		return nil, err
@@ -77,10 +98,6 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 	if dmOtaJob.UpgradeType == msgOta.StaticUpgrade && dmOtaJob.Static.ScheduleTime != 0 {
 		//延时执行
 		dmOtaJob.Status = msgOta.JobStatusPlanned
-	}
-	fi, err := l.OfDB.FindOne(l.ctx, in.FirmwareID)
-	if err != nil {
-		return nil, err
 	}
 	if utils.SliceIn(fi.Version, in.SrcVersions...) {
 		return nil, errors.Parameter.AddMsg("待升级版本号不能和需要升级的版本号相同")
@@ -113,6 +130,7 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 		}
 		otDB := relationDB.NewOtaFirmwareDeviceRepo(tx)
 		oldDevices, err := otDB.FindByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
+			WithJob:     true,
 			ProductID:   fi.ProductID,
 			DeviceNames: deviceNames,
 			Statues: []int64{
@@ -122,9 +140,21 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 			return err
 		}
 		var oldDevicesMap = map[string]*relationDB.DmOtaFirmwareDevice{}
+		var needCancelDeviceF []relationDB.OtaFirmwareDeviceFilter
 		for _, v := range oldDevices {
+			if v.Job.Status == msgOta.JobStatusCompleted || v.Job.Status == msgOta.JobStatusCanceled {
+				needCancelDeviceF = append(needCancelDeviceF, relationDB.OtaFirmwareDeviceFilter{JobID: v.JobID, DeviceName: v.DeviceName})
+			}
 			oldDevicesMap[v.DeviceName] = v
 		}
+		if len(needCancelDeviceF) > 0 {
+			err := otDB.UpdateStatusByFilters(l.ctx, needCancelDeviceF, msgOta.DeviceStatusCanceled, "项目完成后取消")
+			if err != nil {
+				return err
+			}
+		}
+		var cantPushCount int
+
 		var otaDevices []*relationDB.DmOtaFirmwareDevice
 		for _, device := range devicePos {
 			status := msgOta.DeviceStatusQueued
@@ -139,6 +169,7 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 				case msgOta.DeviceStatusInProgress, msgOta.DeviceStatusNotified:
 					status = msgOta.DeviceStatusFailure
 					detail = "其他任务正在升级中"
+					cantPushCount++
 				case msgOta.DeviceStatusFailure:
 					od.Detail = od.Detail + "-其他任务启动"
 					od.Status = msgOta.DeviceStatusCanceled
@@ -153,6 +184,7 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 					if in.IsOverwriteMode != def.True { //如果是不覆盖则直接失败
 						status = msgOta.DeviceStatusFailure
 						detail = "其他任务正在等待升级中"
+						cantPushCount++
 					} else {
 						od.Status = msgOta.DeviceStatusCanceled
 						od.Detail = "其他任务启动取消该任务"
@@ -183,6 +215,9 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 				Status:      status,
 				Detail:      detail,
 			})
+		}
+		if dmOtaJob.UpgradeType == msgOta.StaticUpgrade && cantPushCount == len(otaDevices) {
+			return errors.Parameter.AddMsg("指定的所有设备都在执行其他升级任务")
 		}
 		err = otDB.MultiInsert(l.ctx, otaDevices)
 		if err != nil {

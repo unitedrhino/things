@@ -2,6 +2,7 @@ package devicemsglogic
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
@@ -39,8 +40,16 @@ func (l *PropertyAggIndexLogic) PropertyAggIndex(in *dm.PropertyAggIndexReq) (*d
 		err        error
 	)
 	uc := ctxs.GetUserCtxNoNil(l.ctx)
+	if in.ProjectID == 0 {
+		in.ProjectID = uc.ProjectID
+	}
 	if !uc.IsAdmin {
-		return nil, errors.Permissions.AddMsg("只允许管理员操作")
+		if in.ProjectID == 0 {
+			return nil, errors.Permissions.AddMsg("只允许管理员操作")
+		}
+		if !uc.AuthProject(in.ProjectID, def.AuthReadWrite) {
+			return nil, errors.Permissions.AddMsg("该项目无权限")
+		}
 	}
 	if len(in.DeviceNames) == 0 {
 		if in.DeviceName == "" && !uc.IsAdmin {
@@ -123,7 +132,11 @@ func (l *PropertyAggIndexLogic) PropertyAggIndex(in *dm.PropertyAggIndexReq) (*d
 			BelongGroup: utils.CopyMap2[dm.IDsInfo](devData.BelongGroup),
 		}
 		for _, v1 := range devData.Values {
-			var dv = dm.PropertyAggRespDetail{DataID: v1.Identifier, TimeWindow: v1.TsWindow.UnixMilli(), Values: map[string]*dm.PropertyAggRespDataDetail{}}
+			var dv = dm.PropertyAggRespDetail{
+				DataID:     v1.Identifier,
+				DataName:   schema.GetDataName(t, v1.Identifier),
+				TimeWindow: v1.TsWindow.UnixMilli(),
+				Values:     map[string]*dm.PropertyAggRespDataDetail{}}
 			for k2, v2 := range v1.Values {
 				dv2 := dm.PropertyAggRespDataDetail{Timestamp: v2.TimeStamp.UnixMilli()}
 				if dv2.Timestamp < 0 {

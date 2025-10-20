@@ -146,10 +146,17 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 		tagKeys, tagVals := tdengine.GenTagsParams(ts, d.groupConfigs, optional.BelongGroup)
 
 		switch property.Value.(type) {
-		case map[string]msgThing.Param:
-			paramPlaceholder, paramIds, paramValList, err := GenParams(property.Value.(map[string]msgThing.Param))
-			if err != nil {
-				return "", nil, err
+		case map[string]msgThing.Param, map[string]any:
+			var paramPlaceholder string
+			var paramIds string
+			var paramValList []any
+			switch v2 := property.Value.(type) {
+			case map[string]msgThing.Param:
+				paramPlaceholder, paramIds, paramValList, err = GenParams(v2)
+				ars[property.Identifier], _ = msgThing.ToVal(property.Value.(map[string]msgThing.Param))
+			case map[string]any:
+				paramPlaceholder, paramIds, paramValList, err = GenParams2(v2)
+				ars[property.Identifier] = property.Value
 			}
 			sql = fmt.Sprintf(" %s using %s (%s)tags('%s','%s','%s','%s','%s',%d,%d,'%s' %s) (`ts`, %s) values (?,%s) ",
 				d.GetPropertyTableName(productID, deviceName, property.Identifier),
@@ -157,7 +164,6 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 				optional.AreaID, optional.AreaIDPath, tagVals,
 				paramIds, paramPlaceholder)
 			args = append([]any{timestamp}, paramValList...)
-			ars[property.Identifier], _ = msgThing.ToVal(property.Value.(map[string]msgThing.Param))
 
 		default:
 			var (

@@ -4,6 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"reflect"
+	"sort"
+	"sync"
+	"time"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
@@ -14,13 +19,10 @@ import (
 	"github.com/traefik/yaegi/interp"
 	"github.com/traefik/yaegi/stdlib"
 	"github.com/zeromicro/go-zero/core/logx"
-	"reflect"
-	"sort"
-	"sync"
-	"time"
 )
 
 type ScriptInfo struct {
+	TenantCode string
 	Name       string
 	Priority   int64
 	ScriptLang int64
@@ -52,7 +54,10 @@ type ScriptTrans struct {
 	ProductUpAfterCache    map[string]map[devices.MsgHandle]map[string]ScriptInfos       //第一级是
 	DeviceUpAfterCache     map[devices.Core]map[devices.MsgHandle]map[string]ScriptInfos //第一级是
 	ProductDownBeforeCache map[string]map[devices.MsgHandle]map[string]ScriptInfos       //第一级是
+	ProductDownAfterCache  map[string]map[devices.MsgHandle]map[string]ScriptInfos       //第一级是
 	DeviceDownBeforeCache  map[devices.Core]map[devices.MsgHandle]map[string]ScriptInfos //第一级是
+	DeviceDownAfterCache   map[devices.Core]map[devices.MsgHandle]map[string]ScriptInfos //第一级是
+
 	ProductUpBeforeMutex   sync.RWMutex
 	DeviceUpBeforeMutex    sync.RWMutex
 	ProductUpAfterMutex    sync.RWMutex
@@ -212,11 +217,11 @@ func (s *ScriptTrans) RespMsgRun(ctx context.Context, req *deviceMsg.PublishMsg,
 	}()
 	handle, logs, err := s.GetFunc(ctx, script, "Handle")
 	if err != nil {
-		return nil, errors.Parameter.AddMsg("结构体中需要定义: func Handle(context.Context, *dm.PublishMsg) *dm.PublishMsg")
+		return nil, errors.Parameter.AddMsgf("脚本定义错误:%s", err.Error())
 	}
 	fn, ok := handle.(func(context.Context, *deviceMsg.PublishMsg, *deviceMsg.PublishMsg))
 	if !ok {
-		return nil, errors.Parameter.AddMsg("结构体中需要定义: func Handle(context.Context, *dm.PublishMsg) *dm.PublishMsg")
+		return nil, errors.Parameter.AddMsg("结构体中需要定义: func Handle(context.Context,func(context.Context, *deviceMsg.PublishMsg, *deviceMsg.PublishMsg))")
 	}
 	fn(ctx, req, resp)
 	return *logs, nil
@@ -249,18 +254,18 @@ func (s *ScriptTrans) UpAfterTrans(ctx context.Context, req *deviceMsg.PublishMs
 	//todo 后面需要加上缓存
 	var scripts ScriptInfos
 	func() {
-		s.ProductUpBeforeMutex.RLock()
-		defer s.ProductUpBeforeMutex.RUnlock()
-		pc, ok := s.ProductUpBeforeCache[req.ProductID]
+		s.ProductUpAfterMutex.RLock()
+		defer s.ProductUpAfterMutex.RUnlock()
+		pc, ok := s.ProductUpAfterCache[req.ProductID]
 		if ok {
 			script := s.GetScripts(ctx, pc, req)
 			scripts = append(scripts, script...)
 		}
 	}()
 	func() {
-		s.DeviceUpBeforeMutex.RLock()
-		defer s.DeviceUpBeforeMutex.RUnlock()
-		dc, ok := s.DeviceUpBeforeCache[devices.Core{ProductID: req.ProductID, DeviceName: req.DeviceName}]
+		s.DeviceUpAfterMutex.RLock()
+		defer s.DeviceUpAfterMutex.RUnlock()
+		dc, ok := s.DeviceUpAfterCache[devices.Core{ProductID: req.ProductID, DeviceName: req.DeviceName}]
 		if ok {
 			script := s.GetScripts(ctx, dc, req)
 			scripts = append(scripts, script...)
@@ -271,7 +276,7 @@ func (s *ScriptTrans) UpAfterTrans(ctx context.Context, req *deviceMsg.PublishMs
 	}
 	sort.Sort(scripts)
 	for _, script := range scripts {
-		log, err := s.RespMsgRun(ctx, req, resp, script.Script)
+		log, err := s.RespMsgRun(ctxs.BindTenantCode(ctx, script.TenantCode, 0), req, resp, script.Script)
 		if err != nil {
 			continue
 		}
@@ -313,7 +318,7 @@ func (s *ScriptTrans) UpBeforeTrans(ctx context.Context, msg *deviceMsg.PublishM
 	}
 	sort.Sort(scripts)
 	for _, script := range scripts {
-		newMsg, log, err := s.PublishMsgRun(ctx, &out, script.Script)
+		newMsg, log, err := s.PublishMsgRun(ctxs.BindTenantCode(ctx, script.TenantCode, 0), &out, script.Script)
 		if err != nil {
 			logx.WithContext(ctx).Error(err)
 			continue
@@ -359,7 +364,7 @@ func (s *ScriptTrans) DownBeforeTrans(ctx context.Context, msg *deviceMsg.Publis
 	}
 	sort.Sort(scripts)
 	for _, script := range scripts {
-		newMsg, log, err := s.PublishMsgRun(ctx, &out, script.Script)
+		newMsg, log, err := s.PublishMsgRun(ctxs.BindTenantCode(ctx, script.TenantCode, 0), &out, script.Script)
 		if err != nil {
 			logx.WithContext(ctx).Error(err)
 			continue

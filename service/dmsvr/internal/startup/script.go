@@ -2,7 +2,13 @@ package startup
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+	"reflect"
+
 	"gitee.com/unitedrhino/share/def"
+	"gitee.com/unitedrhino/share/utils"
+	sdkProtocol "gitee.com/unitedrhino/things/sdk/protocol"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/deviceinteract"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/devicemanage"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/devicemsg"
@@ -22,12 +28,12 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgSdkLog"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
+	"gitee.com/unitedrhino/things/share/topics"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/share/devices"
 	"github.com/zeromicro/go-zero/core/logx"
-	"reflect"
 )
 
 func ScriptInit(svcCtx *svc.ServiceContext) {
@@ -56,6 +62,7 @@ func ScriptLoad(svcCtx *svc.ServiceContext) {
 				continue
 			}
 			si := protocol.ScriptInfo{
+				TenantCode: string(sd.TenantCode),
 				Name:       sd.Script.Name,
 				Priority:   sd.Priority,
 				ScriptLang: sd.Script.ScriptLang,
@@ -139,6 +146,14 @@ func ScriptLoad(svcCtx *svc.ServiceContext) {
 						trans.DeviceUpBeforeCache = before
 					}()
 				}
+				after := up[protocol.TriggerTimerAfter]
+				if len(after) > 0 {
+					func() {
+						trans.DeviceUpAfterMutex.Lock()
+						defer trans.DeviceUpAfterMutex.Unlock()
+						trans.DeviceUpAfterCache = after
+					}()
+				}
 			}
 			if len(down) > 0 {
 				before := down[protocol.TriggerTimerBefore]
@@ -147,6 +162,14 @@ func ScriptLoad(svcCtx *svc.ServiceContext) {
 						trans.DeviceDownBeforeMutex.Lock()
 						defer trans.DeviceDownBeforeMutex.Unlock()
 						trans.DeviceDownBeforeCache = before
+					}()
+				}
+				after := down[protocol.TriggerTimerAfter]
+				if len(after) > 0 {
+					func() {
+						trans.DeviceDownAfterMutex.Lock()
+						defer trans.DeviceDownAfterMutex.Unlock()
+						trans.DeviceDownAfterCache = after
 					}()
 				}
 			}
@@ -163,6 +186,14 @@ func ScriptLoad(svcCtx *svc.ServiceContext) {
 						trans.ProductUpBeforeCache = before
 					}()
 				}
+				after := up[protocol.TriggerTimerAfter]
+				if len(after) > 0 {
+					func() {
+						trans.ProductUpAfterMutex.Lock()
+						defer trans.ProductUpAfterMutex.Unlock()
+						trans.ProductUpAfterCache = after
+					}()
+				}
 			}
 			if len(down) > 0 {
 				before := down[protocol.TriggerTimerBefore]
@@ -171,6 +202,14 @@ func ScriptLoad(svcCtx *svc.ServiceContext) {
 						trans.ProductDownBeforeMutex.Lock()
 						defer trans.ProductDownBeforeMutex.Unlock()
 						trans.ProductDownBeforeCache = before
+					}()
+				}
+				after := down[protocol.TriggerTimerAfter]
+				if len(after) > 0 {
+					func() {
+						trans.ProductDownAfterMutex.Lock()
+						defer trans.ProductDownAfterMutex.Unlock()
+						trans.ProductDownAfterCache = after
 					}()
 				}
 			}
@@ -228,6 +267,20 @@ func dmSymbolInit(svcCtx *svc.ServiceContext) map[string]reflect.Value {
 		}),
 		"SchemaGet": reflect.ValueOf(func(ctx context.Context, productID string, deviceName string) (*schema.Model, error) {
 			return svcCtx.DeviceSchemaRepo.GetData(ctx, devices.Core{ProductID: productID, DeviceName: deviceName})
+		}),
+		"DevPubMsg": reflect.ValueOf(func(ctx context.Context, publishMsg *devices.DevPublish) error {
+			sdkProtocol.UpdateDeviceActivity(ctx, devices.Core{
+				ProductID:  publishMsg.ProductID,
+				DeviceName: publishMsg.DeviceName,
+			})
+			pubStr, _ := json.Marshal(publishMsg)
+			err := svcCtx.FastEvent.Publish(ctx,
+				fmt.Sprintf(topics.DeviceUpMsg, publishMsg.Handle, publishMsg.ProductID, publishMsg.DeviceName), pubStr)
+			if err != nil {
+				logx.Errorf("%s.publish  err:%v", utils.FuncName(), err)
+				return err
+			}
+			return err
 		}),
 		"DeviceMsg":                         reflect.ValueOf(devicemsg.NewDirectDeviceMsg(svcCtx, devicemsgServer.NewDeviceMsgServer(svcCtx))),
 		"DeviceInteract":                    reflect.ValueOf(deviceinteract.NewDirectDeviceInteract(svcCtx, deviceinteractServer.NewDeviceInteractServer(svcCtx))),
