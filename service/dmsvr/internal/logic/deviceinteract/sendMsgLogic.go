@@ -2,14 +2,15 @@ package deviceinteractlogic
 
 import (
 	"context"
+	"strings"
+	"time"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
-	"strings"
-	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -49,8 +50,12 @@ func (l *SendMsgLogic) SendMsg(in *dm.SendMsgReq) (ret *dm.SendMsgResp, err erro
 	}); err != nil {
 		return nil, err
 	}
-
-	er := l.svcCtx.PubDev.PublishToDev(l.ctx, &deviceMsg.PublishMsg{
+	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: topicInfo.ProductID, DeviceName: topicInfo.DeviceName})
+	if err != nil {
+		l.Error(err)
+		return nil, err
+	}
+	er := l.svcCtx.PubDev.PublishToDev(l.ctx, di, &deviceMsg.PublishMsg{
 		Timestamp:    time.Now().UnixMilli(),
 		Payload:      in.Payload,
 		Handle:       strings.TrimPrefix(topicInfo.TopicHead, "$"),

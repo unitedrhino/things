@@ -2,7 +2,9 @@ package script
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/apisvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 
 	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
@@ -28,5 +30,11 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 
 func (l *IndexLogic) Index(req *types.ProtocolScriptIndexReq) (resp *types.ProtocolScriptIndexResp, err error) {
 	ret, err := l.svcCtx.ProtocolM.ProtocolScriptIndex(l.ctx, utils.Copy[dm.ProtocolScriptIndexReq](req))
-	return utils.Copy[types.ProtocolScriptIndexResp](ret), err
+	if err != nil {
+		return nil, err
+	}
+	return &types.ProtocolScriptIndexResp{
+		PageResp: logic.ToPageResp(req.Page, ret.Total),
+		List:     utils.CopySlice[types.ProtocolScript](ret.List),
+	}, nil
 }

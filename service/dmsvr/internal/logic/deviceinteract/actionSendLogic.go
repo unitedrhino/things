@@ -3,6 +3,8 @@ package deviceinteractlogic
 import (
 	"context"
 	"encoding/json"
+	"time"
+
 	"gitee.com/unitedrhino/core/service/timed/timedjobsvr/pb/timedjob"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
@@ -17,7 +19,6 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
-	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -93,6 +94,11 @@ func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (ret *dm.ActionSendRe
 	if err != nil {
 		return nil, err
 	}
+	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
+	if err != nil {
+		l.Error(err)
+		return
+	}
 	defer func() {
 		ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
 			uc := ctxs.GetUserCtx(l.ctx)
@@ -100,11 +106,7 @@ func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (ret *dm.ActionSendRe
 			content["req"] = params
 			content["userID"] = uc.UserID
 			contentStr, _ := json.Marshal(params)
-			di, err := l.svcCtx.DeviceCache.GetData(ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
-			if err != nil {
-				l.Error(err)
-				return
-			}
+
 			_ = l.svcCtx.SendRepo.Insert(ctx, &deviceLog.Send{
 				TenantCode:  di.TenantCode,
 				ProjectID:   di.ProjectID,
@@ -141,7 +143,7 @@ func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (ret *dm.ActionSendRe
 	}
 
 	if in.IsAsync { //如果是异步获取 处理结果暂不关注
-		err := l.svcCtx.PubDev.PublishToDev(l.ctx, &reqMsg)
+		err := l.svcCtx.PubDev.PublishToDev(l.ctx, di, &reqMsg)
 		if err != nil {
 			return nil, err
 		}
@@ -168,7 +170,7 @@ func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (ret *dm.ActionSendRe
 			MsgToken: req.MsgToken,
 		}, nil
 	}
-	resp, err := l.svcCtx.PubDev.ReqToDeviceSync(l.ctx, &reqMsg, 0, func(payload []byte) bool {
+	resp, err := l.svcCtx.PubDev.ReqToDeviceSync(l.ctx, di, &reqMsg, 0, func(payload []byte) bool {
 		var dresp msgThing.Resp
 		err = utils.Unmarshal(payload, &dresp)
 		if err != nil { //如果是没法解析的说明不是需要的包,直接跳过即可

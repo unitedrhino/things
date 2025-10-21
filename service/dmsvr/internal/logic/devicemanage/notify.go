@@ -3,6 +3,8 @@ package devicemanagelogic
 import (
 	"context"
 	"encoding/json"
+	"time"
+
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
@@ -15,7 +17,6 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
-	"time"
 )
 
 // BindChange 同一个项目只通知一次
@@ -46,12 +47,17 @@ func BindChange(ctx context.Context, svcCtx *svc.ServiceContext, pi *dm.ProductI
 		DeviceName:   dev.DeviceName,
 		ProtocolCode: pi.ProtocolCode,
 	}
-	er := svcCtx.PubDev.PublishToDev(ctx, &msg)
+	di, err := svcCtx.DeviceCache.GetData(ctx, dev)
+	if err != nil {
+		logx.WithContext(ctx).Error(err)
+		return err
+	}
+	er := svcCtx.PubDev.PublishToDev(ctx, di, &msg)
 	if er != nil {
 		logx.WithContext(ctx).Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)
 		return er
 	}
-	err := svcCtx.BindChange.Set(ctx, dev, projectID)
+	err = svcCtx.BindChange.Set(ctx, dev, projectID)
 	if err != nil {
 		logx.WithContext(ctx).Error(err)
 		return err
@@ -74,7 +80,12 @@ func TopoChange(ctx context.Context, svcCtx *svc.ServiceContext, status def.Gate
 		DeviceName:   gateway.DeviceName,
 		ProtocolCode: pi.ProtocolCode,
 	}
-	er := svcCtx.PubDev.PublishToDev(ctx, &msg)
+	di, err := svcCtx.DeviceCache.GetData(ctx, gateway)
+	if err != nil {
+		logx.WithContext(ctx).Error(err)
+		return err
+	}
+	er := svcCtx.PubDev.PublishToDev(ctx, di, &msg)
 	if er != nil {
 		logx.WithContext(ctx).Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)
 		return er

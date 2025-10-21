@@ -2,6 +2,9 @@ package protocolmanagelogic
 
 import (
 	"context"
+
+	"gitee.com/unitedrhino/share/ctxs"
+	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
@@ -26,7 +29,17 @@ func NewProtocolScriptDeviceDeleteLogic(ctx context.Context, svcCtx *svc.Service
 
 // 协议删除
 func (l *ProtocolScriptDeviceDeleteLogic) ProtocolScriptDeviceDelete(in *dm.WithID) (*dm.Empty, error) {
-	err := relationDB.NewProtocolScriptDeviceRepo(l.ctx).Delete(l.ctx, in.Id)
+	if err := ctxs.IsAdmin(l.ctx); err != nil {
+		return nil, err
+	}
+	old, err := relationDB.NewProtocolScriptDeviceRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.ProtocolScriptDeviceFilter{ID: in.Id})
+	if err != nil {
+		return &dm.Empty{}, err
+	}
+	if !ctxs.CanHandTenant(l.ctx, old.TenantCode) {
+		return nil, errors.Permissions
+	}
+	err = relationDB.NewProtocolScriptDeviceRepo(l.ctx).Delete(l.ctx, in.Id)
 
 	return &dm.Empty{}, err
 }

@@ -3,6 +3,8 @@ package deviceinteractlogic
 import (
 	"context"
 	"encoding/json"
+	"time"
+
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
@@ -13,7 +15,6 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
-	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -97,7 +98,12 @@ func (l *ActionRespLogic) ActionResp(in *dm.ActionRespReq) (*dm.Empty, error) {
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 	}
-	err = l.svcCtx.PubDev.PublishToDev(l.ctx, &reqMsg)
+	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
+	if err != nil {
+		l.Error(err)
+		return nil, err
+	}
+	err = l.svcCtx.PubDev.PublishToDev(l.ctx, di, &reqMsg)
 	if err != nil {
 		return nil, err
 	}

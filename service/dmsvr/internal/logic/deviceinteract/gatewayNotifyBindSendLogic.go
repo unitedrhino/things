@@ -3,6 +3,8 @@ package deviceinteractlogic
 import (
 	"context"
 	"encoding/json"
+	"time"
+
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
@@ -11,7 +13,6 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgGateway"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
-	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -77,7 +78,12 @@ func (l *GatewayNotifyBindSendLogic) GatewayNotifyBindSend(in *dm.GatewayNotifyB
 		ProtocolCode: protocolCode,
 	}
 	var resp []byte
-	resp, err = l.svcCtx.PubDev.ReqToDeviceSync(l.ctx, &reqMsg, time.Second*10, func(payload []byte) bool {
+	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: in.Gateway.ProductID, DeviceName: in.Gateway.DeviceName})
+	if err != nil {
+		l.Error(err)
+		return nil, err
+	}
+	resp, err = l.svcCtx.PubDev.ReqToDeviceSync(l.ctx, di, &reqMsg, time.Second*10, func(payload []byte) bool {
 		var dresp msgThing.Resp
 		err = utils.Unmarshal(payload, &dresp)
 		if err != nil { //如果是没法解析的说明不是需要的包,直接跳过即可

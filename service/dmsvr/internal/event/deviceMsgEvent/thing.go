@@ -632,7 +632,12 @@ func OtaVersionCheck(ctx context.Context, svcCtx *svc.ServiceContext, msg device
 		DeviceName:   msg.DeviceName,
 		ProtocolCode: pi.ProtocolCode,
 	}
-	err = svcCtx.PubDev.PublishToDev(ctx, &reqMsg)
+	di, err := svcCtx.DeviceCache.GetData(ctx, msg)
+	if err != nil {
+		logx.WithContext(ctx).Error(err)
+		return
+	}
+	err = svcCtx.PubDev.PublishToDev(ctx, di, &reqMsg)
 	if err != nil {
 		log.Error(err)
 		return

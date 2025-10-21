@@ -110,7 +110,12 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 				ProductID:  data.ProductID,
 				DeviceName: data.DeviceName,
 			}
-			er := l.svcCtx.PubDev.PublishToDev(l.ctx, &msg)
+			di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: data.ProductID, DeviceName: data.DeviceName})
+			if err != nil {
+				l.Error(err)
+				return err
+			}
+			er := l.svcCtx.PubDev.PublishToDev(l.ctx, di, &msg)
 			if er != nil {
 				l.Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)
 			}

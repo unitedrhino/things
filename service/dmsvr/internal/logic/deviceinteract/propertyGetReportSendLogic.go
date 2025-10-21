@@ -3,6 +3,9 @@ package deviceinteractlogic
 import (
 	"context"
 	"encoding/json"
+	"strings"
+	"time"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
@@ -14,8 +17,6 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
-	"strings"
-	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -96,13 +97,14 @@ func (l *PropertyGetReportSendLogic) PropertyGetReportSend(in *dm.PropertyGetRep
 	}
 	var resp []byte
 	var params []byte
+	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
+		ProductID:  in.ProductID,
+		DeviceName: in.DeviceName,
+	})
 	defer func() {
 		uc := ctxs.GetUserCtxNoNil(l.ctx)
 		account := uc.Account
-		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
-			ProductID:  in.ProductID,
-			DeviceName: in.DeviceName,
-		})
+
 		if err != nil {
 			l.Error(err)
 			return
@@ -127,7 +129,8 @@ func (l *PropertyGetReportSendLogic) PropertyGetReportSend(in *dm.PropertyGetRep
 
 		_ = l.svcCtx.SendRepo.Insert(l.ctx, &do)
 	}()
-	resp, err = l.svcCtx.PubDev.ReqToDeviceSync(l.ctx, &reqMsg, 0, func(payload []byte) bool {
+
+	resp, err = l.svcCtx.PubDev.ReqToDeviceSync(l.ctx, di, &reqMsg, 0, func(payload []byte) bool {
 		var dresp msgThing.Resp
 		err = utils.Unmarshal(payload, &dresp)
 		if err != nil { //如果是没法解析的说明不是需要的包,直接跳过即可

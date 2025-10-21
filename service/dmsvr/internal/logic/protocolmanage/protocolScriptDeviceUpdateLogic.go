@@ -2,6 +2,9 @@ package protocolmanagelogic
 
 import (
 	"context"
+
+	"gitee.com/unitedrhino/share/ctxs"
+	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
@@ -26,9 +29,15 @@ func NewProtocolScriptDeviceUpdateLogic(ctx context.Context, svcCtx *svc.Service
 
 // 协议更新
 func (l *ProtocolScriptDeviceUpdateLogic) ProtocolScriptDeviceUpdate(in *dm.ProtocolScriptDevice) (*dm.Empty, error) {
-	old, err := relationDB.NewProtocolScriptDeviceRepo(l.ctx).FindOne(l.ctx, in.Id)
+	if err := ctxs.IsAdmin(l.ctx); err != nil {
+		return nil, err
+	}
+	old, err := relationDB.NewProtocolScriptDeviceRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.ProtocolScriptDeviceFilter{ID: in.Id})
 	if err != nil {
 		return &dm.Empty{}, err
+	}
+	if !ctxs.CanHandTenant(l.ctx, old.TenantCode) {
+		return nil, errors.Permissions
 	}
 	if in.Priority != 0 {
 		old.Priority = in.Priority

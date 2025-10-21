@@ -707,6 +707,7 @@ message ProtocolScriptDebugResp{
 }
 
 message ProtocolScript{
+  string tenantCode =11;//租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改
   int64  id = 1;
   string  name = 2; //名称
   int64 triggerDir =3;    //1:up 2:down
@@ -737,6 +738,7 @@ message ProtocolScriptIndexResp{
 
 
 message ProtocolScriptDevice{
+  string tenantCode =12;//租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改
   int64  id = 1;
   int64 triggerSrc =2;    //产品:1 设备:2
   string productID =3;

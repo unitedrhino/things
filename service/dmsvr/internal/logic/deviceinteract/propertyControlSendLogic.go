@@ -3,6 +3,8 @@ package deviceinteractlogic
 import (
 	"context"
 	"encoding/json"
+	"time"
+
 	"gitee.com/unitedrhino/core/service/syssvr/sysExport"
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
@@ -21,7 +23,6 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"gitee.com/unitedrhino/things/share/userSubscribe"
-	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -188,11 +189,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 			if account == "" && uc.UserID <= def.RootNode {
 				account = "系统控制"
 			}
-			di, er := l.svcCtx.DeviceCache.GetData(ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
-			if er != nil {
-				l.Error(er)
-				return
-			}
+
 			for dataID, content := range param {
 				_ = l.svcCtx.SendRepo.Insert(ctx, &deviceLog.Send{
 					TenantCode:  di.TenantCode,
@@ -259,7 +256,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 	}
 
 	if in.IsAsync { //如果是异步获取 处理结果暂不关注
-		err := l.svcCtx.PubDev.PublishToDev(l.ctx, &reqMsg)
+		err := l.svcCtx.PubDev.PublishToDev(l.ctx, di, &reqMsg)
 		if err != nil {
 			return nil, err
 		}
@@ -270,7 +267,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 		}, nil
 	}
 	var resp []byte
-	resp, err = l.svcCtx.PubDev.ReqToDeviceSync(l.ctx, &reqMsg, time.Duration(in.SyncTimeout)*time.Second, func(payload []byte) bool {
+	resp, err = l.svcCtx.PubDev.ReqToDeviceSync(l.ctx, di, &reqMsg, time.Duration(in.SyncTimeout)*time.Second, func(payload []byte) bool {
 		var dresp msgThing.Resp
 		err = utils.Unmarshal(payload, &dresp)
 		if err != nil { //如果是没法解析的说明不是需要的包,直接跳过即可

@@ -1737,6 +1737,7 @@ type ProtocolInfoIndexResp struct {
 }
 
 type ProtocolScript struct {
+	TenantCode    string  `json:"tenantCode,optional"` //租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改
 	ID            int64   `json:"id,string,optional"`
 	Name          string  `json:"name,optional"`
 	Desc          *string `json:"desc,optional"`
@@ -1763,6 +1764,7 @@ type ProtocolScriptDebugResp struct {
 }
 
 type ProtocolScriptDevice struct {
+	TenantCode  string          `json:"tenantCode,optional"` //租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改
 	ID          int64           `json:"id,string,optional"`
 	TriggerSrc  int64           `json:"triggerSrc,optional"` //product:1 device:2
 	ProductID   string          `json:"productID,optional"`
@@ -1815,8 +1817,8 @@ type ProtocolScriptIndexReq struct {
 }
 
 type ProtocolScriptIndexResp struct {
-	List  []*ProtocolScript `json:"list"`           //自定义协议信息
-	Total int64             `json:"total,optional"` //拥有的总数
+	List []*ProtocolScript `json:"list"` //自定义协议信息
+	PageResp
 }
 
 type ProtocolService struct {

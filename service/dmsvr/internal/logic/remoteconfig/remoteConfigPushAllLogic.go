@@ -3,6 +3,8 @@ package remoteconfiglogic
 import (
 	"context"
 	"encoding/json"
+	"time"
+
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
@@ -12,7 +14,6 @@ import (
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgRemoteConfig"
-	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -68,7 +69,12 @@ func (l *RemoteConfigPushAllLogic) RemoteConfigPushAll(in *dm.RemoteConfigPushAl
 			ProductID:  v.ProductID,
 			DeviceName: v.DeviceName,
 		}
-		er := l.svcCtx.PubDev.PublishToDev(l.ctx, &msg)
+		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: v.ProductID, DeviceName: v.DeviceName})
+		if err != nil {
+			l.Error(v, err)
+			return nil, err
+		}
+		er := l.svcCtx.PubDev.PublishToDev(l.ctx, di, &msg)
 		if er != nil {
 			l.Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)
 			return nil, errors.System.AddDetail(er)

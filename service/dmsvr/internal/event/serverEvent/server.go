@@ -3,6 +3,8 @@ package serverEvent
 import (
 	"context"
 	"encoding/json"
+	"time"
+
 	"gitee.com/unitedrhino/core/service/timed/timedjobsvr/client/timedmanage"
 	"gitee.com/unitedrhino/core/service/timed/timedjobsvr/pb/timedjob"
 	"gitee.com/unitedrhino/share/ctxs"
@@ -22,7 +24,6 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/zeromicro/go-zero/core/logx"
-	"time"
 )
 
 type ServerHandle struct {
@@ -190,7 +191,12 @@ func (l *ServerHandle) ActionCheck(in *deviceMsg.PublishMsg) error {
 		sendMsg(err)
 		return nil
 	}
-	err = l.svcCtx.PubDev.PublishToDev(l.ctx, in)
+	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
+	if err != nil {
+		l.Error(err)
+		return err
+	}
+	err = l.svcCtx.PubDev.PublishToDev(l.ctx, di, in)
 	if err != nil {
 		return err
 	}

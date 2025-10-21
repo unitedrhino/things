@@ -4,6 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"sync"
+	"time"
+
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
@@ -19,8 +22,6 @@ import (
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"
-	"sync"
-	"time"
 )
 
 type SendMessageToDevicesLogic struct {
@@ -377,7 +378,16 @@ func PushMessageToDevice(ctx context.Context, svcCtx *svc.ServiceContext, device
 		DeviceName:   device.DeviceName,
 		ProtocolCode: pi.ProtocolCode,
 	}
-	err := svcCtx.PubDev.PublishToDev(ctx, &reqMsg)
+	core := devices.Core{
+		ProductID:  device.ProductID,
+		DeviceName: device.DeviceName,
+	}
+	di, err := svcCtx.DeviceCache.GetData(ctx, core)
+	if err != nil {
+		logx.WithContext(ctx).Error(err)
+		return err
+	}
+	err = svcCtx.PubDev.PublishToDev(ctx, di, &reqMsg)
 	if err != nil {
 		logx.WithContext(ctx).Error(err)
 		return err
@@ -393,15 +403,7 @@ func PushMessageToDevice(ctx context.Context, svcCtx *svc.ServiceContext, device
 		logx.WithContext(ctx).Error(err)
 		return err
 	}
-	core := devices.Core{
-		ProductID:  device.ProductID,
-		DeviceName: device.DeviceName,
-	}
-	di, err := svcCtx.DeviceCache.GetData(ctx, core)
-	if err != nil {
-		logx.WithContext(ctx).Error(err)
-		return nil
-	}
+
 	appMsg := application.OtaReport{
 		Device:    core,
 		Timestamp: time.Now().UnixMilli(),

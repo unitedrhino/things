@@ -3,6 +3,8 @@ package protocolmanagelogic
 import (
 	"context"
 	"encoding/json"
+
+	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
@@ -26,6 +28,9 @@ func NewProtocolScriptMultiImportLogic(ctx context.Context, svcCtx *svc.ServiceC
 }
 
 func (l *ProtocolScriptMultiImportLogic) ProtocolScriptMultiImport(in *dm.ProtocolScriptImportReq) (*dm.ImportResp, error) {
+	if err := ctxs.IsAdmin(l.ctx); err != nil {
+		return nil, err
+	}
 	var scripts []*relationDB.DmProtocolScript
 	err := json.Unmarshal([]byte(in.Scripts), &scripts)
 	if err != nil {

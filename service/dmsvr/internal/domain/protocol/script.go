@@ -10,8 +10,10 @@ import (
 	"time"
 
 	"gitee.com/unitedrhino/share/ctxs"
+	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"github.com/tidwall/gjson"
@@ -250,8 +252,7 @@ func (s *ScriptTrans) GetScripts(ctx context.Context, script map[devices.MsgHand
 	return
 }
 
-func (s *ScriptTrans) UpAfterTrans(ctx context.Context, req *deviceMsg.PublishMsg, resp *deviceMsg.PublishMsg) error {
-	//todo 后面需要加上缓存
+func (s *ScriptTrans) UpAfterTrans(ctx context.Context, di *dm.DeviceInfo, req *deviceMsg.PublishMsg, resp *deviceMsg.PublishMsg) error {
 	var scripts ScriptInfos
 	func() {
 		s.ProductUpAfterMutex.RLock()
@@ -276,7 +277,10 @@ func (s *ScriptTrans) UpAfterTrans(ctx context.Context, req *deviceMsg.PublishMs
 	}
 	sort.Sort(scripts)
 	for _, script := range scripts {
-		log, err := s.RespMsgRun(ctxs.BindTenantCode(ctx, script.TenantCode, 0), req, resp, script.Script)
+		if di.TenantCode != script.TenantCode && !(script.TenantCode == def.TenantCodeCommon || script.TenantCode == def.TenantCodeDefault) {
+			continue
+		}
+		log, err := s.RespMsgRun(ctxs.WithAdmin(ctxs.BindTenantCode(ctx, script.TenantCode, 0)), req, resp, script.Script)
 		if err != nil {
 			continue
 		}
@@ -292,7 +296,7 @@ func (s *ScriptTrans) UpAfterTrans(ctx context.Context, req *deviceMsg.PublishMs
 	return nil
 }
 
-func (s *ScriptTrans) UpBeforeTrans(ctx context.Context, msg *deviceMsg.PublishMsg) *deviceMsg.PublishMsg {
+func (s *ScriptTrans) UpBeforeTrans(ctx context.Context, di *dm.DeviceInfo, msg *deviceMsg.PublishMsg) *deviceMsg.PublishMsg {
 	var out = *msg
 	var scripts ScriptInfos
 	func() {
@@ -316,9 +320,13 @@ func (s *ScriptTrans) UpBeforeTrans(ctx context.Context, msg *deviceMsg.PublishM
 	if len(scripts) == 0 {
 		return &out
 	}
+
 	sort.Sort(scripts)
 	for _, script := range scripts {
-		newMsg, log, err := s.PublishMsgRun(ctxs.BindTenantCode(ctx, script.TenantCode, 0), &out, script.Script)
+		if di.TenantCode != script.TenantCode && !(script.TenantCode == def.TenantCodeCommon || script.TenantCode == def.TenantCodeDefault) {
+			continue
+		}
+		newMsg, log, err := s.PublishMsgRun(ctxs.WithAdmin(ctxs.BindTenantCode(ctx, script.TenantCode, 0)), &out, script.Script)
 		if err != nil {
 			logx.WithContext(ctx).Error(err)
 			continue
@@ -331,6 +339,8 @@ func (s *ScriptTrans) UpBeforeTrans(ctx context.Context, msg *deviceMsg.PublishM
 			logx.WithContext(ctx).Infof("UpBeforeTrans脚本:%s 执行日志为:%s", script.Name, logs)
 		}
 		if newMsg != nil {
+			newMsg.ProductID = out.ProductID
+			newMsg.DeviceName = out.DeviceName
 			out = *newMsg
 		}
 	}
@@ -338,7 +348,7 @@ func (s *ScriptTrans) UpBeforeTrans(ctx context.Context, msg *deviceMsg.PublishM
 	return &out
 }
 
-func (s *ScriptTrans) DownBeforeTrans(ctx context.Context, msg *deviceMsg.PublishMsg) *deviceMsg.PublishMsg {
+func (s *ScriptTrans) DownBeforeTrans(ctx context.Context, di *dm.DeviceInfo, msg *deviceMsg.PublishMsg) *deviceMsg.PublishMsg {
 	var out = *msg
 	var scripts ScriptInfos
 	func() {
@@ -364,7 +374,10 @@ func (s *ScriptTrans) DownBeforeTrans(ctx context.Context, msg *deviceMsg.Publis
 	}
 	sort.Sort(scripts)
 	for _, script := range scripts {
-		newMsg, log, err := s.PublishMsgRun(ctxs.BindTenantCode(ctx, script.TenantCode, 0), &out, script.Script)
+		if di.TenantCode != script.TenantCode && !(script.TenantCode == def.TenantCodeCommon || script.TenantCode == def.TenantCodeDefault) {
+			continue
+		}
+		newMsg, log, err := s.PublishMsgRun(ctxs.WithAdmin(ctxs.BindTenantCode(ctx, script.TenantCode, 0)), &out, script.Script)
 		if err != nil {
 			logx.WithContext(ctx).Error(err)
 			continue
@@ -377,6 +390,8 @@ func (s *ScriptTrans) DownBeforeTrans(ctx context.Context, msg *deviceMsg.Publis
 			logx.WithContext(ctx).Infof("DownBeforeTrans脚本:%s 执行日志为:%s", script.Name, logs)
 		}
 		if newMsg != nil {
+			newMsg.ProductID = out.ProductID
+			newMsg.DeviceName = out.DeviceName
 			out = *newMsg
 		}
 	}

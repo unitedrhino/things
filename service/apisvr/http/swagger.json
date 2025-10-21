@@ -13860,6 +13860,10 @@
     "ProtocolScript": {
       "type": "object",
       "properties": {
+        "tenantCode": {
+          "type": "string",
+          "description": "租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改"
+        },
         "id": {
           "type": "string"
         },
@@ -13960,6 +13964,10 @@
     "ProtocolScriptDevice": {
       "type": "object",
       "properties": {
+        "tenantCode": {
+          "type": "string",
+          "description": "租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改"
+        },
         "id": {
           "type": "string"
         },
@@ -14148,10 +14156,19 @@
           },
           "description": "自定义协议信息"
         },
-        "total": {
+        "page": {
           "type": "integer",
           "format": "int64",
-          "description": "拥有的总数"
+          "description": " 页码"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "ProtocolScriptIndexResp",

@@ -3,15 +3,17 @@ package pubDev
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/eventBus"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"gitee.com/unitedrhino/things/share/domain/protocols"
 	"gitee.com/unitedrhino/things/share/topics"
 	"github.com/zeromicro/go-zero/core/logx"
-	"time"
 )
 
 type (
@@ -24,12 +26,13 @@ func newPubDevClient(fast *eventBus.FastEvent) (*pubDevClient, error) {
 	return &pubDevClient{client: fast}, nil
 }
 
-func (n *pubDevClient) PublishToDev(ctx context.Context, reqMsg *deviceMsg.PublishMsg) error {
+func (n *pubDevClient) PublishToDev(ctx context.Context, di *dm.DeviceInfo, reqMsg *deviceMsg.PublishMsg) error {
 	startTime := time.Now()
 	if reqMsg.ProtocolCode == "" {
 		reqMsg.ProtocolCode = protocols.ProtocolCodeUrMqtt
 	}
-	reqMsg = s.DownBeforeTrans(ctx, reqMsg)
+
+	reqMsg = s.DownBeforeTrans(ctx, di, reqMsg)
 	defer func() {
 		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).
 			Infof("PublishToDev msg:%v", reqMsg)
@@ -44,7 +47,7 @@ func (n *pubDevClient) PublishToDev(ctx context.Context, reqMsg *deviceMsg.Publi
 	return err
 }
 
-func (n *pubDevClient) ReqToDeviceSync(ctx context.Context, reqMsg *deviceMsg.PublishMsg, timeout time.Duration, compareMsg CompareMsg) (
+func (n *pubDevClient) ReqToDeviceSync(ctx context.Context, di *dm.DeviceInfo, reqMsg *deviceMsg.PublishMsg, timeout time.Duration, compareMsg CompareMsg) (
 	payload []byte, err error) {
 	start := time.Now()
 	topic := fmt.Sprintf(topics.DeviceUpMsg, reqMsg.Handle, reqMsg.ProductID, reqMsg.DeviceName)
@@ -72,7 +75,7 @@ func (n *pubDevClient) ReqToDeviceSync(ctx context.Context, reqMsg *deviceMsg.Pu
 		return nil, err
 	}
 	defer n.client.UnSubscribeWithID(topic, sub)
-	err = n.PublishToDev(ctx, reqMsg)
+	err = n.PublishToDev(ctx, di, reqMsg)
 	if err != nil {
 		return nil, err
 	}

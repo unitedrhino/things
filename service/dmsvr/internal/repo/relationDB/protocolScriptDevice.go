@@ -23,6 +23,7 @@ func NewProtocolScriptDeviceRepo(in any) *ProtocolScriptDeviceRepo {
 }
 
 type ProtocolScriptDeviceFilter struct {
+	ID         int64
 	TriggerSrc int64
 	ScriptID   int64
 	ProductID  string
@@ -41,6 +42,9 @@ func (p ProtocolScriptDeviceRepo) fmtFilter(ctx context.Context, f ProtocolScrip
 	}
 	if f.ScriptID != 0 {
 		db = db.Where("script_id = ?", f.ScriptID)
+	}
+	if f.ID != 0 {
+		db = db.Where("id = ?", f.ID)
 	}
 	if f.DeviceName != "" {
 		db = db.Where("device_name = ?", f.DeviceName)

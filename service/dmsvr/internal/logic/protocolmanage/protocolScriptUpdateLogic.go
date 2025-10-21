@@ -2,6 +2,8 @@ package protocolmanagelogic
 
 import (
 	"context"
+
+	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/protocol"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
@@ -27,9 +29,15 @@ func NewProtocolScriptUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContex
 
 // 协议更新
 func (l *ProtocolScriptUpdateLogic) ProtocolScriptUpdate(in *dm.ProtocolScript) (*dm.Empty, error) {
+	if err := ctxs.IsAdmin(l.ctx); err != nil {
+		return nil, err
+	}
 	old, err := relationDB.NewProtocolScriptRepo(l.ctx).FindOne(l.ctx, in.Id)
 	if err != nil {
 		return &dm.Empty{}, err
+	}
+	if !ctxs.CanHandTenant(l.ctx, in.TenantCode) {
+		return nil, errors.Permissions
 	}
 	if in.Name != "" {
 		old.Name = in.Name
