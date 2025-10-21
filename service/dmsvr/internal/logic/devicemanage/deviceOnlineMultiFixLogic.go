@@ -124,8 +124,7 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 			log.Error(err)
 			return
 		}
-		if pi.OnlineHandle != product.OnlineHandleAuto { //暂时没有这样的设备
-			log.Errorf("OnlineHandle di:%#v pi%#v", di, pi)
+		if pi.OnlineHandle == product.OnlineHandleAlways {
 			return
 		}
 		push := func(appMsg application.ConnectMsg, di *dm.DeviceInfo) {
