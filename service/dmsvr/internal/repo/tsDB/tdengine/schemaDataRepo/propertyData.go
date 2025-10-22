@@ -9,6 +9,8 @@ import (
 
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/shadow"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
@@ -51,9 +53,9 @@ func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Mod
 			sp[identifier], _ = param.ToVal()
 		}
 	}
-	//if len(sp) != 0 {
-	//relationDB.NewShadowRepo(ctx).AsyncUpdate(ctx, shadow.NewInfo(productID, deviceName, sp, &timestamp))
-	//}
+	if len(sp) != 0 {
+		relationDB.NewShadowRepo(ctx).AsyncUpdate(ctx, shadow.NewInfo(productID, deviceName, sp, &timestamp))
+	}
 	return nil
 }
 
