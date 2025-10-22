@@ -29,6 +29,7 @@ type (
 	CommonSchemaIndexResp             = dm.CommonSchemaIndexResp
 	CommonSchemaInfo                  = dm.CommonSchemaInfo
 	CommonSchemaUpdateReq             = dm.CommonSchemaUpdateReq
+	Compare                           = dm.Compare
 	CompareInt64                      = dm.CompareInt64
 	CompareString                     = dm.CompareString
 	CustomTopic                       = dm.CustomTopic

@@ -66,7 +66,7 @@ type (
 		NotGroupID         int64
 		NotAreaID          int64
 		Distributor        *stores.IDPathFilter
-		Property           map[string]string
+		Property           map[string]*stores.Compare
 		RatedPower         *stores.Cmp
 		ExpTime            *stores.Cmp
 		Rssi               *stores.Cmp
@@ -262,8 +262,12 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	}
 	if len(f.Property) != 0 {
 		subQuery := d.db.Model(&DmDeviceShadow{}).Select("product_id, device_name")
+		//for k, v := range f.Property {
+		//	subQuery = subQuery.Where(" data_id=? and value=?", k, v)
+		//}
 		for k, v := range f.Property {
-			subQuery = subQuery.Where(" data_id=? and value=?", k, v)
+			subQuery = stores.GetCmp(v.CmpType, v.Value).
+				Where(subQuery, stores.Cast("value", v.CastTo)).Where(" data_id=? ", k)
 		}
 		db = db.Where("(product_id, device_name) in (?)",
 			subQuery)

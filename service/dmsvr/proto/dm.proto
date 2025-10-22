@@ -27,6 +27,12 @@ message PageInfo{
   }
 }
 
+message Compare{
+  string CmpType =1;//"=":相等 "!=":不相等 ">":大于">=":大于等于"<":小于"<=":小于等于 "like":模糊查询
+  string value =2;//值
+  string castTo =3; //参数的类型(填写了会进行数据类型的转换): int float string
+}
+
 message CompareString{
   string CmpType =1;//"=":相等 "!=":不相等 ">":大于">=":大于等于"<":小于"<=":小于等于 "like":模糊查询
   string value =2;//值
@@ -1789,7 +1795,7 @@ message DeviceInfoIndexReq{
   string protocolCode =51;//协议查询
   CompareInt64 rssi=52;
   IDPath dept =53;//过滤分销商的数据
-  map<string,CompareString> property =54;//设备最新属性过滤,key为属性的id,如果是结构体则key为 aaa.bbb 数组为aaa.1
+  map<string,Compare> property =54;//设备最新属性过滤,key为属性的id,如果是结构体则key为 aaa.bbb 数组为aaa.1
 }
 
 message DeviceInfoIndexResp{

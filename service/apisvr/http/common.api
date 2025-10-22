@@ -123,7 +123,11 @@ type(
         Path string  `json:"path,optional,omitempty"` //文件的路径
         IsUpdate bool  `json:"isUpdate,optional,omitempty"` //如果要更新该文件,则需要将该参数置为true
     }
-
+    Compare{
+        CmpTYpe string `json:"cmpType"`//"=":相等 "!=":不相等 ">":大于">=":大于等于"<":小于"<=":小于等于 "like":模糊查询,只有string类型可以使用
+        Value string `json:"value"`
+        CastTo string  `json:"castTo"` //参数的类型(填写了会进行数据类型的转换): int float string
+    }
     ImportResp{
         Total  int64 `json:"total"`      //导入总接口数
         ErrCount  int64 `json:"errCount"` //失败数

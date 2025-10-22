@@ -7123,6 +7123,28 @@
       },
       "title": "CommonSchemaUpdateReq"
     },
+    "Compare": {
+      "type": "object",
+      "properties": {
+        "cmpType": {
+          "type": "string",
+          "description": "\"=\":相等 \"!=\":不相等 \"\u003e\":大于\"\u003e=\":大于等于\"\u003c\":小于\"\u003c=\":小于等于 \"like\":模糊查询,只有string类型可以使用"
+        },
+        "value": {
+          "type": "string"
+        },
+        "castTo": {
+          "type": "string",
+          "description": "参数的类型(填写了会进行数据类型的转换): int float string"
+        }
+      },
+      "title": "Compare",
+      "required": [
+        "cmpType",
+        "value",
+        "castTo"
+      ]
+    },
     "CompareInt64": {
       "type": "object",
       "properties": {

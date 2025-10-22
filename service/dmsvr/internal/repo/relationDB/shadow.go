@@ -2,6 +2,7 @@ package relationDB
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/shadow"
@@ -16,7 +17,10 @@ type ShadowRepo struct {
 var async *stores.AsyncInsert[DmDeviceShadow]
 
 func Init() {
-	async = stores.NewAsyncInsert[DmDeviceShadow](stores.GetCommonConn(context.Background()), "")
+	async = stores.NewAsyncInsert[DmDeviceShadow](stores.GetCommonConn(context.Background()), "", stores.WithDBHandle(func(db *stores.DB) *stores.DB {
+		return db.Clauses(clause.OnConflict{
+			UpdateAll: true, Columns: stores.SetWithPg([]clause.Column{{Name: "product_id"}, {Name: "device_name"}, {Name: "data_id"}}, []clause.Column{})})
+	}))
 }
 
 func NewShadowRepo(in any) shadow.Repo {
@@ -45,7 +49,8 @@ func (p *ShadowRepo) MultiUpdate(ctx context.Context, data []*shadow.Info) error
 	for i, d := range data {
 		vals[i] = ToShadowPo(d)
 	}
-	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true, Columns: stores.SetWithPg([]clause.Column{{Name: "product_id"}, {Name: "device_name"}, {Name: "data_id"}}, []clause.Column{})}).Model(&DmDeviceShadow{}).Create(vals).Error
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{
+		UpdateAll: true, Columns: stores.SetWithPg([]clause.Column{{Name: "product_id"}, {Name: "device_name"}, {Name: "data_id"}}, []clause.Column{})}).Model(&DmDeviceShadow{}).Create(vals).Error
 	return stores.ErrFmt(err)
 }
 func (p *ShadowRepo) fmtFilter(ctx context.Context, f shadow.Filter) *gorm.DB {
