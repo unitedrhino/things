@@ -2,6 +2,9 @@ package devicemanagelogic
 
 import (
 	"context"
+	"fmt"
+	"time"
+
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
@@ -14,7 +17,6 @@ import (
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/topics"
 	"gorm.io/gorm"
-	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -217,12 +219,12 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 	if err != nil {
 		return nil, err
 	}
-	for _, di := range devs {
+	for i, di := range devs {
 		err = l.svcCtx.DeviceCache.SetData(l.ctx, *di, nil)
 		if err != nil {
 			l.Error(err)
 		}
-		err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUnbind, &di)
+		err = l.svcCtx.FastEvent.Publish(l.ctx, fmt.Sprintf(topics.DmDeviceInfoUnbind, dis[i].TenantCode), &di)
 		if err != nil {
 			l.Error(err)
 		}

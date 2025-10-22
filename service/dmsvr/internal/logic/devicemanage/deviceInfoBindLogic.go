@@ -3,6 +3,9 @@ package devicemanagelogic
 import (
 	"context"
 	"database/sql"
+	"fmt"
+	"time"
+
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
@@ -13,7 +16,6 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/topics"
-	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -199,11 +201,11 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 	logic.FillAreaDeviceCount(l.ctx, l.svcCtx, ai.AreaIDPath, string(oldAreaIDPath))
 	logic.FillProjectDeviceCount(l.ctx, l.svcCtx, int64(di.ProjectID))
 	dev := devices.Core{ProductID: di.ProductID, DeviceName: di.DeviceName}
-	er := l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUpdate, &dev)
+	er := l.svcCtx.FastEvent.Publish(l.ctx, fmt.Sprintf(topics.DmDeviceInfoUpdate, di.TenantCode), &dev)
 	if er != nil {
 		l.Error(er)
 	}
-	er = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoBind, &dev)
+	er = l.svcCtx.FastEvent.Publish(l.ctx, fmt.Sprintf(topics.DmDeviceInfoBind, di.TenantCode), &dev)
 	if er != nil {
 		l.Error(er)
 	}

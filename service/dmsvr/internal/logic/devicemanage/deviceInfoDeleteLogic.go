@@ -2,6 +2,8 @@ package devicemanagelogic
 
 import (
 	"context"
+	"fmt"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
@@ -101,7 +103,7 @@ func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*d
 	if err != nil {
 		l.Error(err)
 	}
-	err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoDelete, &devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
+	err = l.svcCtx.FastEvent.Publish(l.ctx, fmt.Sprintf(topics.DmDeviceInfoDelete, di.TenantCode), &devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
 	if err != nil {
 		l.Error(err)
 	}

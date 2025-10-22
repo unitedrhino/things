@@ -202,7 +202,7 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 				Device: device, Timestamp: timeStamp.UnixMilli(), Params: paramValues,
 			}
 			//应用事件通知-设备物模型属性上报通知 ↓↓↓
-			err := l.svcCtx.PubApp.DeviceThingPropertyReportV2(ctx, appMsg)
+			err := l.svcCtx.PubApp.DeviceThingPropertyReportV2(ctx, di, appMsg)
 			if err != nil {
 				logx.WithContext(ctx).Errorf("%s.DeviceThingPropertyReport  params:%v,err:%v", utils.FuncName(), paramValues, err)
 			}
@@ -233,7 +233,7 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 					Identifier: identifier, Param: param,
 				}
 				//应用事件通知-设备物模型属性上报通知 ↓↓↓
-				err := l.svcCtx.PubApp.DeviceThingPropertyReport(ctx, appMsg)
+				err := l.svcCtx.PubApp.DeviceThingPropertyReport(ctx, di, appMsg)
 				if err != nil {
 					logx.WithContext(ctx).Errorf("%s.DeviceThingPropertyReport  identifier:%v, param:%v,err:%v", utils.FuncName(), identifier, param, err)
 				}
@@ -306,7 +306,7 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 			Params:     paramValues,
 			Type:       dbData.Type,
 		}
-		err = l.svcCtx.PubApp.DeviceThingEventReport(l.ctx, appMsg)
+		err = l.svcCtx.PubApp.DeviceThingEventReport(l.ctx, di, appMsg)
 		if err != nil {
 			l.Errorf("%s.DeviceThingEventReport  err:%v", utils.FuncName(), err)
 		}
@@ -472,11 +472,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 				Device: device, Timestamp: timeStamp.UnixMilli(),
 				Identifier: identifier, Param: param,
 			}
-			//应用事件通知-设备物模型属性上报通知 ↓↓↓
-			err := l.svcCtx.PubApp.DeviceThingPropertyReport(ctx, appMsg)
-			if err != nil {
-				logx.WithContext(ctx).Errorf("%s.DeviceThingPropertyReport  identifier:%v, param:%v,err:%v", utils.FuncName(), identifier, param, err)
-			}
+
 			err = l.svcCtx.WebHook.Publish(l.svcCtx.WithDeviceTenant(l.ctx, device), sysExport.CodeDmDevicePropertyReport, appMsg)
 			if err != nil {
 				l.Error(err)
@@ -499,6 +495,11 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 					"projectID": cast.ToString(di.ProjectID),
 					"areaID":    cast.ToString(di.AreaID),
 				})
+				//应用事件通知-设备物模型属性上报通知 ↓↓↓
+				err := l.svcCtx.PubApp.DeviceThingPropertyReport(ctx, di, appMsg)
+				if err != nil {
+					logx.WithContext(ctx).Errorf("%s.DeviceThingPropertyReport  identifier:%v, param:%v,err:%v", utils.FuncName(), identifier, param, err)
+				}
 			}
 		}
 		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).Debugf("%s.DeviceThingPropertyReport startTime:%v",
@@ -507,11 +508,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 	utils.Go(ctx, func() {
 		startTime := time.Now()
 		appMsg := application.PropertyReportV2{Device: device, Timestamp: timeStamp.UnixMilli(), Params: paramValues}
-		//应用事件通知-设备物模型属性上报通知 ↓↓↓
-		err := l.svcCtx.PubApp.DeviceThingPropertyReportV2(ctx, appMsg)
-		if err != nil {
-			logx.WithContext(ctx).Errorf("%s.DeviceThingPropertyReport  params:%v,err:%v", utils.FuncName(), paramValues, err)
-		}
+
 		err = l.svcCtx.WebHook.Publish(l.svcCtx.WithDeviceTenant(l.ctx, device), sysExport.CodeDmDevicePropertyReportV2, appMsg)
 		if err != nil {
 			l.Error(err)
@@ -530,6 +527,11 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 				"projectID": cast.ToString(di.ProjectID),
 				"areaID":    cast.ToString(di.AreaID),
 			})
+			//应用事件通知-设备物模型属性上报通知 ↓↓↓
+			err := l.svcCtx.PubApp.DeviceThingPropertyReportV2(ctx, di, appMsg)
+			if err != nil {
+				logx.WithContext(ctx).Errorf("%s.DeviceThingPropertyReport  params:%v,err:%v", utils.FuncName(), paramValues, err)
+			}
 		}
 		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).Debugf("%s.DeviceThingPropertyReport startTime:%v",
 			utils.FuncName(), startTime)
@@ -814,7 +816,7 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 		Params:     paramValues,
 		Type:       dbData.Type,
 	}
-	err = l.svcCtx.PubApp.DeviceThingEventReport(l.ctx, appMsg)
+	err = l.svcCtx.PubApp.DeviceThingEventReport(l.ctx, l.di, appMsg)
 	if err != nil {
 		l.Errorf("%s.DeviceThingEventReport  err:%v", utils.FuncName(), err)
 	}
@@ -888,11 +890,7 @@ func (l *ThingLogic) HandleAction(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg
 				ActionID: l.dreq.ActionID, Params: l.dreq.Params, Dir: schema.ActionDirUp,
 				Code: l.dreq.Code, Msg: l.dreq.Msg,
 			}
-			//应用事件通知-设备物模型事件上报通知 ↓↓↓
-			err := l.svcCtx.PubApp.DeviceThingActionReport(ctx, appMsg)
-			if err != nil {
-				logx.WithContext(ctx).Errorf("%s.DeviceThingActionReport.Action  req:%v,err:%v", utils.FuncName(), utils.Fmt(l.dreq), err)
-			}
+
 			di, err := l.svcCtx.DeviceCache.GetData(l.ctx, core)
 			if err != nil {
 				l.Error(err)
@@ -911,6 +909,11 @@ func (l *ThingLogic) HandleAction(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg
 					"projectID": cast.ToString(di.ProjectID),
 					"areaID":    cast.ToString(di.AreaID),
 				})
+				//应用事件通知-设备物模型事件上报通知 ↓↓↓
+				err := l.svcCtx.PubApp.DeviceThingActionReport(ctx, di, appMsg)
+				if err != nil {
+					logx.WithContext(ctx).Errorf("%s.DeviceThingActionReport.Action  req:%v,err:%v", utils.FuncName(), utils.Fmt(l.dreq), err)
+				}
 			}
 			if err != nil {
 				logx.WithContext(ctx).Error(err)
@@ -944,20 +947,21 @@ func (l *ThingLogic) HandleAction(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg
 				logx.WithContext(ctx).Error(err)
 			}
 			param, _ := resp.Data.(map[string]any)
-			//应用事件通知-设备物模型事件上报通知 ↓↓↓
-			appMsg := application.ActionReport{
-				Device: core, Timestamp: timeStamp.UnixMilli(), ReqType: reqType, MsgToken: resp.MsgToken,
-				ActionID: resp.ActionID, Params: param, Dir: schema.ActionDirUp, Code: resp.Code, Msg: resp.Msg,
-			}
-			err = l.svcCtx.PubApp.DeviceThingActionReport(ctx, appMsg)
-			if err != nil {
-				logx.WithContext(ctx).Errorf("%s.DeviceThingActionReport  req:%v,err:%v", utils.FuncName(), utils.Fmt(l.dreq), err)
-			}
+
 			di, err := l.svcCtx.DeviceCache.GetData(l.ctx, core)
 			if err != nil {
 				l.Error(err)
 			}
 			if di != nil {
+				//应用事件通知-设备物模型事件上报通知 ↓↓↓
+				appMsg := application.ActionReport{
+					Device: core, Timestamp: timeStamp.UnixMilli(), ReqType: reqType, MsgToken: resp.MsgToken,
+					ActionID: resp.ActionID, Params: param, Dir: schema.ActionDirUp, Code: resp.Code, Msg: resp.Msg,
+				}
+				err = l.svcCtx.PubApp.DeviceThingActionReport(ctx, di, appMsg)
+				if err != nil {
+					logx.WithContext(ctx).Errorf("%s.DeviceThingActionReport  req:%v,err:%v", utils.FuncName(), utils.Fmt(l.dreq), err)
+				}
 				err = l.svcCtx.UserSubscribe.Publish(ctx, userSubscribe.DeviceActionReport, appMsg, map[string]any{
 					"productID":  core.ProductID,
 					"deviceName": core.DeviceName,

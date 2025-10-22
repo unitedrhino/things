@@ -139,7 +139,7 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 					utils.FuncName(), ld.ProductID, ld.DeviceName, err)
 			}
 
-			err = svcCtx.PubApp.DeviceStatusDisConnected(ctx, appMsg)
+			err = svcCtx.PubApp.DeviceStatusDisConnected(ctx, di, appMsg)
 			if err != nil {
 				log.Errorf("%s.pubApp productID:%v deviceName:%v err:%v",
 					utils.FuncName(), ld.ProductID, ld.DeviceName, err)

@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"time"
+
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
@@ -18,7 +20,6 @@ import (
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/topics"
 	"gorm.io/gorm"
-	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -53,6 +54,7 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceInfoUnbindReq) (*d
 	if di.ProjectID <= def.NotClassified {
 		return nil, errors.DeviceNotBound.WithMsg("设备已解绑")
 	}
+	oldTenantCode := di.TenantCode
 	uc := ctxs.GetUserCtxNoNil(l.ctx)
 	pi, err := l.svcCtx.ProjectM.ProjectInfoRead(l.ctx, &sys.ProjectWithID{ProjectID: int64(di.ProjectID)})
 	if err != nil && !errors.Cmp(err, errors.NotFind) { //解绑的时候家庭已经不存在了也需要能正确解绑
@@ -147,7 +149,7 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceInfoUnbindReq) (*d
 	}
 	l.svcCtx.DeviceCache.SetData(l.ctx, dev, nil)
 	err = DeleteDeviceTimeData(l.ctx, l.svcCtx, in.ProductID, in.DeviceName, DeleteModeThing)
-	err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUnbind, &dev)
+	err = l.svcCtx.FastEvent.Publish(l.ctx, fmt.Sprintf(topics.DmDeviceInfoUnbind, oldTenantCode), &dev)
 	if err != nil {
 		l.Error(err)
 	}

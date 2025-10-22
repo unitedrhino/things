@@ -231,7 +231,7 @@ func (l *DeviceMsgHandle) FixDisconnect(msg *deviceMsg.PublishMsg) {
 				Status:    def.ConnectedStatus,
 				Timestamp: msg.Timestamp,
 			}
-			err = l.svcCtx.PubApp.DeviceStatusConnected(ctx, appMsg)
+			err = l.svcCtx.PubApp.DeviceStatusConnected(ctx, di, appMsg)
 			if err != nil {
 				l.Errorf("%s.pubApp productID:%v deviceName:%v err:%v",
 					utils.FuncName(), msg.ProductID, msg.DeviceName, err)

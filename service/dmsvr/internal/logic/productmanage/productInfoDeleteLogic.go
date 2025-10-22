@@ -2,14 +2,17 @@ package productmanagelogic
 
 import (
 	"context"
+	"fmt"
+
 	"gitee.com/unitedrhino/share/ctxs"
+	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
-	"gitee.com/unitedrhino/things/share/topics"
-
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/share/topics"
+	"github.com/spf13/cast"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -34,10 +37,20 @@ func NewProductInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 
 // 删除设备
 func (l *ProductInfoDeleteLogic) ProductInfoDelete(in *dm.ProductInfoDeleteReq) (*dm.Empty, error) {
-	if err := ctxs.IsRoot(l.ctx); err != nil {
+	if err := ctxs.IsAdmin(l.ctx); err != nil {
 		return nil, err
 	}
-	err := l.Check(in)
+	po, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.ProductID}})
+	if err != nil {
+		if errors.Cmp(err, errors.NotFind) {
+			return nil, errors.Parameter.AddDetail("not find Product_id id:" + cast.ToString(in.ProductID))
+		}
+		return nil, err
+	}
+	if !ctxs.CanHandTenant(l.ctx, po.TenantCode) {
+		return nil, errors.Parameter
+	}
+	err = l.Check(in)
 	if err != nil {
 		return nil, err
 	}
@@ -54,6 +67,10 @@ func (l *ProductInfoDeleteLogic) ProductInfoDelete(in *dm.ProductInfoDeleteReq) 
 	if err != nil {
 		l.Errorf("%s.Delete err=%v", utils.FuncName(), utils.Fmt(err))
 		return nil, err
+	}
+	err = l.svcCtx.FastEvent.Publish(l.ctx, fmt.Sprintf(topics.DmProductInfoDelete, def.GetTenantCode(po.TenantCode)), in.ProductID)
+	if err != nil {
+		l.Error(err)
 	}
 	return &dm.Empty{}, nil
 }
@@ -83,10 +100,6 @@ func (l *ProductInfoDeleteLogic) DropProduct(in *dm.ProductInfoDeleteReq) error 
 		return err
 	}
 	err = l.svcCtx.ProductCache.SetData(l.ctx, in.ProductID, nil)
-	if err != nil {
-		l.Error(err)
-	}
-	err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmProductInfoDelete, in.ProductID)
 	if err != nil {
 		l.Error(err)
 	}

@@ -161,6 +161,11 @@ func (l *ServerHandle) ActionCheck(in *deviceMsg.PublishMsg) error {
 	if resp != nil { //设备已经回复,不需要管
 		return nil
 	}
+	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
+	if err != nil {
+		l.Error(err)
+		return err
+	}
 	core := devices.Core{
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
@@ -172,7 +177,7 @@ func (l *ServerHandle) ActionCheck(in *deviceMsg.PublishMsg) error {
 		ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
 			l.Infof("DeviceThingActionReport.Action device:%v,req:%v", core, req)
 			//应用事件通知-设备物模型事件上报通知 ↓↓↓
-			err := l.svcCtx.PubApp.DeviceThingActionReport(ctx, application.ActionReport{
+			err := l.svcCtx.PubApp.DeviceThingActionReport(ctx, di, application.ActionReport{
 				Device: core, Timestamp: now.UnixMilli(), ReqType: deviceMsg.ReqMsg, MsgToken: req.MsgToken,
 				ActionID: req.ActionID, Dir: schema.ActionDirUp, Code: devErr.GetCode(), Msg: devErr.GetMsg(),
 			})
@@ -191,11 +196,7 @@ func (l *ServerHandle) ActionCheck(in *deviceMsg.PublishMsg) error {
 		sendMsg(err)
 		return nil
 	}
-	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
-	if err != nil {
-		l.Error(err)
-		return err
-	}
+
 	err = l.svcCtx.PubDev.PublishToDev(l.ctx, di, in)
 	if err != nil {
 		return err

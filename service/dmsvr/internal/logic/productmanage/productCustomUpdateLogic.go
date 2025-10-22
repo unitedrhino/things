@@ -2,13 +2,11 @@ package productmanagelogic
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
-	"gitee.com/unitedrhino/share/events"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
-	"gitee.com/unitedrhino/things/share/topics"
-
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 
@@ -67,9 +65,9 @@ func (l *ProductCustomUpdateLogic) ProductCustomUpdate(in *dm.ProductCustom) (*d
 	if err != nil {
 		return nil, errors.Database.AddDetail(err)
 	}
-	err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmProductCustomUpdate, &events.DeviceUpdateInfo{ProductID: in.ProductID})
-	if err != nil {
-		return nil, err
-	}
+	//err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmProductCustomUpdate, &events.DeviceUpdateInfo{ProductID: in.ProductID})
+	//if err != nil {
+	//	return nil, err
+	//}
 	return &dm.Empty{}, nil
 }

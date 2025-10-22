@@ -396,7 +396,8 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Empty, 
 		l.Error(err)
 	}
 
-	err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUpdate, &devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
+	err = l.svcCtx.FastEvent.Publish(l.ctx, fmt.Sprintf(topics.DmDeviceInfoUpdate, dmDiPo.TenantCode),
+		&devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
 	if err != nil {
 		l.Error(err)
 	}

@@ -53,8 +53,7 @@ func (l *ProductInfoCreateLogic) CheckProduct(in *dm.ProductInfo) (bool, error) 
 	if errors.Cmp(err, errors.NotFind) {
 		return false, nil
 	}
-	uc := ctxs.GetUserCtxNoNil(l.ctx)
-	if !uc.IsRoot() && in.TenantCode != "" && in.TenantCode != uc.TenantCode {
+	if !ctxs.CanHandTenant(l.ctx, in.TenantCode) {
 		return false, errors.Permissions.AddMsg("普通租户只能创建自己租户下的产品")
 	}
 	return false, err
@@ -223,7 +222,7 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Empt
 		l.Errorf("%s.Insert err=%+v", utils.FuncName(), err)
 		return nil, err
 	}
-	err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmProductInfoCreate, in.ProductID)
+	err = l.svcCtx.FastEvent.Publish(l.ctx, fmt.Sprintf(topics.DmProductInfoCreate, def.GetTenantCode(pi.TenantCode)), in.ProductID)
 	if err != nil {
 		l.Error(err)
 	}

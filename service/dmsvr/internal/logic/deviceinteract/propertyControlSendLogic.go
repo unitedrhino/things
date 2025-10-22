@@ -72,6 +72,10 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 			return nil, err
 		}
 	}
+	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, dev)
+	if err != nil {
+		return nil, err
+	}
 	err = l.initMsg(devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
 	if err != nil {
 		return nil, err
@@ -127,7 +131,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 				Device: dev, Timestamp: time.Now().UnixMilli(), Params: req.Params,
 			}
 			//应用事件通知-设备物模型属性上报通知 ↓↓↓
-			err := l.svcCtx.PubApp.DeviceThingPropertyReportV2(l.ctx, appMsg)
+			err := l.svcCtx.PubApp.DeviceThingPropertyReportV2(l.ctx, di, appMsg)
 			if err != nil {
 				logx.WithContext(l.ctx).Errorf("%s.DeviceThingPropertyReport  params:%v,err:%v", utils.FuncName(), req.Params, err)
 			}
@@ -146,7 +150,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 				Identifier: k, Param: v,
 			}
 			//应用事件通知-设备物模型属性上报通知 ↓↓↓
-			err := l.svcCtx.PubApp.DeviceThingPropertyReport(l.ctx, appMsg)
+			err := l.svcCtx.PubApp.DeviceThingPropertyReport(l.ctx, di, appMsg)
 			if err != nil {
 				logx.WithContext(l.ctx).Errorf("%s.DeviceThingPropertyReport  identifier:%v, param:%v,err:%v", utils.FuncName(), k, param, err)
 			}
@@ -164,10 +168,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 			})
 		}
 	}
-	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, dev)
-	if err != nil {
-		l.Error(err)
-	}
+	
 	if in.ShadowControl == shadow.ControlOnlyCloud || in.ShadowControl == shadow.ControlOnlyCloudLatest {
 		//插入多条设备物模型属性数据
 		err = l.svcCtx.SchemaManaRepo.InsertPropertiesData(l.ctx, l.model, in.ProductID, in.DeviceName, params, time.Now(),

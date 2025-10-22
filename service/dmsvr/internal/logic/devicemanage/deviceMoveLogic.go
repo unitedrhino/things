@@ -2,6 +2,9 @@ package devicemanagelogic
 
 import (
 	"context"
+	"fmt"
+	"time"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
@@ -14,7 +17,6 @@ import (
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/topics"
 	"gorm.io/gorm"
-	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -186,7 +188,7 @@ func (l *DeviceMoveLogic) DeviceMove(in *dm.DeviceMoveReq) (*dm.Empty, error) {
 	l.svcCtx.DeviceCache.SetData(l.ctx, newDevCore, nil)
 	err = DeleteDeviceTimeData(l.ctx, l.svcCtx, oldDev.ProductID, oldDev.DeviceName, DeleteModeAll)
 	err = DeleteDeviceTimeData(l.ctx, l.svcCtx, newDev.ProductID, newDev.DeviceName, DeleteModeAll)
-	err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUnbind, &oldDevCore)
+	err = l.svcCtx.FastEvent.Publish(l.ctx, fmt.Sprintf(topics.DmDeviceInfoUnbind, oldDev.TenantCode), &oldDevCore)
 	BindChange(l.ctx, l.svcCtx, pi, oldDevCore, int64(oldDev.ProjectID))
 	BindChange(l.ctx, l.svcCtx, pi, newDevCore, int64(newDev.ProjectID))
 

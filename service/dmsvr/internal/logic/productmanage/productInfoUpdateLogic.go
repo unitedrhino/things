@@ -246,6 +246,9 @@ func (l *ProductInfoUpdateLogic) ProductInfoUpdate(in *dm.ProductInfo) (*dm.Empt
 		}
 		return nil, err
 	}
+	if !ctxs.CanHandTenant(l.ctx, po.TenantCode) {
+		return nil, errors.Parameter
+	}
 
 	err = l.setPoByPb(po, in)
 	if err != nil {
@@ -263,7 +266,7 @@ func (l *ProductInfoUpdateLogic) ProductInfoUpdate(in *dm.ProductInfo) (*dm.Empt
 	if err != nil {
 		l.Error(err)
 	}
-	err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmProductInfoUpdate, in.ProductID)
+	err = l.svcCtx.FastEvent.Publish(l.ctx, fmt.Sprintf(topics.DmProductInfoUpdate, def.GetTenantCode(po.TenantCode)), in.ProductID)
 	if err != nil {
 		l.Error(err)
 	}

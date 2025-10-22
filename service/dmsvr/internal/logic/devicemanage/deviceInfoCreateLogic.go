@@ -4,6 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"regexp"
+	"time"
+
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
@@ -23,8 +26,6 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.uber.org/atomic"
 	"gorm.io/gorm"
-	"regexp"
-	"time"
 )
 
 type DeviceInfoCreateLogic struct {
@@ -314,7 +315,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 	}
 	logic.FillAreaDeviceCount(l.ctx, l.svcCtx, string(di.AreaIDPath))
 	logic.FillProjectDeviceCount(l.ctx, l.svcCtx, int64(di.ProjectID))
-	err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoCreate, &devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
+	err = l.svcCtx.FastEvent.Publish(l.ctx, fmt.Sprintf(topics.DmDeviceInfoCreate, di.TenantCode), &devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
 	if err != nil {
 		l.Error(err)
 	}

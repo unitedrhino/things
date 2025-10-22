@@ -457,7 +457,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		return nil
 	})
 	logx.Must(err)
-	err = svcCtx.FastEvent.QueueSubscribe(coreTopic.CoreProjectInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
+	err = svcCtx.FastEvent.QueueSubscribe(fmt.Sprintf(coreTopic.CoreProjectInfoDelete, "*"), func(ctx context.Context, t time.Time, body []byte) error {
 		pi := cast.ToInt64(string(body))
 		logx.WithContext(ctx).Infof("CoreProjectInfoDelete value:%v err:%v", string(body), err)
 		if pi == 0 {
@@ -481,7 +481,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		return nil
 	})
 	logx.Must(err)
-	err = svcCtx.FastEvent.QueueSubscribe(coreTopic.CoreAreaInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
+	err = svcCtx.FastEvent.QueueSubscribe(fmt.Sprintf(coreTopic.CoreAreaInfoDelete, "*"), func(ctx context.Context, t time.Time, body []byte) error {
 		var value def.IDs
 		err := json.Unmarshal(body, &value)
 		if err != nil {

@@ -2,6 +2,9 @@ package devicemanagelogic
 
 import (
 	"context"
+	"fmt"
+	"time"
+
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
@@ -12,7 +15,6 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/topics"
-	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -42,7 +44,7 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 	if in.AreaID == def.RootNode {
 		return nil, errors.Parameter.AddMsgf("设备不能在root节点的区域下")
 	}
-
+	uc := ctxs.GetUserCtxNoNil(l.ctx)
 	var columns []string
 	var Distributor stores.IDPathWithUpdate
 	var areaIDPath string
@@ -55,6 +57,9 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 		ai, err := l.svcCtx.AreaCache.GetData(l.ctx, in.AreaID)
 		if err != nil {
 			return nil, err
+		}
+		if uc.TenantCode != ai.TenantCode {
+			return nil, errors.NotFind.AddMsg("未查询到区域")
 		}
 		areaIDPath = ai.AreaIDPath
 		changeAreaIDPaths[areaIDPath] = struct{}{}
@@ -104,7 +109,7 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 		logic.UpdateDevice(l.ctx, l.svcCtx, devs, deviceAffiliation)
 	}
 	for _, dev := range devs {
-		err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUpdate, dev)
+		err = l.svcCtx.FastEvent.Publish(l.ctx, fmt.Sprintf(topics.DmDeviceInfoUpdate, uc.TenantCode), dev)
 		if err != nil {
 			l.Error(err)
 		}
