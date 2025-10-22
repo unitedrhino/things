@@ -1,5 +1,5 @@
 #!/bin/bash
 
 
-git push -f  gitee dev:dev
-git push -f github dev:dev
+git push -f  gitee
+git push -f github
