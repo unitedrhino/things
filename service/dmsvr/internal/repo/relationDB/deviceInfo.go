@@ -3,6 +3,7 @@ package relationDB
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"gitee.com/unitedrhino/share/ctxs"
@@ -265,10 +266,23 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 		//for k, v := range f.Property {
 		//	subQuery = subQuery.Where(" data_id=? and value=?", k, v)
 		//}
+		var sqs []any
 		for k, v := range f.Property {
-			subQuery = stores.GetCmp(v.CmpType, v.Value).
-				Where(subQuery, stores.Cast("value", v.CastTo)).Where(" data_id=? ", k)
+			sqs = append(sqs, stores.GetCmp(v.CmpType, v.Value).
+				Where(d.db.Model(&DmDeviceShadow{}).Select("product_id, device_name"),
+					stores.Cast("value", v.CastTo)).Where(" data_id=? ", k))
 		}
+
+		if len(f.Property) == 1 {
+			subQuery = sqs[0].(*stores.DB)
+		} else {
+			var query []string
+			for range sqs {
+				query = append(query, " (?) ")
+			}
+			subQuery = d.db.Raw(strings.Join(query, " INTERSECT "), sqs...)
+		}
+
 		db = db.Where("(product_id, device_name) in (?)",
 			subQuery)
 	}
