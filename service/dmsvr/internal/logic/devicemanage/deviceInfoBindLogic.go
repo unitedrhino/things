@@ -3,6 +3,8 @@ package devicemanagelogic
 import (
 	"context"
 	"database/sql"
+	"time"
+
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
@@ -13,7 +15,6 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/topics"
-	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -78,16 +79,14 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 		return nil, err
 	}
 	if di == nil {
-		di, err = relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(ctxs.WithRoot(l.ctx), relationDB.DeviceFilter{
-			DeviceNames: []string{in.Device.DeviceName, filterAllowedChars(in.Device.DeviceName)}, //兼容打印错误
-		})
-		if err != nil {
-			if !errors.Cmp(err, errors.NotFind) {
+		if !(((pi.NetType == def.NetBle || pi.NetType == 10) && pi.AutoRegister == def.AutoRegAuto) || (pi.AutoRegister == def.AutoRegBind)) {
+			di, err = relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(ctxs.WithRoot(l.ctx), relationDB.DeviceFilter{
+				DeviceNames: []string{in.Device.DeviceName, filterAllowedChars(in.Device.DeviceName)}, //兼容打印错误
+			})
+			if err != nil {
 				return nil, err
 			}
-			if !(((pi.NetType == def.NetBle || pi.NetType == 10) && pi.AutoRegister == def.AutoRegAuto) || (pi.AutoRegister == def.AutoRegBind)) {
-				return nil, errors.NotFind
-			}
+		} else {
 			_, err = NewDeviceInfoCreateLogic(ctxs.WithProjectID(ctxs.WithAdmin(l.ctx), def.NotClassified), l.svcCtx).
 				DeviceInfoCreate(&dm.DeviceInfo{ProductID: in.Device.ProductID, DeviceName: in.Device.DeviceName, IsOnline: def.True})
 			if err != nil {
