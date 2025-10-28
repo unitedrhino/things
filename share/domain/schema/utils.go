@@ -7,7 +7,6 @@ import (
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	sq "gitee.com/unitedrhino/squirrel"
-	"github.com/spf13/cast"
 	"gorm.io/gorm"
 
 	"strings"
@@ -22,7 +21,7 @@ func WhereArray(db *gorm.DB, identifier string, pos string) *gorm.DB {
 	if len(arrs) <= 1 {
 		return db
 	}
-	num, err := cast.ToIntE(arrs[1])
+	num, err := utils.ToIntE(arrs[1])
 	if err != nil {
 		if arrs[1] == "*" {
 			return db
@@ -42,7 +41,7 @@ func WhereArray2(db sq.SelectBuilder, identifier string, pos string) sq.SelectBu
 	if len(arrs) <= 1 {
 		return db
 	}
-	num, err := cast.ToIntE(arrs[1])
+	num, err := utils.ToIntE(arrs[1])
 	if err != nil {
 		if arrs[1] == "*" {
 			return db
@@ -61,11 +60,11 @@ func GetArray(identifier string) (ident string, num int, ok bool) {
 	if len(arrs) <= 1 {
 		return identifier, 0, false
 	}
-	num, err := cast.ToIntE(arrs[1])
+	num, err := utils.ToIntE(arrs[1])
 	if err != nil {
 		return arrs[0], 0, false
 	}
-	return arrs[0], cast.ToInt(arrs[1]), true
+	return arrs[0], utils.ToInt(arrs[1]), true
 }
 
 type DataIDInfo struct {
@@ -83,7 +82,7 @@ func ParseDataID(identifier string) (*DataIDInfo, error) {
 			ID: identifier,
 		}, nil
 	case 2:
-		num, err := cast.ToInt64E(arrs[1])
+		num, err := utils.ToInt64E(arrs[1])
 		if err != nil {
 			if arrs[1] == "*" {
 				return &DataIDInfo{
@@ -110,7 +109,7 @@ func ParseDataID(identifier string) (*DataIDInfo, error) {
 			NumStr: arrs[1],
 		}, nil
 	case 3:
-		num, err := cast.ToInt64E(arrs[1])
+		num, err := utils.ToInt64E(arrs[1])
 		if err != nil {
 			if arrs[1] == "*" {
 				return &DataIDInfo{
