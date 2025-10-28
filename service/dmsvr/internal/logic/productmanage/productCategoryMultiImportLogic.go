@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
@@ -40,7 +41,7 @@ func (l *ProductCategoryMultiImportLogic) ProductCategoryMultiImport(in *dm.Prod
 		ss := node.Schemas
 		node.Children = nil
 		node.Schemas = nil
-		err := relationDB.NewProductCategoryRepo(l.ctx).Insert(l.ctx, node)
+		err := relationDB.NewProductCategoryRepo(l.ctx).Upset(l.ctx, node)
 		if err != nil {
 			if errors.Cmp(err, errors.Duplicate) {
 				resp.IgnoreCount++

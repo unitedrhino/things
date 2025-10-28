@@ -2,6 +2,7 @@ package relationDB
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/stores"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -97,6 +98,12 @@ func (p ProductCategoryRepo) Update(ctx context.Context, data *DmProductCategory
 	return stores.ErrFmt(err)
 }
 
+func (p ProductCategoryRepo) Upset(ctx context.Context, data *DmProductCategory) error {
+	err := p.db.WithContext(ctx).Where("id = ?", data.ID).Clauses(clause.OnConflict{UpdateAll: true,
+		Columns: stores.SetColumnsWithPg(p.db, &DmProductCategory{}, "idx_dm_product_category_pn")}).Create(data).Error
+	return stores.ErrFmt(err)
+}
+
 func (d ProductCategoryRepo) UpdateWithField(ctx context.Context, f ProductCategoryFilter, updates map[string]any) error {
 	db := d.fmtFilter(ctx, f)
 	err := db.Model(&DmProductCategory{}).Updates(updates).Error
@@ -124,6 +131,6 @@ func (p ProductCategoryRepo) FindOne(ctx context.Context, id int64) (*DmProductC
 
 // 批量插入 LightStrategyDevice 记录
 func (p ProductCategoryRepo) MultiInsert(ctx context.Context, data []*DmProductCategory) error {
-	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true}).Model(&DmProductCategory{}).Create(data).Error
+	err := p.db.WithContext(ctx).Clauses(clause.OnConflict{UpdateAll: true, Columns: stores.SetColumnsWithPg(p.db, &DmProductCategory{}, "idx_dm_product_category_pn")}).Model(&DmProductCategory{}).Create(data).Error
 	return stores.ErrFmt(err)
 }
