@@ -218,9 +218,9 @@ func (m *DmProductID) TableName() string {
 }
 
 type DmProductConfig struct {
-	ID        int64                                      `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	ProductID string                                     `gorm:"column:product_id;type:varchar(100);uniqueIndex:idx_dm_product_config_pd;NOT NULL"` // 产品id
-	DevInit   `gorm:"embedded;embeddedPrefix:dev_init_"` //设备初始化配置
+	ID        int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	ProductID string `gorm:"column:product_id;type:varchar(100);uniqueIndex:idx_dm_product_config_pd;NOT NULL"` // 产品id
+	DevInit   `gorm:"embedded;embeddedPrefix:dev_init_"`                                                        //设备初始化配置
 	stores.NoDelTime
 	Info        *DmProductInfo     `gorm:"foreignKey:product_id;references:product_id"`
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:idx_dm_product_config_pd"`
@@ -527,7 +527,7 @@ type DmDeviceShadow struct {
 	ProductID         string       `gorm:"column:product_id;uniqueIndex:idx_dm_device_shadow_pi_dn_di;type:varchar(100);NOT NULL"`
 	DeviceName        string       `gorm:"column:device_name;uniqueIndex:idx_dm_device_shadow_pi_dn_di;type:VARCHAR(100);NOT NULL"`
 	DataID            string       `gorm:"column:data_id;uniqueIndex:idx_dm_device_shadow_pi_dn_di;type:VARCHAR(100);NOT NULL"`
-	Value             string       `gorm:"column:value;type:VARCHAR(100);default:NULL"`
+	Value             string       `gorm:"column:value;type:VARCHAR(2048);default:NULL"`
 	UpdatedDeviceTime sql.NullTime `gorm:"column:updated_device_time;"`
 	stores.OnlyTime
 }
