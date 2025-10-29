@@ -28,6 +28,12 @@ service api {
     post /action-read (DeviceInteractRespReadReq) returns (DeviceInteractSendActionResp)
 
     @doc(
+        summary: "设备回复行为调用结果"
+    )
+    @handler actionResp
+    post /action-resp (DeviceInteractActionRespReq) returns ()
+
+    @doc(
         summary: "调用设备属性"
     )
     @handler propertyControlSend
@@ -202,6 +208,15 @@ type DeviceInteractSendActionResp  {
     OutputParams string `json:"outputParams"` //输出参数 注意：此字段可能返回 null，表示取不到有效值。
     Msg       string `json:"msg"`       //返回状态
     Code         int64  `json:"code"`         //设备返回状态码
+}
+
+type DeviceInteractActionRespReq  {
+    ProductID   string `json:"productID"`   //产品id
+    DeviceName  string `json:"deviceName"`  //设备名
+    MsgToken    string `json:"msgToken"`    //调用id
+    OutputParams string `json:"outputParams,optional"` //输出参数 注意：此字段可能返回 null，表示取不到有效值。
+    Msg         string `json:"msg"`         //返回状态
+    Code        int64  `json:"code"`        //设备返回状态码
 }
 
 type DeviceInteractMultiSendPropertyReq  {

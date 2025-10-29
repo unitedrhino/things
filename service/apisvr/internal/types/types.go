@@ -437,6 +437,15 @@ type DeviceInfoWithProperty struct {
 	Timestamp int64  `json:"timestamp,string"` //发生时间戳
 }
 
+type DeviceInteractActionRespReq struct {
+	ProductID    string `json:"productID"`             //产品id
+	DeviceName   string `json:"deviceName"`            //设备名
+	MsgToken     string `json:"msgToken"`              //调用id
+	OutputParams string `json:"outputParams,optional"` //输出参数 注意：此字段可能返回 null，表示取不到有效值。
+	Msg          string `json:"msg"`                   //返回状态
+	Code         int64  `json:"code"`                  //设备返回状态码
+}
+
 type DeviceInteractEdgeSendReq struct {
 	Handle        string `path:"handle"`                //对应 mqtt topic的第一个 thing ota config 等等
 	Type          string `path:"type"`                  //操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为

@@ -290,6 +290,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: thingsdeviceinteract.ActionReadHandler(serverCtx),
 				},
 				{
+					// 设备回复行为调用结果
+					Method:  http.MethodPost,
+					Path:    "/action-resp",
+					Handler: thingsdeviceinteract.ActionRespHandler(serverCtx),
+				},
+				{
 					// 调用设备行为
 					Method:  http.MethodPost,
 					Path:    "/action-send",

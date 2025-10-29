@@ -591,6 +591,27 @@
       ],
       "authType": "all"
     },
+    "thingsDeviceInteractOther": {
+      "name": "操作设备交互",
+      "code": "thingsDeviceInteractOther",
+      "group": "设备管理",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsDeviceInteractOther",
+          "method": "POST",
+          "route": "/api/v1/things/device/interact/action-resp",
+          "name": "",
+          "isNeedAuth": 2,
+          "businessType": "other",
+          "desc": "",
+          "authType": "all",
+          "recordLogMode": 0
+        }
+      ],
+      "authType": "all"
+    },
     "thingsDeviceMsgFind": {
       "name": "查询设备消息",
       "code": "thingsDeviceMsgFind",
