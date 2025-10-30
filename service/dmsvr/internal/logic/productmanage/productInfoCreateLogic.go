@@ -91,8 +91,8 @@ func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relatio
 		BindLevel:        in.BindLevel,
 		SubProtocolCode:  in.SubProtocolCode.GetValue(),
 	}
-	if pi.TenantCode == "" {
-		pi.TenantCode = dataType.TenantCodeWithCommonR(ctxs.GetUserCtxNoNil(l.ctx).TenantCode)
+	if pi.TenantCode == "" && ctxs.IsRoot(l.ctx) == nil {
+		pi.TenantCode = def.TenantCodeCommon
 	}
 	if in.AutoRegister != def.Unknown {
 		pi.AutoRegister = in.AutoRegister

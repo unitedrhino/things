@@ -218,9 +218,9 @@ func (m *DmProductID) TableName() string {
 }
 
 type DmProductConfig struct {
-	ID        int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	ProductID string `gorm:"column:product_id;type:varchar(100);uniqueIndex:idx_dm_product_config_pd;NOT NULL"` // 产品id
-	DevInit   `gorm:"embedded;embeddedPrefix:dev_init_"`                                                        //设备初始化配置
+	ID        int64                                      `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	ProductID string                                     `gorm:"column:product_id;type:varchar(100);uniqueIndex:idx_dm_product_config_pd;NOT NULL"` // 产品id
+	DevInit   `gorm:"embedded;embeddedPrefix:dev_init_"` //设备初始化配置
 	stores.NoDelTime
 	Info        *DmProductInfo     `gorm:"foreignKey:product_id;references:product_id"`
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:idx_dm_product_config_pd"`
@@ -296,7 +296,7 @@ type DmProtocolService struct {
 	ID     int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	Code   string `gorm:"column:code;uniqueIndex:idx_dm_protocol_service_pc;type:varchar(100);default:iThings"` //
 	Ip     string `gorm:"column:ip;uniqueIndex:idx_dm_protocol_service_pc;type:varchar(100);not null"`          //
-	Port   int64  `gorm:"column:port;uniqueIndex:idx_dm_protocol_service_pc;type:varchar(200)"`                 //
+	Port   int64  `gorm:"column:port;uniqueIndex:idx_dm_protocol_service_pc"`                                   //
 	Status int64  `gorm:"column:status;type:bigint;default:2"`
 	stores.NoDelTime
 }
