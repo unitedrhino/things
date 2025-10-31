@@ -125,7 +125,30 @@ type (
         Name *string `json:"name,optional"`                           //功能名称
         Desc *string `json:"desc,optional"`                           //描述
         Required int64 `json:"required,optional"`                     //是否必须 1:是 2:否
-        Affordance *string `json:"affordance,optional"`                //各功能类型的详细参数定义
+        /*
+        Affordance 各功能类型的详细参数定义(JSON)。由字段 Type 决定其结构:
+
+        1) Type=1 PropertyAffordance (属性能力)
+           - isUseShadow: bool  是否使用设备影子。true: 设备离线写影子，在线直发
+           - isNoRecord:  bool  是否不存储历史记录。true: 不落库，仅保留最新
+           - define:      object 数据定义(Define)。描述数据类型、取值范围/枚举、单位、步进等
+           - mode:        int    读写类型(PropertyMode)。1: r(只读) 2: rw(可读可写)
+           - JSON 示例: {"isUseShadow":true,"isNoRecord":false,"define":{"type":"int","min":0,"max":100,"unit":"%"},"mode":2}
+
+        2) Type=2 EventAffordance (事件能力)
+           - type:   string  事件类型(EventType)。info/alert/fault
+           - params: object  事件参数(Params)。键为参数名，值为参数定义(同 Define)
+           - JSON 示例: {"type":"alert","params":{"code":{"type":"string"},"level":{"type":"enum","enum":["L1","L2","L3"]}}}
+
+        3) Type=3 ActionAffordance (行为能力)
+           - dir:    string  调用方向(ActionDir)。如 up/down
+           - input:  object  调用入参(Params)。键为参数名，值为参数定义(同 Define)
+           - output: object  返回出参(Params)。键为参数名，值为参数定义(同 Define)
+           - JSON 示例: {"dir":"down","input":{"switch":{"type":"bool"}},"output":{"result":{"type":"int","enum":[0,1]}}}
+
+        参考: things/share/domain/schema/affordance.go
+        */
+        Affordance *string `json:"affordance,optional"`                //各功能类型参数(JSON)
         IsCanSceneLinkage int64  `json:"isCanSceneLinkage,optional"` //是否可以场景联动
         FuncGroup int64 `json:"funcGroup,optional"`// 功能分类: 1:普通功能 2:系统功能
         UserPerm int64 `json:"userPerm,optional"`//用户权限操作: 1:r(只读) 3:rw(可读可写)

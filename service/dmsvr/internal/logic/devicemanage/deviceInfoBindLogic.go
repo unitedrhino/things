@@ -3,7 +3,6 @@ package devicemanagelogic
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"time"
 
 	"gitee.com/unitedrhino/core/share/dataType"
@@ -80,16 +79,14 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 		return nil, err
 	}
 	if di == nil {
-		di, err = relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(ctxs.WithRoot(l.ctx), relationDB.DeviceFilter{
-			DeviceNames: []string{in.Device.DeviceName, filterAllowedChars(in.Device.DeviceName)}, //兼容打印错误
-		})
-		if err != nil {
-			if !errors.Cmp(err, errors.NotFind) {
+		if !(((pi.NetType == def.NetBle || pi.NetType == 10) && pi.AutoRegister == def.AutoRegAuto) || (pi.AutoRegister == def.AutoRegBind)) {
+			di, err = relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(ctxs.WithRoot(l.ctx), relationDB.DeviceFilter{
+				DeviceNames: []string{in.Device.DeviceName, filterAllowedChars(in.Device.DeviceName)}, //兼容打印错误
+			})
+			if err != nil {
 				return nil, err
 			}
-			if !(((pi.NetType == def.NetBle || pi.NetType == 10) && pi.AutoRegister == def.AutoRegAuto) || (pi.AutoRegister == def.AutoRegBind)) {
-				return nil, errors.NotFind
-			}
+		} else {
 			_, err = NewDeviceInfoCreateLogic(ctxs.WithProjectID(ctxs.WithAdmin(l.ctx), def.NotClassified), l.svcCtx).
 				DeviceInfoCreate(&dm.DeviceInfo{ProductID: in.Device.ProductID, DeviceName: in.Device.DeviceName, IsOnline: def.True})
 			if err != nil {
@@ -201,11 +198,11 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 	logic.FillAreaDeviceCount(l.ctx, l.svcCtx, ai.AreaIDPath, string(oldAreaIDPath))
 	logic.FillProjectDeviceCount(l.ctx, l.svcCtx, int64(di.ProjectID))
 	dev := devices.Core{ProductID: di.ProductID, DeviceName: di.DeviceName}
-	er := l.svcCtx.FastEvent.Publish(l.ctx, fmt.Sprintf(topics.DmDeviceInfoUpdate, di.TenantCode), &dev)
+	er := l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUpdate, &dev)
 	if er != nil {
 		l.Error(er)
 	}
-	er = l.svcCtx.FastEvent.Publish(l.ctx, fmt.Sprintf(topics.DmDeviceInfoBind, di.TenantCode), &dev)
+	er = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoBind, &dev)
 	if er != nil {
 		l.Error(er)
 	}

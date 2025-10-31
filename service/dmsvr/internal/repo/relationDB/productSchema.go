@@ -194,7 +194,7 @@ func (p ProductSchemaRepo) MultiInsert(ctx context.Context, data []*DmProductSch
 	}
 	err := p.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		err := tx.Clauses(clause.OnConflict{UpdateAll: true,
-			Columns: stores.SetColumnsWithPg(p.db, &DmSchemaInfo{}, "idx_dm_schema_info_identifier")}).Model(&DmSchemaInfo{}).Create(data).Error
+			Columns: stores.SetColumnsWithPg(p.db, &DmProductSchema{}, "idx_dm_schema_info_identifier")}).Model(&DmProductSchema{}).Create(data).Error
 		if err != nil {
 			return err
 		}

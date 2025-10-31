@@ -1292,6 +1292,45 @@
         ]
       }
     },
+    "/api/v1/things/device/interact/action-resp": {
+      "post": {
+        "summary": "设备回复行为调用结果",
+        "operationId": "postApiV1ThingsDeviceInteractAction-resp",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceInteractActionRespReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/interact",
+          "thingsDeviceInteract"
+        ]
+      }
+    },
     "/api/v1/things/device/interact/action-send": {
       "post": {
         "summary": "调用设备行为",
@@ -8536,6 +8575,44 @@
       "required": [
         "value",
         "timestamp"
+      ]
+    },
+    "DeviceInteractActionRespReq": {
+      "type": "object",
+      "properties": {
+        "productID": {
+          "type": "string",
+          "description": "产品id"
+        },
+        "deviceName": {
+          "type": "string",
+          "description": "设备名"
+        },
+        "msgToken": {
+          "type": "string",
+          "description": "调用id"
+        },
+        "outputParams": {
+          "type": "string",
+          "description": "输出参数 注意：此字段可能返回 null，表示取不到有效值。"
+        },
+        "msg": {
+          "type": "string",
+          "description": "返回状态"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int64",
+          "description": "设备返回状态码"
+        }
+      },
+      "title": "DeviceInteractActionRespReq",
+      "required": [
+        "productID",
+        "deviceName",
+        "msgToken",
+        "msg",
+        "code"
       ]
     },
     "DeviceInteractEdgeSendReq": {

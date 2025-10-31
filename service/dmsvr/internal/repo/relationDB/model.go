@@ -296,7 +296,7 @@ type DmProtocolService struct {
 	ID     int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	Code   string `gorm:"column:code;uniqueIndex:idx_dm_protocol_service_pc;type:varchar(100);default:iThings"` //
 	Ip     string `gorm:"column:ip;uniqueIndex:idx_dm_protocol_service_pc;type:varchar(100);not null"`          //
-	Port   int64  `gorm:"column:port;uniqueIndex:idx_dm_protocol_service_pc;type:varchar(200)"`                 //
+	Port   int64  `gorm:"column:port;uniqueIndex:idx_dm_protocol_service_pc"`                                   //
 	Status int64  `gorm:"column:status;type:bigint;default:2"`
 	stores.NoDelTime
 }
@@ -527,7 +527,7 @@ type DmDeviceShadow struct {
 	ProductID         string       `gorm:"column:product_id;uniqueIndex:idx_dm_device_shadow_pi_dn_di;type:varchar(100);NOT NULL"`
 	DeviceName        string       `gorm:"column:device_name;uniqueIndex:idx_dm_device_shadow_pi_dn_di;type:VARCHAR(100);NOT NULL"`
 	DataID            string       `gorm:"column:data_id;uniqueIndex:idx_dm_device_shadow_pi_dn_di;type:VARCHAR(100);NOT NULL"`
-	Value             string       `gorm:"column:value;type:VARCHAR(100);default:NULL"`
+	Value             string       `gorm:"column:value;type:VARCHAR(2048);default:NULL"`
 	UpdatedDeviceTime sql.NullTime `gorm:"column:updated_device_time;"`
 	stores.OnlyTime
 }

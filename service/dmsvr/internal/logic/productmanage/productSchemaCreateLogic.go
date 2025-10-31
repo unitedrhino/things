@@ -55,6 +55,9 @@ func (l *ProductSchemaCreateLogic) RuleCheck(in *dm.ProductSchemaCreateReq) (*re
 	if in.Info.Tag != int64(schema.TagCustom) {
 		cs, err = relationDB.NewCommonSchemaRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.CommonSchemaFilter{Identifiers: []string{in.Info.Identifier}})
 		if err != nil {
+			if errors.Cmp(err, errors.NotFind) {
+				return nil, errors.NotFind.AddMsgf("未发现绑定的通用物模型:%v", in.Info.Identifier)
+			}
 			return nil, err
 		}
 		po.IsCanSceneLinkage = cs.IsCanSceneLinkage

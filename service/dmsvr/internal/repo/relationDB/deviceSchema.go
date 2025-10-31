@@ -46,8 +46,8 @@ func (p DeviceSchemaRepo) filter(db *gorm.DB, f DeviceSchemaFilter) *gorm.DB {
 		db = db.Where("device_name=?", f.DeviceName)
 		db = db.Where("tag in ?", deviceTag)
 	} else {
-		db = db.Where("product_id=? and device_name=? and tag in ?", f.ProductID, f.DeviceName, deviceTag).
-			Or("product_id=? and tag not in ?", f.ProductID, deviceTag)
+		db = db.Where("product_id=? and device_name=? and tag in ? or product_id=? and tag not in ?",
+			f.ProductID, f.DeviceName, deviceTag, f.ProductID, deviceTag)
 	}
 
 	if f.IsCanSceneLinkage != 0 {

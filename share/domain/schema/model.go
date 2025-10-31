@@ -3,12 +3,14 @@ package schema
 import (
 	"encoding/json"
 	"fmt"
+	"math/rand"
+	"strings"
+	"time"
+
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"github.com/spf13/cast"
-	"strings"
-	"time"
 )
 
 type (
@@ -180,6 +182,45 @@ func (d *Define) String() string {
 	}
 	def, _ := json.Marshal(d)
 	return string(def)
+}
+
+// 生成随机对象,方便调试
+func (d *Define) GenRandValue() any {
+	if d == nil {
+		return nil
+	}
+	switch d.Type {
+	case DataTypeFloat:
+		l := cast.ToFloat64(d.Max) - cast.ToFloat64(d.Min)
+		return cast.ToFloat64(d.Min) + rand.Float64()*l
+	case DataTypeInt:
+		l := cast.ToInt(d.Max) - cast.ToInt(d.Min)
+		return int64(rand.Intn(l)) + cast.ToInt64(d.Min)
+	case DataTypeBool:
+		return int64(rand.Intn(2))
+	case DataTypeEnum:
+		return utils.ToInt64(utils.GetRandomKey(d.Mapping))
+	case DataTypeString:
+		l := rand.Intn(cast.ToInt(d.Max)) + 1
+		return utils.RandString(l)
+	case DataTypeTimestamp:
+		return time.Now().UnixMilli()
+	case DataTypeStruct:
+		var val = map[string]any{}
+		for _, v := range d.Specs {
+			vv := v.DataType.GenRandValue()
+			val[v.Identifier] = vv
+		}
+		return val
+	case DataTypeArray:
+		var val []any
+		l := rand.Intn(cast.ToInt(d.Max)) + 1
+		for i := 0; i < l; i++ {
+			val = append(val, d.ArrayInfo.GenRandValue())
+		}
+		return val
+	}
+	return nil
 }
 
 func (p *PropertyMap) GetMapWithIDs(datas ...string) map[string]*Property {

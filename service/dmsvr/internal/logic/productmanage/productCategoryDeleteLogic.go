@@ -2,6 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/stores"
@@ -37,7 +38,15 @@ func (l *ProductCategoryDeleteLogic) ProductCategoryDelete(in *dm.WithID) (*dm.E
 	if err != nil {
 		return nil, err
 	}
-	stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+		err = relationDB.NewProductCategoryRepo(tx).Delete(l.ctx, in.Id)
+		if err != nil {
+			return err
+		}
+		err = relationDB.NewProductCategoryRepo(tx).DeleteByFilter(l.ctx, relationDB.ProductCategoryFilter{IDPath: po.IDPath})
+		if err != nil {
+			return err
+		}
 		if po.ParentID != 0 {
 			c, err := relationDB.NewProductCategoryRepo(tx).CountByFilter(l.ctx, relationDB.ProductCategoryFilter{ParentID: po.ParentID})
 			if err != nil {
@@ -51,8 +60,7 @@ func (l *ProductCategoryDeleteLogic) ProductCategoryDelete(in *dm.WithID) (*dm.E
 				}
 			}
 		}
-		err := relationDB.NewProductCategoryRepo(l.ctx).Delete(l.ctx, in.Id)
-		return err
+		return nil
 	})
 
 	return &dm.Empty{}, err

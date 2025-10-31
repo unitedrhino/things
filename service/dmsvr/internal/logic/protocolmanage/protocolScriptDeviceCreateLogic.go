@@ -42,7 +42,9 @@ func (l *ProtocolScriptDeviceCreateLogic) ProtocolScriptDeviceCreate(in *dm.Prot
 	if s.TenantCode != def.TenantCodeCommon && in.TenantCode != "" && in.TenantCode != uc.TenantCode {
 		return nil, errors.Permissions
 	}
-	if in.TenantCode != "" {
+	if in.TenantCode == "" && ctxs.IsRoot(l.ctx) == nil {
+		in.TenantCode = def.TenantCodeCommon
+	} else if in.TenantCode != "" {
 		if !ctxs.CanHandTenant(l.ctx, s.TenantCode) {
 			return nil, errors.Permissions
 		}
