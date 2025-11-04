@@ -4,6 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"regexp"
+	"time"
+
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
@@ -23,8 +26,6 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.uber.org/atomic"
 	"gorm.io/gorm"
-	"regexp"
-	"time"
 )
 
 type DeviceInfoCreateLogic struct {
@@ -229,7 +230,7 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 		di.Address = in.Address.Value
 	}
 
-	if in.DeviceAlias != nil {
+	if in.DeviceAlias.GetValue() != "" {
 		di.DeviceAlias = in.DeviceAlias.Value
 	} else {
 		di.DeviceAlias = fmt.Sprintf("%s%d", pi.ProductName, GenID())
