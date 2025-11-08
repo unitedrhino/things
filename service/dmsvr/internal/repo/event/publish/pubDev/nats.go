@@ -44,6 +44,12 @@ func (n *pubDevClient) PublishToDev(ctx context.Context, di *dm.DeviceInfo, reqM
 	if err != nil {
 		logx.WithContext(ctx).Errorf("%s Publish failure err:%v", utils.FuncName(), err)
 	}
+
+	////用户订阅设备收到的消息,方便调试及支持非mqtt协议的设备,让app代为处理数据
+	//us.Publish(ctx, userSubscribe.DeviceSubscribe, reqMsg, map[string]any{
+	//	"productID":  reqMsg.ProductID,
+	//	"deviceName": reqMsg.DeviceName,
+	//})
 	return err
 }
 

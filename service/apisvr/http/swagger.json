@@ -1091,6 +1091,49 @@
         ]
       }
     },
+    "/api/v1/things/device/info/ota/upgrade": {
+      "post": {
+        "summary": "设备升级,获取升级包手动升级",
+        "operationId": "postApiV1ThingsDeviceInfoOtaUpgrade",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/DeviceOtaUpgradeResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": " DeviceOtaUpgradeReq OTA升级请求\r",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceOtaUpgradeReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/info",
+          "thingsDeviceInfo"
+        ]
+      }
+    },
     "/api/v1/things/device/info/read": {
       "post": {
         "summary": "获取设备详情",
@@ -7112,8 +7155,7 @@
           "description": "是否必须 1:是 2:否"
         },
         "affordance": {
-          "type": "string",
-          "description": "各功能类型的详细参数定义"
+          "type": "string"
         },
         "isCanSceneLinkage": {
           "type": "integer",
@@ -10655,6 +10697,48 @@
         "succCount"
       ]
     },
+    "DeviceOtaUpgradeReq": {
+      "type": "object",
+      "properties": {
+        "productID": {
+          "type": "string",
+          "description": " 产品ID"
+        },
+        "deviceName": {
+          "type": "string",
+          "description": " 设备名称"
+        },
+        "version": {
+          "type": "string",
+          "description": " 当前版本"
+        },
+        "startUpdate": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": " 如果有新版本 是否开启升级"
+        }
+      },
+      "title": "DeviceOtaUpgradeReq",
+      "required": [
+        "productID",
+        "deviceName",
+        "version",
+        "startUpdate"
+      ]
+    },
+    "DeviceOtaUpgradeResp": {
+      "type": "object",
+      "properties": {
+        "firmware": {
+          "$ref": "#/definitions/OtaUpgradeData",
+          "description": " 如果有新版本会返回"
+        }
+      },
+      "title": "DeviceOtaUpgradeResp",
+      "required": [
+        "firmware"
+      ]
+    },
     "DeviceProfile": {
       "type": "object",
       "properties": {
@@ -10816,8 +10900,7 @@
           "description": "是否必须 1:是 2:否"
         },
         "affordance": {
-          "type": "string",
-          "description": "各功能类型的详细参数定义"
+          "type": "string"
         },
         "isCanSceneLinkage": {
           "type": "integer",
@@ -11752,6 +11835,40 @@
       },
       "title": "OrderBy"
     },
+    "OtaFile": {
+      "type": "object",
+      "properties": {
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 文件大小（字节）"
+        },
+        "name": {
+          "type": "string",
+          "description": " 文件名"
+        },
+        "fileUrl": {
+          "type": "string",
+          "description": " 文件下载地址"
+        },
+        "fileMd5": {
+          "type": "string",
+          "description": " 文件MD5校验值"
+        },
+        "signature": {
+          "type": "string",
+          "description": " 文件签名值"
+        }
+      },
+      "title": "OtaFile",
+      "required": [
+        "size",
+        "name",
+        "fileUrl",
+        "fileMd5",
+        "signature"
+      ]
+    },
     "OtaFirmwareCreateReq": {
       "type": "object",
       "properties": {
@@ -12615,6 +12732,53 @@
       "title": "OtaModuleInfoIndexResp",
       "required": [
         "list"
+      ]
+    },
+    "OtaUpgradeData": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": " 新固件的版本"
+        },
+        "name": {
+          "type": "string",
+          "description": " 固件升级包名称"
+        },
+        "desc": {
+          "type": "string",
+          "description": " 文件描述"
+        },
+        "isDiff": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 是否差分升级包（0/1）"
+        },
+        "signMethod": {
+          "type": "string",
+          "description": " OTA升级包签名方法（MD5/SHA256，默认MD5）"
+        },
+        "extra": {
+          "type": "string",
+          "description": " 额外信息"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OtaFile"
+          },
+          "description": " 升级文件列表"
+        }
+      },
+      "title": "OtaUpgradeData",
+      "required": [
+        "version",
+        "name",
+        "desc",
+        "isDiff",
+        "signMethod",
+        "extra",
+        "files"
       ]
     },
     "PageInfo": {
@@ -13650,8 +13814,7 @@
           "description": "是否必须 1:是 2:否"
         },
         "affordance": {
-          "type": "string",
-          "description": "各功能类型的详细参数定义"
+          "type": "string"
         },
         "isCanSceneLinkage": {
           "type": "integer",

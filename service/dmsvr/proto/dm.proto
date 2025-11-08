@@ -165,6 +165,10 @@ service DeviceManage {
   rpc deviceGroupMultiUpdate(DeviceGroupMultiSaveReq)     returns (Empty);
   //删除设备所在分组
   rpc deviceGroupMultiDelete(DeviceGroupMultiSaveReq)     returns (Empty);
+
+
+  //设备升级,获取升级包手动升级
+  rpc deviceOtaUpgrade(DeviceOtaUpgradeReq) returns(DeviceOtaUpgradeResp);
 }
 
 //产品管理
@@ -411,7 +415,6 @@ service OtaManage{
   rpc otaFirmwareDeviceRetry(OtaFirmwareDeviceRetryReq) returns(Empty);
   //app确认设备升级
   rpc otaFirmwareDeviceConfirm(OtaFirmwareDeviceConfirmReq) returns(Empty);
-
 
   rpc otaModuleInfoCreate(OtaModuleInfo)returns(WithID);
   rpc otaModuleInfoUpdate(OtaModuleInfo)returns(Empty);
@@ -2125,6 +2128,42 @@ message DeviceGroupMultiSaveReq{
 }
 
 
+message DeviceOtaUpgradeReq{
+  string productID =1;
+  string deviceName =2;
+  string version=3;//当前版本
+  bool startUpdate=4;//如果有新版本 是否开启升级
+}
+
+
+
+message DeviceOtaUpgradeResp{
+    OtaUpgradeData firmware =1;//如果有新版本会返回
+}
+
+message OtaUpgradeData{
+  string version      =1;//新固件的版本
+  string name = 2; //固件升级包名称
+  string desc = 3; //文件描述
+  int64 isDiff        =4;
+  /**
+OTA升级包签名方法。取值：
+MD5（默认）：MD5签名。
+SHA256：SHA256签名。
+*/
+  string signMethod   =5;
+  string extra        =6;
+  repeated  OtaFile files=7;
+}
+
+message OtaFile  {
+  int64  size =1;
+  string name =2;
+  string fileUrl =3;
+  string fileMd5 =4;
+  string signature =5;
+}
+
 
 
 message DeviceProfile{
@@ -2584,10 +2623,6 @@ message OtaFirmwareDeviceConfirmReq{
   string productID =1;
   string deviceName =2;
 }
-
-
-
-
 
 
 

@@ -143,7 +143,7 @@ type (
 
         参考: things/share/domain/schema/affordance.go
         */
-        Affordance *string `json:"affordance,optional"`                //各功能类型参数(JSON)
+        Affordance *string `json:"affordance,optional"`
         IsCanSceneLinkage int64  `json:"isCanSceneLinkage,optional"` //是否可以场景联动
         FuncGroup int64 `json:"funcGroup,optional"`// 功能分类: 1:普通功能 2:系统功能
         UserPerm int64 `json:"userPerm,optional"`//用户权限操作: 1:r(只读) 3:rw(可读可写)

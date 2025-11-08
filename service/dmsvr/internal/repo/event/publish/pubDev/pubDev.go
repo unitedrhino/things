@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"gitee.com/unitedrhino/share/eventBus"
+	ws "gitee.com/unitedrhino/share/websocket"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/protocol"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
@@ -20,8 +21,9 @@ type (
 )
 
 var s *protocol.ScriptTrans
-
-func NewPubDev(fast *eventBus.FastEvent, S *protocol.ScriptTrans) (PubDev, error) {
+var us *ws.UserSubscribe
+func NewPubDev(fast *eventBus.FastEvent, S *protocol.ScriptTrans,US *ws.UserSubscribe) (PubDev, error) {
 	s = S
+	us = US
 	return newPubDevClient(fast)
 }

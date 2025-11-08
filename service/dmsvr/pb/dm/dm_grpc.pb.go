@@ -60,6 +60,7 @@ const (
 	DeviceManage_DeviceGroupMultiCreate_FullMethodName   = "/dm.DeviceManage/deviceGroupMultiCreate"
 	DeviceManage_DeviceGroupMultiUpdate_FullMethodName   = "/dm.DeviceManage/deviceGroupMultiUpdate"
 	DeviceManage_DeviceGroupMultiDelete_FullMethodName   = "/dm.DeviceManage/deviceGroupMultiDelete"
+	DeviceManage_DeviceOtaUpgrade_FullMethodName         = "/dm.DeviceManage/deviceOtaUpgrade"
 )
 
 // DeviceManageClient is the client API for DeviceManage service.
@@ -126,6 +127,8 @@ type DeviceManageClient interface {
 	DeviceGroupMultiUpdate(ctx context.Context, in *DeviceGroupMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
 	// 删除设备所在分组
 	DeviceGroupMultiDelete(ctx context.Context, in *DeviceGroupMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
+	// 获取设备能升级的升级包
+	DeviceOtaUpgrade(ctx context.Context, in *DeviceOtaUpgradeReq, opts ...grpc.CallOption) (*DeviceOtaUpgradeResp, error)
 }
 
 type deviceManageClient struct {
@@ -487,6 +490,15 @@ func (c *deviceManageClient) DeviceGroupMultiDelete(ctx context.Context, in *Dev
 	return out, nil
 }
 
+func (c *deviceManageClient) DeviceOtaUpgrade(ctx context.Context, in *DeviceOtaUpgradeReq, opts ...grpc.CallOption) (*DeviceOtaUpgradeResp, error) {
+	out := new(DeviceOtaUpgradeResp)
+	err := c.cc.Invoke(ctx, DeviceManage_DeviceOtaUpgrade_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DeviceManageServer is the server API for DeviceManage service.
 // All implementations must embed UnimplementedDeviceManageServer
 // for forward compatibility
@@ -551,6 +563,8 @@ type DeviceManageServer interface {
 	DeviceGroupMultiUpdate(context.Context, *DeviceGroupMultiSaveReq) (*Empty, error)
 	// 删除设备所在分组
 	DeviceGroupMultiDelete(context.Context, *DeviceGroupMultiSaveReq) (*Empty, error)
+	// 获取设备能升级的升级包
+	DeviceOtaUpgrade(context.Context, *DeviceOtaUpgradeReq) (*DeviceOtaUpgradeResp, error)
 	mustEmbedUnimplementedDeviceManageServer()
 }
 
@@ -674,6 +688,9 @@ func (UnimplementedDeviceManageServer) DeviceGroupMultiUpdate(context.Context, *
 }
 func (UnimplementedDeviceManageServer) DeviceGroupMultiDelete(context.Context, *DeviceGroupMultiSaveReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeviceGroupMultiDelete not implemented")
+}
+func (UnimplementedDeviceManageServer) DeviceOtaUpgrade(context.Context, *DeviceOtaUpgradeReq) (*DeviceOtaUpgradeResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceOtaUpgrade not implemented")
 }
 func (UnimplementedDeviceManageServer) mustEmbedUnimplementedDeviceManageServer() {}
 
@@ -1390,6 +1407,24 @@ func _DeviceManage_DeviceGroupMultiDelete_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DeviceManage_DeviceOtaUpgrade_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeviceOtaUpgradeReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeviceManageServer).DeviceOtaUpgrade(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DeviceManage_DeviceOtaUpgrade_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeviceManageServer).DeviceOtaUpgrade(ctx, req.(*DeviceOtaUpgradeReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DeviceManage_ServiceDesc is the grpc.ServiceDesc for DeviceManage service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1552,6 +1587,10 @@ var DeviceManage_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "deviceGroupMultiDelete",
 			Handler:    _DeviceManage_DeviceGroupMultiDelete_Handler,
+		},
+		{
+			MethodName: "deviceOtaUpgrade",
+			Handler:    _DeviceManage_DeviceOtaUpgrade_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -251,6 +251,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: thingsdeviceinfo.MultiUpdateImportHandler(serverCtx),
 				},
 				{
+					// 设备升级,获取升级包手动升级
+					Method:  http.MethodPost,
+					Path:    "/ota/upgrade",
+					Handler: thingsdeviceinfo.OtaUpgradeHandler(serverCtx),
+				},
+				{
 					// 获取设备详情
 					Method:  http.MethodPost,
 					Path:    "/read",

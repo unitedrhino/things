@@ -228,7 +228,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	statusR := statusLogRepo.NewStatusLogRepo(c.TSDB, gd)
 	sendR := sendLogRepo.NewSendLogRepo(c.TSDB, gd)
 	script := protocol.NewScriptTrans()
-	pd, err := pubDev.NewPubDev(serverMsg, script)
+	us:=ws.NewUserSubscribe(ca, serverMsg)
+	pd, err := pubDev.NewPubDev(serverMsg, script,us)
 	if err != nil {
 		logx.Error("NewPubDev err", err)
 		os.Exit(-1)
@@ -255,7 +256,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		DeptM:             DeptM,
 		Common:            Common,
 		DataM:             dataM,
-		UserSubscribe:     ws.NewUserSubscribe(ca, serverMsg),
+		UserSubscribe:    us,
 		ProductSchemaRepo: getProductSchemaModel,
 		DeviceSchemaRepo:  getDeviceSchemaModel,
 		SchemaManaRepo:    deviceDataR,

@@ -69,10 +69,13 @@ func AccessPerm(ctx context.Context, dc DeviceCacheT, usc UserShareCacheT, authT
 			if uds.AuthType == def.AuthAdmin {
 				return nil
 			}
-			sp := uds.AccessPerm[access]
-			if sp != nil && sp.Perm > authType {
-				return errors.Permissions.AddMsgf("操作:%v 没有控制权限", access)
+			if access != "" {
+				sp := uds.AccessPerm[access]
+				if sp != nil && sp.Perm > authType {
+					return errors.Permissions.AddMsgf("操作:%v 没有控制权限", access)
+				}
 			}
+
 			return nil
 		}
 		return nil

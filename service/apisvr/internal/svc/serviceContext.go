@@ -1,6 +1,8 @@
 package svc
 
 import (
+	"os"
+
 	"gitee.com/unitedrhino/core/service/syssvr/client/areamanage"
 	"gitee.com/unitedrhino/core/service/syssvr/client/dictmanage"
 	"gitee.com/unitedrhino/core/service/syssvr/client/log"
@@ -33,7 +35,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
-	"os"
+	operLog "gitee.com/unitedrhino/core/service/syssvr/client/log"
 )
 
 type SvrClient struct {
@@ -54,7 +56,10 @@ type SvrClient struct {
 	UserC      sysExport.UserCacheT
 	AreaC      sysExport.AreaCacheT
 	AreaM      areamanage.AreaManage
-	DictM      dictmanage.DictManage
+	DictM     dictmanage.DictManage
+	RoleRpc   role.RoleManage
+	TenantRpc tenant.TenantManage
+	LogRpc operLog.Log
 }
 
 type ServiceContext struct {
@@ -67,6 +72,8 @@ type ServiceContext struct {
 	OtaM           otamanage.OtaManage
 	ProductCache   dmExport.ProductCacheT
 	DeviceCache    dmExport.DeviceCacheT
+	UserShareCache     dmExport.UserShareCacheT
+
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -92,7 +99,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	var lo log.Log
 
 	caches.InitStore(c.CacheRedis)
-
+	nodeID := utils.GetNodeID(c.CacheRedis, c.Name)
+	serverMsg, err := eventBus.NewFastEvent(c.Event, c.Name, nodeID)
+	logx.Must(err)
 	//var me menu.Menu
 	if c.DmRpc.Enable {
 		if c.DmRpc.Mode == conf.ClientModeGrpc { //服务模式
@@ -121,6 +130,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 		}
 	}
+	udc, err := dmExport.NewUserShareCache(UserDevice, serverMsg)
+	logx.Must(err)
 	if c.DgRpc.Enable {
 		if c.DgRpc.Mode == conf.ClientModeGrpc { //服务模式
 			deviceA = deviceauth.NewDeviceAuth(zrpc.MustNewClient(c.DgRpc.Conf))
@@ -147,9 +158,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		logx.Errorf("NewOss err err:%v", err)
 		os.Exit(-1)
 	}
-	nodeID := utils.GetNodeID(c.CacheRedis, c.Name)
-	serverMsg, err := eventBus.NewFastEvent(c.Event, c.Name, nodeID)
-	logx.Must(err)
+
 	pc, err := dmExport.NewProductInfoCache(productM, serverMsg)
 	logx.Must(err)
 	dc, err := dmExport.NewDeviceInfoCache(deviceM, serverMsg)
@@ -167,6 +176,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Ws:             ws.MustNewServer(c.RestConf),
 		ProductCache:   pc,
 		DeviceCache:    dc,
+		UserShareCache:     udc,
 		SvrClient: SvrClient{
 			UserM:          ur,
 			ProtocolM:      protocolM,
@@ -183,6 +193,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			DeviceInteract: deviceInteract,
 			RemoteConfig:   remoteConfig,
 			UserDevice:     UserDevice,
+			RoleRpc:        ro,
+			TenantRpc:      tm,
+			LogRpc:         lo,
 		},
 		//OSS:        ossClient,
 	}

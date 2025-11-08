@@ -107,6 +107,5 @@ func (l *ActionRespLogic) ActionResp(in *dm.ActionRespReq) (*dm.Empty, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	return &dm.Empty{}, nil
 }

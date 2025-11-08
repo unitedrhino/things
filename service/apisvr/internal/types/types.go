@@ -65,14 +65,14 @@ type CommonSchemaIndexResp struct {
 }
 
 type CommonSchemaInfo struct {
-	ID                int64   `json:"id,optional"`                //产品id
-	Type              int64   `json:"type,optional"`              //物模型类型 1:property属性 2:event事件 3:action行为
-	Identifier        string  `json:"identifier,optional"`        //标识符
-	ExtendConfig      string  `json:"extendConfig,optional"`      //拓展参数
-	Name              *string `json:"name,optional"`              //功能名称
-	Desc              *string `json:"desc,optional"`              //描述
-	Required          int64   `json:"required,optional"`          //是否必须 1:是 2:否
-	Affordance        *string `json:"affordance,optional"`        //各功能类型的详细参数定义
+	ID                int64   `json:"id,optional"`           //产品id
+	Type              int64   `json:"type,optional"`         //物模型类型 1:property属性 2:event事件 3:action行为
+	Identifier        string  `json:"identifier,optional"`   //标识符
+	ExtendConfig      string  `json:"extendConfig,optional"` //拓展参数
+	Name              *string `json:"name,optional"`         //功能名称
+	Desc              *string `json:"desc,optional"`         //描述
+	Required          int64   `json:"required,optional"`     //是否必须 1:是 2:否
+	Affordance        *string `json:"affordance,optional"`
 	IsCanSceneLinkage int64   `json:"isCanSceneLinkage,optional"` //是否可以场景联动
 	FuncGroup         int64   `json:"funcGroup,optional"`         // 功能分类: 1:普通功能 2:系统功能
 	UserPerm          int64   `json:"userPerm,optional"`          //用户权限操作: 1:r(只读) 3:rw(可读可写)
@@ -947,6 +947,17 @@ type DeviceMultiUpdateImportResp struct {
 	SuccCount   int64                          `json:"succCount"`   //成功数
 }
 
+type DeviceOtaUpgradeReq struct {
+	ProductID   string `json:"productID"`   // 产品ID
+	DeviceName  string `json:"deviceName"`  // 设备名称
+	Version     string `json:"version"`     // 当前版本
+	StartUpdate bool   `json:"startUpdate"` // 如果有新版本 是否开启升级
+}
+
+type DeviceOtaUpgradeResp struct {
+	Firmware *OtaUpgradeData `json:"firmware"` // 如果有新版本会返回
+}
+
 type DeviceProfile struct {
 	Device DeviceCore `json:"device"`
 	Code   string     `json:"code"`
@@ -983,14 +994,14 @@ type DeviceRegisterResp struct {
 type DeviceSchema struct {
 	ProductID         string  `json:"productID,optional"` //产品id 只读
 	DeviceName        string  `json:"deviceName,optional"`
-	Type              int64   `json:"type"`                       //物模型类型 1:property属性 2:event事件 3:action行为
-	Tag               int64   `json:"tag"`                        //物模型标签 1:自定义 2:可选 3:必选  必选不可删除
-	Identifier        string  `json:"identifier"`                 //标识符
-	ExtendConfig      string  `json:"extendConfig,optional"`      //拓展参数
-	Name              *string `json:"name,optional"`              //功能名称
-	Desc              *string `json:"desc,optional"`              //描述
-	Required          int64   `json:"required,optional"`          //是否必须 1:是 2:否
-	Affordance        *string `json:"affordance,optional"`        //各功能类型的详细参数定义
+	Type              int64   `json:"type"`                  //物模型类型 1:property属性 2:event事件 3:action行为
+	Tag               int64   `json:"tag"`                   //物模型标签 1:自定义 2:可选 3:必选  必选不可删除
+	Identifier        string  `json:"identifier"`            //标识符
+	ExtendConfig      string  `json:"extendConfig,optional"` //拓展参数
+	Name              *string `json:"name,optional"`         //功能名称
+	Desc              *string `json:"desc,optional"`         //描述
+	Required          int64   `json:"required,optional"`     //是否必须 1:是 2:否
+	Affordance        *string `json:"affordance,optional"`
 	IsCanSceneLinkage int64   `json:"isCanSceneLinkage,optional"` //是否可以场景联动
 	FuncGroup         int64   `json:"funcGroup,optional"`         // 功能分类: 1:普通功能 2:系统功能
 	UserPerm          int64   `json:"userPerm,optional"`          //用户权限操作: 1:r(只读) 3:rw(可读可写)
@@ -1222,6 +1233,14 @@ type OrderBy struct {
 	Sort  int64  `json:"sort,optional"`  //排序方式：1 从小到大, 2 从大到小
 }
 
+type OtaFile struct {
+	Size      int64  `json:"size"`      // 文件大小（字节）
+	Name      string `json:"name"`      // 文件名
+	FileUrl   string `json:"fileUrl"`   // 文件下载地址
+	FileMd5   string `json:"fileMd5"`   // 文件MD5校验值
+	Signature string `json:"signature"` // 文件签名值
+}
+
 type OtaFirmwareCreateReq struct {
 	Name       string             `json:"name"`               //升级包名称
 	ProductID  string             `json:"productID"`          //产品id
@@ -1417,6 +1436,16 @@ type OtaModuleInfoIndexReq struct {
 type OtaModuleInfoIndexResp struct {
 	List []*OtaModuleInfo `json:"list"` // OTA作业信息列表
 	PageResp
+}
+
+type OtaUpgradeData struct {
+	Version    string     `json:"version"`    // 新固件的版本
+	Name       string     `json:"name"`       // 固件升级包名称
+	Desc       string     `json:"desc"`       // 文件描述
+	IsDiff     int64      `json:"isDiff"`     // 是否差分升级包（0/1）
+	SignMethod string     `json:"signMethod"` // OTA升级包签名方法（MD5/SHA256，默认MD5）
+	Extra      string     `json:"extra"`      // 额外信息
+	Files      []*OtaFile `json:"files"`      // 升级文件列表
 }
 
 type PageInfo struct {
@@ -1665,15 +1694,15 @@ type ProductSchemaIndexResp struct {
 }
 
 type ProductSchemaInfo struct {
-	ProductID         string  `json:"productID,optional"`         //产品id 只读
-	Type              int64   `json:"type"`                       //物模型类型 1:property属性 2:event事件 3:action行为
-	Tag               int64   `json:"tag"`                        //物模型标签 1:自定义 2:可选 3:必选  必选不可删除
-	Identifier        string  `json:"identifier"`                 //标识符
-	ExtendConfig      string  `json:"extendConfig,optional"`      //拓展参数
-	Name              *string `json:"name,optional"`              //功能名称
-	Desc              *string `json:"desc,optional"`              //描述
-	Required          int64   `json:"required,optional"`          //是否必须 1:是 2:否
-	Affordance        *string `json:"affordance,optional"`        //各功能类型的详细参数定义
+	ProductID         string  `json:"productID,optional"`    //产品id 只读
+	Type              int64   `json:"type"`                  //物模型类型 1:property属性 2:event事件 3:action行为
+	Tag               int64   `json:"tag"`                   //物模型标签 1:自定义 2:可选 3:必选  必选不可删除
+	Identifier        string  `json:"identifier"`            //标识符
+	ExtendConfig      string  `json:"extendConfig,optional"` //拓展参数
+	Name              *string `json:"name,optional"`         //功能名称
+	Desc              *string `json:"desc,optional"`         //描述
+	Required          int64   `json:"required,optional"`     //是否必须 1:是 2:否
+	Affordance        *string `json:"affordance,optional"`
 	IsCanSceneLinkage int64   `json:"isCanSceneLinkage,optional"` //是否可以场景联动
 	FuncGroup         int64   `json:"funcGroup,optional"`         // 功能分类: 1:普通功能 2:系统功能
 	UserPerm          int64   `json:"userPerm,optional"`          //用户权限操作: 1:r(只读) 3:rw(可读可写)

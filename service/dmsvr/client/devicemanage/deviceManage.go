@@ -69,6 +69,8 @@ type (
 	DeviceMoveReq                     = dm.DeviceMoveReq
 	DeviceOnlineMultiFix              = dm.DeviceOnlineMultiFix
 	DeviceOnlineMultiFixReq           = dm.DeviceOnlineMultiFixReq
+	DeviceOtaUpgradeReq               = dm.DeviceOtaUpgradeReq
+	DeviceOtaUpgradeResp              = dm.DeviceOtaUpgradeResp
 	DeviceProfile                     = dm.DeviceProfile
 	DeviceProfileIndexReq             = dm.DeviceProfileIndexReq
 	DeviceProfileIndexResp            = dm.DeviceProfileIndexResp
@@ -123,6 +125,7 @@ type (
 	IDPathWithUpdate                  = dm.IDPathWithUpdate
 	IDsInfo                           = dm.IDsInfo
 	ImportResp                        = dm.ImportResp
+	OtaFile                           = dm.OtaFile
 	OtaFirmwareDeviceCancelReq        = dm.OtaFirmwareDeviceCancelReq
 	OtaFirmwareDeviceConfirmReq       = dm.OtaFirmwareDeviceConfirmReq
 	OtaFirmwareDeviceIndexReq         = dm.OtaFirmwareDeviceIndexReq
@@ -149,6 +152,7 @@ type (
 	OtaModuleInfo                     = dm.OtaModuleInfo
 	OtaModuleInfoIndexReq             = dm.OtaModuleInfoIndexReq
 	OtaModuleInfoIndexResp            = dm.OtaModuleInfoIndexResp
+	OtaUpgradeData                    = dm.OtaUpgradeData
 	PageInfo                          = dm.PageInfo
 	PageInfo_OrderBy                  = dm.PageInfo_OrderBy
 	Point                             = dm.Point
@@ -327,6 +331,8 @@ type (
 		DeviceGroupMultiUpdate(ctx context.Context, in *DeviceGroupMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
 		// 删除设备所在分组
 		DeviceGroupMultiDelete(ctx context.Context, in *DeviceGroupMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
+		// 获取设备能升级的升级包
+		DeviceOtaUpgrade(ctx context.Context, in *DeviceOtaUpgradeReq, opts ...grpc.CallOption) (*DeviceOtaUpgradeResp, error)
 	}
 
 	defaultDeviceManage struct {
@@ -743,4 +749,15 @@ func (m *defaultDeviceManage) DeviceGroupMultiDelete(ctx context.Context, in *De
 // 删除设备所在分组
 func (d *directDeviceManage) DeviceGroupMultiDelete(ctx context.Context, in *DeviceGroupMultiSaveReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.DeviceGroupMultiDelete(ctx, in)
+}
+
+// 获取设备能升级的升级包
+func (m *defaultDeviceManage) DeviceOtaUpgrade(ctx context.Context, in *DeviceOtaUpgradeReq, opts ...grpc.CallOption) (*DeviceOtaUpgradeResp, error) {
+	client := dm.NewDeviceManageClient(m.cli.Conn())
+	return client.DeviceOtaUpgrade(ctx, in, opts...)
+}
+
+// 获取设备能升级的升级包
+func (d *directDeviceManage) DeviceOtaUpgrade(ctx context.Context, in *DeviceOtaUpgradeReq, opts ...grpc.CallOption) (*DeviceOtaUpgradeResp, error) {
+	return d.svr.DeviceOtaUpgrade(ctx, in)
 }

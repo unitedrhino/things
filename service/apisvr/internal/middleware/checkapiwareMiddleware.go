@@ -17,7 +17,7 @@ func (m *CheckApiWareMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc 
 	return func(w http.ResponseWriter, r *http.Request) {
 		//userCtx := ctxs.GetUserCtx(r.Context())
 		////校验 Casbin Rule
-		//_, err := m.AuthRpc.RoleApiAuth(r.Context(), &user.RoleApiAuthReq{
+		//_, err := m.RoleRpc.RoleApiAuth(r.Context(), &user.RoleApiAuthReq{
 		//	RoleID: userCtx.RoleID,
 		//	Path:   r.URL.Path,
 		//	Method: r.Method,

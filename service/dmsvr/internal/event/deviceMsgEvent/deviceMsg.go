@@ -192,6 +192,7 @@ func (l *DeviceMsgHandle) deviceResp(di *dm.DeviceInfo, respMsg *deviceMsg.Publi
 		l.Errorf("DeviceMsgHandle.deviceResp.PublishToDev failure err:%v", er)
 		return
 	}
+
 	l.WithDuration(time.Now().Sub(startTime)).Debugf("DeviceMsgHandle.deviceResp startTime:%v msg:%v", startTime, respMsg)
 }
 

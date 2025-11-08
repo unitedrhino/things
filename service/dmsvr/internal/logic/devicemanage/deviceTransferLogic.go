@@ -2,6 +2,8 @@ package devicemanagelogic
 
 import (
 	"context"
+	"time"
+
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
@@ -14,7 +16,6 @@ import (
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/topics"
 	"gorm.io/gorm"
-	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -222,9 +223,11 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 		if err != nil {
 			l.Error(err)
 		}
-		err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUnbind, &di)
-		if err != nil {
-			l.Error(err)
+		if in.IsCleanData == def.True {
+			err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUnbind, &di)
+			if err != nil {
+				l.Error(err)
+			}
 		}
 		BindChange(l.ctx, l.svcCtx, nil, *di, int64(ProjectID))
 

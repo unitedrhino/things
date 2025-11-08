@@ -2,6 +2,7 @@ package deviceauthlogic
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dgsvr/internal/svc"

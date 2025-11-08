@@ -119,9 +119,50 @@ service api {
     )
     @handler transfer
     post /transfer (DeviceInfoTransferReq) returns ()
+    @doc(
+        summary: "设备升级,获取升级包手动升级"
+        businessType: "modify"
+    )
+    @handler otaUpgrade
+    post /ota/upgrade (DeviceOtaUpgradeReq) returns (DeviceOtaUpgradeResp)
 }
 
 type (
+
+
+    // DeviceOtaUpgradeReq OTA升级请求
+    DeviceOtaUpgradeReq  {
+        ProductID   string `json:"productID"`   // 产品ID
+        DeviceName  string `json:"deviceName"` // 设备名称
+        Version     string `json:"version"`       // 当前版本
+        StartUpdate bool   `json:"startUpdate"` // 如果有新版本 是否开启升级
+    }
+
+// DeviceOtaUpgradeResp OTA升级响应
+    DeviceOtaUpgradeResp  {
+        Firmware *OtaUpgradeData `json:"firmware"` // 如果有新版本会返回
+    }
+
+// OtaUpgradeData 固件升级信息
+    OtaUpgradeData  {
+        Version    string    `json:"version"`       // 新固件的版本
+        Name       string    `json:"name"`             // 固件升级包名称
+        Desc       string    `json:"desc"`             // 文件描述
+        IsDiff     int64     `json:"isDiff"`        // 是否差分升级包（0/1）
+        SignMethod string    `json:"signMethod"` // OTA升级包签名方法（MD5/SHA256，默认MD5）
+        Extra      string    `json:"extra"`           // 额外信息
+        Files      []*OtaFile `json:"files"`          // 升级文件列表
+    }
+
+// OtaFile 升级文件详情
+    OtaFile  {
+        Size      int64  `json:"size"`         // 文件大小（字节）
+        Name      string `json:"name"`          // 文件名
+        FileUrl   string `json:"fileUrl"`    // 文件下载地址
+        FileMd5   string `json:"fileMd5"`    // 文件MD5校验值
+        Signature string `json:"signature"`// 文件签名值
+    }
+
     DeviceInfo  {
         ID    int64  `json:"id,optional,omitempty"`
         TenantCode string `json:"tenantCode,optional,omitempty"`

@@ -69,6 +69,8 @@ type (
 	DeviceMoveReq                     = dm.DeviceMoveReq
 	DeviceOnlineMultiFix              = dm.DeviceOnlineMultiFix
 	DeviceOnlineMultiFixReq           = dm.DeviceOnlineMultiFixReq
+	DeviceOtaUpgradeReq               = dm.DeviceOtaUpgradeReq
+	DeviceOtaUpgradeResp              = dm.DeviceOtaUpgradeResp
 	DeviceProfile                     = dm.DeviceProfile
 	DeviceProfileIndexReq             = dm.DeviceProfileIndexReq
 	DeviceProfileIndexResp            = dm.DeviceProfileIndexResp
@@ -123,6 +125,7 @@ type (
 	IDPathWithUpdate                  = dm.IDPathWithUpdate
 	IDsInfo                           = dm.IDsInfo
 	ImportResp                        = dm.ImportResp
+	OtaFile                           = dm.OtaFile
 	OtaFirmwareDeviceCancelReq        = dm.OtaFirmwareDeviceCancelReq
 	OtaFirmwareDeviceConfirmReq       = dm.OtaFirmwareDeviceConfirmReq
 	OtaFirmwareDeviceIndexReq         = dm.OtaFirmwareDeviceIndexReq
@@ -149,6 +152,7 @@ type (
 	OtaModuleInfo                     = dm.OtaModuleInfo
 	OtaModuleInfoIndexReq             = dm.OtaModuleInfoIndexReq
 	OtaModuleInfoIndexResp            = dm.OtaModuleInfoIndexResp
+	OtaUpgradeData                    = dm.OtaUpgradeData
 	PageInfo                          = dm.PageInfo
 	PageInfo_OrderBy                  = dm.PageInfo_OrderBy
 	Point                             = dm.Point
