@@ -88,8 +88,8 @@ func (l *DeviceOtaUpgradeLogic) DeviceOtaUpgrade(in *dm.DeviceOtaUpgradeReq) (*d
 			}
 			err := relationDB.NewDeviceInfoRepo(l.ctx).UpdateWithField(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductID, DeviceName: in.DeviceName}, map[string]any{
 				"version":              in.Version,
-				"need_confirm_job_id":  "",
-				"need_confirm_version": 0,
+				"need_confirm_job_id":  0,
+				"need_confirm_version": "",
 			})
 			if err != nil {
 				return nil, err
