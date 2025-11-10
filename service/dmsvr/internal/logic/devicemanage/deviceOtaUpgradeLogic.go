@@ -2,7 +2,6 @@ package devicemanagelogic
 
 import (
 	"context"
-	"database/sql"
 	"sync"
 	"time"
 
@@ -37,10 +36,11 @@ func NewDeviceOtaUpgradeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 
 // 获取设备能升级的升级包
 func (l *DeviceOtaUpgradeLogic) DeviceOtaUpgrade(in *dm.DeviceOtaUpgradeReq) (*dm.DeviceOtaUpgradeResp, error) {
-	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
+	dc := devices.Core{
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
-	})
+	}
+	di, err := l.svcCtx.DeviceCache.GetData(l.ctx, dc)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +50,7 @@ func (l *DeviceOtaUpgradeLogic) DeviceOtaUpgrade(in *dm.DeviceOtaUpgradeReq) (*d
 		dfs, err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).FindByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
 			ProductID:   di.ProductID,
 			DeviceNames: []string{di.DeviceName},
-			DestVersion: di.Version.GetValue(),
+			DestVersion: in.Version,
 			Statues: []int64{msgOta.DeviceStatusConfirm, msgOta.DeviceStatusQueued,
 				msgOta.DeviceStatusNotified, msgOta.DeviceStatusInProgress,
 				msgOta.DeviceStatusCanceled, msgOta.DeviceStatusFailure}, //除了成功的都过滤出来
@@ -59,7 +59,7 @@ func (l *DeviceOtaUpgradeLogic) DeviceOtaUpgrade(in *dm.DeviceOtaUpgradeReq) (*d
 			if !errors.Cmp(err, errors.NotFind) {
 				return nil, err
 			}
-		} else {
+		} else if len(dfs) != 0 { //如果有执行中的升级任务
 			var once sync.Once
 			for _, df := range dfs {
 				df.Step = 100
@@ -94,25 +94,33 @@ func (l *DeviceOtaUpgradeLogic) DeviceOtaUpgrade(in *dm.DeviceOtaUpgradeReq) (*d
 			if err != nil {
 				return nil, err
 			}
+			l.svcCtx.DeviceCache.SetData(l.ctx, dc, nil)
 			return &dm.DeviceOtaUpgradeResp{}, nil
 		}
-		return &dm.DeviceOtaUpgradeResp{}, nil
+		//走到这里就是没有对应的升级任务,设备的版本和固件的版本又没对上,先把设备的版本更新了
+		err = relationDB.NewDeviceInfoRepo(l.ctx).UpdateWithField(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductID, DeviceName: in.DeviceName}, map[string]any{
+			"version": in.Version,
+		})
+		if err != nil {
+			return nil, err
+		}
+		l.svcCtx.DeviceCache.SetData(l.ctx, dc, nil)
 	}
 
 	df, err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
 		ProductID:    in.ProductID,
 		DeviceNames:  []string{in.DeviceName},
 		WithFirmware: true,
+		WithFiles:    true,
 		WithJob:      true,
-		DestVersion:  in.Version,
 		Statues:      []int64{msgOta.DeviceStatusQueued},
 	})
 	if err != nil && !errors.Cmp(err, errors.NotFind) {
 		return nil, err
 	}
 
-	if df == nil {
-		return nil, errors.NotFind
+	if df == nil { //没有升级包
+		return &dm.DeviceOtaUpgradeResp{}, nil
 	}
 	data, err := otamanagelogic.GenUpgradeParams(l.ctx, l.svcCtx, df.Firmware, df.Files)
 	if err != nil {
@@ -133,18 +141,18 @@ func (l *DeviceOtaUpgradeLogic) DeviceOtaUpgrade(in *dm.DeviceOtaUpgradeReq) (*d
 	} else {
 		resp.Firmware.Files = utils.CopySlice[dm.OtaFile](data.Files)
 	}
-	if in.StartUpdate {
-		df.Status = msgOta.DeviceStatusNotified
-		df.Detail = "接口获取升级"
-		df.PushTime = sql.NullTime{
-			Time:  time.Now(),
-			Valid: true,
-		}
-		err = relationDB.NewOtaFirmwareDeviceRepo(l.ctx).Update(l.ctx, df)
-		if err != nil {
-			logx.WithContext(l.ctx).Error(err)
-			return nil, err
-		}
-	}
+	//if in.StartUpdate {
+	//	df.Status = msgOta.DeviceStatusNotified
+	//	df.Detail = "接口获取升级"
+	//	df.PushTime = sql.NullTime{
+	//		Time:  time.Now(),
+	//		Valid: true,
+	//	}
+	//	err = relationDB.NewOtaFirmwareDeviceRepo(l.ctx).Update(l.ctx, df)
+	//	if err != nil {
+	//		logx.WithContext(l.ctx).Error(err)
+	//		return nil, err
+	//	}
+	//}
 	return &resp, nil
 }

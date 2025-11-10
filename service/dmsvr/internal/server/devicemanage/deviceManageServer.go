@@ -239,7 +239,7 @@ func (s *DeviceManageServer) DeviceGroupMultiDelete(ctx context.Context, in *dm.
 	return l.DeviceGroupMultiDelete(in)
 }
 
-// 获取设备能升级的升级包
+// 设备升级,获取升级包手动升级
 func (s *DeviceManageServer) DeviceOtaUpgrade(ctx context.Context, in *dm.DeviceOtaUpgradeReq) (*dm.DeviceOtaUpgradeResp, error) {
 	l := devicemanagelogic.NewDeviceOtaUpgradeLogic(ctx, s.svcCtx)
 	return l.DeviceOtaUpgrade(in)

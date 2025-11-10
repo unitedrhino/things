@@ -331,7 +331,7 @@ type (
 		DeviceGroupMultiUpdate(ctx context.Context, in *DeviceGroupMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
 		// 删除设备所在分组
 		DeviceGroupMultiDelete(ctx context.Context, in *DeviceGroupMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
-		// 获取设备能升级的升级包
+		// 设备升级,获取升级包手动升级
 		DeviceOtaUpgrade(ctx context.Context, in *DeviceOtaUpgradeReq, opts ...grpc.CallOption) (*DeviceOtaUpgradeResp, error)
 	}
 
@@ -751,13 +751,13 @@ func (d *directDeviceManage) DeviceGroupMultiDelete(ctx context.Context, in *Dev
 	return d.svr.DeviceGroupMultiDelete(ctx, in)
 }
 
-// 获取设备能升级的升级包
+// 设备升级,获取升级包手动升级
 func (m *defaultDeviceManage) DeviceOtaUpgrade(ctx context.Context, in *DeviceOtaUpgradeReq, opts ...grpc.CallOption) (*DeviceOtaUpgradeResp, error) {
 	client := dm.NewDeviceManageClient(m.cli.Conn())
 	return client.DeviceOtaUpgrade(ctx, in, opts...)
 }
 
-// 获取设备能升级的升级包
+// 设备升级,获取升级包手动升级
 func (d *directDeviceManage) DeviceOtaUpgrade(ctx context.Context, in *DeviceOtaUpgradeReq, opts ...grpc.CallOption) (*DeviceOtaUpgradeResp, error) {
 	return d.svr.DeviceOtaUpgrade(ctx, in)
 }

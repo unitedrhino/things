@@ -127,7 +127,7 @@ type DeviceManageClient interface {
 	DeviceGroupMultiUpdate(ctx context.Context, in *DeviceGroupMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
 	// 删除设备所在分组
 	DeviceGroupMultiDelete(ctx context.Context, in *DeviceGroupMultiSaveReq, opts ...grpc.CallOption) (*Empty, error)
-	// 获取设备能升级的升级包
+	// 设备升级,获取升级包手动升级
 	DeviceOtaUpgrade(ctx context.Context, in *DeviceOtaUpgradeReq, opts ...grpc.CallOption) (*DeviceOtaUpgradeResp, error)
 }
 
@@ -563,7 +563,7 @@ type DeviceManageServer interface {
 	DeviceGroupMultiUpdate(context.Context, *DeviceGroupMultiSaveReq) (*Empty, error)
 	// 删除设备所在分组
 	DeviceGroupMultiDelete(context.Context, *DeviceGroupMultiSaveReq) (*Empty, error)
-	// 获取设备能升级的升级包
+	// 设备升级,获取升级包手动升级
 	DeviceOtaUpgrade(context.Context, *DeviceOtaUpgradeReq) (*DeviceOtaUpgradeResp, error)
 	mustEmbedUnimplementedDeviceManageServer()
 }

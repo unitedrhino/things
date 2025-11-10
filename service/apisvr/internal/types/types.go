@@ -948,10 +948,9 @@ type DeviceMultiUpdateImportResp struct {
 }
 
 type DeviceOtaUpgradeReq struct {
-	ProductID   string `json:"productID"`   // 产品ID
-	DeviceName  string `json:"deviceName"`  // 设备名称
-	Version     string `json:"version"`     // 当前版本
-	StartUpdate bool   `json:"startUpdate"` // 如果有新版本 是否开启升级
+	ProductID  string `json:"productID"`  // 产品ID
+	DeviceName string `json:"deviceName"` // 设备名称
+	Version    string `json:"version"`    // 当前版本,如果和设备的当前版本不一致,会更新设备的版本,如果和固件的版本一致,这个固件的升级进度会变成成功
 }
 
 type DeviceOtaUpgradeResp struct {

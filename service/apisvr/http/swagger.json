@@ -10710,20 +10710,14 @@
         },
         "version": {
           "type": "string",
-          "description": " 当前版本"
-        },
-        "startUpdate": {
-          "type": "boolean",
-          "format": "boolean",
-          "description": " 如果有新版本 是否开启升级"
+          "description": " 当前版本,如果和设备的当前版本不一致,会更新设备的版本,如果和固件的版本一致,这个固件的升级进度会变成成功"
         }
       },
       "title": "DeviceOtaUpgradeReq",
       "required": [
         "productID",
         "deviceName",
-        "version",
-        "startUpdate"
+        "version"
       ]
     },
     "DeviceOtaUpgradeResp": {
