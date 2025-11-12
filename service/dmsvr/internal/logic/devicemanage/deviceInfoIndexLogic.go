@@ -107,10 +107,6 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 				DeviceName: v.DeviceName,
 			})
 		}
-		filter.SharedDevices = append(filter.SharedDevices, &devices.Core{
-			ProductID:  "fef",
-			DeviceName: "fff",
-		})
 	}
 	if in.RatedPower != nil {
 		filter.RatedPower = stores.GetCmp(in.RatedPower.CmpType, in.RatedPower.Value)
