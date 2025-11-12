@@ -95,6 +95,23 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		ParentGroupID:      in.ParentGroupID,
 		Distributor:        utils.Copy[stores.IDPathFilter](in.Distributor),
 	}
+	uc := ctxs.GetUserCtxNoNil(l.ctx)
+	if filter.SharedType != 0 && uc.UserID != 0 {
+		us, err := relationDB.NewUserDeviceShareRepo(l.ctx).FindByFilter(l.ctx, relationDB.UserDeviceShareFilter{SharedUserID: uc.UserID}, nil)
+		if err != nil {
+			return nil, err
+		}
+		for _, v := range us {
+			filter.SharedDevices = append(filter.SharedDevices, &devices.Core{
+				ProductID:  v.ProductID,
+				DeviceName: v.DeviceName,
+			})
+		}
+		filter.SharedDevices = append(filter.SharedDevices, &devices.Core{
+			ProductID:  "fef",
+			DeviceName: "fff",
+		})
+	}
 	if in.RatedPower != nil {
 		filter.RatedPower = stores.GetCmp(in.RatedPower.CmpType, in.RatedPower.Value)
 	}
@@ -114,14 +131,16 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 	if err != nil {
 		return nil, err
 	}
-	di, err := l.DiDB.FindByFilter(l.ctx, filter,
-		logic.ToPageInfo(in.Page).WithDefaultOrder(stores.OrderBy{Field: "is_online", Sort: stores.OrderAsc}, stores.OrderBy{Field: "sort", Sort: stores.OrderAsc},
-			stores.OrderBy{Field: "created_time", Sort: stores.OrderDesc}),
-	)
-	if err != nil {
-		return nil, err
+	var di []*relationDB.DmDeviceInfo
+	if size != 0 {
+		di, err = l.DiDB.FindByFilter(l.ctx, filter,
+			logic.ToPageInfo(in.Page).WithDefaultOrder(stores.OrderBy{Field: "is_online", Sort: stores.OrderAsc}, stores.OrderBy{Field: "sort", Sort: stores.OrderAsc},
+				stores.OrderBy{Field: "created_time", Sort: stores.OrderDesc}),
+		)
+		if err != nil {
+			return nil, err
+		}
 	}
-
 	info = make([]*dm.DeviceInfo, 0, len(di))
 	for _, v := range di {
 		pb := logic.ToDeviceInfo(l.ctx, l.svcCtx, v)

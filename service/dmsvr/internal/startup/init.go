@@ -537,6 +537,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		if t.Before(time.Now().Add(-time.Second * 2)) { //2秒之前的跳过
 			return nil
 		}
+		logx.WithContext(ctx).Info(topics.DmDeviceStaticOneHour)
 		return staticEvent.NewOneHourHandle(ctxs.WithRoot(ctx), svcCtx).Handle()
 	})
 	logx.Must(err)
@@ -544,6 +545,8 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		if t.Before(time.Now().Add(-time.Second * 2)) { //2秒之前的跳过
 			return nil
 		}
+		logx.WithContext(ctx).Info(topics.DmDeviceStaticHalfHour)
+
 		return staticEvent.NewHalfHourHandle(ctxs.WithRoot(ctx), svcCtx).Handle()
 	})
 	logx.Must(err)
@@ -551,6 +554,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		if t.Before(time.Now().Add(-time.Second * 2)) { //2秒之前的跳过
 			return nil
 		}
+		logx.WithContext(ctx).Info(topics.DmDeviceStaticOneMinute)
 		return staticEvent.NewOneMinuteHandle(ctxs.WithRoot(ctx), svcCtx).Handle()
 	})
 	logx.Must(err)

@@ -52,6 +52,7 @@ type (
 		ProductCategoryID  int64
 		ProductCategoryIDs []int64
 		SharedType         def.SelectType
+		SharedDevices      []*devices.Core
 		CollectType        def.SelectType
 		WithManufacturer   bool
 		DeviceType         int64
@@ -347,45 +348,20 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 				subQuery)
 		}
 	}
-	if f.SharedType != 0 && uc.UserID != 0 && ctxs.GetUserCtx(ctx) != nil { //如果要获取共享设备
-		subQuery := d.db.Model(&DmUserDeviceShare{}).Select("product_id, device_name").Where("shared_user_id = ?", uc.UserID)
-
+	if f.SharedType != 0 && len(f.SharedDevices) > 0 { //如果要获取共享设备
+		var devs []string
+		var devStr string
+		for _, v := range f.SharedDevices {
+			devs = append(devs, fmt.Sprintf("('%s','%s')", v.ProductID, v.DeviceName))
+		}
+		devStr = strings.Join(devs, ",")
 		switch f.SharedType {
 		case def.SelectTypeOnly: //直接过滤这几个设备
-			db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where("(product_id, device_name)  in (?)",
-				subQuery)
+			db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where(fmt.Sprintf("(product_id, device_name)  in (%s)", devStr))
 		case def.SelectTypeAll: //同时获取普通设备
 			if !(uc.IsAdmin && (uc.ProjectID <= def.NotClassified || uc.AllProject)) {
-				d := shareAll(ctx, d.db, uc)
+				d := shareAll(ctx, d.db, uc, devStr)
 				db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where(d)
-				//if uc.ProjectID <= def.NotClassified { //如果不是管理员又没有传项目ID,则只获取分享的设备
-				//	db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where("(product_id, device_name)  in (?)",
-				//		subQuery)
-				//} else { //如果传了项目ID,则判断项目的权限
-				//	or := d.db
-				//	or = or.Or("(product_id, device_name)  in (?)", subQuery)
-				//	pa := uc.ProjectAuth[uc.ProjectID]
-				//	if pa == nil && uc.IsAdmin {
-				//		pa = &ctxs.ProjectAuth{AuthType: def.AuthAdmin}
-				//	}
-				//	if pa == nil {
-				//		db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where("(product_id, device_name)  in (?)",
-				//			subQuery)
-				//	} else {
-				//		if pa.AuthType < def.AuthRead || uc.AllArea {
-				//			or = or.Or("project_id = ?", uc.ProjectID)
-				//			db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where(or)
-				//		} else { //如果是读权限,还需要过滤区域
-				//			areaIDs, er1 := stores.GetAreaAuthIDs(ctx)
-				//			areaIDPaths, er2 := stores.GetAreaAuthIDPaths(ctx)
-				//			if (er1 == nil || er2 == nil) && (areaIDPaths != nil || areaIDs != nil) {
-				//				or = or.Or("(area_id in ? or area_id_path in ?) and project_id = ?", areaIDs, areaIDPaths, uc.ProjectID)
-				//			}
-				//			db = db.WithContext(ctxs.WithAllProject(ctxs.WithAllArea(ctx))).Where(or)
-				//		}
-				//	}
-
-				//}
 			}
 		}
 	}
@@ -393,21 +369,19 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 	return db
 }
 
-func shareAll(ctx context.Context, db *gorm.DB, uc *ctxs.UserCtx) *gorm.DB {
-	subQuery := db.Model(&DmUserDeviceShare{}).Select("product_id, device_name").Where("shared_user_id = ?", uc.UserID)
+func shareAll(ctx context.Context, db *gorm.DB, uc *ctxs.UserCtx, devStr string) *gorm.DB {
 	var pas = uc.ProjectAuth
 	if uc.ProjectID > def.NotClassified {
 		pas = map[int64]*ctxs.ProjectAuth{uc.ProjectID: uc.ProjectAuth[uc.ProjectID]}
 	}
 	or := db
-	or = or.Or("(product_id, device_name)  in (?)", subQuery)
+	or = or.Or(fmt.Sprintf("(product_id, device_name)  in (%s)", devStr))
 	for pid, pa := range pas {
 		if pa == nil && uc.IsAdmin {
 			pa = &ctxs.ProjectAuth{AuthType: def.AuthAdmin}
 		}
 		if pa == nil {
-			db = db.Where("(product_id, device_name)  in (?)",
-				subQuery)
+			db = db.Where(fmt.Sprintf("(product_id, device_name)  in (%s)", devStr))
 			return db
 		} else {
 			if pa.AuthType < def.AuthRead || uc.AllArea {

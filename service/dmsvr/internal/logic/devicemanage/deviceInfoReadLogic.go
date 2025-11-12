@@ -2,6 +2,7 @@ package devicemanagelogic
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
@@ -36,9 +37,22 @@ func (l *DeviceInfoReadLogic) DeviceInfoRead(in *dm.DeviceInfoReadReq) (*dm.Devi
 	if ctxs.GetUserCtx(l.ctx).IsAdmin {
 		l.ctx = ctxs.WithAllProject(l.ctx)
 	}
-	di, err := l.DiDB.FindOneByFilter(l.ctx,
-		relationDB.DeviceFilter{ProductID: in.ProductID, DeviceNames: []string{in.DeviceName},
-			SharedType: def.SelectTypeAll})
+	var sharedDevices []*devices.Core
+	uc := ctxs.GetUserCtxNoNil(l.ctx)
+	if uc.UserID != 0 {
+		us, err := relationDB.NewUserDeviceShareRepo(l.ctx).FindByFilter(l.ctx, relationDB.UserDeviceShareFilter{SharedUserID: uc.UserID}, nil)
+		if err != nil {
+			return nil, err
+		}
+		for _, v := range us {
+			sharedDevices = append(sharedDevices, &devices.Core{
+				ProductID:  v.ProductID,
+				DeviceName: v.DeviceName,
+			})
+		}
+	}
+	di, err := l.DiDB.FindOneByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductID, DeviceNames: []string{in.DeviceName},
+		SharedType: def.SelectTypeAll, SharedDevices: sharedDevices})
 	if err != nil && !errors.Cmp(err, errors.NotFind) {
 		l.Error(err)
 		return nil, err
@@ -46,7 +60,7 @@ func (l *DeviceInfoReadLogic) DeviceInfoRead(in *dm.DeviceInfoReadReq) (*dm.Devi
 	if di == nil {
 		di, err = l.DiDB.FindOneByFilter(l.ctx,
 			relationDB.DeviceFilter{DeviceNames: []string{in.DeviceName},
-				SharedType: def.SelectTypeAll})
+				SharedType: def.SelectTypeAll, SharedDevices: sharedDevices})
 		if err != nil {
 			l.Error(err)
 			return nil, err

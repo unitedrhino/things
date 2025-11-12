@@ -165,8 +165,6 @@ service DeviceManage {
   rpc deviceGroupMultiUpdate(DeviceGroupMultiSaveReq)     returns (Empty);
   //删除设备所在分组
   rpc deviceGroupMultiDelete(DeviceGroupMultiSaveReq)     returns (Empty);
-
-
   //设备升级,获取升级包手动升级
   rpc deviceOtaUpgrade(DeviceOtaUpgradeReq) returns(DeviceOtaUpgradeResp);
 }
