@@ -2,6 +2,8 @@ package logic
 
 import (
 	"context"
+	"time"
+
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
@@ -11,7 +13,6 @@ import (
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"google.golang.org/protobuf/types/known/wrapperspb"
-	"time"
 )
 
 func FillAreaGroupCount(ctx context.Context, svcCtx *svc.ServiceContext, areaID int64) error {
@@ -31,6 +32,9 @@ func FillAreaGroupCount(ctx context.Context, svcCtx *svc.ServiceContext, areaID 
 	if err != nil {
 		log.Error(err)
 	}
+	if area.GroupCount.GetValue() == count {
+		return nil
+	}
 	_, err = svcCtx.AreaM.AreaInfoUpdate(ctx, &sys.AreaInfo{ProjectID: area.ProjectID, AreaID: areaID, GroupCount: &wrapperspb.Int64Value{Value: count}})
 	if err != nil {
 		log.Error(err)
@@ -39,17 +43,18 @@ func FillAreaGroupCount(ctx context.Context, svcCtx *svc.ServiceContext, areaID 
 	return nil
 }
 
-func fillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, areaIDPaths ...string) error {
-	logx.WithContext(ctx).Infof("FillAreaDeviceCount areaIDPaths:%v", areaIDPaths)
+func DirectFillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, areas ...*sys.AreaInfo) error {
+	logx.WithContext(ctx).Infof("FillAreaDeviceCount len:%v", len(areas))
 	defer utils.Recover(ctx)
 	ctx = ctxs.WithRoot(ctx)
 	log := logx.WithContext(ctx)
 	var idMap = map[int64]struct{}{}
-	for _, areaIDPath := range areaIDPaths {
-		if areaIDPath == "" || areaIDPath == def.NotClassifiedPath {
+	var updateCount int
+	for _, area := range areas {
+		if area.AreaID <= def.NotClassified || area.AreaIDPath == "" || area.AreaIDPath == def.NotClassifiedPath {
 			continue
 		}
-		ids := utils.GetIDPath(areaIDPath)
+		ids := utils.GetIDPath(area.AreaIDPath)
 		var idPath string
 		for _, id := range ids {
 			idPath += cast.ToString(id) + "-"
@@ -62,11 +67,10 @@ func fillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, areaID
 				log.Error(err)
 				continue
 			}
-			area, err := svcCtx.AreaCache.GetData(ctx, id)
-			if err != nil {
-				log.Error(err)
+			if area.DeviceCount.GetValue() == count {
 				continue
 			}
+			updateCount++
 			_, err = svcCtx.AreaM.AreaInfoUpdate(ctx, &sys.AreaInfo{ProjectID: area.ProjectID, AreaID: id, DeviceCount: &wrapperspb.Int64Value{Value: count}})
 			if err != nil {
 				log.Error(err)
@@ -74,30 +78,31 @@ func fillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, areaID
 			}
 		}
 	}
+	log.Infof("FillAreaDeviceCount:%v", updateCount)
 
 	return nil
 }
 
-func FillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, areaIDPaths ...string) error {
-	areaIDPathChan <- areaIDPaths
+func FillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, areas ...*sys.AreaInfo) error {
+	areaChan <- areas
 	return nil
 }
 
 var projectIDChan = make(chan []int64, 100000)
-var areaIDPathChan = make(chan []string, 100000)
+var areaChan = make(chan []*sys.AreaInfo, 100000)
 
 func Init(svcCtx *svc.ServiceContext) {
 	utils.Go(context.Background(), func() {
 		tick := time.Tick(time.Second)
 		execProjectIDs := make([]int64, 0, 500)
-		execAreaIDPaths := make([]string, 0, 1000)
+		execAreas := make([]*sys.AreaInfo, 0, 1000)
 		for {
 			select {
 			case _ = <-tick:
 				if len(execProjectIDs) > 0 {
 					batchSize := len(execProjectIDs)
-					if batchSize > 100 { //控制每秒执行的速率
-						batchSize = 100
+					if batchSize > 500 { //控制每秒执行的速率
+						batchSize = 500
 					}
 					newProjectIDs := execProjectIDs[:batchSize]
 					execProjectIDs = execProjectIDs[batchSize:] //清空切片
@@ -106,22 +111,22 @@ func Init(svcCtx *svc.ServiceContext) {
 						fillProjectDeviceCount(ctx, svcCtx, newProjectIDs...)
 					})
 				}
-				if len(execAreaIDPaths) > 0 {
-					batchSize := len(execAreaIDPaths)
-					if batchSize > 100 { //控制每秒执行的速率
-						batchSize = 100
+				if len(execAreas) > 0 {
+					batchSize := len(execAreas)
+					if batchSize > 500 { //控制每秒执行的速率
+						batchSize = 500
 					}
-					newAreaIDPaths := execAreaIDPaths[:batchSize]
-					execAreaIDPaths = execAreaIDPaths[batchSize:] //清空切片
+					newAreas := execAreas[:batchSize]
+					execAreas = execAreas[batchSize:] //清空切片
 					utils.Go(context.Background(), func() {
 						ctx := ctxs.WithRoot(context.Background())
-						fillAreaDeviceCount(ctx, svcCtx, newAreaIDPaths...)
+						DirectFillAreaDeviceCount(ctx, svcCtx, newAreas...)
 					})
 				}
 			case p := <-projectIDChan:
 				execProjectIDs = append(execProjectIDs, p...)
-			case a := <-areaIDPathChan:
-				execAreaIDPaths = append(execAreaIDPaths, a...)
+			case a := <-areaChan:
+				execAreas = append(execAreas, a...)
 			}
 		}
 	})
@@ -143,6 +148,14 @@ func fillProjectDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, pro
 		count, err := relationDB.NewDeviceInfoRepo(ctx).CountByFilter(ctx, relationDB.DeviceFilter{ProjectIDs: []int64{id}})
 		if err != nil {
 			log.Error(err)
+			continue
+		}
+		pi, err := svcCtx.ProjectCache.GetData(ctx, id)
+		if err != nil {
+			log.Error(err)
+			continue
+		}
+		if pi.DeviceCount.GetValue() == count {
 			continue
 		}
 		_, err = svcCtx.ProjectM.ProjectInfoUpdate(ctx, &sys.ProjectInfo{ProjectID: id, DeviceCount: &wrapperspb.Int64Value{Value: count}})

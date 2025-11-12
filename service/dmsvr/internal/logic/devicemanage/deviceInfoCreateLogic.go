@@ -313,7 +313,9 @@ func (l *DeviceInfoCreateLogic) DeviceInfoCreate(in *dm.DeviceInfo) (resp *dm.Em
 		l.Errorf("AddDevice.DeviceInfo.Insert err=%+v", err)
 		return nil, err
 	}
-	logic.FillAreaDeviceCount(l.ctx, l.svcCtx, string(di.AreaIDPath))
+	if ai != nil && ai.AreaID > def.NotClassified {
+		logic.FillAreaDeviceCount(l.ctx, l.svcCtx, ai)
+	}
 	logic.FillProjectDeviceCount(l.ctx, l.svcCtx, int64(di.ProjectID))
 	err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoCreate, &devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
 	if err != nil {

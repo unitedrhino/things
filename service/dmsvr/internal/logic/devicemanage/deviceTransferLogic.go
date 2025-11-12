@@ -58,7 +58,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 	}
 	diDB := relationDB.NewDeviceInfoRepo(l.ctx)
 	var dis []*relationDB.DmDeviceInfo
-	var changeAreaIDPaths = map[string]struct{}{}
+	var changeAreas = []*sys.AreaInfo{}
 	var projectIDSet = map[int64]struct{}{}
 	var changeTenantCode bool
 	var oldTenantCode string
@@ -94,7 +94,14 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 		if oldTenantCode != string(di.TenantCode) {
 			changeTenantCode = true
 		}
-		changeAreaIDPaths[string(di.AreaIDPath)] = struct{}{}
+		if di.AreaID > def.NotClassified {
+			ai, err := l.svcCtx.AreaCache.GetData(l.ctx, int64(di.AreaID))
+			if err != nil {
+				l.Error(err)
+			} else {
+				changeAreas = append(changeAreas, ai)
+			}
+		}
 		projectIDSet[int64(di.ProjectID)] = struct{}{}
 
 	}
@@ -146,7 +153,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 			}
 			AreaID = dataType.AreaID(ai.AreaID)
 			AreaIDPath = ai.AreaIDPath
-			changeAreaIDPaths[AreaIDPath] = struct{}{}
+			changeAreas = append(changeAreas, ai)
 			projectIDSet[ai.ProjectID] = struct{}{}
 		}
 		pi, err = l.svcCtx.ProjectCache.GetData(l.ctx, in.ProjectID)
@@ -232,9 +239,9 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 		BindChange(l.ctx, l.svcCtx, nil, *di, int64(ProjectID))
 
 	}
-	if len(changeAreaIDPaths) > 0 {
+	if len(changeAreas) > 0 {
 		ctxs.GoNewCtx(l.ctx, func(ctx2 context.Context) {
-			logic.FillAreaDeviceCount(ctx2, l.svcCtx, utils.SetToSlice(changeAreaIDPaths)...)
+			logic.FillAreaDeviceCount(ctx2, l.svcCtx, changeAreas...)
 		})
 	}
 	if len(projectIDSet) > 0 {

@@ -2,6 +2,8 @@ package staticEvent
 
 import (
 	"context"
+	"time"
+
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/utils"
@@ -11,7 +13,6 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/share/devices"
 	"github.com/zeromicro/go-zero/core/logx"
-	"time"
 )
 
 type OneHourHandle struct {
@@ -41,32 +42,53 @@ func (l *OneHourHandle) Handle() error { //产品品类设备数量统计
 }
 
 func (l *OneHourHandle) DeviceStatic() error { //区域下的设备数量统计
-	err := func() error {
-		ret, err := l.svcCtx.AreaM.AreaInfoIndex(l.ctx, &sys.AreaInfoIndexReq{})
+	{
+		ret, err := l.svcCtx.ProjectM.ProjectInfoIndex(l.ctx, &sys.ProjectInfoIndexReq{})
 		if err != nil {
 			return err
 		}
-		var areaPaths []string
+		var projectIDs []int64
 		for _, v := range ret.List {
-			areaPaths = append(areaPaths, v.AreaIDPath)
+			projectIDs = append(projectIDs, v.ProjectID)
 		}
-		err = logic.FillAreaDeviceCount(l.ctx, l.svcCtx, areaPaths...)
-		return err
-	}()
-	if err != nil {
-		l.Error(err)
+		err = logic.FillProjectDeviceCount(l.ctx, l.svcCtx, projectIDs...)
+		time.Sleep(time.Second * 30) //休息一下减少波峰
 	}
-	ret, err := l.svcCtx.ProjectM.ProjectInfoIndex(l.ctx, &sys.ProjectInfoIndexReq{})
-	if err != nil {
-		return err
+	{
+		var total int64 = 9999 //如果三次都没有成功自然退出
+		var size int64 = 500
+		var areas []*sys.AreaInfo
+		var errCount int64 = 0
+		for page := int64(0); page*size < total; page++ {
+			err := func() error {
+				ret, err := l.svcCtx.AreaM.AreaInfoIndex(l.ctx, &sys.AreaInfoIndexReq{Page: &sys.PageInfo{
+					Page: page + 1,
+					Size: size,
+				}})
+				if err != nil {
+					return err
+				}
+				total = ret.Total
+				for _, v := range ret.List {
+					areas = append(areas, v)
+				}
+				return nil
+			}()
+			if err != nil {
+				l.Error(err)
+				errCount++
+			}
+			if errCount > 3 { //只有三次错误的机会
+				break
+			}
+		}
+		err := logic.DirectFillAreaDeviceCount(l.ctx, l.svcCtx, areas...)
+		if err != nil {
+			l.Error(err)
+		}
 	}
-	var projectIDs []int64
-	for _, v := range ret.List {
-		projectIDs = append(projectIDs, v.ProjectID)
-	}
-	time.Sleep(5 * time.Second) //避免和区域统计同时并发处理,等区域统计完再处理
-	err = logic.FillProjectDeviceCount(l.ctx, l.svcCtx, projectIDs...)
-	return err
+
+	return nil
 }
 
 func (l *OneHourHandle) DeviceOnlineFix() error { //设备在线修复

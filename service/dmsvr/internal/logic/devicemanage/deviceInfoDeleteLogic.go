@@ -2,7 +2,9 @@ package devicemanagelogic
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/ctxs"
+	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
@@ -105,7 +107,14 @@ func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*d
 	if err != nil {
 		l.Error(err)
 	}
-	logic.FillAreaDeviceCount(l.ctx, l.svcCtx, string(di.AreaIDPath))
+	if di.AreaID > def.NotClassified {
+		ai, err := l.svcCtx.AreaCache.GetData(l.ctx, int64(di.AreaID))
+		if err != nil {
+			l.Error(err)
+		} else {
+			logic.FillAreaDeviceCount(l.ctx, l.svcCtx, ai)
+		}
+	}
 	logic.FillProjectDeviceCount(l.ctx, l.svcCtx, int64(di.ProjectID))
 	return &dm.Empty{}, nil
 }

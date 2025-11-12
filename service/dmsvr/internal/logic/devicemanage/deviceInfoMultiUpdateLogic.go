@@ -2,6 +2,9 @@ package devicemanagelogic
 
 import (
 	"context"
+	"time"
+
+	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
@@ -12,7 +15,6 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/topics"
-	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -47,7 +49,7 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 	var Distributor stores.IDPathWithUpdate
 	var areaIDPath string
 	var projectIDSet = map[int64]struct{}{}
-	var changeAreaIDPaths = map[string]struct{}{}
+	var changeAreas []*sys.AreaInfo
 	var deviceAffiliation devices.Affiliation
 	var devs = logic.ToDeviceCores(in.Devices)
 	if in.AreaID != 0 {
@@ -57,7 +59,7 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 			return nil, err
 		}
 		areaIDPath = ai.AreaIDPath
-		changeAreaIDPaths[areaIDPath] = struct{}{}
+		changeAreas = append(changeAreas, ai)
 		deviceAffiliation = devices.Affiliation{
 			ProjectID:  ai.ProjectID,
 			AreaID:     ai.AreaID,
@@ -68,7 +70,13 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 			if err != nil {
 				continue
 			}
-			changeAreaIDPaths[val.AreaIDPath] = struct{}{}
+			if val.AreaID > def.NotClassified {
+				ai, err := l.svcCtx.AreaCache.GetData(l.ctx, in.AreaID)
+				if err != nil {
+					l.Error(err)
+				}
+				changeAreas = append(changeAreas, ai)
+			}
 			projectIDSet[val.ProjectID] = struct{}{}
 		}
 	}
@@ -96,8 +104,10 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 			}
 		}
 	})
-	if len(changeAreaIDPaths) > 0 {
-		logic.FillAreaDeviceCount(l.ctx, l.svcCtx, utils.SetToSlice(changeAreaIDPaths)...)
+	if len(changeAreas) > 0 {
+		logic.FillAreaDeviceCount(l.ctx, l.svcCtx, changeAreas...)
+	}
+	if len(projectIDSet) > 0 {
 		logic.FillProjectDeviceCount(l.ctx, l.svcCtx, utils.SetToSlice(projectIDSet)...)
 	}
 	if deviceAffiliation.AreaID != 0 {

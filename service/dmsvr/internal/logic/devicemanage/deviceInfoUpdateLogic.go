@@ -60,7 +60,15 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 		}
 		ctxs.GoNewCtx(l.ctx, func(ctx2 context.Context) {
 			time.Sleep(2 * time.Second)
-			logic.FillAreaDeviceCount(l.ctx, l.svcCtx, ai.AreaIDPath, string(old.AreaIDPath))
+			logic.FillAreaDeviceCount(l.ctx, l.svcCtx, ai)
+			if old.AreaID > def.NotClassified {
+				ai, err := l.svcCtx.AreaCache.GetData(l.ctx, int64(old.AreaID))
+				if err != nil {
+					l.Error(err)
+				} else {
+					logic.FillAreaDeviceCount(l.ctx, l.svcCtx, ai)
+				}
+			}
 		})
 		old.AreaIDPath = dataType.AreaIDPath(ai.AreaIDPath)
 		isUpdateTag = true

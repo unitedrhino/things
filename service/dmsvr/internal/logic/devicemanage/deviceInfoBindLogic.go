@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"time"
 
+	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
@@ -147,7 +148,13 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 	if err != nil {
 		return nil, err
 	}
-	oldAreaIDPath := di.AreaIDPath
+	var oldArea *sys.AreaInfo
+	if di.AreaID > def.NotClassified {
+		oldArea, err = l.svcCtx.AreaCache.GetData(l.ctx, in.AreaID)
+		if err != nil {
+			l.Error(err)
+		}
+	}
 	di.AreaIDPath = dataType.AreaIDPath(ai.AreaIDPath)
 
 	if !di.FirstBind.Valid { //没有绑定过需要绑定
@@ -195,7 +202,10 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 			l.Error(err)
 		}
 	}
-	logic.FillAreaDeviceCount(l.ctx, l.svcCtx, ai.AreaIDPath, string(oldAreaIDPath))
+	logic.FillAreaDeviceCount(l.ctx, l.svcCtx, ai)
+	if oldArea != nil {
+		logic.FillAreaDeviceCount(l.ctx, l.svcCtx, oldArea)
+	}
 	logic.FillProjectDeviceCount(l.ctx, l.svcCtx, int64(di.ProjectID))
 	dev := devices.Core{ProductID: di.ProductID, DeviceName: di.DeviceName}
 	er := l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUpdate, &dev)
