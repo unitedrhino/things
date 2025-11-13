@@ -51,8 +51,8 @@ func (l *OneHourHandle) DeviceStatic() error { //区域下的设备数量统计
 		for _, v := range ret.List {
 			projectIDs = append(projectIDs, v.ProjectID)
 		}
-		err = logic.FillProjectDeviceCount(l.ctx, l.svcCtx, projectIDs...)
-		time.Sleep(time.Second * 30) //休息一下减少波峰
+		err = logic.DirectFillProjectDeviceCount(l.ctx, l.svcCtx, time.Microsecond*100, projectIDs...)
+		time.Sleep(time.Second * 5) //休息一下减少波峰
 	}
 	{
 		var total int64 = 9999 //如果三次都没有成功自然退出
@@ -82,7 +82,7 @@ func (l *OneHourHandle) DeviceStatic() error { //区域下的设备数量统计
 				break
 			}
 		}
-		err := logic.DirectFillAreaDeviceCount(l.ctx, l.svcCtx, areas...)
+		err := logic.DirectFillAreaDeviceCount(l.ctx, l.svcCtx, time.Microsecond*100, areas...)
 		if err != nil {
 			l.Error(err)
 		}

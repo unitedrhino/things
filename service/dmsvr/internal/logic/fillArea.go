@@ -43,9 +43,10 @@ func FillAreaGroupCount(ctx context.Context, svcCtx *svc.ServiceContext, areaID 
 	return nil
 }
 
-func DirectFillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, areas ...*sys.AreaInfo) error {
+func DirectFillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, delay time.Duration, areas ...*sys.AreaInfo) error {
 	logx.WithContext(ctx).Infof("FillAreaDeviceCount len:%v", len(areas))
 	defer utils.Recover(ctx)
+	var startTime = time.Now()
 	ctx = ctxs.WithRoot(ctx)
 	log := logx.WithContext(ctx)
 	var idMap = map[int64]struct{}{}
@@ -60,6 +61,9 @@ func DirectFillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, 
 			idPath += cast.ToString(id) + "-"
 			if _, ok := idMap[id]; ok {
 				continue
+			}
+			if delay != 0 {
+				time.Sleep(delay)
 			}
 			idMap[id] = struct{}{}
 			count, err := relationDB.NewDeviceInfoRepo(ctx).CountByFilter(ctx, relationDB.DeviceFilter{AreaIDPath: idPath})
@@ -78,7 +82,7 @@ func DirectFillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, 
 			}
 		}
 	}
-	log.Infof("FillAreaDeviceCount:%v", updateCount)
+	log.Infof("FillAreaDeviceCount change:%v use:%v", updateCount, time.Since(startTime))
 
 	return nil
 }
@@ -108,7 +112,7 @@ func Init(svcCtx *svc.ServiceContext) {
 					execProjectIDs = execProjectIDs[batchSize:] //清空切片
 					utils.Go(context.Background(), func() {
 						ctx := ctxs.WithRoot(context.Background())
-						fillProjectDeviceCount(ctx, svcCtx, newProjectIDs...)
+						DirectFillProjectDeviceCount(ctx, svcCtx, 0, newProjectIDs...)
 					})
 				}
 				if len(execAreas) > 0 {
@@ -120,7 +124,7 @@ func Init(svcCtx *svc.ServiceContext) {
 					execAreas = execAreas[batchSize:] //清空切片
 					utils.Go(context.Background(), func() {
 						ctx := ctxs.WithRoot(context.Background())
-						DirectFillAreaDeviceCount(ctx, svcCtx, newAreas...)
+						DirectFillAreaDeviceCount(ctx, svcCtx, 0, newAreas...)
 					})
 				}
 			case p := <-projectIDChan:
@@ -131,7 +135,7 @@ func Init(svcCtx *svc.ServiceContext) {
 		}
 	})
 }
-func fillProjectDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, projectIDs ...int64) error {
+func DirectFillProjectDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, delay time.Duration, projectIDs ...int64) error {
 	logx.WithContext(ctx).Infof("FillProjectDeviceCount projectIDs:%v", projectIDs)
 	defer utils.Recover(ctx)
 	ctx = ctxs.WithRoot(ctx)
@@ -143,6 +147,9 @@ func fillProjectDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, pro
 		}
 		if _, ok := idMap[id]; ok {
 			continue
+		}
+		if delay != 0 {
+			time.Sleep(delay)
 		}
 		idMap[id] = struct{}{}
 		count, err := relationDB.NewDeviceInfoRepo(ctx).CountByFilter(ctx, relationDB.DeviceFilter{ProjectIDs: []int64{id}})

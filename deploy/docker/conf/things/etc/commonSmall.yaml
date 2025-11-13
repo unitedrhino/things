@@ -36,6 +36,8 @@ DmRpc:
   Mode: direct
   Conf:
     Timeout: 1000000
+    Etcd:
+      key: dm.rpc
 UdRpc:
   Enable: true
   Mode: direct
