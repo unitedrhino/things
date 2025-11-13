@@ -9,6 +9,7 @@ const (
 
 	DmDeviceOnlineStatusChange = "server.things.dm.device.onlineStatus.change"
 	DmDeviceStaticOneHour      = "server.things.dm.device.static.2Hour"     //2小时统计
+	DmDeviceStaticOneDay       = "server.things.dm.device.static.1Day"      //1天统计
 	DmDeviceStaticHalfHour     = "server.things.dm.device.static.halfHour"  //半小时统计
 	DmDeviceStaticOneMinute    = "server.things.dm.device.static.oneMinute" //1分钟统计
 	DmProductInfoCreate        = "server.things.dm.product.info.create"
