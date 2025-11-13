@@ -7,6 +7,7 @@ import (
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
+	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
@@ -23,7 +24,7 @@ func FillAreaGroupCount(ctx context.Context, svcCtx *svc.ServiceContext, areaID 
 	if areaID <= def.NotClassified {
 		return nil
 	}
-	count, err := relationDB.NewGroupInfoRepo(ctx).CountByFilter(ctx, relationDB.GroupInfoFilter{AreaID: areaID})
+	count, err := stores.WithNoDebug(ctx, relationDB.NewGroupInfoRepo).CountByFilter(ctx, relationDB.GroupInfoFilter{AreaID: areaID})
 	if err != nil {
 		log.Error(err)
 		return err
@@ -44,7 +45,7 @@ func FillAreaGroupCount(ctx context.Context, svcCtx *svc.ServiceContext, areaID 
 }
 
 func DirectFillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, delay time.Duration, areas ...*sys.AreaInfo) error {
-	logx.WithContext(ctx).Infof("FillAreaDeviceCount len:%v", len(areas))
+	logx.WithContext(ctx).Infof("FillAreaDeviceCount delay:%v len:%v", delay, len(areas))
 	defer utils.Recover(ctx)
 	var startTime = time.Now()
 	ctx = ctxs.WithRoot(ctx)
@@ -66,7 +67,7 @@ func DirectFillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, 
 				time.Sleep(delay)
 			}
 			idMap[id] = struct{}{}
-			count, err := relationDB.NewDeviceInfoRepo(ctx).CountByFilter(ctx, relationDB.DeviceFilter{AreaIDPath: idPath})
+			count, err := stores.WithNoDebug(ctx, relationDB.NewDeviceInfoRepo).CountByFilter(ctx, relationDB.DeviceFilter{AreaIDPath: idPath})
 			if err != nil {
 				log.Error(err)
 				continue
@@ -136,7 +137,7 @@ func Init(svcCtx *svc.ServiceContext) {
 	})
 }
 func DirectFillProjectDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, delay time.Duration, projectIDs ...int64) error {
-	logx.WithContext(ctx).Infof("FillProjectDeviceCount projectIDs:%v", projectIDs)
+	logx.WithContext(ctx).Infof("FillProjectDeviceCount delay:%v projectIDs:%v", delay, projectIDs)
 	defer utils.Recover(ctx)
 	ctx = ctxs.WithRoot(ctx)
 	log := logx.WithContext(ctx)
@@ -152,7 +153,7 @@ func DirectFillProjectDeviceCount(ctx context.Context, svcCtx *svc.ServiceContex
 			time.Sleep(delay)
 		}
 		idMap[id] = struct{}{}
-		count, err := relationDB.NewDeviceInfoRepo(ctx).CountByFilter(ctx, relationDB.DeviceFilter{ProjectIDs: []int64{id}})
+		count, err := stores.WithNoDebug(ctx, relationDB.NewDeviceInfoRepo).CountByFilter(ctx, relationDB.DeviceFilter{ProjectIDs: []int64{id}})
 		if err != nil {
 			log.Error(err)
 			continue

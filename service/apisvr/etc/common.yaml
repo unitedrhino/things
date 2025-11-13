@@ -40,6 +40,8 @@ DmRpc:
   Mode: direct
   Conf:
     Timeout: 1000000
+    Etcd:
+      key: dm.rpc
 SysRpc:
   Enable: true
   Mode: grpc
