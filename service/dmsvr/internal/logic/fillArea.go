@@ -137,7 +137,7 @@ func Init(svcCtx *svc.ServiceContext) {
 	})
 }
 func DirectFillProjectDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, delay time.Duration, projectIDs ...int64) error {
-	logx.WithContext(ctx).Infof("FillProjectDeviceCount delay:%v projectIDs:%v", delay, projectIDs)
+	logx.WithContext(ctx).Infof("FillProjectDeviceCount delay:%v len:%v", delay, len(projectIDs))
 	defer utils.Recover(ctx)
 	ctx = ctxs.WithRoot(ctx)
 	log := logx.WithContext(ctx)
