@@ -30,14 +30,14 @@ service api {
         isNeedAuth: "true"
     )
     @handler update
-    post /update (CommonSchemaUpdateReq) returns ()
+    post /update (CommonSchemaInfo) returns ()
     @doc(
         summary: "新增通用物模型"
         authType: "admin"
         isNeedAuth: "true"
     )
     @handler create
-    post /create (CommonSchemaCreateReq) returns ()
+    post /create (CommonSchemaInfo) returns ()
     @doc(
         summary: "删除通用物模型"
         authType: "admin"
@@ -74,12 +74,6 @@ type (
     }
     CommonSchemaExportResp{
         Schemas string  `json:"schemas"`
-    }
-    CommonSchemaUpdateReq  {
-        *CommonSchemaInfo
-    }
-    CommonSchemaCreateReq  {
-         *CommonSchemaInfo
     }
     CommonSchemaDeleteReq {
         ID int64 `json:"id"`         //产品id

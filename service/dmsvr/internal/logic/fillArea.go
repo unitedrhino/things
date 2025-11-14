@@ -153,7 +153,7 @@ func DirectFillProjectDeviceCount(ctx context.Context, svcCtx *svc.ServiceContex
 			time.Sleep(delay)
 		}
 		idMap[id] = struct{}{}
-		count, err := stores.WithNoDebug(ctx, relationDB.NewDeviceInfoRepo).CountByFilter(ctx, relationDB.DeviceFilter{ProjectIDs: []int64{id}})
+		count, err := relationDB.NewDeviceInfoRepo(ctx).CountByFilter(ctx, relationDB.DeviceFilter{ProjectIDs: []int64{id}})
 		if err != nil {
 			log.Error(err)
 			continue

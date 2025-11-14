@@ -2,6 +2,7 @@ package msg
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
@@ -26,8 +27,8 @@ func NewShadowIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Shado
 	}
 }
 
-func (l *ShadowIndexLogic) ShadowIndex(req *types.DeviceMsgPropertyLogLatestIndexReq) (resp *types.DeviceMsgShadowIndexResp, err error) {
-	dmResp, err := l.svcCtx.DeviceMsg.ShadowIndex(l.ctx, &dm.PropertyLogLatestIndexReq{
+func (l *ShadowIndexLogic) ShadowIndex(req *types.DeviceMsgPropertyLatestIndexReq) (resp *types.DeviceMsgShadowIndexResp, err error) {
+	dmResp, err := l.svcCtx.DeviceMsg.ShadowIndex(l.ctx, &dm.PropertyLatestIndexReq{
 		DeviceName: req.DeviceName,
 		ProductID:  req.ProductID,
 		DataIDs:    req.DataIDs,

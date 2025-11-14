@@ -404,22 +404,46 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: thingsdevicemsg.HubLogIndexHandler(serverCtx),
 				},
 				{
-					// 聚合属性历史记录,设备维度
+					// 弃用
 					Method:  http.MethodPost,
 					Path:    "/property-agg/by-device/index",
 					Handler: thingsdevicemsg.PropertyAggByDeviceIndexHandler(serverCtx),
 				},
 				{
-					// 聚合属性历史记录
+					// 弃用
 					Method:  http.MethodPost,
 					Path:    "/property-agg/index",
 					Handler: thingsdevicemsg.PropertyAggIndexHandler(serverCtx),
 				},
 				{
+					// 聚合属性最新值
+					Method:  http.MethodPost,
+					Path:    "/property-latest-agg/index",
+					Handler: thingsdevicemsg.PropertyLatestAggIndexHandler(serverCtx),
+				},
+				{
 					// 获取最新属性记录
 					Method:  http.MethodPost,
-					Path:    "/property-log-latest/index",
+					Path:    "/property-latest/index",
 					Handler: thingsdevicemsg.PropertyLatestIndexHandler(serverCtx),
+				},
+				{
+					// 聚合属性历史记录,设备维度
+					Method:  http.MethodPost,
+					Path:    "/property-log-agg/by-device/index",
+					Handler: thingsdevicemsg.PropertyLogAggByDeviceIndexHandler(serverCtx),
+				},
+				{
+					// 聚合属性历史记录
+					Method:  http.MethodPost,
+					Path:    "/property-log-agg/index",
+					Handler: thingsdevicemsg.PropertyLogAggIndexHandler(serverCtx),
+				},
+				{
+					// 弃用
+					Method:  http.MethodPost,
+					Path:    "/property-log-latest/index",
+					Handler: thingsdevicemsg.PropertyLogLatestIndexHandler(serverCtx),
 				},
 				{
 					// 获取单个id属性历史记录

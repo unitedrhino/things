@@ -18,12 +18,12 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-func (d *DeviceDataRepo) GetLatestAllPropertyData(ctx context.Context, productID, deviceName string) ([]*msgThing.PropertyData, error) {
+func (d *DeviceDataRepo) GetLatestAllPropertyData(ctx context.Context, productID, deviceName string) ([]*msgThing.PropertyLogData, error) {
 	// 使用缓存管理器获取设备所有属性的最后记录
 	return d.cacheManager.GetPropertyAllLastRecord(ctx, productID, deviceName)
 }
 
-func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schema.Property, filter msgThing.LatestFilter) (*msgThing.PropertyData, error) {
+func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schema.Property, filter msgThing.LatestFilter) (*msgThing.PropertyLogData, error) {
 	// 使用缓存管理器获取最后记录
 	ret, err := d.cacheManager.GetPropertyLastRecord(ctx, filter.ProductID, filter.DeviceName, filter.DataID)
 	if err != nil {
@@ -58,14 +58,14 @@ func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schem
 
 }
 
-//func (d *DeviceDataRepo) GetPropertyAgg(ctx context.Context, m *schema.Model, filter msgThing.FilterOpt) ([]*msgThing.PropertyDatas, error) {
+//func (d *DeviceDataRepo) GetPropertyLogAgg(ctx context.Context, m *schema.Model, filter msgThing.FilterOpt) ([]*msgThing.PropertyDatas, error) {
 //	//TODO implement me
 //	panic("implement me")
 //}
 
 func (d *DeviceDataRepo) GetPropertyDataByID(
 	ctx context.Context, p *schema.Property,
-	filter msgThing.FilterOpt) ([]*msgThing.PropertyData, error) {
+	filter msgThing.FilterOpt) ([]*msgThing.PropertyLogData, error) {
 	if err := filter.Check(); err != nil {
 		return nil, err
 	}
@@ -120,7 +120,7 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 	}
 	var datas []map[string]any
 	stores.Scan(rows, &datas)
-	retProperties := make([]*msgThing.PropertyData, 0, len(datas))
+	retProperties := make([]*msgThing.PropertyLogData, 0, len(datas))
 	for _, v := range datas {
 		retProperties = append(retProperties, d.ToPropertyData(ctx, filter.DataID, p, v))
 	}

@@ -546,6 +546,7 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		return staticEvent.NewOneDayHandle(ctxs.WithRoot(ctx), svcCtx).Handle()
 	})
 	logx.Must(err)
+	err = logic.DirectFillProjectDeviceCount(ctxs.WithRoot(context.Background()), svcCtx, time.Millisecond*50, 1840638724534751232)
 
 	err = svcCtx.FastEvent.QueueSubscribe(topics.DmDeviceStaticHalfHour, func(ctx context.Context, t time.Time, body []byte) error {
 		if t.Before(time.Now().Add(-time.Second * 2)) { //2秒之前的跳过

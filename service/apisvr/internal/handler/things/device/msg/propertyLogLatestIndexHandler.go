@@ -10,17 +10,17 @@ import (
 	"net/http"
 )
 
-// 获取事件历史记录
-func EventLogIndexHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+// 弃用
+func PropertyLogLatestIndexHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.DeviceMsgEventLogIndexReq
+		var req types.DeviceMsgPropertyLatestIndexReq
 		if err := httpx.Parse(r, &req); err != nil {
 			result.Http(w, r, nil, errors.Parameter.WithMsg("入参不正确:"+err.Error()))
 			return
 		}
 
-		l := msg.NewEventLogIndexLogic(r.Context(), svcCtx)
-		resp, err := l.EventLogIndex(&req)
+		l := msg.NewPropertyLogLatestIndexLogic(r.Context(), svcCtx)
+		resp, err := l.PropertyLogLatestIndex(&req)
 		result.Http(w, r, resp, err)
 	}
 }

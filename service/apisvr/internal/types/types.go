@@ -17,10 +17,6 @@ type CommonResp struct {
 	ID int64 `json:"id,optional"` // id
 }
 
-type CommonSchemaCreateReq struct {
-	*CommonSchemaInfo
-}
-
 type CommonSchemaDeleteReq struct {
 	ID int64 `json:"id"` //产品id
 }
@@ -80,10 +76,6 @@ type CommonSchemaInfo struct {
 	IsPassword        int64   `json:"isPassword,optional"`        //是否是密码类型,密码类型需要加掩码
 	Order             int64   `json:"order,optional"`             // 排序
 	ControlMode       int64   `json:"controlMode,optional"`       //控制模式: 1: 可以群控,可以单控  2:只能单控
-}
-
-type CommonSchemaUpdateReq struct {
-	*CommonSchemaInfo
 }
 
 type Compare struct {
@@ -705,7 +697,61 @@ type DeviceMsgPropertyAggByDeviceIndexReq struct {
 	Aggs         []*DeviceMsgPropertyAggByDevice `json:"aggs"`                                //聚合对象
 }
 
-type DeviceMsgPropertyAggIndexReq struct {
+type DeviceMsgPropertyAggCore struct {
+	DataID   string   `json:"dataID,omitempty"` //获取的具体标识符的数据
+	ArgFuncs []string `json:"argFuncs"`         //聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考: https://docs.taosdata.com/reference/taos-sql/function/#apercentile
+}
+
+type DeviceMsgPropertyIndexResp struct {
+	List []*DeviceMsgPropertyLogInfo `json:"list"` //数据
+	PageResp
+}
+
+type DeviceMsgPropertyLatestAggIndexReq struct {
+	TenantCode        string                  `json:"tenantCode,optional,omitempty"`       //只有管理员有权限
+	ProjectID         int64                   `json:"projectID,string,optional,omitempty"` //只有管理员有权限
+	AreaID            int64                   `json:"areaID,string,optional,omitempty"`    //只有管理员有权限
+	AreaIDPath        string                  `json:"areaIDPath,optional,omitempty"`       //只有管理员有权限
+	AreaIDs           []int64                 `json:"areaIDs,string,optional,omitempty"`   //只有管理员有权限
+	BelongGroup       map[string]IDsInfo      `json:"belongGroup,optional,omitempty"`      //key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回
+	DeviceName        string                  `json:"deviceName,optional,omitempty"`       //设备名(不填获取产品下所有设备)
+	DeviceNames       []string                `json:"deviceNames,optional,omitempty"`      //设备名(不填获取产品下所有设备,只有管理员有权限)
+	ProductID         string                  `json:"productID,omitempty,optional"`        //产品id 获取产品id下的所有设备信息
+	ProductCategoryID int64                   `json:"productCategoryID,optional"`          //产品品类id,通用物模型有效
+	PartitionBy       string                  `json:"partitionBy,optional"`                //切分数据,可以填写deviceName
+	Aggs              []*DeviceMsgPropertyAgg `json:"aggs"`                                //聚合对象
+}
+
+type DeviceMsgPropertyLatestAggIndexResp struct {
+	List []*DeviceMsgPropertyLatestAggResp `json:"list"`
+}
+
+type DeviceMsgPropertyLatestAggResp struct {
+	ProductID   string                                  `json:"productID,omitempty"`
+	DeviceName  string                                  `json:"deviceName,omitempty"`                //设备名称
+	TenantCode  string                                  `json:"tenantCode,optional,omitempty"`       //只有partitionBy 传该参数的时候才会返回
+	ProjectID   int64                                   `json:"projectID,string,optional,omitempty"` //只有partitionBy 传该参数的时候才会返回
+	AreaID      int64                                   `json:"areaID,string,optional,omitempty"`    //只有partitionBy 传该参数的时候才会返回
+	AreaIDPath  string                                  `json:"areaIDPath,optional,omitempty"`       //只有partitionBy 传该参数的时候才会返回
+	AreaIDs     []int64                                 `json:"areaIDs,string,optional,omitempty"`   //只有partitionBy 传该参数的时候才会返回
+	BelongGroup map[string]IDsInfo                      `json:"belongGroup,optional,omitempty"`      //key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回
+	Values      []*DeviceMsgPropertyLatestAggRespDetail `json:"values"`
+}
+
+type DeviceMsgPropertyLatestAggRespDetail struct {
+	DataID   string            `json:"dataID"`   //属性ID
+	DataName string            `json:"dataName"` //属性名称
+	Values   map[string]string `json:"values"`   //key是聚合函数
+}
+
+type DeviceMsgPropertyLatestIndexReq struct {
+	DeviceName  string   `json:"deviceName,omitempty"`       //设备名
+	ProductID   string   `json:"productID,omitempty"`        //产品id 获取产品id下的所有设备信息
+	DataIDs     []string `json:"dataIDs,optional,omitempty"` //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值
+	IgnoreEmpty bool     `json:"ignoreEmpty,optional"`       // 设备属性是否忽略空值,空值是否返回
+}
+
+type DeviceMsgPropertyLogAggIndexReq struct {
 	TenantCode        string                  `json:"tenantCode,optional,omitempty"`       //只有管理员有权限
 	ProjectID         int64                   `json:"projectID,string,optional,omitempty"` //只有管理员有权限
 	AreaID            int64                   `json:"areaID,string,optional,omitempty"`    //只有管理员有权限
@@ -724,37 +770,32 @@ type DeviceMsgPropertyAggIndexReq struct {
 	Aggs              []*DeviceMsgPropertyAgg `json:"aggs"`                                //聚合对象
 }
 
-type DeviceMsgPropertyAggIndexResp struct {
-	List []*DeviceMsgPropertyAggResp `json:"list"`
+type DeviceMsgPropertyLogAggIndexResp struct {
+	List []*DeviceMsgPropertyLogAggResp `json:"list"`
 }
 
-type DeviceMsgPropertyAggResp struct {
-	ProductID   string                            `json:"productID,omitempty"`
-	DeviceName  string                            `json:"deviceName,omitempty"`                //设备名称
-	TenantCode  string                            `json:"tenantCode,optional,omitempty"`       //只有partitionBy 传该参数的时候才会返回
-	ProjectID   int64                             `json:"projectID,string,optional,omitempty"` //只有partitionBy 传该参数的时候才会返回
-	AreaID      int64                             `json:"areaID,string,optional,omitempty"`    //只有partitionBy 传该参数的时候才会返回
-	AreaIDPath  string                            `json:"areaIDPath,optional,omitempty"`       //只有partitionBy 传该参数的时候才会返回
-	AreaIDs     []int64                           `json:"areaIDs,string,optional,omitempty"`   //只有partitionBy 传该参数的时候才会返回
-	BelongGroup map[string]IDsInfo                `json:"belongGroup,optional,omitempty"`      //key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回
-	Values      []*DeviceMsgPropertyAggRespDetail `json:"values"`
+type DeviceMsgPropertyLogAggResp struct {
+	ProductID   string                               `json:"productID,omitempty"`
+	DeviceName  string                               `json:"deviceName,omitempty"`                //设备名称
+	TenantCode  string                               `json:"tenantCode,optional,omitempty"`       //只有partitionBy 传该参数的时候才会返回
+	ProjectID   int64                                `json:"projectID,string,optional,omitempty"` //只有partitionBy 传该参数的时候才会返回
+	AreaID      int64                                `json:"areaID,string,optional,omitempty"`    //只有partitionBy 传该参数的时候才会返回
+	AreaIDPath  string                               `json:"areaIDPath,optional,omitempty"`       //只有partitionBy 传该参数的时候才会返回
+	AreaIDs     []int64                              `json:"areaIDs,string,optional,omitempty"`   //只有partitionBy 传该参数的时候才会返回
+	BelongGroup map[string]IDsInfo                   `json:"belongGroup,optional,omitempty"`      //key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回
+	Values      []*DeviceMsgPropertyLogAggRespDetail `json:"values"`
 }
 
-type DeviceMsgPropertyAggRespDataDetail struct {
+type DeviceMsgPropertyLogAggRespDataDetail struct {
 	Timestamp int64  `json:"timestamp,omitempty,string"` //发生时间戳
 	Value     string `json:"value,omitempty"`            //获取到的值
 }
 
-type DeviceMsgPropertyAggRespDetail struct {
-	DataID     string                                         `json:"dataID"`            //属性ID
-	DataName   string                                         `json:"dataName"`          //属性名称
-	TimeWindow int64                                          `json:"timeWindow,string"` //发生时间窗口
-	Values     map[string]*DeviceMsgPropertyAggRespDataDetail `json:"values"`            //key是聚合函数
-}
-
-type DeviceMsgPropertyIndexResp struct {
-	List []*DeviceMsgPropertyLogInfo `json:"list"` //数据
-	PageResp
+type DeviceMsgPropertyLogAggRespDetail struct {
+	DataID     string                                            `json:"dataID"`            //属性ID
+	DataName   string                                            `json:"dataName"`          //属性名称
+	TimeWindow int64                                             `json:"timeWindow,string"` //发生时间窗口
+	Values     map[string]*DeviceMsgPropertyLogAggRespDataDetail `json:"values"`            //key是聚合函数
 }
 
 type DeviceMsgPropertyLogIndexReq struct {
@@ -793,13 +834,6 @@ type DeviceMsgPropertyLogInfo struct {
 	AreaIDPath  string             `json:"areaIDPath,optional,omitempty"`       //只有partitionBy 传该参数的时候才会返回
 	AreaIDs     []int64            `json:"areaIDs,string,optional,omitempty"`   //只有partitionBy 传该参数的时候才会返回
 	BelongGroup map[string]IDsInfo `json:"belongGroup,optional,omitempty"`      //key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回
-}
-
-type DeviceMsgPropertyLogLatestIndexReq struct {
-	DeviceName  string   `json:"deviceName,omitempty"`       //设备名
-	ProductID   string   `json:"productID,omitempty"`        //产品id 获取产品id下的所有设备信息
-	DataIDs     []string `json:"dataIDs,optional,omitempty"` //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值
-	IgnoreEmpty bool     `json:"ignoreEmpty,optional"`       // 设备属性是否忽略空值,空值是否返回
 }
 
 type DeviceMsgPropertyLogMultiIndexReq struct {

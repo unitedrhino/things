@@ -3,7 +3,6 @@ package msg
 import (
 	"context"
 
-	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/logic"
@@ -14,21 +13,22 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type PropertyLatestIndexLogic struct {
+type PropertyLogLatestIndexLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewPropertyLatestIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PropertyLatestIndexLogic {
-	return &PropertyLatestIndexLogic{
+// 弃用
+func NewPropertyLogLatestIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PropertyLogLatestIndexLogic {
+	return &PropertyLogLatestIndexLogic{
 		Logger: logx.WithContext(ctx),
-		ctx:    ctxs.WithDefaultRoot(ctx),
+		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *PropertyLatestIndexLogic) PropertyLatestIndex(req *types.DeviceMsgPropertyLatestIndexReq) (resp *types.DeviceMsgPropertyIndexResp, err error) {
+func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(req *types.DeviceMsgPropertyLatestIndexReq) (resp *types.DeviceMsgPropertyIndexResp, err error) {
 	dmResp, err := l.svcCtx.DeviceMsg.PropertyLatestIndex(l.ctx, utils.Copy[dm.PropertyLatestIndexReq](req))
 	if err != nil {
 		er := errors.Fmt(err)

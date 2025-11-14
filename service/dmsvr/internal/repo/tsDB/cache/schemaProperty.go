@@ -44,7 +44,7 @@ func (p *PropertyCacheManager) UpdatePropertyCache(ctx context.Context, productI
 	log := logx.WithContext(ctx)
 
 	for identifier, value := range data {
-		propertyData := msgThing.PropertyData{
+		propertyData := msgThing.PropertyLogData{
 			Identifier: identifier,
 			Param:      value,
 			TimeStamp:  timestamp,
@@ -71,7 +71,7 @@ func (p *PropertyCacheManager) UpdatePropertyCache(ctx context.Context, productI
 
 // updateFirstRecord 更新首次记录
 func (p *PropertyCacheManager) updateFirstRecord(ctx context.Context, productID, deviceName, identifier string,
-	property *schema.Property, value any, propertyData msgThing.PropertyData) error {
+	property *schema.Property, value any, propertyData msgThing.PropertyLogData) error {
 
 	log := logx.WithContext(ctx)
 
@@ -84,7 +84,7 @@ func (p *PropertyCacheManager) updateFirstRecord(ctx context.Context, productID,
 
 	// 如果存在记录，检查值是否相等
 	if retStr != "" {
-		var ret msgThing.PropertyData
+		var ret msgThing.PropertyLogData
 		err = json.Unmarshal([]byte(retStr), &ret)
 		if err != nil {
 			log.Errorf("解析属性首次记录失败: %v", err)
@@ -108,7 +108,7 @@ func (p *PropertyCacheManager) updateFirstRecord(ctx context.Context, productID,
 }
 
 // GetPropertyFirstRecord 获取属性首次记录
-func (p *PropertyCacheManager) GetPropertyFirstRecord(ctx context.Context, productID, deviceName, identifier string) (*msgThing.PropertyData, error) {
+func (p *PropertyCacheManager) GetPropertyFirstRecord(ctx context.Context, productID, deviceName, identifier string) (*msgThing.PropertyLogData, error) {
 	retStr, err := p.kv.Hget(GenRedisPropertyFirstKey(productID, deviceName), identifier)
 	if err != nil {
 		if errors.Cmp(stores.ErrFmt(err), errors.NotFind) {
@@ -121,7 +121,7 @@ func (p *PropertyCacheManager) GetPropertyFirstRecord(ctx context.Context, produ
 		return nil, nil
 	}
 
-	var data msgThing.PropertyData
+	var data msgThing.PropertyLogData
 	err = json.Unmarshal([]byte(retStr), &data)
 	if err != nil {
 		return nil, err
@@ -131,7 +131,7 @@ func (p *PropertyCacheManager) GetPropertyFirstRecord(ctx context.Context, produ
 }
 
 // GetPropertyLastRecord 获取属性最后记录
-func (p *PropertyCacheManager) GetPropertyLastRecord(ctx context.Context, productID, deviceName, identifier string) (*msgThing.PropertyData, error) {
+func (p *PropertyCacheManager) GetPropertyLastRecord(ctx context.Context, productID, deviceName, identifier string) (*msgThing.PropertyLogData, error) {
 	retStr, err := p.kv.Hget(GenRedisPropertyLastKey(productID, deviceName), identifier)
 	if err != nil {
 		if errors.Cmp(stores.ErrFmt(err), errors.NotFind) {
@@ -144,7 +144,7 @@ func (p *PropertyCacheManager) GetPropertyLastRecord(ctx context.Context, produc
 		return nil, nil
 	}
 
-	var data msgThing.PropertyData
+	var data msgThing.PropertyLogData
 	err = json.Unmarshal([]byte(retStr), &data)
 	if err != nil {
 		return nil, err
@@ -154,16 +154,16 @@ func (p *PropertyCacheManager) GetPropertyLastRecord(ctx context.Context, produc
 }
 
 // GetPropertyAllLastRecord 获取设备所有属性的最后记录
-func (p *PropertyCacheManager) GetPropertyAllLastRecord(ctx context.Context, productID, deviceName string) ([]*msgThing.PropertyData, error) {
+func (p *PropertyCacheManager) GetPropertyAllLastRecord(ctx context.Context, productID, deviceName string) ([]*msgThing.PropertyLogData, error) {
 	// 获取所有最后记录
 	lastRecords, err := p.kv.Hgetall(GenRedisPropertyLastKey(productID, deviceName))
 	if err != nil {
 		return nil, err
 	}
 
-	var result []*msgThing.PropertyData
+	var result []*msgThing.PropertyLogData
 	for _, dataStr := range lastRecords {
-		var data msgThing.PropertyData
+		var data msgThing.PropertyLogData
 		err = json.Unmarshal([]byte(dataStr), &data)
 		if err != nil {
 			logx.WithContext(ctx).Errorf("解析属性记录失败: %v", err)
@@ -186,7 +186,7 @@ func (p *PropertyCacheManager) ClearPropertyCache(ctx context.Context, productID
 }
 
 // CheckIsChange 检查属性值是否发生变化
-func (p *PropertyCacheManager) CheckIsChange(ctx context.Context, dev devices.Core, property *schema.Property, data msgThing.PropertyData) bool {
+func (p *PropertyCacheManager) CheckIsChange(ctx context.Context, dev devices.Core, property *schema.Property, data msgThing.PropertyLogData) bool {
 	if property.RecordMode == schema.RecordModeAll || property.RecordMode == 0 {
 		return true
 	}
@@ -200,7 +200,7 @@ func (p *PropertyCacheManager) CheckIsChange(ctx context.Context, dev devices.Co
 		return true
 	}
 
-	var ret msgThing.PropertyData
+	var ret msgThing.PropertyLogData
 	err = json.Unmarshal([]byte(retStr), &ret)
 	if err != nil {
 		logx.WithContext(ctx).Error(err)
@@ -216,7 +216,7 @@ func (p *PropertyCacheManager) CheckIsChange(ctx context.Context, dev devices.Co
 }
 
 // GetAllPropertyRecords 获取设备所有属性记录
-func (p *PropertyCacheManager) GetAllPropertyRecords(ctx context.Context, productID, deviceName string) (map[string]*msgThing.PropertyData, error) {
+func (p *PropertyCacheManager) GetAllPropertyRecords(ctx context.Context, productID, deviceName string) (map[string]*msgThing.PropertyLogData, error) {
 	// 获取最后记录
 	lastRecords, err := p.kv.Hgetall(GenRedisPropertyLastKey(productID, deviceName))
 	if err != nil {
@@ -229,11 +229,11 @@ func (p *PropertyCacheManager) GetAllPropertyRecords(ctx context.Context, produc
 		return nil, err
 	}
 
-	result := make(map[string]*msgThing.PropertyData)
+	result := make(map[string]*msgThing.PropertyLogData)
 
 	// 处理最后记录
 	for identifier, dataStr := range lastRecords {
-		var data msgThing.PropertyData
+		var data msgThing.PropertyLogData
 		err = json.Unmarshal([]byte(dataStr), &data)
 		if err != nil {
 			logx.WithContext(ctx).Errorf("解析属性记录失败: %v", err)
@@ -244,7 +244,7 @@ func (p *PropertyCacheManager) GetAllPropertyRecords(ctx context.Context, produc
 
 	// 处理首次记录
 	for identifier, dataStr := range firstRecords {
-		var data msgThing.PropertyData
+		var data msgThing.PropertyLogData
 		err = json.Unmarshal([]byte(dataStr), &data)
 		if err != nil {
 			logx.WithContext(ctx).Errorf("解析属性记录失败: %v", err)

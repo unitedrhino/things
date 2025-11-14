@@ -2,6 +2,7 @@ package devicemsglogic
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/shadow"
@@ -29,7 +30,7 @@ func NewShadowIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Shado
 }
 
 // 获取设备影子列表
-func (l *ShadowIndexLogic) ShadowIndex(in *dm.PropertyLogLatestIndexReq) (*dm.ShadowIndexResp, error) {
+func (l *ShadowIndexLogic) ShadowIndex(in *dm.PropertyLatestIndexReq) (*dm.ShadowIndexResp, error) {
 	_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,

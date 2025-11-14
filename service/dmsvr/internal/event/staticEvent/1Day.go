@@ -43,6 +43,9 @@ func (l *OneDayHandle) DeviceStatic() error { //区域下的设备数量统计
 			projectIDs = append(projectIDs, v.ProjectID)
 		}
 		err = logic.DirectFillProjectDeviceCount(l.ctx, l.svcCtx, time.Millisecond*50, projectIDs...)
+		if err != nil {
+			logx.WithContext(l.ctx).Errorf("DirectFillProjectDeviceCount error:%v", err)
+		}
 		time.Sleep(time.Second * 5) //休息一下减少波峰
 	}
 	{

@@ -10,24 +10,23 @@ import (
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
+	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 
-	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
-	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type PropertyLogLatestIndexLogic struct {
+type PropertyLatestIndexLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewPropertyLogLatestIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PropertyLogLatestIndexLogic {
-	return &PropertyLogLatestIndexLogic{
+func NewPropertyLatestIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PropertyLatestIndexLogic {
+	return &PropertyLatestIndexLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
@@ -35,7 +34,7 @@ func NewPropertyLogLatestIndexLogic(ctx context.Context, svcCtx *svc.ServiceCont
 }
 
 // 获取设备数据信息
-func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogLatestIndexReq) (*dm.PropertyLogIndexResp, error) {
+func (l *PropertyLatestIndexLogic) PropertyLatestIndex(in *dm.PropertyLatestIndexReq) (*dm.PropertyLogIndexResp, error) {
 	var (
 		diDatas []*dm.PropertyLogInfo
 		total   int
@@ -70,7 +69,7 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 		}
 		lastBind = di.LastBind
 	}
-	var dp = make(map[string]*msgThing.PropertyData)
+	var dp = make(map[string]*msgThing.PropertyLogData)
 	datas, err := dd.GetLatestAllPropertyData(l.ctx, in.ProductID, in.DeviceName)
 	if err != nil {
 		l.Error(err)
@@ -82,7 +81,7 @@ func (l *PropertyLogLatestIndexLogic) PropertyLogLatestIndex(in *dm.PropertyLogL
 	for k, v := range dataMap {
 		property := v
 		dataID := k
-		handleData := func(data *msgThing.PropertyData) {
+		handleData := func(data *msgThing.PropertyLogData) {
 			var diData dm.PropertyLogInfo
 			if data != nil && lastBind != 0 {
 				if data.TimeStamp.Before(time.Unix(lastBind, 0)) {

@@ -27,7 +27,7 @@ type PropertyAgg2 struct {
 	msgThing.PropertyAgg
 }
 
-func (d *DeviceDataRepo) GetPropertyAgg(ctx context.Context, m *schema.Model, filter msgThing.FilterAggOpt) ([]*msgThing.PropertyData2, error) {
+func (d *DeviceDataRepo) GetPropertyLogAgg(ctx context.Context, m *schema.Model, filter msgThing.FilterLogAggOpt) ([]*msgThing.PropertyLogData2, error) {
 	var (
 		err error
 	)
@@ -44,7 +44,7 @@ func (d *DeviceDataRepo) GetPropertyAgg(ctx context.Context, m *schema.Model, fi
 			}
 		}
 	}
-	var retMap = map[string]msgThing.PropertyData2{}
+	var retMap = map[string]msgThing.PropertyLogData2{}
 	var page = def.PageInfo2{TimeStart: filter.TimeStart, TimeEnd: filter.TimeEnd}
 	for _, agg := range filter.Aggs { //暂时不考虑数组类型
 		p, ok := m.Property[agg.DataID]
@@ -97,7 +97,7 @@ func (d *DeviceDataRepo) GetPropertyAgg(ctx context.Context, m *schema.Model, fi
 
 func (d *DeviceDataRepo) getPropertyArgFuncSelect2(
 	ctx context.Context, p *schema.Property, agg msgThing.PropertyAgg,
-	filter msgThing.FilterAggOpt) (sq.SelectBuilder, error) {
+	filter msgThing.FilterLogAggOpt) (sq.SelectBuilder, error) {
 	var (
 		sql sq.SelectBuilder
 	)
@@ -110,9 +110,9 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect2(
 		for _, argFunc := range agg.ArgFuncs {
 			//pg的 timescale走视图优化
 			if agg.NoFirstTs && utils.SliceIn(argFunc, "first", "last", "min", "max") {
-				selects = append(selects, fmt.Sprintf(" %s(`%s`) as %s_param,cols(%s(`%s`),ts) as %s_ts ", argFunc, col, argFunc, argFunc, col, argFunc))
+				selects = append(selects, fmt.Sprintf(" %s(`%s`) as `%s_param`,cols(%s(`%s`),ts) as `%s_ts` ", argFunc, col, argFunc, argFunc, col, argFunc))
 			} else {
-				selects = append(selects, fmt.Sprintf(" %s(`%s`) as %s_param ", argFunc, col, argFunc))
+				selects = append(selects, fmt.Sprintf(" %s(`%s`) as `%s_param` ", argFunc, col, argFunc))
 			}
 		}
 	}
@@ -152,10 +152,10 @@ type structH struct {
 	Values map[string]any
 }
 
-func (d *DeviceDataRepo) ToPropertyData2(ctx context.Context, agg msgThing.PropertyAgg, p *schema.Define, dbs []map[string]any, retMap map[string]msgThing.PropertyData2) map[string]msgThing.PropertyData2 {
+func (d *DeviceDataRepo) ToPropertyData2(ctx context.Context, agg msgThing.PropertyAgg, p *schema.Define, dbs []map[string]any, retMap map[string]msgThing.PropertyLogData2) map[string]msgThing.PropertyLogData2 {
 	dd, _ := schema.ParseDataID(agg.DataID)
 	for _, db := range dbs {
-		data := msgThing.PropertyData2{
+		data := msgThing.PropertyLogData2{
 			DeviceName: cast.ToString(db["device_name"]),
 			TenantCode: dataType.TenantCode(cast.ToString(db["tenant_code"])),
 			ProjectID:  dataType.ProjectID(cast.ToInt64(db["project_id"])),
@@ -191,10 +191,10 @@ func (d *DeviceDataRepo) ToPropertyData2(ctx context.Context, agg msgThing.Prope
 		if !ok {
 			ret = data
 		}
-		value := msgThing.PropertyAggData{
+		value := msgThing.PropertyLogAggData{
 			Identifier: agg.DataID,
 			TsWindow:   cast.ToTime(db["ts_window"]),
-			Values:     map[string]msgThing.PropertyDataDetail{},
+			Values:     map[string]msgThing.PropertyLogDataDetail{},
 		}
 		if p.Type == schema.DataTypeStruct && dd != nil && dd.Column == "" { //获取结构体所有字段
 			var argCache = map[string]*structH{}
@@ -245,7 +245,7 @@ func (d *DeviceDataRepo) ToPropertyData2(ctx context.Context, agg msgThing.Prope
 				}
 			}
 			for k, v := range argCache {
-				value.Values[k] = msgThing.PropertyDataDetail{
+				value.Values[k] = msgThing.PropertyLogDataDetail{
 					Param:     v.Values,
 					TimeStamp: v.Ts,
 				}
@@ -254,7 +254,7 @@ func (d *DeviceDataRepo) ToPropertyData2(ctx context.Context, agg msgThing.Prope
 			for k, v := range db {
 				if strings.HasSuffix(k, "_param") {
 					argFunc := k[:len(k)-len("_param")]
-					vv := msgThing.PropertyDataDetail{
+					vv := msgThing.PropertyLogDataDetail{
 						Param:     v,
 						TimeStamp: cast.ToTime(db[argFunc+"_ts"]),
 					}

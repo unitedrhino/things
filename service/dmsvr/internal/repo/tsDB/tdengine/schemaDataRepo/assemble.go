@@ -33,7 +33,7 @@ func ToEventData(db map[string]any) *msgThing.EventData {
 	return &data
 }
 
-func (d *DeviceDataRepo) ToPropertyData(ctx context.Context, id string, p *schema.Property, db map[string]any) (ret *msgThing.PropertyData) {
+func (d *DeviceDataRepo) ToPropertyData(ctx context.Context, id string, p *schema.Property, db map[string]any) (ret *msgThing.PropertyLogData) {
 	defer func() {
 		if ret == nil {
 			return
@@ -49,7 +49,7 @@ func (d *DeviceDataRepo) ToPropertyData(ctx context.Context, id string, p *schem
 	if propertyType == schema.DataTypeArray {
 		propertyType = p.Define.ArrayInfo.Type
 	}
-	fill := func(data *msgThing.PropertyData) {
+	fill := func(data *msgThing.PropertyLogData) {
 		if db["tenant_code"] != nil {
 			data.TenantCode = dataType.TenantCode(cast.ToString(db["tenant_code"]))
 		}
@@ -97,7 +97,7 @@ func (d *DeviceDataRepo) ToPropertyData(ctx context.Context, id string, p *schem
 	}
 	switch propertyType {
 	case schema.DataTypeStruct:
-		data := msgThing.PropertyData{
+		data := msgThing.PropertyLogData{
 			DeviceName: cast.ToString(db["device_name"]),
 			Identifier: id,
 			Param:      cast.ToString(utils.BoolToInt(db["param"])),
@@ -116,7 +116,7 @@ func (d *DeviceDataRepo) ToPropertyData(ctx context.Context, id string, p *schem
 		data.Param = db
 		return &data
 	default:
-		data := msgThing.PropertyData{
+		data := msgThing.PropertyLogData{
 			Identifier: id,
 			DeviceName: cast.ToString(db["device_name"]),
 			Param:      cast.ToString(utils.BoolToInt(db["param"])),

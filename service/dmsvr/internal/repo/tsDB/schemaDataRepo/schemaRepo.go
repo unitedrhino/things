@@ -7,6 +7,7 @@ import (
 
 	"gitee.com/unitedrhino/share/caches"
 	"gitee.com/unitedrhino/share/conf"
+	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceGroup"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/cache"
@@ -45,6 +46,10 @@ type DeviceDataRepo struct {
 	asyncPropertyEnum           *stores.AsyncInsert[PropertyEnum]
 	asyncPropertyEnumArray      *stores.AsyncInsert[PropertyEnumArray]
 	cacheManager                *cache.PropertyCacheManager
+}
+
+func (d *DeviceDataRepo) GetPropertyLatestAgg(ctx context.Context, m *schema.Model, filter msgThing.FilterLatestAggOpt) ([]*msgThing.PropertyLatestData, error) {
+	return nil, errors.NotRealize
 }
 
 func (d *DeviceDataRepo) VersionUpdate(ctx context.Context, version string, dc *caches.Cache[dm.DeviceInfo, devices.Core]) error {

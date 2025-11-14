@@ -10,11 +10,12 @@ import (
 	"net/http"
 )
 
+// 获取设备sdk日志
 func SdkLogIndexHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.DeviceMsgSdkLogIndexReq
 		if err := httpx.Parse(r, &req); err != nil {
-			result.Http(w, r, nil, errors.Parameter.AddMsg(err.Error()))
+			result.Http(w, r, nil, errors.Parameter.WithMsg("入参不正确:"+err.Error()))
 			return
 		}
 

@@ -18,21 +18,21 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type PropertyAggByDeviceIndexLogic struct {
+type PropertyLogAggByDeviceIndexLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewPropertyAggByDeviceIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PropertyAggByDeviceIndexLogic {
-	return &PropertyAggByDeviceIndexLogic{
+func NewPropertyLogAggByDeviceIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PropertyLogAggByDeviceIndexLogic {
+	return &PropertyLogAggByDeviceIndexLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *PropertyAggByDeviceIndexLogic) PropertyAggByDeviceIndex(in *dm.PropertyAggByDeviceIndexReq) (*dm.PropertyAggIndexResp, error) {
+func (l *PropertyLogAggByDeviceIndexLogic) PropertyLogAggByDeviceIndex(in *dm.PropertyLogAggByDeviceIndexReq) (*dm.PropertyLogAggIndexResp, error) {
 	var (
 		//diDatas    []*dm.PropertyLogInfo
 		dd  = l.svcCtx.SchemaManaRepo
@@ -50,7 +50,7 @@ func (l *PropertyAggByDeviceIndexLogic) PropertyAggByDeviceIndex(in *dm.Property
 			}
 		}
 	}
-	var diDatas []*dm.PropertyAggResp
+	var diDatas []*dm.PropertyLogAggResp
 	var mutex sync.Mutex
 	var wg errgroup.Group
 	for _, agg2 := range in.Aggs {
@@ -61,7 +61,7 @@ func (l *PropertyAggByDeviceIndexLogic) PropertyAggByDeviceIndex(in *dm.Property
 			if err != nil {
 				return err
 			}
-			dds, err := dd.GetPropertyAgg(l.ctx, t, msgThing.FilterAggOpt{
+			dds, err := dd.GetPropertyLogAgg(l.ctx, t, msgThing.FilterLogAggOpt{
 				TimeStart: in.TimeStart,
 				TimeEnd:   in.TimeEnd,
 				Filter: msgThing.Filter{
@@ -79,18 +79,18 @@ func (l *PropertyAggByDeviceIndexLogic) PropertyAggByDeviceIndex(in *dm.Property
 			mutex.Lock()
 			defer mutex.Unlock()
 			for _, devData := range dds {
-				diData := dm.PropertyAggResp{
+				diData := dm.PropertyLogAggResp{
 					ProductID:  agg.Device.ProductID,
 					DeviceName: agg.Device.DeviceName,
 				}
 				for _, v1 := range devData.Values {
-					var dv = dm.PropertyAggRespDetail{
+					var dv = dm.PropertyLogAggRespDetail{
 						DataID:     v1.Identifier,
 						DataName:   schema.GetDataName(t, v1.Identifier),
 						TimeWindow: v1.TsWindow.UnixMilli(),
-						Values:     map[string]*dm.PropertyAggRespDataDetail{}}
+						Values:     map[string]*dm.PropertyLogAggRespDataDetail{}}
 					for k2, v2 := range v1.Values {
-						dv2 := dm.PropertyAggRespDataDetail{Timestamp: v2.TimeStamp.UnixMilli()}
+						dv2 := dm.PropertyLogAggRespDataDetail{Timestamp: v2.TimeStamp.UnixMilli()}
 						if dv2.Timestamp < 0 {
 							dv2.Timestamp = 0
 						}
@@ -112,5 +112,6 @@ func (l *PropertyAggByDeviceIndexLogic) PropertyAggByDeviceIndex(in *dm.Property
 	}
 	err = wg.Wait()
 
-	return &dm.PropertyAggIndexResp{List: diDatas}, err
+	return &dm.PropertyLogAggIndexResp{List: diDatas}, err
+
 }

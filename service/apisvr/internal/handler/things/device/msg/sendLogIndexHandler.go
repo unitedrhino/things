@@ -10,6 +10,7 @@ import (
 	"net/http"
 )
 
+// 获取设备命令日志
 func SendLogIndexHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.DeviceMsgSendLogIndexReq

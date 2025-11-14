@@ -2,6 +2,7 @@ package common
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -26,9 +27,9 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 	}
 }
 
-func (l *UpdateLogic) Update(req *types.CommonSchemaUpdateReq) error {
+func (l *UpdateLogic) Update(req *types.CommonSchemaInfo) error {
 	dmReq := &dm.CommonSchemaUpdateReq{
-		Info: ToSchemaInfoRpc(req.CommonSchemaInfo),
+		Info: ToSchemaInfoRpc(req),
 	}
 	_, err := l.svcCtx.SchemaM.CommonSchemaUpdate(l.ctx, dmReq)
 	if err != nil {

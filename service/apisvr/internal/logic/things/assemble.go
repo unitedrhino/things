@@ -56,7 +56,7 @@ func InfoToApi(ctx context.Context, svcCtx *svc.ServiceContext, v *dm.DeviceInfo
 	}
 	if w.Properties != nil {
 		func() {
-			resp, err := svcCtx.DeviceMsg.PropertyLogLatestIndex(ctx, &dm.PropertyLogLatestIndexReq{
+			resp, err := svcCtx.DeviceMsg.PropertyLatestIndex(ctx, &dm.PropertyLatestIndexReq{
 				ProductID:   v.ProductID,
 				DeviceName:  v.DeviceName,
 				DataIDs:     w.Properties,

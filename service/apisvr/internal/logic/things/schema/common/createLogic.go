@@ -2,6 +2,7 @@ package common
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -26,9 +27,9 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 	}
 }
 
-func (l *CreateLogic) Create(req *types.CommonSchemaCreateReq) error {
+func (l *CreateLogic) Create(req *types.CommonSchemaInfo) error {
 	dmReq := &dm.CommonSchemaCreateReq{
-		Info: ToSchemaInfoRpc(req.CommonSchemaInfo),
+		Info: ToSchemaInfoRpc(req),
 	}
 	_, err := l.svcCtx.SchemaM.CommonSchemaCreate(l.ctx, dmReq)
 	if err != nil {

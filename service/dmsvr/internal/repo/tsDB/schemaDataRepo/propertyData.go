@@ -50,7 +50,7 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 				ars[schema.GenArray(Identifier, num)] = vvv
 			}
 			if optional.OnlyCache || !d.cacheManager.CheckIsChange(ctx, devices.Core{
-				ProductID: productID, DeviceName: deviceName}, p, msgThing.PropertyData{
+				ProductID: productID, DeviceName: deviceName}, p, msgThing.PropertyLogData{
 				Identifier: schema.GenArray(Identifier, num),
 				Param:      ars[schema.GenArray(Identifier, num)],
 				TimeStamp:  timestamp,
@@ -132,7 +132,7 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 			ars[property.Identifier] = vvv
 		}
 		if optional.OnlyCache || !d.cacheManager.CheckIsChange(ctx, devices.Core{
-			ProductID: productID, DeviceName: deviceName}, p, msgThing.PropertyData{
+			ProductID: productID, DeviceName: deviceName}, p, msgThing.PropertyLogData{
 			Identifier: property.Identifier,
 			Param:      ars[property.Identifier],
 			TimeStamp:  timestamp,
@@ -193,12 +193,12 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 	return
 }
 
-func (d *DeviceDataRepo) GetLatestAllPropertyData(ctx context.Context, productID, deviceName string) ([]*msgThing.PropertyData, error) {
+func (d *DeviceDataRepo) GetLatestAllPropertyData(ctx context.Context, productID, deviceName string) ([]*msgThing.PropertyLogData, error) {
 	// 使用缓存管理器获取设备所有属性的最后记录
 	return d.cacheManager.GetPropertyAllLastRecord(ctx, productID, deviceName)
 }
 
-func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schema.Property, filter msgThing.LatestFilter) (*msgThing.PropertyData, error) {
+func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schema.Property, filter msgThing.LatestFilter) (*msgThing.PropertyLogData, error) {
 	// 使用缓存管理器获取最后记录
 	ret, err := d.cacheManager.GetPropertyLastRecord(ctx, filter.ProductID, filter.DeviceName, filter.DataID)
 	if err != nil {
@@ -262,7 +262,7 @@ func (d *DeviceDataRepo) InsertPropertiesData(ctx context.Context, t *schema.Mod
 
 func (d *DeviceDataRepo) GetPropertyDataByID(
 	ctx context.Context, p *schema.Property,
-	filter msgThing.FilterOpt) ([]*msgThing.PropertyData, error) {
+	filter msgThing.FilterOpt) ([]*msgThing.PropertyLogData, error) {
 	if err := filter.Check(); err != nil {
 		return nil, err
 	}
@@ -309,7 +309,7 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 	db = db.Where("tb.identifier=?", filter.DataID)
 	db = d.fillFilter(ctx, db, filter.Filter)
 	db = filter.Page.FmtSql2(db)
-	var retProperties []*msgThing.PropertyData
+	var retProperties []*msgThing.PropertyLogData
 	var retDatabase = []map[string]any{}
 	err = db.Find(&retDatabase).Error
 	if err != nil {
@@ -321,8 +321,8 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 	return retProperties, nil
 }
 
-func (d *DeviceDataRepo) ToPropertyData(ctx context.Context, noFirstTs bool, id string, p *schema.Property, db map[string]any) *msgThing.PropertyData {
-	data := msgThing.PropertyData{
+func (d *DeviceDataRepo) ToPropertyData(ctx context.Context, noFirstTs bool, id string, p *schema.Property, db map[string]any) *msgThing.PropertyLogData {
+	data := msgThing.PropertyLogData{
 		DeviceName: cast.ToString(db["device_name"]),
 		Identifier: id,
 		Param:      db["param"],

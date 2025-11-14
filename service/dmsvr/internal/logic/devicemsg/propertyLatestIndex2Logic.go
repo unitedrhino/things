@@ -2,31 +2,31 @@ package devicemsglogic
 
 import (
 	"context"
-	"gitee.com/unitedrhino/share/utils"
-	"gitee.com/unitedrhino/things/share/devices"
 	"sync"
 
+	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/share/devices"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type PropertyLogLatestIndex2Logic struct {
+type PropertyLatestIndex2Logic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewPropertyLogLatestIndex2Logic(ctx context.Context, svcCtx *svc.ServiceContext) *PropertyLogLatestIndex2Logic {
-	return &PropertyLogLatestIndex2Logic{
+func NewPropertyLatestIndex2Logic(ctx context.Context, svcCtx *svc.ServiceContext) *PropertyLatestIndex2Logic {
+	return &PropertyLatestIndex2Logic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *PropertyLogLatestIndex2Logic) PropertyLogLatestIndex2(in *dm.PropertyLogLatestIndex2Req) (*dm.PropertyLogIndexResp, error) {
+func (l *PropertyLatestIndex2Logic) PropertyLatestIndex2(in *dm.PropertyLatestIndex2Req) (*dm.PropertyLogIndexResp, error) {
 	var devMap = map[devices.Core][]string{}
 	for _, dev := range in.Devices {
 		d := devices.Core{
@@ -46,7 +46,7 @@ func (l *PropertyLogLatestIndex2Logic) PropertyLogLatestIndex2(in *dm.PropertyLo
 		wg.Add(1)
 		utils.Go(l.ctx, func() {
 			defer wg.Done()
-			datas, err := NewPropertyLogLatestIndexLogic(l.ctx, l.svcCtx).PropertyLogLatestIndex(&dm.PropertyLogLatestIndexReq{
+			datas, err := NewPropertyLatestIndexLogic(l.ctx, l.svcCtx).PropertyLatestIndex(&dm.PropertyLatestIndexReq{
 				ProductID:  dev.ProductID,
 				DeviceName: dev.DeviceName,
 				DataIDs:    dataIDs,

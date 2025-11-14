@@ -191,12 +191,8 @@ type (
 	ProductSchemaUpdateReq            = dm.ProductSchemaUpdateReq
 	PropertyAgg                       = dm.PropertyAgg
 	PropertyAggByDevice               = dm.PropertyAggByDevice
-	PropertyAggByDeviceIndexReq       = dm.PropertyAggByDeviceIndexReq
+	PropertyAggCore                   = dm.PropertyAggCore
 	PropertyAggIndexReq               = dm.PropertyAggIndexReq
-	PropertyAggIndexResp              = dm.PropertyAggIndexResp
-	PropertyAggResp                   = dm.PropertyAggResp
-	PropertyAggRespDataDetail         = dm.PropertyAggRespDataDetail
-	PropertyAggRespDetail             = dm.PropertyAggRespDetail
 	PropertyControlMultiSendReq       = dm.PropertyControlMultiSendReq
 	PropertyControlMultiSendResp      = dm.PropertyControlMultiSendResp
 	PropertyControlSendMsg            = dm.PropertyControlSendMsg
@@ -207,11 +203,20 @@ type (
 	PropertyGetReportSendMsg          = dm.PropertyGetReportSendMsg
 	PropertyGetReportSendReq          = dm.PropertyGetReportSendReq
 	PropertyGetReportSendResp         = dm.PropertyGetReportSendResp
+	PropertyLatestAggIndexReq         = dm.PropertyLatestAggIndexReq
+	PropertyLatestAggIndexResp        = dm.PropertyLatestAggIndexResp
+	PropertyLatestAggResp             = dm.PropertyLatestAggResp
+	PropertyLatestAggRespDetail       = dm.PropertyLatestAggRespDetail
+	PropertyLatestIndex2Req           = dm.PropertyLatestIndex2Req
+	PropertyLatestIndexReq            = dm.PropertyLatestIndexReq
+	PropertyLogAggByDeviceIndexReq    = dm.PropertyLogAggByDeviceIndexReq
+	PropertyLogAggIndexResp           = dm.PropertyLogAggIndexResp
+	PropertyLogAggResp                = dm.PropertyLogAggResp
+	PropertyLogAggRespDataDetail      = dm.PropertyLogAggRespDataDetail
+	PropertyLogAggRespDetail          = dm.PropertyLogAggRespDetail
 	PropertyLogIndexReq               = dm.PropertyLogIndexReq
 	PropertyLogIndexResp              = dm.PropertyLogIndexResp
 	PropertyLogInfo                   = dm.PropertyLogInfo
-	PropertyLogLatestIndex2Req        = dm.PropertyLogLatestIndex2Req
-	PropertyLogLatestIndexReq         = dm.PropertyLogLatestIndexReq
 	ProtocolConfigField               = dm.ProtocolConfigField
 	ProtocolConfigInfo                = dm.ProtocolConfigInfo
 	ProtocolInfo                      = dm.ProtocolInfo
@@ -280,16 +285,17 @@ type (
 		AbnormalLogIndex(ctx context.Context, in *AbnormalLogIndexReq, opts ...grpc.CallOption) (*AbnormalLogIndexResp, error)
 		AbnormalLogCreate(ctx context.Context, in *AbnormalLogInfo, opts ...grpc.CallOption) (*Empty, error)
 		// 获取设备数据信息
-		PropertyLogLatestIndex(ctx context.Context, in *PropertyLogLatestIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error)
-		PropertyLogLatestIndex2(ctx context.Context, in *PropertyLogLatestIndex2Req, opts ...grpc.CallOption) (*PropertyLogIndexResp, error)
+		PropertyLatestIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error)
+		PropertyLatestIndex2(ctx context.Context, in *PropertyLatestIndex2Req, opts ...grpc.CallOption) (*PropertyLogIndexResp, error)
+		PropertyLatestAggIndex(ctx context.Context, in *PropertyLatestAggIndexReq, opts ...grpc.CallOption) (*PropertyLatestAggIndexResp, error)
 		// 获取设备数据信息
 		PropertyLogIndex(ctx context.Context, in *PropertyLogIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error)
-		PropertyAggIndex(ctx context.Context, in *PropertyAggIndexReq, opts ...grpc.CallOption) (*PropertyAggIndexResp, error)
-		PropertyAggByDeviceIndex(ctx context.Context, in *PropertyAggByDeviceIndexReq, opts ...grpc.CallOption) (*PropertyAggIndexResp, error)
+		PropertyLogAggIndex(ctx context.Context, in *PropertyAggIndexReq, opts ...grpc.CallOption) (*PropertyLogAggIndexResp, error)
+		PropertyLogAggByDeviceIndex(ctx context.Context, in *PropertyLogAggByDeviceIndexReq, opts ...grpc.CallOption) (*PropertyLogAggIndexResp, error)
 		// 获取设备数据信息
 		EventLogIndex(ctx context.Context, in *EventLogIndexReq, opts ...grpc.CallOption) (*EventLogIndexResp, error)
 		// 获取设备影子列表
-		ShadowIndex(ctx context.Context, in *PropertyLogLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error)
+		ShadowIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error)
 		// 获取网关可以绑定的子设备列表
 		GatewayCanBindIndex(ctx context.Context, in *GatewayCanBindIndexReq, opts ...grpc.CallOption) (*GatewayCanBindIndexResp, error)
 	}
@@ -376,23 +382,32 @@ func (d *directDeviceMsg) AbnormalLogCreate(ctx context.Context, in *AbnormalLog
 }
 
 // 获取设备数据信息
-func (m *defaultDeviceMsg) PropertyLogLatestIndex(ctx context.Context, in *PropertyLogLatestIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error) {
+func (m *defaultDeviceMsg) PropertyLatestIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error) {
 	client := dm.NewDeviceMsgClient(m.cli.Conn())
-	return client.PropertyLogLatestIndex(ctx, in, opts...)
+	return client.PropertyLatestIndex(ctx, in, opts...)
 }
 
 // 获取设备数据信息
-func (d *directDeviceMsg) PropertyLogLatestIndex(ctx context.Context, in *PropertyLogLatestIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error) {
-	return d.svr.PropertyLogLatestIndex(ctx, in)
+func (d *directDeviceMsg) PropertyLatestIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*PropertyLogIndexResp, error) {
+	return d.svr.PropertyLatestIndex(ctx, in)
 }
 
-func (m *defaultDeviceMsg) PropertyLogLatestIndex2(ctx context.Context, in *PropertyLogLatestIndex2Req, opts ...grpc.CallOption) (*PropertyLogIndexResp, error) {
+func (m *defaultDeviceMsg) PropertyLatestIndex2(ctx context.Context, in *PropertyLatestIndex2Req, opts ...grpc.CallOption) (*PropertyLogIndexResp, error) {
 	client := dm.NewDeviceMsgClient(m.cli.Conn())
-	return client.PropertyLogLatestIndex2(ctx, in, opts...)
+	return client.PropertyLatestIndex2(ctx, in, opts...)
 }
 
-func (d *directDeviceMsg) PropertyLogLatestIndex2(ctx context.Context, in *PropertyLogLatestIndex2Req, opts ...grpc.CallOption) (*PropertyLogIndexResp, error) {
-	return d.svr.PropertyLogLatestIndex2(ctx, in)
+func (d *directDeviceMsg) PropertyLatestIndex2(ctx context.Context, in *PropertyLatestIndex2Req, opts ...grpc.CallOption) (*PropertyLogIndexResp, error) {
+	return d.svr.PropertyLatestIndex2(ctx, in)
+}
+
+func (m *defaultDeviceMsg) PropertyLatestAggIndex(ctx context.Context, in *PropertyLatestAggIndexReq, opts ...grpc.CallOption) (*PropertyLatestAggIndexResp, error) {
+	client := dm.NewDeviceMsgClient(m.cli.Conn())
+	return client.PropertyLatestAggIndex(ctx, in, opts...)
+}
+
+func (d *directDeviceMsg) PropertyLatestAggIndex(ctx context.Context, in *PropertyLatestAggIndexReq, opts ...grpc.CallOption) (*PropertyLatestAggIndexResp, error) {
+	return d.svr.PropertyLatestAggIndex(ctx, in)
 }
 
 // 获取设备数据信息
@@ -406,22 +421,22 @@ func (d *directDeviceMsg) PropertyLogIndex(ctx context.Context, in *PropertyLogI
 	return d.svr.PropertyLogIndex(ctx, in)
 }
 
-func (m *defaultDeviceMsg) PropertyAggIndex(ctx context.Context, in *PropertyAggIndexReq, opts ...grpc.CallOption) (*PropertyAggIndexResp, error) {
+func (m *defaultDeviceMsg) PropertyLogAggIndex(ctx context.Context, in *PropertyAggIndexReq, opts ...grpc.CallOption) (*PropertyLogAggIndexResp, error) {
 	client := dm.NewDeviceMsgClient(m.cli.Conn())
-	return client.PropertyAggIndex(ctx, in, opts...)
+	return client.PropertyLogAggIndex(ctx, in, opts...)
 }
 
-func (d *directDeviceMsg) PropertyAggIndex(ctx context.Context, in *PropertyAggIndexReq, opts ...grpc.CallOption) (*PropertyAggIndexResp, error) {
-	return d.svr.PropertyAggIndex(ctx, in)
+func (d *directDeviceMsg) PropertyLogAggIndex(ctx context.Context, in *PropertyAggIndexReq, opts ...grpc.CallOption) (*PropertyLogAggIndexResp, error) {
+	return d.svr.PropertyLogAggIndex(ctx, in)
 }
 
-func (m *defaultDeviceMsg) PropertyAggByDeviceIndex(ctx context.Context, in *PropertyAggByDeviceIndexReq, opts ...grpc.CallOption) (*PropertyAggIndexResp, error) {
+func (m *defaultDeviceMsg) PropertyLogAggByDeviceIndex(ctx context.Context, in *PropertyLogAggByDeviceIndexReq, opts ...grpc.CallOption) (*PropertyLogAggIndexResp, error) {
 	client := dm.NewDeviceMsgClient(m.cli.Conn())
-	return client.PropertyAggByDeviceIndex(ctx, in, opts...)
+	return client.PropertyLogAggByDeviceIndex(ctx, in, opts...)
 }
 
-func (d *directDeviceMsg) PropertyAggByDeviceIndex(ctx context.Context, in *PropertyAggByDeviceIndexReq, opts ...grpc.CallOption) (*PropertyAggIndexResp, error) {
-	return d.svr.PropertyAggByDeviceIndex(ctx, in)
+func (d *directDeviceMsg) PropertyLogAggByDeviceIndex(ctx context.Context, in *PropertyLogAggByDeviceIndexReq, opts ...grpc.CallOption) (*PropertyLogAggIndexResp, error) {
+	return d.svr.PropertyLogAggByDeviceIndex(ctx, in)
 }
 
 // 获取设备数据信息
@@ -436,13 +451,13 @@ func (d *directDeviceMsg) EventLogIndex(ctx context.Context, in *EventLogIndexRe
 }
 
 // 获取设备影子列表
-func (m *defaultDeviceMsg) ShadowIndex(ctx context.Context, in *PropertyLogLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error) {
+func (m *defaultDeviceMsg) ShadowIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error) {
 	client := dm.NewDeviceMsgClient(m.cli.Conn())
 	return client.ShadowIndex(ctx, in, opts...)
 }
 
 // 获取设备影子列表
-func (d *directDeviceMsg) ShadowIndex(ctx context.Context, in *PropertyLogLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error) {
+func (d *directDeviceMsg) ShadowIndex(ctx context.Context, in *PropertyLatestIndexReq, opts ...grpc.CallOption) (*ShadowIndexResp, error) {
 	return d.svr.ShadowIndex(ctx, in)
 }
 

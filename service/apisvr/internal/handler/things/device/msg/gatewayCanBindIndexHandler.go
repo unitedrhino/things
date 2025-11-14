@@ -10,6 +10,7 @@ import (
 	"net/http"
 )
 
+// 获取网关可以绑定的子设备列表
 func GatewayCanBindIndexHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.GatewayCanBindIndexReq

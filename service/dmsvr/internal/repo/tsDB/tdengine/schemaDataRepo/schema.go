@@ -37,18 +37,18 @@ func (S *SchemaStore) GetSpecsColumnWithArgFunc2(s schema.Specs, agg msgThing.Pr
 	var selects []string
 	var tsHandle = map[string]bool{}
 	for _, v := range s {
-		if utils.SliceIn(v.DataType.Type, schema.DataTypeString, schema.DataTypeBool, schema.DataTypeBool) {
+		if utils.SliceIn(v.DataType.Type, schema.DataTypeString, schema.DataTypeBool) {
 			continue
 		}
 		for _, argFunc := range agg.ArgFuncs {
 			//pg的 timescale走视图优化
 			if agg.NoFirstTs && utils.SliceIn(argFunc, "first", "last") {
 				if !tsHandle[argFunc] {
-					selects = append(selects, fmt.Sprintf("  %s(`ts`) as %s_ts ", argFunc, argFunc))
+					selects = append(selects, fmt.Sprintf("  %s(`ts`) as `%s_ts` ", argFunc, argFunc))
 				}
 				tsHandle[argFunc] = true
 			}
-			selects = append(selects, fmt.Sprintf(" %s(`%s`) as %s_%s_param ", argFunc, v.Identifier, v.Identifier, argFunc))
+			selects = append(selects, fmt.Sprintf(" %s(`%s`) as `%s_%s_param` ", argFunc, v.Identifier, v.Identifier, argFunc))
 		}
 	}
 	return strings.Join(selects, ",")

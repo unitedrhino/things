@@ -18,7 +18,7 @@ import (
 	"time"
 )
 
-func (d *DeviceDataRepo) GetPropertyAgg(ctx context.Context, m *schema.Model, filter msgThing.FilterAggOpt) ([]*msgThing.PropertyData2, error) {
+func (d *DeviceDataRepo) GetPropertyLogAgg(ctx context.Context, m *schema.Model, filter msgThing.FilterLogAggOpt) ([]*msgThing.PropertyLogData2, error) {
 
 	var (
 		err error
@@ -32,7 +32,7 @@ func (d *DeviceDataRepo) GetPropertyAgg(ctx context.Context, m *schema.Model, fi
 			return nil, errors.Parameter.AddMsgf("属性未定义:%v", agg.DataID)
 		}
 	}
-	var retMap = map[string]msgThing.PropertyData2{}
+	var retMap = map[string]msgThing.PropertyLogData2{}
 	var mutex sync.Mutex
 	var wait sync.WaitGroup
 	for _, agg := range filter.Aggs {
@@ -81,7 +81,7 @@ func (d *DeviceDataRepo) GetPropertyAgg(ctx context.Context, m *schema.Model, fi
 
 func (d *DeviceDataRepo) getPropertyArgFuncSelect2(
 	ctx context.Context, db *stores.DB, p *schema.Property, agg msgThing.PropertyAgg,
-	filter msgThing.FilterAggOpt) (*stores.DB, error) {
+	filter msgThing.FilterLogAggOpt) (*stores.DB, error) {
 	//var start = "0000-01-01 0:00:00"
 	//if filter.TimeStart != 0 {
 	//	start = time.UnixMilli(filter.TimeStart).Format("2006-01-02 15:04:05")
@@ -175,9 +175,9 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect2(
 	return db, nil
 }
 
-func (d *DeviceDataRepo) ToPropertyData2(ctx context.Context, agg msgThing.PropertyAgg, m *schema.Model, dbs []map[string]any, retMap map[string]msgThing.PropertyData2) map[string]msgThing.PropertyData2 {
+func (d *DeviceDataRepo) ToPropertyData2(ctx context.Context, agg msgThing.PropertyAgg, m *schema.Model, dbs []map[string]any, retMap map[string]msgThing.PropertyLogData2) map[string]msgThing.PropertyLogData2 {
 	for _, db := range dbs {
-		data := msgThing.PropertyData2{
+		data := msgThing.PropertyLogData2{
 			DeviceName: cast.ToString(db["device_name"]),
 			TenantCode: dataType.TenantCode(cast.ToString(db["tenant_code"])),
 			ProjectID:  dataType.ProjectID(cast.ToInt64(db["project_id"])),
@@ -202,16 +202,16 @@ func (d *DeviceDataRepo) ToPropertyData2(ctx context.Context, agg msgThing.Prope
 		if !ok {
 			ret = data
 		}
-		value := msgThing.PropertyAggData{
+		value := msgThing.PropertyLogAggData{
 			Identifier: agg.DataID,
 			TsWindow:   cast.ToTime(db["ts_window"]),
-			Values:     map[string]msgThing.PropertyDataDetail{},
+			Values:     map[string]msgThing.PropertyLogDataDetail{},
 		}
 		p := m.Property[agg.DataID]
 		for k, v := range db {
 			if strings.HasSuffix(k, "_param") {
 				argFunc := k[:len(k)-len("_param")]
-				vv := msgThing.PropertyDataDetail{
+				vv := msgThing.PropertyLogDataDetail{
 					Param:     v,
 					TimeStamp: cast.ToTime(db[argFunc+"_ts"]),
 				}

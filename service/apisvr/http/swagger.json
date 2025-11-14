@@ -1874,7 +1874,7 @@
     },
     "/api/v1/things/device/msg/property-agg/by-device/index": {
       "post": {
-        "summary": "聚合属性历史记录,设备维度",
+        "summary": "弃用",
         "operationId": "postApiV1ThingsDeviceMsgProperty-aggBy-deviceIndex",
         "responses": {
           "200": {
@@ -1892,7 +1892,7 @@
                   "title": "返回的消息"
                 },
                 "data": {
-                  "$ref": "#/definitions/DeviceMsgPropertyAggIndexResp"
+                  "$ref": "#/definitions/DeviceMsgPropertyLogAggIndexResp"
                 }
               }
             }
@@ -1916,7 +1916,7 @@
     },
     "/api/v1/things/device/msg/property-agg/index": {
       "post": {
-        "summary": "聚合属性历史记录",
+        "summary": "弃用",
         "operationId": "postApiV1ThingsDeviceMsgProperty-aggIndex",
         "responses": {
           "200": {
@@ -1934,7 +1934,7 @@
                   "title": "返回的消息"
                 },
                 "data": {
-                  "$ref": "#/definitions/DeviceMsgPropertyAggIndexResp"
+                  "$ref": "#/definitions/DeviceMsgPropertyLogAggIndexResp"
                 }
               }
             }
@@ -1946,7 +1946,175 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/DeviceMsgPropertyAggIndexReq"
+              "$ref": "#/definitions/DeviceMsgPropertyLogAggIndexReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/msg",
+          "thingsDeviceMsg"
+        ]
+      }
+    },
+    "/api/v1/things/device/msg/property-latest-agg/index": {
+      "post": {
+        "summary": "聚合属性最新值",
+        "operationId": "postApiV1ThingsDeviceMsgProperty-latest-aggIndex",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/DeviceMsgPropertyLatestAggIndexResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceMsgPropertyLatestAggIndexReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/msg",
+          "thingsDeviceMsg"
+        ]
+      }
+    },
+    "/api/v1/things/device/msg/property-latest/index": {
+      "post": {
+        "summary": "获取最新属性记录",
+        "operationId": "postApiV1ThingsDeviceMsgProperty-latestIndex",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/DeviceMsgPropertyIndexResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceMsgPropertyLatestIndexReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/msg",
+          "thingsDeviceMsg"
+        ]
+      }
+    },
+    "/api/v1/things/device/msg/property-log-agg/by-device/index": {
+      "post": {
+        "summary": "聚合属性历史记录,设备维度",
+        "operationId": "postApiV1ThingsDeviceMsgProperty-log-aggBy-deviceIndex",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/DeviceMsgPropertyLogAggIndexResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceMsgPropertyAggByDeviceIndexReq"
+            }
+          }
+        ],
+        "tags": [
+          "things/device/msg",
+          "thingsDeviceMsg"
+        ]
+      }
+    },
+    "/api/v1/things/device/msg/property-log-agg/index": {
+      "post": {
+        "summary": "聚合属性历史记录",
+        "operationId": "postApiV1ThingsDeviceMsgProperty-log-aggIndex",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "default": "200",
+                  "title": "返回code"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/DeviceMsgPropertyLogAggIndexResp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeviceMsgPropertyLogAggIndexReq"
             }
           }
         ],
@@ -1958,7 +2126,7 @@
     },
     "/api/v1/things/device/msg/property-log-latest/index": {
       "post": {
-        "summary": "获取最新属性记录",
+        "summary": "弃用",
         "operationId": "postApiV1ThingsDeviceMsgProperty-log-latestIndex",
         "responses": {
           "200": {
@@ -1988,7 +2156,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/DeviceMsgPropertyLogLatestIndexReq"
+              "$ref": "#/definitions/DeviceMsgPropertyLatestIndexReq"
             }
           }
         ],
@@ -2198,7 +2366,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/DeviceMsgPropertyLogLatestIndexReq"
+              "$ref": "#/definitions/DeviceMsgPropertyLatestIndexReq"
             }
           }
         ],
@@ -6049,10 +6217,11 @@
         "parameters": [
           {
             "name": "body",
+            "description": "/*物模型条目*/",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/CommonSchemaCreateReq"
+              "$ref": "#/definitions/CommonSchemaInfo"
             }
           }
         ],
@@ -6282,10 +6451,11 @@
         "parameters": [
           {
             "name": "body",
+            "description": "/*物模型条目*/",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/CommonSchemaUpdateReq"
+              "$ref": "#/definitions/CommonSchemaInfo"
             }
           }
         ],
@@ -6934,15 +7104,6 @@
       },
       "title": "CommonResp"
     },
-    "CommonSchemaCreateReq": {
-      "type": "object",
-      "properties": {
-        "": {
-          "$ref": "#/definitions/CommonSchemaInfo"
-        }
-      },
-      "title": "CommonSchemaCreateReq"
-    },
     "CommonSchemaDeleteReq": {
       "type": "object",
       "properties": {
@@ -7194,15 +7355,6 @@
         }
       },
       "title": "CommonSchemaInfo"
-    },
-    "CommonSchemaUpdateReq": {
-      "type": "object",
-      "properties": {
-        "": {
-          "$ref": "#/definitions/CommonSchemaInfo"
-        }
-      },
-      "title": "CommonSchemaUpdateReq"
     },
     "Compare": {
       "type": "object",
@@ -9695,7 +9847,237 @@
         "aggs"
       ]
     },
-    "DeviceMsgPropertyAggIndexReq": {
+    "DeviceMsgPropertyAggCore": {
+      "type": "object",
+      "properties": {
+        "dataID": {
+          "type": "string",
+          "description": "获取的具体标识符的数据"
+        },
+        "argFuncs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考: https:docs.taosdata.com/reference/taos-sql/function/#apercentile"
+        }
+      },
+      "title": "DeviceMsgPropertyAggCore",
+      "required": [
+        "argFuncs"
+      ]
+    },
+    "DeviceMsgPropertyIndexResp": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceMsgPropertyLogInfo"
+          },
+          "description": "数据"
+        },
+        "page": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 页码"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页大小"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "DeviceMsgPropertyIndexResp",
+      "required": [
+        "list"
+      ]
+    },
+    "DeviceMsgPropertyLatestAggIndexReq": {
+      "type": "object",
+      "properties": {
+        "tenantCode": {
+          "type": "string",
+          "description": "只有管理员有权限"
+        },
+        "projectID": {
+          "type": "string",
+          "description": "只有管理员有权限"
+        },
+        "areaID": {
+          "type": "string",
+          "description": "只有管理员有权限"
+        },
+        "areaIDPath": {
+          "type": "string",
+          "description": "只有管理员有权限"
+        },
+        "areaIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "只有管理员有权限"
+        },
+        "belongGroup": {
+          "type": "object",
+          "description": "key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回"
+        },
+        "deviceName": {
+          "type": "string",
+          "description": "设备名(不填获取产品下所有设备)"
+        },
+        "deviceNames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "设备名(不填获取产品下所有设备,只有管理员有权限)"
+        },
+        "productID": {
+          "type": "string",
+          "description": "产品id 获取产品id下的所有设备信息"
+        },
+        "productCategoryID": {
+          "type": "integer",
+          "format": "int64",
+          "description": "产品品类id,通用物模型有效"
+        },
+        "partitionBy": {
+          "type": "string",
+          "description": "切分数据,可以填写deviceName"
+        },
+        "aggs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceMsgPropertyAgg"
+          },
+          "description": "聚合对象"
+        }
+      },
+      "title": "DeviceMsgPropertyLatestAggIndexReq",
+      "required": [
+        "aggs"
+      ]
+    },
+    "DeviceMsgPropertyLatestAggIndexResp": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceMsgPropertyLatestAggResp"
+          }
+        }
+      },
+      "title": "DeviceMsgPropertyLatestAggIndexResp",
+      "required": [
+        "list"
+      ]
+    },
+    "DeviceMsgPropertyLatestAggResp": {
+      "type": "object",
+      "properties": {
+        "productID": {
+          "type": "string"
+        },
+        "deviceName": {
+          "type": "string",
+          "description": "设备名称"
+        },
+        "tenantCode": {
+          "type": "string",
+          "description": "只有partitionBy 传该参数的时候才会返回"
+        },
+        "projectID": {
+          "type": "string",
+          "description": "只有partitionBy 传该参数的时候才会返回"
+        },
+        "areaID": {
+          "type": "string",
+          "description": "只有partitionBy 传该参数的时候才会返回"
+        },
+        "areaIDPath": {
+          "type": "string",
+          "description": "只有partitionBy 传该参数的时候才会返回"
+        },
+        "areaIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "只有partitionBy 传该参数的时候才会返回"
+        },
+        "belongGroup": {
+          "type": "object",
+          "description": "key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceMsgPropertyLatestAggRespDetail"
+          }
+        }
+      },
+      "title": "DeviceMsgPropertyLatestAggResp",
+      "required": [
+        "values"
+      ]
+    },
+    "DeviceMsgPropertyLatestAggRespDetail": {
+      "type": "object",
+      "properties": {
+        "dataID": {
+          "type": "string",
+          "description": "属性ID"
+        },
+        "dataName": {
+          "type": "string",
+          "description": "属性名称"
+        },
+        "values": {
+          "type": "object",
+          "description": "key是聚合函数"
+        }
+      },
+      "title": "DeviceMsgPropertyLatestAggRespDetail",
+      "required": [
+        "dataID",
+        "dataName",
+        "values"
+      ]
+    },
+    "DeviceMsgPropertyLatestIndexReq": {
+      "type": "object",
+      "properties": {
+        "deviceName": {
+          "type": "string",
+          "description": "设备名"
+        },
+        "productID": {
+          "type": "string",
+          "description": "产品id 获取产品id下的所有设备信息"
+        },
+        "dataIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值"
+        },
+        "ignoreEmpty": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": " 设备属性是否忽略空值,空值是否返回"
+        }
+      },
+      "title": "DeviceMsgPropertyLatestIndexReq"
+    },
+    "DeviceMsgPropertyLogAggIndexReq": {
       "type": "object",
       "properties": {
         "tenantCode": {
@@ -9774,27 +10156,27 @@
           "description": "聚合对象"
         }
       },
-      "title": "DeviceMsgPropertyAggIndexReq",
+      "title": "DeviceMsgPropertyLogAggIndexReq",
       "required": [
         "aggs"
       ]
     },
-    "DeviceMsgPropertyAggIndexResp": {
+    "DeviceMsgPropertyLogAggIndexResp": {
       "type": "object",
       "properties": {
         "list": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/DeviceMsgPropertyAggResp"
+            "$ref": "#/definitions/DeviceMsgPropertyLogAggResp"
           }
         }
       },
-      "title": "DeviceMsgPropertyAggIndexResp",
+      "title": "DeviceMsgPropertyLogAggIndexResp",
       "required": [
         "list"
       ]
     },
-    "DeviceMsgPropertyAggResp": {
+    "DeviceMsgPropertyLogAggResp": {
       "type": "object",
       "properties": {
         "productID": {
@@ -9834,16 +10216,16 @@
         "values": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/DeviceMsgPropertyAggRespDetail"
+            "$ref": "#/definitions/DeviceMsgPropertyLogAggRespDetail"
           }
         }
       },
-      "title": "DeviceMsgPropertyAggResp",
+      "title": "DeviceMsgPropertyLogAggResp",
       "required": [
         "values"
       ]
     },
-    "DeviceMsgPropertyAggRespDataDetail": {
+    "DeviceMsgPropertyLogAggRespDataDetail": {
       "type": "object",
       "properties": {
         "timestamp": {
@@ -9855,9 +10237,9 @@
           "description": "获取到的值"
         }
       },
-      "title": "DeviceMsgPropertyAggRespDataDetail"
+      "title": "DeviceMsgPropertyLogAggRespDataDetail"
     },
-    "DeviceMsgPropertyAggRespDetail": {
+    "DeviceMsgPropertyLogAggRespDetail": {
       "type": "object",
       "properties": {
         "dataID": {
@@ -9877,42 +10259,12 @@
           "description": "key是聚合函数"
         }
       },
-      "title": "DeviceMsgPropertyAggRespDetail",
+      "title": "DeviceMsgPropertyLogAggRespDetail",
       "required": [
         "dataID",
         "dataName",
         "timeWindow",
         "values"
-      ]
-    },
-    "DeviceMsgPropertyIndexResp": {
-      "type": "object",
-      "properties": {
-        "list": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/DeviceMsgPropertyLogInfo"
-          },
-          "description": "数据"
-        },
-        "page": {
-          "type": "integer",
-          "format": "int64",
-          "description": " 页码"
-        },
-        "pageSize": {
-          "type": "integer",
-          "format": "int64",
-          "description": " 每页大小"
-        },
-        "total": {
-          "type": "integer",
-          "format": "int64"
-        }
-      },
-      "title": "DeviceMsgPropertyIndexResp",
-      "required": [
-        "list"
       ]
     },
     "DeviceMsgPropertyLogIndexReq": {
@@ -10072,32 +10424,6 @@
         "dataID",
         "dataName"
       ]
-    },
-    "DeviceMsgPropertyLogLatestIndexReq": {
-      "type": "object",
-      "properties": {
-        "deviceName": {
-          "type": "string",
-          "description": "设备名"
-        },
-        "productID": {
-          "type": "string",
-          "description": "产品id 获取产品id下的所有设备信息"
-        },
-        "dataIDs": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值"
-        },
-        "ignoreEmpty": {
-          "type": "boolean",
-          "format": "boolean",
-          "description": " 设备属性是否忽略空值,空值是否返回"
-        }
-      },
-      "title": "DeviceMsgPropertyLogLatestIndexReq"
     },
     "DeviceMsgPropertyLogMultiIndexReq": {
       "type": "object",

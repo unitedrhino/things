@@ -14,24 +14,25 @@ import (
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
+
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type PropertyAggIndexLogic struct {
+type PropertyLogAggIndexLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewPropertyAggIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PropertyAggIndexLogic {
-	return &PropertyAggIndexLogic{
+func NewPropertyLogAggIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PropertyLogAggIndexLogic {
+	return &PropertyLogAggIndexLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *PropertyAggIndexLogic) PropertyAggIndex(in *dm.PropertyAggIndexReq) (*dm.PropertyAggIndexResp, error) {
+func (l *PropertyLogAggIndexLogic) PropertyLogAggIndex(in *dm.PropertyAggIndexReq) (*dm.PropertyLogAggIndexResp, error) {
 	var (
 		//diDatas    []*dm.PropertyLogInfo
 		dd         = l.svcCtx.SchemaManaRepo
@@ -101,7 +102,7 @@ func (l *PropertyAggIndexLogic) PropertyAggIndex(in *dm.PropertyAggIndexReq) (*d
 
 	}
 
-	dds, err := dd.GetPropertyAgg(l.ctx, t, msgThing.FilterAggOpt{
+	dds, err := dd.GetPropertyLogAgg(l.ctx, t, msgThing.FilterLogAggOpt{
 		TimeStart: in.TimeStart,
 		TimeEnd:   in.TimeEnd,
 		Filter: msgThing.Filter{
@@ -121,9 +122,9 @@ func (l *PropertyAggIndexLogic) PropertyAggIndex(in *dm.PropertyAggIndexReq) (*d
 		l.Errorf("%s.GetPropertyDataByID err=%v", utils.FuncName(), err)
 		return nil, err
 	}
-	var diDatas []*dm.PropertyAggResp
+	var diDatas []*dm.PropertyLogAggResp
 	for _, devData := range dds {
-		diData := dm.PropertyAggResp{
+		diData := dm.PropertyLogAggResp{
 			DeviceName:  devData.DeviceName,
 			TenantCode:  string(devData.TenantCode),
 			ProjectID:   int64(devData.ProjectID),
@@ -132,13 +133,13 @@ func (l *PropertyAggIndexLogic) PropertyAggIndex(in *dm.PropertyAggIndexReq) (*d
 			BelongGroup: utils.CopyMap2[dm.IDsInfo](devData.BelongGroup),
 		}
 		for _, v1 := range devData.Values {
-			var dv = dm.PropertyAggRespDetail{
+			var dv = dm.PropertyLogAggRespDetail{
 				DataID:     v1.Identifier,
 				DataName:   schema.GetDataName(t, v1.Identifier),
 				TimeWindow: v1.TsWindow.UnixMilli(),
-				Values:     map[string]*dm.PropertyAggRespDataDetail{}}
+				Values:     map[string]*dm.PropertyLogAggRespDataDetail{}}
 			for k2, v2 := range v1.Values {
-				dv2 := dm.PropertyAggRespDataDetail{Timestamp: v2.TimeStamp.UnixMilli()}
+				dv2 := dm.PropertyLogAggRespDataDetail{Timestamp: v2.TimeStamp.UnixMilli()}
 				if dv2.Timestamp < 0 {
 					dv2.Timestamp = 0
 				}
@@ -155,5 +156,5 @@ func (l *PropertyAggIndexLogic) PropertyAggIndex(in *dm.PropertyAggIndexReq) (*d
 		}
 		diDatas = append(diDatas, &diData)
 	}
-	return &dm.PropertyAggIndexResp{List: diDatas}, nil
+	return &dm.PropertyLogAggIndexResp{List: diDatas}, nil
 }

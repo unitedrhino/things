@@ -56,14 +56,19 @@ func (s *DeviceMsgServer) AbnormalLogCreate(ctx context.Context, in *dm.Abnormal
 }
 
 // 获取设备数据信息
-func (s *DeviceMsgServer) PropertyLogLatestIndex(ctx context.Context, in *dm.PropertyLogLatestIndexReq) (*dm.PropertyLogIndexResp, error) {
-	l := devicemsglogic.NewPropertyLogLatestIndexLogic(ctx, s.svcCtx)
-	return l.PropertyLogLatestIndex(in)
+func (s *DeviceMsgServer) PropertyLatestIndex(ctx context.Context, in *dm.PropertyLatestIndexReq) (*dm.PropertyLogIndexResp, error) {
+	l := devicemsglogic.NewPropertyLatestIndexLogic(ctx, s.svcCtx)
+	return l.PropertyLatestIndex(in)
 }
 
-func (s *DeviceMsgServer) PropertyLogLatestIndex2(ctx context.Context, in *dm.PropertyLogLatestIndex2Req) (*dm.PropertyLogIndexResp, error) {
-	l := devicemsglogic.NewPropertyLogLatestIndex2Logic(ctx, s.svcCtx)
-	return l.PropertyLogLatestIndex2(in)
+func (s *DeviceMsgServer) PropertyLatestIndex2(ctx context.Context, in *dm.PropertyLatestIndex2Req) (*dm.PropertyLogIndexResp, error) {
+	l := devicemsglogic.NewPropertyLatestIndex2Logic(ctx, s.svcCtx)
+	return l.PropertyLatestIndex2(in)
+}
+
+func (s *DeviceMsgServer) PropertyLatestAggIndex(ctx context.Context, in *dm.PropertyLatestAggIndexReq) (*dm.PropertyLatestAggIndexResp, error) {
+	l := devicemsglogic.NewPropertyLatestAggIndexLogic(ctx, s.svcCtx)
+	return l.PropertyLatestAggIndex(in)
 }
 
 // 获取设备数据信息
@@ -72,14 +77,14 @@ func (s *DeviceMsgServer) PropertyLogIndex(ctx context.Context, in *dm.PropertyL
 	return l.PropertyLogIndex(in)
 }
 
-func (s *DeviceMsgServer) PropertyAggIndex(ctx context.Context, in *dm.PropertyAggIndexReq) (*dm.PropertyAggIndexResp, error) {
-	l := devicemsglogic.NewPropertyAggIndexLogic(ctx, s.svcCtx)
-	return l.PropertyAggIndex(in)
+func (s *DeviceMsgServer) PropertyLogAggIndex(ctx context.Context, in *dm.PropertyAggIndexReq) (*dm.PropertyLogAggIndexResp, error) {
+	l := devicemsglogic.NewPropertyLogAggIndexLogic(ctx, s.svcCtx)
+	return l.PropertyLogAggIndex(in)
 }
 
-func (s *DeviceMsgServer) PropertyAggByDeviceIndex(ctx context.Context, in *dm.PropertyAggByDeviceIndexReq) (*dm.PropertyAggIndexResp, error) {
-	l := devicemsglogic.NewPropertyAggByDeviceIndexLogic(ctx, s.svcCtx)
-	return l.PropertyAggByDeviceIndex(in)
+func (s *DeviceMsgServer) PropertyLogAggByDeviceIndex(ctx context.Context, in *dm.PropertyLogAggByDeviceIndexReq) (*dm.PropertyLogAggIndexResp, error) {
+	l := devicemsglogic.NewPropertyLogAggByDeviceIndexLogic(ctx, s.svcCtx)
+	return l.PropertyLogAggByDeviceIndex(in)
 }
 
 // 获取设备数据信息
@@ -89,7 +94,7 @@ func (s *DeviceMsgServer) EventLogIndex(ctx context.Context, in *dm.EventLogInde
 }
 
 // 获取设备影子列表
-func (s *DeviceMsgServer) ShadowIndex(ctx context.Context, in *dm.PropertyLogLatestIndexReq) (*dm.ShadowIndexResp, error) {
+func (s *DeviceMsgServer) ShadowIndex(ctx context.Context, in *dm.PropertyLatestIndexReq) (*dm.ShadowIndexResp, error) {
 	l := devicemsglogic.NewShadowIndexLogic(ctx, s.svcCtx)
 	return l.ShadowIndex(in)
 }

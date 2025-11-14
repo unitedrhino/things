@@ -26,11 +26,11 @@ func ToEventData(db map[string]any) *msgThing.EventData {
 	return &data
 }
 
-func ToPropertyData(id string, p *schema.Property, db map[string]any) *msgThing.PropertyData {
+func ToPropertyData(id string, p *schema.Property, db map[string]any) *msgThing.PropertyLogData {
 	propertyType := db[PropertyType]
 	switch propertyType {
 	case string(schema.DataTypeStruct):
-		data := msgThing.PropertyData{
+		data := msgThing.PropertyLogData{
 			Identifier: id,
 			Param:      nil,
 			TimeStamp:  cast.ToTime(db["ts"]),
@@ -47,7 +47,7 @@ func ToPropertyData(id string, p *schema.Property, db map[string]any) *msgThing.
 	case string(schema.DataTypeArray):
 		switch p.Define.ArrayInfo.Type {
 		case schema.DataTypeStruct:
-			data := msgThing.PropertyData{
+			data := msgThing.PropertyLogData{
 				Identifier: id,
 				TimeStamp:  cast.ToTime(db["ts"]),
 			}
@@ -61,7 +61,7 @@ func ToPropertyData(id string, p *schema.Property, db map[string]any) *msgThing.
 			data.Param = db
 			return &data
 		default:
-			data := msgThing.PropertyData{
+			data := msgThing.PropertyLogData{
 				Identifier: id,
 				Param:      cast.ToString(utils.BoolToInt(db["param"])),
 				TimeStamp:  cast.ToTime(db["ts"]),
@@ -69,7 +69,7 @@ func ToPropertyData(id string, p *schema.Property, db map[string]any) *msgThing.
 			return &data
 		}
 	default:
-		data := msgThing.PropertyData{
+		data := msgThing.PropertyLogData{
 			Identifier: id,
 			Param:      cast.ToString(utils.BoolToInt(db["param"])),
 			TimeStamp:  cast.ToTime(db["ts"]),

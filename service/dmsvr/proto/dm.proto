@@ -334,18 +334,19 @@ service DeviceMsg {
   rpc abnormalLogCreate(AbnormalLogInfo) returns(Empty);
 
   //获取设备数据信息
-  rpc propertyLogLatestIndex(PropertyLogLatestIndexReq)     returns (PropertyLogIndexResp);
-  rpc propertyLogLatestIndex2(PropertyLogLatestIndex2Req)     returns (PropertyLogIndexResp);
+  rpc propertyLatestIndex(PropertyLatestIndexReq)     returns (PropertyLogIndexResp);
+  rpc propertyLatestIndex2(PropertyLatestIndex2Req)     returns (PropertyLogIndexResp);
+  rpc propertyLatestAggIndex(PropertyLatestAggIndexReq)     returns (PropertyLatestAggIndexResp);
 
   //获取设备数据信息
   rpc propertyLogIndex(PropertyLogIndexReq)     returns (PropertyLogIndexResp);
-  rpc propertyAggIndex(PropertyAggIndexReq)     returns (PropertyAggIndexResp);
-  rpc propertyAggByDeviceIndex(PropertyAggByDeviceIndexReq)     returns (PropertyAggIndexResp);
+  rpc propertyLogAggIndex(PropertyAggIndexReq)     returns (PropertyLogAggIndexResp);
+  rpc propertyLogAggByDeviceIndex(PropertyLogAggByDeviceIndexReq)     returns (PropertyLogAggIndexResp);
 
   //获取设备数据信息
   rpc eventLogIndex(EventLogIndexReq)     returns (EventLogIndexResp);
   //获取设备影子列表
-  rpc shadowIndex(PropertyLogLatestIndexReq)     returns (ShadowIndexResp);
+  rpc shadowIndex(PropertyLatestIndexReq)     returns (ShadowIndexResp);
 
   //获取网关可以绑定的子设备列表
   rpc gatewayCanBindIndex(GatewayCanBindIndexReq)returns(GatewayCanBindIndexResp);
@@ -964,7 +965,7 @@ message PropertyAggIndexReq{
   repeated PropertyAgg aggs =10;// 聚合参数
 }
 
-message PropertyAggByDeviceIndexReq{
+message PropertyLogAggByDeviceIndexReq{
   int64 timeStart = 6;//获取时间的开始(毫秒时间戳)
   int64 timeEnd = 7;//时间的结束(毫秒时间戳)
   int64 interval = 8;//间隔 如果这个值不为零值 则时间的开始和结束必须有效及聚合函数不应该为空
@@ -975,14 +976,14 @@ message PropertyAggByDeviceIndexReq{
 }
 
 /*获取对应日志信息*/
-message PropertyAggIndexResp{
-  repeated PropertyAggResp list = 2;
+message PropertyLogAggIndexResp{
+  repeated PropertyLogAggResp list = 2;
 }
 
-message PropertyAggResp{
+message PropertyLogAggResp{
   string productID = 5;//产品名称
   string deviceName = 2;//设备名称
-  repeated PropertyAggRespDetail values = 4;//获取到的值
+  repeated PropertyLogAggRespDetail values = 4;//获取到的值
   string tenantCode = 7;//租户号,只有partitionBy 传该参数的时候才会返回
   int64 projectID = 8;//租户号,只有partitionBy 传该参数的时候才会返回
   int64 areaID =9;//租户号,只有partitionBy 传该参数的时候才会返回
@@ -990,26 +991,68 @@ message PropertyAggResp{
   map<string,IDsInfo> belongGroup =18;//key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回
 
 }
-message PropertyAggRespDetail{
+message PropertyLogAggRespDetail{
   string dataID = 1;//属性id
   string dataName =3;//属性名称
   int64 timeWindow = 2;//发生时间戳(毫秒时间戳)
-  map<string,PropertyAggRespDataDetail> values = 4;//key是聚合函数
+  map<string,PropertyLogAggRespDataDetail> values = 4;//key是聚合函数
 }
-message PropertyAggRespDataDetail{
+message PropertyLogAggRespDataDetail{
   int64 timestamp = 1;//发生时间戳(毫秒时间戳)
   string value = 4;//获取到的值
 }
 
+message PropertyLatestAggIndexReq{
+  string tenantCode = 21;//租户号,只有管理员有权限
+  int64 projectID =20;//只有管理员有权限
+  int64 areaID =14;//只有管理员有权限
+  string areaIDPath =15;//只有管理员有权限
+  repeated int64 areaIDs =16;//只有管理员有权限
+  int64  productCategoryID = 17;//产品品类id
+  map<string,IDsInfo> BelongGroup =18;//key是group的purpose, value是里面包含的分组id
+  string deviceName=2;//设备ID
+  repeated string deviceNames=3;
+  string productID = 4; //产品id (必填)
+  string partitionBy =13;//切分数据,可以填写deviceName
+  repeated PropertyAggCore aggs =10;// 聚合参数
+}
+message PropertyLatestAggIndexResp{
+  repeated PropertyLatestAggResp list = 2;
+}
+
+
+message PropertyLatestAggResp{
+  string productID = 5;//产品名称
+  string deviceName = 2;//设备名称
+  repeated PropertyLatestAggRespDetail values = 4;//获取到的值
+  string tenantCode = 7;//租户号,只有partitionBy 传该参数的时候才会返回
+  int64 projectID = 8;//租户号,只有partitionBy 传该参数的时候才会返回
+  int64 areaID =9;//租户号,只有partitionBy 传该参数的时候才会返回
+  string areaIDPath =10;//租户号,只有partitionBy 传该参数的时候才会返回
+  map<string,IDsInfo> belongGroup =18;//key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回
+
+}
+message PropertyLatestAggRespDetail{
+  string dataID = 1;//属性id
+  string dataName =3;//属性名称
+  map<string,string> values = 4;//key是聚合函数,value是值
+}
+
+
+message PropertyAggCore{
+  string dataID = 1; //获取的具体标识符的数据(必填)
+  repeated string argFuncs = 2;//聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考:https://docs.taosdata.com/reference/taos-sql/function
+}
+
 /*获取对应日志信息*/
-message PropertyLogLatestIndexReq{
+message PropertyLatestIndexReq{
   string productID = 2; //产品id (必填)
   string deviceName = 1; //设备名(必填)
   repeated string dataIDs = 3; //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值
   bool ignoreEmpty = 5;// 设备属性是否忽略空值,空值是否返回
 }
 
-message PropertyLogLatestIndex2Req{
+message PropertyLatestIndex2Req{
   repeated DeviceData devices = 4;//
 }
 

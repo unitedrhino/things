@@ -75,7 +75,7 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 			ars[k] = v
 
 			// 使用缓存管理器检查是否需要更新
-			if !d.cacheManager.CheckIsChange(ctx, devices.Core{ProductID: productID, DeviceName: deviceName}, p, msgThing.PropertyData{
+			if !d.cacheManager.CheckIsChange(ctx, devices.Core{ProductID: productID, DeviceName: deviceName}, p, msgThing.PropertyLogData{
 				Identifier: k,
 				Param:      v,
 				TimeStamp:  timestamp,
@@ -136,7 +136,7 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 
 		ars[property.Identifier] = property.Value
 		// 使用缓存管理器检查是否需要更新
-		if !d.cacheManager.CheckIsChange(ctx, devices.Core{ProductID: productID, DeviceName: deviceName}, p, msgThing.PropertyData{
+		if !d.cacheManager.CheckIsChange(ctx, devices.Core{ProductID: productID, DeviceName: deviceName}, p, msgThing.PropertyLogData{
 			Identifier: property.Identifier,
 			Param:      property.Value,
 			TimeStamp:  timestamp,

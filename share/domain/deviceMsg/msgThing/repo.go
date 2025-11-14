@@ -18,8 +18,8 @@ import (
 )
 
 type (
-	// PropertyData 属性数据
-	PropertyData struct {
+	// PropertyLogData 属性数据
+	PropertyLogData struct {
 		TenantCode  dataType.TenantCode    `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"`                        // 租户编码
 		ProjectID   dataType.ProjectID     `gorm:"column:project_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"` // 项目ID(雪花ID)
 		AreaID      dataType.AreaID        `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`    // 项目区域ID(雪花ID)
@@ -30,23 +30,37 @@ type (
 		Param       any                    `gorm:"column:param;type:varchar(256);NOT NULL" json:"param" `         //一个属性的参数
 		TimeStamp   time.Time              `gorm:"column:ts;NOT NULL;" json:"timeStamp"`                          //时间戳
 	}
-	PropertyData2 struct {
+	PropertyLogData2 struct {
 		TenantCode  dataType.TenantCode    `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"`                        // 租户编码
 		ProjectID   dataType.ProjectID     `gorm:"column:project_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"` // 项目ID(雪花ID)
 		AreaID      dataType.AreaID        `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`    // 项目区域ID(雪花ID)
 		AreaIDPath  dataType.AreaIDPath    `gorm:"column:area_id_path;type:varchar(100);default:'';NOT NULL"`                 // 项目区域ID路径(雪花ID)
 		BelongGroup map[string]def.IDsInfo `gorm:"column:belong_group;type:json;serializer:json;default:'{}'"`
 		DeviceName  string                 `gorm:"column:device_name;type:varchar(50);NOT NULL" json:"deviceName"`
-		Values      []PropertyAggData      `gorm:"-"`
+		Values      []PropertyLogAggData   `gorm:"-"`
 	}
-	PropertyAggData struct {
-		Identifier string                        `gorm:"column:identifier;type:varchar(50);NOT NULL" json:"identifier"` //标识符
-		TsWindow   time.Time                     `gorm:"column:ts_window;NOT NULL;" json:"timeStamp"`                   //时间戳
-		Values     map[string]PropertyDataDetail `gorm:"-"`                                                             //key是聚合函数
+	PropertyLogAggData struct {
+		Identifier string                           `gorm:"column:identifier;type:varchar(50);NOT NULL" json:"identifier"` //标识符
+		TsWindow   time.Time                        `gorm:"column:ts_window;NOT NULL;" json:"timeStamp"`                   //时间戳
+		Values     map[string]PropertyLogDataDetail `gorm:"-"`                                                             //key是聚合函数
 	}
-	PropertyDataDetail struct {
+	PropertyLogDataDetail struct {
 		Param     any       `gorm:"column:param;type:varchar(256);NOT NULL" json:"param" ` //一个属性的参数
 		TimeStamp time.Time `gorm:"column:ts;NOT NULL;" json:"timeStamp"`                  //时间戳
+	}
+
+	PropertyLatestData struct {
+		TenantCode  dataType.TenantCode     `gorm:"column:tenant_code;index;type:VARCHAR(50);NOT NULL"`                        // 租户编码
+		ProjectID   dataType.ProjectID      `gorm:"column:project_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"` // 项目ID(雪花ID)
+		AreaID      dataType.AreaID         `gorm:"column:area_id;index:project_id_area_id;type:bigint;default:0;NOT NULL"`    // 项目区域ID(雪花ID)
+		AreaIDPath  dataType.AreaIDPath     `gorm:"column:area_id_path;type:varchar(100);default:'';NOT NULL"`                 // 项目区域ID路径(雪花ID)
+		BelongGroup map[string]def.IDsInfo  `gorm:"column:belong_group;type:json;serializer:json;default:'{}'"`
+		DeviceName  string                  `gorm:"column:device_name;type:varchar(50);NOT NULL" json:"deviceName"`
+		Values      []PropertyLatestAggData `gorm:"-"`
+	}
+	PropertyLatestAggData struct {
+		Identifier string         `gorm:"column:identifier;type:varchar(50);NOT NULL" json:"identifier"` //标识符
+		Values     map[string]any `gorm:"-"`                                                             //key是聚合函数
 	}
 
 	// EventData 事件数据
@@ -101,17 +115,21 @@ type (
 
 	}
 
-	FilterAggOpt struct {
+	FilterLogAggOpt struct {
 		Filter
 		TimeStart int64         `json:"timeStart"`
 		TimeEnd   int64         `json:"timeEnd"`
 		Aggs      []PropertyAgg `json:"aggs,optional"`
 	}
+	FilterLatestAggOpt struct {
+		Filter
+		Aggs []PropertyAgg `json:"aggs,optional"`
+	}
 	PropertyAgg struct {
 		DataID    string
 		ArgFuncs  []string //聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考:https://docs.taosdata.com/taos-sql/function
 		Fill      string   //指定窗口区间数据缺失的情况下的填充模式
-		NoFirstTs bool     `json:"noFirstTs,optional"` //时间戳填充不填充最早的值,聚合模式使用
+		NoFirstTs bool     `json:"noFirstTs,optional"` //历史聚合专属,时间戳填充不填充最早的值,聚合模式使用
 	}
 	PropertyAgg2 struct {
 		DataID    string
@@ -147,11 +165,13 @@ type (
 		// GetEventDataWithID 根据事件id获取事件信息
 		GetEventDataByFilter(ctx context.Context, filter FilterOpt) ([]*EventData, error)
 		GetEventCountByFilter(ctx context.Context, filter FilterOpt) (int64, error)
-		GetPropertyAgg(ctx context.Context, m *schema.Model, filter FilterAggOpt) ([]*PropertyData2, error)
+		GetPropertyLogAgg(ctx context.Context, m *schema.Model, filter FilterLogAggOpt) ([]*PropertyLogData2, error)
+		GetPropertyLatestAgg(ctx context.Context, m *schema.Model, filter FilterLatestAggOpt) ([]*PropertyLatestData, error)
+
 		// GetPropertyDataByID 根据属性id获取属性信息
-		GetPropertyDataByID(ctx context.Context, p *schema.Property, filter FilterOpt) ([]*PropertyData, error)
-		GetLatestPropertyDataByID(ctx context.Context, p *schema.Property, filter LatestFilter) (*PropertyData, error)
-		GetLatestAllPropertyData(ctx context.Context, productID, deviceName string) ([]*PropertyData, error)
+		GetPropertyDataByID(ctx context.Context, p *schema.Property, filter FilterOpt) ([]*PropertyLogData, error)
+		GetLatestPropertyDataByID(ctx context.Context, p *schema.Property, filter LatestFilter) (*PropertyLogData, error)
+		GetLatestAllPropertyData(ctx context.Context, productID, deviceName string) ([]*PropertyLogData, error)
 		GetPropertyCountByID(ctx context.Context, p *schema.Property, filter FilterOpt) (int64, error)
 		// InitProduct 初始化产品的物模型相关表及日志记录表
 		InitProduct(ctx context.Context, t *schema.Model, productID string) error
@@ -172,13 +192,13 @@ type (
 	}
 )
 
-func (p *PropertyData) String() string {
+func (p *PropertyLogData) String() string {
 
 	v, _ := jsonx.Marshal(p)
 	return string(v)
 }
 
-func (p *PropertyData) Fmt() *PropertyData {
+func (p *PropertyLogData) Fmt() *PropertyLogData {
 	switch param := p.Param.(type) {
 	case map[string]Param:
 		var pp = map[string]any{}

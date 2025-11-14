@@ -454,7 +454,7 @@ func dmSymbolInit(svcCtx *svc.ServiceContext) map[string]reflect.Value {
 		"PropertyLogIndexReq":               reflect.ValueOf((*dm.PropertyLogIndexReq)(nil)),
 		"PropertyLogIndexResp":              reflect.ValueOf((*dm.PropertyLogIndexResp)(nil)),
 		"PropertyLogInfo":                   reflect.ValueOf((*dm.PropertyLogInfo)(nil)),
-		"PropertyLogLatestIndexReq":         reflect.ValueOf((*dm.PropertyLogLatestIndexReq)(nil)),
+		"PropertyLatestIndexReq":            reflect.ValueOf((*dm.PropertyLatestIndexReq)(nil)),
 		"ProtocolConfigField":               reflect.ValueOf((*dm.ProtocolConfigField)(nil)),
 		"ProtocolConfigInfo":                reflect.ValueOf((*dm.ProtocolConfigInfo)(nil)),
 		"ProtocolInfo":                      reflect.ValueOf((*dm.ProtocolInfo)(nil)),

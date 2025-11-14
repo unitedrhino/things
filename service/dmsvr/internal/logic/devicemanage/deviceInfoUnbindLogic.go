@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"time"
+
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
@@ -18,7 +20,6 @@ import (
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/topics"
 	"gorm.io/gorm"
-	"time"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -75,7 +76,7 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceInfoUnbindReq) (*d
 				return nil, errors.Permissions
 			}
 			var secert string
-			ret, err := devicemsglogic.NewPropertyLogLatestIndexLogic(ctxs.WithRoot(l.ctx), l.svcCtx).PropertyLogLatestIndex(&dm.PropertyLogLatestIndexReq{
+			ret, err := devicemsglogic.NewPropertyLatestIndexLogic(ctxs.WithRoot(l.ctx), l.svcCtx).PropertyLatestIndex(&dm.PropertyLatestIndexReq{
 				ProductID:  di.ProductID,
 				DeviceName: di.DeviceName,
 				DataIDs:    []string{in.SecretType},

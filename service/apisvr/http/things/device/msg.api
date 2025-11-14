@@ -32,24 +32,42 @@ service api {
     @doc "获取单个id属性历史记录"
     @handler propertyLogIndex
     post /property-log/index (DeviceMsgPropertyLogIndexReq) returns (DeviceMsgPropertyIndexResp)
-    @doc "聚合属性历史记录"
+    @doc "弃用"
     @handler propertyAggIndex
-    post /property-agg/index (DeviceMsgPropertyAggIndexReq) returns (DeviceMsgPropertyAggIndexResp)
-    @doc "聚合属性历史记录,设备维度"
+    post /property-agg/index (DeviceMsgPropertyLogAggIndexReq) returns (DeviceMsgPropertyLogAggIndexResp)
+    @doc "弃用"
     @handler propertyAggByDeviceIndex
-    post /property-agg/by-device/index (DeviceMsgPropertyAggByDeviceIndexReq) returns (DeviceMsgPropertyAggIndexResp)
+    post /property-agg/by-device/index (DeviceMsgPropertyAggByDeviceIndexReq) returns (DeviceMsgPropertyLogAggIndexResp)
+
+    @doc "聚合属性历史记录"
+    @handler propertyLogAggIndex
+    post /property-log-agg/index (DeviceMsgPropertyLogAggIndexReq) returns (DeviceMsgPropertyLogAggIndexResp)
+    @doc "聚合属性历史记录,设备维度"
+    @handler propertyLogAggByDeviceIndex
+    post /property-log-agg/by-device/index (DeviceMsgPropertyAggByDeviceIndexReq) returns (DeviceMsgPropertyLogAggIndexResp)
+
+    @doc "聚合属性最新值"
+    @handler propertyLatestAggIndex
+    post /property-latest-agg/index (DeviceMsgPropertyLatestAggIndexReq) returns (DeviceMsgPropertyLatestAggIndexResp)
+
+
     @doc "批量获取单个id属性历史记录"
     @handler propertyLogMultiIndex
     post /property-log/multi-index (DeviceMsgPropertyLogMultiIndexReq) returns (DeviceMsgPropertyMultiIndexResp)
+    @doc "弃用"
+    @handler propertyLogLatestIndex
+    post /property-log-latest/index (DeviceMsgPropertyLatestIndexReq) returns (DeviceMsgPropertyIndexResp)
+
     @doc "获取最新属性记录"
     @handler propertyLatestIndex
-    post /property-log-latest/index (DeviceMsgPropertyLogLatestIndexReq) returns (DeviceMsgPropertyIndexResp)
+    post /property-latest/index (DeviceMsgPropertyLatestIndexReq) returns (DeviceMsgPropertyIndexResp)
+
     @doc "获取事件历史记录"
     @handler eventLogIndex
     post /event-log/index (DeviceMsgEventLogIndexReq) returns (DeviceMsgEventLogIndexResp)
     @doc "获取设备影子列表"
     @handler shadowIndex
-    post /shadow/index (DeviceMsgPropertyLogLatestIndexReq) returns (DeviceMsgShadowIndexResp)
+    post /shadow/index (DeviceMsgPropertyLatestIndexReq) returns (DeviceMsgShadowIndexResp)
 
     @doc "获取网关可以绑定的子设备列表"
     @handler gatewayCanBindIndex
@@ -213,7 +231,46 @@ type (
     }
 )
 type (
-    DeviceMsgPropertyAggIndexReq{
+
+    DeviceMsgPropertyLatestAggIndexReq{
+        TenantCode string  `json:"tenantCode,optional,omitempty"`//只有管理员有权限
+        ProjectID  int64     `json:"projectID,string,optional,omitempty"`    //只有管理员有权限
+        AreaID     int64     `json:"areaID,string,optional,omitempty"`          //只有管理员有权限
+        AreaIDPath string    `json:"areaIDPath,optional,omitempty"`   //只有管理员有权限
+        AreaIDs    []int64   `json:"areaIDs,string,optional,omitempty"` //只有管理员有权限
+        BelongGroup map[string]IDsInfo `json:"belongGroup,optional,omitempty"`//key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回
+        DeviceName string `json:"deviceName,optional,omitempty"`                       //设备名(不填获取产品下所有设备)
+        DeviceNames []string `json:"deviceNames,optional,omitempty"`                       //设备名(不填获取产品下所有设备,只有管理员有权限)
+        ProductID string `json:"productID,omitempty,optional"`                         //产品id 获取产品id下的所有设备信息
+        ProductCategoryID int64  `json:"productCategoryID,optional"`//产品品类id,通用物模型有效
+        PartitionBy string `json:"partitionBy,optional"`//切分数据,可以填写deviceName
+        Aggs []*DeviceMsgPropertyAgg `json:"aggs"` //聚合对象
+    }
+    DeviceMsgPropertyAggCore{
+        DataID string `json:"dataID,omitempty"`                      //获取的具体标识符的数据
+        ArgFuncs []string `json:"argFuncs"`           //聚合函数 avg:平均值 first:第一个参数 last:最后一个参数 count:总数 twa: 时间加权平均函数 参考: https://docs.taosdata.com/reference/taos-sql/function/#apercentile
+    }
+    DeviceMsgPropertyLatestAggIndexResp{
+        List []*DeviceMsgPropertyLatestAggResp `json:"list"`
+    }
+    DeviceMsgPropertyLatestAggResp{
+        ProductID string  `json:"productID,omitempty"`
+        DeviceName string `json:"deviceName,omitempty"` //设备名称
+        TenantCode string  `json:"tenantCode,optional,omitempty"`//只有partitionBy 传该参数的时候才会返回
+        ProjectID  int64     `json:"projectID,string,optional,omitempty"`    //只有partitionBy 传该参数的时候才会返回
+        AreaID     int64     `json:"areaID,string,optional,omitempty"`          //只有partitionBy 传该参数的时候才会返回
+        AreaIDPath string    `json:"areaIDPath,optional,omitempty"`   //只有partitionBy 传该参数的时候才会返回
+        AreaIDs    []int64   `json:"areaIDs,string,optional,omitempty"` //只有partitionBy 传该参数的时候才会返回
+        BelongGroup map[string]IDsInfo `json:"belongGroup,optional,omitempty"`//key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回
+        Values []*DeviceMsgPropertyLatestAggRespDetail `json:"values"`
+    }
+    DeviceMsgPropertyLatestAggRespDetail{
+        DataID string `json:"dataID"`                           //属性ID
+        DataName string `json:"dataName"`                           //属性名称
+        values map[string]string `json:"values"` //key是聚合函数
+    }
+
+    DeviceMsgPropertyLogAggIndexReq{
         TenantCode string  `json:"tenantCode,optional,omitempty"`//只有管理员有权限
         ProjectID  int64     `json:"projectID,string,optional,omitempty"`    //只有管理员有权限
         AreaID     int64     `json:"areaID,string,optional,omitempty"`          //只有管理员有权限
@@ -252,10 +309,10 @@ type (
         Fill string `json:"fill,optional"`          //指定窗口区间数据缺失的情况下的填充模式 参考: https://docs.taosdata.com/reference/taos-sql/distinguished/#fill-%E5%AD%90%E5%8F%A5
         NoFirstTs bool `json:"noFirstTs,optional"` //时间戳填充不填充最早的值,聚合模式使用
     }
-    DeviceMsgPropertyAggIndexResp{
-        List []*DeviceMsgPropertyAggResp `json:"list"`
+    DeviceMsgPropertyLogAggIndexResp{
+        List []*DeviceMsgPropertyLogAggResp `json:"list"`
     }
-    DeviceMsgPropertyAggResp{
+    DeviceMsgPropertyLogAggResp{
         ProductID string  `json:"productID,omitempty"`
         DeviceName string `json:"deviceName,omitempty"` //设备名称
         TenantCode string  `json:"tenantCode,optional,omitempty"`//只有partitionBy 传该参数的时候才会返回
@@ -264,15 +321,15 @@ type (
         AreaIDPath string    `json:"areaIDPath,optional,omitempty"`   //只有partitionBy 传该参数的时候才会返回
         AreaIDs    []int64   `json:"areaIDs,string,optional,omitempty"` //只有partitionBy 传该参数的时候才会返回
         BelongGroup map[string]IDsInfo `json:"belongGroup,optional,omitempty"`//key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回
-        Values []*DeviceMsgPropertyAggRespDetail `json:"values"`
+        Values []*DeviceMsgPropertyLogAggRespDetail `json:"values"`
     }
-    DeviceMsgPropertyAggRespDetail{
+    DeviceMsgPropertyLogAggRespDetail{
         DataID string `json:"dataID"`                           //属性ID
         DataName string `json:"dataName"`                           //属性名称
         TimeWindow int64 `json:"timeWindow,string"`               //发生时间窗口
-        values map[string]*DeviceMsgPropertyAggRespDataDetail `json:"values"` //key是聚合函数
+        values map[string]*DeviceMsgPropertyLogAggRespDataDetail `json:"values"` //key是聚合函数
     }
-    DeviceMsgPropertyAggRespDataDetail{
+    DeviceMsgPropertyLogAggRespDataDetail{
         Timestamp int64 `json:"timestamp,omitempty,string"`               //发生时间戳
         Value string `json:"value,omitempty"`             //获取到的值
     }
@@ -300,7 +357,7 @@ type (
         NoFirstTs bool `json:"noFirstTs,optional"` //时间戳填充不填充最早的值,聚合模式使用
     }
 
-    DeviceMsgPropertyLogLatestIndexReq  {
+    DeviceMsgPropertyLatestIndexReq  {
         DeviceName string `json:"deviceName,omitempty"`                       //设备名
         ProductID string `json:"productID,omitempty"`                         //产品id 获取产品id下的所有设备信息
         DataIDs []string `json:"dataIDs,optional,omitempty"`                      //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值

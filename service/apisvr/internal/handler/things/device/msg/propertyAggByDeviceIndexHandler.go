@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-// 聚合属性历史记录,设备维度
+// 弃用
 func PropertyAggByDeviceIndexHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.DeviceMsgPropertyAggByDeviceIndexReq

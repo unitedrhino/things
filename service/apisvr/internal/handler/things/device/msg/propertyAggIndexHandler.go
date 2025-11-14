@@ -10,10 +10,10 @@ import (
 	"net/http"
 )
 
-// 聚合属性历史记录
+// 弃用
 func PropertyAggIndexHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.DeviceMsgPropertyAggIndexReq
+		var req types.DeviceMsgPropertyLogAggIndexReq
 		if err := httpx.Parse(r, &req); err != nil {
 			result.Http(w, r, nil, errors.Parameter.WithMsg("入参不正确:"+err.Error()))
 			return
