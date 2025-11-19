@@ -945,6 +945,7 @@ message PropertyAggByDevice{
   string fill = 4; //填充模式 参考:https://docs.taosdata.com/reference/taos-sql/distinguished/#fill-%E5%AD%90%E5%8F%A5
   bool noFirstTs =5;//时间戳填充不填充最早的值,聚合模式使用
 }
+
 message PropertyAggIndexReq{
   string tenantCode = 21;//租户号,只有管理员有权限
   int64 projectID =20;//只有管理员有权限
@@ -1016,6 +1017,7 @@ message PropertyLatestAggIndexReq{
   string partitionBy =13;//切分数据,可以填写deviceName
   repeated PropertyAggCore aggs =10;// 聚合参数
 }
+
 message PropertyLatestAggIndexResp{
   repeated PropertyLatestAggResp list = 2;
 }

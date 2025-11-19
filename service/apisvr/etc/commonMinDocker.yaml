@@ -25,7 +25,9 @@ Database:
 TSDB:
   DBType: pgsql
   DSN: postgres://postgres:password@postgres:5432/postgres
-
+DevServer:
+  Enabled: true
+  Port: 7065
 AuthWhite:
   Users:
     - UserName: dgsvr

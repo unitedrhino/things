@@ -6,7 +6,7 @@ ENV GOPRIVATE=*.gitee.com,gitee.com/*
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
 RUN apk add  git
 RUN go mod download
-RUN cd ./service/apisvr  && go build -tags no_k8s -ldflags="-s -w" -o thingsvr .
+RUN cd ./service/apisvr  && go build -tags no_k8s -o thingsvr .
 
 FROM docker.unitedrhino.com/unitedrhino/alpine:3.20
 LABEL homepage="https://gitee.com/unitedrhino"

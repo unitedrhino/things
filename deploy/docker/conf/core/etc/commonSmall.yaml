@@ -36,7 +36,9 @@ TimedSchedulerRpc:
   RunProxy: true
   Conf:
     Timeout: 1000000
-
+DevServer:
+  Enabled: true
+  Port: 7061
 OssConf:
   OssType: local # 如果不需要minio,可以填写local,默认存储路径为 ../oss
   PublicBucketName: ithings-public

@@ -2,6 +2,9 @@ Host: 0.0.0.0
 CpuThreshold: 0
 Timeout: 1000000
 MaxBytes: 1000000000
+DevServer:
+  Enabled: true
+  Port: 7065
 Etcd:
   Hosts:
     - etcd:2379

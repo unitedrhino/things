@@ -22,6 +22,7 @@ services:
     restart: always
     ports:
       - "7788:7788"
+      - "7065:7065"
       - "17788:17788"
       - "9081:9081" # dmsvr rpc端口
     volumes:
@@ -64,6 +65,7 @@ services:
     ports:
       - "7777:7777"
       - "17777:17777"
+      - "7061:7061"
       - "9180:9180" # sys rpc 端口
       - "3256:3256" # timedJob 端口
     depends_on:
