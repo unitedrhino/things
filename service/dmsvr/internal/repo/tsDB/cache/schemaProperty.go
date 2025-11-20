@@ -169,6 +169,10 @@ func (p *PropertyCacheManager) GetPropertyAllLastRecord(ctx context.Context, pro
 			logx.WithContext(ctx).Errorf("解析属性记录失败: %v", err)
 			continue
 		}
+		u := data.TimeStamp.Unix()
+		if u < 100 {
+			continue
+		}
 		result = append(result, &data)
 	}
 
