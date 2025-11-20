@@ -17,7 +17,7 @@ func (h *HubLogRepo) fillFilter(ctx context.Context, db *stores.DB, filter devic
 		db = db.Where("device_name=?", filter.DeviceName)
 	}
 	if len(filter.Content) != 0 {
-		db = db.Where("content=?", filter.Content)
+		db = db.Where("content like ?", "%"+filter.Content+"%")
 	}
 	if len(filter.RequestID) != 0 {
 		db = db.Where("request_id=?", filter.RequestID)

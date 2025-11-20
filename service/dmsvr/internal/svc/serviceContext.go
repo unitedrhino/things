@@ -17,6 +17,7 @@ import (
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"gitee.com/unitedrhino/core/service/syssvr/sysExport"
 	"gitee.com/unitedrhino/core/service/timed/timedjobsvr/client/timedmanage"
+	ws "gitee.com/unitedrhino/core/share/websocket"
 	"gitee.com/unitedrhino/share/caches"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
@@ -24,7 +25,6 @@ import (
 	"gitee.com/unitedrhino/share/oss"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
-	ws "gitee.com/unitedrhino/share/websocket"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/config"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceBind"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceGroup"
@@ -228,8 +228,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	statusR := statusLogRepo.NewStatusLogRepo(c.TSDB, gd)
 	sendR := sendLogRepo.NewSendLogRepo(c.TSDB, gd)
 	script := protocol.NewScriptTrans()
-	us:=ws.NewUserSubscribe(ca, serverMsg)
-	pd, err := pubDev.NewPubDev(serverMsg, script,us)
+	us := ws.NewUserSubscribe(ca, serverMsg)
+	pd, err := pubDev.NewPubDev(serverMsg, script, us)
 	if err != nil {
 		logx.Error("NewPubDev err", err)
 		os.Exit(-1)
@@ -256,7 +256,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		DeptM:             DeptM,
 		Common:            Common,
 		DataM:             dataM,
-		UserSubscribe:    us,
+		UserSubscribe:     us,
 		ProductSchemaRepo: getProductSchemaModel,
 		DeviceSchemaRepo:  getDeviceSchemaModel,
 		SchemaManaRepo:    deviceDataR,

@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
@@ -19,7 +20,7 @@ func (h *HubLogRepo) fillFilter(sql sq.SelectBuilder, filter deviceLog.HubFilter
 		sql = sql.Where("`device_name`=?", filter.DeviceName)
 	}
 	if len(filter.Content) != 0 {
-		sql = sql.Where("`content`=?", filter.Content)
+		sql = sql.Where("`content` like (?)", "%"+filter.Content+"%")
 	}
 	if len(filter.RequestID) != 0 {
 		sql = sql.Where("`request_id`=?", filter.RequestID)
