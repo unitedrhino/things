@@ -1,12 +1,13 @@
 package msgThing
 
 import (
+	"time"
+
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"gitee.com/unitedrhino/things/share/domain/schema"
-	"time"
 )
 
 type (
@@ -52,6 +53,7 @@ type (
 	SubDevice struct {
 		ProductID  string                  `json:"productID"`  //产品id
 		DeviceName string                  `json:"deviceName"` //设备名称
+		IsOnline   int64                   `json:"isOnline"`   //0:忽略 1:在线 2:离线
 		Properties []*deviceMsg.TimeParams `json:"properties"`
 		Events     []*deviceMsg.TimeParams `json:"events"`
 	}
@@ -66,7 +68,10 @@ func (d Req) AddStatus(err error) Req {
 
 func (d *Req) GetTimeStamp(defaultTime int64) time.Time {
 	if d.Timestamp == 0 {
-		return time.UnixMilli(defaultTime)
+		if defaultTime != 0 {
+			return time.UnixMilli(defaultTime)
+		}
+		return time.Now()
 	}
 	return time.UnixMilli(d.Timestamp)
 }

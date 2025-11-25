@@ -218,9 +218,9 @@ func (m *DmProductID) TableName() string {
 }
 
 type DmProductConfig struct {
-	ID        int64                                      `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	ProductID string                                     `gorm:"column:product_id;type:varchar(100);uniqueIndex:idx_dm_product_config_pd;NOT NULL"` // 产品id
-	DevInit   `gorm:"embedded;embeddedPrefix:dev_init_"` //设备初始化配置
+	ID        int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	ProductID string `gorm:"column:product_id;type:varchar(100);uniqueIndex:idx_dm_product_config_pd;NOT NULL"` // 产品id
+	DevInit   `gorm:"embedded;embeddedPrefix:dev_init_"`                                                        //设备初始化配置
 	stores.NoDelTime
 	Info        *DmProductInfo     `gorm:"foreignKey:product_id;references:product_id"`
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:idx_dm_product_config_pd"`
@@ -331,15 +331,15 @@ func (m *DmProtocolScript) TableName() string {
 
 // 协议插件
 type DmProtocolScriptDevice struct {
-	TenantCode dataType.TenantCode `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'default'"` // 租户编码
-	ID         int64               `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	TriggerSrc protocol.TriggerSrc `gorm:"column:trigger_src;"`                             //product:1 device:2
-	ProductID  string              `gorm:"column:product_id;type:varchar(100);not null"`    // 产品id
-	DeviceName string              `gorm:"column:device_name;type:varchar(100);default:''"` //设备
-	ScriptID   int64               `gorm:"column:script_id;type:bigint"`
-	Priority   int64               `gorm:"column:priority;default:1"` //执行优先级
-	Status     def.Bool            `gorm:"column:status;default:1"`   //状态:是否启用
-	Script     *DmProtocolScript   `gorm:"foreignKey:ID;references:ScriptID"`
+	TenantCode dataType.TenantCodeWithCommonR `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'default'"` // 租户编码
+	ID         int64                          `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
+	TriggerSrc protocol.TriggerSrc            `gorm:"column:trigger_src;"`                             //product:1 device:2
+	ProductID  string                         `gorm:"column:product_id;type:varchar(100);not null"`    // 产品id
+	DeviceName string                         `gorm:"column:device_name;type:varchar(100);default:''"` //设备
+	ScriptID   int64                          `gorm:"column:script_id;type:bigint"`
+	Priority   int64                          `gorm:"column:priority;default:1"` //执行优先级
+	Status     def.Bool                       `gorm:"column:status;default:1"`   //状态:是否启用
+	Script     *DmProtocolScript              `gorm:"foreignKey:ID;references:ScriptID"`
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0"`
 }

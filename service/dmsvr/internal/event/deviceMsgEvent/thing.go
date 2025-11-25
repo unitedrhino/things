@@ -102,6 +102,13 @@ func (l *ThingLogic) DeviceResp(msg *deviceMsg.PublishMsg, err error, data any) 
 	}
 }
 
+var (
+	OnlineMap = map[int64]string{
+		def.True:  devices.ActionConnected,
+		def.False: devices.ActionDisconnected,
+	}
+)
+
 // 设备属性上报
 func (l *ThingLogic) HandlePackReport(msg *deviceMsg.PublishMsg, req msgThing.Req) (respMsg *deviceMsg.PublishMsg, err error) {
 	err = l.InsertPackReport(msg, l.schema, devices.Core{
@@ -136,7 +143,20 @@ func (l *ThingLogic) HandlePackReport(msg *deviceMsg.PublishMsg, req msgThing.Re
 				l.Errorf("存在未绑定的设备:%v", d)
 				continue
 			}
-			l.OnlineFix(msg, di, l.di)
+			if dev.IsOnline == 0 {
+				l.OnlineFix(msg, di, l.di)
+			}
+			if dev.IsOnline <= def.False && dev.IsOnline != di.IsOnline {
+				err = devicemanagelogic.HandleOnlineFix(l.ctx, l.svcCtx, &deviceStatus.ConnectMsg{
+					Device:    d,
+					Timestamp: l.dreq.GetTimeStamp(msg.Timestamp),
+					Action:    OnlineMap[dev.IsOnline],
+					Reason:    "gateway report",
+				})
+				if err != nil {
+					l.Error(err)
+				}
+			}
 			ds, err := l.svcCtx.DeviceSchemaRepo.GetData(l.ctx, devices.Core{ProductID: dev.ProductID, DeviceName: dev.DeviceName})
 			if err != nil {
 				return l.DeviceResp(msg, err, nil), err
