@@ -197,6 +197,7 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Empt
 			schemas = append(schemas, &relationDB.DmProductSchema{
 				TenantCode:   pi.TenantCode,
 				ProductID:    pi.ProductID,
+				Identifier:   pcs.Identifier,
 				DmSchemaCore: pcs.DmSchemaCore,
 			})
 		}

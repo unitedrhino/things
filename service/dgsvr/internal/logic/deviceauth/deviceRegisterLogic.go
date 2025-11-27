@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
@@ -24,7 +25,7 @@ type DeviceRegisterLogic struct {
 }
 
 type DeviceRegisterPayload struct {
-	EncryptionType int    `json:"encryptionType"` //加密类型，1表示证书认证，2表示签名认证
+	EncryptionType int    `json:"encryptionType"` //加密类型，1表示证书认证，2表示签名认证aes-128-cbc
 	Psk            string `json:"psk"`            //设备密钥，当产品认证类型为签名认证时有此参数。
 	ClientCert     string `json:"clientCert"`     //设备证书文件字符串格式，当产品认证类型为证书认证时有此参数
 	ClientKey      string `json:"clientKey"`      //设备私钥文件字符串格式，当产品认证类型为证书认证时有此参数

@@ -172,6 +172,7 @@ func (p ProductInfoRepo) Insert(ctx context.Context, data *DmProductInfo) error 
 				schemas = append(schemas, &DmProductSchema{ //公共物模型只有公共的
 					TenantCode:   data.TenantCode,
 					ProductID:    data.ProductID,
+					Identifier:   v.Identifier,
 					DmSchemaCore: v.DmSchemaCore,
 				})
 			}

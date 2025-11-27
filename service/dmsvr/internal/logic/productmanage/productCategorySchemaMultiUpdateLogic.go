@@ -127,6 +127,7 @@ func (l *ProductCategorySchemaMultiUpdateLogic) ProductCategorySchemaMultiUpdate
 					schemas = append(schemas, &relationDB.DmProductSchema{
 						TenantCode:   productMap[v].TenantCode,
 						ProductID:    v,
+						Identifier:   identifier.Identifier,
 						DmSchemaCore: identifier.DmSchemaCore,
 					})
 				}
