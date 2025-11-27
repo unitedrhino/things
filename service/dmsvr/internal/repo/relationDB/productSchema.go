@@ -120,8 +120,12 @@ func (p ProductSchemaRepo) Update(ctx context.Context, data *DmSchemaInfo) error
 }
 
 func (p ProductSchemaRepo) UpdateTag(ctx context.Context, productIDs []string, identifiers []string, oldTag, newTag int64) error {
-	err := p.db.WithContext(ctx).Model(&DmSchemaInfo{}).Where(
-		"product_id in ? and identifier in ? and tag =?", productIDs, identifiers, oldTag).Update("tag", newTag).Error
+	db := p.db.WithContext(ctx).Model(&DmSchemaInfo{}).Where(
+		"product_id in ?  and tag =?", productIDs, oldTag)
+	if len(identifiers) > 0 {
+		db.Where(" identifier in ? ", identifiers)
+	}
+	err := db.Update("tag", newTag).Error
 	return stores.ErrFmt(err)
 }
 

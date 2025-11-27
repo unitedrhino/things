@@ -39,6 +39,7 @@ func (l *ProductCategorySchemaMultiCreateLogic) ProductCategorySchemaMultiCreate
 	pcDB := relationDB.NewProductCategoryRepo(l.ctx)
 	var productIDs []string
 	var products []*relationDB.DmProductInfo
+	var productMap = make(map[string]*relationDB.DmProductInfo)
 	{
 		var productCategoryIDs = []int64{in.ProductCategoryID}
 		var idPath string
@@ -65,6 +66,9 @@ func (l *ProductCategorySchemaMultiCreateLogic) ProductCategorySchemaMultiCreate
 		productIDs = utils.ToSliceWithFunc(products, func(in *relationDB.DmProductInfo) string {
 			return in.ProductID
 		})
+		for _, product := range products {
+			productMap[product.ProductID] = product
+		}
 	}
 	csDB := relationDB.NewCommonSchemaRepo(l.ctx)
 	cs, err := csDB.FindByFilter(l.ctx, relationDB.CommonSchemaFilter{Identifiers: in.Identifiers}, nil)
@@ -111,7 +115,7 @@ func (l *ProductCategorySchemaMultiCreateLogic) ProductCategorySchemaMultiCreate
 	for _, v := range productIDs {
 		for _, id := range newIdentifiers {
 			po := relationDB.DmProductSchema{
-				TenantCode:   def.TenantCodeCommon,
+				TenantCode:   productMap[v].TenantCode,
 				ProductID:    v,
 				Identifier:   id,
 				DmSchemaCore: commonSchemaMap[id].DmSchemaCore,

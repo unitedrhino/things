@@ -12,14 +12,17 @@ import (
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/oss"
 	"gitee.com/unitedrhino/share/oss/common"
+	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/systems"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/share/domain/schema"
 	"gitee.com/unitedrhino/things/share/topics"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
+	"gorm.io/gorm"
 )
 
 type ProductInfoUpdateLogic struct {
@@ -95,7 +98,7 @@ func NewProductInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 //
 //}
 
-func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *dm.ProductInfo) error {
+func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *dm.ProductInfo) (funcs []func(tx *stores.DB) error, err error) {
 	if data.Tags != nil {
 		old.Tags = data.Tags
 	}
@@ -146,7 +149,7 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 		nwePath := oss.GenFilePath(l.ctx, l.svcCtx.Config.Name, oss.BusinessProductManage, oss.SceneProductImg, fmt.Sprintf("%s/%s", data.ProductID, oss.GetFileNameWithPath(data.ProductImg)))
 		path, err := l.svcCtx.OssClient.PublicBucket().CopyFromTempBucket(data.ProductImg, nwePath)
 		if err != nil {
-			return errors.System.AddDetail(err)
+			return nil, errors.System.AddDetail(err)
 		}
 
 		old.ProductImg = path
@@ -164,11 +167,11 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 			defer os.RemoveAll(fileName)
 			err := l.svcCtx.OssClient.TemporaryBucket().GetObjectLocal(l.ctx, v.Path, localFilePath)
 			if err != nil {
-				return errors.System.AddMsg("拉取文件出错").AddDetail(err)
+				return nil, errors.System.AddMsg("拉取文件出错").AddDetail(err)
 			}
 			archive, err := zip.OpenReader(localFilePath)
 			if err != nil {
-				return errors.System.AddDetail(err)
+				return nil, errors.System.AddDetail(err)
 			}
 			defer archive.Close()
 			var version int64 = 1
@@ -189,12 +192,12 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 				r, err := f.Open()
 				if err != nil {
 					l.Error(err)
-					return errors.System.AddDetail(err)
+					return nil, errors.System.AddDetail(err)
 				}
 				_, err = l.svcCtx.OssClient.PublicBucket().Upload(l.ctx, uPath, r, common.OptionKv{})
 				if err != nil {
 					l.Error(err)
-					return errors.System.AddDetail(err)
+					return nil, errors.System.AddDetail(err)
 				}
 			}
 			v.Path = fmt.Sprintf("%s/index.html", uploadPath)
@@ -213,7 +216,48 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 	if data.SubProtocolConf != nil {
 		old.SubProtocolConf = data.SubProtocolConf
 	}
-	if data.CategoryID != 0 {
+	if data.CategoryID != 0 && data.CategoryID != old.CategoryID {
+		var schemas []*relationDB.DmProductSchema
+		if data.CategoryID != def.NotClassified {
+			var categoryIDs = []int64{def.RootNode}
+			if data.CategoryID != def.RootNode {
+				pcs, err := relationDB.NewProductCategoryRepo(l.ctx).FindOne(l.ctx, data.CategoryID)
+				if err != nil {
+					return nil, err
+				}
+				if pcs.IDPath != "" {
+					categoryIDs = append(categoryIDs, utils.GetIDPath(pcs.IDPath)...)
+				}
+			}
+			pcss, err := relationDB.NewCommonSchemaRepo(l.ctx).FindByFilter(l.ctx, relationDB.CommonSchemaFilter{
+				ProductCategoryIDs: categoryIDs,
+			}, nil)
+			if err != nil {
+				return nil, err
+			}
+			for _, pcs := range pcss {
+				pcs.Tag = schema.TagRequired
+				schemas = append(schemas, &relationDB.DmProductSchema{
+					TenantCode:   old.TenantCode,
+					ProductID:    old.ProductID,
+					Identifier:   pcs.Identifier,
+					DmSchemaCore: pcs.DmSchemaCore,
+				})
+			}
+		}
+		funcs = append(funcs, func(tx *stores.DB) error {
+			err = relationDB.NewProductSchemaRepo(tx).UpdateTag(l.ctx, []string{data.ProductID}, nil, schema.TagRequired, schema.TagOptional)
+			if err != nil {
+				return err
+			}
+			if len(schemas) > 0 {
+				err = relationDB.NewProductSchemaRepo(tx).MultiInsert(l.ctx, schemas)
+				if err != nil {
+					return err
+				}
+			}
+			return nil
+		})
 		old.CategoryID = data.CategoryID
 	}
 	if data.NetType != 0 {
@@ -231,7 +275,7 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 	if data.DeviceSchemaMode != 0 {
 		old.DeviceSchemaMode = data.DeviceSchemaMode
 	}
-	return nil
+	return
 }
 
 // 更新设备
@@ -246,12 +290,23 @@ func (l *ProductInfoUpdateLogic) ProductInfoUpdate(in *dm.ProductInfo) (*dm.Empt
 		}
 		return nil, err
 	}
-
-	err = l.setPoByPb(po, in)
+	txFuncs, err := l.setPoByPb(po, in)
 	if err != nil {
 		return nil, err
 	}
-	err = l.PiDB.Update(l.ctx, po)
+	if len(txFuncs) == 0 {
+		err = l.PiDB.Update(l.ctx, po)
+	} else {
+		stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
+			for _, txFunc := range txFuncs {
+				err := txFunc(tx)
+				if err != nil {
+					return err
+				}
+			}
+			return relationDB.NewProductInfoRepo(tx).Update(l.ctx, po)
+		})
+	}
 	if err != nil {
 		l.Errorf("%s.Update err=%+v", utils.FuncName(), err)
 		if errors.Cmp(err, errors.Duplicate) {
