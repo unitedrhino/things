@@ -2,6 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
@@ -54,12 +55,11 @@ func (l *ProductSchemaDeleteLogic) ProductSchemaDelete(in *dm.ProductSchemaDelet
 			return nil, err
 		}
 		p, ok := t.Property[in.Identifier]
-		if !ok {
-			return nil, errors.Parameter.AddMsg("标识符未找到")
-		}
-		if err := l.svcCtx.SchemaManaRepo.DeleteProperty(l.ctx, p, in.ProductID, in.Identifier); err != nil {
-			l.Errorf("%s.DeleteProperty failure,err:%v", utils.FuncName(), err)
-			return nil, errors.Database.AddDetail(err)
+		if ok {
+			if err := l.svcCtx.SchemaManaRepo.DeleteProperty(l.ctx, p, in.ProductID, in.Identifier); err != nil {
+				l.Errorf("%s.DeleteProperty failure,err:%v", utils.FuncName(), err)
+				return nil, errors.Database.AddDetail(err)
+			}
 		}
 	}
 	err = l.PsDB.DeleteByFilter(l.ctx, relationDB.ProductSchemaFilter{ID: po.ID})

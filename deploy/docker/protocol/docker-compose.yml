@@ -108,3 +108,21 @@ services:
       driver: json-file
     networks:
       - unitedrhino_net
+  protocol-zhonghong-z7-mqtt:
+    image: docker.unitedrhino.com/protocol/zhonghong-z7-mqtt:latest
+    container_name: protocol-zhonghong-z7-mqtt
+    hostname: protocol-zhonghong-z7-mqtt
+    restart: always
+    ports:
+      - "8176:8176"
+    environment:
+      - devOpenApiApiKey=${devOpenApiApiKey} #emq的秘钥配置,参考: https://doc.unitedrhino.com/pages/24d647/#%E8%AE%BE%E5%A4%87%E5%9C%A8%E7%BA%BF%E7%8A%B6%E6%80%81%E6%A0%A1%E5%87%86-%E5%8F%AF%E9%80%89
+      - devOpenApiSecretKey=${devOpenApiSecretKey} #如上
+      - confSuffix=${confSuffix}
+    logging:
+      options:
+        max-size: "50M"
+        max-file: "10"
+      driver: json-file
+    networks:
+      - unitedrhino_net

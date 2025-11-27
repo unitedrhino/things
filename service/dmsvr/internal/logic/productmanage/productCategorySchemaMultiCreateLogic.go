@@ -74,11 +74,16 @@ func (l *ProductCategorySchemaMultiCreateLogic) ProductCategorySchemaMultiCreate
 	if len(cs) != len(in.Identifiers) {
 		return nil, errors.Parameter.AddMsg("有物模型不存在")
 	}
+	var commonSchemaMap = map[string]*relationDB.DmCommonSchema{}
+	for _, c := range cs {
+		commonSchemaMap[c.Identifier] = c
+	}
 	pcsDB := relationDB.NewProductCategorySchemaRepo(l.ctx)
-	olds, err := pcsDB.FindByFilter(l.ctx, relationDB.ProductCategorySchemaFilter{ProductCategoryID: in.ProductCategoryID}, nil)
+	olds, err := pcsDB.FindByFilter(l.ctx, relationDB.ProductCategorySchemaFilter{ProductCategoryID: in.ProductCategoryID, Identifiers: in.Identifiers}, nil)
 	if err != nil {
 		return nil, err
 	}
+
 	oldIdentifiers := utils.ToSliceWithFunc(olds, func(in *relationDB.DmProductCategorySchema) string {
 		return in.Identifier
 	})
@@ -87,6 +92,8 @@ func (l *ProductCategorySchemaMultiCreateLogic) ProductCategorySchemaMultiCreate
 	for _, v := range in.Identifiers {
 		if _, ok := oldIdentifierSet[v]; !ok { //原来没有的
 			newIdentifiers = append(newIdentifiers, v)
+		} else {
+			delete(commonSchemaMap, v)
 		}
 	}
 	if len(newIdentifiers) == 0 {
@@ -99,6 +106,20 @@ func (l *ProductCategorySchemaMultiCreateLogic) ProductCategorySchemaMultiCreate
 			Identifier:        v,
 		})
 	}
+
+	var newProducts []*relationDB.DmProductSchema
+	for _, v := range productIDs {
+		for _, id := range newIdentifiers {
+			po := relationDB.DmProductSchema{
+				TenantCode:   def.TenantCodeCommon,
+				ProductID:    v,
+				Identifier:   id,
+				DmSchemaCore: commonSchemaMap[id].DmSchemaCore,
+			}
+			po.Tag = schema.TagRequired
+			newProducts = append(newProducts, &po)
+		}
+	}
 	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
 		err = relationDB.NewProductCategorySchemaRepo(l.ctx).MultiInsert(l.ctx, insertDatas)
 		if err != nil {
@@ -108,51 +129,52 @@ func (l *ProductCategorySchemaMultiCreateLogic) ProductCategorySchemaMultiCreate
 		if err != nil {
 			return err
 		}
-		return nil
+		err = relationDB.NewProductSchemaRepo(tx).MultiInsert(l.ctx, newProducts)
+		return err
 	})
-	ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
-		adds := utils.GetAddSlice(oldIdentifiers, in.Identifiers)
-		if len(adds) == 0 {
-			return
-		}
-		addSet := utils.SliceToSet(adds)
-		//物模型没有的需要增加
-		for _, identifier := range cs {
-			if _, ok := addSet[identifier.Identifier]; !ok {
-				continue //非新增的直接跳过
-			}
-			identifier.ID = 0
-			identifier.Tag = schema.TagRequired
-			err = stores.GetTenantConn(ctx).Transaction(func(tx *gorm.DB) error {
-				var findProducts = map[string]struct{}{} //数据库中有该物模型的
-				psDB := relationDB.NewProductSchemaRepo(tx)
-				//获取涉及到的产品物模型
-				ps, err := psDB.FindProductIDByFilter(ctx, relationDB.ProductSchemaFilter{ProductIDs: productIDs, Identifiers: []string{identifier.Identifier}})
-				if err != nil {
-					return err
-				}
-				findProducts = utils.SliceToSet(ps)
-				var schemas []*relationDB.DmProductSchema
-				var addProductIDs []string
-				for _, p := range products {
-					if _, ok := findProducts[p.ProductID]; ok {
-						continue
-					}
-					addProductIDs = append(addProductIDs, p.ProductID)
-					//如果没有这个物模型需要新增
-					schemas = append(schemas, &relationDB.DmProductSchema{
-						TenantCode:   p.TenantCode,
-						ProductID:    p.ProductID,
-						DmSchemaCore: identifier.DmSchemaCore,
-					})
-				}
-
-				return psDB.MultiInsert(ctx, schemas)
-			})
-			if err != nil {
-				logx.WithContext(ctx).Error(err)
-			}
-		}
-	})
+	//ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
+	//	adds := utils.GetAddSlice(oldIdentifiers, in.Identifiers)
+	//	if len(adds) == 0 {
+	//		return
+	//	}
+	//	addSet := utils.SliceToSet(adds)
+	//	//物模型没有的需要增加
+	//	for _, identifier := range cs {
+	//		if _, ok := addSet[identifier.Identifier]; !ok {
+	//			continue //非新增的直接跳过
+	//		}
+	//		identifier.ID = 0
+	//		identifier.Tag = schema.TagRequired
+	//		err = stores.GetTenantConn(ctx).Transaction(func(tx *gorm.DB) error {
+	//			var findProducts = map[string]struct{}{} //数据库中有该物模型的
+	//			psDB := relationDB.NewProductSchemaRepo(tx)
+	//			//获取涉及到的产品物模型
+	//			ps, err := psDB.FindProductIDByFilter(ctx, relationDB.ProductSchemaFilter{ProductIDs: productIDs, Identifiers: []string{identifier.Identifier}})
+	//			if err != nil {
+	//				return err
+	//			}
+	//			findProducts = utils.SliceToSet(ps)
+	//			var schemas []*relationDB.DmProductSchema
+	//			var addProductIDs []string
+	//			for _, p := range products {
+	//				if _, ok := findProducts[p.ProductID]; ok {
+	//					continue
+	//				}
+	//				addProductIDs = append(addProductIDs, p.ProductID)
+	//				//如果没有这个物模型需要新增
+	//				schemas = append(schemas, &relationDB.DmProductSchema{
+	//					TenantCode:   p.TenantCode,
+	//					ProductID:    p.ProductID,
+	//					DmSchemaCore: identifier.DmSchemaCore,
+	//				})
+	//			}
+	//
+	//			return psDB.MultiInsert(ctx, schemas)
+	//		})
+	//		if err != nil {
+	//			logx.WithContext(ctx).Error(err)
+	//		}
+	//	}
+	//})
 	return &dm.Empty{}, err
 }

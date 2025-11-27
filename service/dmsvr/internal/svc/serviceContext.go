@@ -130,7 +130,10 @@ func NewServiceContext(c config.Config) *ServiceContext {
 				return nil, err
 			}
 			schemaModel := relationDB.ToSchemaDo(key, utils.CopySlice[relationDB.DmSchemaInfo](dbSchemas))
-			schemaModel.ValidateWithFmt()
+			err = schemaModel.ValidateWithFmt()
+			if err != nil {
+				logx.WithContext(ctx).Errorf("产品物模型初始化失败,产品ID:%v err:%v", key, err.Error())
+			}
 			return schemaModel, nil
 		},
 		Fmt: func(ctx context.Context, key string, data *schema.Model) *schema.Model {
