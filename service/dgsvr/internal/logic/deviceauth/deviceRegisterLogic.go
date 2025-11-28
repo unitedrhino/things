@@ -48,7 +48,7 @@ func getSignature(secret string, dest string) string {
 	return base64.StdEncoding.EncodeToString([]byte(utils.HmacSha1(dest, []byte(secret))))
 }
 
-func getPayload(encryptionType int, psk string, productSecret string) (size int, payload string, err error) {
+func getPayload(encryptionType int, retEnc string, psk string, productSecret string) (size int, payload string, err error) {
 	var data DeviceRegisterPayload
 	data.EncryptionType = encryptionType
 	data.Psk = psk
@@ -56,11 +56,17 @@ func getPayload(encryptionType int, psk string, productSecret string) (size int,
 	if err != nil {
 		return 0, "", err
 	}
+	if retEnc == "aes128ecb" {
+		payloadStr, err := utils.AesEcbBase64(string(pay), productSecret)
+		if err != nil {
+			return 0, "", err
+		}
+		return len(pay), payloadStr, nil
+	}
 	payloadStr, err := utils.AesCbcBase64(string(pay), productSecret)
 	if err != nil {
 		return 0, "", err
 	}
-
 	return len(pay), payloadStr, nil
 }
 
@@ -100,7 +106,7 @@ func (l *DeviceRegisterLogic) DeviceRegister(in *dg.DeviceRegisterReq) (*dg.Devi
 					return nil, errors.Database.AddMsgf("设备注册失败: %s", err.Error())
 				}
 				//将应答信息封装json 并加密
-				length, payload, err := getPayload(devices.EncryptionTypeCert, resp.Secret, pi.Secret)
+				length, payload, err := getPayload(devices.EncTypeCert, in.RetEnc, resp.Secret, pi.Secret)
 				return &dg.DeviceRegisterResp{Len: int64(length), Payload: payload}, nil
 			}
 			return nil, errors.NotFind.AddMsg("设备注册失败，无效设备")
@@ -120,6 +126,6 @@ func (l *DeviceRegisterLogic) DeviceRegister(in *dg.DeviceRegisterReq) (*dg.Devi
 	}
 
 	//将应答信息封装json 并加密
-	length, payload, err := getPayload(devices.EncryptionTypeCert, di.Secret, pi.Secret)
+	length, payload, err := getPayload(devices.EncTypeCert, in.RetEnc, di.Secret, pi.Secret)
 	return &dg.DeviceRegisterResp{Len: int64(length), Payload: payload}, nil
 }

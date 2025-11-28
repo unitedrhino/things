@@ -18,6 +18,8 @@ type (
 		Nonce     int64  `json:"nonce"`     //随机数
 		Timestamp int64  `json:"timestamp"` //秒级时间戳
 		Signature string `json:"signature"` //签名信息
+		EncType   int    `json:"encType"`   //fanhui
+		RetEnc    string `json:"retEnc"`    //返回使用的加密方式: aes128cbc(默认) aes128ecb
 	}
 
 	RespData struct {

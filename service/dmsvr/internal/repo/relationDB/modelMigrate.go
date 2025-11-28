@@ -2,6 +2,7 @@ package relationDB
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/conf"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
@@ -90,7 +91,7 @@ func versionUpdate(db *gorm.DB) error {
 				if err != nil {
 					return err
 				}
-				if err := tx.CreateInBatches(&MigrateProtocolInfo, 100).Error; err != nil {
+				if err := stores.CreateInBatches(tx, &MigrateProtocolInfo, 100); err != nil {
 					return err
 				}
 				err = NewProductInfoRepo(tx).UpdateWithField(ctx, ProductFilter{ProtocolCode: "iThings"}, map[string]any{
@@ -123,10 +124,10 @@ func versionUpdate(db *gorm.DB) error {
 
 func migrateTableColumn() error {
 	db := stores.GetCommonConn(context.TODO()).Clauses(clause.OnConflict{DoNothing: true})
-	if err := db.CreateInBatches(&MigrateProtocolInfo, 100).Error; err != nil {
+	if err := stores.CreateInBatches(db, &MigrateProtocolInfo, 100); err != nil {
 		return err
 	}
-	if err := db.CreateInBatches(&MigrateProductCategory, 100).Error; err != nil {
+	if err := stores.CreateInBatches(db, &MigrateProductCategory, 100); err != nil {
 		return err
 	}
 	//if err := db.CreateInBatches(&MigrateManufacturerInfo, 100).Error; err != nil {
@@ -135,7 +136,7 @@ func migrateTableColumn() error {
 	for i := 0; i < 100; i++ {
 		NewProductIDRepo(db).GenID(ctxs.WithRoot(context.Background()))
 	}
-	if err := db.CreateInBatches([]DmGroupInfo{{DeletedTime: 666}, {DeletedTime: 777}, {DeletedTime: 888}}, 100).Error; err != nil {
+	if err := stores.CreateInBatches(db, []DmGroupInfo{{DeletedTime: 666}, {DeletedTime: 777}, {DeletedTime: 888}}, 100); err != nil {
 		logx.Error(err)
 	}
 

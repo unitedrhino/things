@@ -5,7 +5,8 @@ import "gitee.com/unitedrhino/share/def"
 const (
 	DeviceRegisterUnable   = 1
 	DeviceAutoCreateEnable = 3
-	EncryptionTypeCert     = 1
+	EncTypeCert            = 1 //证书加密
+	EncTypeKey             = 2 //秘钥加密
 )
 
 type Core struct {
