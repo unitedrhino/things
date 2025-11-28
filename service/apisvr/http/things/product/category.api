@@ -117,6 +117,7 @@ type (
         HeadImg  string `json:"headImg,optional"`        // 用户头像
         IsUpdateHeadImg  bool `json:"isUpdateHeadImg,omitempty,optional"`        // 用户头像
         IsLeaf int64 `json:"isLeaf,optional"`
+        Order     int64 `json:"order,optional"`//排序,必须大于等于1,为0代表不修改
         DeviceCount int64 `json:"deviceCount,optional"`//设备数量
         Children []*ProductCategory `json:"children,optional"`
     }

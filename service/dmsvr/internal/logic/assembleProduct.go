@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/oss/common"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/productCustom"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/protocol"
@@ -132,6 +133,7 @@ func ToProductCategoryPb(ctx context.Context, svcCtx *svc.ServiceContext, info *
 		Desc:        utils.ToRpcNullString(info.Desc),
 		IsLeaf:      info.IsLeaf,
 		DeviceCount: info.DeviceCount,
+		Order:       info.Order,
 	}
 	if children != nil {
 		var idMap = map[int64][]*dm.ProductCategory{}

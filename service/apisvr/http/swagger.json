@@ -8762,7 +8762,7 @@
         },
         "timestamp": {
           "type": "string",
-          "description": "发生时间戳"
+          "description": "发生时间戳(毫秒时间戳)"
         }
       },
       "title": "DeviceInfoWithProperty",
@@ -9552,11 +9552,11 @@
         },
         "timeStart": {
           "type": "string",
-          "description": "获取时间的开始"
+          "description": "获取时间的开始(毫秒时间戳)"
         },
         "timeEnd": {
           "type": "string",
-          "description": "时间的结束"
+          "description": "时间的结束(毫秒时间戳)"
         },
         "page": {
           "$ref": "#/definitions/PageInfo",
@@ -9607,7 +9607,7 @@
       "properties": {
         "timestamp": {
           "type": "string",
-          "description": "发生时间戳"
+          "description": "发生时间戳(毫秒时间戳)"
         },
         "type": {
           "type": "string",
@@ -9641,11 +9641,11 @@
         },
         "timeStart": {
           "type": "string",
-          "description": "获取时间的开始"
+          "description": "获取时间的开始(毫秒时间戳)"
         },
         "timeEnd": {
           "type": "string",
-          "description": "时间的结束"
+          "description": "时间的结束(毫秒时间戳)"
         },
         "page": {
           "$ref": "#/definitions/PageInfo",
@@ -9710,7 +9710,8 @@
       "type": "object",
       "properties": {
         "timestamp": {
-          "type": "string"
+          "type": "string",
+          "description": "发生时间戳(毫秒时间戳)"
         },
         "action": {
           "type": "string",
@@ -9824,11 +9825,11 @@
         },
         "timeStart": {
           "type": "string",
-          "description": "获取时间的开始"
+          "description": "获取时间的开始(毫秒时间戳)"
         },
         "timeEnd": {
           "type": "string",
-          "description": "时间的结束"
+          "description": "时间的结束(毫秒时间戳)"
         },
         "partitionBy": {
           "type": "string",
@@ -10138,11 +10139,11 @@
         },
         "timeStart": {
           "type": "string",
-          "description": "获取时间的开始"
+          "description": "获取时间的开始(毫秒时间戳)"
         },
         "timeEnd": {
           "type": "string",
-          "description": "时间的结束"
+          "description": "时间的结束(毫秒时间戳)"
         },
         "partitionBy": {
           "type": "string",
@@ -10158,6 +10159,7 @@
       },
       "title": "DeviceMsgPropertyLogAggIndexReq",
       "required": [
+        "interval",
         "aggs"
       ]
     },
@@ -10230,7 +10232,7 @@
       "properties": {
         "timestamp": {
           "type": "string",
-          "description": "发生时间戳"
+          "description": "发生时间戳(毫秒时间戳)"
         },
         "value": {
           "type": "string",
@@ -10323,11 +10325,11 @@
         },
         "timeStart": {
           "type": "string",
-          "description": "获取时间的开始"
+          "description": "获取时间的开始(毫秒时间戳)"
         },
         "timeEnd": {
           "type": "string",
-          "description": "时间的结束"
+          "description": "时间的结束(毫秒时间戳)"
         },
         "page": {
           "$ref": "#/definitions/PageInfo",
@@ -10372,7 +10374,7 @@
       "properties": {
         "timestamp": {
           "type": "string",
-          "description": "发生时间戳"
+          "description": "发生时间戳(毫秒时间戳)"
         },
         "deviceName": {
           "type": "string",
@@ -10495,7 +10497,7 @@
       "properties": {
         "timestamp": {
           "type": "string",
-          "description": "发生时间戳"
+          "description": "发生时间戳(毫秒时间戳)"
         },
         "loglevel": {
           "type": "integer",
@@ -10527,11 +10529,11 @@
         },
         "timeStart": {
           "type": "string",
-          "description": "获取时间的开始"
+          "description": "获取时间的开始(毫秒时间戳)"
         },
         "timeEnd": {
           "type": "string",
-          "description": "时间的结束"
+          "description": "时间的结束(毫秒时间戳)"
         },
         "logLevel": {
           "type": "integer",
@@ -13207,6 +13209,11 @@
         "isLeaf": {
           "type": "integer",
           "format": "int64"
+        },
+        "order": {
+          "type": "integer",
+          "format": "int64",
+          "description": "排序,必须大于等于1,为0代表不修改"
         },
         "deviceCount": {
           "type": "integer",

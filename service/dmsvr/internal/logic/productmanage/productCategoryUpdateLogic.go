@@ -3,6 +3,7 @@ package productmanagelogic
 import (
 	"context"
 	"fmt"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/oss"
@@ -41,6 +42,9 @@ func (l *ProductCategoryUpdateLogic) ProductCategoryUpdate(in *dm.ProductCategor
 	}
 	if in.Name != "" {
 		old.Name = in.Name
+	}
+	if in.Order != 0 {
+		old.Order = in.Order
 	}
 	if in.Desc != nil {
 		old.Desc = utils.ToEmptyString(in.Desc)

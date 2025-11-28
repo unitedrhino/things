@@ -3,6 +3,7 @@ package productmanagelogic
 import (
 	"context"
 	"fmt"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
@@ -42,6 +43,7 @@ func (l *ProductCategoryCreateLogic) ProductCategoryCreate(in *dm.ProductCategor
 		ParentID: in.ParentID,
 		Name:     in.Name,
 		Desc:     utils.ToEmptyString(in.Desc),
+		Order:    in.Order,
 	}
 
 	err := relationDB.NewProductCategoryRepo(l.ctx).Insert(l.ctx, &po)

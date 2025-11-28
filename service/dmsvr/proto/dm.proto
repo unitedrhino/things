@@ -669,6 +669,7 @@ message ProductCategory{
   repeated int64 idPath =9;
   int64 isLeaf =10;
   int64 deviceCount = 11;
+  int64 order =12;//排序,必须大于等于1,为0代表不修改
   repeated ProductCategory children =7;//子节点
 }
 

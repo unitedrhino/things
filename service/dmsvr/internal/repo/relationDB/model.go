@@ -246,6 +246,7 @@ type DmProductCategory struct {
 	IDPath      string                     `gorm:"column:id_path;type:varchar(100);NOT NULL"`                                     // 1-2-3-的格式记录顶级区域到当前区域的路径
 	IsLeaf      int64                      `gorm:"column:is_leaf;type:bigint;default:1;NOT NULL"`                                 //是否是叶子节点
 	DeviceCount int64                      `gorm:"column:device_count;type:bigint;default:0"`                                     //该产品品类下的设备数量统计
+	Order       int64                      `gorm:"column:order;type:BIGINT;default:1"`                                            // 左侧table排序序号
 	Children    []*DmProductCategory       `gorm:"foreignKey:ParentID;references:ID;"`
 	Schemas     []*DmProductCategorySchema `gorm:"foreignKey:ProductCategoryID;references:ID;"`
 	stores.NoDelTime

@@ -426,7 +426,7 @@ type DeviceInfoUnbindReq struct {
 
 type DeviceInfoWithProperty struct {
 	Value     string `json:"value"`            //获取到的值
-	Timestamp int64  `json:"timestamp,string"` //发生时间戳
+	Timestamp int64  `json:"timestamp,string"` //发生时间戳(毫秒时间戳)
 }
 
 type DeviceInteractActionRespReq struct {
@@ -627,8 +627,8 @@ type DeviceMsgEventLogIndexReq struct {
 	DeviceNames []string  `json:"deviceNames,optional"`                //设备名(不填获取产品下所有设备)
 	ProductID   string    `json:"productID,optional"`                  //产品id 获取产品id下的所有设备信息
 	DataID      string    `json:"dataID,optional,omitempty"`           //获取的具体标识符的数据 如果不指定则获取所有属性数据,一个属性一条,如果没有获取到的不会返回值
-	TimeStart   int64     `json:"timeStart,string,optional,omitempty"` //获取时间的开始
-	TimeEnd     int64     `json:"timeEnd,string,optional,omitempty"`   //时间的结束
+	TimeStart   int64     `json:"timeStart,string,optional,omitempty"` //获取时间的开始(毫秒时间戳)
+	TimeEnd     int64     `json:"timeEnd,string,optional,omitempty"`   //时间的结束(毫秒时间戳)
 	Page        *PageInfo `json:"page,optional"`                       //分页信息
 	Types       []string  `json:"types,optional"`                      //类型 事件类型: 信息:info  告警alert  故障:fault
 }
@@ -639,7 +639,7 @@ type DeviceMsgEventLogIndexResp struct {
 }
 
 type DeviceMsgEventLogInfo struct {
-	Timestamp int64  `json:"timestamp,string"` //发生时间戳
+	Timestamp int64  `json:"timestamp,string"` //发生时间戳(毫秒时间戳)
 	Type      string `json:"type,omitempty"`   //类型 事件类型: 信息:info  告警alert  故障:fault
 	DataID    string `json:"dataID"`           //获取的具体属性值
 	Params    string `json:"params,omitempty"` //获取到的值
@@ -648,8 +648,8 @@ type DeviceMsgEventLogInfo struct {
 type DeviceMsgHubLogIndexReq struct {
 	DeviceName string    `json:"deviceName,optional,omitempty"`       //设备名
 	ProductID  string    `json:"productID,optional,omitempty"`        //产品id 获取产品id下的所有设备信息
-	TimeStart  int64     `json:"timeStart,string,optional,omitempty"` //获取时间的开始
-	TimeEnd    int64     `json:"timeEnd,string,optional,omitempty"`   //时间的结束
+	TimeStart  int64     `json:"timeStart,string,optional,omitempty"` //获取时间的开始(毫秒时间戳)
+	TimeEnd    int64     `json:"timeEnd,string,optional,omitempty"`   //时间的结束(毫秒时间戳)
 	Page       *PageInfo `json:"page,optional"`                       //分页信息
 	Actions    []string  `json:"actions,optional"`                    //过滤操作类型 connected:上线 disconnected:下线  property:属性 event:事件 action:操作 thing:物模型提交的操作为匹配的日志
 	Topics     []string  `json:"topics,optional"`                     //过滤主题
@@ -663,8 +663,8 @@ type DeviceMsgHubLogIndexResp struct {
 }
 
 type DeviceMsgHubLogInfo struct {
-	Timestamp   int64  `json:"timestamp,string"`
-	Action      string `json:"action"` //connected:上线 disconnected:下线  property:属性 event:事件 action:操作 thing:物模型提交的操作为匹配的日志
+	Timestamp   int64  `json:"timestamp,string"` //发生时间戳(毫秒时间戳)
+	Action      string `json:"action"`           //connected:上线 disconnected:下线  property:属性 event:事件 action:操作 thing:物模型提交的操作为匹配的日志
 	RequestID   string `json:"requestID"`
 	TraceID     string `json:"traceID"`
 	Topic       string `json:"topic"`
@@ -691,8 +691,8 @@ type DeviceMsgPropertyAggByDevice struct {
 type DeviceMsgPropertyAggByDeviceIndexReq struct {
 	Interval     int64                           `json:"interval,optional"`                   //间隔 如果这个值不为零值 则时间的开始和结束必须有效及聚合函数不应该为空
 	IntervalUnit string                          `json:"intervalUnit,optional"`               //间隔单位 a (毫秒,默认), d (天), h (小时), m (分钟), n (月), s (秒), u (微秒), w (周), y (年)  则时间的开始和结束必须有效及聚合函数不应该为空
-	TimeStart    int64                           `json:"timeStart,string,optional,omitempty"` //获取时间的开始
-	TimeEnd      int64                           `json:"timeEnd,string,optional,omitempty"`   //时间的结束
+	TimeStart    int64                           `json:"timeStart,string,optional,omitempty"` //获取时间的开始(毫秒时间戳)
+	TimeEnd      int64                           `json:"timeEnd,string,optional,omitempty"`   //时间的结束(毫秒时间戳)
 	PartitionBy  string                          `json:"partitionBy,optional"`                //切分数据,可以填写deviceName
 	Aggs         []*DeviceMsgPropertyAggByDevice `json:"aggs"`                                //聚合对象
 }
@@ -757,15 +757,15 @@ type DeviceMsgPropertyLogAggIndexReq struct {
 	AreaID            int64                   `json:"areaID,string,optional,omitempty"`    //只有管理员有权限
 	AreaIDPath        string                  `json:"areaIDPath,optional,omitempty"`       //只有管理员有权限
 	AreaIDs           []int64                 `json:"areaIDs,string,optional,omitempty"`   //只有管理员有权限
-	Interval          int64                   `json:"interval,optional"`                   //间隔 如果这个值不为零值 则时间的开始和结束必须有效及聚合函数不应该为空
+	Interval          int64                   `json:"interval"`                            //间隔 如果这个值不为零值 则时间的开始和结束必须有效及聚合函数不应该为空
 	IntervalUnit      string                  `json:"intervalUnit,optional"`               //间隔单位 a (毫秒,默认), d (天), h (小时), m (分钟), n (月), s (秒), u (微秒), w (周), y (年)  则时间的开始和结束必须有效及聚合函数不应该为空
 	BelongGroup       map[string]IDsInfo      `json:"belongGroup,optional,omitempty"`      //key是group的purpose, value是里面包含的分组id 只有partitionBy 传该参数的时候才会返回
 	DeviceName        string                  `json:"deviceName,optional,omitempty"`       //设备名(不填获取产品下所有设备)
 	DeviceNames       []string                `json:"deviceNames,optional,omitempty"`      //设备名(不填获取产品下所有设备,只有管理员有权限)
 	ProductID         string                  `json:"productID,omitempty,optional"`        //产品id 获取产品id下的所有设备信息
 	ProductCategoryID int64                   `json:"productCategoryID,optional"`          //产品品类id,通用物模型有效
-	TimeStart         int64                   `json:"timeStart,string,optional,omitempty"` //获取时间的开始
-	TimeEnd           int64                   `json:"timeEnd,string,optional,omitempty"`   //时间的结束
+	TimeStart         int64                   `json:"timeStart,string,optional,omitempty"` //获取时间的开始(毫秒时间戳)
+	TimeEnd           int64                   `json:"timeEnd,string,optional,omitempty"`   //时间的结束(毫秒时间戳)
 	PartitionBy       string                  `json:"partitionBy,optional"`                //切分数据,可以填写deviceName
 	Aggs              []*DeviceMsgPropertyAgg `json:"aggs"`                                //聚合对象
 }
@@ -787,7 +787,7 @@ type DeviceMsgPropertyLogAggResp struct {
 }
 
 type DeviceMsgPropertyLogAggRespDataDetail struct {
-	Timestamp int64  `json:"timestamp,omitempty,string"` //发生时间戳
+	Timestamp int64  `json:"timestamp,omitempty,string"` //发生时间戳(毫秒时间戳)
 	Value     string `json:"value,omitempty"`            //获取到的值
 }
 
@@ -810,8 +810,8 @@ type DeviceMsgPropertyLogIndexReq struct {
 	ProductID         string             `json:"productID,omitempty,optional"`        //产品id 获取产品id下的所有设备信息
 	ProductCategoryID int64              `json:"productCategoryID,optional"`          //产品品类id,通用物模型有效
 	DataID            string             `json:"dataID,omitempty"`                    //获取的具体标识符的数据
-	TimeStart         int64              `json:"timeStart,string,optional,omitempty"` //获取时间的开始
-	TimeEnd           int64              `json:"timeEnd,string,optional,omitempty"`   //时间的结束
+	TimeStart         int64              `json:"timeStart,string,optional,omitempty"` //获取时间的开始(毫秒时间戳)
+	TimeEnd           int64              `json:"timeEnd,string,optional,omitempty"`   //时间的结束(毫秒时间戳)
 	Page              *PageInfo          `json:"page,optional"`                       //分页信息
 	Interval          int64              `json:"interval,optional"`                   //间隔 如果这个值不为零值 则时间的开始和结束必须有效及聚合函数不应该为空
 	IntervalUnit      string             `json:"intervalUnit,optional"`               //间隔单位 a (毫秒,默认), d (天), h (小时), m (分钟), n (月), s (秒), u (微秒), w (周), y (年)  则时间的开始和结束必须有效及聚合函数不应该为空
@@ -823,7 +823,7 @@ type DeviceMsgPropertyLogIndexReq struct {
 }
 
 type DeviceMsgPropertyLogInfo struct {
-	Timestamp   int64              `json:"timestamp,string"`                    //发生时间戳
+	Timestamp   int64              `json:"timestamp,string"`                    //发生时间戳(毫秒时间戳)
 	DeviceName  string             `json:"deviceName,omitempty"`                //设备名称
 	DataID      string             `json:"dataID"`                              //属性ID
 	DataName    string             `json:"dataName"`                            //属性名称
@@ -850,7 +850,7 @@ type DeviceMsgSdkIndexResp struct {
 }
 
 type DeviceMsgSdkInfo struct {
-	Timestamp int64  `json:"timestamp,string"` //发生时间戳
+	Timestamp int64  `json:"timestamp,string"` //发生时间戳(毫秒时间戳)
 	Loglevel  int64  `json:"loglevel"`         //日志级别 1)关闭 2)错误 3)告警 4)信息 5)调试
 	Content   string `json:"content"`          //具体内容
 }
@@ -858,8 +858,8 @@ type DeviceMsgSdkInfo struct {
 type DeviceMsgSdkLogIndexReq struct {
 	DeviceName string    `json:"deviceName,omitempty"`                //设备名
 	ProductID  string    `json:"productID,omitempty"`                 //产品id 获取产品id下的所有设备信息
-	TimeStart  int64     `json:"timeStart,string,optional,omitempty"` //获取时间的开始
-	TimeEnd    int64     `json:"timeEnd,string,optional,omitempty"`   //时间的结束
+	TimeStart  int64     `json:"timeStart,string,optional,omitempty"` //获取时间的开始(毫秒时间戳)
+	TimeEnd    int64     `json:"timeEnd,string,optional,omitempty"`   //时间的结束(毫秒时间戳)
 	LogLevel   int       `json:"logLevel,optional"`                   //等级
 	Page       *PageInfo `json:"page,optional"`                       //分页信息
 }
@@ -1507,6 +1507,7 @@ type ProductCategory struct {
 	HeadImg         string             `json:"headImg,optional"`                   // 用户头像
 	IsUpdateHeadImg bool               `json:"isUpdateHeadImg,omitempty,optional"` // 用户头像
 	IsLeaf          int64              `json:"isLeaf,optional"`
+	Order           int64              `json:"order,optional"`       //排序,必须大于等于1,为0代表不修改
 	DeviceCount     int64              `json:"deviceCount,optional"` //设备数量
 	Children        []*ProductCategory `json:"children,optional"`
 }
