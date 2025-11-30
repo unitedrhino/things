@@ -77,13 +77,17 @@ type (
         ProductID string `json:"productID"`       //产品id 只读
         Tsl string `json:"tsl"`                   //物模型tsl
     }
+
     ProductSchemaMultiCreateReq{
         ProductID string `json:"productID"`         //产品id
-        List []*ProductSchemaInfo `json:"list"`           //分页信息,只获取一个则不填
+        Identifiers []string `json:"identifiers,optional"`                //导入的标识符列表
+        List []*ProductSchemaInfo `json:"list,optional"`           //如果没有填标识符列表取这里
     }
+
     ProductSchemaCreateReq  {
          *ProductSchemaInfo
     }
+
     ProductSchemaDeleteReq {
         ProductID string `json:"productID"`         //产品id
         Identifier string `json:"identifier"`                //标识符

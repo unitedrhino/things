@@ -169,8 +169,8 @@ type (
 	ProductCustom                     = dm.ProductCustom
 	ProductCustomReadReq              = dm.ProductCustomReadReq
 	ProductCustomUi                   = dm.ProductCustomUi
+	ProductID                         = dm.ProductID
 	ProductInfo                       = dm.ProductInfo
-	ProductInfoDeleteReq              = dm.ProductInfoDeleteReq
 	ProductInfoExportReq              = dm.ProductInfoExportReq
 	ProductInfoExportResp             = dm.ProductInfoExportResp
 	ProductInfoImportReq              = dm.ProductInfoImportReq

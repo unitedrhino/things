@@ -2,8 +2,7 @@ package info
 
 import (
 	"context"
-	"gitee.com/unitedrhino/share/errors"
-	"gitee.com/unitedrhino/share/utils"
+
 	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/types"
 
@@ -26,10 +25,5 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 
 func (l *UpdateLogic) Update(req *types.ProductInfo) error {
 	_, err := l.svcCtx.ProductM.ProductInfoUpdate(l.ctx, productInfoToRpc(req))
-	if err != nil {
-		er := errors.Fmt(err)
-		l.Errorf("%s.rpc.ManageProduct req=%v err=%+v", utils.FuncName(), utils.Fmt(req), er)
-		return er
-	}
-	return nil
+	return err
 }

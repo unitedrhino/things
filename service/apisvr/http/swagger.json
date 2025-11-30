@@ -4544,6 +4544,9 @@
                 "msg": {
                   "type": "string",
                   "title": "返回的消息"
+                },
+                "data": {
+                  "$ref": "#/definitions/ProductID"
                 }
               }
             }
@@ -4594,7 +4597,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/ProductInfoDeleteReq"
+              "$ref": "#/definitions/ProductID"
             }
           }
         ],
@@ -13475,6 +13478,19 @@
         "path"
       ]
     },
+    "ProductID": {
+      "type": "object",
+      "properties": {
+        "productID": {
+          "type": "string",
+          "description": "产品id 只读"
+        }
+      },
+      "title": "ProductID",
+      "required": [
+        "productID"
+      ]
+    },
     "ProductInfo": {
       "type": "object",
       "properties": {
@@ -13614,19 +13630,6 @@
         }
       },
       "title": "ProductInfo"
-    },
-    "ProductInfoDeleteReq": {
-      "type": "object",
-      "properties": {
-        "productID": {
-          "type": "string",
-          "description": "产品id 只读"
-        }
-      },
-      "title": "ProductInfoDeleteReq",
-      "required": [
-        "productID"
-      ]
     },
     "ProductInfoExportReq": {
       "type": "object",
@@ -14193,18 +14196,24 @@
           "type": "string",
           "description": "产品id"
         },
+        "identifiers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "导入的标识符列表"
+        },
         "list": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/ProductSchemaInfo"
           },
-          "description": "分页信息,只获取一个则不填"
+          "description": "如果没有填标识符列表取这里"
         }
       },
       "title": "ProductSchemaMultiCreateReq",
       "required": [
-        "productID",
-        "list"
+        "productID"
       ]
     },
     "ProductSchemaTslImportReq": {

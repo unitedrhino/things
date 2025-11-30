@@ -29,7 +29,7 @@ service api {
         isNeedAuth: "true"
     )
     @handler create
-    post /create (ProductInfo) returns ()
+    post /create (ProductInfo) returns (ProductID)
     @doc(
         summary: "更新产品"
         authType: "admin"
@@ -43,7 +43,7 @@ service api {
         isNeedAuth: "true"
     )
     @handler delete
-    post /delete (ProductInfoDeleteReq) returns ()
+    post /delete (ProductID) returns ()
     @doc "获取产品信息列表"
     @handler index
     post /index (ProductInfoIndexReq) returns (ProductInfoIndexResp)
@@ -155,7 +155,7 @@ type (
     }
 
 
-    ProductInfoDeleteReq  {
+    ProductID  {
         ProductID string `json:"productID"`                            //产品id 只读
     }
 

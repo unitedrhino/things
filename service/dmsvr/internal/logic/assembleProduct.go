@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"sort"
 
 	"gitee.com/unitedrhino/share/oss/common"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/productCustom"
@@ -148,6 +149,11 @@ func ToProductCategoryPb(ctx context.Context, svcCtx *svc.ServiceContext, info *
 func fillDictInfoChildren(node *dm.ProductCategory, nodeMap map[int64][]*dm.ProductCategory) {
 	// 找到当前节点的子节点数组
 	children := nodeMap[node.Id]
+	if len(children) > 1 {
+		sort.Slice(children, func(i, j int) bool {
+			return children[i].Order < children[j].Order
+		})
+	}
 	for _, child := range children {
 		fillDictInfoChildren(child, nodeMap)
 	}

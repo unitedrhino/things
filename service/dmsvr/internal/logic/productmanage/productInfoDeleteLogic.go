@@ -2,6 +2,7 @@ package productmanagelogic
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
@@ -33,7 +34,7 @@ func NewProductInfoDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 }
 
 // 删除设备
-func (l *ProductInfoDeleteLogic) ProductInfoDelete(in *dm.ProductInfoDeleteReq) (*dm.Empty, error) {
+func (l *ProductInfoDeleteLogic) ProductInfoDelete(in *dm.ProductID) (*dm.Empty, error) {
 	if err := ctxs.IsRoot(l.ctx); err != nil {
 		return nil, err
 	}
@@ -57,7 +58,7 @@ func (l *ProductInfoDeleteLogic) ProductInfoDelete(in *dm.ProductInfoDeleteReq) 
 	}
 	return &dm.Empty{}, nil
 }
-func (l *ProductInfoDeleteLogic) DropProduct(in *dm.ProductInfoDeleteReq) error {
+func (l *ProductInfoDeleteLogic) DropProduct(in *dm.ProductID) error {
 	pt, err := l.svcCtx.ProductSchemaRepo.GetData(l.ctx, in.ProductID)
 	if err != nil {
 		return errors.System.AddDetail(err)
@@ -92,7 +93,7 @@ func (l *ProductInfoDeleteLogic) DropProduct(in *dm.ProductInfoDeleteReq) error 
 	}
 	return nil
 }
-func (l *ProductInfoDeleteLogic) Check(in *dm.ProductInfoDeleteReq) error {
+func (l *ProductInfoDeleteLogic) Check(in *dm.ProductID) error {
 	count, err := l.DiDB.CountByFilter(l.ctx, relationDB.DeviceFilter{ProductID: in.ProductID})
 	if err != nil {
 		l.Errorf("%s.CountByFilter err=%v", utils.FuncName(), utils.Fmt(err))

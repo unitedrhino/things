@@ -1635,11 +1635,11 @@ const (
 type ProductManageClient interface {
 	ProductInit(ctx context.Context, in *ProductInitReq, opts ...grpc.CallOption) (*Empty, error)
 	// 新增产品
-	ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Empty, error)
+	ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*ProductID, error)
 	// 更新产品
 	ProductInfoUpdate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Empty, error)
 	// 删除产品
-	ProductInfoDelete(ctx context.Context, in *ProductInfoDeleteReq, opts ...grpc.CallOption) (*Empty, error)
+	ProductInfoDelete(ctx context.Context, in *ProductID, opts ...grpc.CallOption) (*Empty, error)
 	// 获取产品信息列表
 	ProductInfoIndex(ctx context.Context, in *ProductInfoIndexReq, opts ...grpc.CallOption) (*ProductInfoIndexResp, error)
 	// 获取产品信息详情
@@ -1701,8 +1701,8 @@ func (c *productManageClient) ProductInit(ctx context.Context, in *ProductInitRe
 	return out, nil
 }
 
-func (c *productManageClient) ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
+func (c *productManageClient) ProductInfoCreate(ctx context.Context, in *ProductInfo, opts ...grpc.CallOption) (*ProductID, error) {
+	out := new(ProductID)
 	err := c.cc.Invoke(ctx, ProductManage_ProductInfoCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -1719,7 +1719,7 @@ func (c *productManageClient) ProductInfoUpdate(ctx context.Context, in *Product
 	return out, nil
 }
 
-func (c *productManageClient) ProductInfoDelete(ctx context.Context, in *ProductInfoDeleteReq, opts ...grpc.CallOption) (*Empty, error) {
+func (c *productManageClient) ProductInfoDelete(ctx context.Context, in *ProductID, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, ProductManage_ProductInfoDelete_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -1959,11 +1959,11 @@ func (c *productManageClient) ProductCategoryMultiExport(ctx context.Context, in
 type ProductManageServer interface {
 	ProductInit(context.Context, *ProductInitReq) (*Empty, error)
 	// 新增产品
-	ProductInfoCreate(context.Context, *ProductInfo) (*Empty, error)
+	ProductInfoCreate(context.Context, *ProductInfo) (*ProductID, error)
 	// 更新产品
 	ProductInfoUpdate(context.Context, *ProductInfo) (*Empty, error)
 	// 删除产品
-	ProductInfoDelete(context.Context, *ProductInfoDeleteReq) (*Empty, error)
+	ProductInfoDelete(context.Context, *ProductID) (*Empty, error)
 	// 获取产品信息列表
 	ProductInfoIndex(context.Context, *ProductInfoIndexReq) (*ProductInfoIndexResp, error)
 	// 获取产品信息详情
@@ -2016,13 +2016,13 @@ type UnimplementedProductManageServer struct {
 func (UnimplementedProductManageServer) ProductInit(context.Context, *ProductInitReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductInit not implemented")
 }
-func (UnimplementedProductManageServer) ProductInfoCreate(context.Context, *ProductInfo) (*Empty, error) {
+func (UnimplementedProductManageServer) ProductInfoCreate(context.Context, *ProductInfo) (*ProductID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductInfoCreate not implemented")
 }
 func (UnimplementedProductManageServer) ProductInfoUpdate(context.Context, *ProductInfo) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductInfoUpdate not implemented")
 }
-func (UnimplementedProductManageServer) ProductInfoDelete(context.Context, *ProductInfoDeleteReq) (*Empty, error) {
+func (UnimplementedProductManageServer) ProductInfoDelete(context.Context, *ProductID) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductInfoDelete not implemented")
 }
 func (UnimplementedProductManageServer) ProductInfoIndex(context.Context, *ProductInfoIndexReq) (*ProductInfoIndexResp, error) {
@@ -2168,7 +2168,7 @@ func _ProductManage_ProductInfoUpdate_Handler(srv interface{}, ctx context.Conte
 }
 
 func _ProductManage_ProductInfoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProductInfoDeleteReq)
+	in := new(ProductID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -2180,7 +2180,7 @@ func _ProductManage_ProductInfoDelete_Handler(srv interface{}, ctx context.Conte
 		FullMethod: ProductManage_ProductInfoDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductManageServer).ProductInfoDelete(ctx, req.(*ProductInfoDeleteReq))
+		return srv.(ProductManageServer).ProductInfoDelete(ctx, req.(*ProductID))
 	}
 	return interceptor(ctx, in, info, handler)
 }

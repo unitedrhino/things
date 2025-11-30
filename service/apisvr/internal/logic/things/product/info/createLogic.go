@@ -3,7 +3,6 @@ package info
 import (
 	"context"
 
-	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/apisvr/internal/types"
@@ -25,12 +24,7 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 	}
 }
 
-func (l *CreateLogic) Create(req *types.ProductInfo) error {
-	_, err := l.svcCtx.ProductM.ProductInfoCreate(l.ctx, productInfoToRpc(req))
-	if err != nil {
-		er := errors.Fmt(err)
-		l.Errorf("%s.rpc.ManageProduct req=%v err=%v", utils.FuncName(), req, er)
-		return er
-	}
-	return nil
+func (l *CreateLogic) Create(req *types.ProductInfo) (*types.ProductID, error) {
+	ret, err := l.svcCtx.ProductM.ProductInfoCreate(l.ctx, productInfoToRpc(req))
+	return utils.Copy[types.ProductID](ret), err
 }

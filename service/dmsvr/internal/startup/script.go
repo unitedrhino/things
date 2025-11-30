@@ -425,7 +425,7 @@ func dmSymbolInit(svcCtx *svc.ServiceContext) map[string]reflect.Value {
 		"ProductCustomReadReq":              reflect.ValueOf((*dm.ProductCustomReadReq)(nil)),
 		"ProductCustomUi":                   reflect.ValueOf((*dm.ProductCustomUi)(nil)),
 		"ProductInfo":                       reflect.ValueOf((*dm.ProductInfo)(nil)),
-		"ProductInfoDeleteReq":              reflect.ValueOf((*dm.ProductInfoDeleteReq)(nil)),
+		"ProductID":                         reflect.ValueOf((*dm.ProductID)(nil)),
 		"ProductInfoIndexReq":               reflect.ValueOf((*dm.ProductInfoIndexReq)(nil)),
 		"ProductInfoIndexResp":              reflect.ValueOf((*dm.ProductInfoIndexResp)(nil)),
 		"ProductInfoReadReq":                reflect.ValueOf((*dm.ProductInfoReadReq)(nil)),

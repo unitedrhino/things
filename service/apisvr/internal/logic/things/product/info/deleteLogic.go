@@ -2,8 +2,7 @@ package info
 
 import (
 	"context"
-	"gitee.com/unitedrhino/share/errors"
-	"gitee.com/unitedrhino/share/utils"
+
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 
 	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
@@ -26,12 +25,7 @@ func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogi
 	}
 }
 
-func (l *DeleteLogic) Delete(req *types.ProductInfoDeleteReq) error {
-	_, err := l.svcCtx.ProductM.ProductInfoDelete(l.ctx, &dm.ProductInfoDeleteReq{ProductID: req.ProductID})
-	if err != nil {
-		er := errors.Fmt(err)
-		l.Errorf("%s.rpc.ManageProduct req=%v err=%v", utils.FuncName(), req, er)
-		return er
-	}
-	return nil
+func (l *DeleteLogic) Delete(req *types.ProductID) error {
+	_, err := l.svcCtx.ProductM.ProductInfoDelete(l.ctx, &dm.ProductID{ProductID: req.ProductID})
+	return err
 }

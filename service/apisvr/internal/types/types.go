@@ -1580,6 +1580,10 @@ type ProductCustomUi struct {
 	IsUpdateUi bool   `json:"isUpdateUi,optional,omitempty"`
 }
 
+type ProductID struct {
+	ProductID string `json:"productID"` //产品id 只读
+}
+
 type ProductInfo struct {
 	TenantCode         string                      `json:"tenantCode,optional"`                   //租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改
 	CreatedTime        int64                       `json:"createdTime,optional,string"`           //创建时间 只读
@@ -1609,10 +1613,6 @@ type ProductInfo struct {
 	Category           *ProductCategory            `json:"category,optional,omitempty"`
 	Config             *ProductConfig              `json:"config,optional,omitempty"`   //产品配置,只有管理员会返回该字段
 	CustomUi           map[string]*ProductCustomUi `json:"customUi,optional,omitempty"` //自定义ui,key是端的类型(web-client  mini-client) value是以下类型的对象{version:123(版本号,只读),isUpdateUi:bool(是否更新ui),path:string(前端路径,如果需要修改,需要将isUpdateUi置为true并在这个参数中传入压缩包的filePath)}
-}
-
-type ProductInfoDeleteReq struct {
-	ProductID string `json:"productID"` //产品id 只读
 }
 
 type ProductInfoExportReq struct {
@@ -1747,8 +1747,9 @@ type ProductSchemaInfo struct {
 }
 
 type ProductSchemaMultiCreateReq struct {
-	ProductID string               `json:"productID"` //产品id
-	List      []*ProductSchemaInfo `json:"list"`      //分页信息,只获取一个则不填
+	ProductID   string               `json:"productID"`            //产品id
+	Identifiers []string             `json:"identifiers,optional"` //导入的标识符列表
+	List        []*ProductSchemaInfo `json:"list,optional"`        //如果没有填标识符列表取这里
 }
 
 type ProductSchemaTslImportReq struct {

@@ -2,6 +2,7 @@ package schema
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 
 	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
@@ -26,8 +27,9 @@ func NewMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Multi
 
 func (l *MultiCreateLogic) MultiCreate(req *types.ProductSchemaMultiCreateReq) error {
 	dmReq := &dm.ProductSchemaMultiCreateReq{
-		ProductID: req.ProductID,
-		List:      ToSchemaInfosRpc(req.List),
+		ProductID:   req.ProductID,
+		List:        ToSchemaInfosRpc(req.List),
+		Identifiers: req.Identifiers,
 	}
 	_, err := l.svcCtx.ProductM.ProductSchemaMultiCreate(l.ctx, dmReq)
 	return err

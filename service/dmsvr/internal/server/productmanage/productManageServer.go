@@ -29,7 +29,7 @@ func (s *ProductManageServer) ProductInit(ctx context.Context, in *dm.ProductIni
 }
 
 // 新增产品
-func (s *ProductManageServer) ProductInfoCreate(ctx context.Context, in *dm.ProductInfo) (*dm.Empty, error) {
+func (s *ProductManageServer) ProductInfoCreate(ctx context.Context, in *dm.ProductInfo) (*dm.ProductID, error) {
 	l := productmanagelogic.NewProductInfoCreateLogic(ctx, s.svcCtx)
 	return l.ProductInfoCreate(in)
 }
@@ -41,7 +41,7 @@ func (s *ProductManageServer) ProductInfoUpdate(ctx context.Context, in *dm.Prod
 }
 
 // 删除产品
-func (s *ProductManageServer) ProductInfoDelete(ctx context.Context, in *dm.ProductInfoDeleteReq) (*dm.Empty, error) {
+func (s *ProductManageServer) ProductInfoDelete(ctx context.Context, in *dm.ProductID) (*dm.Empty, error) {
 	l := productmanagelogic.NewProductInfoDeleteLogic(ctx, s.svcCtx)
 	return l.ProductInfoDelete(in)
 }

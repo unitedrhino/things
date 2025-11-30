@@ -2,8 +2,10 @@ package productmanagelogic
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 
@@ -53,7 +55,10 @@ func (l *ProductCategoryIndexLogic) ProductCategoryIndex(in *dm.ProductCategoryI
 	}
 
 	di, err := piDB.FindByFilter(l.ctx, f,
-		logic.ToPageInfo(in.Page),
+		logic.ToPageInfo(in.Page).WithDefaultOrder(stores.OrderBy{
+			Field: "order",
+			Sort:  stores.OrderAsc,
+		}),
 	)
 	if err != nil {
 		return nil, err

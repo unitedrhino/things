@@ -139,7 +139,7 @@ func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relatio
 }
 
 // 新增设备
-func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Empty, error) {
+func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.ProductID, error) {
 	if err := ctxs.IsAdmin(l.ctx); err != nil {
 		return nil, err
 	}
@@ -228,7 +228,7 @@ func (l *ProductInfoCreateLogic) ProductInfoCreate(in *dm.ProductInfo) (*dm.Empt
 	if err != nil {
 		l.Error(err)
 	}
-	return &dm.Empty{}, nil
+	return &dm.ProductID{ProductID: in.ProductID}, nil
 }
 
 func (l *ProductInfoCreateLogic) InitProduct(pi *relationDB.DmProductInfo) error {
