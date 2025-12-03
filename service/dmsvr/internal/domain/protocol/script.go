@@ -210,7 +210,7 @@ func (s *ScriptTrans) PublishMsgRun(ctx context.Context, msg *deviceMsg.PublishM
 	return newMsg, *logs, nil
 }
 
-func (s *ScriptTrans) RespMsgRun(ctx context.Context, req *deviceMsg.PublishMsg, resp *deviceMsg.PublishMsg, script string) (retLogs []string, err error) {
+func (s *ScriptTrans) UpAfterMsgRun(ctx context.Context, req *deviceMsg.PublishMsg, resp *deviceMsg.PublishMsg, script string) (retLogs []string, err error) {
 	defer func() {
 		if p := recover(); p != nil {
 			err = errors.Parameter.AddMsgf("执行panic:%v", p)
@@ -226,6 +226,25 @@ func (s *ScriptTrans) RespMsgRun(ctx context.Context, req *deviceMsg.PublishMsg,
 		return nil, errors.Parameter.AddMsg("结构体中需要定义: func Handle(context.Context,func(context.Context, *deviceMsg.PublishMsg, *deviceMsg.PublishMsg))")
 	}
 	fn(ctx, req, resp)
+	return *logs, nil
+}
+
+func (s *ScriptTrans) DownAfterMsgRun(ctx context.Context, req *deviceMsg.PublishMsg, script string) (retLogs []string, err error) {
+	defer func() {
+		if p := recover(); p != nil {
+			err = errors.Parameter.AddMsgf("执行panic:%v", p)
+			return
+		}
+	}()
+	handle, logs, err := s.GetFunc(ctx, script, "Handle")
+	if err != nil {
+		return nil, errors.Parameter.AddMsgf("脚本定义错误:%s", err.Error())
+	}
+	fn, ok := handle.(func(context.Context, *deviceMsg.PublishMsg))
+	if !ok {
+		return nil, errors.Parameter.AddMsg("结构体中需要定义: func(context.Context,msg *deviceMsg.PublishMsg)")
+	}
+	fn(ctx, req)
 	return *logs, nil
 }
 
@@ -280,7 +299,7 @@ func (s *ScriptTrans) UpAfterTrans(ctx context.Context, di *dm.DeviceInfo, req *
 		if di.TenantCode != script.TenantCode && !(script.TenantCode == def.TenantCodeCommon || script.TenantCode == def.TenantCodeDefault) {
 			continue
 		}
-		log, err := s.RespMsgRun(ctxs.WithAdmin(ctxs.BindTenantCode(ctx, script.TenantCode, 0)), req, resp, script.Script)
+		log, err := s.UpAfterMsgRun(ctxs.WithAdmin(ctxs.BindTenantCode(ctx, script.TenantCode, 0)), req, resp, script.Script)
 		if err != nil {
 			continue
 		}
@@ -396,4 +415,52 @@ func (s *ScriptTrans) DownBeforeTrans(ctx context.Context, di *dm.DeviceInfo, ms
 		}
 	}
 	return &out
+}
+
+func (s *ScriptTrans) DownAfterTrans(ctx context.Context, di *dm.DeviceInfo, msg *deviceMsg.PublishMsg) {
+	ctxs.GoNewCtx(ctx, func(ctx context.Context) {
+		var out = *msg
+		var scripts ScriptInfos
+		func() {
+			s.ProductDownAfterMutex.RLock()
+			defer s.ProductDownAfterMutex.RUnlock()
+			pc, ok := s.ProductDownAfterCache[msg.ProductID]
+			if ok {
+				script := s.GetScripts(ctx, pc, msg)
+				scripts = append(scripts, script...)
+			}
+		}()
+		func() {
+			s.DeviceDownAfterMutex.RLock()
+			defer s.DeviceDownAfterMutex.RUnlock()
+			dc, ok := s.DeviceDownAfterCache[devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName}]
+			if ok {
+				script := s.GetScripts(ctx, dc, msg)
+				scripts = append(scripts, script...)
+			}
+		}()
+		if len(scripts) == 0 {
+			return
+		}
+		sort.Sort(scripts)
+		for _, script := range scripts {
+			if di.TenantCode != script.TenantCode && !(script.TenantCode == def.TenantCodeCommon || script.TenantCode == def.TenantCodeDefault) {
+				continue
+			}
+			log, err := s.DownAfterMsgRun(ctxs.WithAdmin(ctxs.BindTenantCode(ctx, script.TenantCode, 0)), &out, script.Script)
+			if err != nil {
+				logx.WithContext(ctx).Error(err)
+				continue
+			}
+			logs := make([]string, 0)
+			for _, l := range log {
+				logs = append(logs, fmt.Sprintf("%s:[%s]  ", script.Name, l))
+			}
+			if len(logs) > 0 {
+				logx.WithContext(ctx).Infof("DownAfterTrans脚本:%s 执行日志为:%s", script.Name, logs)
+			}
+		}
+		return
+	})
+
 }

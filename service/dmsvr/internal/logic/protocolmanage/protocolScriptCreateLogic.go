@@ -28,11 +28,14 @@ func NewProtocolScriptCreateLogic(ctx context.Context, svcCtx *svc.ServiceContex
 	}
 }
 
-//go:embed script/after
-var afterScript string
-
 //go:embed script/before
 var beforeScript string
+
+//go:embed script/downAfter
+var downAfterScript string
+
+//go:embed script/upAfter
+var upAfterScript string
 
 // 协议创建
 func (l *ProtocolScriptCreateLogic) ProtocolScriptCreate(in *dm.ProtocolScript) (*dm.WithID, error) {
@@ -43,12 +46,15 @@ func (l *ProtocolScriptCreateLogic) ProtocolScriptCreate(in *dm.ProtocolScript) 
 		return nil, errors.Permissions
 	}
 	po := utils.Copy[relationDB.DmProtocolScript](in)
-	switch in.TriggerTimer {
-	case protocol.TriggerTimerBefore:
-		po.Script = beforeScript
-	case protocol.TriggerTimerAfter:
-		po.Script = afterScript
+	po.Script = beforeScript
+	if in.TriggerTimer == protocol.TriggerTimerAfter {
+		if in.TriggerDir == protocol.TriggerDirUp {
+			po.Script = upAfterScript
+		} else {
+			po.Script = downAfterScript
+		}
 	}
+
 	err := relationDB.NewProtocolScriptRepo(l.ctx).Insert(l.ctx, po)
 	return &dm.WithID{Id: po.ID}, err
 }

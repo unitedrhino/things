@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"reflect"
 
+	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
+	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	sdkProtocol "gitee.com/unitedrhino/things/sdk/protocol"
 	"gitee.com/unitedrhino/things/service/dmsvr/client/deviceinteract"
@@ -269,12 +271,24 @@ func dmSymbolInit(svcCtx *svc.ServiceContext) map[string]reflect.Value {
 			return svcCtx.DeviceSchemaRepo.GetData(ctx, devices.Core{ProductID: productID, DeviceName: deviceName})
 		}),
 		"DevPubMsg": reflect.ValueOf(func(ctx context.Context, publishMsg *devices.DevPublish) error {
+			tk := ctxs.GetTenantCode(ctx)
+			publishMsg.DeviceName = "6666"
+			di, err := svcCtx.DeviceCache.GetData(ctx, devices.Core{
+				ProductID:  publishMsg.ProductID,
+				DeviceName: publishMsg.DeviceName,
+			})
+			if err != nil {
+				return errors.Fmt(err).AddMsgf("DevPubMsg未发现设备: %s %s", publishMsg.ProductID, publishMsg.DeviceName)
+			}
+			if di.TenantCode != tk {
+				return errors.Permissions.AddMsgf("DevPubMsg设备权限错误,只能操作设备所属租户下的设备: %s %s", publishMsg.ProductID, publishMsg.DeviceName)
+			}
 			sdkProtocol.UpdateDeviceActivity(ctx, devices.Core{
 				ProductID:  publishMsg.ProductID,
 				DeviceName: publishMsg.DeviceName,
 			})
 			pubStr, _ := json.Marshal(publishMsg)
-			err := svcCtx.FastEvent.Publish(ctx,
+			err = svcCtx.FastEvent.Publish(ctx,
 				fmt.Sprintf(topics.DeviceUpMsg, publishMsg.Handle, publishMsg.ProductID, publishMsg.DeviceName), pubStr)
 			if err != nil {
 				logx.Errorf("%s.publish  err:%v", utils.FuncName(), err)

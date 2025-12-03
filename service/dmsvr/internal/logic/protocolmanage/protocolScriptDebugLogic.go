@@ -2,6 +2,7 @@ package protocolmanagelogic
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/protocol"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
@@ -57,8 +58,17 @@ func (l *ProtocolScriptDebugLogic) ProtocolScriptDebug(in *dm.ProtocolScriptDebu
 		}, nil
 	case protocol.TriggerTimerAfter:
 		req := utils.Copy[deviceMsg.PublishMsg](in.Req)
-		resp := utils.Copy[deviceMsg.PublishMsg](in.Resp)
-		logs, err := l.svcCtx.ScriptTrans.RespMsgRun(l.ctx, req, resp, in.Script)
+		if in.TriggerDir == protocol.TriggerDirUp {
+			resp := utils.Copy[deviceMsg.PublishMsg](in.Resp)
+			logs, err := l.svcCtx.ScriptTrans.UpAfterMsgRun(l.ctx, req, resp, in.Script)
+			if err != nil {
+				return nil, err
+			}
+			return &dm.ProtocolScriptDebugResp{
+				Logs: logs,
+			}, nil
+		}
+		logs, err := l.svcCtx.ScriptTrans.DownAfterMsgRun(l.ctx, req, in.Script)
 		if err != nil {
 			return nil, err
 		}

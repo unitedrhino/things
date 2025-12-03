@@ -57,9 +57,16 @@ func (l *ProtocolScriptUpdateLogic) ProtocolScriptUpdate(in *dm.ProtocolScript) 
 				return nil, errors.Parameter.AddMsg("结构体中需要定义: func Handle(context.Context,req *dm.PublishMsg) *dm.PublishMsg")
 			}
 		case protocol.TriggerTimerAfter:
-			_, ok := handle.(func(context.Context, *deviceMsg.PublishMsg, *deviceMsg.PublishMsg))
-			if !ok {
-				return nil, errors.Parameter.AddMsg("结构体中需要定义: func Handle(ctx context.Context,req *dm.PublishMsg,resp *dm.PublishMsg)")
+			if old.TriggerDir == protocol.TriggerDirUp {
+				_, ok := handle.(func(context.Context, *deviceMsg.PublishMsg, *deviceMsg.PublishMsg))
+				if !ok {
+					return nil, errors.Parameter.AddMsg("结构体中需要定义: func Handle(ctx context.Context,req *dm.PublishMsg,resp *dm.PublishMsg)")
+				}
+			} else {
+				_, ok := handle.(func(context.Context, *deviceMsg.PublishMsg))
+				if !ok {
+					return nil, errors.Parameter.AddMsg("结构体中需要定义: func Handle(ctx context.Context,req *dm.PublishMsg,resp *dm.PublishMsg)")
+				}
 			}
 		}
 		old.Script = in.Script
