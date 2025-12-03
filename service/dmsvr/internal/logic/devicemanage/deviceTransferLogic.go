@@ -210,7 +210,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 		if in.IsCleanData == def.True {
 			param["last_bind"] = time.Now()
 		}
-		err = relationDB.NewDeviceInfoRepo(tx).UpdateWithField(ctx, relationDB.DeviceFilter{Cores: devs}, param)
+		err = relationDB.NewDeviceInfoRepo(tx).UpdateWithField(ctxs.WithRoot(ctx), relationDB.DeviceFilter{Cores: devs}, param)
 		if err != nil {
 			return err
 		}

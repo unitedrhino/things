@@ -299,7 +299,7 @@ func (s *ScriptTrans) UpAfterTrans(ctx context.Context, di *dm.DeviceInfo, req *
 		if di.TenantCode != script.TenantCode && !(script.TenantCode == def.TenantCodeCommon || script.TenantCode == def.TenantCodeDefault) {
 			continue
 		}
-		log, err := s.UpAfterMsgRun(ctxs.WithAdmin(ctxs.BindTenantCode(ctx, script.TenantCode, 0)), req, resp, script.Script)
+		log, err := s.UpAfterMsgRun(ctxs.WithAdmin(ctxs.BindTenantCode(ctx, di.TenantCode, 0)), req, resp, script.Script)
 		if err != nil {
 			continue
 		}
@@ -345,7 +345,7 @@ func (s *ScriptTrans) UpBeforeTrans(ctx context.Context, di *dm.DeviceInfo, msg 
 		if di.TenantCode != script.TenantCode && !(script.TenantCode == def.TenantCodeCommon || script.TenantCode == def.TenantCodeDefault) {
 			continue
 		}
-		newMsg, log, err := s.PublishMsgRun(ctxs.WithAdmin(ctxs.BindTenantCode(ctx, script.TenantCode, 0)), &out, script.Script)
+		newMsg, log, err := s.PublishMsgRun(ctxs.WithAdmin(ctxs.BindTenantCode(ctx, di.TenantCode, 0)), &out, script.Script)
 		if err != nil {
 			logx.WithContext(ctx).Error(err)
 			continue
@@ -396,7 +396,7 @@ func (s *ScriptTrans) DownBeforeTrans(ctx context.Context, di *dm.DeviceInfo, ms
 		if di.TenantCode != script.TenantCode && !(script.TenantCode == def.TenantCodeCommon || script.TenantCode == def.TenantCodeDefault) {
 			continue
 		}
-		newMsg, log, err := s.PublishMsgRun(ctxs.WithAdmin(ctxs.BindTenantCode(ctx, script.TenantCode, 0)), &out, script.Script)
+		newMsg, log, err := s.PublishMsgRun(ctxs.WithAdmin(ctxs.BindTenantCode(ctx, di.TenantCode, 0)), &out, script.Script)
 		if err != nil {
 			logx.WithContext(ctx).Error(err)
 			continue
@@ -447,7 +447,7 @@ func (s *ScriptTrans) DownAfterTrans(ctx context.Context, di *dm.DeviceInfo, msg
 			if di.TenantCode != script.TenantCode && !(script.TenantCode == def.TenantCodeCommon || script.TenantCode == def.TenantCodeDefault) {
 				continue
 			}
-			log, err := s.DownAfterMsgRun(ctxs.WithAdmin(ctxs.BindTenantCode(ctx, script.TenantCode, 0)), &out, script.Script)
+			log, err := s.DownAfterMsgRun(ctxs.WithAdmin(ctxs.BindTenantCode(ctx, di.TenantCode, 0)), &out, script.Script)
 			if err != nil {
 				logx.WithContext(ctx).Error(err)
 				continue

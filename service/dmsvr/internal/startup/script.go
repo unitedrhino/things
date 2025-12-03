@@ -272,7 +272,6 @@ func dmSymbolInit(svcCtx *svc.ServiceContext) map[string]reflect.Value {
 		}),
 		"DevPubMsg": reflect.ValueOf(func(ctx context.Context, publishMsg *devices.DevPublish) error {
 			tk := ctxs.GetTenantCode(ctx)
-			publishMsg.DeviceName = "6666"
 			di, err := svcCtx.DeviceCache.GetData(ctx, devices.Core{
 				ProductID:  publishMsg.ProductID,
 				DeviceName: publishMsg.DeviceName,
