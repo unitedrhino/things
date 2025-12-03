@@ -1073,9 +1073,10 @@ type DeviceSchemaIndexResp struct {
 }
 
 type DeviceSchemaMultiCreateReq struct {
-	ProductID  string          `json:"productID"` //产品id
-	DeviceName string          `json:"deviceName"`
-	List       []*DeviceSchema `json:"list"` //分页信息,只获取一个则不填
+	ProductID   string          `json:"productID"` //产品id
+	DeviceName  string          `json:"deviceName"`
+	Identifiers []string        `json:"identifiers,optional"` //导入的标识符列表
+	List        []*DeviceSchema `json:"list,optional"`        //如果没有填标识符列表取这里
 }
 
 type DeviceSchemaMultiDeleteReq struct {

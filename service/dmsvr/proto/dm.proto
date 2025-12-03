@@ -2076,6 +2076,7 @@ message DeviceSchemaMultiCreateReq{
   string productID = 1;
   string deviceName =3;
   repeated DeviceSchema list = 2;//物模型信息
+  repeated  string identifiers = 4;           //要导入的标识符列表
 }
 
 

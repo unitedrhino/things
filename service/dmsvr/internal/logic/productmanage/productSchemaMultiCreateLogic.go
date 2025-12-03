@@ -36,7 +36,7 @@ func (l *ProductSchemaMultiCreateLogic) ProductSchemaMultiCreate(in *dm.ProductS
 	if err := ctxs.IsRoot(l.ctx); err != nil {
 		return nil, err
 	}
-	if len(in.Identifiers) == 0 || len(in.List) == 0 {
+	if len(in.Identifiers) == 0 && len(in.List) == 0 {
 		return &dm.Empty{}, errors.Parameter.AddMsg("identifiers list must set one")
 	}
 	createLogic := NewProductSchemaCreateLogic(l.ctx, l.svcCtx)

@@ -83,7 +83,8 @@ type (
     DeviceSchemaMultiCreateReq{
         ProductID string `json:"productID"`         //产品id
         DeviceName string `json:"deviceName"`
-        List []*DeviceSchema `json:"list"`           //分页信息,只获取一个则不填
+        Identifiers []string `json:"identifiers,optional"`                //导入的标识符列表
+        List []*DeviceSchema `json:"list,optional"`           //如果没有填标识符列表取这里
     }
     DeviceSchemaDeleteReq {
         ProductID string `json:"productID"`         //产品id

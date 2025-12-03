@@ -40,9 +40,31 @@ func ruleCheck(ctx context.Context, svcCtx *svc.ServiceContext, in *dm.DeviceSch
 		}
 		return nil, err
 	}
+	if len(in.Identifiers) == 0 && len(in.List) == 0 {
+		return nil, errors.Parameter.AddMsg("identifiers list must set one")
+	}
 	s, err := svcCtx.DeviceSchemaRepo.GetData(ctx, devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
 	if err != nil {
 		return nil, err
+	}
+	if len(in.Identifiers) != 0 {
+		cs, err := relationDB.NewCommonSchemaRepo(ctx).FindByFilter(ctx, relationDB.CommonSchemaFilter{Identifiers: in.Identifiers}, nil)
+		if err != nil {
+			return nil, err
+		}
+		for _, c := range cs {
+			_, ok := s.Property[c.Identifier]
+			if ok {
+				continue
+			}
+			c.Tag = schema.TagDeviceOptional
+			ret = append(ret, &relationDB.DmDeviceSchema{
+				ProductID:    in.ProductID,
+				DeviceName:   in.DeviceName,
+				Identifier:   c.Identifier,
+				DmSchemaCore: c.DmSchemaCore,
+			})
+		}
 	}
 	for _, v := range in.List {
 		var checkOptions []logic.CheckOption
