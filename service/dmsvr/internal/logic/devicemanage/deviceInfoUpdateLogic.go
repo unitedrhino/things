@@ -14,6 +14,7 @@ import (
 	"gitee.com/unitedrhino/share/oss"
 	"gitee.com/unitedrhino/share/oss/common"
 	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/share/tools"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	otamanagelogic "gitee.com/unitedrhino/things/service/dmsvr/internal/logic/otamanage"
@@ -49,16 +50,17 @@ func NewDeviceInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 	}
 }
 
-func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, data *dm.DeviceInfo) error {
+func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, data *dm.DeviceInfo) (*tools.AfterFunc, error) {
+	var afterFunc tools.AfterFunc
 	uc := ctxs.GetUserCtx(l.ctx)
 	var isUpdateTag bool
 	if data.AreaID != 0 && data.AreaID != int64(old.AreaID) {
 		old.AreaID = dataType.AreaID(data.AreaID)
 		ai, err := l.svcCtx.AreaCache.GetData(l.ctx, data.AreaID)
 		if err != nil {
-			return err
+			return nil, err
 		}
-		ctxs.GoNewCtx(l.ctx, func(ctx2 context.Context) {
+		afterFunc.AddFunc(func(ctx context.Context) {
 			time.Sleep(2 * time.Second)
 			logic.FillAreaDeviceCount(l.ctx, l.svcCtx, ai)
 			if old.AreaID > def.NotClassified {
@@ -93,13 +95,12 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 			old.Adcode = data.Adcode.GetValue()
 		}
 		if data.ProjectID != 0 && data.ProjectID != int64(old.ProjectID) {
-			ctxs.GoNewCtx(l.ctx, func(ctx2 context.Context) {
-				time.Sleep(2 * time.Second)
-				logic.FillProjectDeviceCount(ctx2, l.svcCtx, data.ProjectID, int64(old.ProjectID))
+			afterFunc.AddFunc(func(ctx context.Context) {
+				BindChange(ctx, l.svcCtx, nil, devices.Core{ProductID: old.ProductID, DeviceName: old.DeviceName}, data.ProjectID)
+				logic.FillProjectDeviceCount(ctx, l.svcCtx, data.ProjectID, int64(old.ProjectID))
 			})
 			old.ProjectID = dataType.ProjectID(data.ProjectID)
 			isUpdateTag = true
-			BindChange(l.ctx, l.svcCtx, nil, devices.Core{ProductID: old.ProductID, DeviceName: old.DeviceName}, data.ProjectID)
 		}
 		if data.ProtocolConf != nil {
 			old.ProtocolConf = data.ProtocolConf
@@ -110,33 +111,35 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 
 		if data.LogLevel != def.Unknown && data.LogLevel != old.LogLevel { //如果日志等级更新了,需要通知设备
 			old.LogLevel = data.LogLevel
-			resp := deviceMsg.NewRespCommonMsg(l.ctx, deviceMsg.GetStatus, devices.GenMsgToken(l.ctx, l.svcCtx.NodeID))
-			resp.Data = map[string]any{"logLevel": data.LogLevel}
+			afterFunc.AddFunc(func(ctx context.Context) {
+				resp := deviceMsg.NewRespCommonMsg(ctx, deviceMsg.GetStatus, devices.GenMsgToken(ctx, l.svcCtx.NodeID))
+				resp.Data = map[string]any{"logLevel": data.LogLevel}
 
-			msg := deviceMsg.PublishMsg{
-				Handle:     devices.Log,
-				Type:       msgSdkLog.TypeUpdate,
-				Payload:    resp.AddStatus(errors.OK, false).Bytes(),
-				Timestamp:  time.Now().UnixMilli(),
-				ProductID:  data.ProductID,
-				DeviceName: data.DeviceName,
-			}
-			di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: data.ProductID, DeviceName: data.DeviceName})
-			if err != nil {
-				l.Error(err)
-				return err
-			}
-			er := l.svcCtx.PubDev.PublishToDev(l.ctx, di, &msg)
-			if er != nil {
-				l.Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)
-			}
+				msg := deviceMsg.PublishMsg{
+					Handle:     devices.Log,
+					Type:       msgSdkLog.TypeUpdate,
+					Payload:    resp.AddStatus(errors.OK, false).Bytes(),
+					Timestamp:  time.Now().UnixMilli(),
+					ProductID:  data.ProductID,
+					DeviceName: data.DeviceName,
+				}
+				di, err := l.svcCtx.DeviceCache.GetData(ctx, devices.Core{ProductID: data.ProductID, DeviceName: data.DeviceName})
+				if err != nil {
+					l.Error(err)
+					return
+				}
+				er := l.svcCtx.PubDev.PublishToDev(ctx, di, &msg)
+				if er != nil {
+					l.Errorf("%s.PublishToDev failure err:%v", utils.FuncName(), er)
+				}
+			})
 		}
 		if data.ExpTime != nil {
 			if data.ExpTime.Value == 0 && old.UserID > def.RootNode { //如果是主动传0且被绑定了则需要看下过期时间是否正确
 				pi, err := l.svcCtx.ProductCache.GetData(l.ctx, data.ProductID)
 				if err != nil && !errors.Cmp(err, errors.NotFind) {
 					l.Error(err)
-					return err
+					return nil, err
 				}
 				if pi.TrialTime.GetValue() != 0 {
 					old.ExpTime = sql.NullTime{
@@ -159,79 +162,86 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 		if data.Version != nil {
 			if old.Version != data.Version.GetValue() {
 				old.Version = data.Version.GetValue()
-				//如果不一样则需要判断是否是ota升级的,如果是,则需要更新升级状态
-				dfs, err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).FindByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
-					ProductID:   old.ProductID,
-					DeviceNames: []string{old.DeviceName},
-					DestVersion: data.Version.GetValue(),
-					Statues: []int64{msgOta.DeviceStatusConfirm, msgOta.DeviceStatusQueued,
-						msgOta.DeviceStatusNotified, msgOta.DeviceStatusInProgress,
-						msgOta.DeviceStatusCanceled, msgOta.DeviceStatusFailure}, //除了成功的都过滤出来
-				}, nil)
-				if err != nil {
-					if !errors.Cmp(err, errors.NotFind) {
-						return err
-					}
-				} else {
-					var once sync.Once
-					for _, df := range dfs {
-						df.Step = 100
-						df.Status = msgOta.DeviceStatusSuccess
-						df.Detail = "升级成功"
-						err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).Update(l.ctx, df)
-						if err != nil {
-							return err
-						}
-						old.NeedConfirmVersion = ""
-						old.NeedConfirmJobID = 0
-						once.Do(func() {
-							appMsg := application.OtaReport{
-								Device:    devices.Core{ProductID: old.ProductID, DeviceName: old.DeviceName},
-								Timestamp: time.Now().UnixMilli(), Status: df.Status, Detail: df.Detail, Step: df.Step,
-							}
-							err = l.svcCtx.UserSubscribe.Publish(l.ctx, userSubscribe.DeviceOtaReport, appMsg, map[string]any{
-								"productID":  old.ProductID,
-								"deviceName": old.DeviceName,
-							}, map[string]any{
-								"projectID": old.ProjectID,
-							}, map[string]any{
-								"projectID": cast.ToString(old.ProjectID),
-								"areaID":    cast.ToString(old.AreaID),
-							})
-						})
-					}
-				}
-			} else {
-				//检查是否有待升级的任务并推送
-				dfs, err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).FindByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
-					ProductID:    old.ProductID,
-					DeviceNames:  []string{old.DeviceName},
-					DestVersion:  data.Version.GetValue(),
-					WithJob:      true,
-					WithFirmware: true,
-					Statues:      []int64{msgOta.DeviceStatusQueued},
-				}, nil)
-				if err != nil {
-					if !errors.Cmp(err, errors.NotFind) {
-						return err
-					}
-				}
-				if len(dfs) > 0 && dfs[0].Job != nil && dfs[0].Firmware != nil {
-					dfs[0].Job.Firmware = dfs[0].Firmware
-					payload, err := otamanagelogic.GenPayload(l.ctx, l.svcCtx, dfs[0].Job)
-					if err != nil {
-						return err
-					}
-					pi, err := l.svcCtx.ProductCache.GetData(l.ctx, dfs[0].Firmware.ProductID)
-					if err != nil {
-						return err
-					}
-					err = otamanagelogic.PushMessageToDevice(l.ctx, l.svcCtx, dfs[0], pi, payload)
+				afterFunc.AddFunc(func(ctx context.Context) {
+					//如果不一样则需要判断是否是ota升级的,如果是,则需要更新升级状态
+					dfs, err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).FindByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
+						ProductID:   old.ProductID,
+						DeviceNames: []string{old.DeviceName},
+						DestVersion: data.Version.GetValue(),
+						Statues: []int64{msgOta.DeviceStatusConfirm, msgOta.DeviceStatusQueued,
+							msgOta.DeviceStatusNotified, msgOta.DeviceStatusInProgress,
+							msgOta.DeviceStatusCanceled, msgOta.DeviceStatusFailure}, //除了成功的都过滤出来
+					}, nil)
 					if err != nil {
 						l.Error(err)
-						return err
+					} else {
+						var once sync.Once
+						for _, df := range dfs {
+							df.Step = 100
+							df.Status = msgOta.DeviceStatusSuccess
+							df.Detail = "升级成功"
+							err := relationDB.NewOtaFirmwareDeviceRepo(ctx).Update(ctx, df)
+							if err != nil {
+								l.Error(err)
+							}
+							old.NeedConfirmVersion = ""
+							old.NeedConfirmJobID = 0
+							once.Do(func() {
+								appMsg := application.OtaReport{
+									Device:    devices.Core{ProductID: old.ProductID, DeviceName: old.DeviceName},
+									Timestamp: time.Now().UnixMilli(), Status: df.Status, Detail: df.Detail, Step: df.Step,
+								}
+								err = l.svcCtx.UserSubscribe.Publish(ctx, userSubscribe.DeviceOtaReport, appMsg, map[string]any{
+									"productID":  old.ProductID,
+									"deviceName": old.DeviceName,
+								}, map[string]any{
+									"projectID": old.ProjectID,
+								}, map[string]any{
+									"projectID": cast.ToString(old.ProjectID),
+									"areaID":    cast.ToString(old.AreaID),
+								})
+							})
+						}
+
 					}
-				}
+				})
+
+			} else {
+				afterFunc.AddFunc(func(ctx context.Context) {
+					//检查是否有待升级的任务并推送
+					dfs, err := relationDB.NewOtaFirmwareDeviceRepo(l.ctx).FindByFilter(l.ctx, relationDB.OtaFirmwareDeviceFilter{
+						ProductID:    old.ProductID,
+						DeviceNames:  []string{old.DeviceName},
+						DestVersion:  data.Version.GetValue(),
+						WithJob:      true,
+						WithFirmware: true,
+						Statues:      []int64{msgOta.DeviceStatusQueued},
+					}, nil)
+					if err != nil {
+						if !errors.Cmp(err, errors.NotFind) {
+							l.Error(err)
+							return
+						}
+					}
+					if len(dfs) > 0 && dfs[0].Job != nil && dfs[0].Firmware != nil {
+						dfs[0].Job.Firmware = dfs[0].Firmware
+						payload, err := otamanagelogic.GenPayload(l.ctx, l.svcCtx, dfs[0].Job)
+						if err != nil {
+							l.Error(err)
+							return
+						}
+						pi, err := l.svcCtx.ProductCache.GetData(l.ctx, dfs[0].Firmware.ProductID)
+						if err != nil {
+							l.Error(err)
+							return
+						}
+						err = otamanagelogic.PushMessageToDevice(l.ctx, l.svcCtx, dfs[0], pi, payload)
+						if err != nil {
+							l.Error(err)
+							return
+						}
+					}
+				})
 			}
 
 		}
@@ -275,31 +285,35 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 
 	if data.DeviceImg != "" && data.IsUpdateDeviceImg == true { //如果填了参数且不等于原来的,说明修改头像,需要处理
 		if old.DeviceImg != "" {
-			err := l.svcCtx.OssClient.PrivateBucket().Delete(l.ctx, old.DeviceImg, common.OptionKv{})
-			if err != nil {
-				l.Errorf("Delete file err path:%v,err:%v", old.DeviceImg, err)
-			}
+			afterFunc.AddFunc(func(ctx context.Context) {
+				err := l.svcCtx.OssClient.PrivateBucket().Delete(ctx, old.DeviceImg, common.OptionKv{})
+				if err != nil {
+					l.Errorf("Delete file err path:%v,err:%v", old.DeviceImg, err)
+				}
+			})
 		}
 		nwePath := oss.GenFilePath(l.ctx, l.svcCtx.Config.Name, oss.BusinessDeviceManage, oss.SceneDeviceImg,
 			fmt.Sprintf("%s/%s/%s", data.ProductID, data.DeviceName, oss.GetFileNameWithPath(data.DeviceImg)))
 		path, err := l.svcCtx.OssClient.PrivateBucket().CopyFromTempBucket(data.DeviceImg, nwePath)
 		if err != nil {
-			return errors.System.AddDetail(err)
+			return nil, errors.System.AddDetail(err)
 		}
 		old.DeviceImg = path
 	}
 	if data.File != "" && data.IsUpdateFile == true { //如果填了参数且不等于原来的,说明修改头像,需要处理
 		if old.File != "" {
-			err := l.svcCtx.OssClient.PrivateBucket().Delete(l.ctx, old.File, common.OptionKv{})
-			if err != nil {
-				l.Errorf("Delete file err path:%v,err:%v", old.File, err)
-			}
+			afterFunc.AddFunc(func(ctx context.Context) {
+				err := l.svcCtx.OssClient.PrivateBucket().Delete(ctx, old.File, common.OptionKv{})
+				if err != nil {
+					l.Errorf("Delete file err path:%v,err:%v", old.File, err)
+				}
+			})
 		}
 		nwePath := oss.GenFilePath(l.ctx, l.svcCtx.Config.Name, oss.BusinessDeviceManage, oss.SceneFile,
 			fmt.Sprintf("%s/%s/%s", data.ProductID, data.DeviceName, oss.GetFileNameWithPath(data.File)))
 		path, err := l.svcCtx.OssClient.PrivateBucket().CopyFromTempBucket(data.File, nwePath)
 		if err != nil {
-			return errors.System.AddDetail(err)
+			return nil, errors.System.AddDetail(err)
 		}
 		old.File = path
 	}
@@ -349,14 +363,17 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 	}
 
 	if isUpdateTag {
-		err := logic.UpdateDevice(l.ctx, l.svcCtx, []*devices.Core{
-			{ProductID: old.ProductID, DeviceName: old.DeviceName}},
-			devices.Affiliation{ProjectID: int64(old.ProjectID), AreaID: int64(old.AreaID), AreaIDPath: string(old.AreaIDPath)})
-		if err != nil {
-			return err
-		}
+		afterFunc.AddTxFunc(func(tx *stores.DB) error {
+			err := logic.UpdateDevice(l.ctx, l.svcCtx, []*devices.Core{
+				{ProductID: old.ProductID, DeviceName: old.DeviceName}},
+				devices.Affiliation{ProjectID: int64(old.ProjectID), AreaID: int64(old.AreaID), AreaIDPath: string(old.AreaIDPath)})
+			if err != nil {
+				return err
+			}
+			return nil
+		})
 	}
-	return nil
+	return &afterFunc, nil
 }
 
 // 更新设备
@@ -378,7 +395,7 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Empty, 
 		return nil, errors.Database.AddDetail(err)
 	}
 
-	err = l.SetDevicePoByDto(dmDiPo, in)
+	afterFunc, err := l.SetDevicePoByDto(dmDiPo, in)
 	if err != nil {
 		return nil, err
 	}
@@ -393,9 +410,10 @@ func (l *DeviceInfoUpdateLogic) DeviceInfoUpdate(in *dm.DeviceInfo) (*dm.Empty, 
 			return nil, err
 		}
 	}
-	err = l.DiDB.Update(l.ctx, dmDiPo)
+	err = afterFunc.Handle(l.ctx, func(tx *stores.DB) error {
+		return relationDB.NewDeviceInfoRepo(tx).Update(l.ctx, dmDiPo)
+	})
 	if err != nil {
-		l.Errorf("DeviceInfoUpdate.DeviceInfo.Update err=%+v", err)
 		return nil, err
 	}
 

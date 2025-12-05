@@ -81,6 +81,7 @@ func (s *DeviceSubServer) ExtMsg(topic string, payload []byte) error {
 		Nonce:      req.Payload.Nonce,
 		Timestamp:  req.Payload.Timestamp,
 		Signature:  req.Payload.Signature,
+		RetEnc:     req.Payload.RetEnc,
 	})
 	if err != nil {
 		s.Error(err)

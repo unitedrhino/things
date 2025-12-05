@@ -2,8 +2,11 @@ package productmanagelogic
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
+	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/share/tools"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	commonschemalogic "gitee.com/unitedrhino/things/service/dmsvr/internal/logic/schemamanage"
@@ -12,7 +15,6 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/spf13/cast"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -34,7 +36,8 @@ func NewProductSchemaUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext
 	}
 }
 
-func (l *ProductSchemaUpdateLogic) ruleCheck(in *dm.ProductSchemaUpdateReq) (*relationDB.DmSchemaInfo, *relationDB.DmSchemaInfo, error) {
+func (l *ProductSchemaUpdateLogic) ruleCheck(in *dm.ProductSchemaUpdateReq) (*relationDB.DmSchemaInfo, *tools.AfterFunc, error) {
+	var afterUpdate tools.AfterFunc
 	_, err := l.PiDB.FindOneByFilter(l.ctx, relationDB.ProductFilter{ProductIDs: []string{in.Info.ProductID}})
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {
@@ -56,9 +59,6 @@ func (l *ProductSchemaUpdateLogic) ruleCheck(in *dm.ProductSchemaUpdateReq) (*re
 	}
 	newPo := logic.ToProductSchemaPo(in.Info)
 	newPo.ID = po.ID
-	if in.Info.Affordance != nil && po.Tag == schema.TagCustom {
-		po.Affordance = newPo.Affordance
-	}
 	if in.Info.Name != nil {
 		po.Name = newPo.Name
 	}
@@ -94,10 +94,28 @@ func (l *ProductSchemaUpdateLogic) ruleCheck(in *dm.ProductSchemaUpdateReq) (*re
 	if in.Info.ExtendConfig != "" {
 		po.ExtendConfig = newPo.ExtendConfig
 	}
-	if err := commonschemalogic.CheckAffordance(po.Identifier, &newPo.DmSchemaCore); err != nil {
-		return nil, nil, err
+	if in.Info.Affordance != nil && po.Tag == schema.TagCustom && in.Info.Affordance.String() != po.Affordance {
+		po.Affordance = newPo.Affordance
+		if err := commonschemalogic.CheckAffordance(po.Identifier, &po.DmSchemaCore); err != nil {
+			return nil, nil, err
+		}
+		if po.Type == schema.AffordanceTypeProperty {
+			afterUpdate.AddTxFunc(func(db *stores.DB) error {
+				if err := l.svcCtx.SchemaManaRepo.DeleteProperty(
+					l.ctx, relationDB.ToPropertyDo(po.Identifier, &po.DmSchemaCore), in.Info.ProductID, in.Info.Identifier); err != nil {
+					l.Errorf("%s.DeleteProperty failure,err:%v", utils.FuncName(), err)
+					return err
+				}
+				if err := l.svcCtx.SchemaManaRepo.CreateProperty(
+					l.ctx, relationDB.ToPropertyDo(po.Identifier, &po.DmSchemaCore), in.Info.ProductID); err != nil {
+					l.Errorf("%s.CreateProperty failure,err:%v", utils.FuncName(), err)
+					return err
+				}
+				return nil
+			})
+		}
 	}
-	return po, newPo, nil
+	return po, &afterUpdate, nil
 }
 
 // 更新产品物模型
@@ -105,28 +123,14 @@ func (l *ProductSchemaUpdateLogic) ProductSchemaUpdate(in *dm.ProductSchemaUpdat
 	if err := ctxs.IsRoot(l.ctx); err != nil {
 		return nil, err
 	}
-	po, newPo, err := l.ruleCheck(in)
+	po, afterFunc, err := l.ruleCheck(in)
 	if err != nil {
 		return nil, err
 	}
-	if schema.AffordanceType(po.Type) == schema.AffordanceTypeProperty {
-		if err := l.svcCtx.SchemaManaRepo.DeleteProperty(
-			l.ctx, relationDB.ToPropertyDo(po.Identifier, &po.DmSchemaCore), in.Info.ProductID, in.Info.Identifier); err != nil {
-			l.Errorf("%s.DeleteProperty failure,err:%v", utils.FuncName(), err)
-			return nil, errors.Database.AddDetail(err)
-		}
-	}
-	if schema.AffordanceType(newPo.Type) == schema.AffordanceTypeProperty {
-		if err := l.svcCtx.SchemaManaRepo.CreateProperty(
-			l.ctx, relationDB.ToPropertyDo(po.Identifier, &newPo.DmSchemaCore), in.Info.ProductID); err != nil {
-			l.Errorf("%s.CreateProperty failure,err:%v", utils.FuncName(), err)
-			return nil, errors.Database.AddDetail(err)
-		}
-	}
-	err = l.PsDB.Update(l.ctx, newPo)
-	if err != nil {
-		return nil, err
-	}
+	afterFunc.Handle(l.ctx, func(tx *stores.DB) error {
+		return relationDB.NewProductSchemaRepo(tx).Update(l.ctx, po)
+	})
+
 	//清除缓存
 	err = l.svcCtx.ProductSchemaRepo.SetData(l.ctx, in.Info.ProductID, nil)
 	if err != nil {

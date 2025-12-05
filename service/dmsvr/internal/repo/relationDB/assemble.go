@@ -2,6 +2,7 @@ package relationDB
 
 import (
 	"encoding/json"
+
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/shadow"
@@ -17,7 +18,7 @@ func ToPropertyPo(in *schema.Property) DmSchemaCore {
 	}
 	defineStr, _ := json.Marshal(define)
 	return DmSchemaCore{
-		Type:         int64(schema.AffordanceTypeProperty),
+		Type:         schema.AffordanceTypeProperty,
 		Name:         in.Name,
 		ExtendConfig: in.ExtendConfig,
 		Desc:         in.Desc,
@@ -67,7 +68,7 @@ func ToEventPo(in *schema.Event) DmSchemaCore {
 	}
 	defineStr, _ := json.Marshal(define)
 	return DmSchemaCore{
-		Type:              int64(schema.AffordanceTypeEvent),
+		Type:              schema.AffordanceTypeEvent,
 		Name:              in.Name,
 		Desc:              in.Desc,
 		ExtendConfig:      in.ExtendConfig,
@@ -105,7 +106,7 @@ func ToActionPo(in *schema.Action) DmSchemaCore {
 	}
 	defineStr, _ := json.Marshal(define)
 	return DmSchemaCore{
-		Type:              int64(schema.AffordanceTypeAction),
+		Type:              schema.AffordanceTypeAction,
 		Name:              in.Name,
 		ExtendConfig:      in.ExtendConfig,
 		Desc:              in.Desc,

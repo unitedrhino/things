@@ -10,7 +10,7 @@ import (
 func ToCommonSchemaRpc(info *relationDB.DmCommonSchema) *dm.CommonSchemaInfo {
 	db := &dm.CommonSchemaInfo{
 		Id:                info.ID,
-		Type:              info.Type,
+		Type:              int64(info.Type),
 		Identifier:        info.Identifier,
 		ExtendConfig:      info.ExtendConfig,
 		Name:              utils.ToRpcNullString(&info.Name),
@@ -34,7 +34,7 @@ func ToCommonSchemaPo(info *dm.CommonSchemaInfo) *relationDB.DmCommonSchema {
 		Identifier: info.Identifier,
 		DmSchemaCore: relationDB.DmSchemaCore{
 			Tag:               schema.TagOptional,
-			Type:              info.Type,
+			Type:              schema.AffordanceType(info.Type),
 			ExtendConfig:      info.ExtendConfig,
 			Name:              info.Name.GetValue(),
 			Desc:              info.Desc.GetValue(),

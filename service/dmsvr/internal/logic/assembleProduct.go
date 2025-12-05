@@ -64,7 +64,7 @@ func ToProductSchemaRpc(info *relationDB.DmSchemaInfo) *dm.ProductSchemaInfo {
 	db := &dm.ProductSchemaInfo{
 		ProductID:         info.ProductID,
 		Tag:               info.Tag,
-		Type:              info.Type,
+		Type:              int64(info.Type),
 		Identifier:        info.Identifier,
 		ExtendConfig:      info.ExtendConfig,
 		Name:              utils.ToRpcNullString(&info.Name),

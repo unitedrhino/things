@@ -2,12 +2,14 @@ package devicemanagelogic
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	commonschemalogic "gitee.com/unitedrhino/things/service/dmsvr/internal/logic/schemamanage"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/share/devices"
+	"gitee.com/unitedrhino/things/share/domain/schema"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -47,9 +49,6 @@ func (l *DeviceSchemaUpdateLogic) DeviceSchemaUpdate(in *dm.DeviceSchema) (*dm.E
 	}
 	newPo := utils.Copy[relationDB.DmDeviceSchema](in)
 	newPo.ID = po.ID
-	if in.Affordance != nil {
-		po.Affordance = newPo.Affordance
-	}
 	if in.Name != nil {
 		po.Name = newPo.Name
 	}
@@ -83,8 +82,11 @@ func (l *DeviceSchemaUpdateLogic) DeviceSchemaUpdate(in *dm.DeviceSchema) (*dm.E
 	if in.ExtendConfig != "" {
 		po.ExtendConfig = newPo.ExtendConfig
 	}
-	if err := commonschemalogic.CheckAffordance(po.Identifier, &newPo.DmSchemaCore); err != nil {
-		return nil, err
+	if in.Affordance != nil && po.Tag == schema.TagDeviceCustom && in.Affordance.String() != po.Affordance {
+		po.Affordance = newPo.Affordance
+		if err := commonschemalogic.CheckAffordance(po.Identifier, &po.DmSchemaCore); err != nil {
+			return nil, err
+		}
 	}
 	err = relationDB.NewDeviceSchemaRepo(l.ctx).Update(l.ctx, po)
 	if err != nil {
