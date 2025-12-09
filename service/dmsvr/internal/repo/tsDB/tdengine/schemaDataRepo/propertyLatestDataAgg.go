@@ -137,7 +137,7 @@ func (d *DeviceDataRepo) getPropertyLatestArgFuncSelect(
 			selects2 = append(selects2, d.GetSpecsColumnWithArgFunc2(sdef.Specs, agg))
 		}
 	} else {
-		getOnCol("`param`")
+		getOnCol("param")
 	}
 
 	sql2 = sq.Select(selects2...)
