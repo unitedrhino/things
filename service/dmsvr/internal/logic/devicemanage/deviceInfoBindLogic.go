@@ -62,7 +62,7 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 		l.Error(err)
 		return nil, err
 	}
-	if uc.ProjectAuth == nil || uc.ProjectAuth[uc.ProjectID] == nil {
+	if !uc.IsAdmin && (uc.ProjectAuth == nil || uc.ProjectAuth[uc.ProjectID] == nil) {
 		return nil, errors.Permissions.AddMsg("无权限")
 	}
 	diDB := relationDB.NewDeviceInfoRepo(l.ctx)
@@ -102,7 +102,7 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 			}
 		}
 	}
-	if pi.BindLevel < 3 && di.IsOnline != def.True { //如果是中绑定和强绑定,如果设备不在线,不允许绑定
+	if !in.IsIgnoreOffline && pi.BindLevel < 3 && di.IsOnline != def.True { //如果是中绑定和强绑定,如果设备不在线,不允许绑定
 		return nil, errors.NotOnline
 	}
 	if string(di.TenantCode) == uc.TenantCode &&
