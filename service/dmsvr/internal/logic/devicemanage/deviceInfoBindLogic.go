@@ -105,14 +105,14 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 		}
 	}
 
-	//if string(di.TenantCode) == uc.TenantCode &&
-	//	int64(di.ProjectID) == uc.ProjectID { //如果已经绑定到自己名下则不允许重复绑定
-	//	if pi.BindLevel == product.BindLeveHard1 {
-	//		return nil, errors.DeviceBound.WithMsg("设备已存在，请返回设备列表查看该设备")
-	//	} else {
-	//		return &dm.Empty{}, nil
-	//	}
-	//}
+	if string(di.TenantCode) == uc.TenantCode &&
+		int64(di.ProjectID) == uc.ProjectID { //如果已经绑定到自己名下则不允许重复绑定
+		if pi.BindLevel == product.BindLeveHard1 {
+			return nil, errors.DeviceBound.WithMsg("设备已存在，请返回设备列表查看该设备")
+		} else {
+			return &dm.Empty{}, nil
+		}
+	}
 	if !in.IsIgnoreSlot && !in.IsIgnoreOffline && pi.BindLevel < 3 && di.IsOnline != def.True { //如果是中绑定和强绑定,如果设备不在线,不允许绑定
 		return nil, errors.NotOnline
 	}
