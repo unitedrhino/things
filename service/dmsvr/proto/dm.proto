@@ -2267,7 +2267,10 @@ message DeviceInfoBindReq{
   int64 areaID =2;
   string token =3;//中绑定的token
   bool isIgnoreOffline =4; //是否忽略设备离线
+  bool isIgnoreSlot =5;//使用插槽
+  map<string,string> expand =7; //拓展字段
 }
+
 
 message DeviceProfileIndexReq{
   DeviceCore device =1;

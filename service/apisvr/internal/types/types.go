@@ -287,9 +287,10 @@ type DeviceInfo struct {
 }
 
 type DeviceInfoBindReq struct {
-	Device DeviceCore `json:"device"`
-	AreaID int64      `json:"areaID,optional,string"`
-	Token  string     `json:"token,optional"` //配网token,中绑定需要
+	Device DeviceCore        `json:"device"`
+	AreaID int64             `json:"areaID,optional,string"`
+	Token  string            `json:"token,optional"`  //配网token,中绑定需要
+	Expand map[string]string `json:"expand,optional"` //拓展字段
 }
 
 type DeviceInfoCanBindReq struct {

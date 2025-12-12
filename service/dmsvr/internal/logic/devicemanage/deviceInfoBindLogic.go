@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
+	"gitee.com/unitedrhino/core/service/syssvr/sysExport"
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
@@ -15,6 +16,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/share/devices"
+	"gitee.com/unitedrhino/things/share/thingsSlot"
 	"gitee.com/unitedrhino/things/share/topics"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
@@ -102,16 +104,17 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 			}
 		}
 	}
-	if !in.IsIgnoreOffline && pi.BindLevel < 3 && di.IsOnline != def.True { //如果是中绑定和强绑定,如果设备不在线,不允许绑定
+
+	//if string(di.TenantCode) == uc.TenantCode &&
+	//	int64(di.ProjectID) == uc.ProjectID { //如果已经绑定到自己名下则不允许重复绑定
+	//	if pi.BindLevel == product.BindLeveHard1 {
+	//		return nil, errors.DeviceBound.WithMsg("设备已存在，请返回设备列表查看该设备")
+	//	} else {
+	//		return &dm.Empty{}, nil
+	//	}
+	//}
+	if !in.IsIgnoreSlot && !in.IsIgnoreOffline && pi.BindLevel < 3 && di.IsOnline != def.True { //如果是中绑定和强绑定,如果设备不在线,不允许绑定
 		return nil, errors.NotOnline
-	}
-	if string(di.TenantCode) == uc.TenantCode &&
-		int64(di.ProjectID) == uc.ProjectID { //如果已经绑定到自己名下则不允许重复绑定
-		if pi.BindLevel == product.BindLeveHard1 {
-			return nil, errors.DeviceBound.WithMsg("设备已存在，请返回设备列表查看该设备")
-		} else {
-			return &dm.Empty{}, nil
-		}
 	}
 
 	dpi, err := l.svcCtx.TenantCache.GetData(l.ctx, def.TenantCodeDefault)
@@ -134,6 +137,17 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 			//只有归属于default租户和自己租户的才可以
 			l.Infof("DeviceCantBound di:%v uc:%v", utils.Fmt(di), utils.Fmt(uc))
 			return nil, errors.DeviceCantBound.WithMsg("设备已被其他用户绑定。如需解绑，请按照相关流程操作。")
+		}
+	}
+
+	if !in.IsIgnoreSlot {
+		tt, _ := l.svcCtx.Slot.GetData(l.ctx, sysExport.GenSlotCacheKey(thingsSlot.CodeDeviceBind, pi.ProtocolCode))
+		if tt != nil {
+			err := tt.Request(l.ctx, in, nil)
+			if err != nil {
+				l.Error(err)
+				return nil, err
+			}
 		}
 	}
 

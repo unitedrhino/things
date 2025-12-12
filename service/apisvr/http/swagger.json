@@ -8171,6 +8171,10 @@
         "token": {
           "type": "string",
           "description": "配网token,中绑定需要"
+        },
+        "expand": {
+          "type": "object",
+          "description": "拓展字段"
         }
       },
       "title": "DeviceInfoBindReq",
