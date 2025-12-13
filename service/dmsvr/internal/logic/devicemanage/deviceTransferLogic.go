@@ -143,6 +143,10 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 		UserID = in.UserID
 	case DeviceTransferToProject:
 		ProjectID = dataType.ProjectID(in.ProjectID)
+		pi, err = l.svcCtx.ProjectCache.GetData(l.ctx, in.ProjectID)
+		if err != nil {
+			return nil, err
+		}
 		if in.AreaID > def.NotClassified {
 			ai, err := l.svcCtx.AreaCache.GetData(l.ctx, in.AreaID)
 			if err != nil {
@@ -154,12 +158,8 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 			AreaID = dataType.AreaID(ai.AreaID)
 			AreaIDPath = ai.AreaIDPath
 			changeAreas = append(changeAreas, ai)
-			projectIDSet[ai.ProjectID] = struct{}{}
 		}
-		pi, err = l.svcCtx.ProjectCache.GetData(l.ctx, in.ProjectID)
-		if err != nil {
-			return nil, err
-		}
+		projectIDSet[in.ProjectID] = struct{}{}
 		if ctxs.IsRoot(l.ctx) != nil && pi.TenantCode != uc.TenantCode {
 			return nil, errors.Permissions.AddMsg("非超管不能转移到其他租户")
 		}
