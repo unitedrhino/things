@@ -492,24 +492,9 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 			return nil
 		}
 		ctx = ctxs.WithRoot(ctx)
-		dis, err := relationDB.NewDeviceInfoRepo(ctx).FindByFilter(ctx, relationDB.DeviceFilter{AreaIDs: value.IDs}, nil)
+		err = relationDB.NewDeviceInfoRepo(ctx).UpdateWithField(ctx, relationDB.DeviceFilter{AreaIDs: value.IDs}, map[string]any{"area_id": def.NotClassified})
 		if err != nil {
-			logx.WithContext(ctx).Error(err)
-			return err
-		}
-		var devs []*dm.DeviceCore
-		for _, v := range dis {
-			devs = append(devs, &dm.DeviceCore{
-				ProductID:  v.ProductID,
-				DeviceName: v.DeviceName,
-			})
-		}
-		_, err = devicemanagelogic.NewDeviceInfoMultiUpdateLogic(ctx, svcCtx).DeviceInfoMultiUpdate(&dm.DeviceInfoMultiUpdateReq{
-			Devices: devs,
-			AreaID:  def.NotClassified,
-		})
-		if err != nil {
-			logx.WithContext(ctx).Errorf("DeviceInfoMultiUpdate dev:%v err:%v", utils.Fmt(devs), err)
+			logx.WithContext(ctx).Errorf("DeviceInfoMultiUpdate  err:%v", err)
 		}
 		return nil
 	})
