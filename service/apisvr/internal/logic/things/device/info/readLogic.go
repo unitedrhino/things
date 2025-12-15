@@ -2,6 +2,7 @@ package info
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
@@ -36,5 +37,5 @@ func (l *ReadLogic) Read(req *types.DeviceInfoReadReq) (resp *types.DeviceInfo, 
 		l.Errorf("%s.rpc.GetDeviceInfo req=%v err=%+v", utils.FuncName(), req, er)
 		return nil, er
 	}
-	return things.InfoToApi(l.ctx, l.svcCtx, dmResp, things.DeviceInfoWith{Owner: req.WithOwner, Properties: req.WithProperties, PropertyIgnoreEmpty: req.PropertyIgnoreEmpty, Profiles: req.WithProfiles, Area: req.WithArea}), nil
+	return things.InfoToApi(l.ctx, l.svcCtx, dmResp, things.DeviceInfoWith{IsOnlyCore: req.IsOnlyCore, Owner: req.WithOwner, Properties: req.WithProperties, PropertyIgnoreEmpty: req.PropertyIgnoreEmpty, Profiles: req.WithProfiles, Area: req.WithArea}), nil
 }

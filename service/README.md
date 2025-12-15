@@ -43,8 +43,6 @@ cd apisvr && goctl api swagger -filename swagger.json -api http/api.api -dir ./h
 cd apisvr && goctl api access  -api http/api.api -dir ./http && cd ..
 ```
 
-
-
 # 设备管理模块-dmsvr
 
 - rpc文件编译方法

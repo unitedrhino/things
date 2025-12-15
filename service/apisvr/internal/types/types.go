@@ -386,6 +386,7 @@ type DeviceInfoReadReq struct {
 	WithOwner           bool     `json:"withOwner,optional"`           //同时获取拥有人的信息
 	WithGateway         bool     `json:"withGateway,optional"`         //同时返回子设备绑定的网关信息
 	WithArea            bool     `json:"withArea,optional"`            //同时返回区域信息
+	IsOnlyCore          bool     `json:"isOnlyCore,optional"`          //只返回核心信息
 }
 
 type DeviceInfoSaveReq struct {
@@ -1603,7 +1604,7 @@ type ProductInfo struct {
 	AutoRegister       int64                       `json:"autoRegister,optional,range=[0:4]"`     //动态注册:1:关闭,2:打开,3:打开并自动创建设备,4:在前面的基础上绑定没有也自动创建
 	OnlineHandle       int64                       `json:"onlineHandle,optional,range=[0:2]"`     //在线处理:1: 自动 2: 永远在线
 	Secret             string                      `json:"secret,optional"`                       //动态注册产品秘钥 只读
-	TrialTime          int64                       `json:"trialTime,optional,string"`             //试用时间(单位为天,为0不限制)
+	TrialTime          *int64                      `json:"trialTime,optional,string"`             //试用时间(单位为天,为0不限制)
 	Desc               *string                     `json:"desc,optional,optional"`                //描述
 	Tags               []*Tag                      `json:"tags,optional,optional"`                // 产品tag
 	SceneMode          string                      `json:"sceneMode,optional,optional"`           //场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)

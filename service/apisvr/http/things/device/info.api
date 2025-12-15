@@ -320,6 +320,7 @@ type (
         WithOwner bool  `json:"withOwner,optional"`//同时获取拥有人的信息
         WithGateway bool  `json:"withGateway,optional"`//同时返回子设备绑定的网关信息
         WithArea bool `json:"withArea,optional"` //同时返回区域信息
+        IsOnlyCore bool `json:"isOnlyCore,optional"` //只返回核心信息
     }
     DeviceInfoMultiUpdateReq  {
            Devices []*DeviceCore `json:"devices"`
