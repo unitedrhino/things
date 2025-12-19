@@ -171,7 +171,7 @@ type (
 		// GetPropertyDataByID 根据属性id获取属性信息
 		GetPropertyDataByID(ctx context.Context, p *schema.Property, filter FilterOpt) ([]*PropertyLogData, error)
 		GetLatestPropertyDataByID(ctx context.Context, p *schema.Property, filter LatestFilter) (*PropertyLogData, error)
-		GetLatestAllPropertyData(ctx context.Context, productID, deviceName string) ([]*PropertyLogData, error)
+		GetLatestAllPropertyData(ctx context.Context, m *schema.Model, productID, deviceName string) ([]*PropertyLogData, error)
 		GetPropertyCountByID(ctx context.Context, p *schema.Property, filter FilterOpt) (int64, error)
 		// InitProduct 初始化产品的物模型相关表及日志记录表
 		InitProduct(ctx context.Context, t *schema.Model, productID string) error

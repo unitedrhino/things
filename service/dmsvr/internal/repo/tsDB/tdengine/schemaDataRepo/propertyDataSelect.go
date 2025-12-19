@@ -18,9 +18,9 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-func (d *DeviceDataRepo) GetLatestAllPropertyData(ctx context.Context, productID, deviceName string) ([]*msgThing.PropertyLogData, error) {
+func (d *DeviceDataRepo) GetLatestAllPropertyData(ctx context.Context, m *schema.Model, productID, deviceName string) ([]*msgThing.PropertyLogData, error) {
 	// 使用缓存管理器获取设备所有属性的最后记录
-	return d.cacheManager.GetPropertyAllLastRecord(ctx, productID, deviceName)
+	return d.cacheManager.GetPropertyAllLastRecord(ctx, m, productID, deviceName)
 }
 
 func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schema.Property, filter msgThing.LatestFilter) (*msgThing.PropertyLogData, error) {

@@ -154,7 +154,7 @@ func (p *PropertyCacheManager) GetPropertyLastRecord(ctx context.Context, produc
 }
 
 // GetPropertyAllLastRecord 获取设备所有属性的最后记录
-func (p *PropertyCacheManager) GetPropertyAllLastRecord(ctx context.Context, productID, deviceName string) ([]*msgThing.PropertyLogData, error) {
+func (p *PropertyCacheManager) GetPropertyAllLastRecord(ctx context.Context, m *schema.Model, productID, deviceName string) ([]*msgThing.PropertyLogData, error) {
 	// 获取所有最后记录
 	lastRecords, err := p.kv.Hgetall(GenRedisPropertyLastKey(productID, deviceName))
 	if err != nil {

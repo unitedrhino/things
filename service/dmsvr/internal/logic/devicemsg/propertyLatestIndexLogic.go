@@ -70,7 +70,7 @@ func (l *PropertyLatestIndexLogic) PropertyLatestIndex(in *dm.PropertyLatestInde
 		lastBind = di.LastBind
 	}
 	var dp = make(map[string]*msgThing.PropertyLogData)
-	datas, err := dd.GetLatestAllPropertyData(l.ctx, in.ProductID, in.DeviceName)
+	datas, err := dd.GetLatestAllPropertyData(l.ctx, temp, in.ProductID, in.DeviceName)
 	if err != nil {
 		l.Error(err)
 	} else {
