@@ -83,7 +83,7 @@ func (d *Define) FmtValue(val any) (any, error) {
 			}
 			return d.FmtValue(ret)
 		}
-	case DataTypeArray:
+	case DataTypeArray,DataTypeMatrix:
 		switch val.(type) {
 		case []any:
 			arr := val.([]any)

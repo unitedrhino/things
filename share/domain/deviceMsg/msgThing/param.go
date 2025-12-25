@@ -129,7 +129,7 @@ func getParamVal(def *schema.Define, value any) (any, error) {
 			return nil, errors.Parameter.AddMsgf("struct Param is not find")
 		}
 
-	case schema.DataTypeArray:
+	case schema.DataTypeArray,schema.DataTypeMatrix:
 		array, ok := value.([]any)
 		if ok == false {
 			return getParamVal(def.ArrayInfo, value)

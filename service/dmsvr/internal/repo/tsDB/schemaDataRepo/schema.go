@@ -2,6 +2,7 @@ package schemaDataRepo
 
 import (
 	"fmt"
+
 	"gitee.com/unitedrhino/things/share/domain/schema"
 )
 
@@ -14,12 +15,16 @@ var types = []schema.Define{
 	{Type: schema.DataTypeTimestamp},
 	{Type: schema.DataTypeEnum},
 	{Type: schema.DataTypeFloat},
+	{Type: schema.DataTypeStruct},
+	{Type: schema.DataTypeMatrix},
 	{Type: schema.DataTypeArray, ArrayInfo: &schema.Define{Type: schema.DataTypeBool}},
+	{Type: schema.DataTypeArray, ArrayInfo: &schema.Define{Type: schema.DataTypeStruct}},
 	{Type: schema.DataTypeArray, ArrayInfo: &schema.Define{Type: schema.DataTypeInt}},
 	{Type: schema.DataTypeArray, ArrayInfo: &schema.Define{Type: schema.DataTypeString}},
 	{Type: schema.DataTypeArray, ArrayInfo: &schema.Define{Type: schema.DataTypeTimestamp}},
 	{Type: schema.DataTypeArray, ArrayInfo: &schema.Define{Type: schema.DataTypeEnum}},
 	{Type: schema.DataTypeArray, ArrayInfo: &schema.Define{Type: schema.DataTypeFloat}},
+	{Type: schema.DataTypeArray, ArrayInfo: &schema.Define{Type: schema.DataTypeMatrix}},
 }
 
 func init() {
@@ -50,6 +55,11 @@ func getModel(p schema.Define) interface{} {
 			return PropertyStringArray{}
 		}
 		return PropertyString{}
+	case schema.DataTypeMatrix:
+		if isArray {
+			return PropertyMatrixArray{}
+		}
+		return PropertyMatrix{}
 	case schema.DataTypeStruct:
 		if isArray {
 			return PropertyStructArray{}

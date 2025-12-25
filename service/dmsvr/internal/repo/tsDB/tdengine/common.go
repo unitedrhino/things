@@ -3,6 +3,8 @@ package tdengine
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"gitee.com/unitedrhino/share/clients"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/stores"
@@ -13,7 +15,6 @@ import (
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/zeromicro/go-zero/core/logx"
-	"strings"
 )
 
 func ToBelongGroup(in map[string]*dm.IDsInfo) (out map[string]def.IDsInfo) {
@@ -176,7 +177,7 @@ func GetTdType(define schema.Define) string {
 		return "DOUBLE"
 	case schema.DataTypeTimestamp:
 		return "TIMESTAMP"
-	case schema.DataTypeArray:
+	case schema.DataTypeArray, schema.DataTypeMatrix:
 		return "BINARY(5000)"
 	case schema.DataTypeEnum:
 		return "SMALLINT"

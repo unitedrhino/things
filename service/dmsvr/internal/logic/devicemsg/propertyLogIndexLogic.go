@@ -149,7 +149,7 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 		return nil, err
 	}
 	sdef := p.Define
-	if sdef.Type == schema.DataTypeArray {
+	if sdef.Type == schema.DataTypeArray || sdef.Type == schema.DataTypeMatrix {
 		sdef = *sdef.ArrayInfo
 	}
 	if sdef.Type == schema.DataTypeStruct {

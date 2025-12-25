@@ -9,9 +9,10 @@ const (
 	DataTypeString    DataType = "string"
 	DataTypeStruct    DataType = "struct"
 	DataTypeFloat     DataType = "float"
-	DataTypeTimestamp DataType = "timestamp"
-	DataTypeArray     DataType = "array"
-	DataTypeEnum      DataType = "enum"
+	DataTypeTimestamp DataType = "timestamp" //时间戳, 毫秒级时间戳
+	DataTypeArray     DataType = "array"     //数组,可以使用 a.2=3 的方式修改数组的第二个元素,也可以使用 a[2,3] 的方式修改
+	DataTypeMatrix    DataType = "matrix"    //矩阵, 只能使用[123,34]的方式
+	DataTypeEnum      DataType = "enum"      //枚举, 只能使用预定义的值
 )
 
 type ParamType int64

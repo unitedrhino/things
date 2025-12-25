@@ -105,7 +105,7 @@ func (l *PropertyLatestIndexLogic) PropertyLatestIndex(in *dm.PropertyLatestInde
 				}
 			} else {
 				sdef := property.Define
-				if sdef.Type == schema.DataTypeArray {
+				if sdef.Type == schema.DataTypeArray || sdef.Type == schema.DataTypeMatrix {
 					sdef = *sdef.ArrayInfo
 				}
 				if sdef.Type == schema.DataTypeStruct {

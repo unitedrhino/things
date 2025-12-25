@@ -145,6 +145,8 @@ func (m *PropertyStruct) TableName() string {
 	return "dm_time_model_property_struct"
 }
 
+
+
 type PropertyStructArray struct {
 	Property
 	Param map[string]any `gorm:"column:param;type:json;serializer:json;NOT NULL"` // 时间戳
@@ -153,4 +155,24 @@ type PropertyStructArray struct {
 
 func (m *PropertyStructArray) TableName() string {
 	return "dm_time_model_property_struct_array"
+}
+
+type PropertyMatrix struct {
+	Property
+	Param []any `gorm:"column:param;type:json;serializer:json;NOT NULL"` // 时间戳
+}
+
+func (m *PropertyMatrix) TableName() string {
+	return "dm_time_model_property_matrix"
+}
+
+// PropertyMatrixArray 矩阵数组  a.3:[123,43,54]
+type PropertyMatrixArray struct {
+	Property
+	Param []any `gorm:"column:param;type:json;serializer:json;NOT NULL"` // 时间戳
+	Pos   int64          `gorm:"column:pos;NOT NULL;"`
+}
+
+func (m *PropertyMatrixArray) TableName() string {
+	return "dm_time_model_property_matrix_array"
 }

@@ -257,7 +257,9 @@ func (d *Define) ValidateWithFmt() error {
 	case DataTypeTimestamp:
 		return d.ValidateWithFmtTimeStamp()
 	case DataTypeArray:
-		return d.ValidateWithFmtArray()
+		return d.ValidateWithFmtArray(false)
+	case DataTypeMatrix:
+		return d.ValidateWithFmtArray(true)
 	case DataTypeEnum:
 		return d.ValidateWithFmtEnum()
 	}
@@ -445,18 +447,21 @@ func (d *Define) ValidateWithFmtTimeStamp() error {
 	d.Spec = nil
 	return nil
 }
-func (d *Define) ValidateWithFmtArray() error {
+func (d *Define) ValidateWithFmtArray(isMatrix bool) error {
 	max, err := cast.ToInt64E(d.Max)
 	if err != nil {
 		return errors.Parameter.WithMsgf("数组类型的个数定义不是数字类型:%v", d.Max)
 	}
-	if max > DefineArrayMax {
-		max = DefineArrayMax
-		d.Max = cast.ToString(max)
+	if !isMatrix {
+		if max > DefineArrayMax {
+			max = DefineArrayMax
+			d.Max = cast.ToString(max)
+		}
+		if d.Max == "0" {
+			return errors.Parameter.WithMsg("数组类型的个数定义不能小于0")
+		}
 	}
-	if d.Max == "0" {
-		return errors.Parameter.WithMsg("数组类型的个数定义不能小于0")
-	}
+
 	d.Min = ""
 	d.Start = ""
 	d.Step = ""
@@ -465,10 +470,11 @@ func (d *Define) ValidateWithFmtArray() error {
 	d.Specs = nil
 	d.Spec = nil
 	if d.ArrayInfo == nil {
-		return errors.Parameter.WithMsgf("数组类型缺失arrayInfo结构体")
+		return errors.Parameter.WithMsgf("数组或矩阵类型缺失arrayInfo结构体")
 	}
 	return d.ArrayInfo.ValidateWithFmt()
 }
+
 func (d *Define) ValidateWithFmtEnum() error {
 	if len(d.Mapping) == 0 {
 		return errors.Parameter.WithMsgf("枚举的数据定义长度不能为0")

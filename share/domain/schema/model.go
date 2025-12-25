@@ -81,7 +81,7 @@ type (
 		CommonParam
 		Dir    ActionDir         `json:"dir"`    //调用方向
 		Input  Params            `json:"input"`  //调用参数
-		Output Params            `json:"output"` //返回参数
+		Output Params            `json:"output"` //返回参数,如果没有返回参数,设备端可以不回复
 		In     map[string]*Param `json:"-"`      //内部使用,使用map加速匹配,key为id
 		Out    map[string]*Param `json:"-"`      //内部使用,使用map加速匹配,key为id
 	}
@@ -99,15 +99,15 @@ type (
 
 	/*数据类型定义*/
 	Define struct {
-		Type      DataType          `json:"type"`                //参数类型:bool int string struct float timestamp array enum
+		Type      DataType          `json:"type"`                //参数类型:bool int string struct float timestamp array matrix enum
 		Mapping   map[string]string `json:"mapping,omitempty"`   //枚举及bool类型:bool enum
 		Min       string            `json:"min,omitempty"`       //数值最小值:int  float
-		Max       string            `json:"max,omitempty"`       //数值最大值:int string float array
+		Max       string            `json:"max,omitempty"`       //数值最大值:int string float array matrix
 		Start     string            `json:"start,omitempty"`     //初始值:int float
 		Step      string            `json:"step,omitempty"`      //步长:int float
 		Unit      string            `json:"unit,omitempty"`      //单位:int float
 		Specs     Specs             `json:"specs,omitempty"`     //结构体:struct
-		ArrayInfo *Define           `json:"arrayInfo,omitempty"` //数组:array
+		ArrayInfo *Define           `json:"arrayInfo,omitempty"` //数组:array matrix
 		Spec      map[string]*Spec  `json:"-"`                   //内部使用,使用map加速匹配,key为id
 	}
 )
@@ -212,7 +212,7 @@ func (d *Define) GenRandValue() any {
 			val[v.Identifier] = vv
 		}
 		return val
-	case DataTypeArray:
+	case DataTypeArray, DataTypeMatrix:
 		var val []any
 		l := rand.Intn(cast.ToInt(d.Max)) + 1
 		for i := 0; i < l; i++ {

@@ -66,6 +66,12 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 				Identifier: id,
 			}
 			switch property.Define.ArrayInfo.Type {
+			case schema.DataTypeMatrix:
+				d.asyncPropertyMatrixArray.AsyncInsert(&PropertyMatrixArray{
+					Property: pp,
+					Param:    ars[schema.GenArray(Identifier, num)].([]any),
+					Pos:      int64(num),
+				})
 			case schema.DataTypeStruct:
 				d.asyncPropertyStructArray.AsyncInsert(&PropertyStructArray{
 					Property: pp,
@@ -150,6 +156,11 @@ func (d *DeviceDataRepo) GenInsertPropertySql(ctx context.Context, p *schema.Pro
 			d.asyncPropertyStruct.AsyncInsert(&PropertyStruct{
 				Property: pp,
 				Param:    ars[property.Identifier].(map[string]any),
+			})
+		case schema.DataTypeMatrix:
+			d.asyncPropertyMatrix.AsyncInsert(&PropertyMatrix{
+				Property: pp,
+				Param:    cast.ToSlice(ars[property.Identifier]),
 			})
 		case schema.DataTypeBool:
 			d.asyncPropertyBool.AsyncInsert(&PropertyBool{

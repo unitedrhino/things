@@ -151,6 +151,7 @@ func (d *DeviceDataRepo) Init(ctx context.Context) error {
 		{tb: d.GetDeviceStableBoolName(), def: schema.Define{Type: schema.DataTypeBool}},
 		{tb: d.GetDeviceStableIntName(), def: schema.Define{Type: schema.DataTypeInt}},
 		{tb: d.GetDeviceStableStringName(), def: schema.Define{Type: schema.DataTypeString}},
+		{tb: d.GetDeviceStableMatrixName(), def: schema.Define{Type: schema.DataTypeMatrix}},
 		{tb: d.GetDeviceStableTimestampName(), def: schema.Define{Type: schema.DataTypeTimestamp}},
 		{tb: d.GetDeviceStableEnumName(), def: schema.Define{Type: schema.DataTypeEnum}},
 		{tb: d.GetDeviceStableFloatName(), def: schema.Define{Type: schema.DataTypeFloat}},

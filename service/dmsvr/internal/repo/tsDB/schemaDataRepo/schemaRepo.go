@@ -42,7 +42,9 @@ type DeviceDataRepo struct {
 	asyncPropertyInt            *stores.AsyncInsert[PropertyInt]
 	asyncPropertyFloat          *stores.AsyncInsert[PropertyFloat]
 	asyncPropertyStruct         *stores.AsyncInsert[PropertyStruct]
+	asyncPropertyMatrix         *stores.AsyncInsert[PropertyMatrix]
 	asyncPropertyStructArray    *stores.AsyncInsert[PropertyStructArray]
+	asyncPropertyMatrixArray    *stores.AsyncInsert[PropertyMatrixArray]
 	asyncPropertyEnum           *stores.AsyncInsert[PropertyEnum]
 	asyncPropertyEnumArray      *stores.AsyncInsert[PropertyEnumArray]
 	cacheManager                *cache.PropertyCacheManager
@@ -84,6 +86,7 @@ func NewDeviceDataRepo(dataSource conf.TSDB, getProductSchemaModel schema.GetSch
 		asyncPropertyFloat:          stores.NewAsyncInsert[PropertyFloat](db, ""),
 		asyncPropertyStruct:         stores.NewAsyncInsert[PropertyStruct](db, ""),
 		asyncPropertyStructArray:    stores.NewAsyncInsert[PropertyStructArray](db, ""),
+		asyncPropertyMatrixArray:    stores.NewAsyncInsert[PropertyMatrixArray](db, ""),
 		asyncPropertyEnum:           stores.NewAsyncInsert[PropertyEnum](db, ""),
 		asyncPropertyEnumArray:      stores.NewAsyncInsert[PropertyEnumArray](db, ""),
 		kv:                          kv,
@@ -110,6 +113,8 @@ func (d *DeviceDataRepo) Init(ctx context.Context) error {
 		PropertyFloat{},
 		PropertyStruct{},
 		PropertyStructArray{},
+		PropertyMatrix{},
+		PropertyMatrixArray{},
 		PropertyEnum{},
 		PropertyEnumArray{},
 	)

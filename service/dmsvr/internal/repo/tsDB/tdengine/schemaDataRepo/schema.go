@@ -72,6 +72,8 @@ func (S *SchemaStore) GetPropertyStableName(p *schema.Property, productID, ident
 			return S.GetDeviceStableTimestampName()
 		case schema.DataTypeEnum:
 			return S.GetDeviceStableEnumName()
+		case schema.DataTypeMatrix:
+			return S.GetDeviceStableMatrixName()
 		default:
 			return ""
 		}
@@ -101,6 +103,7 @@ func init() {
 		s.GetDeviceStableEnumName(),
 		s.GetDeviceStableTimestampName(),
 		s.GetDeviceStableFloatName(),
+		s.GetDeviceStableMatrixName(),
 		s.GetDeviceStableStringName())
 }
 
@@ -126,6 +129,10 @@ func (S *SchemaStore) GetDeviceStableFloatName() string {
 
 func (S *SchemaStore) GetDeviceStableStringName() string {
 	return fmt.Sprintf("`model_device_property_string`")
+}
+
+func (S *SchemaStore) GetDeviceStableMatrixName() string {
+	return fmt.Sprintf("`model_device_property_matrix`")
 }
 
 func (S *SchemaStore) GetPropertyTableNames(productID, deviceName string, p *schema.Property) (ret []string) {
