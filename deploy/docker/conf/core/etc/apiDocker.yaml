@@ -1,20 +1,7 @@
 #api网关接口代理模块-apisvr
 Name: api
 Host: 0.0.0.0
-CpuThreshold: 0
-Timeout: 1000000
-MaxBytes: 1000000000
 Port: 7777
-NodeID: 1
-Log:
-  Encoding: plain
-  #Mode: file
-CacheRedis:
-  - Host: redis:6379
-    Pass:
-    Type: node
-Middlewares:
-  Prometheus: false
 Rej:
   AccessSecret: ad879037-c7a4-4063-9236-6bfc35d54b7d
   AccessExpire: 600     #过期时间单位秒
@@ -47,47 +34,3 @@ Proxy:
     - Router: /oss/
       DeletePrefix: true
       Dest: http://minio:9000
-
-SysRpc:
-  Enable: true
-  Mode: direct
-  RunProxy: true
-  Conf:
-    Timeout: 1000000
-
-TimedJobRpc:
-  Enable: true
-  Mode: direct
-  RunProxy: true
-  Conf:
-    Timeout: 1000000
-TimedSchedulerRpc:
-  Enable: true
-  Mode: direct
-  RunProxy: true
-  Conf:
-    Timeout: 1000000
-
-OssConf:
-  OssType: minio
-  PublicBucketName: ithings-public
-  PrivateBucketName: ithings-private
-  TemporaryBucketName: ithings-temporary
-  AccessKeyID: root
-  AccessKeySecret: password
-  Location: minio:9000
-  ConnectTimeout: 6000
-  ReadWriteTimeout: 60000
-  UseSSL: false
-Event:
-  Nats:
-    Url: nats://nats:4222
-#Telemetry:
-#  Name: coresvr
-#  Endpoint: http://jaeger:14268/api/traces
-#  Sampler: 1.0
-#  Batcher: jaeger
-#Prometheus:
-#  Host: 0.0.0.0
-#  Port: 17777
-#  Path: /metrics

@@ -20,7 +20,59 @@ import (
 
 func (d *DeviceDataRepo) GetLatestAllPropertyData(ctx context.Context, m *schema.Model, productID, deviceName string) ([]*msgThing.PropertyLogData, error) {
 	// 使用缓存管理器获取设备所有属性的最后记录
-	return d.cacheManager.GetPropertyAllLastRecord(ctx, m, productID, deviceName)
+	cacheData, err := d.cacheManager.GetPropertyAllLastRecord(ctx, m, productID, deviceName)
+	if err != nil {
+		logx.WithContext(ctx).Error(err)
+	} else if len(cacheData) > 0 {
+		// 缓存中有数据，直接返回
+		return cacheData, nil
+	}
+
+	// 缓存中没有数据，从数据库加载所有属性
+	var result []*msgThing.PropertyLogData
+	for _, property := range m.Properties {
+		// 对每个属性从数据库获取最新数据
+		filter := msgThing.LatestFilter{
+			ProductID:  productID,
+			DeviceName: deviceName,
+			DataID:     property.Identifier,
+		}
+		propertyData, err := d.GetLatestPropertyDataByID(ctx, &property, filter)
+		if err != nil {
+			logx.WithContext(ctx).Errorf("获取属性 %s 最新数据失败: %v", property.Identifier, err)
+			continue
+		}
+		if propertyData != nil {
+			result = append(result, propertyData)
+		}
+	}
+
+	// 更新缓存（异步执行）
+	if len(result) > 0 {
+		// 将整个缓存更新逻辑放在一个异步任务中执行
+		utils.Go(ctx, func() {
+			// 组织数据格式以便更新缓存
+			for _, data := range result {
+				// 查找对应的属性定义
+				var property *schema.Property
+				for i := range m.Properties {
+					if m.Properties[i].Identifier == data.Identifier {
+						property = &m.Properties[i]
+						break
+					}
+				}
+				if property != nil {
+					// 更新单个属性缓存
+					err := d.cacheManager.UpdatePropertyCache(ctx, productID, deviceName, property, map[string]any{data.Identifier: data.Param}, data.TimeStamp)
+					if err != nil {
+						logx.WithContext(ctx).Errorf("更新属性 %s 缓存失败: %v", data.Identifier, err)
+					}
+				}
+			}
+		})
+	}
+
+	return result, nil
 }
 
 func (d *DeviceDataRepo) GetLatestPropertyDataByID(ctx context.Context, p *schema.Property, filter msgThing.LatestFilter) (*msgThing.PropertyLogData, error) {

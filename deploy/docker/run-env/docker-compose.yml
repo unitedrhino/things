@@ -63,8 +63,8 @@ services:
       TZ: Asia/Shanghai
     volumes:
       - ../conf/mysql/sql:/docker-entrypoint-initdb.d
-      - ../conf/mysql/data:/var/lib/mysql
-      - ../conf/mysql/user:/var/user
+#      - ../conf/mysql/data:/var/lib/mysql
+#      - ../conf/mysql/user:/var/user
 
     logging:
       options:
@@ -112,8 +112,8 @@ services:
       - unitedrhino_net
     volumes:
       - /etc/localtime:/etc/localtime
-      - ../conf/taos/dnode/data:/var/lib/taos
-      - ../conf/taos/dnode/log:/var/log/taos
+#      - ../conf/taos/dnode/data:/var/lib/taos
+#      - ../conf/taos/dnode/log:/var/log/taos
   emqx:
     image: emqx/emqx:5.8
     container_name: ienv-emqx

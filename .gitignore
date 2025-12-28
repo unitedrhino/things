@@ -8594,3 +8594,6 @@ deploy/docker/conf/taos/dnode/data/.taosudf.sock.0
 deploy/docker/run-env/docker-compose.yml
 deploy/docker/conf/core/etc/apiDocker.yaml
 deploy/docker/run-env/docker-compose.yml
+service/oss/jingbo.db
+tools/ssh/go.mod
+tools/ssh/main.go
