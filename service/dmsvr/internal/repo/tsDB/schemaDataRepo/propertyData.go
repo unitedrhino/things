@@ -333,11 +333,55 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 }
 
 func (d *DeviceDataRepo) ToPropertyData(ctx context.Context, noFirstTs bool, id string, p *schema.Property, db map[string]any) *msgThing.PropertyLogData {
+	// 辅助函数：计算绝对值
+	abs := func(x int64) int64 {
+		if x < 0 {
+			return -x
+		}
+		return x
+	}
+
+	// 调试：打印原始数据
+	logx.WithContext(ctx).Infof("ToPropertyData: ts_window type=%T, value=%v | ts type=%T, value=%v",
+		db["ts_window"], db["ts_window"], db["ts"], db["ts"])
+
+	// 调试：打印 time.Time 内部值
+	if ts, ok := db["ts"].(time.Time); ok {
+		// 转换为北京时间验证
+		beijingTime := ts.In(time.FixedZone("CST", 8*3600))
+		logx.WithContext(ctx).Infof("ts debug: String=%v, Beijing=%v, Unix=%d, UnixMilli=%d, UnixNano=%d",
+			ts.String(), beijingTime.String(), ts.Unix(), ts.UnixMilli(), ts.UnixNano())
+	}
+	if tsWin, ok := db["ts_window"].(time.Time); ok {
+		// 转换为北京时间验证
+		beijingTime := tsWin.In(time.FixedZone("CST", 8*3600))
+		logx.WithContext(ctx).Infof("ts_window debug: String=%v, Beijing=%v, Unix=%d, UnixMilli=%d, UnixNano=%d",
+			tsWin.String(), beijingTime.String(), tsWin.Unix(), tsWin.UnixMilli(), tsWin.UnixNano())
+	}
+
+	// 直接使用 time.Time，不需要再用 cast.ToTime()
+	var timeStamp time.Time
+	if v, ok := db["ts_window"].(time.Time); ok && !v.IsZero() {
+		timeStamp = v
+		// 验证时间戳是否正确：从显示的时间重建，检查是否匹配原始的 Unix 时间戳
+		year, month, day := v.Date()
+		hour, min, sec := v.Clock()
+		nsec := v.Nanosecond()
+		reconstructed := time.Date(year, month, day, hour, min, sec, nsec, time.UTC)
+		// 允许 1 秒的误差（纳秒部分可能不同）
+		if abs(reconstructed.Unix()-v.Unix()) > 1 {
+			// 时间显示正确但内部 Unix 时间戳错误，使用重建的时间对象
+			timeStamp = time.Date(year, month, day, hour, min, sec, nsec, v.Location())
+			logx.WithContext(ctx).Infof("Fixed timestamp: display=%v, old_unix=%d, new_unix=%d",
+				v.Format("2006-01-02 15:04:05"), v.Unix(), timeStamp.Unix())
+		}
+	}
+
 	data := msgThing.PropertyLogData{
 		DeviceName: cast.ToString(db["device_name"]),
 		Identifier: id,
 		Param:      db["param"],
-		TimeStamp:  cast.ToTime(db["ts_window"]),
+		TimeStamp:  timeStamp,
 	}
 	pp, err := p.Define.FmtValue(data.Param)
 	if err != nil {
@@ -349,7 +393,12 @@ func (d *DeviceDataRepo) ToPropertyData(ctx context.Context, noFirstTs bool, id 
 		data.Param = cast.ToInt64(b)
 	}
 	if db["ts"] != nil && (noFirstTs || data.TimeStamp.IsZero()) {
-		data.TimeStamp = cast.ToTime(db["ts"])
+		// 直接使用 time.Time，不需要再用 cast.ToTime()
+		if v, ok := db["ts"].(time.Time); ok {
+			data.TimeStamp = v
+		} else {
+			data.TimeStamp = cast.ToTime(db["ts"])
+		}
 	}
 	if db["tenant_code"] != nil {
 		data.TenantCode = dataType.TenantCode(cast.ToString(db["tenant_code"]))

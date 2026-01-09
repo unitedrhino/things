@@ -2,10 +2,10 @@ package interact
 
 import (
 	"context"
+
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
-	"gitee.com/unitedrhino/things/service/apisvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 
 	"gitee.com/unitedrhino/things/service/apisvr/internal/svc"
@@ -29,15 +29,7 @@ func NewActionSendLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Action
 }
 
 func (l *ActionSendLogic) ActionSend(req *types.DeviceInteractSendActionReq) (resp *types.DeviceInteractSendActionResp, err error) {
-	dmReq := &dm.ActionSendReq{
-		ProductID:   req.ProductID,
-		DeviceName:  req.DeviceName,
-		ActionID:    req.ActionID,
-		InputParams: req.InputParams,
-		IsAsync:     req.IsAsync,
-		Option:      logic.ToDmSendOption(req.Option),
-	}
-	dmResp, err := l.svcCtx.DeviceInteract.ActionSend(l.ctx, dmReq)
+	dmResp, err := l.svcCtx.DeviceInteract.ActionSend(l.ctx, utils.Copy[dm.ActionSendReq](req))
 	if err != nil {
 		er := errors.Fmt(err)
 		l.Errorf("%s.rpc.SendAction req=%v err=%+v", utils.FuncName(), req, er)

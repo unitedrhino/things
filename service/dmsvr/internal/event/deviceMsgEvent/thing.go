@@ -215,6 +215,7 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 		di, err := l.svcCtx.DeviceCache.GetData(l.ctx, device)
 		if err != nil {
 			l.Error(err)
+			continue
 		}
 		ctx := ctxs.CopyCtx(l.ctx)
 		utils.Go(ctx, func() {
@@ -521,7 +522,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 				})
 			}
 		}
-		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).Debugf("%s.DeviceThingPropertyReport startTime:%v",
+		logx.WithContext(ctx).WithDuration(time.Since(startTime)).Debugf("%s.DeviceThingPropertyReport startTime:%v",
 			utils.FuncName(), startTime)
 	})
 	utils.Go(ctx, func() {
@@ -551,7 +552,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 				"areaID":    cast.ToString(di.AreaID),
 			})
 		}
-		logx.WithContext(ctx).WithDuration(time.Now().Sub(startTime)).Debugf("%s.DeviceThingPropertyReport startTime:%v",
+		logx.WithContext(ctx).WithDuration(time.Since(startTime)).Debugf("%s.DeviceThingPropertyReport startTime:%v",
 			utils.FuncName(), startTime)
 	})
 

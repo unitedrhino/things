@@ -31,7 +31,7 @@ func Migrate(c conf.Database) error {
 	}
 
 	err := db.AutoMigrate(
-		&DmProductConfig{},
+		&DmProductConfig{},		
 		&DmDeviceMsgCount{},
 		&DmManufacturerInfo{},
 		&DmProtocolService{},
@@ -136,7 +136,7 @@ func migrateTableColumn() error {
 	for i := 0; i < 100; i++ {
 		NewProductIDRepo(db).GenID(ctxs.WithRoot(context.Background()))
 	}
-	if err := stores.CreateInBatches(db, []DmGroupInfo{{DeletedTime: 666}, {DeletedTime: 777}, {DeletedTime: 888}}, 100); err != nil {
+	if err := stores.CreateInBatches(db, &[]DmGroupInfo{{DeletedTime: 666}, {DeletedTime: 777}, {DeletedTime: 888}}, 100); err != nil {
 		logx.Error(err)
 	}
 

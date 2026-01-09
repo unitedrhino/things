@@ -9167,6 +9167,10 @@
           "type": "string",
           "description": "输入参数"
         },
+        "outputParams": {
+          "type": "string",
+          "description": "输出参数(模拟的时候才需要填写) ,如果填写该参数,那么不会下发给设备,直接记录操作记录"
+        },
         "isAsync": {
           "type": "boolean",
           "format": "boolean",

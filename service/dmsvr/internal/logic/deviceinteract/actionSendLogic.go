@@ -125,6 +125,13 @@ func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (ret *dm.ActionSendRe
 			})
 		})
 	}()
+	if in.OutputParams != "" {
+		return &dm.ActionSendResp{
+			MsgToken:     req.MsgToken,
+			OutputParams: in.OutputParams,
+			Code:         errors.OK.GetCode(),
+		}, nil
+	}
 	payload, _ := json.Marshal(req)
 	reqMsg := deviceMsg.PublishMsg{
 		Handle:       devices.Thing,

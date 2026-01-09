@@ -162,6 +162,9 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 		if devData.TimeStamp.IsZero() && devData.Param == nil {
 			continue
 		}
+		l.Infof("devData.TimeStamp: %v, UnixNano: %d, Unix: %d, UnixMilli: %d",
+			devData.TimeStamp, devData.TimeStamp.UnixNano(),
+			devData.TimeStamp.Unix(), devData.TimeStamp.UnixMilli())
 		diData := dm.PropertyLogInfo{
 			DeviceName:  devData.DeviceName,
 			Timestamp:   devData.TimeStamp.UnixMilli(),
