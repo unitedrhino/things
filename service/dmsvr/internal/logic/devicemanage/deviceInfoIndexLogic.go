@@ -101,6 +101,9 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		if err != nil {
 			return nil, err
 		}
+		if len(us) == 0 && filter.SharedType == def.SelectTypeOnly {
+			return &dm.DeviceInfoIndexResp{List: info, Total: 0}, nil
+		}
 		for _, v := range us {
 			filter.SharedDevices = append(filter.SharedDevices, &devices.Core{
 				ProductID:  v.ProductID,
