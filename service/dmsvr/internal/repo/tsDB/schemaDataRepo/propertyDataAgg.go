@@ -3,6 +3,10 @@ package schemaDataRepo
 import (
 	"context"
 	"fmt"
+	"strings"
+	"sync"
+	"time"
+
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/conf"
 	"gitee.com/unitedrhino/share/def"
@@ -13,9 +17,6 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/spf13/cast"
 	"github.com/zeromicro/go-zero/core/logx"
-	"strings"
-	"sync"
-	"time"
 )
 
 func (d *DeviceDataRepo) GetPropertyLogAgg(ctx context.Context, m *schema.Model, filter msgThing.FilterLogAggOpt) ([]*msgThing.PropertyLogData2, error) {
@@ -103,16 +104,17 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect2(
 		switch argFunc {
 		case "first":
 			if agg.NoFirstTs {
-				return fmt.Sprintf("(ARRAY_AGG(tb.%s ORDER BY tb.%s ASC))[1]  AS %s_param, (ARRAY_AGG(tb.%s ORDER BY tb.%s ASC))[1] AS %s_ts ",
-					param, ts, argFunc, ts, ts, argFunc)
+				return fmt.Sprintf("(ARRAY_AGG(tb.%s ORDER BY tb.%s ASC))[1]  AS %s_param", param, ts, argFunc)
+
 			}
-			return fmt.Sprintf("(ARRAY_AGG(tb.%s ORDER BY tb.%s ASC))[1]  AS %s_param", param, ts, argFunc)
+			return fmt.Sprintf("(ARRAY_AGG(tb.%s ORDER BY tb.%s ASC))[1]  AS %s_param, (ARRAY_AGG(tb.%s ORDER BY tb.%s ASC))[1] AS %s_ts ",
+				param, ts, argFunc, ts, ts, argFunc)
 		case "last":
 			if agg.NoFirstTs {
-				return fmt.Sprintf("(ARRAY_AGG(tb.%s ORDER BY tb.%s desc))[1]  AS %s_param, (ARRAY_AGG(tb.%s ORDER BY tb.%s desc))[1] AS %s_ts ",
-					param, ts, argFunc, ts, ts, argFunc)
+				return fmt.Sprintf("(ARRAY_AGG(tb.%s ORDER BY tb.%s desc))[1]  AS %s_param", param, ts, argFunc)
 			}
-			return fmt.Sprintf("(ARRAY_AGG(tb.%s ORDER BY tb.%s desc))[1]  AS %s_param", param, ts, argFunc)
+			return fmt.Sprintf("(ARRAY_AGG(tb.%s ORDER BY tb.%s desc))[1]  AS %s_param, (ARRAY_AGG(tb.%s ORDER BY tb.%s desc))[1] AS %s_ts ",
+				param, ts, argFunc, ts, ts, argFunc)
 		default:
 			return fmt.Sprintf("%s(%s)  AS %s_param", argFunc, param, argFunc)
 		}
@@ -156,12 +158,19 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect2(
 				}
 				db = db.Table(tbName)
 				return db, nil
-			} else { //todo 待实现
+			} else {
 				db = db.Table(getTableName(p.Define) + " as tb")
-				selects = append(selects, fmt.Sprintf(`time_bucket('%v %s', ts)  AS ts_window, %s `,
-					filter.Interval, filter.IntervalUnit.ToPgStr(), arg("", "", "argFunc")))
+				selects = append(selects, fmt.Sprintf(`time_bucket('%v %s', ts)  AS ts_window`,
+					filter.Interval, filter.IntervalUnit.ToPgStr()))
+				for _, argFunc := range agg.ArgFuncs {
+					selects = append(selects, arg("ts", "param", argFunc))
+				}
 				db = db.Select(selects)
-				db = db.Group("ts_window")
+				if groups != "" {
+					db = db.Group(groups + ", ts_window")
+				} else {
+					db = db.Group("ts_window")
+				}
 			}
 		}
 
