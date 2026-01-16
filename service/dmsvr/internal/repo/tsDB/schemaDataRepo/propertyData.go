@@ -501,7 +501,7 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 				selects = append(selects, "ts as ts_window")
 				db = db.Table(getTableName(p.Define) + "_" + filter.IntervalUnit.ToPgStr() + " as tb")
 			default:
-				selects = append(selects, fmt.Sprintf(`time_bucket('%v %s', ts)  AS ts_window`,
+				selects = append(selects, fmt.Sprintf(`time_bucket('%v %s', ts, TIMESTAMPTZ '2026-01-16 00:00:00')  AS ts_window`,
 					filter.Interval, filter.IntervalUnit.ToPgStr()))
 				db = db.Table(getTableName(p.Define) + "_day as tb")
 			}
@@ -511,7 +511,7 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 			db = db.Table(getTableName(p.Define) + " as tb")
 			switch stores.GetTsDBType() {
 			case conf.Pgsql:
-				selects = append(selects, fmt.Sprintf(`time_bucket('%v %s', ts)  AS ts_window, %s `,
+				selects = append(selects, fmt.Sprintf(`time_bucket('%v %s', ts, TIMESTAMPTZ '2026-01-16 00:00:00')  AS ts_window, %s `,
 					filter.Interval, filter.IntervalUnit.ToPgStr(), arg("", "")))
 
 				db = db.Select(selects)

@@ -110,9 +110,7 @@ type (
 		ProductIDs   []string
 		//DeviceName  string
 		DeviceNames []string
-
 		PartitionBy string //切分数据,可以填写deviceName
-
 	}
 
 	FilterLogAggOpt struct {

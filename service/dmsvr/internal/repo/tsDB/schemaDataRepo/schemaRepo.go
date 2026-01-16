@@ -144,7 +144,7 @@ func (d *DeviceDataRepo) Init(ctx context.Context) error {
 const (
 	viewTemplate = `CREATE MATERIALIZED VIEW if not exists %s_%s(product_id,device_name,identifier,ts,first_ts,first_param,last_ts,last_param, max_ts,max_param,min_ts,min_param, sum_param, count_param,avg_param )
 			WITH (timescaledb.continuous) AS
-			SELECT product_id,device_name,identifier,time_bucket('1%s', ts) as ts_window,
+			SELECT product_id,device_name,identifier,time_bucket('1%s', ts, TIMESTAMPTZ '2026-01-16 00:00:00') as ts_window,
 				(ARRAY_AGG(ts ORDER BY ts ASC))[1]    AS first_ts,
 				(ARRAY_AGG(param ORDER BY ts ASC))[1] AS first_param,
 				(ARRAY_AGG(ts ORDER BY ts desc))[1]    AS last_ts,
@@ -157,7 +157,7 @@ const (
 			GROUP BY product_id,device_name,identifier,ts_window;`
 	viewBoolTemplate = `CREATE MATERIALIZED VIEW if not exists %s_%s(product_id,device_name,identifier,ts,first_ts,first_param,last_ts,last_param, count_param,avg_param )
 			WITH (timescaledb.continuous) AS
-			SELECT product_id,device_name,identifier,time_bucket('1%s', ts) as ts_window,
+			SELECT product_id,device_name,identifier,time_bucket('1%s', ts, TIMESTAMPTZ '2026-01-16 00:00:00') as ts_window,
 				(ARRAY_AGG(ts ORDER BY ts ASC))[1]    AS first_ts,
 				(ARRAY_AGG(param ORDER BY ts ASC))[1] AS first_param,
 				(ARRAY_AGG(ts ORDER BY ts desc))[1]    AS last_ts,
