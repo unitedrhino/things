@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"strings"
 	"time"
 
 	"gitee.com/unitedrhino/share/def"
@@ -185,22 +184,39 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 	var (
 		sql sq.SelectBuilder
 	)
-	deviceName := ",`device_name` "
 	partitionBy := utils.CamelCaseToUdnderscore(filter.PartitionBy)
-	if !strings.Contains(partitionBy, "device_name") { //如果没有传partition by 会报错
-		deviceName = ""
-	}
-	pb := partitionBy
+
+	// 定义 selects 数组
+	var selects []string
+
+	// 添加 partition by 字段，如果没有则默认使用 device_name 避免聚合错误
 	if partitionBy != "" {
-		pb = "," + pb
+		selects = append(selects, partitionBy)
+	} else {
+		// 如果没有指定 partitionBy，默认添加 device_name
+		selects = append(selects, "`device_name`")
 	}
-	ts := "FIRST(`ts`)  AS ts "
-	if filter.Interval != 0 {
-		ts = "_wstart AS ts "
+
+	// 定义 getOnCol 函数用于添加聚合列
+	getOnCol := func(col string) {
+		//pg的 timescale走视图优化
+		if filter.NoFirstTs && utils.SliceIn(filter.ArgFunc, "first", "last", "min", "max") {
+			selects = append(selects, fmt.Sprintf("%s(`%s`) as param, cols(%s(`%s`),ts) as ts", filter.ArgFunc, col, filter.ArgFunc, col))
+		} else {
+			// 根据不同条件添加时间戳
+			if filter.Interval != 0 {
+				selects = append(selects, "_wstart AS ts")
+			} else if filter.NoFirstTs {
+				selects = append(selects, "`ts`")
+			} else {
+				selects = append(selects, "FIRST(`ts`) AS ts")
+			}
+			// 添加聚合列
+			selects = append(selects, fmt.Sprintf("%s(`%s`) as param", filter.ArgFunc, col))
+		}
 	}
-	if filter.NoFirstTs {
-		ts = "`ts` "
-	}
+
+	// 处理不同的数据类型
 	sdef := p.Define
 	if sdef.Type == schema.DataTypeArray {
 		sdef = *sdef.ArrayInfo
@@ -208,13 +224,32 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 	if sdef.Type == schema.DataTypeStruct {
 		dd, _ := schema.ParseDataID(filter.DataID)
 		if dd != nil && dd.Column != "" {
-			sql = sq.Select(ts+deviceName+pb, fmt.Sprintf("%s(`%s`) as param", filter.ArgFunc, dd.Column))
+			getOnCol(dd.Column)
 		} else {
-			sql = sq.Select(ts+deviceName+pb, d.GetSpecsColumnWithArgFunc(sdef.Specs, filter.ArgFunc))
+			// 对于 struct 的多列情况，需要单独添加时间戳
+			//pg的 timescale走视图优化
+			if filter.NoFirstTs && utils.SliceIn(filter.ArgFunc, "first", "last", "min", "max") {
+				// struct 多列暂时不支持 cols 优化，保持原有逻辑
+				selects = append(selects, "`ts`")
+				selects = append(selects, d.GetSpecsColumnWithArgFunc(sdef.Specs, filter.ArgFunc))
+			} else {
+				if filter.Interval != 0 {
+					selects = append(selects, "_wstart AS ts")
+				} else if filter.NoFirstTs {
+					selects = append(selects, "`ts`")
+				} else {
+					selects = append(selects, "FIRST(`ts`) AS ts")
+				}
+				selects = append(selects, d.GetSpecsColumnWithArgFunc(sdef.Specs, filter.ArgFunc))
+			}
 		}
 	} else {
-		sql = sq.Select(ts+deviceName+pb, fmt.Sprintf("%s(`param`) as param", filter.ArgFunc))
+		getOnCol("param")
 	}
+
+	// 使用 selects 数组构建 SQL
+	sql = sq.Select(selects...)
+
 	if filter.Interval != 0 {
 		var unit = filter.IntervalUnit
 		if unit == "" {

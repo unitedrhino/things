@@ -525,9 +525,10 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 			db = db.Group("ts_window")
 		}
 
+	} else if groups == "" {
+		return nil, errors.Parameter.AddMsg("没有设置分组字段，无法进行聚合查询")
 	} else {
-		selects = append(selects, fmt.Sprintf("%s(param) as param", filter.ArgFunc))
-
+		selects = append(selects, arg("", ""))
 		db = db.Table(getTableName(p.Define) + " as tb").Select(selects)
 	}
 	if groups != "" {
