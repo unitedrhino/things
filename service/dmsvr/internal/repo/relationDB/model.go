@@ -3,6 +3,7 @@ package relationDB
 import (
 	"context"
 	"database/sql"
+	"strings"
 	"time"
 
 	"gitee.com/unitedrhino/core/share/dataType"
@@ -18,6 +19,55 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"
 )
+
+func normalizeJSONString(in string) string {
+	if strings.TrimSpace(in) == "" {
+		return "{}"
+	}
+	return in
+}
+
+func normalizeStringSlice(in []string) []string {
+	if in == nil {
+		return []string{}
+	}
+	return in
+}
+
+func normalizeMapStringString(in map[string]string) map[string]string {
+	if in == nil {
+		return map[string]string{}
+	}
+	return in
+}
+
+func normalizeMapStringIDsInfo(in map[string]def.IDsInfo) map[string]def.IDsInfo {
+	if in == nil {
+		return map[string]def.IDsInfo{}
+	}
+	return in
+}
+
+func normalizeMapStringProductCustomUi(in map[string]*ProductCustomUi) map[string]*ProductCustomUi {
+	if in == nil {
+		return map[string]*ProductCustomUi{}
+	}
+	return in
+}
+
+func normalizeConfigFields(in protocol.ConfigFields) protocol.ConfigFields {
+	if in == nil {
+		return protocol.ConfigFields{}
+	}
+	return in
+}
+
+func normalizeConfigInfos(in protocol.ConfigInfos) protocol.ConfigInfos {
+	if in == nil {
+		return protocol.ConfigInfos{}
+	}
+	return in
+}
 
 type DmExample struct {
 	ID int64 `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"` // id编号
@@ -85,6 +135,17 @@ type DmDeviceInfo struct {
 
 func (m *DmDeviceInfo) TableName() string {
 	return "dm_device_info"
+}
+
+func (m *DmDeviceInfo) BeforeSave(tx *gorm.DB) error {
+	if m == nil {
+		return nil
+	}
+	m.Tags = normalizeMapStringString(m.Tags)
+	m.SchemaAlias = normalizeMapStringString(m.SchemaAlias)
+	m.ProtocolConf = normalizeMapStringString(m.ProtocolConf)
+	m.SubProtocolConf = normalizeMapStringString(m.SubProtocolConf)
+	return nil
 }
 
 type ConnParam struct {
@@ -209,6 +270,14 @@ func (m *DmProductInfo) TableName() string {
 	return "dm_product_info"
 }
 
+func (m *DmProductInfo) BeforeSave(tx *gorm.DB) error {
+	if m == nil {
+		return nil
+	}
+	m.CustomUi = normalizeMapStringProductCustomUi(m.CustomUi)
+	return nil
+}
+
 type DmProductID struct {
 	ID int64 `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 }
@@ -291,6 +360,18 @@ type DmProtocolInfo struct {
 
 func (m *DmProtocolInfo) TableName() string {
 	return "dm_protocol_info"
+}
+
+func (m *DmProtocolInfo) BeforeSave(tx *gorm.DB) error {
+	if m == nil {
+		return nil
+	}
+	m.DeviceFields = normalizeConfigFields(m.DeviceFields)
+	m.ProductFields = normalizeConfigFields(m.ProductFields)
+	m.ConfigFields = normalizeConfigFields(m.ConfigFields)
+	m.ConfigInfos = normalizeConfigInfos(m.ConfigInfos)
+	m.Endpoints = normalizeStringSlice(m.Endpoints)
+	return nil
 }
 
 type DmProtocolService struct {
@@ -382,6 +463,14 @@ func (m *DmProductSchema) TableName() string {
 	return "dm_schema_info"
 }
 
+func (m *DmProductSchema) BeforeSave(tx *gorm.DB) error {
+	if m == nil {
+		return nil
+	}
+	m.Affordance = normalizeJSONString(m.Affordance)
+	return nil
+}
+
 // 产品物模型表
 type DmDeviceSchema struct {
 	ID         int64  `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
@@ -395,6 +484,14 @@ type DmDeviceSchema struct {
 
 func (m *DmDeviceSchema) TableName() string {
 	return "dm_schema_info"
+}
+
+func (m *DmDeviceSchema) BeforeSave(tx *gorm.DB) error {
+	if m == nil {
+		return nil
+	}
+	m.Affordance = normalizeJSONString(m.Affordance)
+	return nil
 }
 
 // 产品物模型表
@@ -411,6 +508,14 @@ type DmSchemaInfo struct {
 
 func (m *DmSchemaInfo) TableName() string {
 	return "dm_schema_info"
+}
+
+func (m *DmSchemaInfo) BeforeSave(tx *gorm.DB) error {
+	if m == nil {
+		return nil
+	}
+	m.Affordance = normalizeJSONString(m.Affordance)
+	return nil
 }
 
 type DmSchemaCore struct {
@@ -443,6 +548,14 @@ func (m *DmCommonSchema) TableName() string {
 	return "dm_common_schema"
 }
 
+func (m *DmCommonSchema) BeforeSave(tx *gorm.DB) error {
+	if m == nil {
+		return nil
+	}
+	m.Affordance = normalizeJSONString(m.Affordance)
+	return nil
+}
+
 // 设备分组信息表
 type DmGroupInfo struct {
 	ID         int64               `gorm:"column:id;primary_key;AUTO_INCREMENT;type:bigint"`                                                 // 分组ID
@@ -467,6 +580,15 @@ type DmGroupInfo struct {
 
 func (m *DmGroupInfo) TableName() string {
 	return "dm_group_info"
+}
+
+func (m *DmGroupInfo) BeforeSave(tx *gorm.DB) error {
+	if m == nil {
+		return nil
+	}
+	m.Tags = normalizeMapStringString(m.Tags)
+	m.Files = normalizeMapStringString(m.Files)
+	return nil
 }
 
 // 分组与设备关系表
@@ -520,6 +642,14 @@ type DmProductRemoteConfig struct {
 
 func (m *DmProductRemoteConfig) TableName() string {
 	return "dm_product_remote_config"
+}
+
+func (m *DmProductRemoteConfig) BeforeSave(tx *gorm.DB) error {
+	if m == nil {
+		return nil
+	}
+	m.Content = normalizeJSONString(m.Content)
+	return nil
 }
 
 // 设备影子表

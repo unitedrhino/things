@@ -2,9 +2,11 @@ package relationDB
 
 import (
 	"database/sql"
+
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/stores"
+	"gorm.io/gorm"
 )
 
 type DmUserDeviceCollect struct {
@@ -51,4 +53,20 @@ type SharePerm struct {
 
 func (m *DmUserDeviceShare) TableName() string {
 	return "dm_user_device_share"
+}
+
+func normalizeSharePermMap(in map[string]*SharePerm) map[string]*SharePerm {
+	if in == nil {
+		return map[string]*SharePerm{}
+	}
+	return in
+}
+
+func (m *DmUserDeviceShare) BeforeSave(tx *gorm.DB) error {
+	if m == nil {
+		return nil
+	}
+	m.AccessPerm = normalizeSharePermMap(m.AccessPerm)
+	m.SchemaPerm = normalizeSharePermMap(m.SchemaPerm)
+	return nil
 }
