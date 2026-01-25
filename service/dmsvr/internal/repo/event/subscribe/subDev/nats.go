@@ -9,6 +9,7 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"github.com/nats-io/nats.go"
 	"github.com/zeromicro/go-zero/core/logx"
+	"time"
 )
 
 type (
@@ -38,9 +39,10 @@ func (n *NatsClient) Subscribe(handle Handle) error {
 func (n *NatsClient) queueSubscribeDevPublish(topic string,
 	handleFunc func(ctx context.Context, msg *deviceMsg.PublishMsg) error) error {
 	_, err := n.client.QueueSubscribe(topic, ThingsDeliverGroup,
-		func(ctx context.Context, msg []byte, natsMsg *nats.Msg) error {
+		func(ctx context.Context, ts time.Time, msg []byte, natsMsg *nats.Msg) error {
 			ctx = ctxs.WithRoot(ctx)
 			defer utils.Recover(ctx)
+			_ = ts
 			ele, err := deviceMsg.GetDevPublish(ctx, msg)
 			if err != nil {
 				logx.WithContext(ctx).Errorf("%s.GetDevPublish failure err:%v", utils.FuncName(), err)
