@@ -44,7 +44,7 @@ type DmDeviceInfo struct {
 	Mac             string              `gorm:"column:mac;type:varchar(17);NOT NULL"`                                                                                              // MAC号信息
 	DeviceType      int64               `gorm:"column:device_type;index;type:smallint;default:1"`                                                                                  // 设备类型:1:设备,2:网关,3:子设备
 	Version         string              `gorm:"column:version;index;type:varchar(64);NOT NULL"`                                                                                    // 固件版本
-	//ModuleVersion  map[string]string `gorm:"column:module_version;type:json;serializer:json;NOT NULL;default:'{}'"`      // 所有模块的版本
+	//ModuleVersion  map[string]string `gorm:"column:module_version;type:json;serializer:json;NOT NULL"`      // 所有模块的版本
 	HardInfo           string                 `gorm:"column:hard_info;type:varchar(64);NOT NULL"`                               // 模组硬件型号
 	SoftInfo           string                 `gorm:"column:soft_info;type:varchar(64);NOT NULL"`                               // 模组软件版本
 	MobileOperator     def.MobileOperator     `gorm:"column:mobile_operator;type:smallint;default:10;NOT NULL"`                 // 移动运营商:1)移动 2)联通 3)电信 4)广电 10) 无
@@ -52,11 +52,11 @@ type DmDeviceInfo struct {
 	Iccid              sql.NullString         `gorm:"column:iccid;type:varchar(20)"`                                            // SIM卡卡号
 	Address            string                 `gorm:"column:address;type:varchar(512);default:''"`                              // 所在地址
 	Adcode             string                 `gorm:"column:adcode;type:varchar(125);default:''"`                               // 地区编码
-	Tags               map[string]string      `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"`              // 设备标签
-	SchemaAlias        map[string]string      `gorm:"column:schema_alias;type:json;serializer:json;NOT NULL;default:'{}'"`      // 设备物模型别名,如果是结构体类型则key为xxx.xxx
+	Tags               map[string]string      `gorm:"column:tags;type:json;serializer:json;NOT NULL"`              // 设备标签
+	SchemaAlias        map[string]string      `gorm:"column:schema_alias;type:json;serializer:json;NOT NULL"`      // 设备物模型别名,如果是结构体类型则key为xxx.xxx
 	Rssi               int64                  `gorm:"column:rssi;type:bigint;default:0;NOT NULL"`                               // 设备信号（信号极好[-55— 0]，信号好[-70— -55]，信号一般[-85— -70]，信号差[-100— -85]）
-	ProtocolConf       map[string]string      `gorm:"column:protocol_conf;type:json;serializer:json;NOT NULL;default:'{}'"`     // 主协议配置
-	SubProtocolConf    map[string]string      `gorm:"column:sub_protocol_conf;type:json;serializer:json;NOT NULL;default:'{}'"` // 子模块自定义协议配置
+	ProtocolConf       map[string]string      `gorm:"column:protocol_conf;type:json;serializer:json;NOT NULL"`     // 主协议配置
+	SubProtocolConf    map[string]string      `gorm:"column:sub_protocol_conf;type:json;serializer:json;NOT NULL"` // 子模块自定义协议配置
 	DeviceImg          string                 `gorm:"column:device_img;type:varchar(200);default:''"`                           // 设备图片
 	File               string                 `gorm:"column:file;type:varchar(200);default:''"`                                 // 设备相关文件
 	IsOnline           int64                  `gorm:"column:is_online;type:smallint;default:2;NOT NULL"`                        // 是否在线,1是2否
@@ -75,7 +75,7 @@ type DmDeviceInfo struct {
 	NeedConfirmVersion string                 `gorm:"column:need_confirm_version;type:varchar(128);default:'';"`                // 待确认升级的版本
 	LastIp             string                 `gorm:"column:last_ip;type:varchar(128);default:'';"`                             // 最后登录的ip地址
 	LastLocalIp        string                 `gorm:"column:last_local_ip;type:varchar(128);default:'';"`                       // 局域网的ip地址
-	BelongGroup        map[string]def.IDsInfo `gorm:"column:belong_group;type:json;serializer:json;default:'{}'"`
+	BelongGroup        map[string]def.IDsInfo `gorm:"column:belong_group;type:json;serializer:json"`
 	stores.NoDelTime
 	Desc        string                  `gorm:"column:desc;type:varchar(200)"`        // 描述
 	Distributor stores.IDPathWithUpdate `gorm:"embedded;embeddedPrefix:distributor_"` // 代理的id,如果为空,则未参与分销
@@ -186,9 +186,9 @@ type DmProductInfo struct {
 	TrialTime        int64                          `gorm:"column:trial_time"`                                                               //试用时间(单位为天,为0不限制)
 	Status           devices.ProductStatus          `gorm:"column:status;type:smallint;default:1"`
 	SceneMode        string                         `gorm:"column:scene_mode;type:varchar(20);default:rw"`                   // 场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
-	Tags             map[string]string              `gorm:"column:tags;type:json;serializer:json;default:'{}'"`              // 产品标签
-	ProtocolConf     map[string]string              `gorm:"column:protocol_conf;type:json;serializer:json;default:'{}'"`     // 自定义协议配置
-	SubProtocolConf  map[string]string              `gorm:"column:sub_protocol_conf;type:json;serializer:json;default:'{}'"` // 子模块自定义协议配置
+	Tags             map[string]string              `gorm:"column:tags;type:json;serializer:json"`              // 产品标签
+	ProtocolConf     map[string]string              `gorm:"column:protocol_conf;type:json;serializer:json"`     // 自定义协议配置
+	SubProtocolConf  map[string]string              `gorm:"column:sub_protocol_conf;type:json;serializer:json"` // 子模块自定义协议配置
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;uniqueIndex:idx_dm_product_info_pd"`
 	Category    *DmProductCategory `gorm:"foreignKey:ID;references:CategoryID"`       // 添加外键
@@ -196,7 +196,7 @@ type DmProductInfo struct {
 	Protocol    *DmProtocolInfo    `gorm:"foreignKey:Code;references:ProtocolCode"`
 	SubProtocol *DmProtocolInfo    `gorm:"foreignKey:Code;references:SubProtocolCode"`
 	//Devices []*DmDeviceInfo    `gorm:"foreignKey:ProductID;references:ProductID"` // 添加外键
-	CustomUi map[string]*ProductCustomUi `gorm:"column:customUi;type:json;serializer:json;NOT NULL;default:'{}'"`
+	CustomUi map[string]*ProductCustomUi `gorm:"column:customUi;type:json;serializer:json;NOT NULL"`
 }
 
 type ProductCustomUi struct {
@@ -279,11 +279,11 @@ type DmProtocolInfo struct {
 	Desc                string                `gorm:"column:desc;type:varchar(2000)"`                                             // 描述
 	IsEnableSyncProduct int64                 `gorm:"column:is_enable_sync_product;type:bigint;default:2"`                        //是否支持主动同步产品信息
 	IsEnableSyncDevice  int64                 `gorm:"column:is_enable_sync_device;type:bigint;default:2"`                         //是否支持主动同步设备信息
-	DeviceFields        protocol.ConfigFields `gorm:"column:device_fields;type:json;serializer:json;NOT NULL;default:'[]'"`       // 协议需要的设备配置字段列表,没有可以不传
-	ProductFields       protocol.ConfigFields `gorm:"column:product_fields;type:json;serializer:json;NOT NULL;default:'[]'"`      // 协议需要的产品配置字段列表,没有可以不传
-	ConfigFields        protocol.ConfigFields `gorm:"column:config_fields;type:json;serializer:json;NOT NULL;default:'[]'"`       // 需要配置的字段列表,没有可以不传
-	ConfigInfos         protocol.ConfigInfos  `gorm:"column:config_infos;type:json;serializer:json;NOT NULL;default:'[]'"`        // 配置列表
-	Endpoints           []string              `gorm:"column:endpoints;type:json;serializer:json;NOT NULL;default:'[]'"`           // 协议端点,如果填写了优先使用该字段
+	DeviceFields        protocol.ConfigFields `gorm:"column:device_fields;type:json;serializer:json;NOT NULL"`       // 协议需要的设备配置字段列表,没有可以不传
+	ProductFields       protocol.ConfigFields `gorm:"column:product_fields;type:json;serializer:json;NOT NULL"`      // 协议需要的产品配置字段列表,没有可以不传
+	ConfigFields        protocol.ConfigFields `gorm:"column:config_fields;type:json;serializer:json;NOT NULL"`       // 需要配置的字段列表,没有可以不传
+	ConfigInfos         protocol.ConfigInfos  `gorm:"column:config_infos;type:json;serializer:json;NOT NULL"`        // 配置列表
+	Endpoints           []string              `gorm:"column:endpoints;type:json;serializer:json;NOT NULL"`           // 协议端点,如果填写了优先使用该字段
 	EtcdKey             string                `gorm:"column:etcd_key;type:varchar(200);default:null"`                             // 服务etcd发现的key etcd key
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:idx_dm_protocol_info_pc;uniqueIndex:idx_dm_protocol_info_pn"`
@@ -311,8 +311,8 @@ type DmProtocolScript struct {
 	TenantCode dataType.TenantCodeWithCommonN `gorm:"column:tenant_code;index;uniqueIndex:idx_dm_protocol_script_name;type:VARCHAR(50);default:'__common __'"` // 租户编码
 	ID         int64                          `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	Name       string                         `gorm:"column:name;uniqueIndex:idx_dm_protocol_script_name;type:varchar(100);not null"` //转换名称
-	//ProductIDs    []string          `gorm:"column:product_ids;type:json;serializer:json;default:'[]'"` // 产品id
-	//Devices       []devices.Core    `gorm:"column:devices;type:json;serializer:json;default:'[]'"`     //设备触发
+	//ProductIDs    []string          `gorm:"column:product_ids;type:json;serializer:json"` // 产品id
+	//Devices       []devices.Core    `gorm:"column:devices;type:json;serializer:json"`     //设备触发
 	TriggerDir    protocol.TriggerDir   `gorm:"column:trigger_dir;not null"`                        //up down
 	TriggerTimer  protocol.TriggerTimer `gorm:"column:trigger_timer;"`                              //收到前处理before after
 	TriggerHandle devices.MsgHandle     `gorm:"column:trigger_handle;type:varchar(100);default:''"` //对应 mqtt topic的第一个 thing ota config 等等
@@ -456,8 +456,8 @@ type DmGroupInfo struct {
 	ProductID  string              `gorm:"column:product_id;type:varchar(100);default:'';NOT NULL"`                                          // 产品id,为空则不限定分组内的产品类型
 	Name       string              `gorm:"column:name;uniqueIndex:idx_dm_group_info_tc_ac;default:'';type:varchar(100);NOT NULL"`            // 分组名称
 	Desc       string              `gorm:"column:desc;type:varchar(200);default:''"`                                                         // 描述
-	Tags       map[string]string   `gorm:"column:tags;type:json;serializer:json;NOT NULL;default:'{}'"`                                      // 分组标签
-	Files      map[string]string   `gorm:"column:files;type:json;serializer:json;NOT NULL;default:'{}'"`                                     // 分组文件
+	Tags       map[string]string   `gorm:"column:tags;type:json;serializer:json;NOT NULL"`                                      // 分组标签
+	Files      map[string]string   `gorm:"column:files;type:json;serializer:json;NOT NULL"`                                     // 分组文件
 
 	stores.NoDelTime
 	DeviceCount int64              `gorm:"column:device_count;type:bigint;default:0;"` //设备数量统计

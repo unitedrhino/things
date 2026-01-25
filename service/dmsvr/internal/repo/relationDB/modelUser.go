@@ -38,8 +38,8 @@ type DmUserDeviceShare struct {
 	UseBy      string                `gorm:"column:use_by;type:varchar(100);default:'default'"`                                                        //用途,默认为default
 	DeviceName string                `gorm:"column:device_name;uniqueIndex:idx_dm_user_device_share_product_id_deviceName;type:varchar(100);NOT NULL"` // 设备名称
 	AuthType   def.AuthType          `gorm:"column:auth_type;type:varchar(100);default:1"`                                                             // 权限类型
-	AccessPerm map[string]*SharePerm `gorm:"column:access_prem;type:json;serializer:json;NOT NULL;default:'{}'"`                                       //操作权限 hubLog:设备消息记录,ota:ota升级权限,deviceTiming:设备定时
-	SchemaPerm map[string]*SharePerm `gorm:"column:schema_prem;type:json;serializer:json;NOT NULL;default:'{}'"`                                       //物模型权限,只需要填写需要授权并授权的物模型id
+	AccessPerm map[string]*SharePerm `gorm:"column:access_prem;type:json;serializer:json;NOT NULL"`                                       //操作权限 hubLog:设备消息记录,ota:ota升级权限,deviceTiming:设备定时
+	SchemaPerm map[string]*SharePerm `gorm:"column:schema_prem;type:json;serializer:json;NOT NULL"`                                       //物模型权限,只需要填写需要授权并授权的物模型id
 	ExpTime    sql.NullTime          `gorm:"column:exp_time"`                                                                                          //过期时间,为0不限制
 
 	stores.NoDelTime
