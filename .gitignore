@@ -83,3 +83,4 @@ tools/ssh/main.go
 deploy/docker/conf/taos/dnode/data/*
 
 *.debug.yaml
+**/init_debug_test.go
