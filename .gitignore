@@ -82,3 +82,4 @@ tools/ssh/go.mod
 tools/ssh/main.go
 deploy/docker/conf/taos/dnode/data/*
 
+deploy/docker/conf/pgsql/data/*

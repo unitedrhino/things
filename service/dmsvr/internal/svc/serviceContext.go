@@ -70,7 +70,7 @@ type ServiceContext struct {
 	SDKLogRepo           deviceLog.SDKRepo
 	Cache                kv.Store
 	DeviceStatus         *cache.DeviceStatus
-	FastEvent            *eventBus.FastEvent
+	 FastEvent            *eventBus.FastEvent
 	AreaM                areamanage.AreaManage
 	UserM                usermanage.UserManage
 	DictM                dictmanage.DictManage

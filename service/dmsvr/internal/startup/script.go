@@ -31,6 +31,7 @@ import (
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"gitee.com/unitedrhino/things/share/topics"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -513,5 +514,7 @@ func dmSymbolInit(svcCtx *svc.ServiceContext) map[string]reflect.Value {
 		"WithIDChildren":                    reflect.ValueOf((*dm.WithIDChildren)(nil)),
 		"WithIDCode":                        reflect.ValueOf((*dm.WithIDCode)(nil)),
 		"WithProfile":                       reflect.ValueOf((*dm.WithProfile)(nil)),
+		"StringValue":                       reflect.ValueOf((*wrapperspb.StringValue)(nil)),
+		"Int64Value":                        reflect.ValueOf((*wrapperspb.Int64Value)(nil)),
 	}
 }
