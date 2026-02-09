@@ -6,6 +6,7 @@ import (
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgOta"
+	"gorm.io/gorm"
 )
 
 //// 升级任务表
@@ -129,6 +130,19 @@ type DmOtaFirmwareJob struct {
 
 func (m *DmOtaFirmwareJob) TableName() string {
 	return "dm_ota_firmware_job"
+}
+
+func (m *DmOtaFirmwareJob) BeforeSave(tx *gorm.DB) error {
+	if m == nil {
+		return nil
+	}
+	if m.SrcVersions == nil {
+		m.SrcVersions = []string{}
+	}
+	if m.Static.TargetDeviceNames == nil {
+		m.Static.TargetDeviceNames = []string{}
+	}
+	return nil
 }
 
 type DmOtaFirmwareJobDynamic struct {

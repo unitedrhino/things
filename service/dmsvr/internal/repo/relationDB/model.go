@@ -145,6 +145,7 @@ func (m *DmDeviceInfo) BeforeSave(tx *gorm.DB) error {
 	m.SchemaAlias = normalizeMapStringString(m.SchemaAlias)
 	m.ProtocolConf = normalizeMapStringString(m.ProtocolConf)
 	m.SubProtocolConf = normalizeMapStringString(m.SubProtocolConf)
+	m.BelongGroup = normalizeMapStringIDsInfo(m.BelongGroup)
 	return nil
 }
 
@@ -274,6 +275,9 @@ func (m *DmProductInfo) BeforeSave(tx *gorm.DB) error {
 	if m == nil {
 		return nil
 	}
+	m.Tags = normalizeMapStringString(m.Tags)
+	m.ProtocolConf = normalizeMapStringString(m.ProtocolConf)
+	m.SubProtocolConf = normalizeMapStringString(m.SubProtocolConf)
 	m.CustomUi = normalizeMapStringProductCustomUi(m.CustomUi)
 	return nil
 }
@@ -445,6 +449,16 @@ type DmProductCustom struct {
 
 func (m *DmProductCustom) TableName() string {
 	return "dm_product_custom"
+}
+
+func (m *DmProductCustom) BeforeSave(tx *gorm.DB) error {
+	if m == nil {
+		return nil
+	}
+	if m.CustomTopics == nil {
+		m.CustomTopics = []*productCustom.CustomTopic{}
+	}
+	return nil
 }
 
 // 产品物模型表
