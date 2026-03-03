@@ -47,6 +47,7 @@ services:
     restart: always
     ports:
       - "9363:9363"
+      - "9366:9366"
     environment:
       - confSuffix=${confSuffix}
     logging:
