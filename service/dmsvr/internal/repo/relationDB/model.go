@@ -3,7 +3,6 @@ package relationDB
 import (
 	"context"
 	"database/sql"
-	"strings"
 	"time"
 
 	"gitee.com/unitedrhino/core/share/dataType"
@@ -21,9 +20,9 @@ import (
 )
 
 func normalizeJSONString(in string) string {
-	if strings.TrimSpace(in) == "" {
-		return "{}"
-	}
+	//if in == "" {
+	//	return "{}"
+	//}
 	return in
 }
 
@@ -95,36 +94,36 @@ type DmDeviceInfo struct {
 	DeviceType      int64               `gorm:"column:device_type;index;type:smallint;default:1"`                                                                                  // 设备类型:1:设备,2:网关,3:子设备
 	Version         string              `gorm:"column:version;index;type:varchar(64);NOT NULL"`                                                                                    // 固件版本
 	//ModuleVersion  map[string]string `gorm:"column:module_version;type:json;serializer:json;NOT NULL"`      // 所有模块的版本
-	HardInfo           string                 `gorm:"column:hard_info;type:varchar(64);NOT NULL"`                               // 模组硬件型号
-	SoftInfo           string                 `gorm:"column:soft_info;type:varchar(64);NOT NULL"`                               // 模组软件版本
-	MobileOperator     def.MobileOperator     `gorm:"column:mobile_operator;type:smallint;default:10;NOT NULL"`                 // 移动运营商:1)移动 2)联通 3)电信 4)广电 10) 无
-	Phone              sql.NullString         `gorm:"column:phone;type:varchar(20)"`                                            // 手机号
-	Iccid              sql.NullString         `gorm:"column:iccid;type:varchar(20)"`                                            // SIM卡卡号
-	Address            string                 `gorm:"column:address;type:varchar(512);default:''"`                              // 所在地址
-	Adcode             string                 `gorm:"column:adcode;type:varchar(125);default:''"`                               // 地区编码
+	HardInfo           string                 `gorm:"column:hard_info;type:varchar(64);NOT NULL"`                  // 模组硬件型号
+	SoftInfo           string                 `gorm:"column:soft_info;type:varchar(64);NOT NULL"`                  // 模组软件版本
+	MobileOperator     def.MobileOperator     `gorm:"column:mobile_operator;type:smallint;default:10;NOT NULL"`    // 移动运营商:1)移动 2)联通 3)电信 4)广电 10) 无
+	Phone              sql.NullString         `gorm:"column:phone;type:varchar(20)"`                               // 手机号
+	Iccid              sql.NullString         `gorm:"column:iccid;type:varchar(20)"`                               // SIM卡卡号
+	Address            string                 `gorm:"column:address;type:varchar(512);default:''"`                 // 所在地址
+	Adcode             string                 `gorm:"column:adcode;type:varchar(125);default:''"`                  // 地区编码
 	Tags               map[string]string      `gorm:"column:tags;type:json;serializer:json;NOT NULL"`              // 设备标签
 	SchemaAlias        map[string]string      `gorm:"column:schema_alias;type:json;serializer:json;NOT NULL"`      // 设备物模型别名,如果是结构体类型则key为xxx.xxx
-	Rssi               int64                  `gorm:"column:rssi;type:bigint;default:0;NOT NULL"`                               // 设备信号（信号极好[-55— 0]，信号好[-70— -55]，信号一般[-85— -70]，信号差[-100— -85]）
+	Rssi               int64                  `gorm:"column:rssi;type:bigint;default:0;NOT NULL"`                  // 设备信号（信号极好[-55— 0]，信号好[-70— -55]，信号一般[-85— -70]，信号差[-100— -85]）
 	ProtocolConf       map[string]string      `gorm:"column:protocol_conf;type:json;serializer:json;NOT NULL"`     // 主协议配置
 	SubProtocolConf    map[string]string      `gorm:"column:sub_protocol_conf;type:json;serializer:json;NOT NULL"` // 子模块自定义协议配置
-	DeviceImg          string                 `gorm:"column:device_img;type:varchar(200);default:''"`                           // 设备图片
-	File               string                 `gorm:"column:file;type:varchar(200);default:''"`                                 // 设备相关文件
-	IsOnline           int64                  `gorm:"column:is_online;type:smallint;default:2;NOT NULL"`                        // 是否在线,1是2否
-	FirstLogin         sql.NullTime           `gorm:"column:first_login"`                                                       // 激活时间
-	LastLogin          sql.NullTime           `gorm:"column:last_login"`                                                        // 最后上线时间
-	LastOffline        sql.NullTime           `gorm:"column:last_offline"`                                                      // 最后下线线时间
-	FirstBind          sql.NullTime           `gorm:"column:first_bind"`                                                        // 首次绑定时间
-	LastBind           sql.NullTime           `gorm:"column:last_bind"`                                                         // 最后一次绑定时间
-	LogLevel           int64                  `gorm:"column:log_level;type:smallint;default:1;NOT NULL"`                        // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
-	UserID             int64                  `gorm:"column:user_id;type:BIGINT;default:1"`                                     // 用户id
-	Sort               int64                  `gorm:"column:sort;type:BIGINT;default:100"`                                      // 排序
-	Status             def.DeviceStatus       `gorm:"column:status;index;type:smallint;default:1;NOT NULL"`                     // 设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中) 5-禁用
-	IsEnable           int64                  `gorm:"column:is_enable;index;type:smallint;default:1;"`                          // 是否启用: 1:是 2:否
-	ExpTime            sql.NullTime           `gorm:"column:exp_time"`                                                          // 过期时间,为0不限制
-	NeedConfirmJobID   int64                  `gorm:"column:need_confirm_job_id;type:smallint;default:0;"`                      // 需要app确认升级的任务ID,为0是没有
-	NeedConfirmVersion string                 `gorm:"column:need_confirm_version;type:varchar(128);default:'';"`                // 待确认升级的版本
-	LastIp             string                 `gorm:"column:last_ip;type:varchar(128);default:'';"`                             // 最后登录的ip地址
-	LastLocalIp        string                 `gorm:"column:last_local_ip;type:varchar(128);default:'';"`                       // 局域网的ip地址
+	DeviceImg          string                 `gorm:"column:device_img;type:varchar(200);default:''"`              // 设备图片
+	File               string                 `gorm:"column:file;type:varchar(200);default:''"`                    // 设备相关文件
+	IsOnline           int64                  `gorm:"column:is_online;type:smallint;default:2;NOT NULL"`           // 是否在线,1是2否
+	FirstLogin         sql.NullTime           `gorm:"column:first_login"`                                          // 激活时间
+	LastLogin          sql.NullTime           `gorm:"column:last_login"`                                           // 最后上线时间
+	LastOffline        sql.NullTime           `gorm:"column:last_offline"`                                         // 最后下线线时间
+	FirstBind          sql.NullTime           `gorm:"column:first_bind"`                                           // 首次绑定时间
+	LastBind           sql.NullTime           `gorm:"column:last_bind"`                                            // 最后一次绑定时间
+	LogLevel           int64                  `gorm:"column:log_level;type:smallint;default:1;NOT NULL"`           // 日志级别:1)关闭 2)错误 3)告警 4)信息 5)调试
+	UserID             int64                  `gorm:"column:user_id;type:BIGINT;default:1"`                        // 用户id
+	Sort               int64                  `gorm:"column:sort;type:BIGINT;default:100"`                         // 排序
+	Status             def.DeviceStatus       `gorm:"column:status;index;type:smallint;default:1;NOT NULL"`        // 设备状态 1-未激活，2-在线，3-离线 4-异常(频繁上下线,告警中) 5-禁用
+	IsEnable           int64                  `gorm:"column:is_enable;index;type:smallint;default:1;"`             // 是否启用: 1:是 2:否
+	ExpTime            sql.NullTime           `gorm:"column:exp_time"`                                             // 过期时间,为0不限制
+	NeedConfirmJobID   int64                  `gorm:"column:need_confirm_job_id;type:smallint;default:0;"`         // 需要app确认升级的任务ID,为0是没有
+	NeedConfirmVersion string                 `gorm:"column:need_confirm_version;type:varchar(128);default:'';"`   // 待确认升级的版本
+	LastIp             string                 `gorm:"column:last_ip;type:varchar(128);default:'';"`                // 最后登录的ip地址
+	LastLocalIp        string                 `gorm:"column:last_local_ip;type:varchar(128);default:'';"`          // 局域网的ip地址
 	BelongGroup        map[string]def.IDsInfo `gorm:"column:belong_group;type:json;serializer:json"`
 	stores.NoDelTime
 	Desc        string                  `gorm:"column:desc;type:varchar(200)"`        // 描述
@@ -247,7 +246,7 @@ type DmProductInfo struct {
 	Desc             string                         `gorm:"column:desc;type:varchar(200)"`                                                   // 描述
 	TrialTime        int64                          `gorm:"column:trial_time"`                                                               //试用时间(单位为天,为0不限制)
 	Status           devices.ProductStatus          `gorm:"column:status;type:smallint;default:1"`
-	SceneMode        string                         `gorm:"column:scene_mode;type:varchar(20);default:rw"`                   // 场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
+	SceneMode        string                         `gorm:"column:scene_mode;type:varchar(20);default:rw"`      // 场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
 	Tags             map[string]string              `gorm:"column:tags;type:json;serializer:json"`              // 产品标签
 	ProtocolConf     map[string]string              `gorm:"column:protocol_conf;type:json;serializer:json"`     // 自定义协议配置
 	SubProtocolConf  map[string]string              `gorm:"column:sub_protocol_conf;type:json;serializer:json"` // 子模块自定义协议配置
@@ -352,11 +351,11 @@ type DmProtocolInfo struct {
 	Desc                string                `gorm:"column:desc;type:varchar(2000)"`                                             // 描述
 	IsEnableSyncProduct int64                 `gorm:"column:is_enable_sync_product;type:bigint;default:2"`                        //是否支持主动同步产品信息
 	IsEnableSyncDevice  int64                 `gorm:"column:is_enable_sync_device;type:bigint;default:2"`                         //是否支持主动同步设备信息
-	DeviceFields        protocol.ConfigFields `gorm:"column:device_fields;type:json;serializer:json;NOT NULL"`       // 协议需要的设备配置字段列表,没有可以不传
-	ProductFields       protocol.ConfigFields `gorm:"column:product_fields;type:json;serializer:json;NOT NULL"`      // 协议需要的产品配置字段列表,没有可以不传
-	ConfigFields        protocol.ConfigFields `gorm:"column:config_fields;type:json;serializer:json;NOT NULL"`       // 需要配置的字段列表,没有可以不传
-	ConfigInfos         protocol.ConfigInfos  `gorm:"column:config_infos;type:json;serializer:json;NOT NULL"`        // 配置列表
-	Endpoints           []string              `gorm:"column:endpoints;type:json;serializer:json;NOT NULL"`           // 协议端点,如果填写了优先使用该字段
+	DeviceFields        protocol.ConfigFields `gorm:"column:device_fields;type:json;serializer:json;NOT NULL"`                    // 协议需要的设备配置字段列表,没有可以不传
+	ProductFields       protocol.ConfigFields `gorm:"column:product_fields;type:json;serializer:json;NOT NULL"`                   // 协议需要的产品配置字段列表,没有可以不传
+	ConfigFields        protocol.ConfigFields `gorm:"column:config_fields;type:json;serializer:json;NOT NULL"`                    // 需要配置的字段列表,没有可以不传
+	ConfigInfos         protocol.ConfigInfos  `gorm:"column:config_infos;type:json;serializer:json;NOT NULL"`                     // 配置列表
+	Endpoints           []string              `gorm:"column:endpoints;type:json;serializer:json;NOT NULL"`                        // 协议端点,如果填写了优先使用该字段
 	EtcdKey             string                `gorm:"column:etcd_key;type:varchar(200);default:null"`                             // 服务etcd发现的key etcd key
 	stores.NoDelTime
 	DeletedTime stores.DeletedTime `gorm:"column:deleted_time;default:0;uniqueIndex:idx_dm_protocol_info_pc;uniqueIndex:idx_dm_protocol_info_pn"`
@@ -583,8 +582,8 @@ type DmGroupInfo struct {
 	ProductID  string              `gorm:"column:product_id;type:varchar(100);default:'';NOT NULL"`                                          // 产品id,为空则不限定分组内的产品类型
 	Name       string              `gorm:"column:name;uniqueIndex:idx_dm_group_info_tc_ac;default:'';type:varchar(100);NOT NULL"`            // 分组名称
 	Desc       string              `gorm:"column:desc;type:varchar(200);default:''"`                                                         // 描述
-	Tags       map[string]string   `gorm:"column:tags;type:json;serializer:json;NOT NULL"`                                      // 分组标签
-	Files      map[string]string   `gorm:"column:files;type:json;serializer:json;NOT NULL"`                                     // 分组文件
+	Tags       map[string]string   `gorm:"column:tags;type:json;serializer:json;NOT NULL"`                                                   // 分组标签
+	Files      map[string]string   `gorm:"column:files;type:json;serializer:json;NOT NULL"`                                                  // 分组文件
 
 	stores.NoDelTime
 	DeviceCount int64              `gorm:"column:device_count;type:bigint;default:0;"` //设备数量统计
