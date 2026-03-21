@@ -305,7 +305,7 @@ func (d *DeviceDataRepo) GetPropertyDataByID(
 		}
 		db = db.Table(getTableName(p.Define) + " as tb")
 	} else {
-		db, err = d.getPropertyArgFuncSelect(ctx, db, p, filter)
+		db, err = d.getPropertyArgFuncSelect(ctx, db, p, &filter)
 		if err != nil {
 			return nil, err
 		}
@@ -452,7 +452,7 @@ GROUP BY
 */
 func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 	ctx context.Context, db *stores.DB, p *schema.Property,
-	filter msgThing.FilterOpt) (*stores.DB, error) {
+	filter *msgThing.FilterOpt) (*stores.DB, error) {
 	var start = "0000-01-01 0:00:00"
 	if filter.Page.TimeStart != 0 {
 		start = time.UnixMilli(filter.Page.TimeStart).Format("2006-01-02 15:04:05")
@@ -535,6 +535,16 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 			timeSpan >= 24*60*60*1000 {
 			selects = append(selects, arg(filter.ArgFunc+"_ts", filter.ArgFunc+"_param"))
 			db = db.Table(getTableName(p.Define) + "_hour as tb").Select(selects)
+			// _hour视图的ts是time_bucket整点,需要将时间范围对齐到小时边界,避免过滤掉边界bucket
+			if filter.Page.TimeStart > 0 {
+				filter.Page.TimeStart = filter.Page.TimeStart - (filter.Page.TimeStart % (60 * 60 * 1000))
+			}
+			if filter.Page.TimeEnd > 0 {
+				remainder := filter.Page.TimeEnd % (60 * 60 * 1000)
+				if remainder > 0 {
+					filter.Page.TimeEnd = filter.Page.TimeEnd - remainder + 60*60*1000
+				}
+			}
 		} else {
 			selects = append(selects, arg("", ""))
 			db = db.Table(getTableName(p.Define) + " as tb").Select(selects)
