@@ -528,23 +528,24 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 	} else if groups == "" {
 		return nil, errors.Parameter.AddMsg("没有设置分组字段，无法进行聚合查询")
 	} else {
-		// 时间跨度>=1天 且 argFunc 支持视图预聚合列，走 _hour 物化视图优化
-		timeSpan := filter.Page.TimeEnd - filter.Page.TimeStart
-		if stores.GetTsDBType() == conf.Pgsql &&
-			utils.SliceIn(filter.ArgFunc, "first", "last", "min", "max") &&
-			timeSpan >= 23*60*60*1000 {
+		// 根据argFunc和时间边界对齐情况决定是否走_hour物化视图
+		// first只关心起始边界对齐,last只关心结束边界对齐,min/max两端都需要对齐
+		startAligned := filter.Page.TimeStart%(60*60*1000) == 0
+		endAligned := (filter.Page.TimeEnd+1)%(60*60*1000) == 0
+		canUseView := false
+		if stores.GetTsDBType() == conf.Pgsql {
+			switch filter.ArgFunc {
+			case "first":
+				canUseView = startAligned
+			case "last":
+				canUseView = endAligned
+			case "min", "max":
+				canUseView = startAligned && endAligned
+			}
+		}
+		if canUseView {
 			selects = append(selects, arg(filter.ArgFunc+"_ts", filter.ArgFunc+"_param"))
 			db = db.Table(getTableName(p.Define) + "_hour as tb").Select(selects)
-			// _hour视图的ts是time_bucket整点,需要将时间范围对齐到小时边界,避免过滤掉边界bucket
-			if filter.Page.TimeStart > 0 {
-				filter.Page.TimeStart = filter.Page.TimeStart - (filter.Page.TimeStart % (60 * 60 * 1000))
-			}
-			if filter.Page.TimeEnd > 0 {
-				remainder := filter.Page.TimeEnd % (60 * 60 * 1000)
-				if remainder > 0 {
-					filter.Page.TimeEnd = filter.Page.TimeEnd - remainder + 60*60*1000
-				}
-			}
 		} else {
 			selects = append(selects, arg("", ""))
 			db = db.Table(getTableName(p.Define) + " as tb").Select(selects)
