@@ -532,7 +532,7 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 		timeSpan := filter.Page.TimeEnd - filter.Page.TimeStart
 		if stores.GetTsDBType() == conf.Pgsql &&
 			utils.SliceIn(filter.ArgFunc, "first", "last", "min", "max") &&
-			timeSpan >= 24*60*60*1000 {
+			timeSpan >= 23*60*60*1000 {
 			selects = append(selects, arg(filter.ArgFunc+"_ts", filter.ArgFunc+"_param"))
 			db = db.Table(getTableName(p.Define) + "_hour as tb").Select(selects)
 			// _hour视图的ts是time_bucket整点,需要将时间范围对齐到小时边界,避免过滤掉边界bucket

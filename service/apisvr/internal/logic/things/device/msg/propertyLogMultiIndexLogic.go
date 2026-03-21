@@ -29,6 +29,9 @@ func NewPropertyLogMultiIndexLogic(ctx context.Context, svcCtx *svc.ServiceConte
 }
 
 func (l *PropertyLogMultiIndexLogic) PropertyLogMultiIndex(req *types.DeviceMsgPropertyLogMultiIndexReq) (resp *types.DeviceMsgPropertyMultiIndexResp, err error) {
+	if len(req.Reqs) == 0 {
+		return &types.DeviceMsgPropertyMultiIndexResp{}, nil
+	}
 	var wait sync.WaitGroup
 	var ret = make([][]*types.DeviceMsgPropertyLogInfo, len(req.Reqs))
 	var mutex sync.Mutex
