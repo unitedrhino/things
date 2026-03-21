@@ -528,8 +528,17 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect(
 	} else if groups == "" {
 		return nil, errors.Parameter.AddMsg("没有设置分组字段，无法进行聚合查询")
 	} else {
-		selects = append(selects, arg("", ""))
-		db = db.Table(getTableName(p.Define) + " as tb").Select(selects)
+		// 时间跨度>=1天 且 argFunc 支持视图预聚合列，走 _hour 物化视图优化
+		timeSpan := filter.Page.TimeEnd - filter.Page.TimeStart
+		if stores.GetTsDBType() == conf.Pgsql &&
+			utils.SliceIn(filter.ArgFunc, "first", "last", "min", "max") &&
+			timeSpan >= 24*60*60*1000 {
+			selects = append(selects, arg(filter.ArgFunc+"_ts", filter.ArgFunc+"_param"))
+			db = db.Table(getTableName(p.Define) + "_hour as tb").Select(selects)
+		} else {
+			selects = append(selects, arg("", ""))
+			db = db.Table(getTableName(p.Define) + " as tb").Select(selects)
+		}
 	}
 	if groups != "" {
 		db = db.Group(groups)
