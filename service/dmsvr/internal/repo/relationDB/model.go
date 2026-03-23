@@ -81,7 +81,7 @@ type DmDeviceInfo struct {
 	AreaIDPath      dataType.AreaIDPath `gorm:"column:area_id_path;type:varchar(100);default:'';NOT NULL"`                                                                         // 项目区域ID路径(雪花ID)
 	DeptID          dataType.DeptID     `gorm:"column:dept_id;type:bigint;default:0;NOT NULL"`                                                                                     // 部门ID
 	DeptIDPath      dataType.DeptIDPath `gorm:"column:dept_id_path;type:varchar(100);default:'';NOT NULL"`                                                                         // 部门ID路径
-	DeptUpdatedTime time.Time           `gorm:"column:dept_updated_time;default:null"`                                                                                             //部门更新时间
+	DeptUpdatedTime sql.NullTime        `gorm:"column:dept_updated_time;default:null"`                                                                                             //部门更新时间
 	ProductID       string              `gorm:"column:product_id;type:varchar(100);index:idx_dm_device_info_pd_dn;uniqueIndex:idx_dm_device_info_product_id_deviceName;NOT NULL"`  // 产品id
 	DeviceName      string              `gorm:"column:device_name;index:idx_dm_device_info_pd_dn;uniqueIndex:idx_dm_device_info_product_id_deviceName;type:varchar(100);NOT NULL"` // 设备名称
 	DeviceAlias     string              `gorm:"column:device_alias;type:varchar(100);NOT NULL"`                                                                                    // 设备别名

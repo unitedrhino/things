@@ -276,7 +276,10 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 		if data.Dept != nil {
 			old.DeptID = dataType.DeptID(data.Dept.Id)
 			old.DeptIDPath = dataType.DeptIDPath(data.Dept.IdPath)
-			old.DeptUpdatedTime = time.Now()
+			old.DeptUpdatedTime = sql.NullTime{
+				Time:  time.Now(),
+				Valid: true,
+			}
 		}
 		if data.IsEnable != def.Unknown {
 			old.IsEnable = data.IsEnable
