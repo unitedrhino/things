@@ -1515,7 +1515,7 @@ message GroupInfo{
   map<string, string> tags = 7;
   string productID = 8;
   string productName = 9;
-  repeated DeviceCore devices =11;
+  repeated DeviceCore devices =11;//withDevices=true时返回分组下设备核心信息
   int64 deviceCount = 12;
   int64 isLeaf =13;
   map<string,string> files =16;//key 是用途, value是 是文件的路径,如果要更新该文件, 传filePath即可
@@ -1542,6 +1542,7 @@ message  GroupInfoReadReq{
   int64 id =1;         // id
   bool withChildren =2;
   string purpose =15;//用途 不填默认为default
+  bool withDevices =16;//true时返回devices设备核心信息
 }
 
 
@@ -1555,6 +1556,7 @@ message GroupInfoIndexReq{
   string purpose =15;//用途 不填默认为default
   repeated string purposes =16;//用途
    DeviceCore hasDevice=17;
+   bool withDevices =18;//true时返回list[].devices设备核心信息
 }
 
 message GroupInfoIndexResp{

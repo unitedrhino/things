@@ -17,6 +17,7 @@ type GroupInfoIndexLogic struct {
 	svcCtx *svc.ServiceContext
 	logx.Logger
 	GiDB *relationDB.GroupInfoRepo
+	GdDB *relationDB.GroupDeviceRepo
 }
 
 func NewGroupInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GroupInfoIndexLogic {
@@ -25,6 +26,7 @@ func NewGroupInfoIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Gr
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 		GiDB:   relationDB.NewGroupInfoRepo(ctx),
+		GdDB:   relationDB.NewGroupDeviceRepo(ctx),
 	}
 }
 
@@ -50,8 +52,17 @@ func (l *GroupInfoIndexLogic) GroupInfoIndex(in *dm.GroupInfoIndexReq) (*dm.Grou
 		return nil, err
 	}
 	info := make([]*dm.GroupInfo, 0, len(ros))
+	groupIDs := make([]int64, 0, len(ros))
 	for _, ro := range ros {
 		info = append(info, ToGroupInfoPb(l.ctx, l.svcCtx, ro))
+		groupIDs = append(groupIDs, ro.ID)
+	}
+	if in.WithDevices {
+		groupDevices, err := l.GdDB.FindByFilter(l.ctx, relationDB.GroupDeviceFilter{GroupIDs: groupIDs, WithDevice: true}, nil)
+		if err != nil {
+			return nil, err
+		}
+		fillGroupDevices(info, groupDevices)
 	}
 	return &dm.GroupInfoIndexResp{List: info, Total: total}, nil
 }

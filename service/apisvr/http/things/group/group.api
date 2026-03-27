@@ -75,7 +75,7 @@ type (
         IsLeaf int64 `json:"isLeaf,optional"`
         Tags []*Tag `json:"tags,optional,omitempty"`                 //分组tag
         Files map[string]string `json:"files,optional,omitempty"` //key 是用途, value是文件的路径,
-        Devices []*DeviceCore `json:"devices,optional,omitempty"`
+        Devices []*DeviceCore `json:"devices,optional,omitempty"` // withDevices=true 时返回分组下设备核心信息
         Children []*GroupInfo `json:"children,optional,omitempty"`
     }
 
@@ -84,6 +84,7 @@ type (
         ID int64 `json:"id"`         // id
         Purpose string `json:"purpose,optional"`//用途 不填默认为default
         WithChildren bool `json:"withChildren,optional"`
+        WithDevices bool `json:"withDevices,optional"` // true 时返回 devices 设备核心信息
     }
     GroupInfoIndexReq  {
         Page *PageInfo `json:"page,optional"`             //分页信息 只获取一个则不填
@@ -93,6 +94,7 @@ type (
         Name string `json:"name,optional"`          //分组名称
         Tags []*Tag `json:"tags,optional"`                    //分组tag
         Purpose string `json:"purpose,optional"`//用途 不填默认为default
+        WithDevices bool `json:"withDevices,optional"` // true 时返回 list[].devices 设备核心信息
     }
 
     GroupInfoIndexResp  {

@@ -47,3 +47,32 @@ func ToGroupInfoPb(ctx context.Context, svcCtx *svc.ServiceContext, ro *relation
 		IsLeaf:      ro.IsLeaf,
 	}
 }
+
+func fillGroupDevices(groups []*dm.GroupInfo, groupDevices []*relationDB.DmGroupDevice) {
+	if len(groups) == 0 || len(groupDevices) == 0 {
+		return
+	}
+	groupDeviceMap := make(map[int64][]*dm.DeviceCore)
+	for _, gd := range groupDevices {
+		if gd == nil || gd.Device == nil {
+			continue
+		}
+		groupDeviceMap[gd.GroupID] = append(groupDeviceMap[gd.GroupID], &dm.DeviceCore{
+			ProductID:  gd.Device.ProductID,
+			DeviceName: gd.Device.DeviceName,
+		})
+	}
+	fillGroupDevicesByMap(groups, groupDeviceMap)
+}
+
+func fillGroupDevicesByMap(groups []*dm.GroupInfo, groupDeviceMap map[int64][]*dm.DeviceCore) {
+	for _, group := range groups {
+		if group == nil {
+			continue
+		}
+		if devices := groupDeviceMap[group.Id]; len(devices) > 0 {
+			group.Devices = devices
+		}
+		fillGroupDevicesByMap(group.Children, groupDeviceMap)
+	}
+}

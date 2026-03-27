@@ -17,6 +17,7 @@ type GroupInfoReadLogic struct {
 	svcCtx *svc.ServiceContext
 	logx.Logger
 	GiDB *relationDB.GroupInfoRepo
+	GdDB *relationDB.GroupDeviceRepo
 }
 
 func NewGroupInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GroupInfoReadLogic {
@@ -25,6 +26,7 @@ func NewGroupInfoReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Gro
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 		GiDB:   relationDB.NewGroupInfoRepo(ctx),
+		GdDB:   relationDB.NewGroupDeviceRepo(ctx),
 	}
 }
 
@@ -43,13 +45,6 @@ func (l *GroupInfoReadLogic) GroupInfoRead(in *dm.GroupInfoReadReq) (*dm.GroupIn
 		if in.Purpose == "" {
 			in.Purpose = deviceGroup.DictDefault
 		}
-		//ret, err := l.svcCtx.DictM.DictDetailRead(l.ctx, &sys.DictDetailReadReq{
-		//	DictCode: deviceGroup.DictCode,
-		//	Value:    in.Purpose,
-		//})
-		//if err == nil {
-		//	po.Name = ret.Value
-		//}
 	case def.NotClassified:
 		po = &relationDB.DmGroupInfo{
 			ID:   def.NotClassified,
@@ -62,7 +57,11 @@ func (l *GroupInfoReadLogic) GroupInfoRead(in *dm.GroupInfoReadReq) (*dm.GroupIn
 		}
 	}
 	if !in.WithChildren {
-		return ToGroupInfoPb(l.ctx, l.svcCtx, po), nil
+		ret := ToGroupInfoPb(l.ctx, l.svcCtx, po)
+		if in.WithDevices {
+			fillGroupDevices([]*dm.GroupInfo{ret}, l.getGroupDevices([]int64{ret.Id}))
+		}
+		return ret, nil
 	}
 	children, err := l.GiDB.FindByFilter(l.ctx,
 		relationDB.GroupInfoFilter{Purpose: in.Purpose, IDPath: po.IDPath, WithProduct: true}, nil)
@@ -72,12 +71,33 @@ func (l *GroupInfoReadLogic) GroupInfoRead(in *dm.GroupInfoReadReq) (*dm.GroupIn
 	var ret = ToGroupInfoPb(l.ctx, l.svcCtx, po)
 	if children != nil {
 		var idMap = map[int64][]*dm.GroupInfo{}
+		var groupIDs = []int64{ret.Id}
 		for _, v := range children {
 			idMap[v.ParentID] = append(idMap[v.ParentID], ToGroupInfoPb(l.ctx, l.svcCtx, v))
+			groupIDs = append(groupIDs, v.ID)
 		}
 		fillDictInfoChildren(ret, idMap)
+		if in.WithDevices {
+			fillGroupDevices([]*dm.GroupInfo{ret}, l.getGroupDevices(groupIDs))
+		}
+		return ret, nil
+	}
+	if in.WithDevices {
+		fillGroupDevices([]*dm.GroupInfo{ret}, l.getGroupDevices([]int64{ret.Id}))
 	}
 	return ret, nil
+}
+
+func (l *GroupInfoReadLogic) getGroupDevices(groupIDs []int64) []*relationDB.DmGroupDevice {
+	if len(groupIDs) == 0 {
+		return nil
+	}
+	ret, err := l.GdDB.FindByFilter(l.ctx, relationDB.GroupDeviceFilter{GroupIDs: groupIDs, WithDevice: true}, nil)
+	if err != nil {
+		l.Errorf("getGroupDevices failed: %v", err)
+		return nil
+	}
+	return ret
 }
 func fillDictInfoChildren(node *dm.GroupInfo, nodeMap map[int64][]*dm.GroupInfo) {
 	// 找到当前节点的子节点数组

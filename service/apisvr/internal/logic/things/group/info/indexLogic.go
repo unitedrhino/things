@@ -28,12 +28,13 @@ func NewIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IndexLogic 
 
 func (l *IndexLogic) Index(req *types.GroupInfoIndexReq) (resp *types.GroupInfoIndexResp, err error) {
 	res, err := l.svcCtx.DeviceG.GroupInfoIndex(l.ctx, &dm.GroupInfoIndexReq{
-		Page:     logic.ToDmPageRpc(req.Page),
-		ParentID: req.ParentID,
-		AreaID:   req.AreaID,
-		Name:     req.Name,
-		Tags:     logic.ToTagsMap(req.Tags),
-		Purpose:  req.Purpose,
+		Page:        logic.ToDmPageRpc(req.Page),
+		ParentID:    req.ParentID,
+		AreaID:      req.AreaID,
+		Name:        req.Name,
+		Tags:        logic.ToTagsMap(req.Tags),
+		Purpose:     req.Purpose,
+		WithDevices: req.WithDevices,
 	})
 	if err != nil {
 		er := errors.Fmt(err)
