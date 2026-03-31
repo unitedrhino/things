@@ -100,7 +100,11 @@ func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (ret *dm.ActionSendRe
 	}
 	defer func() {
 		ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
-			uc := ctxs.GetUserCtx(l.ctx)
+			uc := ctxs.GetUserCtxNoNil(l.ctx)
+			account := uc.Account
+			if account == "" && uc.UserID <= def.RootNode {
+				account = "系统控制"
+			}
 			var content = map[string]any{}
 			content["req"] = params
 			content["userID"] = uc.UserID
@@ -113,7 +117,7 @@ func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (ret *dm.ActionSendRe
 				AreaIDPath:  di.AreaIDPath,
 				BelongGroup: utils.CopyMap3[def.IDsInfo](di.BelongGroup),
 				ProductID:   in.ProductID,
-				Account:     uc.Account,
+				Account:     account,
 				Action:      "actionSend",
 				Timestamp:   time.Now(), // 操作时间
 				DeviceName:  in.DeviceName,
