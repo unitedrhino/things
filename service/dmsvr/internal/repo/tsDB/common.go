@@ -10,6 +10,22 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 )
 
+const (
+	// TimescaleBucketOriginSQL aligns day/hour buckets to Asia/Shanghai boundaries.
+	TimescaleBucketOriginSQL = "TIMESTAMPTZ '2026-01-16 00:00:00+08'"
+)
+
+func CreateHypertableSQL(table string) string {
+	return fmt.Sprintf(
+		"SELECT create_hypertable('%s','ts', chunk_time_interval => interval '1 day', migrate_data => TRUE, if_not_exists => TRUE);",
+		table,
+	)
+}
+
+func TimeBucketSQL(interval string, column string) string {
+	return fmt.Sprintf("time_bucket(%s, %s, %s)", interval, column, TimescaleBucketOriginSQL)
+}
+
 func GroupFilter(db *stores.DB, belongGroup map[string]def.IDsInfo) *stores.DB {
 	if len(belongGroup) == 0 {
 		return db

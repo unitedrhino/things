@@ -6,6 +6,7 @@ import (
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceGroup"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine/statusLogRepo"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -30,14 +31,14 @@ func NewStatusLogRepo(dataSource conf.TSDB, g []*deviceGroup.GroupDetail) device
 	stores.InitTsConn(dataSource)
 	db := stores.GetTsConn(context.Background())
 	var NeedInitColumn bool
-	if db.Migrator().HasTable(&Status{}) {
+	if !db.Migrator().HasTable(&Status{}) {
 		//需要初始化表
 		NeedInitColumn = true
 	}
 	err := db.AutoMigrate(&Status{})
 	logx.Must(err)
 	if NeedInitColumn && stores.GetTsDBType() == conf.Pgsql {
-		db.Exec("SELECT create_hypertable('dm_time_status_log','ts', chunk_time_interval => interval '1 day'    );")
+		db.Exec(tsDB.CreateHypertableSQL((&Status{}).TableName()))
 	}
 	return &StatusLogRepo{db: db, asyncInsert: stores.NewAsyncInsert[Status](db, "")}
 }
