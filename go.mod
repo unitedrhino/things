@@ -7,7 +7,7 @@ go 1.24.4
 
 require (
 	gitee.com/unitedrhino/core v1.5.4
-	gitee.com/unitedrhino/share v1.5.60
+	gitee.com/unitedrhino/share v1.5.69
 	gitee.com/unitedrhino/squirrel v1.20.7
 	github.com/dgraph-io/ristretto v0.1.1
 	github.com/dop251/goja v0.0.0-20250630131328-58d95d85e994
@@ -208,6 +208,7 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/driver/mysql v1.5.7 // indirect
 	gorm.io/driver/postgres v1.5.9 // indirect
+	gorm.io/plugin/dbresolver v1.6.2 // indirect
 	k8s.io/api v0.29.3 // indirect
 	k8s.io/apimachinery v0.29.4 // indirect
 	k8s.io/client-go v0.29.3 // indirect
