@@ -126,7 +126,23 @@ const (
 	DeviceMqttDevice   = "device:mqtt:device"
 	DeviceMqttClientID = "device:mqtt:clientID"
 	DeviceLastActivity = "device:lastActivity"
+	batchSize          = 1000
 )
+
+// 时间段划分：越近越密，防止单段时间内数据量过大
+var activityTimeSegments = []time.Duration{
+	2 * time.Minute,    // 0 ~ 2min
+	3 * time.Minute,    // 2min ~ 5min
+	5 * time.Minute,    // 5min ~ 10min
+	20 * time.Minute,   // 10min ~ 30min
+	30 * time.Minute,   // 30min ~ 1h
+	11 * time.Hour,     // 1h ~ 12h
+	12 * time.Hour,     // 12h ~ 24h
+	24 * time.Hour,     // 24h ~ 48h
+	24 * time.Hour,     // 48h ~ 72h
+	5 * 24 * time.Hour, // 3d ~ 7d
+	23 * 24 * time.Hour,// 7d ~ 30d
+}
 
 func GenDeviceTopicKey(dev devices.Core) string {
 	return fmt.Sprintf("%v:%v", dev.ProductID, dev.DeviceName)
@@ -158,16 +174,65 @@ func UpdatesDeviceActivity(ctx context.Context, devs []devices.Core) {
 }
 
 func GetActivityDevices(ctx context.Context) (map[devices.Core]struct{}, error) {
-	devs, err := caches.GetStore().ZrangeCtx(ctx, DeviceLastActivity, math.MinInt64, math.MaxInt64)
-	if err != nil {
-		return nil, err
+	ret := make(map[devices.Core]struct{})
+	now := time.Now().Unix()
+
+	end := now
+	for _, seg := range activityTimeSegments {
+		start := end - int64(seg.Seconds())
+		if start < 0 {
+			start = 0
+		}
+		if err := querySegmentByScore(ctx, DeviceLastActivity, start, end, ret); err != nil {
+			return nil, err
+		}
+		end = start
+		if start <= 0 {
+			break
+		}
 	}
-	var ret = make(map[devices.Core]struct{}, len(devs))
-	for _, v := range devs {
-		ps := strings.Split(v, ":")
-		ret[devices.Core{ProductID: ps[0], DeviceName: ps[1]}] = struct{}{}
+
+	// 最后一段：30天之前
+	if end > 0 {
+		if err := querySegmentByScore(ctx, DeviceLastActivity, math.MinInt64, end, ret); err != nil {
+			return nil, err
+		}
 	}
+
 	return ret, nil
+}
+
+// querySegmentByScore 基于 score 游标查询
+// 使用 ZREVRANGEBYSCORE ... LIMIT 0 batchSize，然后用最后一条 score-1 作为下一段的 max
+// 完全避开 offset 排名偏移问题
+func querySegmentByScore(ctx context.Context, key string, minScore, maxScore int64, ret map[devices.Core]struct{}) error {
+	if minScore >= maxScore {
+		return nil
+	}
+	for {
+		pairs, err := caches.GetStore().ZrevrangebyscoreWithScoresAndLimitCtx(
+			ctx, key, minScore, maxScore, 0, batchSize,
+		)
+		if err != nil {
+			return err
+		}
+		for _, v := range pairs {
+			ps := strings.Split(v.Key, ":")
+			if len(ps) == 2 {
+				ret[devices.Core{ProductID: ps[0], DeviceName: ps[1]}] = struct{}{}
+			}
+		}
+		if len(pairs) < batchSize {
+			break // 该段已查完
+		}
+		// 用最后一条的 score - 1 作为新的 maxScore（严格小于最后一条，避免重复）
+		lastScore := pairs[len(pairs)-1].Score
+		maxScore = lastScore - 1
+		if maxScore <= minScore {
+			break
+		}
+	}
+	return nil
 }
 
 func DeleteDeviceActivity(ctx context.Context, dev devices.Core) {
