@@ -5,7 +5,7 @@ MaxBytes: 1000000000
 Etcd:
   Hosts:
     - 127.0.0.1:2379
-  Key:
+  Key: api.rpc
 DevServer:
   Enabled: true
   Port: 7065
@@ -44,7 +44,9 @@ DmRpc:
   Conf:
     Timeout: 1000000
     Etcd:
-      key: dm.rpc
+      Hosts:
+        - 127.0.0.1:2379
+      Key: dm.rpc
 SysRpc:
   Enable: true
   Mode: grpc
