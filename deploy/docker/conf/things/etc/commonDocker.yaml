@@ -8,7 +8,7 @@ DevServer:
 Etcd:
   Hosts:
     - etcd:2379
-  Key:
+  Key: api.rpc
 Log:
   Encoding: plain
   #Mode: file
@@ -44,7 +44,9 @@ DmRpc:
   Conf:
     Timeout: 1000000
     Etcd:
-      key: dm.rpc
+      Hosts:
+        - etcd:2379
+      Key: dm.rpc
 SysRpc:
   Enable: true
   Mode: grpc

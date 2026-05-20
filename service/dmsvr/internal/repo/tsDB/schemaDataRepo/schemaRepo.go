@@ -7,9 +7,9 @@ import (
 
 	"gitee.com/unitedrhino/share/caches"
 	"gitee.com/unitedrhino/share/conf"
-	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceGroup"
+	repoTsDB "gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/cache"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine/schemaDataRepo"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
@@ -51,7 +51,7 @@ type DeviceDataRepo struct {
 }
 
 func (d *DeviceDataRepo) GetPropertyLatestAgg(ctx context.Context, m *schema.Model, filter msgThing.FilterLatestAggOpt) ([]*msgThing.PropertyLatestData, error) {
-	return nil, errors.NotRealize
+	return d.getPropertyLatestAgg(ctx, m, filter)
 }
 
 func (d *DeviceDataRepo) VersionUpdate(ctx context.Context, version string, dc *caches.Cache[dm.DeviceInfo, devices.Core]) error {
@@ -122,18 +122,18 @@ func (d *DeviceDataRepo) Init(ctx context.Context) error {
 		return err
 	}
 	if NeedInitColumn && stores.GetTsDBType() == conf.Pgsql {
-		d.db.Exec("SELECT create_hypertable('dm_time_model_event','ts', chunk_time_interval => interval '1 day'    );")
+		d.db.Exec(repoTsDB.CreateHypertableSQL((&Event{}).TableName()))
 		for _, tb := range TableNames {
-			d.db.Exec(fmt.Sprintf("SELECT create_hypertable('%s','ts', chunk_time_interval => interval '1 day');", tb))
+			d.db.Exec(repoTsDB.CreateHypertableSQL(tb))
 			d.db.Exec(fmt.Sprintf("SELECT add_dimension('%s', by_hash('device_name', 2));", tb))
 			d.db.Exec(fmt.Sprintf("SELECT add_dimension('%s', by_hash('identifier', 2));", tb))
 			d.db.Exec(fmt.Sprintf("CREATE UNIQUE INDEX IF NOT EXISTS idx_unique ON %s( product_id, device_name, identifier,ts);", tb))
 			if strings.HasSuffix(tb, "bool") {
-				d.db.Exec(fmt.Sprintf(viewBoolTemplate, tb, "day", "day", tb))
-				d.db.Exec(fmt.Sprintf(viewBoolTemplate, tb, "hour", "hour", tb))
+				d.db.Exec(fmt.Sprintf(viewBoolTemplate, tb, "day", "day", repoTsDB.TimescaleBucketOriginSQL, tb))
+				d.db.Exec(fmt.Sprintf(viewBoolTemplate, tb, "hour", "hour", repoTsDB.TimescaleBucketOriginSQL, tb))
 			} else {
-				d.db.Exec(fmt.Sprintf(viewTemplate, tb, "day", "day", tb))
-				d.db.Exec(fmt.Sprintf(viewTemplate, tb, "hour", "hour", tb))
+				d.db.Exec(fmt.Sprintf(viewTemplate, tb, "day", "day", repoTsDB.TimescaleBucketOriginSQL, tb))
+				d.db.Exec(fmt.Sprintf(viewTemplate, tb, "hour", "hour", repoTsDB.TimescaleBucketOriginSQL, tb))
 			}
 		}
 	}
@@ -144,7 +144,7 @@ func (d *DeviceDataRepo) Init(ctx context.Context) error {
 const (
 	viewTemplate = `CREATE MATERIALIZED VIEW if not exists %s_%s(product_id,device_name,identifier,ts,first_ts,first_param,last_ts,last_param, max_ts,max_param,min_ts,min_param, sum_param, count_param,avg_param )
 			WITH (timescaledb.continuous) AS
-			SELECT product_id,device_name,identifier,time_bucket('1%s', ts, TIMESTAMPTZ '2026-01-16 00:00:00') as ts_window,
+			SELECT product_id,device_name,identifier,time_bucket('1%s', ts, %s) as ts_window,
 				(ARRAY_AGG(ts ORDER BY ts ASC))[1]    AS first_ts,
 				(ARRAY_AGG(param ORDER BY ts ASC))[1] AS first_param,
 				(ARRAY_AGG(ts ORDER BY ts desc))[1]    AS last_ts,
@@ -157,7 +157,7 @@ const (
 			GROUP BY product_id,device_name,identifier,ts_window;`
 	viewBoolTemplate = `CREATE MATERIALIZED VIEW if not exists %s_%s(product_id,device_name,identifier,ts,first_ts,first_param,last_ts,last_param, count_param,avg_param )
 			WITH (timescaledb.continuous) AS
-			SELECT product_id,device_name,identifier,time_bucket('1%s', ts, TIMESTAMPTZ '2026-01-16 00:00:00') as ts_window,
+			SELECT product_id,device_name,identifier,time_bucket('1%s', ts, %s) as ts_window,
 				(ARRAY_AGG(ts ORDER BY ts ASC))[1]    AS first_ts,
 				(ARRAY_AGG(param ORDER BY ts ASC))[1] AS first_param,
 				(ARRAY_AGG(ts ORDER BY ts desc))[1]    AS last_ts,

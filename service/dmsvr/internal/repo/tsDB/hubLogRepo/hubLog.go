@@ -6,6 +6,7 @@ import (
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceGroup"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/tdengine/hubLogRepo"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -30,14 +31,14 @@ func NewHubLogRepo(dataSource conf.TSDB, g []*deviceGroup.GroupDetail) deviceLog
 	stores.InitTsConn(dataSource)
 	db := stores.GetTsConn(context.Background())
 	var NeedInitColumn bool
-	if db.Migrator().HasTable(&Hub{}) {
+	if !db.Migrator().HasTable(&Hub{}) {
 		//需要初始化表
 		NeedInitColumn = true
 	}
 	err := db.AutoMigrate(&Hub{})
 	logx.Must(err)
 	if NeedInitColumn && stores.GetTsDBType() == conf.Pgsql {
-		db.Exec("SELECT create_hypertable('dm_time_hub_log','ts', chunk_time_interval => interval '1 day'    );")
+		db.Exec(tsDB.CreateHypertableSQL((&Hub{}).TableName()))
 	}
 	return &HubLogRepo{db: db, asyncInsert: stores.NewAsyncInsert[Hub](db, "")}
 }

@@ -6,6 +6,7 @@ const (
 	DmDeviceInfoDelete = "server.things.dm.device.info.delete"
 	DmDeviceInfoUpdate = "server.things.dm.device.info.update"
 	DmDeviceInfoBind   = "server.things.dm.device.info.bind"
+	DmDeviceTransfer   = "server.things.dm.device.transfer"
 
 	DmDeviceOnlineStatusChange = "server.things.dm.device.onlineStatus.change"
 	DmDeviceStaticOneHour      = "server.things.dm.device.static.2Hour"     //2小时统计

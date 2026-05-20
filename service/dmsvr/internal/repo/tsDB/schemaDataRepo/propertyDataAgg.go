@@ -13,6 +13,7 @@ import (
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
 	"github.com/spf13/cast"
@@ -146,8 +147,8 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect2(
 					}
 				default:
 					db = db.Group("ts_window")
-					selects = append(selects, fmt.Sprintf(`time_bucket('%v %s', ts , TIMESTAMPTZ '2026-01-16 00:00:00')  AS ts_window `,
-						filter.Interval, filter.IntervalUnit.ToPgStr()))
+					selects = append(selects, fmt.Sprintf(`%s AS ts_window `,
+						tsDB.TimeBucketSQL(fmt.Sprintf("'%v %s'", filter.Interval, filter.IntervalUnit.ToPgStr()), "ts")))
 					for _, argFunc := range agg.ArgFuncs {
 						selects = append(selects, arg(argFunc+"_ts", argFunc+"_param", argFunc))
 					}
@@ -160,8 +161,8 @@ func (d *DeviceDataRepo) getPropertyArgFuncSelect2(
 				return db, nil
 			} else {
 				db = db.Table(getTableName(p.Define) + " as tb")
-				selects = append(selects, fmt.Sprintf(`time_bucket('%v %s', ts , TIMESTAMPTZ '2026-01-16 00:00:00')  AS ts_window`,
-					filter.Interval, filter.IntervalUnit.ToPgStr()))
+				selects = append(selects, fmt.Sprintf(`%s AS ts_window`,
+					tsDB.TimeBucketSQL(fmt.Sprintf("'%v %s'", filter.Interval, filter.IntervalUnit.ToPgStr()), "ts")))
 				for _, argFunc := range agg.ArgFuncs {
 					selects = append(selects, arg("ts", "param", argFunc))
 				}

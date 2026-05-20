@@ -6,6 +6,7 @@ import (
 
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"gitee.com/unitedrhino/core/share/dataType"
+	shareEvents "gitee.com/unitedrhino/share/events"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
@@ -179,6 +180,16 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 		}
 	}
 	var devs = utils.CopySlice[devices.Core](dis)
+	transferInfos := make([]*shareEvents.DeviceTransferInfo, 0, len(dis))
+	for _, di := range dis {
+		transferInfos = append(transferInfos, &shareEvents.DeviceTransferInfo{
+			ProductID:     di.ProductID,
+			DeviceName:    di.DeviceName,
+			OldTenantCode: string(di.TenantCode),
+			OldProjectID:  int64(di.ProjectID),
+			OldAreaID:     int64(di.AreaID),
+		})
+	}
 
 	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
 		err := relationDB.NewUserDeviceShareRepo(tx).DeleteByFilter(ctxs.WithRoot(l.ctx), relationDB.UserDeviceShareFilter{
@@ -225,13 +236,30 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 	if err != nil {
 		return nil, err
 	}
-	for _, di := range devs {
+	diDB = relationDB.NewDeviceInfoRepo(ctxs.WithDefaultRoot(l.ctx))
+	for i, di := range devs {
 		err = l.svcCtx.DeviceCache.SetData(l.ctx, *di, nil)
 		if err != nil {
 			l.Error(err)
 		}
+		newDi, err := diDB.FindOneByFilter(ctxs.WithDefaultRoot(l.ctx), relationDB.DeviceFilter{
+			ProductID:   di.ProductID,
+			DeviceNames: []string{di.DeviceName},
+		})
+		if err != nil {
+			return nil, err
+		}
+		transferInfos[i].NewTenantCode = string(newDi.TenantCode)
+		transferInfos[i].NewProjectID = int64(newDi.ProjectID)
+		transferInfos[i].NewAreaID = int64(newDi.AreaID)
+		transferInfos[i].NewAreaIDPath = string(newDi.AreaIDPath)
 		if in.IsCleanData == def.True {
 			err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUnbind, &di)
+			if err != nil {
+				l.Error(err)
+			}
+		} else {
+			err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceTransfer, transferInfos[i])
 			if err != nil {
 				l.Error(err)
 			}

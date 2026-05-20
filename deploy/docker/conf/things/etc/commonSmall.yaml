@@ -40,7 +40,9 @@ DmRpc:
   Conf:
     Timeout: 1000000
     Etcd:
-      key: dm.rpc
+      Hosts:
+        - 127.0.0.1:2379
+      Key: dm.rpc
 UdRpc:
   Enable: true
   Mode: direct
