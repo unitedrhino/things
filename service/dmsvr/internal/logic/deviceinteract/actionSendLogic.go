@@ -104,7 +104,14 @@ func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (ret *dm.ActionSendRe
 			var content = map[string]any{}
 			content["req"] = params
 			content["userID"] = uc.UserID
-			contentStr, _ := json.Marshal(params)
+			if ret != nil {
+				content["resp"] = map[string]any{
+					"code":         ret.Code,
+					"msg":          ret.Msg,
+					"outputParams": ret.OutputParams,
+				}
+			}
+			contentStr, _ := json.Marshal(content)
 
 			_ = l.svcCtx.SendRepo.Insert(ctx, &deviceLog.Send{
 				TenantCode:  di.TenantCode,
@@ -195,8 +202,16 @@ func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (ret *dm.ActionSendRe
 	if err != nil {
 		return nil, err
 	}
-	respParam, err := json.Marshal(dresp.Data)
-	if err != nil {
+	if dresp.Code != errors.OK.GetCode() {
+		if dresp.Msg != "" {
+			err = errors.DeviceResp.AddMsg(dresp.Msg)
+		} else {
+			err = errors.DeviceResp
+		}
+		err = errors.Fmt(err).WithMsg("指令发送失败")
+	}
+	respParam, err2 := json.Marshal(dresp.Data)
+	if err2 != nil {
 		return nil, errors.RespParam.AddDetailf("ActionSend get device resp not right:%+v", dresp.Data)
 	}
 	return &dm.ActionSendResp{
@@ -204,5 +219,5 @@ func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (ret *dm.ActionSendRe
 		Msg:          dresp.Msg,
 		Code:         dresp.Code,
 		OutputParams: string(respParam),
-	}, nil
+	}, err
 }
