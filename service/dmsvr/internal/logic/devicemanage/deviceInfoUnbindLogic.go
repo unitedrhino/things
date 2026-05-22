@@ -99,6 +99,10 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceInfoUnbindReq) (*d
 	//if err != nil {
 	//	return nil, err
 	//}
+	// 保存旧区域和项目ID，事务后触发重算
+	oldAreaID := int64(di.AreaID)
+	oldProjectID := int64(di.ProjectID)
+
 	di.TenantCode = def.TenantCodeDefault
 	di.ProjectID = def.NotClassified
 	di.UserID = def.RootNode
@@ -145,6 +149,16 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceInfoUnbindReq) (*d
 	})
 	if err != nil {
 		return nil, err
+	}
+	// 解绑后触发重算旧区域和旧项目设备数
+	if oldAreaID > def.NotClassified {
+		oldArea, _ := l.svcCtx.AreaCache.GetData(l.ctx, oldAreaID)
+		if oldArea != nil {
+			logic.FillAreaDeviceCount(l.ctx, l.svcCtx, oldArea)
+		}
+	}
+	if oldProjectID > def.NotClassified {
+		logic.FillProjectDeviceCount(l.ctx, l.svcCtx, oldProjectID)
 	}
 	l.svcCtx.DeviceCache.SetData(l.ctx, dev, nil)
 	err = DeleteDeviceTimeData(l.ctx, l.svcCtx, in.ProductID, in.DeviceName, DeleteModeThing)

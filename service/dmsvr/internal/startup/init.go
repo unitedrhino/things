@@ -482,19 +482,41 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 	})
 	logx.Must(err)
 	err = svcCtx.FastEvent.QueueSubscribe(coreTopic.CoreAreaInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {
-		var value def.IDs
+		// areaDeleteMsg 与 core/syssvr areaInfoDeleteLogic 保持 JSON 字段名一致
+		type areaDeleteMsg struct {
+			AreaIDs      []int64 `json:"areaIDs,string"`
+			ParentAreaID int64   `json:"parentAreaID,string"`
+			ProjectID    int64   `json:"projectID,string"`
+		}
+		var value areaDeleteMsg
 		err := json.Unmarshal(body, &value)
 		if err != nil {
-			return err
+			// 兼容旧格式 def.IDs
+			var oldValue def.IDs
+			err2 := json.Unmarshal(body, &oldValue)
+			if err2 != nil {
+				return err
+			}
+			value.AreaIDs = oldValue.IDs
 		}
 		logx.WithContext(ctx).Infof("CoreAreaInfoDelete value:%v err:%v", utils.Fmt(value), err)
-		if len(value.IDs) == 0 {
+		if len(value.AreaIDs) == 0 {
 			return nil
 		}
 		ctx = ctxs.WithRoot(ctx)
-		err = relationDB.NewDeviceInfoRepo(ctx).UpdateWithField(ctx, relationDB.DeviceFilter{AreaIDs: value.IDs}, map[string]any{"area_id": def.NotClassified})
+		err = relationDB.NewDeviceInfoRepo(ctx).UpdateWithField(ctx, relationDB.DeviceFilter{AreaIDs: value.AreaIDs}, map[string]any{"area_id": def.NotClassified})
 		if err != nil {
 			logx.WithContext(ctx).Errorf("DeviceInfoMultiUpdate  err:%v", err)
+		}
+		// 触发父区域和项目的设备数重算
+		if value.ParentAreaID > def.NotClassified {
+			parentArea, _ := svcCtx.AreaCache.GetData(ctx, value.ParentAreaID)
+			if parentArea != nil {
+				logic.FillAreaDeviceCount(ctx, svcCtx, parentArea)
+			}
+		}
+		if value.ProjectID > def.NotClassified {
+			logic.FillProjectDeviceCount(ctx, svcCtx, value.ProjectID)
 		}
 		return nil
 	})

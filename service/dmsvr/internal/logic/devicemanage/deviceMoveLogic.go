@@ -51,6 +51,10 @@ func (l *DeviceMoveLogic) DeviceMove(in *dm.DeviceMoveReq) (*dm.Empty, error) {
 		return nil, errors.Parameter.WithMsg("只有相同产品才可以迁移配置")
 	}
 
+	// 保存迁移前的区域和项目ID，事务后触发重算
+	oldAreaID := int64(oldDev.AreaID)
+	oldProjectID := int64(oldDev.ProjectID)
+
 	newDev.ProjectID = oldDev.ProjectID
 	newDev.AreaID = oldDev.AreaID
 	newDev.AreaIDPath = oldDev.AreaIDPath
@@ -178,6 +182,23 @@ func (l *DeviceMoveLogic) DeviceMove(in *dm.DeviceMoveReq) (*dm.Empty, error) {
 	})
 	if err != nil {
 		return nil, err
+	}
+	// 迁移后触发区域和项目设备数重算
+	if oldAreaID > def.NotClassified {
+		oldArea, _ := l.svcCtx.AreaCache.GetData(l.ctx, oldAreaID)
+		if oldArea != nil {
+			logic.FillAreaDeviceCount(l.ctx, l.svcCtx, oldArea)
+		}
+	}
+	newAreaID := int64(newDev.AreaID)
+	if newAreaID > def.NotClassified && newAreaID != oldAreaID {
+		newArea, _ := l.svcCtx.AreaCache.GetData(l.ctx, newAreaID)
+		if newArea != nil {
+			logic.FillAreaDeviceCount(l.ctx, l.svcCtx, newArea)
+		}
+	}
+	if oldProjectID > def.NotClassified {
+		logic.FillProjectDeviceCount(l.ctx, l.svcCtx, oldProjectID)
 	}
 	oldDevCore := devices.Core{ProductID: oldDev.ProductID, DeviceName: oldDev.DeviceName}
 	newDevCore := devices.Core{ProductID: newDev.ProductID, DeviceName: newDev.DeviceName}
