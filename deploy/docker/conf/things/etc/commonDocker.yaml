@@ -49,21 +49,21 @@ DmRpc:
       Key: dm.rpc
 SysRpc:
   Enable: true
-  Mode: grpc
+  Mode: direct
   Conf:
     Timeout: 1000000
     Etcd:
       Key: sys.rpc
 TimedJobRpc:
   Enable: true
-  Mode: grpc
+  Mode: direct
   Conf:
     Timeout: 1000000
     Etcd:
       Key: timedjob.rpc
 TimedSchedulerRpc:
   Enable: true
-  Mode: grpc
+  Mode: direct
   Conf:
     Timeout: 1000000
     Etcd:

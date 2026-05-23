@@ -3,6 +3,12 @@
 
 start:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>$@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+	@if [ ! -d ../conf/core/dist/app ]; then \
+		echo "初始化 dist 文件（从 core 镜像提取）..."; \
+		CID=$$(docker create docker.unitedrhino.com/ee/core:latest); \
+		docker cp $$CID:/unitedrhino/dist/. ../conf/core/dist/; \
+		docker rm $$CID > /dev/null; \
+	fi
 	@docker compose up -d
 
 
@@ -26,14 +32,9 @@ reset:
 update-core:
 	@echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>$@<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	docker compose pull core
-	rm -rf  ../conf/core/dist2
-	mv ../conf/core/dist ../conf/core/dist2
-	mkdir ../conf/core/dist
 	docker compose down core
+	rm -rf ../conf/core/dist/app
+	CID=$$(docker create docker.unitedrhino.com/ee/core:latest); \
+	docker cp $$CID:/unitedrhino/dist/. ../conf/core/dist/; \
+	docker rm $$CID > /dev/null
 	docker compose up -d core
-	rm -rf ../conf/core/dist2/app/core
-	rm -rf ../conf/core/dist2/app/lowcode
-	rm -rf ../conf/core/dist2/app/my-things
-	rm -rf ../conf/core/dist2/app/things
-	rm -rf ../conf/core/dist2/app/static
-	cp -r ../conf/core/dist2/app/* ../conf/core/dist/app/
