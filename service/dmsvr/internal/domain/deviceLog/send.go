@@ -24,7 +24,7 @@ type (
 		Timestamp  time.Time `gorm:"column:ts;NOT NULL;" json:"timestamp"`                                // 操作时间
 		TraceID    string    `gorm:"column:trace_id;type:varchar(100);NOT NULL" json:"traceID,omitempty"` // 服务器端事务id
 		Account    string    `gorm:"column:account;type:varchar(100);NOT NULL" json:"account"`
-		Content    string    `gorm:"column:content;type:varchar(100);NOT NULL" json:"content"`               //操作的内容
+		Content    string    `gorm:"column:content;type:varchar(1000);NOT NULL" json:"content"`              //操作的内容
 		ResultCode int64     `gorm:"column:result_code;type:BIGINT;default:200" json:"resultCode,omitempty"` // 请求结果状态
 	}
 	SendFilter struct {

@@ -11,7 +11,7 @@ import (
 func (s *SendLogRepo) InitProduct(ctx context.Context, productID string) (err error) {
 	s.once.Do(func() {
 		sql := fmt.Sprintf("CREATE STABLE IF NOT EXISTS %s "+
-			"(`ts` timestamp,`user_id` BIGINT,`account` BINARY(200),`action` BINARY(50),`data_id` BINARY(50),`trace_id` BINARY(50),`content` BINARY(200),`result_code` BINARY(50)) "+
+			"(`ts` timestamp,`user_id` BIGINT,`account` BINARY(200),`action` BINARY(50),`data_id` BINARY(50),`trace_id` BINARY(50),`content` BINARY(1000),`result_code` BINARY(50)) "+
 			"TAGS (%s);",
 			s.GetLogStableName(), tdengine.GenTagsDef(defaultTagDef, s.groupConfigs))
 		_, err = s.t.ExecContext(ctx, sql)
