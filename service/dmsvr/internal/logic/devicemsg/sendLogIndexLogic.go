@@ -23,12 +23,51 @@ type SendLogIndexLogic struct {
 	logx.Logger
 }
 
+const (
+	defaultSendLogIndexPage                = int64(1)
+	defaultSendLogIndexSize                = int64(20)
+	defaultFirstPropertyControlSendLogSize = int64(1)
+	propertyControlSendAction              = "propertyControlSend"
+)
+
 func NewSendLogIndexLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendLogIndexLogic {
 	return &SendLogIndexLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
+}
+
+func normalizeSendLogIndexPage(in *dm.SendLogIndexReq) *dm.PageInfo {
+	if in != nil && in.Page != nil && in.Page.GetSize() > 0 {
+		return in.Page
+	}
+
+	size := defaultSendLogIndexSize
+	if isFirstPropertyControlSendLogLookup(in) {
+		size = defaultFirstPropertyControlSendLogSize
+	}
+
+	return &dm.PageInfo{
+		Page: defaultSendLogIndexPage,
+		Size: size,
+	}
+}
+
+func isFirstPropertyControlSendLogLookup(in *dm.SendLogIndexReq) bool {
+	if in == nil {
+		return false
+	}
+	if in.ProductID == "" || in.DeviceName == "" {
+		return false
+	}
+	if len(in.DataIDs) == 0 || in.ResultCode != 200 {
+		return false
+	}
+	if len(in.Actions) != 1 {
+		return false
+	}
+	return in.Actions[0] == propertyControlSendAction
 }
 
 func (l *SendLogIndexLogic) SendLogIndex(in *dm.SendLogIndexReq) (*dm.SendLogIndexResp, error) {
@@ -42,11 +81,12 @@ func (l *SendLogIndexLogic) SendLogIndex(in *dm.SendLogIndexReq) (*dm.SendLogInd
 		DataID:      in.DataID,
 		BelongGroup: utils.CopyMap3[def.IDsInfo](in.BelongGroup),
 	}
+	reqPage := normalizeSendLogIndexPage(in)
 	page := def.PageInfo2{
 		TimeStart: in.TimeStart,
 		TimeEnd:   in.TimeEnd,
-		Page:      in.Page.GetPage(),
-		Size:      in.Page.GetSize(),
+		Page:      reqPage.GetPage(),
+		Size:      reqPage.GetSize(),
 	}
 	if in.ProductID != "" && in.DeviceName != "" {
 		_, err := logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthRead, devices.Core{
