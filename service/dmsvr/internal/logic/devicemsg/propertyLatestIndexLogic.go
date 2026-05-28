@@ -83,7 +83,7 @@ func (l *PropertyLatestIndexLogic) PropertyLatestIndex(in *dm.PropertyLatestInde
 		dataID := k
 		handleData := func(data *msgThing.PropertyLogData) {
 			var diData dm.PropertyLogInfo
-			if data != nil && lastBind != 0 {
+			if data != nil && lastBind != 0 && property.FuncGroup != 2 {
 				if data.TimeStamp.Before(time.Unix(lastBind, 0)) {
 					data = nil
 				}
