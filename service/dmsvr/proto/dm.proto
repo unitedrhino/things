@@ -452,6 +452,10 @@ service userDevice{
   rpc userDeivceShareMultiIndex(UserDeviceShareMultiToken)returns(UserDeviceShareMultiInfo);
   //接受批量分享的设备
   rpc userDeivceShareMultiAccept(UserDeviceShareMultiAcceptReq)returns(Empty);
+  //获取当前用户的批量分享 token 列表
+  rpc userDeviceShareMultiGetTokenList(Empty)returns(UserDeviceShareMultiGetTokenListResp);
+  //删除批量分享 token
+  rpc userDeviceShareMultiDeleteToken(UserDeviceShareMultiDeleteTokenReq)returns(Empty);
 }
 
 
@@ -652,6 +656,24 @@ message UserDeviceShareMultiAcceptReq{
   int64 sharedUserID = 3;//分享的对象
   string sharedUserAccount =2;//分享的账号(只读)
   repeated DeviceCore devices = 4;
+}
+
+message UserDeviceShareMultiListItem{
+  string shareToken = 1;//分享 Token
+  int64 deviceCount = 2;//设备数量
+  int64 createdTime = 3;//创建时间
+  int64 expTime = 4;//分享过期时间
+  int64 authType =5;//授权类型
+  string useBy = 6;//用途
+}
+
+message UserDeviceShareMultiGetTokenListResp{
+  repeated UserDeviceShareMultiListItem list = 1;//Token 列表
+  int64 total = 2;//总数
+}
+
+message UserDeviceShareMultiDeleteTokenReq{
+  string shareToken = 1;//要删除的分享 Token
 }
 
 message UserDeviceCollectSave{

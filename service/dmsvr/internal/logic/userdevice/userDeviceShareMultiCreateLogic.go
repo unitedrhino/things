@@ -75,6 +75,6 @@ func (l *UserDeviceShareMultiCreateLogic) UserDeviceShareMultiCreate(in *dm.User
 			d.ProductImg = di.ProductImg
 		}
 	}
-	l.svcCtx.UserMultiDeviceShare.SetData(l.ctx, shareToken, in)
+	l.svcCtx.UserMultiDeviceShare.SetData(l.ctx, uc.TenantCode, shareToken, in)
 	return &dm.UserDeviceShareMultiToken{ShareToken: shareToken}, nil
 }

@@ -35,6 +35,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	devicemanagelogic "gitee.com/unitedrhino/things/service/dmsvr/internal/logic/devicemanage"
 	userdevicelogic "gitee.com/unitedrhino/things/service/dmsvr/internal/logic/userdevice"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/cache"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/event/subscribe/server"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
@@ -247,7 +248,7 @@ func InitCache(svcCtx *svc.ServiceContext) {
 			ExpireTime: 24 * time.Hour,
 		})
 		logx.Must(err)
-		svcCtx.UserMultiDeviceShare = userMultiDeviceShare
+		svcCtx.UserMultiDeviceShare = cache.NewUserMultiDeviceShareManager(userMultiDeviceShare, svcCtx.Cache)
 	}
 	{
 		deviceBindToken, err := caches.NewCache(caches.CacheConfig[deviceBind.TokenInfo, string]{

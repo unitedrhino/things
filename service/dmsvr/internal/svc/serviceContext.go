@@ -80,7 +80,7 @@ type ServiceContext struct {
 	ProductCache         *caches.Cache[dm.ProductInfo, string]
 	DeviceCache          *caches.Cache[dm.DeviceInfo, devices.Core]
 	UserDeviceShare      *caches.Cache[dm.UserDeviceShareInfo, userShared.UserShareKey]
-	UserMultiDeviceShare *caches.Cache[dm.UserDeviceShareMultiInfo, string]
+	UserMultiDeviceShare *cache.UserMultiDeviceShareManager
 	DeviceBindToken      *caches.Cache[deviceBind.TokenInfo, string]
 	TenantCache          sysExport.TenantCacheT
 	ProjectCache         sysExport.ProjectCacheT

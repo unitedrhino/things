@@ -265,11 +265,14 @@ type (
 	UserDeviceShareIndexReq           = dm.UserDeviceShareIndexReq
 	UserDeviceShareIndexResp          = dm.UserDeviceShareIndexResp
 	UserDeviceShareInfo               = dm.UserDeviceShareInfo
-	UserDeviceShareMultiAcceptReq     = dm.UserDeviceShareMultiAcceptReq
-	UserDeviceShareMultiDeleteReq     = dm.UserDeviceShareMultiDeleteReq
-	UserDeviceShareMultiInfo          = dm.UserDeviceShareMultiInfo
-	UserDeviceShareMultiToken         = dm.UserDeviceShareMultiToken
-	UserDeviceShareReadReq            = dm.UserDeviceShareReadReq
+	UserDeviceShareMultiAcceptReq      = dm.UserDeviceShareMultiAcceptReq
+	UserDeviceShareMultiDeleteReq      = dm.UserDeviceShareMultiDeleteReq
+	UserDeviceShareMultiDeleteTokenReq = dm.UserDeviceShareMultiDeleteTokenReq
+	UserDeviceShareMultiGetTokenListResp = dm.UserDeviceShareMultiGetTokenListResp
+	UserDeviceShareMultiInfo           = dm.UserDeviceShareMultiInfo
+	UserDeviceShareMultiListItem       = dm.UserDeviceShareMultiListItem
+	UserDeviceShareMultiToken          = dm.UserDeviceShareMultiToken
+	UserDeviceShareReadReq             = dm.UserDeviceShareReadReq
 	WithID                            = dm.WithID
 	WithIDChildren                    = dm.WithIDChildren
 	WithIDCode                        = dm.WithIDCode
@@ -300,6 +303,10 @@ type (
 		UserDeivceShareMultiIndex(ctx context.Context, in *UserDeviceShareMultiToken, opts ...grpc.CallOption) (*UserDeviceShareMultiInfo, error)
 		// 接受批量分享的设备
 		UserDeivceShareMultiAccept(ctx context.Context, in *UserDeviceShareMultiAcceptReq, opts ...grpc.CallOption) (*Empty, error)
+		// 获取当前用户的批量分享 token 列表
+		UserDeviceShareMultiGetTokenList(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*UserDeviceShareMultiGetTokenListResp, error)
+		// 删除批量分享 token
+		UserDeviceShareMultiDeleteToken(ctx context.Context, in *UserDeviceShareMultiDeleteTokenReq, opts ...grpc.CallOption) (*Empty, error)
 	}
 
 	defaultUserDevice struct {
@@ -462,4 +469,26 @@ func (m *defaultUserDevice) UserDeivceShareMultiAccept(ctx context.Context, in *
 // 接受批量分享的设备
 func (d *directUserDevice) UserDeivceShareMultiAccept(ctx context.Context, in *UserDeviceShareMultiAcceptReq, opts ...grpc.CallOption) (*Empty, error) {
 	return d.svr.UserDeivceShareMultiAccept(ctx, in)
+}
+
+// 获取当前用户的批量分享 token 列表
+func (m *defaultUserDevice) UserDeviceShareMultiGetTokenList(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*UserDeviceShareMultiGetTokenListResp, error) {
+	client := dm.NewUserDeviceClient(m.cli.Conn())
+	return client.UserDeviceShareMultiGetTokenList(ctx, in, opts...)
+}
+
+// 获取当前用户的批量分享 token 列表
+func (d *directUserDevice) UserDeviceShareMultiGetTokenList(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*UserDeviceShareMultiGetTokenListResp, error) {
+	return d.svr.UserDeviceShareMultiGetTokenList(ctx, in)
+}
+
+// 删除批量分享 token
+func (m *defaultUserDevice) UserDeviceShareMultiDeleteToken(ctx context.Context, in *UserDeviceShareMultiDeleteTokenReq, opts ...grpc.CallOption) (*Empty, error) {
+	client := dm.NewUserDeviceClient(m.cli.Conn())
+	return client.UserDeviceShareMultiDeleteToken(ctx, in, opts...)
+}
+
+// 删除批量分享 token
+func (d *directUserDevice) UserDeviceShareMultiDeleteToken(ctx context.Context, in *UserDeviceShareMultiDeleteTokenReq, opts ...grpc.CallOption) (*Empty, error) {
+	return d.svr.UserDeviceShareMultiDeleteToken(ctx, in)
 }

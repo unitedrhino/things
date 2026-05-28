@@ -2100,6 +2100,24 @@ type UserDeviceShareMultiToken struct {
 	ShareToken string `json:"shareToken,optional"`
 }
 
+type UserDeviceShareMultiListItem struct {
+	ShareToken  string `json:"shareToken,optional"`  // 分享 Token
+	DeviceCount int64  `json:"deviceCount,optional"` // 设备数量
+	CreatedTime int64  `json:"createdTime,optional"` // 创建时间
+	ExpTime     int64  `json:"expTime,optional"`     // 分享过期时间
+	AuthType    int64  `json:"authType,optional"`    // 授权类型
+	UseBy       string `json:"useBy,optional,omitempty"` // 用途
+}
+
+type UserDeviceShareMultiGetTokenListResp struct {
+	List  []*UserDeviceShareMultiListItem `json:"list,optional"` // Token 列表
+	Total int64                           `json:"total,optional"` // 总数
+}
+
+type UserDeviceShareMultiDeleteTokenReq struct {
+	ShareToken string `json:"shareToken"` // 要删除的分享 Token
+}
+
 type UserDeviceShareReadReq struct {
 	ID     int64       `json:"id,optional"`
 	UseBy  string      `json:"useBy,optional,omitempty"` //用途

@@ -1375,6 +1375,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/update",
 					Handler: thingsuserdeviceshare.UpdateHandler(serverCtx),
 				},
+				{
+					// 获取批量分享 Token 列表
+					Method:  http.MethodPost,
+					Path:    "/multi-get-token-list",
+					Handler: thingsuserdeviceshare.MultiGetTokenListHandler(serverCtx),
+				},
+				{
+					// 删除批量分享 Token
+					Method:  http.MethodPost,
+					Path:    "/multi-delete-token",
+					Handler: thingsuserdeviceshare.MultiDeleteTokenHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/user/device/share"),

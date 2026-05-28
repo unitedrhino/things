@@ -62,6 +62,12 @@ service api {
 	@doc "获取分享设备列表"
 	@handler index
 	post /index (UserDeviceShareIndexReq) returns (UserDeviceShareIndexResp)
+	@doc "获取批量分享 Token 列表"
+	@handler multiGetTokenList
+	post /multi-get-token-list () returns (UserDeviceShareMultiGetTokenListResp)
+	@doc "删除批量分享 Token"
+	@handler multiDeleteToken
+	post /multi-delete-token (UserDeviceShareMultiDeleteTokenReq) returns ()
 }
 
 type (
@@ -125,6 +131,21 @@ type (
 		UseBy  string      `json:"useBy,optional,omitempty"`   //用途
 
 		CreatedTime int64  `json:"createdTime,optional"`
+	}
+	UserDeviceShareMultiListItem{
+		ShareToken string `json:"shareToken,optional"` //分享 Token
+		DeviceCount int64 `json:"deviceCount,optional"` //设备数量
+		CreatedTime int64 `json:"createdTime,optional"` //创建时间
+		ExpTime int64 `json:"expTime,optional"` //分享过期时间
+		AuthType int64 `json:"authType,optional"` //授权类型
+		UseBy string `json:"useBy,optional,omitempty"` //用途
+	}
+	UserDeviceShareMultiGetTokenListResp{
+		List []*UserDeviceShareMultiListItem `json:"list,optional"` //Token 列表
+		Total int64 `json:"total,optional"` //总数
+	}
+	UserDeviceShareMultiDeleteTokenReq{
+		ShareToken string `json:"shareToken"` //要删除的分享 Token
 	}
 	DeviceShareInfo{
 		ProductID string `json:"productID"`      //产品ID

@@ -98,3 +98,15 @@ func (s *UserDeviceServer) UserDeivceShareMultiAccept(ctx context.Context, in *d
 	l := userdevicelogic.NewUserDeivceShareMultiAcceptLogic(ctx, s.svcCtx)
 	return l.UserDeivceShareMultiAccept(in)
 }
+
+// 获取当前用户的批量分享 token 列表
+func (s *UserDeviceServer) UserDeviceShareMultiGetTokenList(ctx context.Context, in *dm.Empty) (*dm.UserDeviceShareMultiGetTokenListResp, error) {
+	l := userdevicelogic.NewUserDeviceShareMultiGetTokenListLogic(ctx, s.svcCtx)
+	return l.UserDeviceShareMultiGetTokenList(in)
+}
+
+// 删除批量分享 token
+func (s *UserDeviceServer) UserDeviceShareMultiDeleteToken(ctx context.Context, in *dm.UserDeviceShareMultiDeleteTokenReq) (*dm.Empty, error) {
+	l := userdevicelogic.NewUserDeviceShareMultiDeleteTokenLogic(ctx, s.svcCtx)
+	return l.UserDeviceShareMultiDeleteToken(in)
+}
