@@ -32,6 +32,7 @@ type UserDeviceShareFilter struct {
 	DeviceName    string
 	UseBy         string
 	SharedUserID  int64
+	ExcludeUserID int64 // 排除指定用户的分享记录（用于排除主人自己）
 	ID            int64
 	IDs           []int64
 	ExpTime       *stores.Cmp
@@ -42,6 +43,9 @@ func (p UserDeviceShareRepo) fmtFilter(ctx context.Context, f UserDeviceShareFil
 	db = f.ExpTime.Where(db, "exp_time")
 	if f.SharedUserID != 0 {
 		db = db.Where("shared_user_id = ?", f.SharedUserID)
+	}
+	if f.ExcludeUserID != 0 {
+		db = db.Where("shared_user_id != ?", f.ExcludeUserID)
 	}
 	if len(f.SharedUserIDs) > 0 {
 		db = db.Where("shared_user_id in ?", f.SharedUserIDs)

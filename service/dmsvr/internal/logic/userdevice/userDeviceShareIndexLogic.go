@@ -48,7 +48,7 @@ func (l *UserDeviceShareIndexLogic) UserDeviceShareIndex(in *dm.UserDeviceShareI
 	if !uc.IsAdmin && (pi.AdminUserID != uc.UserID) { //只有所有者和被分享者才有权限操作
 		return nil, errors.Permissions
 	}
-	f := relationDB.UserDeviceShareFilter{ProductID: di.ProductID, DeviceName: di.DeviceName}
+	f := relationDB.UserDeviceShareFilter{ProductID: di.ProductID, DeviceName: di.DeviceName, ExcludeUserID: uc.UserID}
 	total, err := relationDB.NewUserDeviceShareRepo(l.ctx).CountByFilter(l.ctx, f)
 	if err != nil {
 		return nil, err
