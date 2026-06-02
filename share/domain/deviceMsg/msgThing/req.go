@@ -8,6 +8,7 @@ import (
 	"gitee.com/unitedrhino/things/share/devices"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"gitee.com/unitedrhino/things/share/domain/schema"
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type (
@@ -123,7 +124,7 @@ func (d *Req) VerifyReqParam(t *schema.Model, tt schema.ParamType) (map[string]P
 			if err == nil {
 				getParam[k] = tp
 			} else if !errors.Cmp(err, errors.NotFind) {
-				return nil, errors.Fmt(err).AddDetail(p.Identifier)
+				logx.Errorf("VerifyReqParam skip property %s: %v", p.Identifier, err)
 			}
 		}
 		if hasArray {
