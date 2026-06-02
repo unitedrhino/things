@@ -70,7 +70,7 @@ func (l *DeviceInfoMultiUpdateLogic) DeviceInfoMultiUpdate(in *dm.DeviceInfoMult
 			if err != nil {
 				continue
 			}
-			if val.AreaID > def.NotClassified && val.AreaID != dataType.AreaID(in.AreaID) {
+			if val.AreaID > def.NotClassified && int64(val.AreaID) != in.AreaID {
 				oldAi, err := l.svcCtx.AreaCache.GetData(l.ctx, int64(val.AreaID))
 				if err != nil {
 					l.Error(err)
