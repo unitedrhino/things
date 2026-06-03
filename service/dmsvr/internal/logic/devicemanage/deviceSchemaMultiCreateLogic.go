@@ -32,6 +32,12 @@ func NewDeviceSchemaMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceCon
 }
 
 func ruleCheck(ctx context.Context, svcCtx *svc.ServiceContext, in *dm.DeviceSchemaMultiCreateReq) (ret []*relationDB.DmDeviceSchema, err error) {
+	// 校验列表中每个标识符的格式
+	for _, v := range in.List {
+		if err := schema.IDValidate(v.Identifier); err != nil {
+			return nil, err
+		}
+	}
 	_, err = relationDB.NewDeviceInfoRepo(ctx).FindOneByFilter(ctx,
 		relationDB.DeviceFilter{ProductID: in.ProductID, DeviceNames: []string{in.DeviceName}})
 	if err != nil {

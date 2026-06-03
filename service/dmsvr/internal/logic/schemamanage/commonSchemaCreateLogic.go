@@ -31,6 +31,9 @@ func NewCommonSchemaCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 }
 
 func (l *CommonSchemaCreateLogic) ruleCheck(in *dm.CommonSchemaCreateReq) (*relationDB.DmCommonSchema, error) {
+	if err := schema.IDValidate(in.Info.Identifier); err != nil {
+		return nil, err
+	}
 
 	_, err := l.PsDB.FindOneByFilter(l.ctx, relationDB.CommonSchemaFilter{
 		Identifiers: []string{in.Info.Identifier},

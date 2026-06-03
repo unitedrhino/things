@@ -35,6 +35,9 @@ func NewProductSchemaCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext
 }
 
 func (l *ProductSchemaCreateLogic) RuleCheck(in *dm.ProductSchemaCreateReq) (*relationDB.DmProductSchema, error) {
+	if err := schema.IDValidate(in.Info.Identifier); err != nil {
+		return nil, err
+	}
 	pi, err := l.svcCtx.ProductCache.GetData(l.ctx, in.Info.ProductID)
 	if err != nil {
 		if errors.Cmp(err, errors.NotFind) {
