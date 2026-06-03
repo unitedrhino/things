@@ -116,6 +116,7 @@ func (l *CommonSchemaIndexLogic) CommonSchemaIndex(in *dm.CommonSchemaIndexReq) 
 				Type:              in.Type,
 				Types:             in.Types,
 				Name:              in.Name,
+				Identifier:        in.Identifier,
 				Identifiers:       in.Identifiers,
 				IsCanSceneLinkage: in.IsCanSceneLinkage,
 				FuncGroup:         in.FuncGroup,

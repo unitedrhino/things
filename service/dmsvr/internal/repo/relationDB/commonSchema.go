@@ -16,6 +16,7 @@ type (
 		Type               int64 //物模型类型 1:property属性 2:event事件 3:action行为
 		Types              []int64
 		Identifiers        []string //过滤标识符列表
+		Identifier         string   //标识符模糊查询
 		Name               string
 		IsCanSceneLinkage  int64
 		ProductCategoryIDs []int64
@@ -50,6 +51,9 @@ func (p CommonSchemaRepo) fmtFilter(ctx context.Context, f CommonSchemaFilter) *
 	}
 	if f.Name != "" {
 		db = db.Where("name like ?", "%"+f.Name+"%")
+	}
+	if f.Identifier != "" {
+		db = db.Where("identifier like ?", "%"+f.Identifier+"%")
 	}
 	if f.ID != 0 {
 		db = db.Where("id=?", f.ID)

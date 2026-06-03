@@ -25,6 +25,7 @@ type (
 		Tags              []schema.Tag
 		Identifiers       []string //过滤标识符列表
 		Name              string
+		Identifier        string //标识符模糊查询
 		IsCanSceneLinkage int64
 		FuncGroup         int64
 		UserPerm          int64
@@ -61,6 +62,9 @@ func (p SchemaInfoRepo) fmtFilter(ctx context.Context, f SchemaInfoFilter) *gorm
 	}
 	if f.Name != "" {
 		db = db.Where("name like ?", "%"+f.Name+"%")
+	}
+	if f.Identifier != "" {
+		db = db.Where("identifier like ?", "%"+f.Identifier+"%")
 	}
 	if f.ID != 0 {
 		db = db.Where("id=?", f.ID)

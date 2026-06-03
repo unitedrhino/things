@@ -53,6 +53,7 @@ type CommonSchemaIndexReq struct {
 	PropertyMode              string    `json:"propertyMode,optional"`     //属性类型可用 读写类型: r(只读) rw(可读可写)
 	ControlMode               int64     `json:"controlMode,optional"`      //控制模式: 1: 可以群控,可以单控  2:只能单控
 	ProductSceneMode          string    `json:"productSceneMode,optional"` //产品场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
+	Identifier                string    `json:"identifier,optional"`       //标识符模糊过滤
 }
 
 type CommonSchemaIndexResp struct {
@@ -1068,6 +1069,7 @@ type DeviceSchemaIndexReq struct {
 	PropertyMode      string    `json:"propertyMode,optional"`      //属性类型可用 读写类型: 1:r(只读) 2:rw(可读可写)
 	ControlMode       int64     `json:"controlMode,optional"`       //控制模式: 1: 可以群控,可以单控  2:只能单控
 	WithProductSchema bool      `json:"withProductSchema,optional"` //同时获取产品物模型
+	Identifier        string    `json:"identifier,optional"`        //标识符模糊过滤
 }
 
 type DeviceSchemaIndexResp struct {
@@ -1726,6 +1728,7 @@ type ProductSchemaIndexReq struct {
 	UserPerm          int64     `json:"userPerm,optional"`          //用户权限操作: 1:r(只读) 3:rw(可读可写)
 	PropertyMode      string    `json:"propertyMode,optional"`      //属性类型可用 读写类型: 1:r(只读) 2:rw(可读可写)
 	ControlMode       int64     `json:"controlMode,optional"`       //控制模式: 1: 可以群控,可以单控  2:只能单控
+	Identifier        string    `json:"identifier,optional"`        //标识符模糊过滤
 }
 
 type ProductSchemaIndexResp struct {
