@@ -45,6 +45,7 @@ func (l *UserDeivceShareMultiAcceptLogic) UserDeivceShareMultiAccept(in *dm.User
 		acceptDevicesMap[fmt.Sprintf("%s_%s", v.ProductID, v.DeviceName)] = true
 	}
 	tenantCode := ctxs.GetUserCtxNoNil(l.ctx).TenantCode
+	acceptedCount := 0
 	for _, v := range multiDevices.Devices {
 		key := fmt.Sprintf("%s_%s", v.ProductID, v.DeviceName)
 		if !acceptDevicesMap[key] {
@@ -85,6 +86,13 @@ func (l *UserDeivceShareMultiAcceptLogic) UserDeivceShareMultiAccept(in *dm.User
 			DeviceName:   po.DeviceName,
 			SharedUserID: po.SharedUserID,
 		}, nil)
+		acceptedCount++
+	}
+	if acceptedCount > 0 && shouldConsumeShareTokenAfterAccept(multiDevices.UseBy) {
+		err = l.svcCtx.UserMultiDeviceShare.DeleteToken(l.ctx, tenantCode, multiDevices.UserID, in.ShareToken)
+		if err != nil {
+			return &dm.Empty{}, err
+		}
 	}
 	return &dm.Empty{}, nil
 }
