@@ -2777,6 +2777,9 @@ func (x *UserDeviceShareMultiInfo) GetUseBy() string {
 type UserDeviceShareMultiToken struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ShareToken    string                 `protobuf:"bytes,1,opt,name=shareToken,proto3" json:"shareToken,omitempty"`
+	LinkExpireAt  int64                  `protobuf:"varint,2,opt,name=linkExpireAt,proto3" json:"linkExpireAt,omitempty"`
+	AuthExpireAt  int64                  `protobuf:"varint,3,opt,name=authExpireAt,proto3" json:"authExpireAt,omitempty"`
+	CreatedTime   int64                  `protobuf:"varint,4,opt,name=createdTime,proto3" json:"createdTime,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2816,6 +2819,27 @@ func (x *UserDeviceShareMultiToken) GetShareToken() string {
 		return x.ShareToken
 	}
 	return ""
+}
+
+func (x *UserDeviceShareMultiToken) GetLinkExpireAt() int64 {
+	if x != nil {
+		return x.LinkExpireAt
+	}
+	return 0
+}
+
+func (x *UserDeviceShareMultiToken) GetAuthExpireAt() int64 {
+	if x != nil {
+		return x.AuthExpireAt
+	}
+	return 0
+}
+
+func (x *UserDeviceShareMultiToken) GetCreatedTime() int64 {
+	if x != nil {
+		return x.CreatedTime
+	}
+	return 0
 }
 
 type UserDeviceShareMultiAcceptReq struct {
@@ -19936,11 +19960,14 @@ const file_dm_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\v2\r.dm.SharePermR\x05value:\x028\x01\x1aL\n" +
 	"\x0fAccessPermEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12#\n" +
-	"\x05value\x18\x02 \x01(\v2\r.dm.SharePermR\x05value:\x028\x01\";\n" +
+	"\x05value\x18\x02 \x01(\v2\r.dm.SharePermR\x05value:\x028\x01\"\xa5\x01\n" +
 	"\x19UserDeviceShareMultiToken\x12\x1e\n" +
 	"\n" +
 	"shareToken\x18\x01 \x01(\tR\n" +
-	"shareToken\"\xbb\x01\n" +
+	"shareToken\x12\"\n" +
+	"\flinkExpireAt\x18\x02 \x01(\x03R\flinkExpireAt\x12\"\n" +
+	"\fauthExpireAt\x18\x03 \x01(\x03R\fauthExpireAt\x12 \n" +
+	"\vcreatedTime\x18\x04 \x01(\x03R\vcreatedTime\"\xbb\x01\n" +
 	"\x1dUserDeviceShareMultiAcceptReq\x12\x1e\n" +
 	"\n" +
 	"shareToken\x18\x01 \x01(\tR\n" +

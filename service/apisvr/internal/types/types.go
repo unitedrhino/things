@@ -2101,20 +2101,37 @@ type UserDeviceShareMultiInfo struct {
 }
 
 type UserDeviceShareMultiToken struct {
-	ShareToken string `json:"shareToken,optional"`
+	ShareToken   string `json:"shareToken,optional"`
+	LinkExpireAt int64  `json:"linkExpireAt,optional"`
+	AuthExpireAt int64  `json:"authExpireAt,optional"`
+	CreatedTime  int64  `json:"createdTime,optional"`
+}
+
+type UserDeviceShareTokenCheckReq struct {
+	ShareToken string `json:"shareToken"`
+}
+
+type UserDeviceShareTokenCheckResp struct {
+	Valid        bool   `json:"valid"`
+	Reason       string `json:"reason,optional"`
+	LinkExpireAt int64  `json:"linkExpireAt,optional"`
+	AuthExpireAt int64  `json:"authExpireAt,optional"`
+	CreatedTime  int64  `json:"createdTime,optional"`
+	UseBy        string `json:"useBy,optional,omitempty"`
+	DeviceCount  int64  `json:"deviceCount,optional"`
 }
 
 type UserDeviceShareMultiListItem struct {
-	ShareToken  string `json:"shareToken,optional"`  // 分享 Token
-	DeviceCount int64  `json:"deviceCount,optional"` // 设备数量
-	CreatedTime int64  `json:"createdTime,optional"` // 创建时间
-	ExpTime     int64  `json:"expTime,optional"`     // 分享过期时间
-	AuthType    int64  `json:"authType,optional"`    // 授权类型
+	ShareToken  string `json:"shareToken,optional"`      // 分享 Token
+	DeviceCount int64  `json:"deviceCount,optional"`     // 设备数量
+	CreatedTime int64  `json:"createdTime,optional"`     // 创建时间
+	ExpTime     int64  `json:"expTime,optional"`         // 分享过期时间
+	AuthType    int64  `json:"authType,optional"`        // 授权类型
 	UseBy       string `json:"useBy,optional,omitempty"` // 用途
 }
 
 type UserDeviceShareMultiGetTokenListResp struct {
-	List  []*UserDeviceShareMultiListItem `json:"list,optional"` // Token 列表
+	List  []*UserDeviceShareMultiListItem `json:"list,optional"`  // Token 列表
 	Total int64                           `json:"total,optional"` // 总数
 }
 

@@ -245,7 +245,7 @@ func InitCache(svcCtx *svc.ServiceContext) {
 			GetData: func(ctx context.Context, key string) (*dm.UserDeviceShareMultiInfo, error) {
 				return &dm.UserDeviceShareMultiInfo{}, errors.Failure.WithMsg("分享已过期")
 			},
-			ExpireTime: 24 * time.Hour,
+			ExpireTime: userShared.MultiDeviceShareTokenTTL,
 		})
 		logx.Must(err)
 		svcCtx.UserMultiDeviceShare = cache.NewUserMultiDeviceShareManager(userMultiDeviceShare, svcCtx.Cache)

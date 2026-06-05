@@ -1391,4 +1391,19 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		),
 		rest.WithPrefix("/api/v1/things/user/device/share"),
 	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.InitCtxsWare},
+			[]rest.Route{
+				{
+					// 公开查询批量分享 Token 状态
+					Method:  http.MethodPost,
+					Path:    "/token/check",
+					Handler: thingsuserdeviceshare.TokenCheckHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/user/device/share"),
+	)
 }

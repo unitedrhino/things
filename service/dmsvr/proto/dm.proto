@@ -649,6 +649,9 @@ message UserDeviceShareMultiInfo{
 
 message UserDeviceShareMultiToken{
   string shareToken = 1;
+  int64 linkExpireAt = 2;
+  int64 authExpireAt = 3;
+  int64 createdTime = 4;
 }
 
 message UserDeviceShareMultiAcceptReq{
@@ -2702,7 +2705,6 @@ message OtaFirmwareDeviceConfirmReq{
   string productID =1;
   string deviceName =2;
 }
-
 
 
 
