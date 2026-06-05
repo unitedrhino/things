@@ -30,5 +30,10 @@ func (l *MultiCreateLogic) MultiCreate(req *types.UserDeviceShareMultiInfo) (res
 	if err != nil {
 		return nil, err
 	}
-	return &types.UserDeviceShareMultiToken{ShareToken: ret.ShareToken}, err
+	return &types.UserDeviceShareMultiToken{
+		ShareToken:   ret.ShareToken,
+		LinkExpireAt: ret.LinkExpireAt,
+		AuthExpireAt: ret.AuthExpireAt,
+		CreatedTime:  ret.CreatedTime,
+	}, err
 }

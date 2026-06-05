@@ -2,6 +2,7 @@ package userdevicelogic
 
 import (
 	"context"
+	"time"
 
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"gitee.com/unitedrhino/share/ctxs"
@@ -34,6 +35,7 @@ func (l *UserDeviceShareMultiCreateLogic) UserDeviceShareMultiCreate(in *dm.User
 	shareToken, _ := uuid.GenerateUUID()
 	uc := ctxs.GetUserCtx(l.ctx)
 	in.UserID = uc.UserID
+	in.CreatedTime = time.Now().Unix()
 	//判断是否有分享的权限
 	pi, err := l.svcCtx.ProjectM.ProjectInfoRead(l.ctx, &sys.ProjectWithID{ProjectID: int64(uc.ProjectID)})
 	if err != nil {
@@ -75,6 +77,8 @@ func (l *UserDeviceShareMultiCreateLogic) UserDeviceShareMultiCreate(in *dm.User
 			d.ProductImg = di.ProductImg
 		}
 	}
-	l.svcCtx.UserMultiDeviceShare.SetData(l.ctx, uc.TenantCode, shareToken, in)
-	return &dm.UserDeviceShareMultiToken{ShareToken: shareToken}, nil
+	if err := l.svcCtx.UserMultiDeviceShare.SetData(l.ctx, uc.TenantCode, shareToken, in); err != nil {
+		return nil, err
+	}
+	return buildMultiShareTokenResponse(shareToken, in), nil
 }

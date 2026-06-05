@@ -3,11 +3,11 @@ package cache
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"gitee.com/unitedrhino/share/caches"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/stores"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/userShared"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 )
@@ -21,7 +21,7 @@ type UserMultiDeviceShareManager struct {
 
 // MultiShareItem 批量分享列表项，包含 Token 及其对应数据
 type MultiShareItem struct {
-	Token string                      // 分享 Token
+	Token string                       // 分享 Token
 	Info  *dm.UserDeviceShareMultiInfo // 分享数据
 }
 
@@ -51,7 +51,7 @@ func (m *UserMultiDeviceShareManager) SetData(ctx context.Context, tenantCode, t
 			return stores.ErrFmt(err)
 		}
 		// 给 Set 设置与数据相同的 TTL，避免长期残留
-		err = m.store.ExpireCtx(ctx, listKey, int(24*time.Hour/time.Second))
+		err = m.store.ExpireCtx(ctx, listKey, int(userShared.MultiDeviceShareTokenTTLSeconds))
 		if err != nil {
 			return stores.ErrFmt(err)
 		}
