@@ -1726,6 +1726,7 @@ message ProductInfo{
   int64 bindLevel = 23;//绑定级别: 1:强绑定(默认,只有用户解绑之后才能绑定) 2:中绑定(可以通过token强制绑定设备) 3:弱绑定(app可以内部解绑被绑定的设备)
   ProductConfig config =30;//产品配置
   int64 onlineHandle   =40;              //1: 自动 2: 永远在线
+  int64 subDeviceOnlineHandle = 41;      //子设备在线处理:1:自动(跟随网关下线) 2:独立(不跟随)
 }
 
 message ProductCustomUi{

@@ -193,7 +193,7 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 			protocol.UpdateDeviceActivity(ctx, dev)
 		} else {
 			if !utils.SliceIn(msg.Reason, "takeovered", "takenover", "discard", "discarded") { //连接还在的时候被别人顶了,忽略这种下线
-				if di.DeviceType == def.DeviceTypeGateway { //如果是网关类型下线,则需要把子设备全部下线
+				if di.DeviceType == def.DeviceTypeGateway && pi.SubDeviceOnlineHandle != product.SubDeviceOnlineHandleIndependent { //如果是网关类型下线,则需要把子设备全部下线
 					subDevs, err := relationDB.NewGatewayDeviceRepo(ctx).FindByFilter(ctx,
 						relationDB.GatewayDeviceFilter{Gateway: &dev}, nil)
 					if err != nil {
