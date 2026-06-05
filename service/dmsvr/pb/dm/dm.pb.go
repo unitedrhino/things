@@ -11965,38 +11965,39 @@ func (x *DevInit) GetDeptID() int64 {
 }
 
 type ProductInfo struct {
-	state              protoimpl.MessageState      `protogen:"open.v1"`
-	TenantCode         string                      `protobuf:"bytes,26,opt,name=tenantCode,proto3" json:"tenantCode,omitempty"`                                                               //租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改
-	CreatedTime        int64                       `protobuf:"varint,1,opt,name=createdTime,proto3" json:"createdTime,omitempty"`                                                             //创建时间 只读
-	ProductID          string                      `protobuf:"bytes,2,opt,name=productID,proto3" json:"productID,omitempty"`                                                                  //产品id 只读
-	ProductName        string                      `protobuf:"bytes,3,opt,name=productName,proto3" json:"productName,omitempty"`                                                              //产品名称
-	AuthMode           int64                       `protobuf:"varint,4,opt,name=authMode,proto3" json:"authMode,omitempty"`                                                                   //认证方式:1:账密认证,2:秘钥认证
-	DeviceType         int64                       `protobuf:"varint,5,opt,name=deviceType,proto3" json:"deviceType,omitempty"`                                                               //设备类型:1:设备,2:网关,3:子设备
-	CategoryID         int64                       `protobuf:"varint,6,opt,name=categoryID,proto3" json:"categoryID,omitempty"`                                                               //产品品类
-	NetType            int64                       `protobuf:"varint,7,opt,name=netType,proto3" json:"netType,omitempty"`                                                                     //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
-	ProtocolCode       string                      `protobuf:"bytes,8,opt,name=protocolCode,proto3" json:"protocolCode,omitempty"`                                                            //协议code,默认urMqtt,设备下发只会发送给主协议  urMqtt,urHttp,wumei,aliyun,huaweiyun,tuya
-	SubProtocolCode    *wrapperspb.StringValue     `protobuf:"bytes,24,opt,name=subProtocolCode,proto3" json:"subProtocolCode,omitempty"`                                                     //子协议,主协议和子协议传输类型必须不相同, 设备控制下发只会发送给主协议, 当设备是音视频设备但是控制协议需要单独走的时候就可以把主协议定义为普通协议,子协议定义为音视频协议,这样就能实现音视频走音视频协议,控制走子协议
-	AutoRegister       int64                       `protobuf:"varint,9,opt,name=autoRegister,proto3" json:"autoRegister,omitempty"`                                                           //动态注册:1:关闭,2:打开,3:打开并自动创建设备,4:在前面的基础上绑定没有也自动创建
-	Secret             string                      `protobuf:"bytes,10,opt,name=secret,proto3" json:"secret,omitempty"`                                                                       //动态注册产品秘钥 只读
-	Desc               *wrapperspb.StringValue     `protobuf:"bytes,11,opt,name=desc,proto3" json:"desc,omitempty"`                                                                           //描述
-	Tags               map[string]string           `protobuf:"bytes,13,rep,name=tags,proto3" json:"tags,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"` //产品标签
-	ProductImg         string                      `protobuf:"bytes,14,opt,name=productImg,proto3" json:"productImg,omitempty"`                                                               //产品图片
-	IsUpdateProductImg bool                        `protobuf:"varint,15,opt,name=isUpdateProductImg,proto3" json:"isUpdateProductImg,omitempty"`                                              //只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
-	Protocol           *ProtocolInfo               `protobuf:"bytes,16,opt,name=protocol,proto3" json:"protocol,omitempty"`                                                                   //主协议信息
-	SubProtocol        *ProtocolInfo               `protobuf:"bytes,39,opt,name=subProtocol,proto3" json:"subProtocol,omitempty"`                                                             //子协议信息
-	Category           *ProductCategory            `protobuf:"bytes,17,opt,name=category,proto3" json:"category,omitempty"`
-	ProtocolConf       map[string]string           `protobuf:"bytes,18,rep,name=protocolConf,proto3" json:"protocolConf,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	SubProtocolConf    map[string]string           `protobuf:"bytes,25,rep,name=subProtocolConf,proto3" json:"subProtocolConf,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	TrialTime          *wrapperspb.Int64Value      `protobuf:"bytes,38,opt,name=trialTime,proto3" json:"trialTime,omitempty"`                                                                         //试用时间(单位为天,为0不限制)
-	SceneMode          string                      `protobuf:"bytes,19,opt,name=sceneMode,proto3" json:"sceneMode,omitempty"`                                                                         //场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
-	Status             int64                       `protobuf:"varint,20,opt,name=status,proto3" json:"status,omitempty"`                                                                              //产品状态 1:启用 2:禁用 3:开发中
-	CustomUi           map[string]*ProductCustomUi `protobuf:"bytes,21,rep,name=customUi,proto3" json:"customUi,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"` //自定义ui
-	DeviceSchemaMode   int64                       `protobuf:"varint,22,opt,name=deviceSchemaMode,proto3" json:"deviceSchemaMode,omitempty"`                                                          // 设备物模型模式:1:关闭,2:设备自动创建3: 设备自动创建及上报无定义自动创建
-	BindLevel          int64                       `protobuf:"varint,23,opt,name=bindLevel,proto3" json:"bindLevel,omitempty"`                                                                        //绑定级别: 1:强绑定(默认,只有用户解绑之后才能绑定) 2:中绑定(可以通过token强制绑定设备) 3:弱绑定(app可以内部解绑被绑定的设备)
-	Config             *ProductConfig              `protobuf:"bytes,30,opt,name=config,proto3" json:"config,omitempty"`                                                                               //产品配置
-	OnlineHandle       int64                       `protobuf:"varint,40,opt,name=onlineHandle,proto3" json:"onlineHandle,omitempty"`                                                                  //1: 自动 2: 永远在线
-	unknownFields      protoimpl.UnknownFields
-	sizeCache          protoimpl.SizeCache
+	state                 protoimpl.MessageState      `protogen:"open.v1"`
+	TenantCode            string                      `protobuf:"bytes,26,opt,name=tenantCode,proto3" json:"tenantCode,omitempty"`                                                               //租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改
+	CreatedTime           int64                       `protobuf:"varint,1,opt,name=createdTime,proto3" json:"createdTime,omitempty"`                                                             //创建时间 只读
+	ProductID             string                      `protobuf:"bytes,2,opt,name=productID,proto3" json:"productID,omitempty"`                                                                  //产品id 只读
+	ProductName           string                      `protobuf:"bytes,3,opt,name=productName,proto3" json:"productName,omitempty"`                                                              //产品名称
+	AuthMode              int64                       `protobuf:"varint,4,opt,name=authMode,proto3" json:"authMode,omitempty"`                                                                   //认证方式:1:账密认证,2:秘钥认证
+	DeviceType            int64                       `protobuf:"varint,5,opt,name=deviceType,proto3" json:"deviceType,omitempty"`                                                               //设备类型:1:设备,2:网关,3:子设备
+	CategoryID            int64                       `protobuf:"varint,6,opt,name=categoryID,proto3" json:"categoryID,omitempty"`                                                               //产品品类
+	NetType               int64                       `protobuf:"varint,7,opt,name=netType,proto3" json:"netType,omitempty"`                                                                     //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
+	ProtocolCode          string                      `protobuf:"bytes,8,opt,name=protocolCode,proto3" json:"protocolCode,omitempty"`                                                            //协议code,默认urMqtt,设备下发只会发送给主协议  urMqtt,urHttp,wumei,aliyun,huaweiyun,tuya
+	SubProtocolCode       *wrapperspb.StringValue     `protobuf:"bytes,24,opt,name=subProtocolCode,proto3" json:"subProtocolCode,omitempty"`                                                     //子协议,主协议和子协议传输类型必须不相同, 设备控制下发只会发送给主协议, 当设备是音视频设备但是控制协议需要单独走的时候就可以把主协议定义为普通协议,子协议定义为音视频协议,这样就能实现音视频走音视频协议,控制走子协议
+	AutoRegister          int64                       `protobuf:"varint,9,opt,name=autoRegister,proto3" json:"autoRegister,omitempty"`                                                           //动态注册:1:关闭,2:打开,3:打开并自动创建设备,4:在前面的基础上绑定没有也自动创建
+	Secret                string                      `protobuf:"bytes,10,opt,name=secret,proto3" json:"secret,omitempty"`                                                                       //动态注册产品秘钥 只读
+	Desc                  *wrapperspb.StringValue     `protobuf:"bytes,11,opt,name=desc,proto3" json:"desc,omitempty"`                                                                           //描述
+	Tags                  map[string]string           `protobuf:"bytes,13,rep,name=tags,proto3" json:"tags,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"` //产品标签
+	ProductImg            string                      `protobuf:"bytes,14,opt,name=productImg,proto3" json:"productImg,omitempty"`                                                               //产品图片
+	IsUpdateProductImg    bool                        `protobuf:"varint,15,opt,name=isUpdateProductImg,proto3" json:"isUpdateProductImg,omitempty"`                                              //只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
+	Protocol              *ProtocolInfo               `protobuf:"bytes,16,opt,name=protocol,proto3" json:"protocol,omitempty"`                                                                   //主协议信息
+	SubProtocol           *ProtocolInfo               `protobuf:"bytes,39,opt,name=subProtocol,proto3" json:"subProtocol,omitempty"`                                                             //子协议信息
+	Category              *ProductCategory            `protobuf:"bytes,17,opt,name=category,proto3" json:"category,omitempty"`
+	ProtocolConf          map[string]string           `protobuf:"bytes,18,rep,name=protocolConf,proto3" json:"protocolConf,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	SubProtocolConf       map[string]string           `protobuf:"bytes,25,rep,name=subProtocolConf,proto3" json:"subProtocolConf,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	TrialTime             *wrapperspb.Int64Value      `protobuf:"bytes,38,opt,name=trialTime,proto3" json:"trialTime,omitempty"`                                                                         //试用时间(单位为天,为0不限制)
+	SceneMode             string                      `protobuf:"bytes,19,opt,name=sceneMode,proto3" json:"sceneMode,omitempty"`                                                                         //场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
+	Status                int64                       `protobuf:"varint,20,opt,name=status,proto3" json:"status,omitempty"`                                                                              //产品状态 1:启用 2:禁用 3:开发中
+	CustomUi              map[string]*ProductCustomUi `protobuf:"bytes,21,rep,name=customUi,proto3" json:"customUi,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"` //自定义ui
+	DeviceSchemaMode      int64                       `protobuf:"varint,22,opt,name=deviceSchemaMode,proto3" json:"deviceSchemaMode,omitempty"`                                                          // 设备物模型模式:1:关闭,2:设备自动创建3: 设备自动创建及上报无定义自动创建
+	BindLevel             int64                       `protobuf:"varint,23,opt,name=bindLevel,proto3" json:"bindLevel,omitempty"`                                                                        //绑定级别: 1:强绑定(默认,只有用户解绑之后才能绑定) 2:中绑定(可以通过token强制绑定设备) 3:弱绑定(app可以内部解绑被绑定的设备)
+	Config                *ProductConfig              `protobuf:"bytes,30,opt,name=config,proto3" json:"config,omitempty"`                                                                               //产品配置
+	OnlineHandle          int64                       `protobuf:"varint,40,opt,name=onlineHandle,proto3" json:"onlineHandle,omitempty"`                                                                  //1: 自动 2: 永远在线
+	SubDeviceOnlineHandle int64                       `protobuf:"varint,41,opt,name=subDeviceOnlineHandle,proto3" json:"subDeviceOnlineHandle,omitempty"`                                                //子设备在线处理:1:自动(跟随网关下线) 2:独立(不跟随)
+	unknownFields         protoimpl.UnknownFields
+	sizeCache             protoimpl.SizeCache
 }
 
 func (x *ProductInfo) Reset() {
@@ -12228,6 +12229,13 @@ func (x *ProductInfo) GetConfig() *ProductConfig {
 func (x *ProductInfo) GetOnlineHandle() int64 {
 	if x != nil {
 		return x.OnlineHandle
+	}
+	return 0
+}
+
+func (x *ProductInfo) GetSubDeviceOnlineHandle() int64 {
+	if x != nil {
+		return x.SubDeviceOnlineHandle
 	}
 	return 0
 }
@@ -20895,7 +20903,7 @@ const file_dm_proto_rawDesc = "" +
 	"tenantCode\x12\x1c\n" +
 	"\tprojectID\x18\x02 \x01(\x03R\tprojectID\x12\x16\n" +
 	"\x06areaID\x18\x03 \x01(\x03R\x06areaID\x12\x16\n" +
-	"\x06deptID\x18\x04 \x01(\x03R\x06deptID\"\xdd\v\n" +
+	"\x06deptID\x18\x04 \x01(\x03R\x06deptID\"\x93\f\n" +
 	"\vProductInfo\x12\x1e\n" +
 	"\n" +
 	"tenantCode\x18\x1a \x01(\tR\n" +
@@ -20934,7 +20942,8 @@ const file_dm_proto_rawDesc = "" +
 	"\x10deviceSchemaMode\x18\x16 \x01(\x03R\x10deviceSchemaMode\x12\x1c\n" +
 	"\tbindLevel\x18\x17 \x01(\x03R\tbindLevel\x12)\n" +
 	"\x06config\x18\x1e \x01(\v2\x11.dm.ProductConfigR\x06config\x12\"\n" +
-	"\fonlineHandle\x18( \x01(\x03R\fonlineHandle\x1a7\n" +
+	"\fonlineHandle\x18( \x01(\x03R\fonlineHandle\x124\n" +
+	"\x15subDeviceOnlineHandle\x18) \x01(\x03R\x15subDeviceOnlineHandle\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a?\n" +

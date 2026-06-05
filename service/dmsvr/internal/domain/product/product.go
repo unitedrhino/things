@@ -23,3 +23,10 @@ const (
 	OnlineHandleAuto   = 1 //自动
 	OnlineHandleAlways = 2 //永远在线
 )
+
+type SubDeviceOnlineHandle = int64
+
+const (
+	SubDeviceOnlineHandleAuto        SubDeviceOnlineHandle = 1 //自动（网关下线，子设备跟随下线）
+	SubDeviceOnlineHandleIndependent SubDeviceOnlineHandle = 2 //独立（网关下线，子设备保持原状态）
+)
