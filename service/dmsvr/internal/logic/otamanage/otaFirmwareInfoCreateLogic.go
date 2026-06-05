@@ -3,6 +3,7 @@ package otamanagelogic
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
@@ -93,6 +94,7 @@ func (l *OtaFirmwareInfoCreateLogic) OtaFirmwareInfoCreate(in *dm.OtaFirmwareInf
 	var files []*relationDB.DmOtaFirmwareFile
 	if len(in.FilePaths) > 0 {
 		for _, filePath := range in.FilePaths {
+			filePath = strings.TrimSpace(filePath)
 			nwePath := oss.GenFilePath(l.ctx, l.svcCtx.Config.Name, oss.BusinessOta, oss.SceneFirmware, fmt.Sprintf("%s/%s/%s", in.ProductID, in.Version, oss.GetFileNameWithPath(filePath)))
 			path, err := l.svcCtx.OssClient.PublicBucket().CopyFromTempBucket(filePath, nwePath)
 			if err != nil {
