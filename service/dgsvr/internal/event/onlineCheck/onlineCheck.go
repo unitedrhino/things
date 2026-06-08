@@ -159,6 +159,7 @@ func (o *CheckEvent) Check(isAll bool) error {
 
 	if len(devs) > 0 { //如果全部过滤完了这里还有在线的,同时在emq上是离线的,那么需要下线该设备
 		logx.WithContext(o.ctx).Infof("fixOffLine %v", utils.Fmt(devs))
+		logx.WithContext(o.ctx).Infof("pSet %v productIDs %v", utils.Fmt(pSet), utils.Fmt(productIDs))
 		for dev := range devs {
 			di, err := o.svcCtx.DeviceCache.GetData(o.ctx, dev)
 			if err != nil || di.DeviceType == def.DeviceTypeSubset {
