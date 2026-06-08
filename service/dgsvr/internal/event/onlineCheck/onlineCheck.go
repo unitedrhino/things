@@ -54,7 +54,7 @@ func (o *CheckEvent) Check(isAll bool) error {
 	var pSet = map[string]struct{}{}
 	var productIDs []string
 	for _, pi := range pis.List {
-		if pi.OnlineHandle == 1 {
+		if pi.OnlineHandle == 2 { //永远在线的产品不需要检查
 			continue
 		}
 		productIDs = append(productIDs, pi.ProductID)
