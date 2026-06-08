@@ -2,8 +2,8 @@ module gitee.com/unitedrhino/things
 
 go 1.25.4
 
-gitee.com/unitedrhino/core => ../core
-gitee.com/unitedrhino/share => ../share
+//gitee.com/unitedrhino/core => ../core
+//gitee.com/unitedrhino/share => ../share
 
 require (
 	gitee.com/unitedrhino/core v1.5.12
