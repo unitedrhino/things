@@ -7,7 +7,7 @@ go 1.25.4
 
 require (
 	gitee.com/unitedrhino/core v1.5.12
-	gitee.com/unitedrhino/share v1.5.74
+	gitee.com/unitedrhino/share v1.5.77
 	gitee.com/unitedrhino/squirrel v1.20.7
 	github.com/dgraph-io/ristretto v0.1.1
 	github.com/dop251/goja v0.0.0-20251201205617-2bb4c724c0f9
@@ -228,8 +228,6 @@ require (
 	sigs.k8s.io/structured-merge-diff/v4 v4.4.2 // indirect
 	sigs.k8s.io/yaml v1.4.0 // indirect
 )
-
-replace gitee.com/unitedrhino/share => ../share
 
 replace (
 	cloud.google.com/go => cloud.google.com/go v0.110.10
