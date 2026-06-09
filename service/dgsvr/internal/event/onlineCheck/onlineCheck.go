@@ -162,13 +162,20 @@ func (o *CheckEvent) Check(isAll bool) error {
 		logx.WithContext(o.ctx).Infof("pSet %v productIDs %v", utils.Fmt(pSet), utils.Fmt(productIDs))
 		for dev := range devs {
 			di, err := o.svcCtx.DeviceCache.GetData(o.ctx, dev)
-			if err != nil || di.DeviceType == def.DeviceTypeSubset {
+			if err != nil {
+				logx.WithContext(o.ctx).Infof("fixOffLine skip %v err=%v", utils.Fmt(dev), err)
+				continue
+			}
+			if di.DeviceType == def.DeviceTypeSubset {
+				logx.WithContext(o.ctx).Infof("fixOffLine skip %v subset", utils.Fmt(dev))
 				continue
 			}
 			if _, ok := pSet[dev.ProductID]; !ok {
+				logx.WithContext(o.ctx).Infof("fixOffLine skip %v not in pSet", utils.Fmt(dev))
 				continue
 			}
 			if di.IsOnline == def.True {
+				logx.WithContext(o.ctx).Infof("fixOffLine add %v isOnline=%v", utils.Fmt(dev), di.IsOnline)
 				needOnlineDevices = append(needOnlineDevices, &dm.DeviceOnlineMultiFix{
 					Device: &dm.DeviceCore{
 						ProductID:  di.ProductID,
@@ -177,6 +184,8 @@ func (o *CheckEvent) Check(isAll bool) error {
 					IsOnline:  def.False,
 					ConnectAt: 0,
 				})
+			} else {
+				logx.WithContext(o.ctx).Infof("fixOffLine skip %v already offline isOnline=%v", utils.Fmt(dev), di.IsOnline)
 			}
 		}
 	}
