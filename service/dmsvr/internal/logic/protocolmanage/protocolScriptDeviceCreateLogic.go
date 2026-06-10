@@ -42,8 +42,8 @@ func (l *ProtocolScriptDeviceCreateLogic) ProtocolScriptDeviceCreate(in *dm.Prot
 	if !uc.IsRoot() && in.TenantCode != "" && in.TenantCode != uc.TenantCode {
 		return nil, errors.Permissions.AddMsg("普通租户只能绑定自己租户下的")
 	}
-	if in.TenantCode == "" && ctxs.IsRoot(l.ctx) == nil {
-		in.TenantCode = def.TenantCodeCommon
+	if in.TenantCode == "" {
+		in.TenantCode = dataType.TenantCodeWithCommonR(ctxs.GetUserCtxNoNil(l.ctx).TenantCode)
 	} else if in.TenantCode != "" {
 		if !ctxs.CanHandTenant(l.ctx, s.TenantCode) {
 			return nil, errors.Permissions
