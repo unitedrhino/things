@@ -3,7 +3,6 @@ package protocolmanagelogic
 import (
 	"context"
 
-	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
@@ -43,7 +42,7 @@ func (l *ProtocolScriptDeviceCreateLogic) ProtocolScriptDeviceCreate(in *dm.Prot
 		return nil, errors.Permissions.AddMsg("普通租户只能绑定自己租户下的")
 	}
 	if in.TenantCode == "" {
-		in.TenantCode = dataType.TenantCodeWithCommonR(ctxs.GetUserCtxNoNil(l.ctx).TenantCode)
+		in.TenantCode = ctxs.GetUserCtxNoNil(l.ctx).TenantCode
 	} else if in.TenantCode != "" {
 		if !ctxs.CanHandTenant(l.ctx, s.TenantCode) {
 			return nil, errors.Permissions
