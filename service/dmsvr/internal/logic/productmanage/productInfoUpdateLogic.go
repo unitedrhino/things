@@ -272,6 +272,9 @@ func (l *ProductInfoUpdateLogic) setPoByPb(old *relationDB.DmProductInfo, data *
 	if data.OnlineHandle != def.Unknown {
 		old.OnlineHandle = data.OnlineHandle
 	}
+	if data.SubDeviceOnlineHandle != def.Unknown {
+		old.SubDeviceOnlineHandle = data.SubDeviceOnlineHandle
+	}
 	if data.DeviceSchemaMode != 0 {
 		old.DeviceSchemaMode = data.DeviceSchemaMode
 	}
