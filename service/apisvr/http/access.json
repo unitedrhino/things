@@ -711,6 +711,38 @@
       ],
       "authType": "all"
     },
+    "thingsDevicePairOther": {
+      "name": "操作",
+      "code": "thingsDevicePairOther",
+      "group": "",
+      "isNeedAuth": 2,
+      "desc": "",
+      "apis": [
+        {
+          "accessCode": "thingsDevicePairOther",
+          "method": "POST",
+          "route": "/api/v1/things/device/pair/confirm",
+          "name": "",
+          "isNeedAuth": 2,
+          "businessType": "other",
+          "desc": "",
+          "authType": "all",
+          "recordLogMode": 0
+        },
+        {
+          "accessCode": "thingsDevicePairOther",
+          "method": "POST",
+          "route": "/api/v1/things/device/pair/grant",
+          "name": "",
+          "isNeedAuth": 2,
+          "businessType": "other",
+          "desc": "",
+          "authType": "all",
+          "recordLogMode": 0
+        }
+      ],
+      "authType": "all"
+    },
     "thingsDeviceProfileDelete": {
       "name": "删除",
       "code": "thingsDeviceProfileDelete",

@@ -1,0 +1,71 @@
+info(
+    title: "设备Route B配对"
+    desc: "设备Route B配对"
+    author: "杨磊"
+    email: "603685348@qq.com"
+    version: "v1"
+)
+
+@server(
+    group: things/device/pair
+    prefix: /api/v1/things/device/pair
+    accessCodePrefix: "thingsDevicePair"
+    accessNamePrefix: "设备配对"
+    accessGroup: "设备管理"
+    middleware:  CheckTokenWare,InitCtxsWare
+)
+service api {
+    @doc(
+        summary: "Route B配对授权"
+        description: "根据产品级32位hex MK为指定设备生成Route B配对nonce、authTag和短期grantToken"
+        businessType: "modify"
+    )
+    @handler grant
+    post /grant (DevicePairGrantReq) returns (DevicePairGrantResp)
+
+    @doc(
+        summary: "Route B配对确认"
+        description: "校验Route B grantToken和设备pairAckPayload，成功后复用设备绑定流程完成正式绑定"
+        businessType: "modify"
+    )
+    @handler confirm
+    post /confirm (DevicePairConfirmReq) returns (DevicePairConfirmResp)
+}
+
+type (
+    DevicePairGrantReq {
+        ProductID string `json:"productID"`
+        Mac string `json:"mac"`
+        DeviceName string `json:"deviceName,optional"`
+        ObservedBindEpoch int64 `json:"observedBindEpoch,optional"`
+    }
+
+    DevicePairGrantResp {
+        ProductID string `json:"productID"`
+        Mac string `json:"mac"`
+        DeviceName string `json:"deviceName"`
+        GrantToken string `json:"grantToken"`
+        Nonce string `json:"nonce"`
+        AuthTag string `json:"authTag"`
+        TtlSec int64 `json:"ttlSec"`
+    }
+
+    DevicePairConfirmReq {
+        ProductID string `json:"productID"`
+        Mac string `json:"mac"`
+        DeviceName string `json:"deviceName,optional"`
+        GrantToken string `json:"grantToken"`
+        PairAckPayload string `json:"pairAckPayload"`
+        AreaID int64 `json:"areaID,optional,string"`
+    }
+
+    DevicePairConfirmResp {
+        ProductID string `json:"productID"`
+        Mac string `json:"mac"`
+        DeviceName string `json:"deviceName"`
+        BindEpoch int64 `json:"bindEpoch"`
+        BleSecVer int64 `json:"bleSecVer"`
+        BlePairKey string `json:"blePairKey"`
+        Message string `json:"message"`
+    }
+)
