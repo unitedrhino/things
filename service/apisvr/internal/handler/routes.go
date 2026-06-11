@@ -15,6 +15,7 @@ import (
 	thingsdeviceinteract "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/interact"
 	thingsdevicemoduleversion "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/module/version"
 	thingsdevicemsg "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/msg"
+	thingsdevicepair "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/pair"
 	thingsdeviceprofile "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/profile"
 	thingsdeviceschema "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/schema"
 	thingsgroupdevice "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/group/device"
@@ -283,6 +284,27 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/device/info"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckTokenWare, serverCtx.InitCtxsWare},
+			[]rest.Route{
+				{
+					// Route B配对确认
+					Method:  http.MethodPost,
+					Path:    "/confirm",
+					Handler: thingsdevicepair.ConfirmHandler(serverCtx),
+				},
+				{
+					// Route B配对授权
+					Method:  http.MethodPost,
+					Path:    "/grant",
+					Handler: thingsdevicepair.GrantHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/device/pair"),
 	)
 
 	server.AddRoutes(
