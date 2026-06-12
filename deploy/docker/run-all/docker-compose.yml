@@ -17,7 +17,7 @@ volumes:
       device: '../conf/core/dist'  # 卷数据实际存储的宿主机路径
 services:
   things:
-    image: docker.unitedrhino.com/ee/things:latest
+    image: docker.unitedrhino.com/unitedrhino/things:latest
     container_name: things
     hostname: things
     restart: always
@@ -80,7 +80,7 @@ services:
     networks:
       - unitedrhino_net
   core:
-    image: docker.unitedrhino.com/ee/core:latest
+    image: docker.unitedrhino.com/unitedrhino/core:latest
     container_name: core
     hostname: core
     restart: always
