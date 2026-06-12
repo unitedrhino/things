@@ -291,20 +291,20 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Middleware{serverCtx.CheckTokenWare, serverCtx.InitCtxsWare},
 			[]rest.Route{
 				{
-					// Route B配对确认
+					// S01 BLE安全配对确认
 					Method:  http.MethodPost,
-					Path:    "/confirm",
+					Path:    "/pair-confirm",
 					Handler: thingsdevicepair.ConfirmHandler(serverCtx),
 				},
 				{
-					// Route B配对授权
+					// S01 BLE安全配对授权
 					Method:  http.MethodPost,
-					Path:    "/grant",
+					Path:    "/pair-grant",
 					Handler: thingsdevicepair.GrantHandler(serverCtx),
 				},
 			}...,
 		),
-		rest.WithPrefix("/api/v1/things/device/pair"),
+		rest.WithPrefix("/api/v1/things/device/info"),
 	)
 
 	server.AddRoutes(

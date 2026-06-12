@@ -11546,10 +11546,10 @@
         ]
       }
     },
-    "/api/v1/things/device/pair/confirm": {
+    "/api/v1/things/device/info/pair-confirm": {
       "post": {
-        "description": "校验Route B grantToken和设备pairAckPayload，成功后复用设备绑定流程完成正式绑定",
-        "operationId": "postApiV1ThingsDevicePairConfirm",
+        "description": "校验S01 BLE安全配对grantToken和设备pairAckPayload，成功后复用设备绑定流程完成正式绑定",
+        "operationId": "postApiV1ThingsDeviceInfoPairConfirm",
         "requestBody": {
           "content": {
             "application/json": {
@@ -11587,17 +11587,17 @@
             "description": "A successful response."
           }
         },
-        "summary": "Route B配对确认",
+        "summary": "S01 BLE安全配对确认",
         "tags": [
           "things/device/pair",
           "thingsDevicePair"
         ]
       }
     },
-    "/api/v1/things/device/pair/grant": {
+    "/api/v1/things/device/info/pair-grant": {
       "post": {
-        "description": "根据产品级32位hex MK为指定设备生成Route B配对nonce、authTag和短期grantToken",
-        "operationId": "postApiV1ThingsDevicePairGrant",
+        "description": "根据产品级32位hex MK为指定设备生成S01 BLE安全配对nonce、authTag和短期grantToken",
+        "operationId": "postApiV1ThingsDeviceInfoPairGrant",
         "requestBody": {
           "content": {
             "application/json": {
@@ -11635,7 +11635,7 @@
             "description": "A successful response."
           }
         },
-        "summary": "Route B配对授权",
+        "summary": "S01 BLE安全配对授权",
         "tags": [
           "things/device/pair",
           "thingsDevicePair"
