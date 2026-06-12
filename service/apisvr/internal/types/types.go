@@ -1010,6 +1010,42 @@ type DeviceProfileIndexResp struct {
 	Profiles []*DeviceProfile `json:"profiles,omitempty"`
 }
 
+type DevicePairGrantReq struct {
+	ProductID         string `json:"productID"`
+	Mac               string `json:"mac"`
+	DeviceName        string `json:"deviceName,optional"`
+	ObservedBindEpoch int64  `json:"observedBindEpoch,optional"`
+}
+
+type DevicePairGrantResp struct {
+	ProductID  string `json:"productID"`
+	Mac        string `json:"mac"`
+	DeviceName string `json:"deviceName"`
+	GrantToken string `json:"grantToken"`
+	Nonce      string `json:"nonce"`
+	AuthTag    string `json:"authTag"`
+	TtlSec     int64  `json:"ttlSec"`
+}
+
+type DevicePairConfirmReq struct {
+	ProductID      string `json:"productID"`
+	Mac            string `json:"mac"`
+	DeviceName     string `json:"deviceName,optional"`
+	GrantToken     string `json:"grantToken"`
+	PairAckPayload string `json:"pairAckPayload"`
+	AreaID         int64  `json:"areaID,optional,string"`
+}
+
+type DevicePairConfirmResp struct {
+	ProductID  string `json:"productID"`
+	Mac        string `json:"mac"`
+	DeviceName string `json:"deviceName"`
+	BindEpoch  int64  `json:"bindEpoch"`
+	BleSecVer  int64  `json:"bleSecVer"`
+	BlePairKey string `json:"blePairKey"`
+	Message    string `json:"message"`
+}
+
 type DeviceProfileReadReq struct {
 	Device DeviceCore `json:"device"`
 	Code   string     `json:"code"`
@@ -1593,35 +1629,35 @@ type ProductID struct {
 }
 
 type ProductInfo struct {
-	TenantCode         string                      `json:"tenantCode,optional"`                   //租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改
-	CreatedTime        int64                       `json:"createdTime,optional,string"`           //创建时间 只读
-	ProductID          string                      `json:"productID,optional"`                    //产品id 只读
-	ProductName        string                      `json:"productName,optional"`                  //产品名称
-	ProductImg         string                      `json:"productImg,optional"`                   //产品图片
-	IsUpdateProductImg bool                        `json:"isUpdateProductImg,omitempty,optional"` //只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
-	AuthMode           int64                       `json:"authMode,optional,range=[0:2]"`         //认证方式:1:账密认证,2:秘钥认证
-	DeviceType         int64                       `json:"deviceType,optional,range=[0:4]"`       //设备类型:1:直连设备,2:网关,3:子设备,4:监控设备
-	DeviceSchemaMode   int64                       `json:"deviceSchemaMode,optional,range=[0:4]"` // 设备物模型模式:1:手动创建,2:设备自动创建 3: 设备自动创建及上报无定义自动创建 4: 设备自动创建及上报无定义自动创建(数字类型只使用浮点)
-	CategoryID         int64                       `json:"categoryID,optional"`                   //产品品类
-	NetType            int64                       `json:"netType,optional"`                      //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网,9:4G+BLE
-	ProtocolCode       string                      `json:"protocolCode,optional"`                 //协议code,默认urMqtt,设备下发只会发送给主协议  urMqtt,urHttp,wumei,aliyun,huaweiyun,tuya
-	SubProtocolCode    *string                     `json:"subProtocolCode,optional"`              //子协议,主协议和子协议传输类型必须不相同, 设备控制下发只会发送给主协议, 当设备是音视频设备但是控制协议需要单独走的时候就可以把主协议定义为普通协议,子协议定义为音视频协议,这样就能实现音视频走音视频协议,控制走子协议
-	AutoRegister       int64                       `json:"autoRegister,optional,range=[0:4]"`     //动态注册:1:关闭,2:打开,3:打开并自动创建设备,4:在前面的基础上绑定没有也自动创建
-	OnlineHandle         int64                       `json:"onlineHandle,optional,range=[0:2]"`     //在线处理:1: 自动 2: 永远在线
-	SubDeviceOnlineHandle int64                      `json:"subDeviceOnlineHandle,optional,range=[0:2]"` //子设备在线处理:1:自动 2:独立
-	Secret             string                      `json:"secret,optional"`                       //动态注册产品秘钥 只读
-	TrialTime          *int64                      `json:"trialTime,optional,string"`             //试用时间(单位为天,为0不限制)
-	Desc               *string                     `json:"desc,optional,optional"`                //描述
-	Tags               []*Tag                      `json:"tags,optional,optional"`                // 产品tag
-	SceneMode          string                      `json:"sceneMode,optional,optional"`           //场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
-	Status             int64                       `json:"status,optional,optional"`              //产品状态 1:启用 2:禁用 3:开发中
-	BindLevel          int64                       `json:"bindLevel,optional,optional"`           //绑定级别: 1:强绑定(默认,只有用户解绑之后才能绑定) 2:中绑定(可以通过token强制解绑设备) 3:弱绑定(app可以内部解绑被绑定的设备)
-	ProtocolConf       []*Tag                      `json:"protocolConf,optional,omitempty"`       //协议配置
-	SubProtocolConf    []*Tag                      `json:"subProtocolConf,optional,omitempty"`    //子协议协议配置
-	Protocol           *ProtocolInfo               `json:"protocol,optional,omitempty"`
-	Category           *ProductCategory            `json:"category,optional,omitempty"`
-	Config             *ProductConfig              `json:"config,optional,omitempty"`   //产品配置,只有管理员会返回该字段
-	CustomUi           map[string]*ProductCustomUi `json:"customUi,optional,omitempty"` //自定义ui,key是端的类型(web-client  mini-client) value是以下类型的对象{version:123(版本号,只读),isUpdateUi:bool(是否更新ui),path:string(前端路径,如果需要修改,需要将isUpdateUi置为true并在这个参数中传入压缩包的filePath)}
+	TenantCode            string                      `json:"tenantCode,optional"`                        //租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改
+	CreatedTime           int64                       `json:"createdTime,optional,string"`                //创建时间 只读
+	ProductID             string                      `json:"productID,optional"`                         //产品id 只读
+	ProductName           string                      `json:"productName,optional"`                       //产品名称
+	ProductImg            string                      `json:"productImg,optional"`                        //产品图片
+	IsUpdateProductImg    bool                        `json:"isUpdateProductImg,omitempty,optional"`      //只有这个参数为true的时候才会更新产品图片,传参为产品图片的file path
+	AuthMode              int64                       `json:"authMode,optional,range=[0:2]"`              //认证方式:1:账密认证,2:秘钥认证
+	DeviceType            int64                       `json:"deviceType,optional,range=[0:4]"`            //设备类型:1:直连设备,2:网关,3:子设备,4:监控设备
+	DeviceSchemaMode      int64                       `json:"deviceSchemaMode,optional,range=[0:4]"`      // 设备物模型模式:1:手动创建,2:设备自动创建 3: 设备自动创建及上报无定义自动创建 4: 设备自动创建及上报无定义自动创建(数字类型只使用浮点)
+	CategoryID            int64                       `json:"categoryID,optional"`                        //产品品类
+	NetType               int64                       `json:"netType,optional"`                           //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网,9:4G+BLE
+	ProtocolCode          string                      `json:"protocolCode,optional"`                      //协议code,默认urMqtt,设备下发只会发送给主协议  urMqtt,urHttp,wumei,aliyun,huaweiyun,tuya
+	SubProtocolCode       *string                     `json:"subProtocolCode,optional"`                   //子协议,主协议和子协议传输类型必须不相同, 设备控制下发只会发送给主协议, 当设备是音视频设备但是控制协议需要单独走的时候就可以把主协议定义为普通协议,子协议定义为音视频协议,这样就能实现音视频走音视频协议,控制走子协议
+	AutoRegister          int64                       `json:"autoRegister,optional,range=[0:4]"`          //动态注册:1:关闭,2:打开,3:打开并自动创建设备,4:在前面的基础上绑定没有也自动创建
+	OnlineHandle          int64                       `json:"onlineHandle,optional,range=[0:2]"`          //在线处理:1: 自动 2: 永远在线
+	SubDeviceOnlineHandle int64                       `json:"subDeviceOnlineHandle,optional,range=[0:2]"` //子设备在线处理:1:自动 2:独立
+	Secret                string                      `json:"secret,optional"`                            //动态注册产品秘钥 只读
+	TrialTime             *int64                      `json:"trialTime,optional,string"`                  //试用时间(单位为天,为0不限制)
+	Desc                  *string                     `json:"desc,optional,optional"`                     //描述
+	Tags                  []*Tag                      `json:"tags,optional,optional"`                     // 产品tag
+	SceneMode             string                      `json:"sceneMode,optional,optional"`                //场景模式 读写类型: r(只读) rw(可读可写) none(不参与场景)
+	Status                int64                       `json:"status,optional,optional"`                   //产品状态 1:启用 2:禁用 3:开发中
+	BindLevel             int64                       `json:"bindLevel,optional,optional"`                //绑定级别: 1:强绑定(默认,只有用户解绑之后才能绑定) 2:中绑定(可以通过token强制解绑设备) 3:弱绑定(app可以内部解绑被绑定的设备)
+	ProtocolConf          []*Tag                      `json:"protocolConf,optional,omitempty"`            //协议配置
+	SubProtocolConf       []*Tag                      `json:"subProtocolConf,optional,omitempty"`         //子协议协议配置
+	Protocol              *ProtocolInfo               `json:"protocol,optional,omitempty"`
+	Category              *ProductCategory            `json:"category,optional,omitempty"`
+	Config                *ProductConfig              `json:"config,optional,omitempty"`   //产品配置,只有管理员会返回该字段
+	CustomUi              map[string]*ProductCustomUi `json:"customUi,optional,omitempty"` //自定义ui,key是端的类型(web-client  mini-client) value是以下类型的对象{version:123(版本号,只读),isUpdateUi:bool(是否更新ui),path:string(前端路径,如果需要修改,需要将isUpdateUi置为true并在这个参数中传入压缩包的filePath)}
 }
 
 type ProductInfoExportReq struct {

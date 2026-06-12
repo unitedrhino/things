@@ -122,6 +122,10 @@
             },
             "type": "array"
           },
+          "identifier": {
+            "description": "标识符模糊过滤",
+            "type": "string"
+          },
           "identifiers": {
             "description": "过滤标识符列表",
             "items": {
@@ -4030,6 +4034,134 @@
         "title": "DeviceOtaUpgradeResp",
         "type": "object"
       },
+      "DevicePairConfirmReq": {
+        "properties": {
+          "areaID": {
+            "type": "string"
+          },
+          "deviceName": {
+            "type": "string"
+          },
+          "grantToken": {
+            "type": "string"
+          },
+          "mac": {
+            "type": "string"
+          },
+          "pairAckPayload": {
+            "type": "string"
+          },
+          "productID": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "productID",
+          "mac",
+          "grantToken",
+          "pairAckPayload"
+        ],
+        "title": "DevicePairConfirmReq",
+        "type": "object"
+      },
+      "DevicePairConfirmResp": {
+        "properties": {
+          "bindEpoch": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "blePairKey": {
+            "type": "string"
+          },
+          "bleSecVer": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "deviceName": {
+            "type": "string"
+          },
+          "mac": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "productID": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "productID",
+          "mac",
+          "deviceName",
+          "bindEpoch",
+          "bleSecVer",
+          "blePairKey",
+          "message"
+        ],
+        "title": "DevicePairConfirmResp",
+        "type": "object"
+      },
+      "DevicePairGrantReq": {
+        "properties": {
+          "deviceName": {
+            "type": "string"
+          },
+          "mac": {
+            "type": "string"
+          },
+          "observedBindEpoch": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "productID": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "productID",
+          "mac"
+        ],
+        "title": "DevicePairGrantReq",
+        "type": "object"
+      },
+      "DevicePairGrantResp": {
+        "properties": {
+          "authTag": {
+            "type": "string"
+          },
+          "deviceName": {
+            "type": "string"
+          },
+          "grantToken": {
+            "type": "string"
+          },
+          "mac": {
+            "type": "string"
+          },
+          "nonce": {
+            "type": "string"
+          },
+          "productID": {
+            "type": "string"
+          },
+          "ttlSec": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "productID",
+          "mac",
+          "deviceName",
+          "grantToken",
+          "nonce",
+          "authTag",
+          "ttlSec"
+        ],
+        "title": "DevicePairGrantResp",
+        "type": "object"
+      },
       "DeviceProfile": {
         "properties": {
           "code": {
@@ -4272,6 +4404,10 @@
             "description": " 功能分类: 1:普通功能 2:系统功能",
             "format": "int64",
             "type": "integer"
+          },
+          "identifier": {
+            "description": "标识符模糊过滤",
+            "type": "string"
           },
           "identifiers": {
             "description": "过滤标识符列表",
@@ -6579,6 +6715,12 @@
             "format": "int64",
             "type": "integer"
           },
+          "subDeviceOnlineHandle": {
+            "description": "子设备在线处理:1:自动(跟随网关下线) 2:独立(不跟随)",
+            "format": "int64",
+            "maximum": 2,
+            "type": "integer"
+          },
           "subProtocolCode": {
             "description": "子协议,主协议和子协议传输类型必须不相同, 设备控制下发只会发送给主协议, 当设备是音视频设备但是控制协议需要单独走的时候就可以把主协议定义为普通协议,子协议定义为音视频协议,这样就能实现音视频走音视频协议,控制走子协议",
             "type": "string"
@@ -6994,6 +7136,10 @@
             "description": " 功能分类: 1:普通功能 2:系统功能",
             "format": "int64",
             "type": "integer"
+          },
+          "identifier": {
+            "description": "标识符模糊过滤",
+            "type": "string"
           },
           "identifiers": {
             "description": "过滤标识符列表",
@@ -8356,6 +8502,37 @@
         "title": "UserDeviceShareMultiDeleteReq",
         "type": "object"
       },
+      "UserDeviceShareMultiDeleteTokenReq": {
+        "properties": {
+          "shareToken": {
+            "description": "要删除的分享 Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "shareToken"
+        ],
+        "title": "UserDeviceShareMultiDeleteTokenReq",
+        "type": "object"
+      },
+      "UserDeviceShareMultiGetTokenListResp": {
+        "properties": {
+          "list": {
+            "description": "Token 列表",
+            "items": {
+              "$ref": "#/components/schemas/UserDeviceShareMultiListItem"
+            },
+            "type": "array"
+          },
+          "total": {
+            "description": "总数",
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "title": "UserDeviceShareMultiGetTokenListResp",
+        "type": "object"
+      },
       "UserDeviceShareMultiIndexResp": {
         "properties": {
           "accessPerm": {
@@ -8446,8 +8623,54 @@
         "title": "UserDeviceShareMultiInfo",
         "type": "object"
       },
+      "UserDeviceShareMultiListItem": {
+        "properties": {
+          "authType": {
+            "description": "授权类型",
+            "format": "int64",
+            "type": "integer"
+          },
+          "createdTime": {
+            "description": "创建时间",
+            "format": "int64",
+            "type": "integer"
+          },
+          "deviceCount": {
+            "description": "设备数量",
+            "format": "int64",
+            "type": "integer"
+          },
+          "expTime": {
+            "description": "分享过期时间",
+            "format": "int64",
+            "type": "integer"
+          },
+          "shareToken": {
+            "description": "分享 Token",
+            "type": "string"
+          },
+          "useBy": {
+            "description": "用途",
+            "type": "string"
+          }
+        },
+        "title": "UserDeviceShareMultiListItem",
+        "type": "object"
+      },
       "UserDeviceShareMultiToken": {
         "properties": {
+          "authExpireAt": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "createdTime": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "linkExpireAt": {
+            "format": "int64",
+            "type": "integer"
+          },
           "shareToken": {
             "type": "string"
           }
@@ -8470,6 +8693,53 @@
           }
         },
         "title": "UserDeviceShareReadReq",
+        "type": "object"
+      },
+      "UserDeviceShareTokenCheckReq": {
+        "properties": {
+          "shareToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "shareToken"
+        ],
+        "title": "UserDeviceShareTokenCheckReq",
+        "type": "object"
+      },
+      "UserDeviceShareTokenCheckResp": {
+        "properties": {
+          "authExpireAt": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "createdTime": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "deviceCount": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "linkExpireAt": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "useBy": {
+            "type": "string"
+          },
+          "valid": {
+            "format": "boolean",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "valid"
+        ],
+        "title": "UserDeviceShareTokenCheckResp",
         "type": "object"
       },
       "WithID": {
@@ -8550,7 +8820,8 @@
   },
   "info": {
     "title": "things-api",
-    "version": "1.0.0"
+    "version": "1.0.2",
+    "x-updated-at": "2026-06-11T20:52:52+08:00"
   },
   "openapi": "3.0.3",
   "paths": {
@@ -8832,7 +9103,7 @@
         "operationId": "postApiV1ThingsDeviceEdgeSend:handle:type",
         "parameters": [
           {
-            "description": "对应 mqtt topic的第一个 thing ota config 等等\r",
+            "description": "对应 mqtt topic的第一个 thing ota config 等等",
             "in": "path",
             "name": "handle",
             "required": true,
@@ -8841,7 +9112,7 @@
             }
           },
           {
-            "description": "操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为\r",
+            "description": "操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为",
             "in": "path",
             "name": "type",
             "required": true,
@@ -8850,7 +9121,7 @@
             }
           },
           {
-            "description": "如果网关类型要操作子设备的topic,需要指定子设备的产品ID和设备ID,如果没有填写则默认是账号里的设备\r",
+            "description": "如果网关类型要操作子设备的topic,需要指定子设备的产品ID和设备ID,如果没有填写则默认是账号里的设备",
             "in": "header",
             "name": "productID",
             "schema": {
@@ -8858,7 +9129,7 @@
             }
           },
           {
-            "description": "如果网关类型要操作子设备的topic,需要指定子设备的产品ID和设备ID,如果没有填写则默认是账号里的设备\r",
+            "description": "如果网关类型要操作子设备的topic,需要指定子设备的产品ID和设备ID,如果没有填写则默认是账号里的设备",
             "in": "header",
             "name": "deviceName",
             "schema": {
@@ -8866,7 +9137,7 @@
             }
           },
           {
-            "description": "basic auth  账号密码使用mqtt格式生成的账号密码\r",
+            "description": "basic auth  账号密码使用mqtt格式生成的账号密码",
             "in": "header",
             "name": "authorization",
             "required": true,
@@ -9445,7 +9716,8 @@
         "tags": [
           "things/device/info",
           "thingsDeviceInfo"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/device/info/delete": {
@@ -9489,7 +9761,8 @@
         "tags": [
           "things/device/info",
           "thingsDeviceInfo"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/device/info/index": {
@@ -9682,7 +9955,8 @@
         "tags": [
           "things/device/info",
           "thingsDeviceInfo"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/device/info/multi-update": {
@@ -9781,7 +10055,8 @@
         "tags": [
           "things/device/info",
           "thingsDeviceInfo"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/device/info/ota/upgrade": {
@@ -9795,7 +10070,7 @@
               }
             }
           },
-          "description": " DeviceOtaUpgradeReq OTA升级请求\r",
+          "description": " DeviceOtaUpgradeReq OTA升级请求",
           "required": true,
           "x-originalParamName": "body"
         },
@@ -11271,6 +11546,102 @@
         ]
       }
     },
+    "/api/v1/things/device/info/pair-confirm": {
+      "post": {
+        "description": "校验S01 BLE安全配对grantToken和设备pairAckPayload，成功后复用设备绑定流程完成正式绑定",
+        "operationId": "postApiV1ThingsDeviceInfoPairConfirm",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DevicePairConfirmReq"
+              }
+            }
+          },
+          "required": true,
+          "x-originalParamName": "body"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "default": "200",
+                      "title": "返回code",
+                      "type": "integer"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/DevicePairConfirmResp"
+                    },
+                    "msg": {
+                      "title": "返回的消息",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A successful response."
+          }
+        },
+        "summary": "S01 BLE安全配对确认",
+        "tags": [
+          "things/device/pair",
+          "thingsDevicePair"
+        ]
+      }
+    },
+    "/api/v1/things/device/info/pair-grant": {
+      "post": {
+        "description": "根据产品级32位hex MK为指定设备生成S01 BLE安全配对nonce、authTag和短期grantToken",
+        "operationId": "postApiV1ThingsDeviceInfoPairGrant",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DevicePairGrantReq"
+              }
+            }
+          },
+          "required": true,
+          "x-originalParamName": "body"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "default": "200",
+                      "title": "返回code",
+                      "type": "integer"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/DevicePairGrantResp"
+                    },
+                    "msg": {
+                      "title": "返回的消息",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A successful response."
+          }
+        },
+        "summary": "S01 BLE安全配对授权",
+        "tags": [
+          "things/device/pair",
+          "thingsDevicePair"
+        ]
+      }
+    },
     "/api/v1/things/device/profile/delete": {
       "post": {
         "operationId": "postApiV1ThingsDeviceProfileDelete",
@@ -11495,7 +11866,8 @@
         "tags": [
           "things/device/schema",
           "thingsDeviceSchema"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/device/schema/index": {
@@ -11586,7 +11958,8 @@
         "tags": [
           "things/device/schema",
           "thingsDeviceSchema"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/device/schema/multi-delete": {
@@ -11630,7 +12003,8 @@
         "tags": [
           "things/device/schema",
           "thingsDeviceSchema"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/device/schema/tsl-read": {
@@ -11722,7 +12096,8 @@
         "tags": [
           "things/device/schema",
           "thingsDeviceSchema"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/device/version/index": {
@@ -12221,7 +12596,8 @@
         "tags": [
           "things/ota/firmware/device",
           "thingsOtaFirmwareDevice"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/ota/firmware/device/confirm": {
@@ -12265,7 +12641,8 @@
         "tags": [
           "things/ota/firmware/device",
           "thingsOtaFirmwareDevice"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/ota/firmware/device/index": {
@@ -12312,7 +12689,8 @@
         "tags": [
           "things/ota/firmware/device",
           "thingsOtaFirmwareDevice"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/ota/firmware/device/retry": {
@@ -12356,7 +12734,8 @@
         "tags": [
           "things/ota/firmware/device",
           "thingsOtaFirmwareDevice"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/ota/firmware/info/create": {
@@ -12403,7 +12782,8 @@
         "tags": [
           "things/ota/firmware/info",
           "thingsOtaFirmwareInfo"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/ota/firmware/info/delete": {
@@ -12447,7 +12827,8 @@
         "tags": [
           "things/ota/firmware/info",
           "thingsOtaFirmwareInfo"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/ota/firmware/info/index": {
@@ -12494,7 +12875,8 @@
         "tags": [
           "things/ota/firmware/info",
           "thingsOtaFirmwareInfo"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/ota/firmware/info/read": {
@@ -12541,7 +12923,8 @@
         "tags": [
           "things/ota/firmware/info",
           "thingsOtaFirmwareInfo"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/ota/firmware/info/update": {
@@ -12588,7 +12971,8 @@
         "tags": [
           "things/ota/firmware/info",
           "thingsOtaFirmwareInfo"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/ota/firmware/job/create": {
@@ -12635,7 +13019,8 @@
         "tags": [
           "things/ota/firmware/job",
           "thingsOtaFirmwareJob"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/ota/firmware/job/index": {
@@ -12682,7 +13067,8 @@
         "tags": [
           "things/ota/firmware/job",
           "thingsOtaFirmwareJob"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/ota/firmware/job/read": {
@@ -12729,7 +13115,8 @@
         "tags": [
           "things/ota/firmware/job",
           "thingsOtaFirmwareJob"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/ota/firmware/job/update": {
@@ -12773,7 +13160,8 @@
         "tags": [
           "things/ota/firmware/job",
           "thingsOtaFirmwareJob"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/ota/module/info/create": {
@@ -12820,7 +13208,8 @@
         "tags": [
           "things/ota/module/info",
           "thingsOtaModuleInfo"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/ota/module/info/delete": {
@@ -12864,7 +13253,8 @@
         "tags": [
           "things/ota/module/info",
           "thingsOtaModuleInfo"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/ota/module/info/index": {
@@ -12911,7 +13301,8 @@
         "tags": [
           "things/ota/module/info",
           "thingsOtaModuleInfo"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/ota/module/info/read": {
@@ -12958,7 +13349,8 @@
         "tags": [
           "things/ota/module/info",
           "thingsOtaModuleInfo"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/ota/module/info/update": {
@@ -13002,7 +13394,8 @@
         "tags": [
           "things/ota/module/info",
           "thingsOtaModuleInfo"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/product/category/create": {
@@ -13046,7 +13439,8 @@
         "tags": [
           "things/product/category",
           "thingsProductCategory"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/product/category/delete": {
@@ -13090,7 +13484,8 @@
         "tags": [
           "things/product/category",
           "thingsProductCategory"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/product/category/index": {
@@ -13184,7 +13579,8 @@
         "tags": [
           "things/product/category",
           "thingsProductCategory"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/product/category/multi-import": {
@@ -13231,7 +13627,8 @@
         "tags": [
           "things/product/category",
           "thingsProductCategory"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/product/category/read": {
@@ -13369,7 +13766,8 @@
         "tags": [
           "things/product/category",
           "thingsProductCategory"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/product/category/schema/multi-delete": {
@@ -13413,7 +13811,8 @@
         "tags": [
           "things/product/category",
           "thingsProductCategory"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/product/category/schema/multi-update": {
@@ -13457,7 +13856,8 @@
         "tags": [
           "things/product/category",
           "thingsProductCategory"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/product/category/update": {
@@ -13501,7 +13901,8 @@
         "tags": [
           "things/product/category",
           "thingsProductCategory"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/product/config/update": {
@@ -13545,7 +13946,8 @@
         "tags": [
           "things/product/config",
           "thingsProductConfig"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/product/custom/read": {
@@ -13683,7 +14085,8 @@
         "tags": [
           "things/product/info",
           "thingsProductInfo"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/product/info/delete": {
@@ -13727,7 +14130,8 @@
         "tags": [
           "things/product/info",
           "thingsProductInfo"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/product/info/index": {
@@ -13818,7 +14222,8 @@
         "tags": [
           "things/product/info",
           "thingsProductInfo"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/product/info/multi-export": {
@@ -13865,7 +14270,8 @@
         "tags": [
           "things/product/info",
           "thingsProductInfo"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/product/info/multi-import": {
@@ -13912,7 +14318,8 @@
         "tags": [
           "things/product/info",
           "thingsProductInfo"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/product/info/read": {
@@ -14003,7 +14410,8 @@
         "tags": [
           "things/product/info",
           "thingsProductInfo"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/product/remote-config/create": {
@@ -14229,7 +14637,8 @@
         "tags": [
           "things/product/schema",
           "thingsProductSchema"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/product/schema/delete": {
@@ -14273,7 +14682,8 @@
         "tags": [
           "things/product/schema",
           "thingsProductSchema"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/product/schema/index": {
@@ -14364,7 +14774,8 @@
         "tags": [
           "things/product/schema",
           "thingsProductSchema"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/product/schema/tsl-import": {
@@ -14408,7 +14819,8 @@
         "tags": [
           "things/product/schema",
           "thingsProductSchema"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/product/schema/tsl-read": {
@@ -14499,7 +14911,8 @@
         "tags": [
           "things/product/schema",
           "thingsProductSchema"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/protocol/info/create": {
@@ -14546,7 +14959,8 @@
         "tags": [
           "things/protocol/info",
           "thingsProtocolInfo"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/protocol/info/delete": {
@@ -14590,7 +15004,8 @@
         "tags": [
           "things/protocol/info",
           "thingsProtocolInfo"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/protocol/info/index": {
@@ -14637,7 +15052,8 @@
         "tags": [
           "things/protocol/info",
           "thingsProtocolInfo"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/protocol/info/read": {
@@ -14684,7 +15100,8 @@
         "tags": [
           "things/protocol/info",
           "thingsProtocolInfo"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/protocol/info/update": {
@@ -14728,7 +15145,8 @@
         "tags": [
           "things/protocol/info",
           "thingsProtocolInfo"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/protocol/script/create": {
@@ -14775,7 +15193,8 @@
         "tags": [
           "things/protocol/script",
           "thingsProtocolScript"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/protocol/script/debug": {
@@ -14822,7 +15241,8 @@
         "tags": [
           "things/protocol/script",
           "thingsProtocolScript"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/protocol/script/delete": {
@@ -14866,7 +15286,8 @@
         "tags": [
           "things/protocol/script",
           "thingsProtocolScript"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/protocol/script/device/create": {
@@ -14913,7 +15334,8 @@
         "tags": [
           "things/protocol/script/device",
           "thingsProtocolScriptDevice"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/protocol/script/device/delete": {
@@ -14957,7 +15379,8 @@
         "tags": [
           "things/protocol/script/device",
           "thingsProtocolScriptDevice"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/protocol/script/device/index": {
@@ -15004,7 +15427,8 @@
         "tags": [
           "things/protocol/script/device",
           "thingsProtocolScriptDevice"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/protocol/script/device/read": {
@@ -15051,7 +15475,8 @@
         "tags": [
           "things/protocol/script/device",
           "thingsProtocolScriptDevice"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/protocol/script/device/update": {
@@ -15095,7 +15520,8 @@
         "tags": [
           "things/protocol/script/device",
           "thingsProtocolScriptDevice"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/protocol/script/index": {
@@ -15142,7 +15568,8 @@
         "tags": [
           "things/protocol/script",
           "thingsProtocolScript"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/protocol/script/multi-export": {
@@ -15189,7 +15616,8 @@
         "tags": [
           "things/protocol/script",
           "thingsProtocolScript"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/protocol/script/multi-import": {
@@ -15236,7 +15664,8 @@
         "tags": [
           "things/protocol/script",
           "thingsProtocolScript"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/protocol/script/read": {
@@ -15283,7 +15712,8 @@
         "tags": [
           "things/protocol/script",
           "thingsProtocolScript"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/protocol/script/update": {
@@ -15327,7 +15757,8 @@
         "tags": [
           "things/protocol/script",
           "thingsProtocolScript"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/protocol/service/delete": {
@@ -15371,7 +15802,8 @@
         "tags": [
           "things/protocol/service",
           "thingsProtocolService"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/protocol/service/index": {
@@ -15418,7 +15850,8 @@
         "tags": [
           "things/protocol/service",
           "thingsProtocolService"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/protocol/sync/device": {
@@ -15465,7 +15898,8 @@
         "tags": [
           "things/protocol/sync",
           "thingsProtocolSync"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/protocol/sync/product": {
@@ -15509,7 +15943,8 @@
         "tags": [
           "things/protocol/sync",
           "thingsProtocolSync"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/schema/common/create": {
@@ -15554,7 +15989,8 @@
         "tags": [
           "things/schema/common",
           "thingsSchemaCommon"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/schema/common/delete": {
@@ -15598,7 +16034,8 @@
         "tags": [
           "things/schema/common",
           "thingsSchemaCommon"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/schema/common/index": {
@@ -15678,7 +16115,8 @@
         "tags": [
           "things/schema/common",
           "thingsSchemaCommon"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/schema/common/multi-export": {
@@ -15725,7 +16163,8 @@
         "tags": [
           "things/schema/common",
           "thingsSchemaCommon"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/schema/common/multi-import": {
@@ -15772,7 +16211,8 @@
         "tags": [
           "things/schema/common",
           "thingsSchemaCommon"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/schema/common/update": {
@@ -15817,7 +16257,8 @@
         "tags": [
           "things/schema/common",
           "thingsSchemaCommon"
-        ]
+        ],
+        "x-auth-type": "admin"
       }
     },
     "/api/v1/things/slot/area/create": {
@@ -16352,6 +16793,86 @@
         ]
       }
     },
+    "/api/v1/things/user/device/share/multi-delete-token": {
+      "post": {
+        "operationId": "postApiV1ThingsUserDeviceShareMulti-delete-token",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDeviceShareMultiDeleteTokenReq"
+              }
+            }
+          },
+          "required": true,
+          "x-originalParamName": "body"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "default": "200",
+                      "title": "返回code",
+                      "type": "integer"
+                    },
+                    "msg": {
+                      "title": "返回的消息",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A successful response."
+          }
+        },
+        "summary": "删除批量分享 Token",
+        "tags": [
+          "things/user/device/share",
+          "thingsUserDeviceShare"
+        ]
+      }
+    },
+    "/api/v1/things/user/device/share/multi-get-token-list": {
+      "post": {
+        "operationId": "postApiV1ThingsUserDeviceShareMulti-get-token-list",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "default": "200",
+                      "title": "返回code",
+                      "type": "integer"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/UserDeviceShareMultiGetTokenListResp"
+                    },
+                    "msg": {
+                      "title": "返回的消息",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A successful response."
+          }
+        },
+        "summary": "获取批量分享 Token 列表",
+        "tags": [
+          "things/user/device/share",
+          "thingsUserDeviceShare"
+        ]
+      }
+    },
     "/api/v1/things/user/device/share/multi-index": {
       "post": {
         "operationId": "postApiV1ThingsUserDeviceShareMulti-index",
@@ -16440,6 +16961,54 @@
           }
         },
         "summary": "获取分享设备详情",
+        "tags": [
+          "things/user/device/share",
+          "thingsUserDeviceShare"
+        ]
+      }
+    },
+    "/api/v1/things/user/device/share/token/check": {
+      "post": {
+        "description": "H5 分享承接页公开查询 shareToken 是否仍有效，只返回过期时间和精简状态，不返回权限详情。",
+        "operationId": "postApiV1ThingsUserDeviceShareTokenCheck",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDeviceShareTokenCheckReq"
+              }
+            }
+          },
+          "required": true,
+          "x-originalParamName": "body"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "default": "200",
+                      "title": "返回code",
+                      "type": "integer"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/UserDeviceShareTokenCheckResp"
+                    },
+                    "msg": {
+                      "title": "返回的消息",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A successful response."
+          }
+        },
+        "summary": "公开查询批量分享 Token 状态",
         "tags": [
           "things/user/device/share",
           "thingsUserDeviceShare"
