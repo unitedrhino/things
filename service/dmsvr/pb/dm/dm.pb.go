@@ -3664,7 +3664,7 @@ func (x *ProtocolScriptDebugResp) GetLogs() []string {
 
 type ProtocolScript struct {
 	state         protoimpl.MessageState  `protogen:"open.v1"`
-	TenantCode    string                  `protobuf:"bytes,11,opt,name=tenantCode,proto3" json:"tenantCode,omitempty"` //租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改
+	TenantCode    string                  `protobuf:"bytes,11,opt,name=tenantCode,proto3" json:"tenantCode,omitempty"` //租户号,default 为公共租户,所有租户可读,仅default租户可修改
 	Id            int64                   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name          string                  `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`                   //名称
 	TriggerDir    int64                   `protobuf:"varint,3,opt,name=triggerDir,proto3" json:"triggerDir,omitempty"`      //1:up 2:down
@@ -3932,7 +3932,7 @@ func (x *ProtocolScriptIndexResp) GetTotal() int64 {
 
 type ProtocolScriptDevice struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	TenantCode    string                 `protobuf:"bytes,12,opt,name=tenantCode,proto3" json:"tenantCode,omitempty"` //租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改
+	TenantCode    string                 `protobuf:"bytes,12,opt,name=tenantCode,proto3" json:"tenantCode,omitempty"` //租户号,default 为公共租户,所有租户可读,仅default租户可修改
 	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	TriggerSrc    int64                  `protobuf:"varint,2,opt,name=triggerSrc,proto3" json:"triggerSrc,omitempty"` //产品:1 设备:2
 	ProductID     string                 `protobuf:"bytes,3,opt,name=productID,proto3" json:"productID,omitempty"`
@@ -11990,7 +11990,7 @@ func (x *DevInit) GetDeptID() int64 {
 
 type ProductInfo struct {
 	state                 protoimpl.MessageState      `protogen:"open.v1"`
-	TenantCode            string                      `protobuf:"bytes,26,opt,name=tenantCode,proto3" json:"tenantCode,omitempty"`                                                               //租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改
+	TenantCode            string                      `protobuf:"bytes,26,opt,name=tenantCode,proto3" json:"tenantCode,omitempty"`                                                               //租户号,default 为公共租户,所有租户可读,仅default租户可修改
 	CreatedTime           int64                       `protobuf:"varint,1,opt,name=createdTime,proto3" json:"createdTime,omitempty"`                                                             //创建时间 只读
 	ProductID             string                      `protobuf:"bytes,2,opt,name=productID,proto3" json:"productID,omitempty"`                                                                  //产品id 只读
 	ProductName           string                      `protobuf:"bytes,3,opt,name=productName,proto3" json:"productName,omitempty"`                                                              //产品名称
@@ -12431,7 +12431,7 @@ func (x *ProductInfoReadReq) GetWithCategory() bool {
 type ProductInfoIndexReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Page          *PageInfo              `protobuf:"bytes,1,opt,name=page,proto3" json:"page,omitempty"`              //分页信息 只获取一个则不填
-	TenantCode    string                 `protobuf:"bytes,27,opt,name=tenantCode,proto3" json:"tenantCode,omitempty"` //租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改
+	TenantCode    string                 `protobuf:"bytes,27,opt,name=tenantCode,proto3" json:"tenantCode,omitempty"` //租户号,default 为公共租户,所有租户可读,仅default租户可修改
 	DeviceType    int64                  `protobuf:"varint,2,opt,name=deviceType,proto3" json:"deviceType,omitempty"` //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
 	DeviceTypes   []int64                `protobuf:"varint,10,rep,packed,name=deviceTypes,proto3" json:"deviceTypes,omitempty"`
 	ProductName   string                 `protobuf:"bytes,3,opt,name=productName,proto3" json:"productName,omitempty"`                                                                             //过滤条件: 产品名称

@@ -1629,7 +1629,7 @@ type ProductID struct {
 }
 
 type ProductInfo struct {
-	TenantCode            string                      `json:"tenantCode,optional"`                        //租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改
+	TenantCode            string                      `json:"tenantCode,optional"`                        //租户号,default 为公共租户,所有租户可读,仅default租户可修改
 	CreatedTime           int64                       `json:"createdTime,optional,string"`                //创建时间 只读
 	ProductID             string                      `json:"productID,optional"`                         //产品id 只读
 	ProductName           string                      `json:"productName,optional"`                       //产品名称
@@ -1674,7 +1674,7 @@ type ProductInfoImportReq struct {
 
 type ProductInfoIndexReq struct {
 	Page         *PageInfo `json:"page,optional"`                   //分页信息,只获取一个则不填
-	TenantCode   string    `json:"tenantCode,optional"`             //租户号过滤,common 为公共的产品,公共的大家都可以看
+	TenantCode   string    `json:"tenantCode,optional"`             //租户号过滤,default 为公共租户,所有租户可读
 	ProductName  string    `json:"productName,optional"`            //过滤产品名称
 	DeviceType   int64     `json:"deviceType,optional,range=[0:3]"` //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
 	DeviceTypes  []int64   `json:"deviceTypes,optional"`            //设备类型:1:设备,2:网关,3:子设备//设备类型:1:设备,2:网关,3:子设备
@@ -1862,7 +1862,7 @@ type ProtocolInfoIndexResp struct {
 }
 
 type ProtocolScript struct {
-	TenantCode    string  `json:"tenantCode,optional"` //租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改
+	TenantCode    string  `json:"tenantCode,optional"` //租户号,default 为公共租户,所有租户可读,仅default租户可修改
 	ID            int64   `json:"id,string,optional"`
 	Name          string  `json:"name,optional"`
 	Desc          *string `json:"desc,optional"`
@@ -1889,7 +1889,7 @@ type ProtocolScriptDebugResp struct {
 }
 
 type ProtocolScriptDevice struct {
-	TenantCode  string          `json:"tenantCode,optional"` //租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改
+	TenantCode  string          `json:"tenantCode,optional"` //租户号,default 为公共租户,所有租户可读,仅default租户可修改
 	ID          int64           `json:"id,string,optional"`
 	TriggerSrc  int64           `json:"triggerSrc,optional"` //product:1 device:2
 	ProductID   string          `json:"productID,optional"`

@@ -741,7 +741,7 @@ message ProtocolScriptDebugResp{
 }
 
 message ProtocolScript{
-  string tenantCode =11;//租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改
+  string tenantCode =11;//租户号,default 为公共租户,所有租户可读,仅default租户可修改
   int64  id = 1;
   string  name = 2; //名称
   int64 triggerDir =3;    //1:up 2:down
@@ -772,7 +772,7 @@ message ProtocolScriptIndexResp{
 
 
 message ProtocolScriptDevice{
-  string tenantCode =12;//租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改
+  string tenantCode =12;//租户号,default 为公共租户,所有租户可读,仅default租户可修改
   int64  id = 1;
   int64 triggerSrc =2;    //产品:1 设备:2
   string productID =3;
@@ -1697,7 +1697,7 @@ message DevInit{
 }
 
 message ProductInfo{
-  string tenantCode =26;//租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改
+  string tenantCode =26;//租户号,default 为公共租户,所有租户可读,仅default租户可修改
   int64   createdTime = 1; //创建时间 只读
   string   productID = 2; //产品id 只读
   string  productName = 3; //产品名称
@@ -1747,7 +1747,7 @@ message ProductInfoReadReq{
 
 message ProductInfoIndexReq{
   PageInfo page = 1;//分页信息 只获取一个则不填
-  string tenantCode =27;//租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改
+  string tenantCode =27;//租户号,default 为公共租户,所有租户可读,仅default租户可修改
   int64  deviceType = 2; //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
   repeated int64 deviceTypes =10;
   string  productName = 3; //过滤条件: 产品名称
