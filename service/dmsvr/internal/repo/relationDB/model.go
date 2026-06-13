@@ -226,7 +226,7 @@ func (m *DmDeviceProfile) TableName() string {
 
 // 产品信息表
 type DmProductInfo struct {
-	TenantCode       dataType.TenantCodeWithCommonR `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'common'"` // 租户编码
+	TenantCode       dataType.TenantCodeWithDefaultR `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'default'"` // 租户编码
 	ID               int64                          `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	ProductID        string                         `gorm:"column:product_id;type:varchar(100);uniqueIndex:idx_dm_product_info_pd;NOT NULL"` // 产品id
 	ProductName      string                         `gorm:"column:product_name;type:varchar(100);NOT NULL"`                                  // 产品名称
@@ -393,7 +393,7 @@ func (m *DmProtocolService) TableName() string {
 
 // 协议插件
 type DmProtocolScript struct {
-	TenantCode dataType.TenantCodeWithCommonN `gorm:"column:tenant_code;index;uniqueIndex:idx_dm_protocol_script_name;type:VARCHAR(50);default:'__common __'"` // 租户编码
+	TenantCode dataType.TenantCodeWithDefaultN `gorm:"column:tenant_code;index;uniqueIndex:idx_dm_protocol_script_name;type:VARCHAR(50);default:'default'"` // 租户编码
 	ID         int64                          `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	Name       string                         `gorm:"column:name;uniqueIndex:idx_dm_protocol_script_name;type:varchar(100);not null"` //转换名称
 	//ProductIDs    []string          `gorm:"column:product_ids;type:json;serializer:json"` // 产品id
@@ -417,7 +417,7 @@ func (m *DmProtocolScript) TableName() string {
 
 // 协议插件
 type DmProtocolScriptDevice struct {
-	TenantCode dataType.TenantCodeWithCommonR `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'default'"` // 租户编码
+	TenantCode dataType.TenantCodeWithDefaultR `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'default'"` // 租户编码
 	ID         int64                          `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	TriggerSrc protocol.TriggerSrc            `gorm:"column:trigger_src;"`                             //product:1 device:2
 	ProductID  string                         `gorm:"column:product_id;type:varchar(100);not null"`    // 产品id
@@ -463,7 +463,7 @@ func (m *DmProductCustom) BeforeSave(tx *gorm.DB) error {
 
 // 产品物模型表
 type DmProductSchema struct {
-	TenantCode dataType.TenantCodeWithCommonR `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'common'"` // 租户编码
+	TenantCode dataType.TenantCodeWithDefaultR `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'default'"` // 租户编码
 	ID         int64                          `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	ProductID  string                         `gorm:"column:product_id;uniqueIndex:idx_dm_product_schema_identifier;index:product_id_type;type:varchar(100);NOT NULL"` // 产品id
 	Identifier string                         `gorm:"column:identifier;uniqueIndex:idx_dm_product_schema_identifier;type:varchar(100);NOT NULL"`                       // 标识符
@@ -511,7 +511,7 @@ func (m *DmDeviceSchema) BeforeSave(tx *gorm.DB) error {
 // 产品物模型表
 type DmSchemaInfo struct {
 	ID         int64          `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	TenantCode string         `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'common'"`                                                        // 租户编码
+	TenantCode string         `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'default'"`                                                       // 租户编码
 	ProductID  string         `gorm:"column:product_id;uniqueIndex:idx_dm_schema_info_identifier;index:product_id_type;type:varchar(100);NOT NULL"`      // 产品id
 	DeviceName sql.NullString `gorm:"column:device_name;uniqueIndex:idx_dm_schema_info_identifier;index:product_id_type;type:varchar(100);default:null"` // 产品id
 	Identifier string         `gorm:"column:identifier;uniqueIndex:idx_dm_schema_info_identifier;type:varchar(100);NOT NULL"`                            // 标识符

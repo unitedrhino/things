@@ -54,7 +54,7 @@ func (l *ProductSchemaMultiCreateLogic) ProductSchemaMultiCreate(in *dm.ProductS
 		for _, c := range cs {
 			c.Tag = schema.TagOptional
 			pos = append(pos, &relationDB.DmProductSchema{
-				TenantCode:   dataType.TenantCodeWithCommonR(pi.TenantCode),
+				TenantCode:   dataType.TenantCodeWithDefaultR(pi.TenantCode),
 				ProductID:    in.ProductID,
 				Identifier:   c.Identifier,
 				DmSchemaCore: c.DmSchemaCore,
