@@ -6740,7 +6740,7 @@
             "type": "array"
           },
           "tenantCode": {
-            "description": "租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改",
+            "description": "租户号,default 为公共的产品,所有租户可读,仅default租户可修改",
             "type": "string"
           },
           "trialTime": {
@@ -6882,7 +6882,7 @@
             "type": "array"
           },
           "tenantCode": {
-            "description": "租户号过滤,common 为公共的产品,公共的大家都可以看",
+            "description": "租户号过滤,default 为公共的产品,所有租户可读",
             "type": "string"
           },
           "withCategory": {
@@ -7604,7 +7604,7 @@
             "type": "integer"
           },
           "tenantCode": {
-            "description": "租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改",
+            "description": "租户号,default 为公共的产品,所有租户可读,仅default租户可修改",
             "type": "string"
           },
           "triggerDir": {
@@ -7720,7 +7720,7 @@
             "type": "integer"
           },
           "tenantCode": {
-            "description": "租户号,common 为公共的产品,公共的大家都可以看,但是只有default可以修改",
+            "description": "租户号,default 为公共的产品,所有租户可读,仅default租户可修改",
             "type": "string"
           },
           "triggerSrc": {

@@ -61,7 +61,7 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 	}
 	if fi.TenantCode != def.TenantCodeDefault {
 		in.TenantCodes = append(in.TenantCodes, ctxs.GetUserCtxNoNil(l.ctx).TenantCode)
-	} else { //如果是common,则可以从所有租户里获取
+	} else { //固件归属default(公共)租户时,可跨所有租户获取设备
 		l.ctx = ctxs.WithRoot(l.ctx)
 	}
 	if in.UpgradeType == msgOta.DynamicUpgrade && len(in.SrcVersions) == 0 {
