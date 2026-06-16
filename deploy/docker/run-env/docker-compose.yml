@@ -65,6 +65,7 @@ services:
       - ../conf/mysql/sql:/docker-entrypoint-initdb.d
 #      - ../conf/mysql/data:/var/lib/mysql
 #      - ../conf/mysql/user:/var/user
+      - ../conf/mysql/conf.d:/etc/mysql/conf.d
 
     logging:
       options:
