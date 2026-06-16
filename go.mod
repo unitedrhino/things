@@ -6,8 +6,8 @@ go 1.25.4
 //gitee.com/unitedrhino/share => ../share
 
 require (
-	gitee.com/unitedrhino/core v1.5.91
-	gitee.com/unitedrhino/share v1.5.89
+	gitee.com/unitedrhino/core v1.5.92
+	gitee.com/unitedrhino/share v1.5.90
 	gitee.com/unitedrhino/squirrel v1.20.7
 	github.com/dgraph-io/ristretto v0.1.1
 	github.com/dop251/goja v0.0.0-20251201205617-2bb4c724c0f9
