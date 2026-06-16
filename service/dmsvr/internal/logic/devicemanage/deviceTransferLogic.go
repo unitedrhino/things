@@ -236,23 +236,27 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 	if err != nil {
 		return nil, err
 	}
-	diDB = relationDB.NewDeviceInfoRepo(ctxs.WithDefaultRoot(l.ctx))
+	// 使用 root 权限查询，避免跨租户转移后因上下文租户不匹配导致查询失败
+	postQueryCtx := ctxs.WithRoot(ctxs.WithAllProject(l.ctx))
+	diDB = relationDB.NewDeviceInfoRepo(postQueryCtx)
 	for i, di := range devs {
 		err = l.svcCtx.DeviceCache.SetData(l.ctx, *di, nil)
 		if err != nil {
 			l.Error(err)
 		}
-		newDi, err := diDB.FindOneByFilter(ctxs.WithDefaultRoot(l.ctx), relationDB.DeviceFilter{
+		newDi, err := diDB.FindOneByFilter(postQueryCtx, relationDB.DeviceFilter{
 			ProductID:   di.ProductID,
 			DeviceNames: []string{di.DeviceName},
 		})
 		if err != nil {
-			return nil, err
+			// 转让事务已提交成功，此处仅查询新设备信息用于事件发布，不影响转让结果
+			l.Errorf("DeviceTransfer 转让后查询设备失败 productID=%s deviceName=%s err=%v", di.ProductID, di.DeviceName, err)
+		} else {
+			transferInfos[i].NewTenantCode = string(newDi.TenantCode)
+			transferInfos[i].NewProjectID = int64(newDi.ProjectID)
+			transferInfos[i].NewAreaID = int64(newDi.AreaID)
+			transferInfos[i].NewAreaIDPath = string(newDi.AreaIDPath)
 		}
-		transferInfos[i].NewTenantCode = string(newDi.TenantCode)
-		transferInfos[i].NewProjectID = int64(newDi.ProjectID)
-		transferInfos[i].NewAreaID = int64(newDi.AreaID)
-		transferInfos[i].NewAreaIDPath = string(newDi.AreaIDPath)
 		if in.IsCleanData == def.True {
 			err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUnbind, &di)
 			if err != nil {
