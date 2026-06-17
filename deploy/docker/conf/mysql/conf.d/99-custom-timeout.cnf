@@ -1,0 +1,5 @@
+# MariaDB 锁等待超时自定义配置
+# 用途：在高并发锁竞争场景下，缩短锁等待超时时间，避免线程长期堆积
+# 适用场景：大量并发设备上线/OTA 查询导致 dm_device_info 等表行锁竞争
+[mysqld]
+innodb_lock_wait_timeout = 10
