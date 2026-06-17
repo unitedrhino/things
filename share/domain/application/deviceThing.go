@@ -27,10 +27,11 @@ type OtaReport struct {
 
 // 属性上报消息体
 type PropertyReport struct {
-	Device     devices.Core `json:"device"`
-	Timestamp  int64        `json:"timestamp,string"` //毫秒时间戳
-	Identifier string       `json:"identifier"`       //推送属性的标识符
-	Param      any          `json:"param"`            //推送属性的参数
+	Device         devices.Core `json:"device"`
+	Timestamp      int64        `json:"timestamp,string"`         //毫秒时间戳
+	Identifier     string       `json:"identifier"`               //推送属性的标识符
+	Param          any          `json:"param"`                    //推送属性的参数
+	OperatorUserID int64        `json:"operatorUserId,omitempty"` // App 控制时的操作人
 }
 
 type PropertyReportV2 struct {
@@ -54,15 +55,16 @@ type Hub struct {
 
 // 行为上报消息体
 type ActionReport struct {
-	Device    devices.Core      `json:"device"`
-	MsgToken  string            `json:"msgToken,omitempty"` //调用id
-	Timestamp int64             `json:"timestamp,string"`   //毫秒时间戳
-	ActionID  string            `json:"actionID,omitempty"` //数据模板中的行为标识符，由开发者自行根据设备的应用场景定义
-	Params    map[string]any    `json:"params,omitempty"`   //参数列表
-	Code      int64             `json:"code,omitempty"`     //200为成功
-	Msg       string            `json:"msg,omitempty"`      //消息
-	Dir       schema.ActionDir  `json:"dir"`                //请求方向 up:设备请求云端  down:云端请求设备
-	ReqType   deviceMsg.ReqType `json:"reqType"`            //请求类型 req resp
+	Device         devices.Core      `json:"device"`
+	MsgToken       string            `json:"msgToken,omitempty"`       //调用id
+	Timestamp      int64             `json:"timestamp,string"`         //毫秒时间戳
+	ActionID       string            `json:"actionID,omitempty"`       //数据模板中的行为标识符，由开发者自行根据设备的应用场景定义
+	Params         map[string]any    `json:"params,omitempty"`         //参数列表
+	Code           int64             `json:"code,omitempty"`           //200为成功
+	Msg            string            `json:"msg,omitempty"`            //消息
+	Dir            schema.ActionDir  `json:"dir"`                      //请求方向 up:设备请求云端  down:云端请求设备
+	ReqType        deviceMsg.ReqType `json:"reqType"`                  //请求类型 req resp
+	OperatorUserID int64             `json:"operatorUserId,omitempty"` // App 控制时的操作人
 }
 
 // 事件上报消息体

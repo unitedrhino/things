@@ -62,6 +62,8 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
 	}
+	uc := ctxs.GetUserCtxNoNil(l.ctx)
+	operatorUserID := uc.UserID
 	if protocolCode, err = CheckIsOnline(l.ctx, l.svcCtx, dev); err != nil { //如果是不启用设备影子的模式则直接返回
 		if errors.Is(err, errors.NotOnline) {
 			isOnline = false
@@ -144,6 +146,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 			appMsg := application.PropertyReport{
 				Device: dev, Timestamp: time.Now().UnixMilli(),
 				Identifier: k, Param: v,
+				OperatorUserID: operatorUserID,
 			}
 			//应用事件通知-设备物模型属性上报通知 ↓↓↓
 			err := l.svcCtx.PubApp.DeviceThingPropertyReport(l.ctx, appMsg)

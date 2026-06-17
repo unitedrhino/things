@@ -17,6 +17,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/share/devices"
+	"gitee.com/unitedrhino/things/share/domain/application"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg"
 	"gitee.com/unitedrhino/things/share/domain/deviceMsg/msgThing"
 	"gitee.com/unitedrhino/things/share/domain/schema"
@@ -49,6 +50,8 @@ func (l *ActionSendLogic) initMsg(dev devices.Core) error {
 // 调用设备行为
 func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (ret *dm.ActionSendResp, err error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
+	uc := ctxs.GetUserCtxNoNil(l.ctx)
+	operatorUserID := uc.UserID
 	_, err = logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthReadWrite, devices.Core{
 		ProductID:  in.ProductID,
 		DeviceName: in.DeviceName,
@@ -76,6 +79,24 @@ func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (ret *dm.ActionSendRe
 			return nil, errors.Parameter.AddDetail("ActionSend InputParams not right:", in.InputParams)
 		}
 	}
+	defer func() {
+		if err != nil || ret == nil {
+			return
+		}
+		appMsg := application.ActionReport{
+			Device:         devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName},
+			Timestamp:      time.Now().UnixMilli(),
+			ActionID:       in.ActionID,
+			Params:         param,
+			Dir:            schema.ActionDirDown,
+			ReqType:        deviceMsg.ReqMsg,
+			MsgToken:       ret.MsgToken,
+			OperatorUserID: operatorUserID,
+		}
+		if err2 := l.svcCtx.PubApp.DeviceThingActionReport(l.ctx, appMsg); err2 != nil {
+			l.Errorf("%s.DeviceThingActionReport err:%v", utils.FuncName(), err2)
+		}
+	}()
 	req := msgThing.Req{
 		CommonMsg: deviceMsg.CommonMsg{
 			Method:   deviceMsg.Action,
