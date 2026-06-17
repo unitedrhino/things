@@ -6,8 +6,8 @@ go 1.24.4
 //gitee.com/unitedrhino/share => ../share
 
 require (
-	gitee.com/unitedrhino/core v1.5.9
-	gitee.com/unitedrhino/share v1.5.73
+	gitee.com/unitedrhino/core v1.6.0
+	gitee.com/unitedrhino/share v1.6.0
 	gitee.com/unitedrhino/squirrel v1.20.7
 	github.com/dgraph-io/ristretto v0.1.1
 	github.com/dop251/goja v0.0.0-20251201205617-2bb4c724c0f9
@@ -34,6 +34,7 @@ require (
 )
 
 require (
+	cloud.google.com/go/compute/metadata v0.9.0 // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
 	gitee.com/unitedrhino/driver-go/v3 v3.30.2 // indirect
 	github.com/BurntSushi/toml v1.6.0 // indirect
@@ -226,4 +227,9 @@ require (
 	sigs.k8s.io/json v0.0.0-20241010143419-9aa6b5e7a4b3 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.4.2 // indirect
 	sigs.k8s.io/yaml v1.4.0 // indirect
+)
+
+replace (
+	cloud.google.com/go => cloud.google.com/go v0.110.10
+	cloud.google.com/go/compute/metadata => cloud.google.com/go/compute/metadata v0.6.0
 )
