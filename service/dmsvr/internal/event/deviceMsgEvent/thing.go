@@ -445,7 +445,7 @@ func (l *ThingLogic) DeviceSchemaReportAutoCreate(mode product.DeviceSchemaMode,
 }
 
 // 设备属性上报
-func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThing.Req) (respMsg *deviceMsg.PublishMsg, err error) {
+func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThing.Req, operatorUserID int64) (respMsg *deviceMsg.PublishMsg, err error) {
 	tp, err := req.VerifyReqParam(l.schema, schema.ParamProperty)
 	if err != nil {
 		return l.DeviceResp(msg, err, nil), err
@@ -492,6 +492,7 @@ func (l *ThingLogic) HandlePropertyReport(msg *deviceMsg.PublishMsg, req msgThin
 			appMsg := application.PropertyReport{
 				Device: device, Timestamp: timeStamp.UnixMilli(),
 				Identifier: identifier, Param: param,
+				OperatorUserID: operatorUserID,
 			}
 			//应用事件通知-设备物模型属性上报通知 ↓↓↓
 			err := l.svcCtx.PubApp.DeviceThingPropertyReport(ctx, appMsg)
@@ -779,10 +780,10 @@ func (l *ThingLogic) HandleProperty(msg *deviceMsg.PublishMsg) (respMsg *deviceM
 		if param, ok := l.dreq.Data.(map[string]any); ok {
 			l.dreq.Params = param //新版通过data传递
 		}
-		_, err = l.HandlePropertyReport(msg, l.dreq)
+		_, err = l.HandlePropertyReport(msg, l.dreq, 0)
 		return nil, err
 	case deviceMsg.Report: //设备属性上报
-		return l.HandlePropertyReport(msg, l.dreq)
+		return l.HandlePropertyReport(msg, l.dreq, 0)
 	case deviceMsg.ReportInfo: //设备基础信息上报
 		return l.HandlePropertyReportInfo(msg, l.dreq)
 	case deviceMsg.GetStatus: //设备请求获取 云端记录的最新设备信息
@@ -1017,6 +1018,13 @@ func (l *ThingLogic) HandleControl(msg *deviceMsg.PublishMsg) (respMsg *deviceMs
 	if req == nil || err != nil {
 		return nil, err
 	}
+	reqMeta, _ := cache.GetDeviceMsgMeta(l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, msg.Handle, msg.Type,
+		devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName},
+		resp.MsgToken)
+	var operatorUserID int64
+	if reqMeta != nil {
+		operatorUserID = reqMeta.OperatorUserID
+	}
 	cache.DelDeviceMsg[msgThing.Req](l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, msg.Handle, msg.Type,
 		devices.Core{ProductID: msg.ProductID, DeviceName: msg.DeviceName},
 		resp.MsgToken)
@@ -1026,7 +1034,7 @@ func (l *ThingLogic) HandleControl(msg *deviceMsg.PublishMsg) (respMsg *deviceMs
 	}
 
 	if resp.Code == errors.OK.GetCode() { //如果设备回复了,且处理成功,需要入库
-		_, err = l.HandlePropertyReport(msg, *req)
+		_, err = l.HandlePropertyReport(msg, *req, operatorUserID)
 		return nil, err
 	}
 	return nil, nil

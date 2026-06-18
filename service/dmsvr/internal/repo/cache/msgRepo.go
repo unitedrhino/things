@@ -48,6 +48,23 @@ func GetDeviceMsg[reqType any](ctx context.Context, store kv.Store, msgType stri
 	err = utils.Unmarshal(req.Payload, &ret)
 	return &ret, err
 }
+
+// GetDeviceMsgMeta 读取缓存里的完整 deviceMsg.PublishMsg 元数据，用于获取 OperatorUserID 等内部字段
+func GetDeviceMsgMeta(ctx context.Context, store kv.Store, msgType string, handle string, Type string, device devices.Core, MsgToken string) (*deviceMsg.PublishMsg, error) {
+	val, err := store.GetCtx(ctx, genDeviceMsgKey(msgType, handle, Type, devices.Core{
+		ProductID:  device.ProductID,
+		DeviceName: device.DeviceName,
+	}, MsgToken))
+	if val == "" || err != nil {
+		return nil, err
+	}
+	var req deviceMsg.PublishMsg
+	err = utils.Unmarshal([]byte(val), &req)
+	if err != nil {
+		return nil, err
+	}
+	return &req, nil
+}
 func DelDeviceMsg[reqType any](ctx context.Context, store kv.Store, msgType string /*请求还是回复*/, handle string, Type string, device devices.Core, MsgToken string) error {
 	_, err := store.DelCtx(ctx, genDeviceMsgKey(msgType, handle, Type, devices.Core{
 		ProductID:  device.ProductID,

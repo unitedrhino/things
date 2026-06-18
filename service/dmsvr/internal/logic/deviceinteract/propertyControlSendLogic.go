@@ -245,13 +245,14 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 
 	payload, _ := json.Marshal(req)
 	reqMsg := deviceMsg.PublishMsg{
-		Handle:       devices.Thing,
-		Type:         msgThing.TypeProperty,
-		Payload:      payload,
-		Timestamp:    time.Now().UnixMilli(),
-		ProductID:    in.ProductID,
-		DeviceName:   in.DeviceName,
-		ProtocolCode: protocolCode,
+		Handle:         devices.Thing,
+		Type:           msgThing.TypeProperty,
+		Payload:        payload,
+		Timestamp:      time.Now().UnixMilli(),
+		ProductID:      in.ProductID,
+		DeviceName:     in.DeviceName,
+		ProtocolCode:   protocolCode,
+		OperatorUserID: operatorUserID,
 	}
 	err = cache.SetDeviceMsg(l.ctx, l.svcCtx.Cache, deviceMsg.ReqMsg, &reqMsg, req.MsgToken)
 	if err != nil {
