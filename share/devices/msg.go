@@ -44,15 +44,16 @@ type (
 	}
 	// DevPublish ddsvr 发布设备 发布信息 的结构体
 	DevPublish struct { //发布消息结构体
-		Topic        string    `json:"topic"`  //只用于日志记录
-		Handle       MsgHandle `json:"handle"` //对应 mqtt topic的第一个 thing ota config 等等
-		Type         string    `json:"type"`   //操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
-		Payload      []byte    `json:"payload"`
-		Timestamp    int64     `json:"timestamp"` //毫秒时间戳
-		ProductID    string    `json:"productID"`
-		DeviceName   string    `json:"deviceName"`
-		Explain      string    `json:"explain"`      //内部使用的拓展字段
-		ProtocolCode string    `json:"protocolCode"` //如果有该字段则回复的时候也会带上该字段
+		Topic          string    `json:"topic"`  //只用于日志记录
+		Handle         MsgHandle `json:"handle"` //对应 mqtt topic的第一个 thing ota config 等等
+		Type           string    `json:"type"`   //操作类型 从topic中提取 物模型下就是   property属性 event事件 action行为
+		Payload        []byte    `json:"payload"`
+		Timestamp      int64     `json:"timestamp"` //毫秒时间戳
+		ProductID      string    `json:"productID"`
+		DeviceName     string    `json:"deviceName"`
+		Explain        string    `json:"explain"`                  //内部使用的拓展字段
+		ProtocolCode   string    `json:"protocolCode"`             //如果有该字段则回复的时候也会带上该字段
+		OperatorUserID int64     `json:"operatorUserID,omitempty"` //云端内部使用，记录下发该消息的操作人
 	}
 	// InnerPublish 用于其他服务 发送给ddsvr 转发给设备的
 	InnerPublish = DevPublish
