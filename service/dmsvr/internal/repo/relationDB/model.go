@@ -82,8 +82,8 @@ type DmDeviceInfo struct {
 	DeptID          dataType.DeptID     `gorm:"column:dept_id;type:bigint;default:0;NOT NULL"`                                                                                     // 部门ID
 	DeptIDPath      dataType.DeptIDPath `gorm:"column:dept_id_path;type:varchar(100);default:'';NOT NULL"`                                                                         // 部门ID路径
 	DeptUpdatedTime sql.NullTime        `gorm:"column:dept_updated_time;default:null"`                                                                                             //部门更新时间
-	ProductID       string              `gorm:"column:product_id;type:varchar(100);index:idx_dm_device_info_pd_dn;uniqueIndex:idx_dm_device_info_product_id_deviceName;NOT NULL"`  // 产品id
-	DeviceName      string              `gorm:"column:device_name;index:idx_dm_device_info_pd_dn;uniqueIndex:idx_dm_device_info_product_id_deviceName;type:varchar(100);NOT NULL"` // 设备名称
+	ProductID       string              `gorm:"column:product_id;type:varchar(100);index:idx_dm_device_info_pd_dn;uniqueIndex:idx_dm_device_info_product_id_deviceName;index:idx_dm_device_info_online_lookup,priority:1;NOT NULL"`  // 产品id
+	DeviceName      string              `gorm:"column:device_name;index:idx_dm_device_info_pd_dn;uniqueIndex:idx_dm_device_info_product_id_deviceName;index:idx_dm_device_info_online_lookup,priority:5;type:varchar(100);NOT NULL"` // 设备名称
 	DeviceAlias     string              `gorm:"column:device_alias;type:varchar(100);NOT NULL"`                                                                                    // 设备别名
 	Position        stores.Point        `gorm:"column:position;"`                                                                                                                  // 设备的位置(默认百度坐标系BD09)
 	RatedPower      int64               `gorm:"column:rated_power;index;type:bigint;NOT NULL;default:0"`                                                                           // 额定功率:单位w/h
@@ -108,9 +108,9 @@ type DmDeviceInfo struct {
 	SubProtocolConf    map[string]string      `gorm:"column:sub_protocol_conf;type:json;serializer:json;NOT NULL"` // 子模块自定义协议配置
 	DeviceImg          string                 `gorm:"column:device_img;type:varchar(200);default:''"`              // 设备图片
 	File               string                 `gorm:"column:file;type:varchar(200);default:''"`                    // 设备相关文件
-	IsOnline           int64                  `gorm:"column:is_online;type:smallint;default:2;NOT NULL"`           // 是否在线,1是2否
+	IsOnline           int64                  `gorm:"column:is_online;type:smallint;default:2;index:idx_dm_device_info_online_lookup,priority:2;NOT NULL"`           // 是否在线,1是2否
 	FirstLogin         sql.NullTime           `gorm:"column:first_login"`                                          // 激活时间
-	LastLogin          sql.NullTime           `gorm:"column:last_login"`                                           // 最后上线时间
+	LastLogin          sql.NullTime           `gorm:"column:last_login;index:idx_dm_device_info_online_lookup,priority:3"`                                           // 最后上线时间
 	LastOffline        sql.NullTime           `gorm:"column:last_offline"`                                         // 最后下线线时间
 	FirstBind          sql.NullTime           `gorm:"column:first_bind"`                                           // 首次绑定时间
 	LastBind           sql.NullTime           `gorm:"column:last_bind"`                                            // 最后一次绑定时间
@@ -128,7 +128,7 @@ type DmDeviceInfo struct {
 	stores.NoDelTime
 	Desc        string                  `gorm:"column:desc;type:varchar(200)"`        // 描述
 	Distributor stores.IDPathWithUpdate `gorm:"embedded;embeddedPrefix:distributor_"` // 代理的id,如果为空,则未参与分销
-	DeletedTime stores.DeletedTime      `gorm:"column:deleted_time;default:0;uniqueIndex:idx_dm_device_info_product_id_deviceName"`
+	DeletedTime stores.DeletedTime      `gorm:"column:deleted_time;default:0;uniqueIndex:idx_dm_device_info_product_id_deviceName;index:idx_dm_device_info_online_lookup,priority:4"`
 	ProductInfo *DmProductInfo          `gorm:"foreignKey:ProductID;references:ProductID"` // 添加外键
 }
 
@@ -226,7 +226,7 @@ func (m *DmDeviceProfile) TableName() string {
 
 // 产品信息表
 type DmProductInfo struct {
-	TenantCode       dataType.TenantCodeWithCommonR `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'common'"` // 租户编码
+	TenantCode       dataType.TenantCodeWithDefaultR `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'default'"` // 租户编码
 	ID               int64                          `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	ProductID        string                         `gorm:"column:product_id;type:varchar(100);uniqueIndex:idx_dm_product_info_pd;NOT NULL"` // 产品id
 	ProductName      string                         `gorm:"column:product_name;type:varchar(100);NOT NULL"`                                  // 产品名称
@@ -393,7 +393,7 @@ func (m *DmProtocolService) TableName() string {
 
 // 协议插件
 type DmProtocolScript struct {
-	TenantCode dataType.TenantCodeWithCommonN `gorm:"column:tenant_code;index;uniqueIndex:idx_dm_protocol_script_name;type:VARCHAR(50);default:'__common __'"` // 租户编码
+	TenantCode dataType.TenantCodeWithDefaultN `gorm:"column:tenant_code;index;uniqueIndex:idx_dm_protocol_script_name;type:VARCHAR(50);default:'default'"` // 租户编码
 	ID         int64                          `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	Name       string                         `gorm:"column:name;uniqueIndex:idx_dm_protocol_script_name;type:varchar(100);not null"` //转换名称
 	//ProductIDs    []string          `gorm:"column:product_ids;type:json;serializer:json"` // 产品id
@@ -417,7 +417,7 @@ func (m *DmProtocolScript) TableName() string {
 
 // 协议插件
 type DmProtocolScriptDevice struct {
-	TenantCode dataType.TenantCodeWithCommonR `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'default'"` // 租户编码
+	TenantCode dataType.TenantCodeWithDefaultR `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'default'"` // 租户编码
 	ID         int64                          `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	TriggerSrc protocol.TriggerSrc            `gorm:"column:trigger_src;"`                             //product:1 device:2
 	ProductID  string                         `gorm:"column:product_id;type:varchar(100);not null"`    // 产品id
@@ -463,7 +463,7 @@ func (m *DmProductCustom) BeforeSave(tx *gorm.DB) error {
 
 // 产品物模型表
 type DmProductSchema struct {
-	TenantCode dataType.TenantCodeWithCommonR `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'common'"` // 租户编码
+	TenantCode dataType.TenantCodeWithDefaultR `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'default'"` // 租户编码
 	ID         int64                          `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
 	ProductID  string                         `gorm:"column:product_id;uniqueIndex:idx_dm_product_schema_identifier;index:product_id_type;type:varchar(100);NOT NULL"` // 产品id
 	Identifier string                         `gorm:"column:identifier;uniqueIndex:idx_dm_product_schema_identifier;type:varchar(100);NOT NULL"`                       // 标识符
@@ -511,7 +511,7 @@ func (m *DmDeviceSchema) BeforeSave(tx *gorm.DB) error {
 // 产品物模型表
 type DmSchemaInfo struct {
 	ID         int64          `gorm:"column:id;type:bigint;primary_key;AUTO_INCREMENT"`
-	TenantCode string         `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'common'"`                                                        // 租户编码
+	TenantCode string         `gorm:"column:tenant_code;index;type:VARCHAR(50);default:'default'"`                                                        // 租户编码
 	ProductID  string         `gorm:"column:product_id;uniqueIndex:idx_dm_schema_info_identifier;index:product_id_type;type:varchar(100);NOT NULL"`      // 产品id
 	DeviceName sql.NullString `gorm:"column:device_name;uniqueIndex:idx_dm_schema_info_identifier;index:product_id_type;type:varchar(100);default:null"` // 产品id
 	Identifier string         `gorm:"column:identifier;uniqueIndex:idx_dm_schema_info_identifier;type:varchar(100);NOT NULL"`                            // 标识符

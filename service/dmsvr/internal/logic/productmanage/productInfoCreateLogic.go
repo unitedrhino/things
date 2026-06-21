@@ -79,7 +79,7 @@ func (l *ProductInfoCreateLogic) CheckProductID(in *dm.ProductInfo) (bool, error
 */
 func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relationDB.DmProductInfo, error) {
 	pi := &relationDB.DmProductInfo{
-		TenantCode:       dataType.TenantCodeWithCommonR(in.TenantCode),
+		TenantCode:       dataType.TenantCodeWithDefaultR(in.TenantCode),
 		ProductID:        in.ProductID,   // 产品id
 		ProductName:      in.ProductName, // 产品名称
 		Desc:             in.Desc.GetValue(),
@@ -92,7 +92,7 @@ func (l *ProductInfoCreateLogic) ConvProductPbToPo(in *dm.ProductInfo) (*relatio
 		SubProtocolCode:  in.SubProtocolCode.GetValue(),
 	}
 	if pi.TenantCode == "" && ctxs.IsRoot(l.ctx) == nil {
-		pi.TenantCode = def.TenantCodeCommon
+		pi.TenantCode = def.TenantCodeDefault
 	}
 	if in.AutoRegister != def.Unknown {
 		pi.AutoRegister = in.AutoRegister
