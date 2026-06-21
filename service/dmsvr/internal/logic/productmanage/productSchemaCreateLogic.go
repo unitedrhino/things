@@ -53,7 +53,7 @@ func (l *ProductSchemaCreateLogic) RuleCheck(in *dm.ProductSchemaCreateReq) (*re
 	}
 
 	po := utils.Copy[relationDB.DmProductSchema](in.Info)
-	po.TenantCode = dataType.TenantCodeWithCommonR(pi.TenantCode)
+	po.TenantCode = dataType.TenantCodeWithDefaultR(pi.TenantCode)
 	var cs *relationDB.DmCommonSchema
 	if in.Info.Tag != int64(schema.TagCustom) {
 		cs, err = relationDB.NewCommonSchemaRepo(l.ctx).FindOneByFilter(l.ctx, relationDB.CommonSchemaFilter{Identifiers: []string{in.Info.Identifier}})

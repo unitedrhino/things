@@ -59,11 +59,7 @@ func (l *OtaFirmwareJobCreateLogic) OtaFirmwareJobCreate(in *dm.OtaFirmwareJobIn
 	if !ctxs.CanHandTenant(l.ctx, fi.TenantCode) {
 		return nil, errors.Permissions
 	}
-	if fi.TenantCode != def.TenantCodeCommon {
-		in.TenantCodes = append(in.TenantCodes, ctxs.GetUserCtxNoNil(l.ctx).TenantCode)
-	} else { //如果是common,则可以从所有租户里获取
-		l.ctx = ctxs.WithRoot(l.ctx)
-	}
+	in.TenantCodes = append(in.TenantCodes, ctxs.GetUserCtxNoNil(l.ctx).TenantCode)
 	if in.UpgradeType == msgOta.DynamicUpgrade && len(in.SrcVersions) == 0 {
 		return nil, errors.Parameter.AddMsg("动态升级需要填写待升级的版本")
 	}

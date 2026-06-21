@@ -296,7 +296,7 @@ func (s *ScriptTrans) UpAfterTrans(ctx context.Context, di *dm.DeviceInfo, req *
 	}
 	sort.Sort(scripts)
 	for _, script := range scripts {
-		if di.TenantCode != script.TenantCode && !(script.TenantCode == def.TenantCodeCommon || script.TenantCode == def.TenantCodeDefault) {
+		if di.TenantCode != script.TenantCode && script.TenantCode != def.TenantCodeDefault {
 			continue
 		}
 		log, err := s.UpAfterMsgRun(ctxs.WithAdmin(ctxs.BindTenantCode(ctx, di.TenantCode, 0)), req, resp, script.Script)
@@ -342,7 +342,7 @@ func (s *ScriptTrans) UpBeforeTrans(ctx context.Context, di *dm.DeviceInfo, msg 
 
 	sort.Sort(scripts)
 	for _, script := range scripts {
-		if di.TenantCode != script.TenantCode && !(script.TenantCode == def.TenantCodeCommon || script.TenantCode == def.TenantCodeDefault) {
+		if di.TenantCode != script.TenantCode && script.TenantCode != def.TenantCodeDefault {
 			continue
 		}
 		newMsg, log, err := s.PublishMsgRun(ctxs.WithAdmin(ctxs.BindTenantCode(ctx, di.TenantCode, 0)), &out, script.Script)
@@ -393,7 +393,7 @@ func (s *ScriptTrans) DownBeforeTrans(ctx context.Context, di *dm.DeviceInfo, ms
 	}
 	sort.Sort(scripts)
 	for _, script := range scripts {
-		if di.TenantCode != script.TenantCode && !(script.TenantCode == def.TenantCodeCommon || script.TenantCode == def.TenantCodeDefault) {
+		if di.TenantCode != script.TenantCode && script.TenantCode != def.TenantCodeDefault {
 			continue
 		}
 		newMsg, log, err := s.PublishMsgRun(ctxs.WithAdmin(ctxs.BindTenantCode(ctx, di.TenantCode, 0)), &out, script.Script)
@@ -444,7 +444,7 @@ func (s *ScriptTrans) DownAfterTrans(ctx context.Context, di *dm.DeviceInfo, msg
 		}
 		sort.Sort(scripts)
 		for _, script := range scripts {
-			if di.TenantCode != script.TenantCode && !(script.TenantCode == def.TenantCodeCommon || script.TenantCode == def.TenantCodeDefault) {
+			if di.TenantCode != script.TenantCode && script.TenantCode != def.TenantCodeDefault {
 				continue
 			}
 			log, err := s.DownAfterMsgRun(ctxs.WithAdmin(ctxs.BindTenantCode(ctx, di.TenantCode, 0)), &out, script.Script)
