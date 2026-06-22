@@ -48,6 +48,7 @@ func (l *UserDeviceShareMultiGetTokenListLogic) UserDeviceShareMultiGetTokenList
 			ExpTime:     item.Info.ExpTime,
 			AuthType:    item.Info.AuthType,
 			UseBy:       item.Info.UseBy,
+			Desc:        item.Info.Desc,
 		})
 	}
 

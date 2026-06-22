@@ -21,6 +21,7 @@ func ToUserDeviceSharePb(in *relationDB.DmUserDeviceShare) *dm.UserDeviceShareIn
 		AuthType:          in.AuthType,
 		SharedUserAccount: in.SharedUserAccount,
 		SharedUserID:      in.SharedUserID,
+		Desc:              in.Desc,
 		AccessPerm:        utils.CopyMap[dm.SharePerm](in.AccessPerm),
 		SchemaPerm:        utils.CopyMap[dm.SharePerm](in.SchemaPerm),
 		ExpTime:           utils.TimeToNullInt(in.ExpTime),

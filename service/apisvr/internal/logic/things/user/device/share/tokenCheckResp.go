@@ -18,6 +18,7 @@ func ToTokenCheckResp(in *dm.UserDeviceShareMultiInfo) *types.UserDeviceShareTok
 		AuthExpireAt: in.ExpTime,
 		CreatedTime:  in.CreatedTime,
 		UseBy:        in.UseBy,
+		Desc:         in.Desc,
 		DeviceCount:  int64(len(in.Devices)),
 	}
 }

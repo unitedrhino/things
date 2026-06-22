@@ -2102,6 +2102,7 @@ type UserDeviceShareInfo struct {
 	AccessPerm        map[string]*SharePerm `json:"accessPerm,optional"`      //系统功能权限 2:读写权限 3读权限
 	ExpTime           *int64                `json:"expTime,optional,string"`  //到期时间
 	UseBy             string                `json:"useBy,optional,omitempty"` //用途
+	Desc              string                `json:"desc,optional,omitempty"`  //备注
 	User              *UserCore             `json:"user,optional"`            //只读,传withUser会赋值
 	CreatedTime       int64                 `json:"createdTime,optional"`
 }
@@ -2123,6 +2124,7 @@ type UserDeviceShareMultiIndexResp struct {
 	AccessPerm  map[string]*SharePerm `json:"accessPerm,optional"`      //系统功能权限 2:读写权限 3读权限
 	ExpTime     int64                 `json:"expTime,optional"`         //到期时间
 	UseBy       string                `json:"useBy,optional,omitempty"` //用途
+	Desc        string                `json:"desc,optional,omitempty"`  //备注
 	CreatedTime int64                 `json:"createdTime,optional"`
 }
 
@@ -2133,6 +2135,7 @@ type UserDeviceShareMultiInfo struct {
 	AccessPerm  map[string]*SharePerm `json:"accessPerm,optional"`      //系统功能权限 2:读写权限 3读权限
 	ExpTime     int64                 `json:"expTime,optional"`         //到期时间
 	UseBy       string                `json:"useBy,optional,omitempty"` //用途
+	Desc        string                `json:"desc,optional,omitempty"`  //备注
 	CreatedTime int64                 `json:"createdTime,optional"`
 }
 
@@ -2154,6 +2157,7 @@ type UserDeviceShareTokenCheckResp struct {
 	AuthExpireAt int64  `json:"authExpireAt,optional"`
 	CreatedTime  int64  `json:"createdTime,optional"`
 	UseBy        string `json:"useBy,optional,omitempty"`
+	Desc         string `json:"desc,optional,omitempty"` // 备注
 	DeviceCount  int64  `json:"deviceCount,optional"`
 }
 
@@ -2164,6 +2168,7 @@ type UserDeviceShareMultiListItem struct {
 	ExpTime     int64  `json:"expTime,optional"`         // 分享过期时间
 	AuthType    int64  `json:"authType,optional"`        // 授权类型
 	UseBy       string `json:"useBy,optional,omitempty"` // 用途
+	Desc        string `json:"desc,optional,omitempty"`  // 备注
 }
 
 type UserDeviceShareMultiGetTokenListResp struct {
