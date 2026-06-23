@@ -32,6 +32,7 @@ func (l *RegisterLogic) Register(req *types.DeviceRegisterReq) (resp *types.Devi
 		Nonce:      req.Nonce,
 		Timestamp:  req.Timestamp,
 		Signature:  req.Signature,
+		RetEnc:     req.RetEnc,
 	})
 	if err != nil {
 		er := errors.Fmt(err)

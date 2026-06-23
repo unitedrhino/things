@@ -1052,11 +1052,12 @@ type DeviceProfileReadReq struct {
 }
 
 type DeviceRegisterReq struct {
-	ProductID  string `json:"productID"`  //产品id 只读
-	DeviceName string `json:"deviceName"` //设备名称 读写
-	Nonce      int64  `json:"nonce"`      //随机数
-	Timestamp  int64  `json:"timestamp"`  //秒级时间戳
-	Signature  string `json:"signature"`  //签名信息
+	ProductID  string `json:"productID"`       //产品id 只读
+	DeviceName string `json:"deviceName"`      //设备名称 读写
+	Nonce      int64  `json:"nonce"`           //随机数
+	Timestamp  int64  `json:"timestamp"`       //秒级时间戳
+	Signature  string `json:"signature"`       //签名信息
+	RetEnc     string `json:"retEnc,optional"` //返回使用的加密方式: aes128cbc(默认) aes128ecb hex
 }
 
 type DeviceRegisterResp struct {

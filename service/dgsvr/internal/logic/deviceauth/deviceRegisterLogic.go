@@ -3,8 +3,10 @@ package deviceauthlogic
 import (
 	"context"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/errors"
@@ -31,6 +33,12 @@ type DeviceRegisterPayload struct {
 	ClientKey      string `json:"clientKey"`      //设备私钥文件字符串格式，当产品认证类型为证书认证时有此参数
 }
 
+// DeviceRegisterPlainPayload 是 retEnc=hex 时返回给轻量 MCU 的明文密钥载荷。
+type DeviceRegisterPlainPayload struct {
+	EncryptionType int    `json:"encryptionType"` // 加密类型，2 表示签名认证密钥。
+	Psk            string `json:"psk"`            // Base64 设备密钥解码后的十六进制字符串。
+}
+
 func NewDeviceRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeviceRegisterLogic {
 	return &DeviceRegisterLogic{
 		ctx:    ctxs.WithRoot(ctx),
@@ -39,16 +47,55 @@ func NewDeviceRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *De
 	}
 }
 
-// 计算签名: 使用 HMAC-sha1 算法对目标串 dest 进行加密，密钥为 secret,将生成的结果进行 Base64 编码
-func getSignature(secret string, dest string) string {
+// getSignatureHex 使用 HMAC-sha1 生成旧协议 Base64 编码前的 hex 签名。
+func getSignatureHex(secret string, dest string) string {
 	if secret == "" || dest == "" {
 		return ""
 	}
 
-	return base64.StdEncoding.EncodeToString([]byte(utils.HmacSha1(dest, []byte(secret))))
+	return utils.HmacSha1(dest, []byte(secret))
 }
 
+// getSignature 保留旧协议签名格式：HMAC-sha1 的 hex 字符串再做 Base64。
+func getSignature(secret string, dest string) string {
+	hexSign := getSignatureHex(secret, dest)
+	if hexSign == "" {
+		return ""
+	}
+	return base64.StdEncoding.EncodeToString([]byte(hexSign))
+}
+
+// checkSignature 同时兼容旧 Base64 签名和新 MCU 直接 hex 签名。
+func checkSignature(secret string, dest string, signature string) bool {
+	if signature == "" {
+		return false
+	}
+	hexSign := getSignatureHex(secret, dest)
+	if hexSign == "" {
+		return false
+	}
+	return signature == base64.StdEncoding.EncodeToString([]byte(hexSign)) ||
+		strings.EqualFold(signature, hexSign)
+}
+
+// getPayload 按 retEnc 生成设备动态注册响应，hex 模式返回明文十六进制 psk。
 func getPayload(encryptionType int, retEnc string, psk string, productSecret string) (size int, payload string, err error) {
+	if strings.EqualFold(retEnc, "hex") {
+		rawPsk, err := base64.StdEncoding.DecodeString(psk)
+		if err != nil {
+			return 0, "", errors.Parameter.AddMsg("设备密钥Base64解码失败")
+		}
+		data := DeviceRegisterPlainPayload{
+			EncryptionType: devices.EncTypeKey,
+			Psk:            hex.EncodeToString(rawPsk),
+		}
+		pay, err := json.Marshal(data)
+		if err != nil {
+			return 0, "", err
+		}
+		return len(pay), string(pay), nil
+	}
+
 	var data DeviceRegisterPayload
 	data.EncryptionType = encryptionType
 	data.Psk = psk
@@ -90,8 +137,8 @@ func (l *DeviceRegisterLogic) DeviceRegister(in *dg.DeviceRegisterReq) (*dg.Devi
 			//检查设备自动创建是否开启， 开启则自动创建设备，未开启则返回错误
 			if pi.AutoRegister == devices.DeviceAutoCreateEnable {
 				//检查设备签名是否正确
-				sig := getSignature(pi.Secret, fmt.Sprintf("deviceName=%s&nonce=%d&productID=%s&timestamp=%d", in.DeviceName, in.Nonce, in.ProductID, in.Timestamp))
-				if sig != in.Signature {
+				signSource := fmt.Sprintf("deviceName=%s&nonce=%d&productID=%s&timestamp=%d", in.DeviceName, in.Nonce, in.ProductID, in.Timestamp)
+				if !checkSignature(pi.Secret, signSource, in.Signature) {
 					return nil, errors.Parameter.AddMsg("无效签名")
 				}
 				_, err := l.svcCtx.DeviceM.DeviceInfoCreate(l.ctx, &dm.DeviceInfo{
@@ -120,8 +167,8 @@ func (l *DeviceRegisterLogic) DeviceRegister(in *dg.DeviceRegisterReq) (*dg.Devi
 	}
 
 	//检查设备签名是否正确
-	sig := getSignature(pi.Secret, fmt.Sprintf("deviceName=%s&nonce=%d&productID=%s&timestamp=%d", in.DeviceName, in.Nonce, in.ProductID, in.Timestamp))
-	if sig != in.Signature {
+	signSource := fmt.Sprintf("deviceName=%s&nonce=%d&productID=%s&timestamp=%d", in.DeviceName, in.Nonce, in.ProductID, in.Timestamp)
+	if !checkSignature(pi.Secret, signSource, in.Signature) {
 		return nil, errors.Parameter.AddMsg("无效签名")
 	}
 
