@@ -38,7 +38,7 @@ func (l *GrantLogic) Grant(req *types.DevicePairGrantReq) (*types.DevicePairGran
 	}
 	mk, err := DecodeProductMK(product.Secret)
 	if err != nil {
-		return nil, shareerr.Parameter.WithMsg("产品密钥必须是32位hex MK")
+		return nil, shareerr.Parameter.WithMsg("产品密钥长度必须不少于16个ASCII字符")
 	}
 	mac, _, err := NormalizeMAC(req.Mac)
 	if err != nil {

@@ -17,7 +17,7 @@ info(
 service api {
     @doc(
         summary: "S01 BLE安全配对授权"
-        description: "根据产品级32位hex MK为指定设备生成S01 BLE安全配对nonce、authTag和短期grantToken"
+        description: "根据产品ProductSecret前16个ASCII字符为指定设备生成S01 BLE安全配对nonce、authTag和短期grantToken"
         businessType: "modify"
     )
     @handler grant

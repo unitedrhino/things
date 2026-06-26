@@ -73,7 +73,7 @@ type GrantPayload struct {
 	IssuedAt          int64  `json:"issued_at"`
 	ExpiresAt         int64  `json:"exp"`
 	NonceHex          string `json:"nonce_hex"`
-	PairKeyHex        string `json:"pair_key_hex"`
+	PairKeyHex        string `json:"-"`
 	AuthTagHex        string `json:"auth_tag_hex"`
 }
 
@@ -84,16 +84,18 @@ type PairAck struct {
 	Tag       []byte
 }
 
+// DecodeProductMK 按 ProductSecret 规则取前 16 个 ASCII 字节作为 S01 MK，不做 base64 或 hex 解码。
 func DecodeProductMK(secret string) ([]byte, error) {
 	secret = strings.TrimSpace(secret)
-	if len(secret) != 32 || !isHex(secret) {
+	if len(secret) < aes.BlockSize {
 		return nil, ErrInvalidProductSecret
 	}
-	mk, err := hex.DecodeString(secret)
-	if err != nil || len(mk) != aes.BlockSize {
-		return nil, ErrInvalidProductSecret
+	for i := 0; i < aes.BlockSize; i++ {
+		if secret[i] > 0x7F {
+			return nil, ErrInvalidProductSecret
+		}
 	}
-	return mk, nil
+	return []byte(secret[:aes.BlockSize]), nil
 }
 
 func GrantSigningKey(productID, productSecretHex string) []byte {
@@ -171,11 +173,6 @@ func BuildGrant(in GrantInput) (*GrantResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-	pairKey, err := cmac128(dak, append([]byte("PK"), nonce...))
-	if err != nil {
-		return nil, err
-	}
-
 	payload := GrantPayload{
 		Version:           2,
 		Type:              grantType,
@@ -187,7 +184,6 @@ func BuildGrant(in GrantInput) (*GrantResponse, error) {
 		IssuedAt:          now,
 		ExpiresAt:         now + GrantTTLSeconds,
 		NonceHex:          strings.ToUpper(hex.EncodeToString(nonce)),
-		PairKeyHex:        strings.ToUpper(hex.EncodeToString(pairKey)),
 		AuthTagHex:        strings.ToUpper(hex.EncodeToString(authTag)),
 	}
 	token, err := signPayload(payload, in.SigningKey)
@@ -235,6 +231,30 @@ func VerifyGrant(in VerifyGrantInput) (*GrantPayload, error) {
 		return nil, ErrGrantTokenMismatch
 	}
 	return payload, nil
+}
+
+// derivePairKeyHex 根据产品密钥、MAC 和 grant nonce 临时派生本次配对 key。
+func derivePairKeyHex(mk []byte, mac string, nonceHex string) (string, error) {
+	if len(mk) != aes.BlockSize {
+		return "", ErrInvalidProductSecret
+	}
+	_, macRaw, err := NormalizeMAC(mac)
+	if err != nil {
+		return "", err
+	}
+	nonce, err := hex.DecodeString(strings.TrimSpace(nonceHex))
+	if err != nil || len(nonce) != 8 {
+		return "", ErrInvalidGrantToken
+	}
+	dak, err := cmac128(mk, macRaw)
+	if err != nil {
+		return "", err
+	}
+	pairKey, err := cmac128(dak, append([]byte("PK"), nonce...))
+	if err != nil {
+		return "", err
+	}
+	return strings.ToUpper(hex.EncodeToString(pairKey)), nil
 }
 
 func VerifyPairAck(payloadHex, expectedMAC, pairKeyHex string, observedBindEpoch int64) (*PairAck, error) {

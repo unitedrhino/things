@@ -14,7 +14,7 @@ import (
 )
 
 func TestGrantConfirmLogicBindsDevice(t *testing.T) {
-	const productSecret = "00112233445566778899aabbccddeeff"
+	const productSecret = "Fqx8joXhfN7aLwlWgry2FaykK7g="
 	productM := &fakeProductManage{secret: productSecret}
 	deviceM := &fakeDeviceManage{}
 	svcCtx := &svc.ServiceContext{}
@@ -48,7 +48,12 @@ func TestGrantConfirmLogicBindsDevice(t *testing.T) {
 	if err != nil {
 		t.Fatalf("VerifyGrant returned error: %v", err)
 	}
-	ackHex := BuildTestPairAckHex(t, "AABBCCDDEEFF", 9, grantPayload.PairKeyHex)
+	mk, err := DecodeProductMK(productSecret)
+	if err != nil {
+		t.Fatalf("DecodeProductMK returned error: %v", err)
+	}
+	pairKeyHex := derivePairKeyHexForTest(t, mk, "AABBCCDDEEFF", grantPayload.NonceHex)
+	ackHex := BuildTestPairAckHex(t, "AABBCCDDEEFF", 9, pairKeyHex)
 
 	confirmResp, err := NewConfirmLogic(ctx, svcCtx).Confirm(&types.DevicePairConfirmReq{
 		ProductID:      "S01",
@@ -60,7 +65,7 @@ func TestGrantConfirmLogicBindsDevice(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Confirm returned error: %v", err)
 	}
-	if confirmResp.BindEpoch != 9 || confirmResp.BleSecVer != 2 || confirmResp.BlePairKey != grantPayload.PairKeyHex || confirmResp.Message != "bind_confirmed" {
+	if confirmResp.BindEpoch != 9 || confirmResp.BleSecVer != 2 || confirmResp.BlePairKey != pairKeyHex || confirmResp.Message != "bind_confirmed" {
 		t.Fatalf("Confirm response unexpected: %#v", confirmResp)
 	}
 	if productM.readCalls != 2 {

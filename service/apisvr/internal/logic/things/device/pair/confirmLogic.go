@@ -36,8 +36,9 @@ func (l *ConfirmLogic) Confirm(req *types.DevicePairConfirmReq) (*types.DevicePa
 	if err != nil {
 		return nil, err
 	}
-	if _, err := DecodeProductMK(product.Secret); err != nil {
-		return nil, shareerr.Parameter.WithMsg("产品密钥必须是32位hex MK")
+	mk, err := DecodeProductMK(product.Secret)
+	if err != nil {
+		return nil, shareerr.Parameter.WithMsg("产品密钥长度必须不少于16个ASCII字符")
 	}
 	mac, _, err := NormalizeMAC(req.Mac)
 	if err != nil {
@@ -59,7 +60,11 @@ func (l *ConfirmLogic) Confirm(req *types.DevicePairConfirmReq) (*types.DevicePa
 	if err != nil {
 		return nil, pairError(err)
 	}
-	ack, err := VerifyPairAck(req.PairAckPayload, mac, grant.PairKeyHex, grant.ObservedBindEpoch)
+	pairKeyHex, err := derivePairKeyHex(mk, mac, grant.NonceHex)
+	if err != nil {
+		return nil, pairError(err)
+	}
+	ack, err := VerifyPairAck(req.PairAckPayload, mac, pairKeyHex, grant.ObservedBindEpoch)
 	if err != nil {
 		return nil, pairError(err)
 	}
@@ -80,7 +85,7 @@ func (l *ConfirmLogic) Confirm(req *types.DevicePairConfirmReq) (*types.DevicePa
 		DeviceName: deviceName,
 		BindEpoch:  ack.BindEpoch,
 		BleSecVer:  2,
-		BlePairKey: grant.PairKeyHex,
+		BlePairKey: pairKeyHex,
 		Message:    "bind_confirmed",
 	}, nil
 }

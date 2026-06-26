@@ -11596,7 +11596,7 @@
     },
     "/api/v1/things/device/info/pair-grant": {
       "post": {
-        "description": "根据产品级32位hex MK为指定设备生成S01 BLE安全配对nonce、authTag和短期grantToken",
+        "description": "根据产品ProductSecret前16个ASCII字符为指定设备生成S01 BLE安全配对nonce、authTag和短期grantToken",
         "operationId": "postApiV1ThingsDeviceInfoPairGrant",
         "requestBody": {
           "content": {

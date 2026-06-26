@@ -6,20 +6,30 @@ import (
 	"testing"
 )
 
-func TestDecodeProductMKRequires32Hex(t *testing.T) {
-	mk, err := DecodeProductMK("00112233445566778899aabbccddeeff")
+func TestDecodeProductMKUsesFirst16ASCIIBytes(t *testing.T) {
+	const productSecret = "Fqx8joXhfN7aLwlWgry2FaykK7g="
+	mk, err := DecodeProductMK(productSecret)
 	if err != nil {
 		t.Fatalf("DecodeProductMK returned error: %v", err)
 	}
-	if len(mk) != 16 {
-		t.Fatalf("DecodeProductMK length = %d, want 16", len(mk))
+	if got, want := strings.ToUpper(hex.EncodeToString(mk)), "467178386A6F5868664E37614C776C57"; got != want {
+		t.Fatalf("DecodeProductMK key hex = %s, want %s", got, want)
+	}
+}
+
+func TestDecodeProductMKDoesNotHexDecodeProductSecret(t *testing.T) {
+	const productSecret = "00112233445566778899aabbccddeeff"
+	mk, err := DecodeProductMK(productSecret)
+	if err != nil {
+		t.Fatalf("DecodeProductMK returned error: %v", err)
+	}
+	if got, want := string(mk), "0011223344556677"; got != want {
+		t.Fatalf("DecodeProductMK key text = %q, want %q", got, want)
 	}
 
 	for _, secret := range []string{
 		"",
-		"00112233445566778899aabbccddeef",
-		"00112233445566778899aabbccddeeff00",
-		"00112233445566778899aabbccddeezz",
+		"Fqx8joXhfN7aLwl",
 	} {
 		t.Run(secret, func(t *testing.T) {
 			if _, err := DecodeProductMK(secret); err == nil {
@@ -94,8 +104,11 @@ func TestBuildAndVerifyGrant(t *testing.T) {
 	if err != nil {
 		t.Fatalf("VerifyGrant returned error: %v", err)
 	}
-	if payload.PairKeyHex == "" {
-		t.Fatalf("VerifyGrant returned empty pair key")
+	if payload.PairKeyHex != "" {
+		t.Fatalf("grant token should not carry pair_key_hex")
+	}
+	if body := decodedGrantTokenBody(t, grant.GrantToken); strings.Contains(string(body), "pair_key_hex") {
+		t.Fatalf("grant token payload leaked pair_key_hex: %s", string(body))
 	}
 
 	if _, err := VerifyGrant(VerifyGrantInput{
@@ -165,8 +178,9 @@ func TestVerifyPairAck(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	ackHex := BuildTestPairAckHex(t, "AABBCCDDEEFF", 9, payload.PairKeyHex)
-	ack, err := VerifyPairAck(ackHex, "AABBCCDDEEFF", payload.PairKeyHex, 7)
+	pairKeyHex := derivePairKeyHexForTest(t, mk, "AABBCCDDEEFF", payload.NonceHex)
+	ackHex := BuildTestPairAckHex(t, "AABBCCDDEEFF", 9, pairKeyHex)
+	ack, err := VerifyPairAck(ackHex, "AABBCCDDEEFF", pairKeyHex, 7)
 	if err != nil {
 		t.Fatalf("VerifyPairAck returned error: %v", err)
 	}
@@ -174,16 +188,16 @@ func TestVerifyPairAck(t *testing.T) {
 		t.Fatalf("BindEpoch = %d, want 9", ack.BindEpoch)
 	}
 
-	if _, err := VerifyPairAck(ackHex[:len(ackHex)-2], "AABBCCDDEEFF", payload.PairKeyHex, 7); err == nil {
+	if _, err := VerifyPairAck(ackHex[:len(ackHex)-2], "AABBCCDDEEFF", pairKeyHex, 7); err == nil {
 		t.Fatalf("VerifyPairAck accepted short payload")
 	}
-	if _, err := VerifyPairAck("FFFF"+ackHex[4:], "AABBCCDDEEFF", payload.PairKeyHex, 7); err == nil {
+	if _, err := VerifyPairAck("FFFF"+ackHex[4:], "AABBCCDDEEFF", pairKeyHex, 7); err == nil {
 		t.Fatalf("VerifyPairAck accepted invalid header")
 	}
-	if _, err := VerifyPairAck(ackHex, "001122334455", payload.PairKeyHex, 7); err == nil {
+	if _, err := VerifyPairAck(ackHex, "001122334455", pairKeyHex, 7); err == nil {
 		t.Fatalf("VerifyPairAck accepted mismatched mac")
 	}
-	if _, err := VerifyPairAck(ackHex, "AABBCCDDEEFF", payload.PairKeyHex, 10); err == nil {
+	if _, err := VerifyPairAck(ackHex, "AABBCCDDEEFF", pairKeyHex, 10); err == nil {
 		t.Fatalf("VerifyPairAck accepted stale bind epoch")
 	}
 }
@@ -218,4 +232,38 @@ func BuildTestPairAckHex(t *testing.T, mac string, bindEpoch int64, pairKeyHex s
 		t.Fatal(err)
 	}
 	return strings.ToUpper(hex.EncodeToString(append(payload, tag...)))
+}
+
+func decodedGrantTokenBody(t *testing.T, token string) []byte {
+	t.Helper()
+	parts := strings.Split(token, ".")
+	if len(parts) != 2 {
+		t.Fatalf("grant token parts = %d, want 2", len(parts))
+	}
+	body, err := b64urlDecode(parts[0])
+	if err != nil {
+		t.Fatal(err)
+	}
+	return body
+}
+
+func derivePairKeyHexForTest(t *testing.T, mk []byte, mac string, nonceHex string) string {
+	t.Helper()
+	_, macRaw, err := NormalizeMAC(mac)
+	if err != nil {
+		t.Fatal(err)
+	}
+	nonce, err := hex.DecodeString(nonceHex)
+	if err != nil {
+		t.Fatal(err)
+	}
+	dak, err := cmac128(mk, macRaw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	pairKey, err := cmac128(dak, append([]byte("PK"), nonce...))
+	if err != nil {
+		t.Fatal(err)
+	}
+	return strings.ToUpper(hex.EncodeToString(pairKey))
 }
