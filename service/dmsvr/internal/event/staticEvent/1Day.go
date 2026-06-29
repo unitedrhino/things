@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
+	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -33,8 +34,9 @@ func (l *OneDayHandle) Handle() error { //产品品类设备数量统计
 }
 
 func (l *OneDayHandle) DeviceStatic() error { //区域下的设备数量统计
+	ctx := ctxs.WithRoot(context.Background())
 	{
-		ret, err := l.svcCtx.ProjectM.ProjectInfoIndex(l.ctx, &sys.ProjectInfoIndexReq{})
+		ret, err := l.svcCtx.ProjectM.ProjectInfoIndex(ctx, &sys.ProjectInfoIndexReq{})
 		if err != nil {
 			return err
 		}
@@ -42,9 +44,9 @@ func (l *OneDayHandle) DeviceStatic() error { //区域下的设备数量统计
 		for _, v := range ret.List {
 			projectIDs = append(projectIDs, v.ProjectID)
 		}
-		err = logic.DirectFillProjectDeviceCount(l.ctx, l.svcCtx, time.Millisecond*50, projectIDs...)
+		err = logic.DirectFillProjectDeviceCount(ctx, l.svcCtx, time.Millisecond*50, projectIDs...)
 		if err != nil {
-			logx.WithContext(l.ctx).Errorf("DirectFillProjectDeviceCount error:%v", err)
+			logx.WithContext(ctx).Errorf("DirectFillProjectDeviceCount error:%v", err)
 		}
 		time.Sleep(time.Second * 5) //休息一下减少波峰
 	}
@@ -55,7 +57,7 @@ func (l *OneDayHandle) DeviceStatic() error { //区域下的设备数量统计
 		var errCount int64 = 0
 		for page := int64(0); page*size < total; page++ {
 			err := func() error {
-				ret, err := l.svcCtx.AreaM.AreaInfoIndex(l.ctx, &sys.AreaInfoIndexReq{Page: &sys.PageInfo{
+				ret, err := l.svcCtx.AreaM.AreaInfoIndex(ctx, &sys.AreaInfoIndexReq{Page: &sys.PageInfo{
 					Page: page + 1,
 					Size: size,
 				}})
@@ -76,7 +78,7 @@ func (l *OneDayHandle) DeviceStatic() error { //区域下的设备数量统计
 				break
 			}
 		}
-		err := logic.DirectFillAreaDeviceCount(l.ctx, l.svcCtx, time.Millisecond*50, areas...)
+		err := logic.DirectFillAreaDeviceCount(ctx, l.svcCtx, time.Millisecond*50, areas...)
 		if err != nil {
 			l.Error(err)
 		}

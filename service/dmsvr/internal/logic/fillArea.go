@@ -72,7 +72,8 @@ func DirectFillAreaDeviceCount(ctx context.Context, svcCtx *svc.ServiceContext, 
 				log.Error(err)
 				continue
 			}
-			if area.DeviceCount.GetValue() == count {
+			// area.DeviceCount 只代表传入空间本身，不能拿来判断父级空间是否已同步。
+			if id == area.AreaID && area.DeviceCount.GetValue() == count {
 				continue
 			}
 			updateCount++

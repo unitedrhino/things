@@ -7,6 +7,7 @@ import (
 	"sync"
 	"time"
 
+	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"gitee.com/unitedrhino/core/share/dataType"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
@@ -50,28 +51,64 @@ func NewDeviceInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 	}
 }
 
+// areaDeviceCountRefreshTargets 生成设备空间变更后需要重算的空间列表。
+func areaDeviceCountRefreshTargets(newArea *sys.AreaInfo, oldProjectID, oldAreaID int64, oldAreaIDPath string) []*sys.AreaInfo {
+	targets := make([]*sys.AreaInfo, 0, 2)
+	seen := make(map[int64]struct{}, 2)
+	add := func(area *sys.AreaInfo) {
+		if area == nil || area.AreaID <= def.NotClassified || area.AreaIDPath == "" || area.AreaIDPath == def.NotClassifiedPath {
+			return
+		}
+		if _, ok := seen[area.AreaID]; ok {
+			return
+		}
+		seen[area.AreaID] = struct{}{}
+		targets = append(targets, area)
+	}
+
+	add(newArea)
+	add(&sys.AreaInfo{ProjectID: oldProjectID, AreaID: oldAreaID, AreaIDPath: oldAreaIDPath})
+	return targets
+}
+
+// projectDeviceCountRefreshTargets 生成设备项目变更后需要重算的项目列表。
+func projectDeviceCountRefreshTargets(newProjectID, oldProjectID int64) []int64 {
+	targets := make([]int64, 0, 2)
+	seen := make(map[int64]struct{}, 2)
+	for _, id := range []int64{newProjectID, oldProjectID} {
+		if id <= def.NotClassified {
+			continue
+		}
+		if _, ok := seen[id]; ok {
+			continue
+		}
+		seen[id] = struct{}{}
+		targets = append(targets, id)
+	}
+	return targets
+}
+
 func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, data *dm.DeviceInfo) (*tools.AfterFunc, error) {
 	var afterFunc tools.AfterFunc
 	uc := ctxs.GetUserCtx(l.ctx)
 	var isUpdateTag bool
+	oldAreaID := int64(old.AreaID)
+	oldAreaIDPath := string(old.AreaIDPath)
+	oldProjectID := int64(old.ProjectID)
 	if data.AreaID != 0 && data.AreaID != int64(old.AreaID) {
-		old.AreaID = dataType.AreaID(data.AreaID)
 		ai, err := l.svcCtx.AreaCache.GetData(l.ctx, data.AreaID)
 		if err != nil {
 			return nil, err
 		}
+		areaTargets := areaDeviceCountRefreshTargets(ai, oldProjectID, oldAreaID, oldAreaIDPath)
 		afterFunc.AddFunc(func(ctx context.Context) {
 			time.Sleep(2 * time.Second)
-			logic.FillAreaDeviceCount(l.ctx, l.svcCtx, ai)
-			if old.AreaID > def.NotClassified {
-				ai, err := l.svcCtx.AreaCache.GetData(l.ctx, int64(old.AreaID))
-				if err != nil {
-					l.Error(err)
-				} else {
-					logic.FillAreaDeviceCount(l.ctx, l.svcCtx, ai)
-				}
+			err := logic.FillAreaDeviceCount(ctx, l.svcCtx, areaTargets...)
+			if err != nil {
+				l.Error(err)
 			}
 		})
+		old.AreaID = dataType.AreaID(data.AreaID)
 		old.AreaIDPath = dataType.AreaIDPath(ai.AreaIDPath)
 		isUpdateTag = true
 	}
@@ -95,11 +132,13 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 			old.Adcode = data.Adcode.GetValue()
 		}
 		if data.ProjectID != 0 && data.ProjectID != int64(old.ProjectID) {
+			newProjectID := data.ProjectID
+			projectTargets := projectDeviceCountRefreshTargets(newProjectID, oldProjectID)
 			afterFunc.AddFunc(func(ctx context.Context) {
-				BindChange(ctx, l.svcCtx, nil, devices.Core{ProductID: old.ProductID, DeviceName: old.DeviceName}, data.ProjectID)
-				logic.FillProjectDeviceCount(ctx, l.svcCtx, data.ProjectID, int64(old.ProjectID))
+				BindChange(ctx, l.svcCtx, nil, devices.Core{ProductID: old.ProductID, DeviceName: old.DeviceName}, newProjectID)
+				logic.FillProjectDeviceCount(ctx, l.svcCtx, projectTargets...)
 			})
-			old.ProjectID = dataType.ProjectID(data.ProjectID)
+			old.ProjectID = dataType.ProjectID(newProjectID)
 			isUpdateTag = true
 		}
 		if data.ProtocolConf != nil {
