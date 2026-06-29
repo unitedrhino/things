@@ -20,9 +20,9 @@ import (
 )
 
 func normalizeJSONString(in string) string {
-	//if in == "" {
-	//	return "{}"
-	//}
+	if in == "" {
+		return "{}"
+	}
 	return in
 }
 
