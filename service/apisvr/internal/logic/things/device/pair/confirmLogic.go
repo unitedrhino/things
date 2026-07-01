@@ -68,17 +68,6 @@ func (l *ConfirmLogic) Confirm(req *types.DevicePairConfirmReq) (*types.DevicePa
 	if err != nil {
 		return nil, pairError(err)
 	}
-	_, err = l.svcCtx.DeviceM.DeviceInfoBind(l.ctx, &dm.DeviceInfoBindReq{
-		Device: &dm.DeviceCore{
-			ProductID:  req.ProductID,
-			DeviceName: deviceName,
-		},
-		AreaID:          req.AreaID,
-		IsIgnoreOffline: true,
-	})
-	if err != nil {
-		return nil, err
-	}
 	return &types.DevicePairConfirmResp{
 		ProductID:  req.ProductID,
 		Mac:        mac,
@@ -86,7 +75,7 @@ func (l *ConfirmLogic) Confirm(req *types.DevicePairConfirmReq) (*types.DevicePa
 		BindEpoch:  ack.BindEpoch,
 		BleSecVer:  2,
 		BlePairKey: pairKeyHex,
-		Message:    "bind_confirmed",
+		Message:    "pair_confirmed",
 	}, nil
 }
 

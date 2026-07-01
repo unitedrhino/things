@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-func TestGrantConfirmLogicBindsDevice(t *testing.T) {
+func TestGrantConfirmLogicConfirmsPairAckWithoutBindingDevice(t *testing.T) {
 	const productSecret = "Fqx8joXhfN7aLwlWgry2FaykK7g="
 	productM := &fakeProductManage{secret: productSecret}
 	deviceM := &fakeDeviceManage{}
@@ -65,20 +65,14 @@ func TestGrantConfirmLogicBindsDevice(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Confirm returned error: %v", err)
 	}
-	if confirmResp.BindEpoch != 9 || confirmResp.BleSecVer != 2 || confirmResp.BlePairKey != pairKeyHex || confirmResp.Message != "bind_confirmed" {
+	if confirmResp.BindEpoch != 9 || confirmResp.BleSecVer != 2 || confirmResp.BlePairKey != pairKeyHex || confirmResp.Message != "pair_confirmed" {
 		t.Fatalf("Confirm response unexpected: %#v", confirmResp)
 	}
 	if productM.readCalls != 2 {
 		t.Fatalf("ProductInfoRead calls = %d, want 2", productM.readCalls)
 	}
-	if deviceM.bindCalls != 1 {
-		t.Fatalf("DeviceInfoBind calls = %d, want 1", deviceM.bindCalls)
-	}
-	if deviceM.bindReq.AreaID != 88 || !deviceM.bindReq.IsIgnoreOffline {
-		t.Fatalf("Bind options unexpected: %#v", deviceM.bindReq)
-	}
-	if deviceM.bindReq.Device.ProductID != "S01" || deviceM.bindReq.Device.DeviceName != "AABBCCDDEEFF" {
-		t.Fatalf("Bind device unexpected: %#v", deviceM.bindReq.Device)
+	if deviceM.bindCalls != 0 {
+		t.Fatalf("DeviceInfoBind calls = %d, want 0", deviceM.bindCalls)
 	}
 }
 
