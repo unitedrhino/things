@@ -442,6 +442,11 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 		logx.WithContext(ctx).Infof("CoreUserDelete value:%v err:%v", utils.Fmt(value), err)
 		ctx = ctxs.WithRoot(ctx)
 		dis, err := relationDB.NewDeviceInfoRepo(ctx).FindByFilter(ctx, relationDB.DeviceFilter{UserIDs: value.IDs}, nil)
+		if err != nil {
+			logx.WithContext(ctx).Errorf("CoreUserDelete find devices value:%v err:%v", utils.Fmt(value), err)
+			return err
+		}
+		var firstErr error
 		for _, v := range dis {
 			_, err := devicemanagelogic.NewDeviceInfoUnbindLogic(ctx, svcCtx).DeviceInfoUnbind(&dm.DeviceInfoUnbindReq{
 				ProductID:  v.ProductID,
@@ -449,13 +454,19 @@ func InitEventBus(svcCtx *svc.ServiceContext) {
 			})
 			if err != nil {
 				logx.WithContext(ctx).Errorf("DeviceInfoUnbind dev:%v err:%v", utils.Fmt(v), err)
+				if firstErr == nil && !errors.Cmp(err, errors.DeviceNotBound) {
+					firstErr = err
+				}
 			}
 		}
 		err = relationDB.NewUserDeviceShareRepo(ctx).DeleteByFilter(ctx, relationDB.UserDeviceShareFilter{SharedUserIDs: value.IDs})
 		if err != nil {
 			logx.WithContext(ctx).Errorf("NewUserDeviceShareRepo.Delete err:%v", err)
+			if firstErr == nil {
+				firstErr = err
+			}
 		}
-		return nil
+		return firstErr
 	})
 	logx.Must(err)
 	err = svcCtx.FastEvent.QueueSubscribe(coreTopic.CoreProjectInfoDelete, func(ctx context.Context, t time.Time, body []byte) error {

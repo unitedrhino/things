@@ -60,8 +60,12 @@ func (l *DeviceInfoCanBindLogic) DeviceInfoCanBind(in *dm.DeviceInfoCanBindReq) 
 	//	l.Error(err)
 	//	return nil, err
 	//}
-	if !((di.TenantCode == def.TenantCodeDefault && di.ProjectID < 3) || int64(di.ProjectID) == uc.ProjectID || di.ProjectID == dpi.DefaultProjectID) { //如果在其他租户下 则已经被绑定 或 在本租户下,但是不在一个项目下也不允许绑定
-		//只有归属于default租户和自己租户的才可以
+	ownership, err := classifyDeviceBindOwnership(l.ctx, l.svcCtx.ProjectM, l.svcCtx.UserM,
+		di.TenantCode, di.ProjectID, uc, int64(dpi.DefaultProjectID))
+	if err != nil {
+		return nil, err
+	}
+	if ownership == deviceBindOwnershipBlocked { //如果在其他租户下 则已经被绑定 或 在本租户下,但是不在一个项目下也不允许绑定
 		return nil, errors.DeviceCantBound.WithMsg("设备已被其他用户绑定。如需解绑，请按照相关流程操作。")
 	}
 	if string(di.TenantCode) == uc.TenantCode &&

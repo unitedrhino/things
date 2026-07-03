@@ -132,11 +132,20 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 			return nil, errors.Permissions.AddMsg("配网和绑定的用户不一致")
 		}
 	} else {
-		if !((di.TenantCode == def.TenantCodeDefault && di.ProjectID < 3) || int64(di.ProjectID) == uc.ProjectID ||
-			int64(di.ProjectID) == dpi.DefaultProjectID) { //如果在其他租户下 则已经被绑定 或 在本租户下,但是不在一个项目下也不允许绑定
-			//只有归属于default租户和自己租户的才可以
+		ownership, err := classifyDeviceBindOwnership(l.ctx, l.svcCtx.ProjectM, l.svcCtx.UserM,
+			string(di.TenantCode), int64(di.ProjectID), uc, int64(dpi.DefaultProjectID))
+		if err != nil {
+			return nil, err
+		}
+		if ownership == deviceBindOwnershipBlocked { //如果在其他租户下 则已经被绑定 或 在本租户下,但是不在一个项目下也不允许绑定
 			l.Infof("DeviceCantBound di:%v uc:%v", utils.Fmt(di), utils.Fmt(uc))
 			return nil, errors.DeviceCantBound.WithMsg("设备已被其他用户绑定。如需解绑，请按照相关流程操作。")
+		}
+		if ownership == deviceBindOwnershipStale {
+			err = cleanupStaleDeviceBindArtifacts(l.ctx, devices.Core{ProductID: di.ProductID, DeviceName: di.DeviceName})
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
 
