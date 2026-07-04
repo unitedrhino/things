@@ -563,6 +563,32 @@ type DeviceInteractSendPropertyResp struct {
 	MsgToken string `json:"msgToken"` //调用id
 }
 
+// DeviceSecureControlKeyGrantReq 是 App 安全控制 key-grant 的请求参数。
+type DeviceSecureControlKeyGrantReq struct {
+	ProductID     string `json:"productID"`              //产品id
+	DeviceName    string `json:"deviceName"`             //设备名称
+	Purpose       string `json:"purpose,optional"`       //用途,不填默认app-sec-ctrl-v1
+	KeyVersion    int64  `json:"keyVersion,optional"`    //控制key版本,不填默认1
+	AuthAlg       string `json:"authAlg,optional"`       //认证算法,不填默认aes-cmac-64
+	AppKeyWrapPub string `json:"appKeyWrapPub,optional"` //App一次性X25519包装公钥,Base64编码
+}
+
+// DeviceSecureControlKeyGrantResp 是 App 安全控制 key-grant 的响应参数。
+type DeviceSecureControlKeyGrantResp struct {
+	Version       string `json:"version"`                          //协议版本
+	ProductID     string `json:"productID"`                        //产品id
+	DeviceName    string `json:"deviceName"`                       //设备名称
+	AuthAlg       string `json:"authAlg"`                          //认证算法
+	KeyVersion    int64  `json:"keyVersion"`                       //控制key版本
+	KeyEncoding   string `json:"keyEncoding"`                      //key编码方式
+	AppControlKey string `json:"appControlKey,optional,omitempty"` //plain-base64-v1时返回的App控制key
+	WrappedKey    string `json:"wrappedKey,optional,omitempty"`    //wrapped-key-v1时返回的密文key
+	WrapNonce     string `json:"wrapNonce,optional,omitempty"`     //wrapped-key-v1时返回的AES-GCM nonce
+	ServerWrapPub string `json:"serverWrapPub,optional,omitempty"` //wrapped-key-v1时返回的服务端一次性X25519公钥
+	ScopeBits     string `json:"scopeBits"`                        //授权范围
+	TtlSec        int64  `json:"ttlSec"`                           //建议缓存秒数
+}
+
 type DeviceModuleVersion struct {
 	ID          int64  `json:"id,optional,omitempty"`
 	ProductID   string `json:"productID,optional"` //产品id 只读

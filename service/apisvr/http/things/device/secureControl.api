@@ -1,0 +1,51 @@
+info(
+    title: "设备安全控制授权"
+    desc: "设备安全控制授权"
+    author: "杨磊"
+    email: "603685348@qq.com"
+    version: "v1"
+)
+
+@server(
+    group: things/device/securecontrol
+    prefix: /api/v1/things/device/secure-control
+    accessCodePrefix: "thingsDeviceSecureControl"
+    accessNamePrefix: "设备安全控制"
+    accessGroup: "设备管理"
+    middleware:  CheckTokenWare,InitCtxsWare
+)
+service api {
+    @doc(
+        summary: "App安全控制key-grant"
+        description: "校验用户控制权限后，用设备deviceSecret派生App安全控制key，可直接返回Base64 key或返回wrappedKey"
+        businessType: "modify"
+    )
+    @handler keyGrant
+    post /key-grant (DeviceSecureControlKeyGrantReq) returns (DeviceSecureControlKeyGrantResp)
+}
+
+type (
+    DeviceSecureControlKeyGrantReq {
+        ProductID string `json:"productID"`
+        DeviceName string `json:"deviceName"`
+        Purpose string `json:"purpose,optional"`
+        KeyVersion int64 `json:"keyVersion,optional"`
+        AuthAlg string `json:"authAlg,optional"`
+        AppKeyWrapPub string `json:"appKeyWrapPub,optional"`
+    }
+
+    DeviceSecureControlKeyGrantResp {
+        Version string `json:"version"`
+        ProductID string `json:"productID"`
+        DeviceName string `json:"deviceName"`
+        AuthAlg string `json:"authAlg"`
+        KeyVersion int64 `json:"keyVersion"`
+        KeyEncoding string `json:"keyEncoding"`
+        AppControlKey string `json:"appControlKey,optional,omitempty"`
+        WrappedKey string `json:"wrappedKey,optional,omitempty"`
+        WrapNonce string `json:"wrapNonce,optional,omitempty"`
+        ServerWrapPub string `json:"serverWrapPub,optional,omitempty"`
+        ScopeBits string `json:"scopeBits"`
+        TtlSec int64 `json:"ttlSec"`
+    }
+)

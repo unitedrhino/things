@@ -18,6 +18,7 @@ import (
 	thingsdevicepair "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/pair"
 	thingsdeviceprofile "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/profile"
 	thingsdeviceschema "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/schema"
+	thingsdevicesecurecontrol "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/device/securecontrol"
 	thingsgroupdevice "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/group/device"
 	thingsgroupinfo "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/group/info"
 	thingsotafirmwaredevice "gitee.com/unitedrhino/things/service/apisvr/internal/handler/things/ota/firmware/device"
@@ -284,6 +285,21 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/v1/things/device/info"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CheckTokenWare, serverCtx.InitCtxsWare},
+			[]rest.Route{
+				{
+					// App安全控制key-grant
+					Method:  http.MethodPost,
+					Path:    "/key-grant",
+					Handler: thingsdevicesecurecontrol.KeyGrantHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/v1/things/device/secure-control"),
 	)
 
 	server.AddRoutes(
