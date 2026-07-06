@@ -68,6 +68,7 @@ func (l *GrantLogic) Grant(req *types.DevicePairGrantReq) (*types.DevicePairGran
 		GrantToken: grant.GrantToken,
 		Nonce:      grant.Nonce,
 		AuthTag:    grant.AuthTag,
+		BlePairKey: grant.PairKeyHex,
 		TtlSec:     grant.TTLSec,
 	}, nil
 }

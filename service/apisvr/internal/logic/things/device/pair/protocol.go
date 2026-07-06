@@ -49,6 +49,7 @@ type GrantResponse struct {
 	GrantToken string
 	Nonce      string
 	AuthTag    string
+	PairKeyHex string
 	TTLSec     int64
 }
 
@@ -173,6 +174,10 @@ func BuildGrant(in GrantInput) (*GrantResponse, error) {
 	if err != nil {
 		return nil, err
 	}
+	pairKey, err := cmac128(dak, append([]byte("PK"), nonce...))
+	if err != nil {
+		return nil, err
+	}
 	payload := GrantPayload{
 		Version:           2,
 		Type:              grantType,
@@ -197,6 +202,7 @@ func BuildGrant(in GrantInput) (*GrantResponse, error) {
 		GrantToken: token,
 		Nonce:      payload.NonceHex,
 		AuthTag:    payload.AuthTagHex,
+		PairKeyHex: strings.ToUpper(hex.EncodeToString(pairKey)),
 		TTLSec:     GrantTTLSeconds,
 	}, nil
 }

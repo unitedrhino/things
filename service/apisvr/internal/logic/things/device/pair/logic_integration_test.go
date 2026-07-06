@@ -36,6 +36,9 @@ func TestGrantConfirmLogicConfirmsPairAckWithoutBindingDevice(t *testing.T) {
 	if grantResp.DeviceName != "AABBCCDDEEFF" {
 		t.Fatalf("Grant deviceName = %s, want normalized MAC", grantResp.DeviceName)
 	}
+	if grantResp.BlePairKey == "" {
+		t.Fatalf("Grant returned empty blePairKey")
+	}
 
 	grantPayload, err := VerifyGrant(VerifyGrantInput{
 		Token:      grantResp.GrantToken,
@@ -53,6 +56,9 @@ func TestGrantConfirmLogicConfirmsPairAckWithoutBindingDevice(t *testing.T) {
 		t.Fatalf("DecodeProductMK returned error: %v", err)
 	}
 	pairKeyHex := derivePairKeyHexForTest(t, mk, "AABBCCDDEEFF", grantPayload.NonceHex)
+	if grantResp.BlePairKey != pairKeyHex {
+		t.Fatalf("Grant blePairKey = %s, want %s", grantResp.BlePairKey, pairKeyHex)
+	}
 	ackHex := BuildTestPairAckHex(t, "AABBCCDDEEFF", 9, pairKeyHex)
 
 	confirmResp, err := NewConfirmLogic(ctx, svcCtx).Confirm(&types.DevicePairConfirmReq{

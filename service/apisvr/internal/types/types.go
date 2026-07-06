@@ -1050,6 +1050,7 @@ type DevicePairGrantResp struct {
 	GrantToken string `json:"grantToken"`
 	Nonce      string `json:"nonce"`
 	AuthTag    string `json:"authTag"`
+	BlePairKey string `json:"blePairKey"`
 	TtlSec     int64  `json:"ttlSec"`
 }
 
