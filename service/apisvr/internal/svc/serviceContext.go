@@ -6,6 +6,7 @@ import (
 	"gitee.com/unitedrhino/core/service/syssvr/client/areamanage"
 	"gitee.com/unitedrhino/core/service/syssvr/client/dictmanage"
 	"gitee.com/unitedrhino/core/service/syssvr/client/log"
+	operLog "gitee.com/unitedrhino/core/service/syssvr/client/log"
 	role "gitee.com/unitedrhino/core/service/syssvr/client/rolemanage"
 	tenant "gitee.com/unitedrhino/core/service/syssvr/client/tenantmanage"
 	user "gitee.com/unitedrhino/core/service/syssvr/client/usermanage"
@@ -34,8 +35,6 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/dmdirect"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
-	"github.com/zeromicro/go-zero/zrpc"
-	operLog "gitee.com/unitedrhino/core/service/syssvr/client/log"
 )
 
 type SvrClient struct {
@@ -56,10 +55,10 @@ type SvrClient struct {
 	UserC      sysExport.UserCacheT
 	AreaC      sysExport.AreaCacheT
 	AreaM      areamanage.AreaManage
-	DictM     dictmanage.DictManage
-	RoleRpc   role.RoleManage
-	TenantRpc tenant.TenantManage
-	LogRpc operLog.Log
+	DictM      dictmanage.DictManage
+	RoleRpc    role.RoleManage
+	TenantRpc  tenant.TenantManage
+	LogRpc     operLog.Log
 }
 
 type ServiceContext struct {
@@ -72,8 +71,7 @@ type ServiceContext struct {
 	OtaM           otamanage.OtaManage
 	ProductCache   dmExport.ProductCacheT
 	DeviceCache    dmExport.DeviceCacheT
-	UserShareCache     dmExport.UserShareCacheT
-
+	UserShareCache dmExport.UserShareCacheT
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -105,16 +103,16 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	//var me menu.Menu
 	if c.DmRpc.Enable {
 		if c.DmRpc.Mode == conf.ClientModeGrpc { //服务模式
-			deviceMsg = devicemsg.NewDeviceMsg(zrpc.MustNewClient(c.DmRpc.Conf))
-			deviceInteract = deviceinteract.NewDeviceInteract(zrpc.MustNewClient(c.DmRpc.Conf))
-			productM = productmanage.NewProductManage(zrpc.MustNewClient(c.DmRpc.Conf))
-			deviceM = devicemanage.NewDeviceManage(zrpc.MustNewClient(c.DmRpc.Conf))
-			deviceG = devicegroup.NewDeviceGroup(zrpc.MustNewClient(c.DmRpc.Conf))
-			remoteConfig = remoteconfig.NewRemoteConfig(zrpc.MustNewClient(c.DmRpc.Conf))
-			otaM = otamanage.NewOtaManage(zrpc.MustNewClient(c.DmRpc.Conf))
-			protocolM = protocolmanage.NewProtocolManage(zrpc.MustNewClient(c.DmRpc.Conf))
-			schemaM = schemamanage.NewSchemaManage(zrpc.MustNewClient(c.DmRpc.Conf))
-			UserDevice = userdevice.NewUserDevice(zrpc.MustNewClient(c.DmRpc.Conf))
+			deviceMsg = devicemsg.NewDeviceMsg(c.DmRpc.MustNewClient())
+			deviceInteract = deviceinteract.NewDeviceInteract(c.DmRpc.MustNewClient())
+			productM = productmanage.NewProductManage(c.DmRpc.MustNewClient())
+			deviceM = devicemanage.NewDeviceManage(c.DmRpc.MustNewClient())
+			deviceG = devicegroup.NewDeviceGroup(c.DmRpc.MustNewClient())
+			remoteConfig = remoteconfig.NewRemoteConfig(c.DmRpc.MustNewClient())
+			otaM = otamanage.NewOtaManage(c.DmRpc.MustNewClient())
+			protocolM = protocolmanage.NewProtocolManage(c.DmRpc.MustNewClient())
+			schemaM = schemamanage.NewSchemaManage(c.DmRpc.MustNewClient())
+			UserDevice = userdevice.NewUserDevice(c.DmRpc.MustNewClient())
 
 		} else { //直连模式
 			deviceMsg = dmdirect.NewDeviceMsg(c.DmRpc.RunProxy)
@@ -134,7 +132,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	logx.Must(err)
 	if c.DgRpc.Enable {
 		if c.DgRpc.Mode == conf.ClientModeGrpc { //服务模式
-			deviceA = deviceauth.NewDeviceAuth(zrpc.MustNewClient(c.DgRpc.Conf))
+			deviceA = deviceauth.NewDeviceAuth(c.DgRpc.MustNewClient())
 
 		} else { //直连模式
 			deviceA = dgdirect.NewDeviceAuth(c.DgRpc.RunProxy)
@@ -142,17 +140,17 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 	//if c.UdRpc.Enable {
 	//	if c.UdRpc.Mode == conf.ClientModeGrpc {
-	//		Rule = rule.NewRule(zrpc.MustNewClient(c.UdRpc.Conf))
+	//		Rule = rule.NewRule(c.UdRpc.MustNewClient())
 	//	} else {
 	//		Rule = uddirect.NewRule(c.UdRpc.RunProxy)
 	//	}
 	//}
-	dictM := dictmanage.NewDictManage(zrpc.MustNewClient(c.SysRpc.Conf))
-	ur = user.NewUserManage(zrpc.MustNewClient(c.SysRpc.Conf))
-	ro = role.NewRoleManage(zrpc.MustNewClient(c.SysRpc.Conf))
-	lo = log.NewLog(zrpc.MustNewClient(c.SysRpc.Conf))
-	areaM = areamanage.NewAreaManage(zrpc.MustNewClient(c.SysRpc.Conf))
-	tm = tenant.NewTenantManage(zrpc.MustNewClient(c.SysRpc.Conf))
+	dictM := dictmanage.NewDictManage(c.SysRpc.MustNewClient())
+	ur = user.NewUserManage(c.SysRpc.MustNewClient())
+	ro = role.NewRoleManage(c.SysRpc.MustNewClient())
+	lo = log.NewLog(c.SysRpc.MustNewClient())
+	areaM = areamanage.NewAreaManage(c.SysRpc.MustNewClient())
+	tm = tenant.NewTenantManage(c.SysRpc.MustNewClient())
 	ossClient, err := oss.NewOssClient(c.OssConf)
 	if err != nil {
 		logx.Errorf("NewOss err err:%v", err)
@@ -176,7 +174,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Ws:             ws.MustNewServer(c.RestConf),
 		ProductCache:   pc,
 		DeviceCache:    dc,
-		UserShareCache:     udc,
+		UserShareCache: udc,
 		SvrClient: SvrClient{
 			UserM:          ur,
 			ProtocolM:      protocolM,

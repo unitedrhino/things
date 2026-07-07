@@ -19,7 +19,6 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/share/clients"
 	"github.com/zeromicro/go-zero/core/logx"
-	"github.com/zeromicro/go-zero/zrpc"
 )
 
 type ServiceContext struct {
@@ -58,8 +57,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			}
 	*/
 	if c.DmRpc.Mode == conf.ClientModeGrpc {
-		productM = productmanage.NewProductManage(zrpc.MustNewClient(c.DmRpc.Conf))
-		deviceM = devicemanage.NewDeviceManage(zrpc.MustNewClient(c.DmRpc.Conf))
+		productM = productmanage.NewProductManage(c.DmRpc.MustNewClient())
+		deviceM = devicemanage.NewDeviceManage(c.DmRpc.MustNewClient())
 	} else {
 		productM = dmdirect.NewProductManage(c.DmRpc.RunProxy)
 		deviceM = dmdirect.NewDeviceManage(c.DmRpc.RunProxy)
@@ -85,7 +84,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	logx.Must(err)
 	dc, err := dmExport.NewDeviceInfoCache(deviceM, serverMsg)
 	logx.Must(err)
-	timedM = timedmanage.NewTimedManage(zrpc.MustNewClient(c.TimedJobRpc.Conf))
+	timedM = timedmanage.NewTimedManage(c.TimedJobRpc.MustNewClient())
 	return &ServiceContext{
 		Config: c,
 		// PubDev:   dl,

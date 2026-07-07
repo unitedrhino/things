@@ -49,7 +49,6 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 	"github.com/zeromicro/go-zero/core/syncx"
-	"github.com/zeromicro/go-zero/zrpc"
 )
 
 type ServiceContext struct {
@@ -70,7 +69,7 @@ type ServiceContext struct {
 	SDKLogRepo           deviceLog.SDKRepo
 	Cache                kv.Store
 	DeviceStatus         *cache.DeviceStatus
-	 FastEvent            *eventBus.FastEvent
+	FastEvent            *eventBus.FastEvent
 	AreaM                areamanage.AreaManage
 	UserM                usermanage.UserManage
 	DictM                dictmanage.DictManage
@@ -192,29 +191,29 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	})
 	logx.Must(err)
 
-	timedM = timedmanage.NewTimedManage(zrpc.MustNewClient(c.TimedJobRpc.Conf))
-	areaM = areamanage.NewAreaManage(zrpc.MustNewClient(c.SysRpc.Conf))
-	userM := usermanage.NewUserManage(zrpc.MustNewClient(c.SysRpc.Conf))
-	dictM := dictmanage.NewDictManage(zrpc.MustNewClient(c.SysRpc.Conf))
-	dataM := datamanage.NewDataManage(zrpc.MustNewClient(c.SysRpc.Conf))
-	DeptM = departmentmanage.NewDepartmentManage(zrpc.MustNewClient(c.SysRpc.Conf))
+	timedM = timedmanage.NewTimedManage(c.TimedJobRpc.MustNewClient())
+	areaM = areamanage.NewAreaManage(c.SysRpc.MustNewClient())
+	userM := usermanage.NewUserManage(c.SysRpc.MustNewClient())
+	dictM := dictmanage.NewDictManage(c.SysRpc.MustNewClient())
+	dataM := datamanage.NewDataManage(c.SysRpc.MustNewClient())
+	DeptM = departmentmanage.NewDepartmentManage(c.SysRpc.MustNewClient())
 
-	projectM = projectmanage.NewProjectManage(zrpc.MustNewClient(c.SysRpc.Conf))
-	Common = common.NewCommon(zrpc.MustNewClient(c.SysRpc.Conf))
-	tenantCache, err := sysExport.NewTenantInfoCache(tenantmanage.NewTenantManage(zrpc.MustNewClient(c.SysRpc.Conf)), serverMsg)
+	projectM = projectmanage.NewProjectManage(c.SysRpc.MustNewClient())
+	Common = common.NewCommon(c.SysRpc.MustNewClient())
+	tenantCache, err := sysExport.NewTenantInfoCache(tenantmanage.NewTenantManage(c.SysRpc.MustNewClient()), serverMsg)
 	logx.Must(err)
-	webHook, err := sysExport.NewTenantOpenWebhook(tenantmanage.NewTenantManage(zrpc.MustNewClient(c.SysRpc.Conf)), serverMsg)
+	webHook, err := sysExport.NewTenantOpenWebhook(tenantmanage.NewTenantManage(c.SysRpc.MustNewClient()), serverMsg)
 	logx.Must(err)
 	//webHook.Publish(ctxs.BindTenantCode(context.Background(), "default"),
 	//	tenantOpenWebhook.CodeDmDeviceConn, application.ConnectMsg{Device: devices.Core{
 	//		ProductID:  "123",
 	//		DeviceName: "123",
 	//	}, Timestamp: time.Now().UnixMilli()})
-	Slot, err := sysExport.NewSlotCache(common.NewCommon(zrpc.MustNewClient(c.SysRpc.Conf)))
+	Slot, err := sysExport.NewSlotCache(common.NewCommon(c.SysRpc.MustNewClient()))
 	logx.Must(err)
-	projectC, err := sysExport.NewProjectInfoCache(projectmanage.NewProjectManage(zrpc.MustNewClient(c.SysRpc.Conf)), serverMsg)
+	projectC, err := sysExport.NewProjectInfoCache(projectmanage.NewProjectManage(c.SysRpc.MustNewClient()), serverMsg)
 	logx.Must(err)
-	areaC, err := sysExport.NewAreaInfoCache(areamanage.NewAreaManage(zrpc.MustNewClient(c.SysRpc.Conf)), serverMsg)
+	areaC, err := sysExport.NewAreaInfoCache(areamanage.NewAreaManage(c.SysRpc.MustNewClient()), serverMsg)
 	logx.Must(err)
 	dc, err := dictM.DictDetailIndex(ctxs.WithRoot(nil), &sys.DictDetailIndexReq{DictCode: deviceGroup.DictCode, Page: &sys.PageInfo{Orders: []*sys.PageInfo_OrderBy{{Field: "sort", Sort: 1}}}})
 	logx.Must(err)
