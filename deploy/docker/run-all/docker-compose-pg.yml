@@ -189,7 +189,7 @@ services:
       - ../conf/taos/dnode/data:/var/lib/taos
       - ../conf/taos/dnode/log:/var/log/taos
   emqx:
-    image: emqx/emqx:5.8
+    image: emqx/emqx:5.7.1
     container_name: emqx
     hostname: emqx
     restart: always
