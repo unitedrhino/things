@@ -52,6 +52,7 @@ const (
 
 	ApplicationDeviceReportThingEventAllDevice    = "application.device.*.*.report.thing.event.>"
 	ApplicationDeviceReportThingPropertyAllDevice = "application.device.*.*.report.thing.property.>"
+	ApplicationDeviceReportThingActionAllDevice   = "application.device.*.*.report.thing.action.>"
 	ApplicationDeviceStatusConnectedAllDevice     = "application.device.*.*.status.connected"
 	ApplicationDeviceStatusDisConnectedAllDevice  = "application.device.*.*.status.disconnected"
 	ApplicationDeviceStatusAllDevice              = "application.device.*.*.status.>"
