@@ -47,6 +47,27 @@ func (l *ActionSendLogic) initMsg(dev devices.Core) error {
 	return nil
 }
 
+// fillLegacyEmptySec64 兼容旧版 App：部分旧版本创建场景或定时任务时不会携带 sec64。
+// 仅当当前动作的物模型明确声明了 sec64 且请求中缺失该字段时补空字符串，避免影响其他动作参数。
+func fillLegacyEmptySec64(model *schema.Model, actionID string, params map[string]any) {
+	if model == nil || params == nil {
+		return
+	}
+	if _, exists := params["sec64"]; exists {
+		return
+	}
+	action := model.Action[actionID]
+	if action == nil {
+		return
+	}
+	for _, input := range action.In {
+		if input != nil && input.Identifier == "sec64" {
+			params["sec64"] = ""
+			return
+		}
+	}
+}
+
 // 调用设备行为
 func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (ret *dm.ActionSendResp, err error) {
 	l.Infof("%s req=%+v", utils.FuncName(), in)
@@ -79,6 +100,7 @@ func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (ret *dm.ActionSendRe
 			return nil, errors.Parameter.AddDetail("ActionSend InputParams not right:", in.InputParams)
 		}
 	}
+	fillLegacyEmptySec64(l.schema, in.ActionID, param)
 	defer func() {
 		if err != nil || ret == nil {
 			return
