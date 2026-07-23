@@ -3,6 +3,8 @@ package userdevicelogic
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"gitee.com/unitedrhino/core/share/dataType"
 
 	"gitee.com/unitedrhino/share/ctxs"
@@ -46,6 +48,7 @@ func (l *UserDeivceShareMultiAcceptLogic) UserDeivceShareMultiAccept(in *dm.User
 	}
 	tenantCode := ctxs.GetUserCtxNoNil(l.ctx).TenantCode
 	acceptedCount := 0
+	acceptedDevices := make([]*dm.DeviceShareInfo, 0, len(in.Devices))
 	for _, v := range multiDevices.Devices {
 		key := fmt.Sprintf("%s_%s", v.ProductID, v.DeviceName)
 		if !acceptDevicesMap[key] {
@@ -87,6 +90,14 @@ func (l *UserDeivceShareMultiAcceptLogic) UserDeivceShareMultiAccept(in *dm.User
 			SharedUserID: po.SharedUserID,
 		}, nil)
 		acceptedCount++
+		acceptedDevices = append(acceptedDevices, v)
+	}
+	if acceptedCount > 0 {
+		event := buildDeviceShareAcceptedEvent(in, multiDevices, tenantCode, acceptedDevices, time.Now().Unix())
+		err = publishDeviceShareAcceptedEvent(l.ctx, l.svcCtx.FastEvent, event)
+		if err != nil {
+			return &dm.Empty{}, err
+		}
 	}
 	if acceptedCount > 0 && shouldConsumeShareTokenAfterAccept(multiDevices.UseBy) {
 		err = l.svcCtx.UserMultiDeviceShare.DeleteToken(l.ctx, tenantCode, multiDevices.UserID, in.ShareToken)
