@@ -15,6 +15,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
+	"gitee.com/unitedrhino/things/share/domain/usershare"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -102,7 +103,7 @@ func (l *UserDeivceShareMultiAcceptLogic) UserDeivceShareMultiAccept(in *dm.User
 	}
 	tenantCode := ctxs.GetUserCtxNoNil(l.ctx).TenantCode
 	acceptedCount := 0
-	acceptedDevices := make([]*dm.DeviceShareInfo, 0, len(in.Devices))
+	grantedDevices := make([]usershare.DeviceShareGrantedDevice, 0, len(in.Devices))
 	for _, v := range multiDevices.Devices {
 		key := fmt.Sprintf("%s_%s", v.ProductID, v.DeviceName)
 		if !acceptDevicesMap[key] {
@@ -144,11 +145,26 @@ func (l *UserDeivceShareMultiAcceptLogic) UserDeivceShareMultiAccept(in *dm.User
 			SharedUserID: po.SharedUserID,
 		}, nil)
 		acceptedCount++
-		acceptedDevices = append(acceptedDevices, v)
+		grantedDevices = append(grantedDevices, usershare.DeviceShareGrantedDevice{
+			ShareID:    po.ID,
+			ProductID:  po.ProductID,
+			DeviceName: po.DeviceName,
+		})
 	}
 	if acceptedCount > 0 {
-		event := buildDeviceShareAcceptedEvent(in, multiDevices, tenantCode, acceptedDevices, time.Now().Unix())
-		err = publishDeviceShareAcceptedEvent(l.ctx, l.svcCtx.FastEvent, event)
+		event := buildDeviceShareGrantedEvent(
+			usershare.DeviceShareGrantSourceWechatAccept,
+			in.ShareToken,
+			multiDevices.UserID,
+			in.SharedUserID,
+			in.SharedUserAccount,
+			multiDevices.ProjectID,
+			tenantCode,
+			multiDevices.UseBy,
+			grantedDevices,
+			time.Now().Unix(),
+		)
+		err = publishDeviceShareGrantedEvent(l.ctx, l.svcCtx.FastEvent, event)
 		if err != nil {
 			return &dm.Empty{}, err
 		}

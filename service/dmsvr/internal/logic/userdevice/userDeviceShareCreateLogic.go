@@ -2,12 +2,15 @@ package userdevicelogic
 
 import (
 	"context"
+	"time"
+
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
+	"gitee.com/unitedrhino/things/share/domain/usershare"
 	"github.com/spf13/cast"
 
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
@@ -89,6 +92,28 @@ func (l *UserDeviceShareCreateLogic) UserDeviceShareCreate(in *dm.UserDeviceShar
 		po.SchemaPerm = map[string]*relationDB.SharePerm{}
 	}
 	err = relationDB.NewUserDeviceShareRepo(l.ctx).Insert(l.ctx, &po)
+	if err != nil {
+		return nil, err
+	}
+	event := buildDeviceShareGrantedEvent(
+		usershare.DeviceShareGrantSourceAccountDirect,
+		"",
+		uc.UserID,
+		po.SharedUserID,
+		po.SharedUserAccount,
+		po.ProjectID,
+		uc.TenantCode,
+		po.UseBy,
+		[]usershare.DeviceShareGrantedDevice{
+			{
+				ShareID:    po.ID,
+				ProductID:  po.ProductID,
+				DeviceName: po.DeviceName,
+			},
+		},
+		time.Now().Unix(),
+	)
+	err = publishDeviceShareGrantedEvent(l.ctx, l.svcCtx.FastEvent, event)
 	if err != nil {
 		return nil, err
 	}

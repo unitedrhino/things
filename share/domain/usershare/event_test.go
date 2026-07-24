@@ -5,9 +5,11 @@ import (
 	"testing"
 )
 
-func TestDeviceShareAcceptedEventJSONContract(t *testing.T) {
-	event := DeviceShareAcceptedEvent{
+// TestDeviceShareGrantedEventJSONContract 验证跨服务事件的 JSON 字段契约。
+func TestDeviceShareGrantedEventJSONContract(t *testing.T) {
+	event := DeviceShareGrantedEvent{
 		EventID:         "event-1",
+		Source:          DeviceShareGrantSourceWechatAccept,
 		ShareToken:      "share-token-1",
 		SharerUserID:    101,
 		ReceiverUserID:  202,
@@ -15,9 +17,9 @@ func TestDeviceShareAcceptedEventJSONContract(t *testing.T) {
 		ProjectID:       303,
 		TenantCode:      "default",
 		UseBy:           "wechat_single_device",
-		AcceptedAt:      1717500000,
-		Devices: []DeviceShareAcceptedDevice{
-			{ProductID: "product-1", DeviceName: "device-1"},
+		GrantedAt:       1717500000,
+		Devices: []DeviceShareGrantedDevice{
+			{ShareID: 404, ProductID: "product-1", DeviceName: "device-1"},
 		},
 	}
 
@@ -26,7 +28,7 @@ func TestDeviceShareAcceptedEventJSONContract(t *testing.T) {
 		t.Fatalf("json.Marshal() error = %v", err)
 	}
 
-	want := `{"eventID":"event-1","shareToken":"share-token-1","sharerUserID":101,"receiverUserID":202,"receiverAccount":"receiver","projectID":303,"tenantCode":"default","useBy":"wechat_single_device","acceptedAt":1717500000,"devices":[{"productID":"product-1","deviceName":"device-1"}]}`
+	want := `{"eventID":"event-1","source":"wechat_accept","shareToken":"share-token-1","sharerUserID":101,"receiverUserID":202,"receiverAccount":"receiver","projectID":303,"tenantCode":"default","useBy":"wechat_single_device","grantedAt":1717500000,"devices":[{"shareID":404,"productID":"product-1","deviceName":"device-1"}]}`
 	if string(body) != want {
 		t.Fatalf("json.Marshal() = %s, want %s", body, want)
 	}
