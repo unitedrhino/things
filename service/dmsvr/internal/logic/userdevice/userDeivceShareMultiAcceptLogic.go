@@ -3,9 +3,13 @@ package userdevicelogic
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"gitee.com/unitedrhino/core/share/dataType"
 
 	"gitee.com/unitedrhino/share/ctxs"
+	"gitee.com/unitedrhino/share/def"
+	shareerrors "gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/userShared"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
@@ -18,6 +22,42 @@ type UserDeivceShareMultiAcceptLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+}
+
+type multiAcceptDeviceProjectLookup func(productID string, deviceName string) (int64, error)
+
+// validateMultiAcceptDevices 校验接收时设备仍归属于生成分享 Token 时的项目。
+func validateMultiAcceptDevices(
+	tokenProjectID int64,
+	tokenDevices []*dm.DeviceShareInfo,
+	requestedDevices []*dm.DeviceCore,
+	lookup multiAcceptDeviceProjectLookup,
+) error {
+	if tokenProjectID <= def.NotClassified {
+		return shareerrors.DeviceNotBound.WithMsg("设备已解绑，分享已失效")
+	}
+
+	tokenDeviceSet := make(map[string]struct{}, len(tokenDevices))
+	for _, device := range tokenDevices {
+		tokenDeviceSet[fmt.Sprintf("%s_%s", device.ProductID, device.DeviceName)] = struct{}{}
+	}
+	for _, device := range requestedDevices {
+		key := fmt.Sprintf("%s_%s", device.ProductID, device.DeviceName)
+		if _, ok := tokenDeviceSet[key]; !ok {
+			return shareerrors.Permissions.WithMsg("设备不在当前分享中")
+		}
+		currentProjectID, err := lookup(device.ProductID, device.DeviceName)
+		if err != nil {
+			if shareerrors.Cmp(err, shareerrors.NotFind) {
+				return shareerrors.DeviceNotBound.WithMsg("设备已解绑，分享已失效")
+			}
+			return err
+		}
+		if currentProjectID <= def.NotClassified || currentProjectID != tokenProjectID {
+			return shareerrors.DeviceNotBound.WithMsg("设备已解绑或已更换主人，分享已失效")
+		}
+	}
+	return nil
 }
 
 func NewUserDeivceShareMultiAcceptLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserDeivceShareMultiAcceptLogic {
@@ -34,6 +74,22 @@ func (l *UserDeivceShareMultiAcceptLogic) UserDeivceShareMultiAccept(in *dm.User
 	if err != nil {
 		return &dm.Empty{}, err
 	}
+	err = validateMultiAcceptDevices(multiDevices.ProjectID, multiDevices.Devices, in.Devices, func(productID string, deviceName string) (int64, error) {
+		device, findErr := relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(
+			ctxs.WithRoot(l.ctx),
+			relationDB.DeviceFilter{
+				ProductID:   productID,
+				DeviceNames: []string{deviceName},
+			},
+		)
+		if findErr != nil {
+			return 0, findErr
+		}
+		return int64(device.ProjectID), nil
+	})
+	if err != nil {
+		return &dm.Empty{}, err
+	}
 	sharedDevices, _ := relationDB.NewUserDeviceShareRepo(l.ctx).FindByFilter(l.ctx, relationDB.UserDeviceShareFilter{SharedUserID: in.SharedUserID}, nil)
 	sharedDevicesMap := make(map[string]int64)
 	for _, d := range sharedDevices {
@@ -46,6 +102,7 @@ func (l *UserDeivceShareMultiAcceptLogic) UserDeivceShareMultiAccept(in *dm.User
 	}
 	tenantCode := ctxs.GetUserCtxNoNil(l.ctx).TenantCode
 	acceptedCount := 0
+	acceptedDevices := make([]*dm.DeviceShareInfo, 0, len(in.Devices))
 	for _, v := range multiDevices.Devices {
 		key := fmt.Sprintf("%s_%s", v.ProductID, v.DeviceName)
 		if !acceptDevicesMap[key] {
@@ -87,6 +144,14 @@ func (l *UserDeivceShareMultiAcceptLogic) UserDeivceShareMultiAccept(in *dm.User
 			SharedUserID: po.SharedUserID,
 		}, nil)
 		acceptedCount++
+		acceptedDevices = append(acceptedDevices, v)
+	}
+	if acceptedCount > 0 {
+		event := buildDeviceShareAcceptedEvent(in, multiDevices, tenantCode, acceptedDevices, time.Now().Unix())
+		err = publishDeviceShareAcceptedEvent(l.ctx, l.svcCtx.FastEvent, event)
+		if err != nil {
+			return &dm.Empty{}, err
+		}
 	}
 	if acceptedCount > 0 && shouldConsumeShareTokenAfterAccept(multiDevices.UseBy) {
 		err = l.svcCtx.UserMultiDeviceShare.DeleteToken(l.ctx, tenantCode, multiDevices.UserID, in.ShareToken)

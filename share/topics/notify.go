@@ -7,6 +7,8 @@ const (
 	DmDeviceInfoUpdate = "server.things.dm.device.info.update"
 	DmDeviceInfoBind   = "server.things.dm.device.info.bind"
 	DmDeviceTransfer   = "server.things.dm.device.transfer"
+	// DmUserDeviceShareAccepted 用户成功接收设备分享。
+	DmUserDeviceShareAccepted = "server.things.dm.user.device.share.accepted"
 
 	DmDeviceOnlineStatusChange = "server.things.dm.device.onlineStatus.change"
 	DmDeviceStaticOneHour      = "server.things.dm.device.static.2Hour"     //2小时统计
