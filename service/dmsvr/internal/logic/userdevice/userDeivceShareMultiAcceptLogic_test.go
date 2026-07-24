@@ -5,6 +5,7 @@ import (
 	"errors"
 	"testing"
 
+	shareerrors "gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/userShared"
 	"gitee.com/unitedrhino/things/service/dmsvr/pb/dm"
 	"gitee.com/unitedrhino/things/share/domain/usershare"
@@ -149,5 +150,71 @@ func TestPublishDeviceShareAcceptedEventReturnsPublishError(t *testing.T) {
 
 	if !errors.Is(err, wantErr) {
 		t.Fatalf("error = %v, want %v", err, wantErr)
+	}
+}
+func TestValidateMultiAcceptDevicesRejectsUnboundDevice(t *testing.T) {
+	tokenDevices := []*dm.DeviceShareInfo{
+		{ProductID: "product-1", DeviceName: "device-1"},
+	}
+	requestedDevices := []*dm.DeviceCore{
+		{ProductID: "product-1", DeviceName: "device-1"},
+	}
+
+	err := validateMultiAcceptDevices(101, tokenDevices, requestedDevices, func(_ string, _ string) (int64, error) {
+		return 2, nil
+	})
+
+	if !shareerrors.Cmp(err, shareerrors.DeviceNotBound) {
+		t.Fatalf("error = %v, want DeviceNotBound", err)
+	}
+}
+
+func TestValidateMultiAcceptDevicesRejectsDeviceMovedToAnotherProject(t *testing.T) {
+	tokenDevices := []*dm.DeviceShareInfo{
+		{ProductID: "product-1", DeviceName: "device-1"},
+	}
+	requestedDevices := []*dm.DeviceCore{
+		{ProductID: "product-1", DeviceName: "device-1"},
+	}
+
+	err := validateMultiAcceptDevices(101, tokenDevices, requestedDevices, func(_ string, _ string) (int64, error) {
+		return 202, nil
+	})
+
+	if !shareerrors.Cmp(err, shareerrors.DeviceNotBound) {
+		t.Fatalf("error = %v, want DeviceNotBound", err)
+	}
+}
+
+func TestValidateMultiAcceptDevicesAllowsDeviceInOriginalProject(t *testing.T) {
+	tokenDevices := []*dm.DeviceShareInfo{
+		{ProductID: "product-1", DeviceName: "device-1"},
+	}
+	requestedDevices := []*dm.DeviceCore{
+		{ProductID: "product-1", DeviceName: "device-1"},
+	}
+
+	err := validateMultiAcceptDevices(101, tokenDevices, requestedDevices, func(_ string, _ string) (int64, error) {
+		return 101, nil
+	})
+
+	if err != nil {
+		t.Fatalf("validateMultiAcceptDevices() error = %v, want nil", err)
+	}
+}
+
+func TestPrepareMultiShareInfoStoresCreatorAndProject(t *testing.T) {
+	info := &dm.UserDeviceShareMultiInfo{}
+
+	prepareMultiShareInfo(info, 101, 202, 1717500000)
+
+	if info.UserID != 101 {
+		t.Fatalf("UserID = %d, want 101", info.UserID)
+	}
+	if info.ProjectID != 202 {
+		t.Fatalf("ProjectID = %d, want 202", info.ProjectID)
+	}
+	if info.CreatedTime != 1717500000 {
+		t.Fatalf("CreatedTime = %d, want 1717500000", info.CreatedTime)
 	}
 }

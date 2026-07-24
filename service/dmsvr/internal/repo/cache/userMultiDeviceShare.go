@@ -25,6 +25,19 @@ type MultiShareItem struct {
 	Info  *dm.UserDeviceShareMultiInfo // 分享数据
 }
 
+// multiShareContainsDevice 判断分享 Token 是否包含指定设备。
+func multiShareContainsDevice(info *dm.UserDeviceShareMultiInfo, productID string, deviceName string) bool {
+	if info == nil {
+		return false
+	}
+	for _, device := range info.Devices {
+		if device.ProductID == productID && device.DeviceName == deviceName {
+			return true
+		}
+	}
+	return false
+}
+
 // NewUserMultiDeviceShareManager 创建批量分享 Token 管理器
 func NewUserMultiDeviceShareManager(dataCache *caches.Cache[dm.UserDeviceShareMultiInfo, string], store kv.Store) *UserMultiDeviceShareManager {
 	return &UserMultiDeviceShareManager{
@@ -97,6 +110,29 @@ func (m *UserMultiDeviceShareManager) DeleteToken(ctx context.Context, tenantCod
 	_, err = m.store.SremCtx(ctx, m.genListKey(tenantCode, userID), token)
 	if err != nil {
 		return stores.ErrFmt(err)
+	}
+	return nil
+}
+
+// DeleteDeviceTokens 删除指定用户创建且包含目标设备的全部未过期分享 Token。
+func (m *UserMultiDeviceShareManager) DeleteDeviceTokens(
+	ctx context.Context,
+	tenantCode string,
+	userID int64,
+	productID string,
+	deviceName string,
+) error {
+	items, err := m.GetList(ctx, tenantCode, userID)
+	if err != nil {
+		return err
+	}
+	for _, item := range items {
+		if !multiShareContainsDevice(item.Info, productID, deviceName) {
+			continue
+		}
+		if err = m.DeleteToken(ctx, tenantCode, userID, item.Token); err != nil {
+			return err
+		}
 	}
 	return nil
 }

@@ -22,6 +22,13 @@ type UserDeviceShareMultiCreateLogic struct {
 	logx.Logger
 }
 
+// prepareMultiShareInfo 记录分享 Token 的创建者、所属项目和创建时间。
+func prepareMultiShareInfo(in *dm.UserDeviceShareMultiInfo, userID int64, projectID int64, createdTime int64) {
+	in.UserID = userID
+	in.ProjectID = projectID
+	in.CreatedTime = createdTime
+}
+
 func NewUserDeviceShareMultiCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserDeviceShareMultiCreateLogic {
 	return &UserDeviceShareMultiCreateLogic{
 		ctx:    ctx,
@@ -34,8 +41,7 @@ func (l *UserDeviceShareMultiCreateLogic) UserDeviceShareMultiCreate(in *dm.User
 	// 写入caches
 	shareToken, _ := uuid.GenerateUUID()
 	uc := ctxs.GetUserCtx(l.ctx)
-	in.UserID = uc.UserID
-	in.CreatedTime = time.Now().Unix()
+	prepareMultiShareInfo(in, uc.UserID, uc.ProjectID, time.Now().Unix())
 	//判断是否有分享的权限
 	pi, err := l.svcCtx.ProjectM.ProjectInfoRead(l.ctx, &sys.ProjectWithID{ProjectID: int64(uc.ProjectID)})
 	if err != nil {
