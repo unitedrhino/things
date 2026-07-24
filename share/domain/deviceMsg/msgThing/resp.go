@@ -56,7 +56,10 @@ func (d *Resp) VerifyRespParam(t *schema.Model, id string,
 			}
 			param, ok := resp[v.Identifier]
 			if ok == false {
-				return nil, errors.Parameter.AddDetail("need param:" + k)
+				if v.IsRequired() {
+					return nil, errors.Parameter.AddDetail("need param:" + k)
+				}
+				continue
 			}
 			err := tp.SetByDefine(&v.Define, param)
 			if err == nil {

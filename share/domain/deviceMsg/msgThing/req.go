@@ -182,7 +182,10 @@ func (d *Req) VerifyReqParam(t *schema.Model, tt schema.ParamType) (map[string]P
 
 			param, ok := d.Params[v.Identifier]
 			if ok == false {
-				return nil, errors.Parameter.AddDetail("need param:" + k)
+				if v.IsRequired() {
+					return nil, errors.Parameter.AddDetail("need param:" + k)
+				}
+				continue
 			}
 
 			err := tp.SetByDefine(&v.Define, param)
