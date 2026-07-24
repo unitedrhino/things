@@ -63,7 +63,7 @@ type (
 	Param struct {
 		Identifier string `json:"identifier"`         //参数标识符
 		Name       string `json:"name"`               //参数名称
-		Required   *bool  `json:"required,omitempty"` //是否必填；未配置时兼容历史数据并按必填处理
+		Required   *bool  `json:"required,omitempty"` //调用参数是否必填；未配置时兼容历史数据并按必填处理
 		Define     Define `json:"define,omitempty"`   //参数定义
 	}
 	Params []Param
@@ -113,7 +113,7 @@ type (
 	}
 )
 
-// IsRequired 判断行为参数是否必填，未配置的历史参数仍按必填处理。
+// IsRequired 判断行为调用参数是否必填，未配置的历史参数仍按必填处理。
 func (p Param) IsRequired() bool {
 	return p.Required == nil || *p.Required
 }
