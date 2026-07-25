@@ -6,12 +6,13 @@ import (
 
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
 	"gitee.com/unitedrhino/core/share/dataType"
-	shareEvents "gitee.com/unitedrhino/share/events"
 	"gitee.com/unitedrhino/share/ctxs"
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
+	shareEvents "gitee.com/unitedrhino/share/events"
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/userShared"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/share/devices"
@@ -191,10 +192,18 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 		})
 	}
 
+	var affectedShares []*relationDB.DmUserDeviceShare
 	err = stores.GetTenantConn(l.ctx).Transaction(func(tx *gorm.DB) error {
-		err := relationDB.NewUserDeviceShareRepo(tx).DeleteByFilter(ctxs.WithRoot(l.ctx), relationDB.UserDeviceShareFilter{
-			Devices: devs,
-		})
+		shareRepo := relationDB.NewUserDeviceShareRepo(tx)
+		affectedShares, err = applyDeviceTransferSharePolicy(
+			ctxs.WithRoot(l.ctx),
+			shareRepo,
+			devs,
+			UserID,
+			int64(ProjectID),
+			pi.TenantCode,
+			shouldPreserveDeviceTransferShares(in.IsCleanData),
+		)
 		if err != nil {
 			return err
 		}
@@ -235,6 +244,74 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 	})
 	if err != nil {
 		return nil, err
+	}
+	for _, share := range affectedShares {
+		cacheErr := l.svcCtx.UserDeviceShare.SetData(
+			l.ctx,
+			userShared.UserShareKey{
+				ProductID:    share.ProductID,
+				DeviceName:   share.DeviceName,
+				SharedUserID: share.SharedUserID,
+			},
+			nil,
+		)
+		if cacheErr != nil {
+			l.Errorf(
+				"设备转让后清理分享权限缓存失败 productID=%s deviceName=%s userID=%d err=%v",
+				share.ProductID,
+				share.DeviceName,
+				share.SharedUserID,
+				cacheErr,
+			)
+		}
+	}
+	for _, oldDevice := range dis {
+		tenantCode := string(oldDevice.TenantCode)
+		if tokenErr := l.svcCtx.UserMultiDeviceShare.DeleteAllDeviceTokens(
+			l.ctx,
+			tenantCode,
+			oldDevice.ProductID,
+			oldDevice.DeviceName,
+		); tokenErr != nil {
+			l.Errorf(
+				"设备转让后按设备撤销分享 Token 失败 productID=%s deviceName=%s err=%v",
+				oldDevice.ProductID,
+				oldDevice.DeviceName,
+				tokenErr,
+			)
+		}
+		if tokenErr := l.svcCtx.UserMultiDeviceShare.DeleteDeviceTokens(
+			l.ctx,
+			tenantCode,
+			oldDevice.UserID,
+			oldDevice.ProductID,
+			oldDevice.DeviceName,
+		); tokenErr != nil {
+			l.Errorf(
+				"设备转让后撤销原主人分享 Token 失败 productID=%s deviceName=%s userID=%d err=%v",
+				oldDevice.ProductID,
+				oldDevice.DeviceName,
+				oldDevice.UserID,
+				tokenErr,
+			)
+		}
+		if uc.UserID != oldDevice.UserID {
+			if tokenErr := l.svcCtx.UserMultiDeviceShare.DeleteDeviceTokens(
+				l.ctx,
+				tenantCode,
+				uc.UserID,
+				oldDevice.ProductID,
+				oldDevice.DeviceName,
+			); tokenErr != nil {
+				l.Errorf(
+					"设备转让后撤销操作者分享 Token 失败 productID=%s deviceName=%s userID=%d err=%v",
+					oldDevice.ProductID,
+					oldDevice.DeviceName,
+					uc.UserID,
+					tokenErr,
+				)
+			}
+		}
 	}
 	// 使用 root 权限查询，避免跨租户转移后因上下文租户不匹配导致查询失败
 	postQueryCtx := ctxs.WithRoot(ctxs.WithAllProject(l.ctx))

@@ -13,7 +13,7 @@ import (
 )
 
 // UserMultiDeviceShareManager 批量设备分享 Token 管理器
-// 在 caches.Cache 基础上增加 Redis Set 索引，支持按用户列出分享 Token
+// 在 caches.Cache 基础上增加 Redis Set 索引，支持按用户或设备定位分享 Token
 type UserMultiDeviceShareManager struct {
 	dataCache *caches.Cache[dm.UserDeviceShareMultiInfo, string]
 	store     kv.Store
@@ -51,22 +51,46 @@ func (m *UserMultiDeviceShareManager) genListKey(tenantCode string, userID int64
 	return fmt.Sprintf("things:device:share:batch:list:%s:%d", tenantCode, userID)
 }
 
-// SetData 写入分享数据，同时把 Token 加入用户列表索引
+// genDeviceListKey 生成设备维度的 Token 索引键。
+func (m *UserMultiDeviceShareManager) genDeviceListKey(tenantCode string, productID string, deviceName string) string {
+	return fmt.Sprintf("things:device:share:batch:device:%s:%s:%s", tenantCode, productID, deviceName)
+}
+
+// multiShareIndexKeys 返回 Token 需要写入的全部索引键。
+func (m *UserMultiDeviceShareManager) multiShareIndexKeys(tenantCode string, info *dm.UserDeviceShareMultiInfo) []string {
+	if info == nil {
+		return nil
+	}
+	keys := []string{m.genListKey(tenantCode, info.UserID)}
+	seen := make(map[string]struct{}, len(info.Devices))
+	for _, device := range info.Devices {
+		key := m.genDeviceListKey(tenantCode, device.ProductID, device.DeviceName)
+		if _, ok := seen[key]; ok {
+			continue
+		}
+		seen[key] = struct{}{}
+		keys = append(keys, key)
+	}
+	return keys
+}
+
+// SetData 写入分享数据，同时把 Token 加入用户和设备索引。
 func (m *UserMultiDeviceShareManager) SetData(ctx context.Context, tenantCode, token string, data *dm.UserDeviceShareMultiInfo) error {
 	err := m.dataCache.SetData(ctx, token, data)
 	if err != nil {
 		return err
 	}
 	if data != nil {
-		listKey := m.genListKey(tenantCode, data.UserID)
-		_, err = m.store.SaddCtx(ctx, listKey, token)
-		if err != nil {
-			return stores.ErrFmt(err)
-		}
-		// 给 Set 设置与数据相同的 TTL，避免长期残留
-		err = m.store.ExpireCtx(ctx, listKey, int(userShared.MultiDeviceShareTokenTTLSeconds))
-		if err != nil {
-			return stores.ErrFmt(err)
+		for _, listKey := range m.multiShareIndexKeys(tenantCode, data) {
+			_, err = m.store.SaddCtx(ctx, listKey, token)
+			if err != nil {
+				return stores.ErrFmt(err)
+			}
+			// 给 Set 设置与数据相同的 TTL，避免长期残留
+			err = m.store.ExpireCtx(ctx, listKey, int(userShared.MultiDeviceShareTokenTTLSeconds))
+			if err != nil {
+				return stores.ErrFmt(err)
+			}
 		}
 	}
 	return nil
@@ -99,17 +123,55 @@ func (m *UserMultiDeviceShareManager) GetList(ctx context.Context, tenantCode st
 	return result, nil
 }
 
-// DeleteToken 删除指定 Token，并从用户列表索引中移除
+// DeleteToken 删除指定 Token，并从用户和设备索引中移除。
 func (m *UserMultiDeviceShareManager) DeleteToken(ctx context.Context, tenantCode string, userID int64, token string) error {
-	// 先删除数据缓存
-	err := m.dataCache.SetData(ctx, token, nil)
-	if err != nil {
+	info, infoErr := m.GetData(ctx, token)
+	if infoErr != nil && !errors.Cmp(infoErr, errors.NotFind) {
+		return infoErr
+	}
+	if err := m.dataCache.SetData(ctx, token, nil); err != nil {
 		return err
 	}
-	// 再从用户列表中移除
-	_, err = m.store.SremCtx(ctx, m.genListKey(tenantCode, userID), token)
+	indexKeys := []string{m.genListKey(tenantCode, userID)}
+	if info != nil {
+		indexKeys = m.multiShareIndexKeys(tenantCode, info)
+	}
+	for _, listKey := range indexKeys {
+		if _, err := m.store.SremCtx(ctx, listKey, token); err != nil {
+			return stores.ErrFmt(err)
+		}
+	}
+	return nil
+}
+
+// DeleteAllDeviceTokens 删除所有包含指定设备的未过期分享 Token。
+func (m *UserMultiDeviceShareManager) DeleteAllDeviceTokens(
+	ctx context.Context,
+	tenantCode string,
+	productID string,
+	deviceName string,
+) error {
+	listKey := m.genDeviceListKey(tenantCode, productID, deviceName)
+	tokens, err := m.store.SmembersCtx(ctx, listKey)
 	if err != nil {
 		return stores.ErrFmt(err)
+	}
+	for _, token := range tokens {
+		info, getErr := m.GetData(ctx, token)
+		if getErr != nil {
+			if errors.Cmp(getErr, errors.NotFind) {
+				_, _ = m.store.SremCtx(ctx, listKey, token)
+				continue
+			}
+			return getErr
+		}
+		if !multiShareContainsDevice(info, productID, deviceName) {
+			_, _ = m.store.SremCtx(ctx, listKey, token)
+			continue
+		}
+		if err = m.DeleteToken(ctx, tenantCode, info.UserID, token); err != nil {
+			return err
+		}
 	}
 	return nil
 }
