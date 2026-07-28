@@ -7,6 +7,7 @@ import (
 	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/errors"
 	"gitee.com/unitedrhino/share/utils"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/userShared"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"github.com/spf13/cast"
 
@@ -28,6 +29,19 @@ func NewUserDeviceShareCreateLogic(ctx context.Context, svcCtx *svc.ServiceConte
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
+}
+
+// invalidateCreatedUserDeviceShare 清除新建分享对应的旧权限缓存。
+func invalidateCreatedUserDeviceShare(
+	ctx context.Context,
+	setData func(context.Context, userShared.UserShareKey, *dm.UserDeviceShareInfo) error,
+	share *relationDB.DmUserDeviceShare,
+) {
+	_ = setData(ctx, userShared.UserShareKey{
+		ProductID:    share.ProductID,
+		DeviceName:   share.DeviceName,
+		SharedUserID: share.SharedUserID,
+	}, nil)
 }
 
 // 分享设备
@@ -92,5 +106,6 @@ func (l *UserDeviceShareCreateLogic) UserDeviceShareCreate(in *dm.UserDeviceShar
 	if err != nil {
 		return nil, err
 	}
+	invalidateCreatedUserDeviceShare(l.ctx, l.svcCtx.UserDeviceShare.SetData, &po)
 	return &dm.WithID{Id: po.ID}, nil
 }
