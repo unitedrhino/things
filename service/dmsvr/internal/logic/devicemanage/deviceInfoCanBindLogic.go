@@ -68,6 +68,9 @@ func (l *DeviceInfoCanBindLogic) DeviceInfoCanBind(in *dm.DeviceInfoCanBindReq) 
 	if ownership == deviceBindOwnershipBlocked { //如果在其他租户下 则已经被绑定 或 在本租户下,但是不在一个项目下也不允许绑定
 		return nil, errors.DeviceCantBound.WithMsg("设备已被其他用户绑定。如需解绑，请按照相关流程操作。")
 	}
+	if ownership == deviceBindOwnershipCurrentUserBound {
+		return nil, errors.DeviceBound.WithMsg("设备已存在，请返回设备列表查看该设备")
+	}
 	if string(di.TenantCode) == uc.TenantCode &&
 		int64(di.ProjectID) == uc.ProjectID { //如果已经绑定到自己名下则不允许重复绑定
 		return nil, errors.DeviceBound.WithMsg("设备已存在，请返回设备列表查看该设备")

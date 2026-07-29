@@ -22,6 +22,8 @@ const (
 	deviceBindOwnershipBindable deviceBindOwnership = iota
 	// deviceBindOwnershipBlocked 表示设备仍被有效用户或项目占用。
 	deviceBindOwnershipBlocked
+	// deviceBindOwnershipCurrentUserBound 表示设备已归属当前用户的其它项目。
+	deviceBindOwnershipCurrentUserBound
 	// deviceBindOwnershipStale 表示设备挂在已删除项目或已删除项目管理员名下。
 	deviceBindOwnershipStale
 )
@@ -61,6 +63,9 @@ func classifyDeviceBindOwnership(
 	}
 	if pi == nil {
 		return deviceBindOwnershipStale, nil
+	}
+	if pi.AdminUserID == uc.UserID {
+		return deviceBindOwnershipCurrentUserBound, nil
 	}
 
 	_, err = userReader.UserInfoRead(ctxs.WithRoot(ctx), &sys.UserInfoReadReq{UserID: pi.AdminUserID})

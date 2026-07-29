@@ -65,6 +65,28 @@ func TestClassifyDeviceBindOwnershipBlocksActiveOtherProject(t *testing.T) {
 	}
 }
 
+func TestClassifyDeviceBindOwnershipDetectsCurrentUserOtherProject(t *testing.T) {
+	got, err := classifyDeviceBindOwnership(context.Background(),
+		bindProjectReaderFunc(func(context.Context, *sys.ProjectWithID, ...grpc.CallOption) (*sys.ProjectInfo, error) {
+			return &sys.ProjectInfo{ProjectID: 9001, AdminUserID: 7001}, nil
+		}),
+		bindUserReaderFunc(func(context.Context, *sys.UserInfoReadReq, ...grpc.CallOption) (*sys.UserInfo, error) {
+			t.Fatal("user reader should not be called when current user owns project")
+			return nil, nil
+		}),
+		def.TenantCodeDefault,
+		9001,
+		&ctxs.UserCtx{TenantCode: def.TenantCodeDefault, ProjectID: 7002, UserID: 7001},
+		0,
+	)
+	if err != nil {
+		t.Fatalf("classifyDeviceBindOwnership error: %v", err)
+	}
+	if got != deviceBindOwnershipCurrentUserBound {
+		t.Fatalf("ownership = %v, want current user bound", got)
+	}
+}
+
 func TestClassifyDeviceBindOwnershipAllowsMissingProject(t *testing.T) {
 	got, err := classifyDeviceBindOwnership(context.Background(),
 		bindProjectReaderFunc(func(context.Context, *sys.ProjectWithID, ...grpc.CallOption) (*sys.ProjectInfo, error) {

@@ -141,6 +141,9 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 			l.Infof("DeviceCantBound di:%v uc:%v", utils.Fmt(di), utils.Fmt(uc))
 			return nil, errors.DeviceCantBound.WithMsg("设备已被其他用户绑定。如需解绑，请按照相关流程操作。")
 		}
+		if ownership == deviceBindOwnershipCurrentUserBound {
+			return nil, errors.DeviceBound.WithMsg("设备已存在，请返回设备列表查看该设备")
+		}
 		if ownership == deviceBindOwnershipStale {
 			err = cleanupStaleDeviceBindArtifacts(l.ctx, devices.Core{ProductID: di.ProductID, DeviceName: di.DeviceName})
 			if err != nil {
