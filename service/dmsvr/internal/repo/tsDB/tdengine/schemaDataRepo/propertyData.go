@@ -239,14 +239,16 @@ func GenParams2(params map[string]any) (string, string, []any, error) {
 	for k, vv := range params {
 		v := vv
 		paramIds = append(paramIds, "`"+k+"`")
-		if _, ok := v.([]any); !ok {
-			paramValList = append(paramValList, v)
-		} else { //如果是数组类型,需要序列化为json
+		switch v.(type) {
+		case []any, map[string]any:
+			// 数组或对象类型需要序列化为 json
 			param, err := json.Marshal(v)
 			if err != nil {
 				return "", "", nil, errors.System.AddDetail("param json parse failure")
 			}
 			paramValList = append(paramValList, param)
+		default:
+			paramValList = append(paramValList, v)
 		}
 	}
 	return paramPlaceholder, strings.Join(paramIds, ","), paramValList, nil
