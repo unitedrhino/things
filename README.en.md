@@ -1,230 +1,215 @@
-# UnitedRhino - Enterprise IoT Platform | IoT Foundation Platform
+# UnitedRhino — AIoT-Native Enterprise Digitalization Platform
 
-[![Go](https://github.com/zeromicro/go-zero/workflows/Go/badge.svg?branch=master)](https://github.com/unitedrhino/things/actions)
-[![Go Report Card](https://goreportcard.com/badge/github.com/zeromicro/go-zero)](https://goreportcard.com/report/github.com/unitedrhino/things)
+[![Go Report Card](https://goreportcard.com/badge/github.com/unitedrhino/things)](https://goreportcard.com/report/github.com/unitedrhino/things)
 [![Go Reference](https://pkg.go.dev/badge/github.com/unitedrhino/things.svg)](https://pkg.go.dev/github.com/unitedrhino/things)
-![GitHub Repo stars](https://img.shields.io/github/stars/unitedrhino/things)
+[![GitHub stars](https://img.shields.io/github/stars/unitedrhino/things)](https://github.com/unitedrhino/things/stargazers)
+[![License](https://img.shields.io/github/license/unitedrhino/things)](LICENSE)
 
 > 📖 [English](README.en.md) | [中文](README.md)
 
-## 🚀 Enterprise IoT Platform
+UnitedRhino organizes SaaS, IoT, knowledge base, Skills, MCP, Sandbox, and voice interfaces into a unified AIoT-native foundation — making the kind of AI platform capabilities that only big tech companies could afford to build over years available to every enterprise.
 
-**UnitedRhino** is a commercial-grade **SaaS IoT platform** developed in Go, featuring **cloud-native microservices**, **edge computing** capabilities, and **multi-tenant architecture**. This **enterprise IoT platform** serves as an **IoT foundation platform**, providing complete **device management**, **real-time data analytics**, **comprehensive permission management system**, and **multi-scenario IoT solutions** capabilities, applicable to various scenarios such as **smart buildings**, **smart cities**, **smart energy**, **smart home**, **industrial IoT**, **smart agriculture**, **smart healthcare**, and more, reducing enterprise development costs by 80%.
+This repository is the **core backend service** of the UnitedRhino platform. Built with Go (on the go-zero microservice framework), it implements device connectivity, thing models, the rule engine, alerting, audio/video streaming, SIM card management, and more. It supports monolithic, microservices, and cluster deployment — running on as little as 2GB of RAM while scaling up to millions of devices.
 
-### 🎯 Why Choose UnitedRhino IoT Platform?
-
-- ✅ **Ready-to-Use IoT Solution**: Complete **Internet of Things platform**, no need to build from scratch
-- ✅ **Cost-Effective Enterprise Platform**: Save 80% development costs compared to building your own **IoT platform**
-- ✅ **Rapid IoT Deployment**: From project initiation to **connected devices** launch in just weeks
-- ✅ **Comprehensive Permission Management**: Enterprise-grade **permission management system** with fine-grained access control
-- ✅ **Continuous IoT Innovation**: Active open-source community with ongoing **IoT features** iterations
-
-> 📖 [Complete IoT Documentation](https://doc.unitedrhino.com/) | 🌐 [Online IoT Demo](https://doc.unitedrhino.com/use/ezkveztg/)
+> 📖 [Full Documentation](https://doc.unitedrhino.com/) | 🌐 [Live Demo](https://doc.unitedrhino.com/use/ezkveztg/) | 💰 [Pricing](https://doc.unitedrhino.com/use/68b74b/)
 
 ---
 
-## ✨ Core IoT Platform Features
+## ✨ Core Capabilities
 
-### 🏢 Multi-tenant & Multi-project IoT Architecture
-Supports **multi-tenant IoT solutions** and **multi-project management**, enabling low-cost custom **IoT project development** to meet different enterprises' personalized **connected device** needs. Supports multiple IoT application scenarios including **smart buildings**, **smart cities**, **smart energy**, **smart home**, **industrial IoT**, **smart agriculture**, and **smart healthcare**.
+### 🔌 Device Connectivity & Protocol Compatibility
+Built-in MQTT Broker and 13 protocol adapters, compatible with mainstream ecosystems such as Alibaba Cloud IoT, Tencent Cloud IoT, and Modbus. A Go script engine supports custom protocol transformation, and new protocols can be onboarded quickly by copying existing templates.
 
-### 🔧 Flexible IoT Deployment
-One **IoT platform codebase** supports **monolithic**, **microservices**, and **cluster deployment** modes, running on machines with as little as 2GB RAM, while supporting up to millions of **IoT devices**.
+### 📊 Thing Model & Time-Series Data
+A four-layer thing model definition — from generic models down to device-level models — combined with TDengine time-series storage and asynchronous batch writes, supporting the full data loop from ingestion to analytics.
 
-### ⚡ Quick IoT Integration
-Default support for multiple **IoT protocols** (Alibaba Cloud IoT, Tencent Cloud IoT, Tuya IoT, Telecom IoT, Modbus IoT, etc.), with quick integration capabilities for various **IoT communication protocols** (MQTT, TCP, UDP, HTTP, LoRaWAN...).
+### 🔗 Scene Linkage & Alerting
+A rule engine powers automatic device-to-device linkage. Alerting covers rule configuration, event aggregation, and notifications across 9 channels including in-app messages, SMS, DingTalk, and WeCom.
 
-### 📱 Ready-to-Use IoT Applications
-Provides commercial-grade **IoT mini-programs** and **IoT mobile apps** that can be quickly launched through simple editing, without needing to develop **IoT applications** from scratch.
+### 🎥 Audio/Video Streaming
+Self-developed GB28181 SIP service + ONVIF + ZLMediaKit, delivering WebRTC/HLS live monitoring, PTZ cruise, cloud recording, and device-side playback — with no dependency on third-party video clouds. [Documentation](https://doc.unitedrhino.com/use/25.音视频/)
 
-### 🛠️ Rapid IoT Development
-Utilizes **micro-frontend technology** to create new **IoT modules** on the **SaaS IoT platform**, developing only differentiated frontend code, significantly improving **IoT development** efficiency. Can quickly build various IoT application scenarios such as **smart buildings**, **smart cities**, **smart energy**, **smart home**, **industrial IoT**, **smart agriculture**, and **smart healthcare**.
+### 💳 Managed IoT SIM Cards
+Integration with all three major Chinese carriers (China Mobile, China Unicom, China Telecom): SIM lifecycle, data plans, traffic reconciliation, smart diagnostics, and bulk operations in one place. [Documentation](https://doc.unitedrhino.com/use/26.物联卡/)
 
-### 🌟 One-Stop IoT Foundation Solution
-Full-stack **IoT solution** from **IoT device hardware/software** to **cloud IoT protocol integration** to **IoT web applications** and **mobile IoT apps**, covering the entire **IoT value chain**. As an **IoT foundation platform**, it can quickly build various IoT application scenarios including **smart buildings**, **smart cities**, **smart energy**, **smart home**, **industrial IoT**, **smart agriculture**, and **smart healthcare**.
+### 📺 Scada Dashboards & Low-Code
+A drag-and-drop visualization engine with direct binding to IoT thing model data, 8 dataset types, a template marketplace, and rule-chain low-code orchestration. [Documentation](https://doc.unitedrhino.com/use/01.快速开始/04.组态大屏/)
 
-### 🔌 Comprehensive IoT Platform Features
-Flexible **OTA updates**, **IoT scene automation**, **IoT alarm management**, **IoT rule engine**, **IoT configuration dashboard**, **IoT thing models** (general thing model, product category thing model, product thing model, device thing model)...
+### 🧠 AI Middle Platform & Knowledge Base
+AI is not a bolt-on chat box but a primary platform capability: an Agent runtime, knowledge base, and Skills that distill business expertise, with Xiaozhi voice and voice cloning extending AI to edge devices.
 
-### 🏗️ Powerful IoT Middle Platform
-Complete **IoT notification mechanisms** (email, SMS, WeChat, WeCom, Feishu, DingTalk...), support for third-party user department synchronization, **enterprise-grade permission management system**, supporting fine-grained permission control, role management, data permission management, etc.
+### 🛠️ MCP Tool Integration
+Devices, systems, and external services are re-organized through MCP, so AI can directly query device status and issue control commands — instead of facing a pile of low-level APIs.
 
-### 🌐 Edge Computing & Cloud Native
-Advanced **edge computing** capabilities for **IoT edge devices**, **cloud-native IoT architecture** for seamless scaling, and **real-time IoT data processing**.
+### ☁️ Sandbox & Cloud Claw
+Separation of control plane and execution plane, with governed workspaces and resource management that make AI execution production-ready; unified access for personal, local, and cloud-side AI.
 
-## 🏗️ IoT Platform Architecture
+## 🏗️ Platform Architecture
 
-UnitedRhino **IoT platform** serves as a key intermediary and **IoT foundation platform** in **IoT architecture**, enabling efficient coordination between **IoT devices** and **IoT application layers**. It not only manages **connected IoT devices** downward, completing **IoT data collection** and **IoT data storage**, but also provides unified **IoT data interfaces** and **IoT development tools** upward for **IoT developers** and **IoT integrators**, accelerating multi-scenario **IoT solution development** and **IoT deployment** for **smart buildings**, **smart cities**, **smart energy**, **smart home**, **industrial IoT**, **smart agriculture**, and **smart healthcare**.
+From device connectivity to AI applications, UnitedRhino completes the full loop of data uplink and command downlink on a single foundation:
 
-### IoT Module Architecture Design
+- **User Access**: Web console, mini-programs / apps (Android / iOS / HarmonyOS), DingTalk / WeChat, open API & MCP, UnitedRhino CLI, Xiaozhi voice
+- **Gateway**: Load balancing, WebSocket, authentication, open services, reverse proxy
+- **Application Layer**: IoT applications, industry applications (smart energy, smart buildings, smart cities, structure monitoring, smart agriculture, etc.), system administration
+- **Capability Middle Platform**: AI middle platform, IoT foundation, common foundation
+- **Access Layer**: IoT devices & gateways, cameras / NVRs, voice terminals, third-party platforms
+- **Infrastructure**: PostgreSQL, TDengine, Redis, NATS, MQTT Broker, RustFS, etcd
 
-![IoT Architecture](./doc/assets/物联网.png)
+### Overall Platform Architecture
 
-### SaaS IoT Middle Platform Architecture Design
+![Overall Platform Architecture](./doc/assets/平台架构.png)
 
-![SaaS Platform Architecture](./doc/assets/SaaS平台.png)
+### AI Capability Architecture
 
-### IoT Deployment Architecture Diagram
+The control plane organizes sessions, agents, knowledge and skill assembly; the tool plane provides Skills, MCP, CLI and frontend/backend tools; the execution plane offers governed execution via Claw Runtime and Sandbox; the application plane serves SaaS, IoT and voice entry points.
 
-![Deployment Architecture](./doc/assets/部署架构图.png)
+![AI Capability Architecture](./doc/assets/AI架构.png)
 
-## IoT Platform Demonstrations
+### Device Access & Data Flow Architecture
 
-### Low-Code IoT Platform
+Multi-protocol devices connect through protocol gateways, flow into the device management service's message pipeline over the NATS message bus, and finally reach clients, the rule engine, and persistent storage.
+
+![Device Access & Data Flow Architecture](./doc/assets/设备接入架构.png)
+
+## 📸 Product Screenshots
+
+### Low-Code Platform
 
 ![Low-Code](./doc/assets/低代码.png)
 
-### IoT Configuration Dashboard
+### Scada Dashboard
 
-![Configuration Dashboard](./doc/assets/组态大屏.png)
+![Scada Dashboard](./doc/assets/组态大屏.png)
 
-### IoT Device Map
+### Device Map
 
 ![Device Map](./doc/assets/设备地图.png)
 
-## 💎 IoT Platform Value
+## 🎯 Case Studies
 
-| Platform Value | Description |
+UnitedRhino has been deployed across energy, smart home, lighting, industrial, water conservancy, and geological monitoring scenarios — all delivered on the same platform foundation:
+
+| Smart Energy | Smart Home |
+|---------|---------|
+| [![Smart Energy](./doc/assets/cases/智慧能源.png)](https://doc.unitedrhino.com/cases/e9f4a2/) | [![Smart Home](./doc/assets/cases/智能家居.png)](https://doc.unitedrhino.com/cases/e3a9f1/) |
+| Energy management for parks and enterprises: consumption analytics, power meter collection, prepaid billing, and energy dashboards. [View case →](https://doc.unitedrhino.com/cases/e9f4a2/) | Home automation: multi-protocol gate control, space management, scene linkage, and family sharing. [View case →](https://doc.unitedrhino.com/cases/e3a9f1/) |
+
+| Smart Lighting | Structure Monitoring |
+|---------|---------|
+| [![Smart Lighting](./doc/assets/cases/智慧照明.png)](https://doc.unitedrhino.com/cases/15c21a/) | [![Structure Monitoring](./doc/assets/cases/结构监测.png)](https://doc.unitedrhino.com/cases/geo-mon/) |
+| Intelligent building lighting and HVAC: dashboards, energy analytics, device maps, one-tap scenes, and automated alerts with a companion mini-program. [View case →](https://doc.unitedrhino.com/cases/15c21a/) | Geological and structural safety monitoring: GNSS displacement / stress / crack / vibration sensors, four-level (blue-yellow-orange-red) early warning, and digital portraits. [View case →](https://doc.unitedrhino.com/cases/geo-mon/) |
+
+| Industrial Automation | Smart Water Pump |
+|---------|---------|
+| [![Industrial Automation](./doc/assets/cases/工业自动化.png)](https://doc.unitedrhino.com/cases/82fa55/) | [![Smart Water Pump](./doc/assets/cases/智能水泵.jpg)](https://doc.unitedrhino.com/cases/c4d7e2/) |
+| Industrial energy management: scada screens, data overviews, and video monitoring in a unified view. [View case →](https://doc.unitedrhino.com/cases/82fa55/) | Outdoor water supply for ranches and farmland: water level monitoring, remote pump control, and threshold-based automation. [View case →](https://doc.unitedrhino.com/cases/c4d7e2/) |
+
+| Smart Photovoltaic | Security Monitoring |
+|---------|---------|
+| [![Smart Photovoltaic](./doc/assets/cases/智能光伏.png)](https://doc.unitedrhino.com/cases/d8e6f1/) | [![Security Monitoring](./doc/assets/cases/安防监控.jpg)](https://doc.unitedrhino.com/cases/9d4e82/) |
+| Off-grid PV storage in remote areas: 4G terminal connectivity, charge/discharge monitoring, and remote device control. [View case →](https://doc.unitedrhino.com/cases/d8e6f1/) | Entrance security for villas and parks: IPC camera connectivity, live preview, PTZ control, two-way intercom, playback, and gate control in one. [View case →](https://doc.unitedrhino.com/cases/9d4e82/) |
+
+More cases (smart fans, smart agriculture, and more) 👉 [Case Library & Achievements](https://doc.unitedrhino.com/cases/2cb8e9/)
+
+## 💎 Platform Value
+
+| Value | Description |
 |---------|------|
-| **Strong IoT Extensibility** | Supports **monolithic** and **microservice IoT architectures**, allowing **IoT developers** to flexibly switch between different development stages without maintaining two codebases |
-| **High IoT Performance** | Developed in **Golang** with minimal third-party service dependencies, adaptable to various **IoT performance** requirements with quick horizontal scaling |
-| **IoT Data Value** | **Private IoT deployment** with autonomous **IoT data management**, no concerns about public cloud service interruptions or cost issues |
-| **IoT Foundation Platform** | Serves as a digital foundation for **multi-scenario IoT solutions**, supporting **smart buildings**, **smart cities**, **smart energy**, **smart home**, **industrial IoT**, **smart agriculture**, **smart healthcare** and other multi-industry shared **IoT platforms**, accumulating **IoT industry experience** and **IoT product solutions** |
+| **Strong Extensibility** | Supports both monolithic and microservice architectures, allowing developers to switch flexibly at different growth stages without maintaining two codebases |
+| **High Performance** | Written in Golang with minimal third-party dependencies, adaptable to diverse performance requirements with fast horizontal scaling |
+| **Data Sovereignty** | Private deployment with full data ownership — no worries about public cloud outages or escalating costs |
+| **Multi-Scenario Foundation** | A shared digital foundation across smart energy, smart home, smart lighting, industrial, water conservancy, and security industries, accumulating domain expertise and product solutions |
 
-## 🎖️ Who Uses Our IoT Platform? (Partial)
-
-### IoT Partner Showcase
+## 🎖️ Who Uses UnitedRhino (Partial)
 
 |   |   |   |
 |---------|---------|---------|
-| ![Fujian Hechuang Network Technology Co., Ltd.](./doc/assets/useBy/福建合创网络科技有限公司.png)<br/>Fujian Hechuang Network Technology Co., Ltd. | ![Shenzhen Yibailong Technology Co., Ltd.](./doc/assets/useBy/深圳市易百珑科技有限公司.svg)<br/>Shenzhen Yibailong Technology Co., Ltd. | ![Lianyuan Zhiwei](./doc/assets/useBy/联远智维.jpg)<br/>Lianyuan Zhiwei |
-| ![Changzhou Feinuo Medical Technology Co., Ltd.](./doc/assets/useBy/常州飞诺医疗技术有限公司.png)<br/>Changzhou Feinuo Medical Technology Co., Ltd. | ![Chongqing Tuhao Technology](./doc/assets/useBy/重庆图浩科技.jpg)<br/>Chongqing Tuhao Technology | ![Hangzhou Weilixun](./doc/assets/useBy/杭州伟立讯.png)<br/>Hangzhou Weilixun |
+| ![Fujian Hechuang Network Technology](./doc/assets/useBy/福建合创网络科技有限公司.png)<br/>Fujian Hechuang Network Technology | ![Shenzhen Yibailong Technology](./doc/assets/useBy/深圳市易百珑科技有限公司.svg)<br/>Shenzhen Yibailong Technology | ![Lianyuan Zhiwei](./doc/assets/useBy/联远智维.jpg)<br/>Lianyuan Zhiwei |
+| ![Changzhou Feinuo Medical Technology](./doc/assets/useBy/常州飞诺医疗技术有限公司.png)<br/>Changzhou Feinuo Medical Technology | ![Chongqing Tuhao Technology](./doc/assets/useBy/重庆图浩科技.jpg)<br/>Chongqing Tuhao Technology | ![Hangzhou Weilixun](./doc/assets/useBy/杭州伟立讯.png)<br/>Hangzhou Weilixun |
 
-## 🛠️ IoT Technology Stack
+## 🛠️ Technology Stack
 
-### IoT Backend Technology
-- **IoT Microservice Framework**: [go-zero](https://go-zero.dev/) - High-performance **IoT microservice framework**
-- **IoT High-Performance Cache**: [Redis](https://redis.io/) - In-memory **IoT data structure** store
-- **IoT Message Queue**: [NATS](https://docs.nats.io/) - High-performance **IoT messaging system**
-- **IoT Relational Database**: [MySQL/MariaDB](https://mariadb.com/) or PostgreSQL
-- **IoT Service Registry**: [etcd](https://etcd.io/) (**IoT microservice** mode)
-- **IoT Object Storage**: [MinIO](https://min.io/) or local storage, Alibaba Cloud, AWS - Cloud-native **IoT object storage**
-- **IoT Time-Series Database**: [TDengine](https://www.taosdata.com/) or TimescaleDB - High-performance **IoT time-series data** processing
-- **IoT MQTT Server**: [EMQX](https://docs.emqx.com/) or Comqtt - Distributed **IoT messaging server**
+### Backend
+- **Microservice Framework**: [go-zero](https://go-zero.dev/)
+- **Cache**: [Redis](https://redis.io/)
+- **Message Queue**: [NATS](https://docs.nats.io/)
+- **Relational Database**: [MySQL/MariaDB](https://mariadb.com/) or PostgreSQL
+- **Service Registry**: [etcd](https://etcd.io/) (microservices mode)
+- **Object Storage**: S3-compatible object storage ([RustFS](https://rustfs.com/) in production, MinIO compatible); local storage, Alibaba Cloud OSS, and AWS S3 also supported
+- **Time-Series Database**: [TDengine](https://www.taosdata.com/) or TimescaleDB
+- **MQTT Server**: [EMQX](https://docs.emqx.com/) or comqtt
 
-### IoT Frontend Technology
-- **IoT Framework**: [Vue.js](https://vuejs.org/) - Progressive JavaScript **IoT framework**
-- **IoT UI Components**: [Ant Design Vue](https://antdv.com/) - Enterprise-grade **IoT design components**
+### Frontend
+- **Framework**: [Vue.js](https://vuejs.org/)
+- **UI Components**: [Ant Design Vue](https://antdv.com/)
 
-### IoT Mobile Technology
-- **IoT Mini-Program**: [uni-app Vue3](https://uniapp.dcloud.net.cn/) - Cross-platform **IoT development framework**
-- **IoT App**: [uni-app X](https://doc.dcloud.net.cn/uni-app-x/) - Supports Android, iOS, HarmonyOS for **IoT applications**
+### Mobile
+- **Mini-Program**: [uni-app Vue3](https://uniapp.dcloud.net.cn/)
+- **App**: [uni-app X](https://doc.dcloud.net.cn/uni-app-x/) (Android, iOS, HarmonyOS)
 
-## 🚀 Quick Start IoT Platform
+## 🚀 Quick Start
 
-### 🎯 5-Minute IoT Platform Experience
+### Live Demo
 
-Want to quickly experience UnitedRhino's powerful **IoT platform features**? We've prepared a complete **IoT demo environment** for you!
+No installation required — experience the full UnitedRhino platform right away:
 
-#### 🌟 Online IoT Demo Environment
-No installation required, experience UnitedRhino's complete **IoT functionality** immediately
+[🚀 Try It Now](https://doc.unitedrhino.com/use/ezkveztg/)
 
-[🚀 Try IoT Platform Now](https://doc.unitedrhino.com/use/ezkveztg/)
+### One-Click AI Onboarding
 
-### 📋 IoT Platform Requirements
+Let AI operate the UnitedRhino platform directly — CLI installation, authentication, and Skills deployment are completed automatically:
+
+[🤖 Local AI Setup Guide](https://doc.unitedrhino.com/use/01.快速开始/09.本地AI安装教程/)
+
+### Requirements
+
 - **Go**: 1.19+
-- **IoT Database**: MySQL 5.7+ or PostgreSQL
-- **IoT Cache**: Redis 6.0+
-- **IoT Container**: Docker (optional, recommended)
+- **Database**: MySQL 5.7+ or PostgreSQL
+- **Cache**: Redis 6.0+
+- **Container**: Docker (optional, recommended)
 
-### 🛠️ Quick IoT Platform Deployment
+### Deployment Guide
 
-#### 📚 Detailed IoT Deployment Guide
-From environment preparation to **IoT service** startup, step-by-step **IoT platform deployment** guide
+From environment preparation to service startup, a step-by-step deployment walkthrough:
 
-[📖 View IoT Deployment Documentation](https://doc.unitedrhino.com/use/046431/)
+[📖 View Deployment Documentation](https://doc.unitedrhino.com/use/046431/)
 
-### 💡 Having IoT Platform Issues?
+## 🤝 Open Source Community
 
-- **📖 View IoT Documentation**: [Complete IoT Documentation](https://doc.unitedrhino.com/)
-- **🐛 Submit IoT Issue**: [GitHub IoT Issues](https://github.com/unitedrhino/things/issues)
-- **💬 Join IoT Community**: Scan QR code to join WeChat group for **IoT technical support**
+- **GitHub**: [unitedrhino/things](https://github.com/unitedrhino/things)
+- **Gitee**: [unitedrhino/things](https://gitee.com/unitedrhino/things)
+- **UnitedRhino CLI**: [GitHub](https://github.com/unitedrhino/cli) | [Gitee Mirror](https://gitee.com/unitedrhino/cli) — command-line control of the platform, for developers and AI agents
+- **Website & Docs**: [doc.unitedrhino.com](https://doc.unitedrhino.com/)
 
-#### 💡 Quick IoT Help
-Encountering **IoT technical issues**? Our WeChat group has 500+ **IoT developers** ready to help!
+Thanks to all our [contributors](https://github.com/unitedrhino/things/graphs/contributors)! See our [Star History](https://starchart.cc/unitedrhino/things) for project growth.
 
-**Scan QR code to join WeChat group → Get instant **IoT technical support****
+## 💬 Contact Us
 
-## 💬 Contact IoT Platform Team
+### WeChat Community
 
-### 📱 IoT WeChat Community
-
-> 💬 **Group already has 500+ IoT developers, looking forward to your joining!**
+> 💬 500+ developers are already in the group — scan to join for instant technical support (add on WeChat to be invited)
 
 ![WeCom QR Code](./doc/assets/企业微信二维码.png)
 
-**Scan to join and start your **IoT journey**!**
+### Official Account
 
-### 📢 IoT Official Account
-
-Follow our official account for more exciting **IoT content**:
+Follow our official account for the latest releases and best practices:
 
 ![Official Account](./doc/assets/公众号.jpg)
 
-### 📞 Other IoT Contact Methods
+### Other Contact Methods
 
 - **WeChat**: godLei6
-- **IoT Website**: [https://doc.unitedrhino.com/](https://doc.unitedrhino.com/)
-- **IoT GitHub Issues**: [Submit IoT Feedback](https://github.com/unitedrhino/things/issues)
+- **Feedback**: [GitHub Issues](https://github.com/unitedrhino/things/issues)
 
-## 🤝 IoT Open Source Community
+## 📄 License
 
-- **IoT GitHub**: [UnitedRhino IoT GitHub](https://github.com/unitedrhino/things)
-- **IoT Gitee**: [UnitedRhino IoT Gitee](https://gitee.com/unitedrhino/things)
-- **IoT Website**: [UnitedRhino IoT Website](https://doc.unitedrhino.com/)
-
-## 👥 IoT Contributors
-
-Thanks to everyone who has contributed to our **IoT platform**!
-
-[![Contributors](https://contributors-img.web.app/image?repo=unitedrhino/things)](https://github.com/unitedrhino/things/graphs/contributors)
-
-## 💬 Join Our IoT Community
-
-### 🎯 Why Join Our IoT Community?
-
-- **🚀 Get Latest IoT Updates**: First to know about **IoT platform updates** and new **IoT feature** releases
-- **💡 IoT Technical Exchange**: Deep technical discussions with **IoT experts** and **IoT developers**
-- **🔧 IoT Problem Solving**: Having **IoT issues**? The **IoT experts** in the group are ready to help
-- **🤝 IoT Resource Sharing**: Share **IoT technical documentation**, **IoT best practices**, and **IoT industry cases**
-- **🎁 Exclusive IoT Benefits**: Group members enjoy **IoT technical support** and priority access to new **IoT features**
-- **📈 IoT Career Development**: Network with **IoT industry** peers and expand professional connections
-
-### 🌟 IoT Community Activities
-
-- **Weekly IoT Technical Sharing**: Invite **IoT industry experts** to share cutting-edge **IoT technologies**
-- **IoT Product Experience Officers**: Priority access to new **IoT features** and feedback opportunities
-- **IoT Open Source Contributor Program**: Participate in **IoT open source projects** and earn exclusive recognition
-- **IoT Offline Technical Salons**: Regular offline **IoT exchange** events
-
-## ⭐ IoT Platform Star History
-
-![Star History](https://starchart.cc/unitedrhino/things.svg)
-
-> 💡 **Note**: For latest **IoT platform** version updates, please visit: [Gitee](https://gitee.com/unitedrhino/things)
-
-## 📄 IoT Platform License
-
-This **IoT platform** project is licensed under the [Apache License 2.0](LICENSE).
+This project is licensed under the [Apache License 2.0](LICENSE).
 
 ---
 
-## 🚀 Start Your IoT Platform Journey
+If this project helps you, please give us a ⭐ Star
 
-If this **IoT platform** project helps you, please give us a ⭐ Star
+[⭐ Star on GitHub](https://github.com/unitedrhino/things) | [⭐ Star on Gitee](https://gitee.com/unitedrhino/things)
 
-💬 Join our **IoT community** and learn together with 500+ **IoT developers**
-
-[⭐ Star IoT Platform on GitHub](https://github.com/unitedrhino/things) | [⭐ Star IoT Platform on Gitee](https://gitee.com/unitedrhino/things)
-
-*Made with ❤️ by UnitedRhino IoT Team*
+*Made with ❤️ by the UnitedRhino Team*
