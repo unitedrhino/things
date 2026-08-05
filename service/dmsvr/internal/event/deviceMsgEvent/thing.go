@@ -352,10 +352,12 @@ func (l *ThingLogic) InsertPackReport(msg *deviceMsg.PublishMsg, t *schema.Model
 		if err != nil {
 			l.Error(err)
 		}
-		err = l.repo.InsertEventData(l.ctx, device.ProductID, device.DeviceName, &dbData)
-		if err != nil {
-			l.Errorf("%s.InsertEventData err=%+v", utils.FuncName(), err)
-			return err
+		if t.ShouldRecordHistory(schema.AffordanceTypeEvent, dbData.Identifier) {
+			err = l.repo.InsertEventData(l.ctx, device.ProductID, device.DeviceName, &dbData)
+			if err != nil {
+				l.Errorf("%s.InsertEventData err=%+v", utils.FuncName(), err)
+				return err
+			}
 		}
 	}
 	return nil
@@ -862,10 +864,12 @@ func (l *ThingLogic) HandleEvent(msg *deviceMsg.PublishMsg) (respMsg *deviceMsg.
 		l.Error(err)
 	}
 
-	err = l.repo.InsertEventData(l.ctx, msg.ProductID, msg.DeviceName, &dbData)
-	if err != nil {
-		l.Errorf("%s.InsertEventData err=%+v", utils.FuncName(), err)
-		return l.DeviceResp(msg, errors.Database.AddDetail(err), nil), errors.Database.AddDetail(err)
+	if l.schema.ShouldRecordHistory(schema.AffordanceTypeEvent, dbData.Identifier) {
+		err = l.repo.InsertEventData(l.ctx, msg.ProductID, msg.DeviceName, &dbData)
+		if err != nil {
+			l.Errorf("%s.InsertEventData err=%+v", utils.FuncName(), err)
+			return l.DeviceResp(msg, errors.Database.AddDetail(err), nil), errors.Database.AddDetail(err)
+		}
 	}
 	return l.DeviceResp(msg, errors.OK, nil), nil
 }

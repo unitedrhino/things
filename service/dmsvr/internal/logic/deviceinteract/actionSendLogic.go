@@ -142,6 +142,9 @@ func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (ret *dm.ActionSendRe
 		return
 	}
 	defer func() {
+		if !l.schema.ShouldRecordHistory(schema.AffordanceTypeAction, in.ActionID) {
+			return
+		}
 		ctxs.GoNewCtx(l.ctx, func(ctx context.Context) {
 			uc := ctxs.GetUserCtxNoNil(l.ctx)
 			account := uc.Account
