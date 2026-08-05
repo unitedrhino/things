@@ -6,6 +6,7 @@ import (
 
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/things/share/domain/schema"
+	"github.com/spf13/cast"
 )
 
 func (d *DeviceDataRepo) InitDevice(ctx context.Context,
@@ -39,16 +40,30 @@ func GetArrayID(id string, num int) string {
 	return fmt.Sprintf("%s_%d", id, num)
 }
 
+// propertyDBIdentifiers 返回属性在普通时序库中的实际标识符。
+func propertyDBIdentifiers(property schema.Property) []string {
+	if property.Define.Type != schema.DataTypeArray {
+		return []string{property.Identifier}
+	}
+	identifiers := make([]string, 0, cast.ToInt(property.Define.Max))
+	for index := 0; index < cast.ToInt(property.Define.Max); index++ {
+		identifiers = append(identifiers, GetArrayID(property.Identifier, index))
+	}
+	return identifiers
+}
+
 func (d *DeviceDataRepo) DeleteDeviceProperty(ctx context.Context, productID string, deviceName string, s []schema.Property) error {
-	var ids []string
-	var tables = map[string]struct{}{}
 	if len(s) > 0 {
+		tableIdentifiers := make(map[string][]string)
 		for _, v := range s {
-			ids = append(ids, v.Identifier)
-			tables[getTableName(v.Define)] = struct{}{}
+			tableName := getTableName(v.Define)
+			tableIdentifiers[tableName] = append(tableIdentifiers[tableName], propertyDBIdentifiers(v)...)
 		}
-		for tb := range tables {
-			err := d.db.WithContext(ctx).Table(tb).Where("product_id = ? and device_name = ? and identifier in ?", productID, deviceName, ids).Delete(&Property{}).Error
+		for tableName, identifiers := range tableIdentifiers {
+			if len(identifiers) == 0 {
+				continue
+			}
+			err := d.db.WithContext(ctx).Table(tableName).Where("product_id = ? and device_name = ? and identifier in ?", productID, deviceName, identifiers).Delete(&Property{}).Error
 			if err != nil {
 				return stores.ErrFmt(err)
 			}

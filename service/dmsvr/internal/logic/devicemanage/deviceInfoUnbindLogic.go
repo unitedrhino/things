@@ -184,7 +184,7 @@ func (l *DeviceInfoUnbindLogic) DeviceInfoUnbind(in *dm.DeviceInfoUnbindReq) (*d
 		logic.FillProjectDeviceCount(l.ctx, l.svcCtx, oldProjectID)
 	}
 	l.svcCtx.DeviceCache.SetData(l.ctx, dev, nil)
-	err = DeleteDeviceTimeData(l.ctx, l.svcCtx, in.ProductID, in.DeviceName, DeleteModeThing)
+	err = DeleteDeviceTimeData(l.ctx, l.svcCtx, in.ProductID, in.DeviceName, DeleteModeThing, true)
 	err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUnbind, &dev)
 	if err != nil {
 		l.Error(err)

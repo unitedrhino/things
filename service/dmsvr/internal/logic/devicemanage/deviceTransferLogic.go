@@ -174,7 +174,7 @@ func (l *DeviceTransferLogic) DeviceTransfer(in *dm.DeviceTransferReq) (*dm.Empt
 	}
 	if in.IsCleanData == def.True {
 		for _, di := range dis {
-			err := DeleteDeviceTimeData(l.ctx, l.svcCtx, di.ProductID, di.DeviceName, DeleteModeThing)
+			err := DeleteDeviceTimeData(l.ctx, l.svcCtx, di.ProductID, di.DeviceName, DeleteModeThing, true)
 			if err != nil {
 				return nil, err
 			}

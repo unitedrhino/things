@@ -205,8 +205,8 @@ func (l *DeviceMoveLogic) DeviceMove(in *dm.DeviceMoveReq) (*dm.Empty, error) {
 
 	l.svcCtx.DeviceCache.SetData(l.ctx, oldDevCore, nil)
 	l.svcCtx.DeviceCache.SetData(l.ctx, newDevCore, nil)
-	err = DeleteDeviceTimeData(l.ctx, l.svcCtx, oldDev.ProductID, oldDev.DeviceName, DeleteModeAll)
-	err = DeleteDeviceTimeData(l.ctx, l.svcCtx, newDev.ProductID, newDev.DeviceName, DeleteModeAll)
+	err = DeleteDeviceTimeData(l.ctx, l.svcCtx, oldDev.ProductID, oldDev.DeviceName, DeleteModeAll, false)
+	err = DeleteDeviceTimeData(l.ctx, l.svcCtx, newDev.ProductID, newDev.DeviceName, DeleteModeAll, false)
 	err = l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUnbind, &oldDevCore)
 	BindChange(l.ctx, l.svcCtx, pi, oldDevCore, int64(oldDev.ProjectID))
 	BindChange(l.ctx, l.svcCtx, pi, newDevCore, int64(newDev.ProjectID))

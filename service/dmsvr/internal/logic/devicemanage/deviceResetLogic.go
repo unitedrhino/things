@@ -50,7 +50,7 @@ func (l *DeviceResetLogic) DeviceReset(in *dm.DeviceResetReq) (*dm.Empty, error)
 		return nil, err
 	}
 	if in.Log {
-		err := DeleteDeviceTimeData(l.ctx, l.svcCtx, di.ProductID, di.DeviceName, DeleteModeAll)
+		err := DeleteDeviceTimeData(l.ctx, l.svcCtx, di.ProductID, di.DeviceName, DeleteModeAll, false)
 		if err != nil {
 			return nil, err
 		}
