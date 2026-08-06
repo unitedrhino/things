@@ -144,7 +144,7 @@ func (S *SchemaStore) GetPropertyTableNames(productID, deviceName string, p *sch
 	default:
 		return []string{fmt.Sprintf("`device_property_%s_%s_%s`", productID, deviceName, p.Identifier)}
 	}
-	return []string{}
+	return ret
 }
 func (S *SchemaStore) GetEventTableName(productID, deviceName string) string {
 	return fmt.Sprintf("`device_event_%s_%s`", productID, deviceName)
