@@ -298,6 +298,12 @@ type DeviceInfoCanBindReq struct {
 	Device DeviceCore `json:"device"`
 }
 
+// DeviceInfoCanBindResp 返回可访问设备线索，供 App 判断切换项目或共享入口。
+type DeviceInfoCanBindResp struct {
+	ProjectID int64 `json:"projectID,string,omitempty,optional"` //非共享关系时的设备当前项目ID
+	IsShare   bool  `json:"isShare,omitempty,optional"`          //是否是共享设备关系
+}
+
 type DeviceInfoDeleteReq struct {
 	ProductID  string `json:"productID"`  //产品id 只读
 	DeviceName string `json:"deviceName"` //设备名称 读写

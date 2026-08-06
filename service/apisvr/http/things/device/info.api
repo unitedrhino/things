@@ -89,7 +89,7 @@ service api {
         businessType: "find"
     )
     @handler canBind
-    post /can-bind (DeviceInfoCanBindReq) returns ()
+    post /can-bind (DeviceInfoCanBindReq) returns (DeviceInfoCanBindResp)
     @doc(
         summary: "解绑设备"
         businessType: "modify"
@@ -255,6 +255,10 @@ type (
     }
     DeviceInfoCanBindReq{
         Device DeviceCore `json:"device"`
+    }
+    DeviceInfoCanBindResp{
+        ProjectID int64 `json:"projectID,string,omitempty,optional"`//非共享关系时的设备当前项目ID
+        IsShare bool `json:"isShare,omitempty,optional"`//是否是共享设备关系
     }
     DeviceInfoMultiBindReq{
         Devices []*DeviceCore `json:"devices"`

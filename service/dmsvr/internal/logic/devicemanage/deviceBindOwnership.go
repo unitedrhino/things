@@ -64,6 +64,9 @@ func classifyDeviceBindOwnership(
 	if pi == nil {
 		return deviceBindOwnershipStale, nil
 	}
+	if hasProjectAuth(uc, projectID) {
+		return deviceBindOwnershipCurrentUserBound, nil
+	}
 	if pi.AdminUserID == uc.UserID {
 		return deviceBindOwnershipCurrentUserBound, nil
 	}
@@ -76,6 +79,14 @@ func classifyDeviceBindOwnership(
 		return deviceBindOwnershipBlocked, err
 	}
 	return deviceBindOwnershipBlocked, nil
+}
+
+// hasProjectAuth 判断当前用户是否是设备所属项目的成员。
+func hasProjectAuth(uc *ctxs.UserCtx, projectID int64) bool {
+	if uc == nil || uc.ProjectAuth == nil {
+		return false
+	}
+	return uc.ProjectAuth[projectID] != nil
 }
 
 // cleanupStaleDeviceBindArtifacts 清理已注销旧归属遗留的分享、收藏和设备画像。
