@@ -25,6 +25,7 @@ func ToPropertyPo(in *schema.Property) DmSchemaCore {
 		Required:     def.ToIntBool[int64](in.Required),
 		Affordance:   string(defineStr),
 		Tag:          in.Tag,
+		FuncGroup:    in.FuncGroup,
 	}
 }
 
