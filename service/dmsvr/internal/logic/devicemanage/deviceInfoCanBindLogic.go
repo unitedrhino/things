@@ -82,7 +82,7 @@ func (l *DeviceInfoCanBindLogic) DeviceInfoCanBind(in *dm.DeviceInfoCanBindReq) 
 		}
 		return nil, errors.DeviceCantBound.WithMsg("设备已被其他用户绑定。如需解绑，请按照相关流程操作。")
 	}
-	if ownership == deviceBindOwnershipCurrentUserBound {
+	if ownership == deviceBindOwnershipCurrentUserOwned || ownership == deviceBindOwnershipCurrentUserBound {
 		return nil, currentUserBoundDeviceError(int64(di.ProjectID))
 	}
 	if string(di.TenantCode) == uc.TenantCode &&

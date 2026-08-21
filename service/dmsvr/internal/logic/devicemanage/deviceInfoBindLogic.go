@@ -31,6 +31,16 @@ type DeviceInfoBindLogic struct {
 	logx.Logger
 }
 
+// legacyBroadcastBleNetType 表示老广播蓝牙产品的网络类型。
+const legacyBroadcastBleNetType int64 = 10
+
+// canDirectlyRebindOwnedDevice 判断设备是否符合本人跨项目直接重绑的窄策略。
+func canDirectlyRebindOwnedDevice(ownership deviceBindOwnership, netType, bindLevel int64) bool {
+	return ownership == deviceBindOwnershipCurrentUserOwned &&
+		netType == legacyBroadcastBleNetType &&
+		bindLevel == product.BindLeveWeak3
+}
+
 func NewDeviceInfoBindLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeviceInfoBindLogic {
 	return &DeviceInfoBindLogic{
 		ctx:    ctx,
@@ -81,8 +91,9 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 		l.Error(err)
 		return nil, err
 	}
+	directProjectRebind := false
 	if di == nil {
-		if !(((pi.NetType == def.NetBle || pi.NetType == 10) && pi.AutoRegister == def.AutoRegAuto) || (pi.AutoRegister == def.AutoRegBind)) {
+		if !(((pi.NetType == def.NetBle || pi.NetType == legacyBroadcastBleNetType) && pi.AutoRegister == def.AutoRegAuto) || (pi.AutoRegister == def.AutoRegBind)) {
 			di, err = relationDB.NewDeviceInfoRepo(l.ctx).FindOneByFilter(ctxs.WithRoot(l.ctx), relationDB.DeviceFilter{
 				DeviceNames: []string{in.Device.DeviceName, filterAllowedChars(in.Device.DeviceName)}, //兼容打印错误
 			})
@@ -144,6 +155,11 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 		if ownership == deviceBindOwnershipCurrentUserBound {
 			return nil, errors.DeviceBound.WithMsg("设备已存在，请返回设备列表查看该设备")
 		}
+		directProjectRebind = canDirectlyRebindOwnedDevice(ownership, pi.NetType, pi.BindLevel)
+		if ownership == deviceBindOwnershipCurrentUserOwned && !directProjectRebind {
+			return nil, errors.DeviceBound.WithMsg("设备已存在，请返回设备列表查看该设备")
+		}
+		// 老广播蓝牙弱绑定设备属于当前用户管理的其它项目时继续绑定流程，直接迁入本次请求的项目。
 		if ownership == deviceBindOwnershipStale {
 			err = cleanupStaleDeviceBindArtifacts(l.ctx, devices.Core{ProductID: di.ProductID, DeviceName: di.DeviceName})
 			if err != nil {
@@ -163,6 +179,8 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 		}
 	}
 
+	oldProjectID := int64(di.ProjectID)
+	oldAreaID := int64(di.AreaID)
 	di.TenantCode = dataType.TenantCode(uc.TenantCode)
 	di.ProjectID = dataType.ProjectID(uc.ProjectID)
 	di.UserID = projectI.AdminUserID
@@ -175,7 +193,12 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 		return nil, err
 	}
 	var oldArea *sys.AreaInfo
-	if di.AreaID > def.NotClassified {
+	if directProjectRebind && oldAreaID > def.NotClassified {
+		oldArea, err = l.svcCtx.AreaCache.GetData(l.ctx, oldAreaID)
+		if err != nil {
+			l.Error(err)
+		}
+	} else if !directProjectRebind && di.AreaID > def.NotClassified {
 		oldArea, err = l.svcCtx.AreaCache.GetData(l.ctx, in.AreaID)
 		if err != nil {
 			l.Error(err)
@@ -198,7 +221,7 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 			Valid: true,
 		}
 	}
-	if pc.NetType == def.NetBle || pi.NetType == 10 || pi.OnlineHandle == product.OnlineHandleAlways { //蓝牙绑定了就是上线
+	if pc.NetType == def.NetBle || pi.NetType == legacyBroadcastBleNetType || pi.OnlineHandle == product.OnlineHandleAlways { //蓝牙绑定了就是上线
 		di.IsOnline = def.True
 		di.Status = def.DeviceStatusOnline
 	}
@@ -233,6 +256,9 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 		logic.FillAreaDeviceCount(l.ctx, l.svcCtx, oldArea)
 	}
 	logic.FillProjectDeviceCount(l.ctx, l.svcCtx, int64(di.ProjectID))
+	if directProjectRebind && oldProjectID > def.NotClassified && oldProjectID != int64(di.ProjectID) {
+		logic.FillProjectDeviceCount(l.ctx, l.svcCtx, oldProjectID)
+	}
 	dev := devices.Core{ProductID: di.ProductID, DeviceName: di.DeviceName}
 	er := l.svcCtx.FastEvent.Publish(l.ctx, topics.DmDeviceInfoUpdate, &dev)
 	if er != nil {
