@@ -76,6 +76,7 @@ type (
 		NeedConfirmJobID   int64
 		NeedConfirmVersion string
 		NetType            int64
+		NetTypes           []int64
 		ProtocolCode       string
 		tableAlias         string
 	}
@@ -130,7 +131,11 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 		hasProductFilter = true
 		productSelect = productSelect.Where("category_id in ?", f.ProductCategoryIDs)
 	}
-	if f.NetType != 0 {
+	if len(f.NetTypes) != 0 {
+		hasProductFilter = true
+		productSelect = productSelect.Where("net_type in ?", f.NetTypes)
+	} else if f.NetType != 0 {
+		hasProductFilter = true
 		productSelect = productSelect.Where("net_type = ?", f.NetType)
 	}
 	if hasProductFilter {

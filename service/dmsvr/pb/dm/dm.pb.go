@@ -13209,13 +13209,14 @@ type DeviceInfoIndexReq struct {
 	ProductCategoryID  int64                  `protobuf:"varint,11,opt,name=productCategoryID,proto3" json:"productCategoryID,omitempty"`          //产品品类id
 	ProductCategoryIDs []int64                `protobuf:"varint,33,rep,packed,name=productCategoryIDs,proto3" json:"productCategoryIDs,omitempty"` //产品品类id
 	Devices            []*DeviceCore          `protobuf:"bytes,12,rep,name=devices,proto3" json:"devices,omitempty"`
-	WithShared         int64                  `protobuf:"varint,13,opt,name=withShared,proto3" json:"withShared,omitempty"`   //过滤分享的设备(这里只获取分享的设备) 1: 同时获取分享的设备 2:只获取分享的设备
-	WithCollect        int64                  `protobuf:"varint,24,opt,name=withCollect,proto3" json:"withCollect,omitempty"` //过滤收藏的设备(这里只获取收藏的设备) 1: 同时获取收藏的设备 2:只获取收藏的设备
-	NetType            int64                  `protobuf:"varint,25,opt,name=netType,proto3" json:"netType,omitempty"`         //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
-	TenantCode         string                 `protobuf:"bytes,14,opt,name=tenantCode,proto3" json:"tenantCode,omitempty"`    //租户过滤
-	Versions           []string               `protobuf:"bytes,15,rep,name=versions,proto3" json:"versions,omitempty"`        //版本列表
-	NotVersion         string                 `protobuf:"bytes,39,opt,name=notVersion,proto3" json:"notVersion,omitempty"`    //非版本
-	DeviceType         int64                  `protobuf:"varint,16,opt,name=deviceType,proto3" json:"deviceType,omitempty"`   //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
+	WithShared         int64                  `protobuf:"varint,13,opt,name=withShared,proto3" json:"withShared,omitempty"`    //过滤分享的设备(这里只获取分享的设备) 1: 同时获取分享的设备 2:只获取分享的设备
+	WithCollect        int64                  `protobuf:"varint,24,opt,name=withCollect,proto3" json:"withCollect,omitempty"`  //过滤收藏的设备(这里只获取收藏的设备) 1: 同时获取收藏的设备 2:只获取收藏的设备
+	NetType            int64                  `protobuf:"varint,25,opt,name=netType,proto3" json:"netType,omitempty"`          //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
+	NetTypes           []int64                `protobuf:"varint,60,rep,packed,name=netTypes,proto3" json:"netTypes,omitempty"` //通讯方式列表:支持按一个或多个网络类型过滤
+	TenantCode         string                 `protobuf:"bytes,14,opt,name=tenantCode,proto3" json:"tenantCode,omitempty"`     //租户过滤
+	Versions           []string               `protobuf:"bytes,15,rep,name=versions,proto3" json:"versions,omitempty"`         //版本列表
+	NotVersion         string                 `protobuf:"bytes,39,opt,name=notVersion,proto3" json:"notVersion,omitempty"`     //非版本
+	DeviceType         int64                  `protobuf:"varint,16,opt,name=deviceType,proto3" json:"deviceType,omitempty"`    //过滤设备类型:0:全部,1:设备,2:网关,3:子设备
 	DeviceTypes        []int64                `protobuf:"varint,21,rep,packed,name=deviceTypes,proto3" json:"deviceTypes,omitempty"`
 	Gateway            *DeviceCore            `protobuf:"bytes,17,opt,name=gateway,proto3" json:"gateway,omitempty"` //获取网关下子设备列表
 	GroupID            int64                  `protobuf:"varint,18,opt,name=groupID,proto3" json:"groupID,omitempty"`
@@ -13426,6 +13427,13 @@ func (x *DeviceInfoIndexReq) GetNetType() int64 {
 		return x.NetType
 	}
 	return 0
+}
+
+func (x *DeviceInfoIndexReq) GetNetTypes() []int64 {
+	if x != nil {
+		return x.NetTypes
+	}
+	return nil
 }
 
 func (x *DeviceInfoIndexReq) GetTenantCode() string {
@@ -21111,7 +21119,7 @@ const file_proto_dm_proto_rawDesc = "" +
 	".dm.IDPathR\vdistributor\x12\x1e\n" +
 	"\n" +
 	"ratedPower\x18\x1c \x01(\x03R\n" +
-	"ratedPower\"\xb1\x0f\n" +
+	"ratedPower\"\xcd\x0f\n" +
 	"\x12DeviceInfoIndexReq\x12 \n" +
 	"\x04page\x18\x01 \x01(\v2\f.dm.PageInfoR\x04page\x12\x1c\n" +
 	"\tproductID\x18\x02 \x01(\tR\tproductID\x12\x1e\n" +
@@ -21143,7 +21151,8 @@ const file_proto_dm_proto_rawDesc = "" +
 	"withShared\x18\r \x01(\x03R\n" +
 	"withShared\x12 \n" +
 	"\vwithCollect\x18\x18 \x01(\x03R\vwithCollect\x12\x18\n" +
-	"\anetType\x18\x19 \x01(\x03R\anetType\x12\x1e\n" +
+	"\anetType\x18\x19 \x01(\x03R\anetType\x12\x1a\n" +
+	"\bnetTypes\x18< \x03(\x03R\bnetTypes\x12\x1e\n" +
 	"\n" +
 	"tenantCode\x18\x0e \x01(\tR\n" +
 	"tenantCode\x12\x1a\n" +

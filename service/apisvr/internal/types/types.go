@@ -356,10 +356,11 @@ type DeviceInfoIndexReq struct {
 	WithGateway         bool                `json:"withGateway,optional"` //同时返回子设备绑定的网关信息
 	HasOwner            int64               `json:"hasOwner,optional"`    //是否被人拥有,1为是 2为否
 	UserID              int64               `json:"userID,string,optional"`
-	NetType             int64               `json:"netType,optional,range=[0:8]"` //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网
-	WithArea            bool                `json:"withArea,optional"`            //同时返回区域信息
-	IsOnlyCore          bool                `json:"isOnlyCore,optional"`          //只返回核心信息
-	Iccid               string              `json:"iccid,optional,omitempty"`     //SIM卡卡号
+	NetType             int64               `json:"netType,optional,range=[0:10]"` //通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN,7:wifi+ble,8:有线网,9:4G+BLE
+	NetTypes            []int64             `json:"netTypes,optional"`             //通讯方式列表:支持按一个或多个网络类型过滤
+	WithArea            bool                `json:"withArea,optional"`             //同时返回区域信息
+	IsOnlyCore          bool                `json:"isOnlyCore,optional"`           //只返回核心信息
+	Iccid               string              `json:"iccid,optional,omitempty"`      //SIM卡卡号
 	WithGroups          []string            `json:"withGroups,optional"`
 	Property            map[string]*Compare `json:"property,optional"` //设备最新属性过滤,key为属性的id,如果是结构体则key为 aaa.bbb 数组为aaa.1
 }
