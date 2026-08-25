@@ -7,7 +7,6 @@ import (
 	"github.com/google/uuid"
 	"math/rand"
 	"net/url"
-	"os"
 	"sync"
 	"time"
 
@@ -50,8 +49,11 @@ func NewMqttClient(conf *conf.MqttConf) (mcs *MqttClient, err error) {
 				break
 			}
 			if err != nil {
+				// MQTT 连接失败不应直接退出整个进程（会导致 dgsvr/dmsvr/apisvr 一起崩溃循环）。
+				// paho 客户端已启用 AutoReconnect + ConnectRetry，底层会持续后台重连，
+				// 此处仅记录错误并中止本次初始化，由函数级 return 返回错误给调用方。
 				logx.Errorf("mqtt_client 连接失败 conf:%#v  err:%v", conf, err)
-				os.Exit(-1)
+				return
 			}
 			clients = append(clients, mc)
 			var cli = MqttClient{clients: clients, cfg: conf}

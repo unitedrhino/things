@@ -55,7 +55,10 @@ func GetSvcCtx() *svc.ServiceContext {
 // RunServer 如果是直连模式,同时提供Grpc的能力
 func RunServer(svcCtx *svc.ServiceContext) {
 	runSvrOnce.Do(func() {
-		go Run(svcCtx)
+		// 使用 utils.Go 启动：内部带 recover，避免 RPC bind 失败 panic 直接退出整个进程
+		utils.Go(context.Background(), func() {
+			Run(svcCtx)
+		})
 	})
 
 }
