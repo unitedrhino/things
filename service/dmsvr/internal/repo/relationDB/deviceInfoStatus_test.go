@@ -31,6 +31,10 @@ func newDeviceStatusTestRepo(t *testing.T) DeviceInfoRepo {
 		device_name TEXT,
 		status INTEGER NOT NULL,
 		is_online INTEGER NOT NULL,
+		first_login DATETIME,
+		last_login DATETIME,
+		last_offline DATETIME,
+		last_ip TEXT,
 		exp_time DATETIME,
 		user_id INTEGER NOT NULL,
 		updated_by INTEGER NOT NULL DEFAULT 0,
@@ -120,12 +124,88 @@ func TestDeviceStatusBatchRechecksCurrentStatus(t *testing.T) {
 	}
 }
 
+func TestConnectivityStatusPreservesLifecyclePriority(t *testing.T) {
+	repo := newDeviceStatusTestRepo(t)
+	ctx := deviceStatusTestContext()
+	now := time.Now()
+	insertDeviceStatusTestRow(t, repo, 1, def.DeviceStatusInactive, def.False, now.Add(time.Hour), 2)
+	insertDeviceStatusTestRow(t, repo, 2, def.DeviceStatusAbnormal, def.False, now.Add(time.Hour), 2)
+	insertDeviceStatusTestRow(t, repo, 3, def.DeviceStatusArrearage, def.False, now.Add(time.Hour), 2)
+	insertDeviceStatusTestRow(t, repo, 4, def.DeviceStatusOffline, def.False, now.Add(-time.Hour), 2)
+	insertDeviceStatusTestRow(t, repo, 5, def.DeviceStatusOffline, def.False, now.Add(-time.Hour), def.RootNode)
+
+	for id := int64(1); id <= 5; id++ {
+		if err := repo.UpdateConnectivityOnlineByID(ctx, id, now, "127.0.0.1", true); err != nil {
+			t.Fatal(err)
+		}
+	}
+	wantOnline := map[int64]def.DeviceStatus{
+		1: def.DeviceStatusOnline,
+		2: def.DeviceStatusAbnormal,
+		3: def.DeviceStatusArrearage,
+		4: def.DeviceStatusArrearage,
+		5: def.DeviceStatusOnline,
+	}
+	assertDeviceConnectivityStatus(t, repo, wantOnline, def.True)
+
+	if err := repo.UpdateConnectivityOfflineByIDs(ctx, []int64{5, 3, 1, 4, 2}, now.Add(time.Minute)); err != nil {
+		t.Fatal(err)
+	}
+	wantOffline := map[int64]def.DeviceStatus{
+		1: def.DeviceStatusOffline,
+		2: def.DeviceStatusAbnormal,
+		3: def.DeviceStatusArrearage,
+		4: def.DeviceStatusArrearage,
+		5: def.DeviceStatusOffline,
+	}
+	assertDeviceConnectivityStatus(t, repo, wantOffline, def.False)
+}
+
+func TestDeviceStatusMaintenanceSkipsExpiredOwnedRows(t *testing.T) {
+	repo := newDeviceStatusTestRepo(t)
+	ctx := deviceStatusTestContext()
+	expired := time.Now().Add(-time.Hour)
+	insertDeviceStatusTestRow(t, repo, 1, def.DeviceStatusAbnormal, def.True, expired, 2)
+	insertDeviceStatusTestRow(t, repo, 2, def.DeviceStatusOnline, def.True, expired, 2)
+
+	recovered, err := repo.RecoverAbnormalDeviceStatusBatch(ctx, []int64{1})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(recovered) != 0 {
+		t.Fatalf("recovered expired devices = %v, want empty", deviceStatusIDs(recovered))
+	}
+	marked, err := repo.MarkAbnormalDeviceStatusBatch(ctx, []int64{2})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(marked) != 0 {
+		t.Fatalf("marked expired devices = %v, want empty", deviceStatusIDs(marked))
+	}
+}
+
 func TestDeviceStatusBatchLimit(t *testing.T) {
 	repo := newDeviceStatusTestRepo(t)
 	ids := make([]int64, DeviceStatusUpdateBatchSize+1)
 	_, err := repo.MarkAbnormalDeviceStatusBatch(deviceStatusTestContext(), ids)
 	if err == nil {
 		t.Fatal("expected batch limit error")
+	}
+}
+
+func TestConnectivityStatusBatchLimit(t *testing.T) {
+	repo := newDeviceStatusTestRepo(t)
+	ids := make([]int64, DeviceStatusUpdateBatchSize+1)
+	err := repo.UpdateConnectivityOfflineByIDs(deviceStatusTestContext(), ids, time.Now())
+	if err == nil {
+		t.Fatal("expected connectivity batch limit error")
+	}
+}
+
+func TestConnectivityStatusRejectsMissingRow(t *testing.T) {
+	repo := newDeviceStatusTestRepo(t)
+	if err := repo.UpdateConnectivityOnlineByID(deviceStatusTestContext(), 999, time.Now(), "127.0.0.1", false); err == nil {
+		t.Fatal("expected missing connectivity row error")
 	}
 }
 
@@ -159,4 +239,20 @@ func deviceStatusIDs(devices []*DmDeviceInfo) []int64 {
 		ids = append(ids, device.ID)
 	}
 	return ids
+}
+
+func assertDeviceConnectivityStatus(t *testing.T, repo DeviceInfoRepo, want map[int64]def.DeviceStatus, wantOnline int64) {
+	t.Helper()
+	for id, wantStatus := range want {
+		var got struct {
+			Status   def.DeviceStatus
+			IsOnline int64
+		}
+		if err := repo.db.Table("dm_device_info").Select("status", "is_online").Where("id = ?", id).Scan(&got).Error; err != nil {
+			t.Fatal(err)
+		}
+		if got.Status != wantStatus || got.IsOnline != wantOnline {
+			t.Fatalf("device %d status/isOnline = %d/%d, want %d/%d", id, got.Status, got.IsOnline, wantStatus, wantOnline)
+		}
+	}
 }

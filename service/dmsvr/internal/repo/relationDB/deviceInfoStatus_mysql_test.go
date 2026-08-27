@@ -39,6 +39,10 @@ func TestDeviceStatusUpdatesConcurrentOnMySQL(t *testing.T) {
 		device_name VARCHAR(100) NOT NULL,
 		status SMALLINT NOT NULL,
 		is_online SMALLINT NOT NULL,
+		first_login DATETIME NULL,
+		last_login DATETIME NULL,
+		last_offline DATETIME NULL,
+		last_ip VARCHAR(100) NOT NULL DEFAULT '',
 		exp_time DATETIME NULL,
 		user_id BIGINT NOT NULL,
 		updated_by BIGINT NOT NULL DEFAULT 0,
@@ -72,9 +76,9 @@ func TestDeviceStatusUpdatesConcurrentOnMySQL(t *testing.T) {
 		}
 
 		start := make(chan struct{})
-		errCh := make(chan error, 2)
+		errCh := make(chan error, 4)
 		var wg sync.WaitGroup
-		wg.Add(2)
+		wg.Add(4)
 		go func() {
 			defer wg.Done()
 			<-start
@@ -87,6 +91,16 @@ func TestDeviceStatusUpdatesConcurrentOnMySQL(t *testing.T) {
 			_, updateErr := repo.RecoverAbnormalDeviceStatusBatch(ctx, ids)
 			errCh <- updateErr
 		}()
+		go func() {
+			defer wg.Done()
+			<-start
+			errCh <- repo.UpdateConnectivityOnlineByID(ctx, ids[0], cutoff, "127.0.0.1", true)
+		}()
+		go func() {
+			defer wg.Done()
+			<-start
+			errCh <- repo.UpdateConnectivityOfflineByIDs(ctx, ids, cutoff)
+		}()
 		close(start)
 		wg.Wait()
 		close(errCh)
@@ -94,6 +108,13 @@ func TestDeviceStatusUpdatesConcurrentOnMySQL(t *testing.T) {
 			if updateErr != nil {
 				t.Fatalf("round %d concurrent update failed: %v", round, updateErr)
 			}
+		}
+		var nonArrearage int64
+		if err = db.Model(&DmDeviceInfo{}).Where("status <> ?", def.DeviceStatusArrearage).Count(&nonArrearage).Error; err != nil {
+			t.Fatal(err)
+		}
+		if nonArrearage != 0 {
+			t.Fatalf("round %d non-arrearage expired devices = %d, want 0", round, nonArrearage)
 		}
 	}
 }

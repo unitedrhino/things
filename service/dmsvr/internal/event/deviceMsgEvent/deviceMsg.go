@@ -209,14 +209,11 @@ func (l *DeviceMsgHandle) FixDisconnect(msg *deviceMsg.PublishMsg) {
 			return
 		}
 		if di.IsOnline != def.True { //如果不在线但是上报了需要调整为在线状态
-			var updates = map[string]any{"is_online": def.True, "last_login": time.UnixMilli(msg.Timestamp), "status": def.DeviceStatusOnline}
-			if di.FirstLogin == 0 {
-				updates["first_login"] = time.UnixMilli(msg.Timestamp)
-			}
-			err = relationDB.NewDeviceInfoRepo(ctx).UpdateWithField(ctx,
-				relationDB.DeviceFilter{Cores: []*devices.Core{{ProductID: msg.ProductID, DeviceName: msg.DeviceName}}}, updates)
+			err = relationDB.NewDeviceInfoRepo(ctx).UpdateConnectivityOnlineByID(
+				ctx, di.Id, time.UnixMilli(msg.Timestamp), di.LastIp, di.FirstLogin == 0)
 			if err != nil {
 				l.Error(err)
+				return
 			}
 			err = l.svcCtx.DeviceCache.SetData(ctx, devices.Core{
 				ProductID:  msg.ProductID,

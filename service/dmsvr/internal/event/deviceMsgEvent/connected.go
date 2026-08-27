@@ -2,8 +2,6 @@ package deviceMsgEvent
 
 import (
 	"context"
-	"database/sql"
-	"gitee.com/unitedrhino/share/def"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceStatus"
 	devicemanagelogic "gitee.com/unitedrhino/things/service/dmsvr/internal/logic/devicemanage"
@@ -37,16 +35,10 @@ func NewConnectedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Connect
 }
 
 func (l *ConnectedLogic) UpdateLoginTime() {
-	now := sql.NullTime{
-		Valid: true,
-		Time:  time.Now(),
+	err := l.DiDB.UpdateConnectivityOnlineByID(l.ctx, l.di.ID, time.Now(), l.di.LastIp, !l.di.FirstLogin.Valid)
+	if err != nil {
+		l.Error(err)
 	}
-	if l.di.FirstLogin.Valid == false {
-		l.di.FirstLogin = now
-	}
-	l.di.LastLogin = now
-	l.di.IsOnline = def.True
-	l.DiDB.Update(l.ctx, l.di)
 }
 
 func (l *ConnectedLogic) Handle(msg *deviceStatus.ConnectMsg) error {

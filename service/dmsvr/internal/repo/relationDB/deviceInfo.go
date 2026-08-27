@@ -438,6 +438,69 @@ func (d DeviceInfoRepo) UpdateWithField(ctx context.Context, f DeviceFilter, upd
 	return stores.ErrFmt(err)
 }
 
+// UpdateConnectivityOnlineByID 按主键记录单个设备上线，并保护欠费、异常等高优先级状态。
+func (d DeviceInfoRepo) UpdateConnectivityOnlineByID(ctx context.Context, id int64, loginTime time.Time, lastIP string, setFirstLogin bool) error {
+	updates := map[string]any{
+		"is_online":  def.True,
+		"last_login": loginTime,
+		"last_ip":    lastIP,
+		"status":     deviceConnectivityStatusExpr(time.Now(), def.DeviceStatusOnline),
+	}
+	if setFirstLogin {
+		updates["first_login"] = loginTime
+	}
+	return d.updateConnectivityStatusByIDs(ctx, "online", []int64{id}, updates)
+}
+
+// UpdateConnectivityOfflineByIDs 按主键顺序记录一批设备离线，并保护欠费、异常等高优先级状态。
+func (d DeviceInfoRepo) UpdateConnectivityOfflineByIDs(ctx context.Context, ids []int64, offlineTime time.Time) error {
+	return d.updateConnectivityStatusByIDs(ctx, "offline", ids, map[string]any{
+		"is_online":    def.False,
+		"last_offline": offlineTime,
+		"status":       deviceConnectivityStatusExpr(time.Now(), def.DeviceStatusOffline),
+	})
+}
+
+func deviceConnectivityStatusExpr(cutoff time.Time, connectivityStatus def.DeviceStatus) clause.Expr {
+	return gorm.Expr(`CASE
+		WHEN user_id > ? AND exp_time IS NOT NULL AND exp_time <= ? THEN ?
+		WHEN status > ? THEN status
+		ELSE ? END`,
+		def.RootNode, cutoff, def.DeviceStatusArrearage,
+		def.DeviceStatusOffline, connectivityStatus)
+}
+
+func (d DeviceInfoRepo) updateConnectivityStatusByIDs(ctx context.Context, operation string, ids []int64, updates map[string]any) error {
+	if len(ids) == 0 {
+		return nil
+	}
+	if len(ids) > DeviceStatusUpdateBatchSize {
+		return fmt.Errorf("device connectivity update batch exceeds %d rows", DeviceStatusUpdateBatchSize)
+	}
+
+	orderedIDs := append([]int64(nil), ids...)
+	sort.Slice(orderedIDs, func(i, j int) bool { return orderedIDs[i] < orderedIDs[j] })
+	started := time.Now()
+	result := d.db.WithContext(ctx).Model(&DmDeviceInfo{}).
+		Where("id IN ? AND deleted_time = 0", orderedIDs).
+		Updates(updates)
+	if result.Error != nil {
+		mysqlCode := uint16(0)
+		var mysqlErr *mysql.MySQLError
+		if errors.As(result.Error, &mysqlErr) {
+			mysqlCode = mysqlErr.Number
+		}
+		logx.WithContext(ctx).Errorf(
+			"device connectivity status update operation=%s ids=%v batch=%d duration=%s mysqlCode=%d traceID=%s err=%v",
+			operation, orderedIDs, len(orderedIDs), time.Since(started), mysqlCode, utils.TraceIdFromContext(ctx), result.Error)
+		return stores.ErrFmt(result.Error)
+	}
+	if result.RowsAffected != int64(len(orderedIDs)) {
+		return fmt.Errorf("device connectivity status update affected %d rows, expected %d", result.RowsAffected, len(orderedIDs))
+	}
+	return nil
+}
+
 // UpdateExpiredDeviceStatus updates expired owned devices in short primary-key batches.
 // Rows that are already in arrearage are deliberately excluded to avoid redundant writes.
 func (d DeviceInfoRepo) UpdateExpiredDeviceStatus(ctx context.Context, cutoff time.Time) (updated int64, batches int, err error) {
@@ -479,15 +542,19 @@ func (d DeviceInfoRepo) UpdateExpiredDeviceStatus(ctx context.Context, cutoff ti
 
 // RecoverAbnormalDeviceStatusBatch restores one bounded batch of abnormal devices.
 func (d DeviceInfoRepo) RecoverAbnormalDeviceStatusBatch(ctx context.Context, ids []int64) ([]*DmDeviceInfo, error) {
+	cutoff := time.Now()
 	return d.updateDeviceStatusBatchWithRetry(ctx, ids,
-		"status = ?", []any{def.DeviceStatusAbnormal},
+		"status = ? AND NOT (user_id > ? AND exp_time IS NOT NULL AND exp_time <= ?)",
+		[]any{def.DeviceStatusAbnormal, def.RootNode, cutoff},
 		map[string]any{"status": gorm.Expr("is_online + ?", 1)})
 }
 
 // MarkAbnormalDeviceStatusBatch marks one bounded batch of online/offline devices abnormal.
 func (d DeviceInfoRepo) MarkAbnormalDeviceStatusBatch(ctx context.Context, ids []int64) ([]*DmDeviceInfo, error) {
+	cutoff := time.Now()
 	return d.updateDeviceStatusBatchWithRetry(ctx, ids,
-		"status IN ?", []any{[]def.DeviceStatus{def.DeviceStatusOnline, def.DeviceStatusOffline}},
+		"status IN ? AND NOT (user_id > ? AND exp_time IS NOT NULL AND exp_time <= ?)",
+		[]any{[]def.DeviceStatus{def.DeviceStatusOnline, def.DeviceStatusOffline}, def.RootNode, cutoff},
 		map[string]any{"status": def.DeviceStatusAbnormal})
 }
 

@@ -1,12 +1,61 @@
 package devicemanagelogic
 
 import (
+	"database/sql"
 	"reflect"
 	"testing"
+	"time"
 
 	"gitee.com/unitedrhino/core/service/syssvr/pb/sys"
+	"gitee.com/unitedrhino/share/def"
+	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
+
+func TestNormalizeDeviceLifecycleStatus(t *testing.T) {
+	now := time.Now()
+	tests := []struct {
+		name string
+		row  relationDB.DmDeviceInfo
+		want def.DeviceStatus
+	}{
+		{
+			name: "expired owned device stays arrearage",
+			row: relationDB.DmDeviceInfo{
+				UserID:  2,
+				Status:  def.DeviceStatusOnline,
+				ExpTime: sql.NullTime{Time: now.Add(-time.Minute), Valid: true},
+			},
+			want: def.DeviceStatusArrearage,
+		},
+		{
+			name: "unowned device is not forced to arrearage",
+			row: relationDB.DmDeviceInfo{
+				UserID:  def.RootNode,
+				Status:  def.DeviceStatusOnline,
+				ExpTime: sql.NullTime{Time: now.Add(-time.Minute), Valid: true},
+			},
+			want: def.DeviceStatusOnline,
+		},
+		{
+			name: "future expiry preserves explicit state",
+			row: relationDB.DmDeviceInfo{
+				UserID:  2,
+				Status:  def.DeviceStatusOffline,
+				ExpTime: sql.NullTime{Time: now.Add(time.Minute), Valid: true},
+			},
+			want: def.DeviceStatusOffline,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			normalizeDeviceLifecycleStatus(&test.row, now)
+			if test.row.Status != test.want {
+				t.Fatalf("status = %d, want %d", test.row.Status, test.want)
+			}
+		})
+	}
+}
 
 func TestAreaDeviceCountRefreshTargetsUseCapturedOldArea(t *testing.T) {
 	newArea := &sys.AreaInfo{

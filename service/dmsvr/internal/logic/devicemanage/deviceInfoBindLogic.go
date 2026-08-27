@@ -225,6 +225,7 @@ func (l *DeviceInfoBindLogic) DeviceInfoBind(in *dm.DeviceInfoBindReq) (*dm.Empt
 		di.IsOnline = def.True
 		di.Status = def.DeviceStatusOnline
 	}
+	normalizeDeviceLifecycleStatus(di, time.Now())
 	err = diDB.Update(ctxs.WithRoot(l.ctx), di)
 	if err != nil {
 		l.Error(err)

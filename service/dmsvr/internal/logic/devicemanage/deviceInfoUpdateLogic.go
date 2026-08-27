@@ -51,6 +51,13 @@ func NewDeviceInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 	}
 }
 
+// normalizeDeviceLifecycleStatus 保证有归属且已到期的设备不能被普通状态更新恢复为在线、离线或异常。
+func normalizeDeviceLifecycleStatus(device *relationDB.DmDeviceInfo, now time.Time) {
+	if device.UserID > def.RootNode && device.ExpTime.Valid && !device.ExpTime.Time.After(now) {
+		device.Status = def.DeviceStatusArrearage
+	}
+}
+
 // areaDeviceCountRefreshTargets 生成设备空间变更后需要重算的空间列表。
 func areaDeviceCountRefreshTargets(newArea *sys.AreaInfo, oldProjectID, oldAreaID int64, oldAreaIDPath string) []*sys.AreaInfo {
 	targets := make([]*sys.AreaInfo, 0, 2)
@@ -307,6 +314,7 @@ func (l *DeviceInfoUpdateLogic) SetDevicePoByDto(old *relationDB.DmDeviceInfo, d
 		if data.Status != 0 {
 			old.Status = data.Status
 		}
+		normalizeDeviceLifecycleStatus(old, time.Now())
 
 		if data.Distributor != nil {
 			old.Distributor = utils.Copy2[stores.IDPathWithUpdate](data.Distributor)

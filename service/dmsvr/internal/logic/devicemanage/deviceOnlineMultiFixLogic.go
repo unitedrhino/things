@@ -2,6 +2,7 @@ package devicemanagelogic
 
 import (
 	"context"
+	"sort"
 	"time"
 
 	"gitee.com/unitedrhino/core/service/syssvr/sysExport"
@@ -73,10 +74,21 @@ func (l *DeviceOnlineMultiFixLogic) DeviceOnlineMultiFix(in *dm.DeviceOnlineMult
 
 func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList ...*deviceStatus.ConnectMsg) (err error) {
 	ctx = ctxs.WithRoot(ctx)
+	type pendingOfflineUpdate struct {
+		id          int64
+		device      devices.Core
+		afterUpdate func()
+	}
 	var ( //这里是最后更新数据库状态的设备列表
-		OffLineDevices  []*devices.Core
+		offlineByID     = make(map[int64]pendingOfflineUpdate)
 		subDeviceInsert []*deviceStatus.ConnectMsg
+		firstErr        error
 	)
+	recordError := func(updateErr error) {
+		if updateErr != nil && firstErr == nil {
+			firstErr = updateErr
+		}
+	}
 
 	var log = logx.WithContext(ctx)
 
@@ -174,18 +186,17 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 			}
 		}
 		if status == def.ConnectedStatus {
-			var updates = map[string]any{"is_online": def.True, "last_login": msg.Timestamp, "status": def.DeviceStatusOnline, "last_ip": msg.Address}
-			if di.FirstLogin == 0 {
-				updates["first_login"] = msg.Timestamp
-			}
-			err = relationDB.NewDeviceInfoRepo(ctx).UpdateWithField(ctx,
-				relationDB.DeviceFilter{Cores: []*devices.Core{&dev}}, updates)
-			if err != nil {
-				log.Error(err)
+			updateErr := relationDB.NewDeviceInfoRepo(ctx).UpdateConnectivityOnlineByID(
+				ctx, di.Id, msg.Timestamp, msg.Address, di.FirstLogin == 0)
+			if updateErr != nil {
+				log.Error(updateErr)
+				recordError(updateErr)
+				return
 			}
 			err = svcCtx.DeviceCache.SetData(ctx, dev, nil)
 			if err != nil {
 				log.Error(err)
+				recordError(err)
 			}
 			if di.IsOnline != def.True {
 				push(appMsg, di)
@@ -200,19 +211,21 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 						log.Error(err)
 					} else {
 						for _, v := range subDevs {
-							app := appMsg
-							app.Device = devices.Core{ProductID: v.ProductID, DeviceName: v.DeviceName}
-							push(appMsg, nil)
 							subDeviceInsert = append(subDeviceInsert, &deviceStatus.ConnectMsg{Action: msg.Action,
 								Device: devices.Core{ProductID: v.ProductID, DeviceName: v.DeviceName}})
 						}
 					}
 				}
-				OffLineDevices = append(OffLineDevices, &dev)
-				if di.IsOnline == def.True {
-					push(appMsg, di)
+				offlineByID[di.Id] = pendingOfflineUpdate{
+					id:     di.Id,
+					device: dev,
+					afterUpdate: func() {
+						if di.IsOnline == def.True {
+							push(appMsg, di)
+						}
+						protocol.DeleteDeviceActivity(ctx, dev)
+					},
 				}
-				protocol.DeleteDeviceActivity(ctx, dev)
 			}
 		}
 
@@ -228,17 +241,31 @@ func HandleOnlineFix(ctx context.Context, svcCtx *svc.ServiceContext, insertList
 		}
 	}
 	diDB := relationDB.NewDeviceInfoRepo(ctx)
-	if len(OffLineDevices) > 0 {
-		err = diDB.UpdateOfflineStatus(ctx, relationDB.DeviceFilter{Cores: OffLineDevices})
-		if err != nil {
-			log.Error(err)
+	if len(offlineByID) > 0 {
+		offlineDevices := make([]pendingOfflineUpdate, 0, len(offlineByID))
+		for _, pending := range offlineByID {
+			offlineDevices = append(offlineDevices, pending)
 		}
-		for _, v := range OffLineDevices { //清除缓存
-			err := svcCtx.DeviceCache.SetData(ctx, *v, nil)
-			if err != nil {
-				log.Error(err)
+		sort.Slice(offlineDevices, func(i, j int) bool { return offlineDevices[i].id < offlineDevices[j].id })
+		for start := 0; start < len(offlineDevices); start += relationDB.DeviceStatusUpdateBatchSize {
+			end := min(start+relationDB.DeviceStatusUpdateBatchSize, len(offlineDevices))
+			batch := offlineDevices[start:end]
+			ids := make([]int64, 0, len(batch))
+			for _, pending := range batch {
+				ids = append(ids, pending.id)
+			}
+			if updateErr := diDB.UpdateConnectivityOfflineByIDs(ctx, ids, time.Now()); updateErr != nil {
+				log.Error(updateErr)
+				return updateErr
+			}
+			for _, pending := range batch {
+				if cacheErr := svcCtx.DeviceCache.SetData(ctx, pending.device, nil); cacheErr != nil {
+					log.Error(cacheErr)
+					recordError(cacheErr)
+				}
+				pending.afterUpdate()
 			}
 		}
 	}
-	return nil
+	return firstErr
 }
