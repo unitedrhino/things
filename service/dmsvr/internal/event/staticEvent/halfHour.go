@@ -8,11 +8,12 @@ import (
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/domain/deviceLog"
+	cacheRepo "gitee.com/unitedrhino/things/service/dmsvr/internal/repo/cache"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/tsDB/schemaDataRepo"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/svc"
-	"gitee.com/unitedrhino/things/share/devices"
 	"github.com/zeromicro/go-zero/core/logx"
+	"sort"
 	"sync"
 	"time"
 )
@@ -33,7 +34,7 @@ func NewHalfHourHandle(ctx context.Context, svcCtx *svc.ServiceContext) *HalfHou
 
 func (l *HalfHourHandle) Handle() error { //产品品类设备数量统计
 	w := sync.WaitGroup{}
-	w.Add(6)
+	w.Add(4)
 	utils.Go(l.ctx, func() {
 		defer w.Done()
 		err := l.ProductCategoryStatic()
@@ -50,7 +51,7 @@ func (l *HalfHourHandle) Handle() error { //产品品类设备数量统计
 	})
 	utils.Go(l.ctx, func() {
 		defer w.Done()
-		err := l.DeviceExp()
+		err := l.runDeviceStatusMaintenance()
 		if err != nil {
 			l.Error(err)
 		}
@@ -62,21 +63,39 @@ func (l *HalfHourHandle) Handle() error { //产品品类设备数量统计
 			l.Error(err)
 		}
 	})
-	utils.Go(l.ctx, func() {
-		defer w.Done()
-		err := l.DeviceAbnormalRecover()
-		if err != nil {
-			l.Error(err)
-		}
-	})
-	utils.Go(l.ctx, func() {
-		defer w.Done()
-		err := l.DeviceAbnormalSet()
-		if err != nil {
-			l.Error(err)
-		}
-	})
 	w.Wait()
+	return nil
+}
+
+func (l *HalfHourHandle) runDeviceStatusMaintenance() error {
+	lock := cacheRepo.NewDeviceStatusMaintenanceLock(l.svcCtx.Cache)
+	token, acquired, err := lock.TryLock(l.ctx)
+	if err != nil {
+		return fmt.Errorf("acquire device status maintenance lock: %w", err)
+	}
+	if !acquired {
+		l.Info("skip duplicate device status maintenance")
+		return nil
+	}
+	defer func() {
+		if err := lock.Unlock(l.ctx, token); err != nil {
+			l.Errorf("release device status maintenance lock: %v", err)
+		}
+	}()
+
+	return runDeviceStatusStages(l.DeviceExp, l.DeviceAbnormalRecover, l.DeviceAbnormalSet)
+}
+
+func runDeviceStatusStages(expire, recover, markAbnormal func() error) error {
+	if err := expire(); err != nil {
+		return fmt.Errorf("update expired device status: %w", err)
+	}
+	if err := recover(); err != nil {
+		return fmt.Errorf("recover abnormal device status: %w", err)
+	}
+	if err := markAbnormal(); err != nil {
+		return fmt.Errorf("mark abnormal device status: %w", err)
+	}
 	return nil
 }
 
@@ -97,19 +116,19 @@ func (l *HalfHourHandle) TimescaleHandle() error { //timescale 视图更新
 
 func (l *HalfHourHandle) DeviceExp() error { //设备过期处理
 	{ //有效期到了之后不启用
-		err := relationDB.NewDeviceInfoRepo(l.ctx).UpdateWithField(l.ctx,
-			relationDB.DeviceFilter{HasOwner: def.True, ExpTime: stores.CmpAnd(stores.CmpLte(time.Now()), stores.CmpIsNull(false))},
-			map[string]any{"status": def.DeviceStatusArrearage})
+		start := time.Now()
+		updated, batches, err := relationDB.NewDeviceInfoRepo(l.ctx).UpdateExpiredDeviceStatus(l.ctx, start)
 		if err != nil {
-			l.Error(err)
+			return err
 		}
+		l.Infof("expired device status maintenance updated=%d batches=%d duration=%s", updated, batches, time.Since(start))
 	}
 	{ //清除设置了过期时间且过期了的分享
 		err := relationDB.NewUserDeviceShareRepo(l.ctx).DeleteByFilter(l.ctx, relationDB.UserDeviceShareFilter{
 			ExpTime: stores.CmpAnd(stores.CmpLte(time.Now()), stores.CmpIsNull(false)),
 		})
 		if err != nil {
-			l.Error(err)
+			return err
 		}
 	}
 	return nil
@@ -122,8 +141,7 @@ func (l *HalfHourHandle) DeviceAbnormalRecover() error { //设备上下线异常
 	if err != nil {
 		return err
 	}
-	var recoverDevices []*devices.Core
-	var recoverDeviceDetail []*relationDB.DmDeviceInfo
+	var recoverDeviceIDs []int64
 	for _, d := range dis {
 		count, err := l.svcCtx.StatusRepo.GetCountLog(l.ctx, deviceLog.StatusFilter{
 			ProductID:  d.ProductID,
@@ -137,33 +155,34 @@ func (l *HalfHourHandle) DeviceAbnormalRecover() error { //设备上下线异常
 		if count > 5 { //如果前一个小时还超过5次的登入登出,则保持异常状态
 			continue
 		}
-		recoverDeviceDetail = append(recoverDeviceDetail, d)
-		recoverDevices = append(recoverDevices, &devices.Core{
-			ProductID:  d.ProductID,
-			DeviceName: d.DeviceName,
-		})
+		recoverDeviceIDs = append(recoverDeviceIDs, d.ID)
 	}
-	if len(recoverDeviceDetail) > 0 {
-		l.Infof("recoverDevices:%v", utils.Fmt(recoverDevices))
-		err := relationDB.NewDeviceInfoRepo(l.ctx).UpdateWithField(l.ctx,
-			relationDB.DeviceFilter{Cores: recoverDevices},
-			map[string]any{"status": stores.Expr("is_online + 1")})
-		if err != nil {
-			l.Error(err)
-		}
-		for _, v := range recoverDeviceDetail {
-			l.svcCtx.AbnormalRepo.Insert(l.ctx, &deviceLog.Abnormal{
-				TenantCode: string(v.TenantCode),
-				ProjectID:  int64(v.ProjectID),
-				AreaID:     int64(v.AreaID),
-				AreaIDPath: string(v.AreaIDPath),
-				ProductID:  v.ProductID,
-				DeviceName: v.DeviceName,
-				Action:     def.False,
-				Type:       "online", //上下线异常
-				Timestamp:  time.Now(),
-				Reason:     "设备异常上下线恢复",
-			})
+	if len(recoverDeviceIDs) > 0 {
+		sort.Slice(recoverDeviceIDs, func(i, j int) bool { return recoverDeviceIDs[i] < recoverDeviceIDs[j] })
+		repo := relationDB.NewDeviceInfoRepo(l.ctx)
+		for start := 0; start < len(recoverDeviceIDs); start += relationDB.DeviceStatusUpdateBatchSize {
+			end := min(start+relationDB.DeviceStatusUpdateBatchSize, len(recoverDeviceIDs))
+			updated, err := repo.RecoverAbnormalDeviceStatusBatch(l.ctx, recoverDeviceIDs[start:end])
+			if err != nil {
+				return err
+			}
+			l.Infof("recover abnormal devices updated=%d", len(updated))
+			for _, v := range updated {
+				if err := l.svcCtx.AbnormalRepo.Insert(l.ctx, &deviceLog.Abnormal{
+					TenantCode: string(v.TenantCode),
+					ProjectID:  int64(v.ProjectID),
+					AreaID:     int64(v.AreaID),
+					AreaIDPath: string(v.AreaIDPath),
+					ProductID:  v.ProductID,
+					DeviceName: v.DeviceName,
+					Action:     def.False,
+					Type:       "online", //上下线异常
+					Timestamp:  time.Now(),
+					Reason:     "设备异常上下线恢复",
+				}); err != nil {
+					return err
+				}
+			}
 		}
 	}
 	return nil
@@ -180,8 +199,7 @@ func (l *HalfHourHandle) DeviceAbnormalSet() error { //设备上下线异常设�
 	if err != nil {
 		return err
 	}
-	var abnormalDevices []*devices.Core
-	var abnormalDeviceDetail []*relationDB.DmDeviceInfo
+	var abnormalDeviceIDs []int64
 	for _, d := range dis {
 		count, err := l.svcCtx.StatusRepo.GetCountLog(l.ctx, deviceLog.StatusFilter{
 			ProductID:  d.ProductID,
@@ -196,33 +214,34 @@ func (l *HalfHourHandle) DeviceAbnormalSet() error { //设备上下线异常设�
 			continue
 		}
 		//如果一个小时内上下线次数大于10次,则判断为异常设备
-		abnormalDeviceDetail = append(abnormalDeviceDetail, d)
-		abnormalDevices = append(abnormalDevices, &devices.Core{
-			ProductID:  d.ProductID,
-			DeviceName: d.DeviceName,
-		})
+		abnormalDeviceIDs = append(abnormalDeviceIDs, d.ID)
 	}
-	if len(abnormalDeviceDetail) > 0 {
-		l.Infof("abnormalDevices:%v", utils.Fmt(abnormalDevices))
-		err := relationDB.NewDeviceInfoRepo(l.ctx).UpdateWithField(l.ctx,
-			relationDB.DeviceFilter{Cores: abnormalDevices, Statuses: []int64{def.DeviceStatusOnline, def.DeviceStatusOffline}},
-			map[string]any{"status": def.DeviceStatusAbnormal})
-		if err != nil {
-			l.Error(err)
-		}
-		for _, v := range abnormalDeviceDetail {
-			l.svcCtx.AbnormalRepo.Insert(l.ctx, &deviceLog.Abnormal{
-				TenantCode: string(v.TenantCode),
-				ProjectID:  int64(v.ProjectID),
-				AreaID:     int64(v.AreaID),
-				AreaIDPath: string(v.AreaIDPath),
-				ProductID:  v.ProductID,
-				DeviceName: v.DeviceName,
-				Action:     def.True,
-				Type:       "online", //上下线异常
-				Timestamp:  time.Now(),
-				Reason:     "设备异常频繁上下线",
-			})
+	if len(abnormalDeviceIDs) > 0 {
+		sort.Slice(abnormalDeviceIDs, func(i, j int) bool { return abnormalDeviceIDs[i] < abnormalDeviceIDs[j] })
+		repo := relationDB.NewDeviceInfoRepo(l.ctx)
+		for start := 0; start < len(abnormalDeviceIDs); start += relationDB.DeviceStatusUpdateBatchSize {
+			end := min(start+relationDB.DeviceStatusUpdateBatchSize, len(abnormalDeviceIDs))
+			updated, err := repo.MarkAbnormalDeviceStatusBatch(l.ctx, abnormalDeviceIDs[start:end])
+			if err != nil {
+				return err
+			}
+			l.Infof("mark abnormal devices updated=%d", len(updated))
+			for _, v := range updated {
+				if err := l.svcCtx.AbnormalRepo.Insert(l.ctx, &deviceLog.Abnormal{
+					TenantCode: string(v.TenantCode),
+					ProjectID:  int64(v.ProjectID),
+					AreaID:     int64(v.AreaID),
+					AreaIDPath: string(v.AreaIDPath),
+					ProductID:  v.ProductID,
+					DeviceName: v.DeviceName,
+					Action:     def.True,
+					Type:       "online", //上下线异常
+					Timestamp:  time.Now(),
+					Reason:     "设备异常频繁上下线",
+				}); err != nil {
+					return err
+				}
+			}
 		}
 	}
 	return nil
