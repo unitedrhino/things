@@ -110,7 +110,7 @@ func (l *PropertyLogIndexLogic) PropertyLogIndex(in *dm.PropertyLogIndexReq) (*d
 		Size:      in.Page.GetSize(),
 		Orders:    []def.OrderBy{},
 	}
-	if !uc.IsAdmin {
+	if !uc.IsAdmin && p.FuncGroup != schema.FuncGroupSystem {
 		var lastBind int64
 		for _, d := range in.DeviceNames {
 			di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{ProductID: in.ProductID, DeviceName: d})

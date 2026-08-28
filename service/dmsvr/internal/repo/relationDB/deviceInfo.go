@@ -2,7 +2,10 @@ package relationDB
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"math/rand"
+	"sort"
 	"strings"
 	"time"
 
@@ -11,7 +14,15 @@ import (
 	"gitee.com/unitedrhino/share/stores"
 	"gitee.com/unitedrhino/share/utils"
 	"gitee.com/unitedrhino/things/share/devices"
+	"github.com/go-sql-driver/mysql"
+	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
+)
+
+const (
+	DeviceStatusUpdateBatchSize = 200
+	deviceStatusUpdateRetries   = 2
 )
 
 type DeviceInfoRepo struct {
@@ -76,6 +87,7 @@ type (
 		NeedConfirmJobID   int64
 		NeedConfirmVersion string
 		NetType            int64
+		NetTypes           []int64
 		ProtocolCode       string
 		tableAlias         string
 	}
@@ -130,7 +142,11 @@ func (d DeviceInfoRepo) fmtFilter(ctx context.Context, f DeviceFilter) *gorm.DB 
 		hasProductFilter = true
 		productSelect = productSelect.Where("category_id in ?", f.ProductCategoryIDs)
 	}
-	if f.NetType != 0 {
+	if len(f.NetTypes) != 0 {
+		hasProductFilter = true
+		productSelect = productSelect.Where("net_type in ?", f.NetTypes)
+	} else if f.NetType != 0 {
+		hasProductFilter = true
 		productSelect = productSelect.Where("net_type = ?", f.NetType)
 	}
 	if hasProductFilter {
@@ -420,6 +436,137 @@ func (d DeviceInfoRepo) UpdateWithField(ctx context.Context, f DeviceFilter, upd
 	db := d.fmtFilter(ctx, f)
 	err := db.Model(&DmDeviceInfo{}).Updates(updates).Error
 	return stores.ErrFmt(err)
+}
+
+// UpdateExpiredDeviceStatus updates expired owned devices in short primary-key batches.
+// Rows that are already in arrearage are deliberately excluded to avoid redundant writes.
+func (d DeviceInfoRepo) UpdateExpiredDeviceStatus(ctx context.Context, cutoff time.Time) (updated int64, batches int, err error) {
+	var cursor int64
+	for {
+		var ids []int64
+		err = d.db.WithContext(ctx).Model(&DmDeviceInfo{}).
+			Select("id").
+			Where("id > ?", cursor).
+			Where("exp_time IS NOT NULL AND exp_time <= ?", cutoff).
+			Where("user_id > 1 AND status <> ?", def.DeviceStatusArrearage).
+			Order("id ASC").
+			Limit(DeviceStatusUpdateBatchSize).
+			Pluck("id", &ids).Error
+		if err != nil {
+			return updated, batches, stores.ErrFmt(err)
+		}
+		if len(ids) == 0 {
+			return updated, batches, nil
+		}
+		cursor = ids[len(ids)-1]
+
+		var changed []*DmDeviceInfo
+		err = retryDeviceStatusUpdate(ctx, func() error {
+			var updateErr error
+			changed, updateErr = d.updateDeviceStatusBatch(ctx, ids,
+				"exp_time IS NOT NULL AND exp_time <= ? AND user_id > 1 AND status <> ?",
+				[]any{cutoff, def.DeviceStatusArrearage},
+				map[string]any{"status": def.DeviceStatusArrearage})
+			return updateErr
+		})
+		if err != nil {
+			return updated, batches, stores.ErrFmt(err)
+		}
+		updated += int64(len(changed))
+		batches++
+	}
+}
+
+// RecoverAbnormalDeviceStatusBatch restores one bounded batch of abnormal devices.
+func (d DeviceInfoRepo) RecoverAbnormalDeviceStatusBatch(ctx context.Context, ids []int64) ([]*DmDeviceInfo, error) {
+	return d.updateDeviceStatusBatchWithRetry(ctx, ids,
+		"status = ?", []any{def.DeviceStatusAbnormal},
+		map[string]any{"status": gorm.Expr("is_online + ?", 1)})
+}
+
+// MarkAbnormalDeviceStatusBatch marks one bounded batch of online/offline devices abnormal.
+func (d DeviceInfoRepo) MarkAbnormalDeviceStatusBatch(ctx context.Context, ids []int64) ([]*DmDeviceInfo, error) {
+	return d.updateDeviceStatusBatchWithRetry(ctx, ids,
+		"status IN ?", []any{[]def.DeviceStatus{def.DeviceStatusOnline, def.DeviceStatusOffline}},
+		map[string]any{"status": def.DeviceStatusAbnormal})
+}
+
+func (d DeviceInfoRepo) updateDeviceStatusBatchWithRetry(ctx context.Context, ids []int64, condition string, args []any, updates map[string]any) (updated []*DmDeviceInfo, err error) {
+	err = retryDeviceStatusUpdate(ctx, func() error {
+		var updateErr error
+		updated, updateErr = d.updateDeviceStatusBatch(ctx, ids, condition, args, updates)
+		return updateErr
+	})
+	if err != nil {
+		return nil, stores.ErrFmt(err)
+	}
+	return updated, nil
+}
+
+func (d DeviceInfoRepo) updateDeviceStatusBatch(ctx context.Context, ids []int64, condition string, args []any, updates map[string]any) (updated []*DmDeviceInfo, err error) {
+	if len(ids) == 0 {
+		return nil, nil
+	}
+	if len(ids) > DeviceStatusUpdateBatchSize {
+		return nil, fmt.Errorf("device status update batch exceeds %d rows", DeviceStatusUpdateBatchSize)
+	}
+
+	orderedIDs := append([]int64(nil), ids...)
+	sort.Slice(orderedIDs, func(i, j int) bool { return orderedIDs[i] < orderedIDs[j] })
+	err = d.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		query := tx.Model(&DmDeviceInfo{}).
+			Where("id IN ?", orderedIDs).
+			Where(condition, args...).
+			Order("id ASC")
+		if tx.Dialector.Name() != "sqlite" {
+			query = query.Clauses(clause.Locking{Strength: "UPDATE"})
+		}
+		if err := query.Find(&updated).Error; err != nil {
+			return err
+		}
+		if len(updated) == 0 {
+			return nil
+		}
+
+		matchedIDs := make([]int64, 0, len(updated))
+		for _, device := range updated {
+			matchedIDs = append(matchedIDs, device.ID)
+		}
+		result := tx.Model(&DmDeviceInfo{}).
+			Where("id IN ?", matchedIDs).
+			Where(condition, args...).
+			Updates(updates)
+		if result.Error != nil {
+			return result.Error
+		}
+		if result.RowsAffected != int64(len(matchedIDs)) {
+			return fmt.Errorf("device status update affected %d rows, expected %d", result.RowsAffected, len(matchedIDs))
+		}
+		return nil
+	})
+	return updated, err
+}
+
+func retryDeviceStatusUpdate(ctx context.Context, update func() error) error {
+	var err error
+	for attempt := 0; attempt <= deviceStatusUpdateRetries; attempt++ {
+		err = update()
+		if err == nil || !isDeviceStatusDeadlock(err) || attempt == deviceStatusUpdateRetries {
+			return err
+		}
+		backoff := time.Duration(20+rand.Intn(31)) * time.Millisecond
+		logx.WithContext(ctx).Errorf("device status batch deadlock retry=%d backoff=%s err=%v", attempt+1, backoff, err)
+		time.Sleep(backoff)
+	}
+	return err
+}
+
+func isDeviceStatusDeadlock(err error) bool {
+	var mysqlErr *mysql.MySQLError
+	if !errors.As(err, &mysqlErr) {
+		return false
+	}
+	return mysqlErr.Number == 1213 || mysqlErr.Number == 1205
 }
 
 func (d DeviceInfoRepo) UpdateOfflineStatus(ctx context.Context, f DeviceFilter) error {

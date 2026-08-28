@@ -47,6 +47,14 @@ const (
 	RecordModeNone RecordMode = 3 //不记录
 )
 
+// FuncGroup 表示物模型功能分类。
+type FuncGroup = int64
+
+const (
+	FuncGroupNormal FuncGroup = 1 //普通功能
+	FuncGroupSystem FuncGroup = 2 //系统功能
+)
+
 // 属性读写类型: r(只读) rw(可读可写)
 type PropertyMode string
 

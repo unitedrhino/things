@@ -22,7 +22,9 @@ const (
 	deviceBindOwnershipBindable deviceBindOwnership = iota
 	// deviceBindOwnershipBlocked 表示设备仍被有效用户或项目占用。
 	deviceBindOwnershipBlocked
-	// deviceBindOwnershipCurrentUserBound 表示设备已归属当前用户的其它项目。
+	// deviceBindOwnershipCurrentUserOwned 表示设备归属当前用户管理的其它项目，可直接迁入当前项目。
+	deviceBindOwnershipCurrentUserOwned
+	// deviceBindOwnershipCurrentUserBound 表示当前用户仅是设备所属项目的成员，不允许迁移设备归属。
 	deviceBindOwnershipCurrentUserBound
 	// deviceBindOwnershipStale 表示设备挂在已删除项目或已删除项目管理员名下。
 	deviceBindOwnershipStale
@@ -65,6 +67,9 @@ func classifyDeviceBindOwnership(
 		return deviceBindOwnershipStale, nil
 	}
 	if pi.AdminUserID == uc.UserID {
+		return deviceBindOwnershipCurrentUserOwned, nil
+	}
+	if hasProjectAuth(uc, projectID) {
 		return deviceBindOwnershipCurrentUserBound, nil
 	}
 
@@ -76,6 +81,14 @@ func classifyDeviceBindOwnership(
 		return deviceBindOwnershipBlocked, err
 	}
 	return deviceBindOwnershipBlocked, nil
+}
+
+// hasProjectAuth 判断当前用户是否是设备所属项目的成员。
+func hasProjectAuth(uc *ctxs.UserCtx, projectID int64) bool {
+	if uc == nil || uc.ProjectAuth == nil {
+		return false
+	}
+	return uc.ProjectAuth[projectID] != nil
 }
 
 // cleanupStaleDeviceBindArtifacts 清理已注销旧归属遗留的分享、收藏和设备画像。

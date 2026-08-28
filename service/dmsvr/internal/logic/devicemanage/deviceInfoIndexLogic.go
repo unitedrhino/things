@@ -90,6 +90,7 @@ func (l *DeviceInfoIndexLogic) DeviceInfoIndex(in *dm.DeviceInfoIndexReq) (*dm.D
 		NotAreaID:          in.NotAreaID,
 		UserID:             in.UserID,
 		NetType:            in.NetType,
+		NetTypes:           in.NetTypes,
 		HasOwner:           in.HasOwner,
 		GroupName:          in.GroupName,
 		ParentGroupID:      in.ParentGroupID,

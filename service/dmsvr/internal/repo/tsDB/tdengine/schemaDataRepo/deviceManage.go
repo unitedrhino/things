@@ -91,7 +91,9 @@ func (d *DeviceDataRepo) DeleteDeviceProperty(ctx context.Context, productID str
 	var sqls []string
 	if len(s) > 0 {
 		for _, v := range s {
-			sqls = append(sqls, fmt.Sprintf(" if exists %s ", d.GetPropertyTableName(productID, deviceName, v.Identifier)))
+			for _, tableName := range d.GetPropertyTableNames(productID, deviceName, &v) {
+				sqls = append(sqls, fmt.Sprintf(" if exists %s ", tableName))
+			}
 		}
 	} else { //删除设备的所有表
 		for _, tbName := range DeviceStables {

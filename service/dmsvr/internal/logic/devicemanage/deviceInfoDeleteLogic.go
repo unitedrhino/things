@@ -11,6 +11,7 @@ import (
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/logic"
 	"gitee.com/unitedrhino/things/service/dmsvr/internal/repo/relationDB"
 	"gitee.com/unitedrhino/things/share/devices"
+	"gitee.com/unitedrhino/things/share/domain/schema"
 	"gitee.com/unitedrhino/things/share/topics"
 	"gorm.io/gorm"
 
@@ -53,7 +54,7 @@ func (l *DeviceInfoDeleteLogic) DeviceInfoDelete(in *dm.DeviceInfoDeleteReq) (*d
 		return nil, errors.System.AddDetail(err)
 	}
 	//删除时序数据库中的表数据
-	err = DeleteDeviceTimeData(l.ctx, l.svcCtx, in.ProductID, in.DeviceName, DeleteModeAll)
+	err = DeleteDeviceTimeData(l.ctx, l.svcCtx, in.ProductID, in.DeviceName, DeleteModeAll, false)
 	if err != nil {
 		return nil, err
 	}
@@ -126,14 +127,42 @@ const (
 	DeleteModeThing            //只删除物模型信息
 )
 
-func DeleteDeviceTimeData(ctx context.Context, svcCtx *svc.ServiceContext, productID, deviceName string, mode DeleteMode) error {
-	schema, err := svcCtx.DeviceSchemaRepo.GetData(ctx, devices.Core{ProductID: productID, DeviceName: deviceName})
+// filterNonSystemProperties 返回需要清理的普通属性，未分类的历史属性按普通属性处理。
+func filterNonSystemProperties(model *schema.Model) []schema.Property {
+	if model == nil {
+		return nil
+	}
+	properties := make([]schema.Property, 0, len(model.Property))
+	for _, property := range model.Property {
+		if property == nil || property.FuncGroup == schema.FuncGroupSystem {
+			continue
+		}
+		properties = append(properties, *property)
+	}
+	return properties
+}
+
+// DeleteDeviceTimeData 按清理模式删除设备时序数据，并可在仅清物模型时保留系统属性。
+func DeleteDeviceTimeData(ctx context.Context, svcCtx *svc.ServiceContext, productID, deviceName string, mode DeleteMode, preserveSystemProperties bool) error {
+	model, err := svcCtx.DeviceSchemaRepo.GetData(ctx, devices.Core{ProductID: productID, DeviceName: deviceName})
 	if err != nil {
 		logx.WithContext(ctx).Errorf("%s.GetSchemaModel err=%+v", utils.FuncName(), err)
 		return errors.System.AddDetail(err)
 	}
 
-	err = svcCtx.SchemaManaRepo.DeleteDevice(ctx, schema, productID, deviceName)
+	if mode == DeleteModeThing && preserveSystemProperties {
+		properties := filterNonSystemProperties(model)
+		if len(properties) == 0 {
+			return nil
+		}
+		err = svcCtx.SchemaManaRepo.DeleteDeviceProperty(ctx, productID, deviceName, properties)
+		if err != nil {
+			logx.WithContext(ctx).Errorf("%s.SchemaManaRepo.DeleteDeviceProperty err=%v", utils.FuncName(), err)
+		}
+		return err
+	}
+
+	err = svcCtx.SchemaManaRepo.DeleteDevice(ctx, model, productID, deviceName)
 	if err != nil {
 		logx.WithContext(ctx).Errorf("%s.SchemaManaRepo.DeleteDevice err=%v", utils.FuncName(), err)
 		return err

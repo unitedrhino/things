@@ -58,12 +58,11 @@ func (l *UserDeviceShareMultiCreateLogic) UserDeviceShareMultiCreate(in *dm.User
 					ProductID:  d.ProductID,
 					DeviceName: d.DeviceName,
 				})
-				if err != nil {
+				if err != nil || di == nil {
 					return nil, errors.Permissions.AddMsg("你分享了异常的设备")
-				} else {
-					if pa.Area[int64(di.AreaID)] != def.AuthAdmin {
-						return nil, errors.Permissions.AddMsg("您无权分享所选的设备")
-					}
+				}
+				if pa.Area[int64(di.AreaID)] != def.AuthAdmin {
+					return nil, errors.Permissions.AddMsg("您无权分享所选的设备")
 				}
 				d.DeviceAlias = di.DeviceAlias
 				d.ProductName = di.ProductName
@@ -74,10 +73,14 @@ func (l *UserDeviceShareMultiCreateLogic) UserDeviceShareMultiCreate(in *dm.User
 	for _, d := range in.Devices {
 		//补全设备信息
 		if d.ProductImg == "" {
-			di, _ := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
+			di, err := l.svcCtx.DeviceCache.GetData(l.ctx, devices.Core{
 				ProductID:  d.ProductID,
 				DeviceName: d.DeviceName,
 			})
+			if err != nil || di == nil { //设备不在缓存时直接返回错误,避免nil指针panic
+				l.Errorf("multi share device not in cache productID:%v deviceName:%v err:%v", d.ProductID, d.DeviceName, err)
+				return nil, errors.Parameter.AddMsg("设备不在缓存中,请重试")
+			}
 			d.DeviceAlias = di.DeviceAlias
 			d.ProductName = di.ProductName
 			d.ProductImg = di.ProductImg

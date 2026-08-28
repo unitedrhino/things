@@ -1849,6 +1849,7 @@ message DeviceInfoIndexReq{
   int64 withShared = 13;//过滤分享的设备(这里只获取分享的设备) 1: 同时获取分享的设备 2:只获取分享的设备
   int64 withCollect = 24;//过滤收藏的设备(这里只获取收藏的设备) 1: 同时获取收藏的设备 2:只获取收藏的设备
   int64   netType = 25;//通讯方式:1:其他,2:wi-fi,3:2G/3G/4G,4:5G,5:BLE,6:LoRaWAN
+  repeated int64 netTypes = 60;//通讯方式列表:支持按一个或多个网络类型过滤
   string tenantCode = 14;//租户过滤
   repeated string versions =15;//版本列表
   string notVersion =39;//非版本
