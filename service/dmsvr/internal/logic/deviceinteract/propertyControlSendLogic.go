@@ -64,6 +64,20 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 	}
 	uc := ctxs.GetUserCtxNoNil(l.ctx)
 	operatorUserID := uc.UserID
+
+	param := map[string]any{}
+	err = utils.Unmarshal([]byte(in.Data), &param)
+	if err != nil {
+		return nil, errors.Parameter.AddDetail(
+			"SendProperty data not right:", in.Data)
+	}
+	param, err = logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthReadWrite, dev, param)
+	if err != nil {
+		return nil, err
+	}
+	if err = CheckControlAllowed(l.ctx, l.svcCtx, dev); err != nil {
+		return nil, err
+	}
 	if protocolCode, err = CheckIsOnline(l.ctx, l.svcCtx, dev); err != nil { //如果是不启用设备影子的模式则直接返回
 		if errors.Is(err, errors.NotOnline) {
 			isOnline = false
@@ -74,18 +88,7 @@ func (l *PropertyControlSendLogic) PropertyControlSend(in *dm.PropertyControlSen
 			return nil, err
 		}
 	}
-	err = l.initMsg(devices.Core{ProductID: in.ProductID, DeviceName: in.DeviceName})
-	if err != nil {
-		return nil, err
-	}
-
-	param := map[string]any{}
-	err = utils.Unmarshal([]byte(in.Data), &param)
-	if err != nil {
-		return nil, errors.Parameter.AddDetail(
-			"SendProperty data not right:", in.Data)
-	}
-	param, err = logic.SchemaAccess(l.ctx, l.svcCtx, def.AuthReadWrite, dev, param)
+	err = l.initMsg(dev)
 	if err != nil {
 		return nil, err
 	}

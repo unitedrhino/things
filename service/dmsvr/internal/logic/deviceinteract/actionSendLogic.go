@@ -80,6 +80,12 @@ func (l *ActionSendLogic) ActionSend(in *dm.ActionSendReq) (ret *dm.ActionSendRe
 	if err != nil {
 		return nil, err
 	}
+	if err = CheckControlAllowed(l.ctx, l.svcCtx, devices.Core{
+		ProductID:  in.ProductID,
+		DeviceName: in.DeviceName,
+	}); err != nil {
+		return nil, err
+	}
 	var protocolCode string
 	if protocolCode, err = CheckIsOnline(l.ctx, l.svcCtx, devices.Core{
 		ProductID:  in.ProductID,

@@ -186,6 +186,10 @@ func (l *ServerHandle) ActionCheck(in *deviceMsg.PublishMsg) error {
 		sendMsg(errors.TimeOut)
 		return nil
 	}
+	if err = deviceinteractlogic.CheckControlAllowed(l.ctx, l.svcCtx, core); err != nil {
+		sendMsg(err)
+		return nil
+	}
 	_, err = deviceinteractlogic.CheckIsOnline(l.ctx, l.svcCtx, core)
 	if err != nil {
 		sendMsg(err)
