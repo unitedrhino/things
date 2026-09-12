@@ -81,6 +81,22 @@ Multi-protocol devices connect through protocol gateways, flow into the device m
 
 ![Scada Dashboard](./doc/assets/组态大屏.png)
 
+#### Five Energy Dashboard Templates
+
+The platform ships five built-in energy dashboard system templates — electric power, water, gas, heat, and coal. Create a dashboard from a template in one click. Device data flows in over MQTT and is pushed to the dashboard in real time via WebSocket; alarms are triggered by the rule engine with drill-down handling details.
+
+![Energy Dashboard - Electric](./doc/assets/bigscreen/能源大屏-电力.png)
+
+The other four share the same layout with per-category color schemes and data semantics:
+
+| Energy Dashboard - Water | Energy Dashboard - Gas |
+|---|---|
+| ![能源大屏-水务](./doc/assets/bigscreen/能源大屏-水务.png) | ![能源大屏-燃气](./doc/assets/bigscreen/能源大屏-燃气.png) |
+| **Energy Dashboard - Heat** | **Energy Dashboard - Coal** |
+| ![能源大屏-热力](./doc/assets/bigscreen/能源大屏-热力.png) | ![能源大屏-燃煤](./doc/assets/bigscreen/能源大屏-燃煤.png) |
+
+[View the Smart Energy case →](https://doc.unitedrhino.com/cases/e9f4a2/)
+
 ### Device Map
 
 ![Device Map](./doc/assets/设备地图.png)
