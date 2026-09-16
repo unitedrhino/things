@@ -89,3 +89,8 @@ things/
 
 - 任何涉及远程环境的操作之前，必须先阅读 `deploy/environments/` 下对应环境的说明文档
 - 禁止仅凭记忆或历史经验直接操作环境
+
+### 6. README 媒体兼容
+
+- ⚠️ Gitee 会将仓库内 SVG 以 `text/plain` 和 `nosniff` 返回，README 中不得用 SVG 承载必须直接展示的动画；优先使用动画 WebP 或 GIF，SVG 只作为源文件保留
+- 更新 README 媒体后，必须分别检查 GitHub、Gitee 的资源响应类型，并在仓库页面确认图片已完成加载且自然尺寸不为零
