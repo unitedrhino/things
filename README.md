@@ -27,7 +27,7 @@
 
 ![配电站数字孪生演示](./doc/assets/cases/智慧能源-配电站数字孪生.webp)
 
-[查看智慧能源案例 →](https://doc.unitedrhino.com/cases/e9f4a2/)
+[查看官网 30 FPS 完整演示 →](https://doc.unitedrhino.com/cases/e9f4a2/#数字孪生演示)
 
 ## ✨ 核心能力
 
