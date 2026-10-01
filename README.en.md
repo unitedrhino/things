@@ -1,231 +1,131 @@
-# UnitedRhino — AIoT-Native Enterprise Digitalization Platform
+# UnitedRhino Things · Open-source IoT module
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/unitedrhino/things)](https://goreportcard.com/report/github.com/unitedrhino/things)
-[![Go Reference](https://pkg.go.dev/badge/github.com/unitedrhino/things.svg)](https://pkg.go.dev/github.com/unitedrhino/things)
-[![GitHub stars](https://img.shields.io/github/stars/unitedrhino/things)](https://github.com/unitedrhino/things/stargazers)
-[![License](https://img.shields.io/github/license/unitedrhino/things)](LICENSE)
+English · [中文](./README.md)
 
-> 📖 [English](README.en.md) | [中文](README.md)
+**Connect devices quickly, build your own AI applications, then develop your own SaaS and smart products.**
 
-UnitedRhino organizes SaaS, IoT, knowledge base, Skills, MCP, Sandbox, and voice interfaces into a unified AIoT-native foundation — making the kind of AI platform capabilities that only big tech companies could afford to build over years available to every enterprise.
+> **The Enterprise Edition is permanently free to deploy privately, with no limits on user or device counts.**
+>
+> Deploy it on your own or your customer's servers for commercial projects. Free use covers Enterprise Edition platform software, not source-code licensing, server resources, industry application licenses or professional services. Actual capacity depends on deployment resources and configuration. Hosted SaaS plans have separate resource quotas; those quotas do not apply to private deployment.
 
-This repository is the **core backend service** of the UnitedRhino platform. Built with Go (on the go-zero microservice framework), it implements device connectivity, thing models, the rule engine, alerting, audio/video streaming, SIM card management, and more. It supports monolithic, microservices, and cluster deployment — running on as little as 2GB of RAM while scaling up to millions of devices.
+[Visit our website](https://www.unitedrhino.com/zh-CN/) · [Deploy Enterprise Edition for free](https://doc.unitedrhino.com/use/046431/) · [Try online](https://www.unitedrhino.com/zh-CN/pricing/#saas-experience)
 
-> 📖 [Full Documentation](https://doc.unitedrhino.com/) | 🌐 [Live Demo](https://doc.unitedrhino.com/use/ezkveztg/) | 💰 [Pricing](https://doc.unitedrhino.com/use/68b74b/)
+[⭐ Star on GitHub](https://github.com/unitedrhino/things) · [⭐ Star on Gitee](https://gitee.com/unitedrhino/things)
 
----
+## What you can build
 
-## ✨ Core Capabilities
+UnitedRhino combines IoT, AI and multi-enterprise application capabilities. Reuse device connectivity, data management, knowledge and business tools, and enterprise/application permissions—then focus your development on industry workflows and your own brand experience.
 
-### 🔌 Device Connectivity & Protocol Compatibility
-Built-in MQTT Broker and 13 protocol adapters, compatible with mainstream ecosystems such as Alibaba Cloud IoT, Tencent Cloud IoT, and Modbus. A Go script engine supports custom protocol transformation, and new protocols can be onboarded quickly by copying existing templates.
+The following is a suggested path, not a prerequisite: if you already have devices, documents or business systems, you can start directly with AI applications or product development.
 
-### 📊 Thing Model & Time-Series Data
-A four-layer thing model definition — from generic models down to device-level models — combined with TDengine time-series storage and asynchronous batch writes, supporting the full data loop from ingestion to analytics.
+### 1. Connect devices quickly—with your own AI tools
 
-### 🔗 Scene Linkage & Alerting
-A rule engine powers automatic device-to-device linkage. Alerting covers rule configuration, event aggregation, and notifications across 9 channels including in-app messages, SMS, DingTalk, and WeCom.
+Use a familiar AI tool such as WorkBuddy, supported by UnitedRhino Skills and CLI for integration guidance and authorized platform operations:
 
-### 🎥 Audio/Video Streaming
-Self-developed GB28181 SIP service + ONVIF + ZLMediaKit, delivering WebRTC/HLS live monitoring, PTZ cruise, cloud recording, and device-side playback — with no dependency on third-party video clouds. [Documentation](https://doc.unitedrhino.com/use/25.音视频/)
+1. **Provide device information:** give AI the manual, protocol documentation or existing messages, and describe the device to connect.
+2. **Authorize integration:** complete your own authorization and device networking; let AI assist with products, devices and data fields.
+3. **Check and debug:** inspect the result, then ask AI about reporting, field or log issues to help diagnose and adjust the integration.
 
-### 💳 Managed IoT SIM Cards
-Integration with all three major Chinese carriers (China Mobile, China Unicom, China Telecom): SIM lifecycle, data plans, traffic reconciliation, smart diagnostics, and bulk operations in one place. [Documentation](https://doc.unitedrhino.com/use/26.物联卡/)
+You do not need to manually download a thing model first. Hardware adaptation and on-site operations may still be necessary; “one-click integration” does not mean every device or protocol works without adaptation.
 
-### 📺 Scada Dashboards & Low-Code
-A drag-and-drop visualization engine with direct binding to IoT thing model data, 8 dataset types, a template marketplace, and rule-chain low-code orchestration. [Documentation](https://doc.unitedrhino.com/use/01.快速开始/04.组态大屏/)
+[Device integration guide](https://doc.unitedrhino.com/use/device-access-guide/) · [Explore Skills / CLI](https://www.unitedrhino.com/zh-CN/product/developer/)
 
-### 🧠 AI Middle Platform & Knowledge Base
-AI is not a bolt-on chat box but a primary platform capability: an Agent runtime, knowledge base, and Skills that distill business expertise, with Xiaozhi voice and voice cloning extending AI to edge devices.
+### 2. Build your own AI applications
 
-### 🛠️ MCP Tool Integration
-Devices, systems, and external services are re-organized through MCP, so AI can directly query device status and issue control commands — instead of facing a pile of low-level APIs.
+In the complete platform, combine roles, knowledge, device data and authorized business tools. AI can query device status, look up maintenance documents or call business interfaces within the permitted scope—not just answer general questions. Control operations still require business permissions, device support and result feedback.
 
-### ☁️ Sandbox & Cloud Claw
-Separation of control plane and execution plane, with governed workspaces and resource management that make AI execution production-ready; unified access for personal, local, and cloud-side AI.
+These AI capabilities come from the complete UnitedRhino platform and supporting modules; cloning things alone does not provide all of them.
 
-## 🏗️ Platform Architecture
+[Explore device intelligence](https://www.unitedrhino.com/zh-CN/product/iot/#device-ai) · [Platform architecture](https://www.unitedrhino.com/zh-CN/product/architecture/)
 
-From device connectivity to AI applications, UnitedRhino completes the full loop of data uplink and command downlink on a single foundation:
+### 3. Develop your own SaaS and smart products
 
-- **User Access**: Web console, mini-programs / apps (Android / iOS / HarmonyOS), DingTalk / WeChat, open API & MCP, UnitedRhino CLI, Xiaozhi voice
-- **Gateway**: Load balancing, WebSocket, authentication, open services, reverse proxy
-- **Application Layer**: IoT applications, industry applications (smart energy, smart buildings, smart cities, structure monitoring, smart agriculture, etc.), system administration
-- **Capability Middle Platform**: AI middle platform, IoT foundation, common foundation
-- **Access Layer**: IoT devices & gateways, cameras / NVRs, voice terminals, third-party platforms
-- **Infrastructure**: PostgreSQL, TDengine, Redis, NATS, MQTT Broker, RustFS, etcd
+Reuse enterprise, application, account, permission and project-scope capabilities alongside IoT and AI. Build your own SaaS, industry applications or smart terminals. UnitedRhino supplies foundational capabilities and integration tools; you implement your workflows, brand interfaces, hardware adaptation and delivery validation.
 
-### Overall Platform Architecture
+Start with hosted SaaS or privately deploy the Enterprise Edition for free. See the website for branded product development and source-code cooperation options.
 
-![Overall Platform Architecture](./doc/assets/平台架构.png)
+[Explore the complete platform](https://www.unitedrhino.com/zh-CN/product/) · [Usage and cooperation options](https://www.unitedrhino.com/zh-CN/pricing/)
 
-### AI Capability Architecture
+## See the capabilities in context
 
-The control plane organizes sessions, agents, knowledge and skill assembly; the tool plane provides Skills, MCP, CLI and frontend/backend tools; the execution plane offers governed execution via Claw Runtime and Sandbox; the application plane serves SaaS, IoT and voice entry points.
+### Device map: locate devices and open management views
 
-![AI Capability Architecture](./doc/assets/AI架构.png)
+An existing interface shows how devices are organized on a map. It does not establish current online status or the scale of a particular customer project.
 
-### Device Access & Data Flow Architecture
+![Device map interface](./doc/assets/设备地图.png)
 
-Multi-protocol devices connect through protocol gateways, flow into the device management service's message pipeline over the NATS message bus, and finally reach clients, the rule engine, and persistent storage.
+### Energy analysis: turn device data into a business interface
 
-![Device Access & Data Flow Architecture](./doc/assets/设备接入架构.png)
+This electricity dashboard example shows an energy-focused visualization. See the website for the complete industry application and its licensing scope; this screenshot does not mean things alone contains the full energy product.
 
-## 📸 Product Screenshots
+![Electricity dashboard example](./doc/assets/bigscreen/能源大屏-电力.png)
 
-### Low-Code Platform
+### Digital twin: connect spaces, device points and data
 
-![Low-Code](./doc/assets/低代码.png)
+The building demonstration shows space selection, device locations and associated data panels. Skills / CLI can assist development of models, points and field bindings; a static 3D scene is not a complete delivery.
 
-### Scada Dashboard
+![Building digital twin demonstration](./doc/assets/cases/智慧能源-建筑数字孪生.webp)
 
-![Scada Dashboard](./doc/assets/组态大屏.png)
+*Existing delivery demonstration recording, not current live site data.*
 
-#### Five Energy Dashboard Templates
+<details>
+<summary>Show the power-station digital twin demonstration</summary>
 
-The platform ships five built-in energy dashboard system templates — electric power, water, gas, heat, and coal. Create a dashboard from a template in one click. Device data flows in over MQTT and is pushed to the dashboard in real time via WebSocket; alarms are triggered by the rule engine with drill-down handling details.
+![Power-station digital twin demonstration](./doc/assets/cases/智慧能源-配电站数字孪生.webp)
 
-![Energy Dashboard - Electric](./doc/assets/bigscreen/能源大屏-电力.png)
+*Delivery demonstration material, not current live site data.*
 
-The other four share the same layout with per-category color schemes and data semantics:
+</details>
 
-| Energy Dashboard - Water | Energy Dashboard - Gas |
+[Explore the digital twin and integration approach](https://www.unitedrhino.com/zh-CN/products/digital-twin/)
+
+## Application practices and demonstrations
+
+The website distinguishes application practices and recordings from demonstrations and integration examples. Interface material is not presented as an unverified customer success story.
+
+- [Gate-control panels and device sharing](https://www.unitedrhino.com/zh-CN/cases/smart-home/): specific device applications, not a complete whole-home installation.
+- [Lighting and building applications](https://www.unitedrhino.com/zh-CN/cases/smart-building/): device maps, scenes and mobile interfaces.
+- [Energy delivery demonstration](https://www.unitedrhino.com/zh-CN/cases/smart-energy/): building and power-station demonstrations, not current live site data.
+- [Browse all practices and integration examples](https://www.unitedrhino.com/zh-CN/cases/): structural monitoring, agricultural water supply, industrial applications, security, vending machines, off-grid solar and more.
+
+## What is in this repository?
+
+**things is UnitedRhino's open-source IoT module**, primarily covering products and devices, thing models, protocols and device gateways, device data and OTA. It works with Core, Share and the corresponding runtime dependencies.
+
+The complete Enterprise Edition, shared enterprise capabilities, AI, industry applications and development tools have their own modules and delivery entry points. Free use of Enterprise Edition software does not include its complete source code and does not change this repository's open-source license.
+
+| Your goal | Start here |
 |---|---|
-| ![能源大屏-水务](./doc/assets/bigscreen/能源大屏-水务.png) | ![能源大屏-燃气](./doc/assets/bigscreen/能源大屏-燃气.png) |
-| **Energy Dashboard - Heat** | **Energy Dashboard - Coal** |
-| ![能源大屏-热力](./doc/assets/bigscreen/能源大屏-热力.png) | ![能源大屏-燃煤](./doc/assets/bigscreen/能源大屏-燃煤.png) |
+| Browse existing device data or register your own workspace | [Hosted SaaS experience guide](https://www.unitedrhino.com/zh-CN/pricing/#saas-experience) |
+| Deploy Enterprise Edition on your servers for free | [Installation guide](https://doc.unitedrhino.com/use/046431/) · [urops guide](https://doc.unitedrhino.com/use/urops-guide/) |
+| Develop the open-source IoT module | Repository source, `go.mod` and [developer documentation](https://doc.unitedrhino.com/) |
+| Explore complete products, practices and cooperation | [UnitedRhino website](https://www.unitedrhino.com/zh-CN/) |
 
-[View the Smart Energy case →](https://doc.unitedrhino.com/cases/e9f4a2/)
+Source development uses **Go 1.24.4**, matching `go.mod`. Refer to developer documentation for dependencies, installation and configuration rather than maintaining a second deployment manual here.
 
-### Device Map
+## Documentation and open-source projects
 
-![Device Map](./doc/assets/设备地图.png)
+The website covers products, practices and cooperation. Documentation covers installation, configuration, interfaces and development. Linked product pages and guides are currently in Chinese.
 
-## 🎯 Case Studies
+| Project / resource | Purpose | Links |
+|---|---|---|
+| UnitedRhino website | Complete platform, industry products, practices and cooperation | [Website](https://www.unitedrhino.com/zh-CN/) |
+| Developer documentation | Usage, device integration and development | [Docs](https://doc.unitedrhino.com/) |
+| Things | Open-source IoT module | [GitHub](https://github.com/unitedrhino/things) · [Gitee](https://gitee.com/unitedrhino/things) |
+| ur CLI | Authorized platform operations for developers and their AI tools | [GitHub](https://github.com/unitedrhino/cli) · [Gitee](https://gitee.com/unitedrhino/cli) |
+| Docling · Go document parsing | Structured document parsing for knowledge and AI applications | [GitHub](https://github.com/unitedrhino/docling) |
+| Sandbox | AI tool execution and workspace service | [GitHub](https://github.com/unitedrhino/sandbox) · [Gitee](https://gitee.com/unitedrhino/sandbox) |
+| UnitedRhino-customized go-zero | Customized framework source and guidance; not necessarily every service's default dependency | [Gitee](https://gitee.com/unitedrhino/go-zero) |
 
-UnitedRhino has been deployed across energy, smart home, lighting, industrial, water conservancy, and geological monitoring scenarios — all delivered on the same platform foundation:
+## License and participation
 
-| Smart Energy | Smart Home |
-|---------|---------|
-| [![Smart Energy](./doc/assets/cases/智慧能源.png)](https://doc.unitedrhino.com/cases/e9f4a2/) | [![Smart Home](./doc/assets/cases/智能家居.png)](https://doc.unitedrhino.com/cases/e3a9f1/) |
-| Energy management for parks and enterprises: consumption analytics, power meter collection, prepaid billing, and energy dashboards. [View case →](https://doc.unitedrhino.com/cases/e9f4a2/) | Home automation: multi-protocol gate control, space management, scene linkage, and family sharing. [View case →](https://doc.unitedrhino.com/cases/e3a9f1/) |
+This repository is licensed under **AGPL-3.0**; see the full [LICENSE](./LICENSE). Follow applicable license obligations when modifying, distributing or offering modified software over a network. Other products and commercial licensing have separate terms available through the website or our team.
 
-| Smart Lighting | Structure Monitoring |
-|---------|---------|
-| [![Smart Lighting](./doc/assets/cases/智慧照明.png)](https://doc.unitedrhino.com/cases/15c21a/) | [![Structure Monitoring](./doc/assets/cases/结构监测.png)](https://doc.unitedrhino.com/cases/geo-mon/) |
-| Intelligent building lighting and HVAC: dashboards, energy analytics, device maps, one-tap scenes, and automated alerts with a companion mini-program. [View case →](https://doc.unitedrhino.com/cases/15c21a/) | Geological and structural safety monitoring: GNSS displacement / stress / crack / vibration sensors, four-level (blue-yellow-orange-red) early warning, and digital portraits. [View case →](https://doc.unitedrhino.com/cases/geo-mon/) |
+Report problems through [Issues](https://github.com/unitedrhino/things/issues), or contribute improvements. If the project helps you, consider giving it a **Star** to follow future updates.
 
-| Industrial Automation | Smart Water Pump |
-|---------|---------|
-| [![Industrial Automation](./doc/assets/cases/工业自动化.png)](https://doc.unitedrhino.com/cases/82fa55/) | [![Smart Water Pump](./doc/assets/cases/智能水泵.jpg)](https://doc.unitedrhino.com/cases/c4d7e2/) |
-| Industrial energy management: scada screens, data overviews, and video monitoring in a unified view. [View case →](https://doc.unitedrhino.com/cases/82fa55/) | Outdoor water supply for ranches and farmland: water level monitoring, remote pump control, and threshold-based automation. [View case →](https://doc.unitedrhino.com/cases/c4d7e2/) |
+[Visit our website](https://www.unitedrhino.com/zh-CN/) · [GitHub Star](https://github.com/unitedrhino/things) · [Gitee Star](https://gitee.com/unitedrhino/things) · [Contact us](https://www.unitedrhino.com/zh-CN/contact/)
 
-| Smart Photovoltaic | Security Monitoring |
-|---------|---------|
-| [![Smart Photovoltaic](./doc/assets/cases/智能光伏.png)](https://doc.unitedrhino.com/cases/d8e6f1/) | [![Security Monitoring](./doc/assets/cases/安防监控.jpg)](https://doc.unitedrhino.com/cases/9d4e82/) |
-| Off-grid PV storage in remote areas: 4G terminal connectivity, charge/discharge monitoring, and remote device control. [View case →](https://doc.unitedrhino.com/cases/d8e6f1/) | Entrance security for villas and parks: IPC camera connectivity, live preview, PTZ control, two-way intercom, playback, and gate control in one. [View case →](https://doc.unitedrhino.com/cases/9d4e82/) |
-
-More cases (smart fans, smart agriculture, and more) 👉 [Case Library & Achievements](https://doc.unitedrhino.com/cases/2cb8e9/)
-
-## 💎 Platform Value
-
-| Value | Description |
-|---------|------|
-| **Strong Extensibility** | Supports both monolithic and microservice architectures, allowing developers to switch flexibly at different growth stages without maintaining two codebases |
-| **High Performance** | Written in Golang with minimal third-party dependencies, adaptable to diverse performance requirements with fast horizontal scaling |
-| **Data Sovereignty** | Private deployment with full data ownership — no worries about public cloud outages or escalating costs |
-| **Multi-Scenario Foundation** | A shared digital foundation across smart energy, smart home, smart lighting, industrial, water conservancy, and security industries, accumulating domain expertise and product solutions |
-
-## 🎖️ Who Uses UnitedRhino (Partial)
-
-|   |   |   |
-|---------|---------|---------|
-| ![Fujian Hechuang Network Technology](./doc/assets/useBy/福建合创网络科技有限公司.png)<br/>Fujian Hechuang Network Technology | ![Shenzhen Yibailong Technology](./doc/assets/useBy/深圳市易百珑科技有限公司.svg)<br/>Shenzhen Yibailong Technology | ![Lianyuan Zhiwei](./doc/assets/useBy/联远智维.jpg)<br/>Lianyuan Zhiwei |
-| ![Changzhou Feinuo Medical Technology](./doc/assets/useBy/常州飞诺医疗技术有限公司.png)<br/>Changzhou Feinuo Medical Technology | ![Chongqing Tuhao Technology](./doc/assets/useBy/重庆图浩科技.jpg)<br/>Chongqing Tuhao Technology | ![Hangzhou Weilixun](./doc/assets/useBy/杭州伟立讯.png)<br/>Hangzhou Weilixun |
-
-## 🛠️ Technology Stack
-
-### Backend
-- **Microservice Framework**: [go-zero](https://go-zero.dev/)
-- **Cache**: [Redis](https://redis.io/)
-- **Message Queue**: [NATS](https://docs.nats.io/)
-- **Relational Database**: [MySQL/MariaDB](https://mariadb.com/) or PostgreSQL
-- **Service Registry**: [etcd](https://etcd.io/) (microservices mode)
-- **Object Storage**: S3-compatible object storage ([RustFS](https://rustfs.com/) in production, MinIO compatible); local storage, Alibaba Cloud OSS, and AWS S3 also supported
-- **Time-Series Database**: [TDengine](https://www.taosdata.com/) or TimescaleDB
-- **MQTT Server**: [EMQX](https://docs.emqx.com/) or comqtt
-
-### Frontend
-- **Framework**: [Vue.js](https://vuejs.org/)
-- **UI Components**: [Ant Design Vue](https://antdv.com/)
-
-### Mobile
-- **Mini-Program**: [uni-app Vue3](https://uniapp.dcloud.net.cn/)
-- **App**: [uni-app X](https://doc.dcloud.net.cn/uni-app-x/) (Android, iOS, HarmonyOS)
-
-## 🚀 Quick Start
-
-### Live Demo
-
-No installation required — experience the full UnitedRhino platform right away:
-
-[🚀 Try It Now](https://doc.unitedrhino.com/use/ezkveztg/)
-
-### One-Click AI Onboarding
-
-Let AI operate the UnitedRhino platform directly — CLI installation, authentication, and Skills deployment are completed automatically:
-
-[🤖 Local AI Setup Guide](https://doc.unitedrhino.com/use/01.快速开始/09.本地AI安装教程/)
-
-### Requirements
-
-- **Go**: 1.19+
-- **Database**: MySQL 5.7+ or PostgreSQL
-- **Cache**: Redis 6.0+
-- **Container**: Docker (optional, recommended)
-
-### Deployment Guide
-
-From environment preparation to service startup, a step-by-step deployment walkthrough:
-
-[📖 View Deployment Documentation](https://doc.unitedrhino.com/use/046431/)
-
-## 🤝 Open Source Community
-
-- **GitHub**: [unitedrhino/things](https://github.com/unitedrhino/things)
-- **Gitee**: [unitedrhino/things](https://gitee.com/unitedrhino/things)
-- **UnitedRhino CLI**: [GitHub](https://github.com/unitedrhino/cli) | [Gitee Mirror](https://gitee.com/unitedrhino/cli) — command-line control of the platform, for developers and AI agents
-- **Website & Docs**: [doc.unitedrhino.com](https://doc.unitedrhino.com/)
-
-Thanks to all our [contributors](https://github.com/unitedrhino/things/graphs/contributors)! See our [Star History](https://starchart.cc/unitedrhino/things) for project growth.
-
-## 💬 Contact Us
-
-### WeChat Community
-
-> 💬 500+ developers are already in the group — scan to join for instant technical support (add on WeChat to be invited)
-
-![WeCom QR Code](./doc/assets/企业微信二维码.png)
-
-### Official Account
-
-Follow our official account for the latest releases and best practices:
-
-![Official Account](./doc/assets/公众号.jpg)
-
-### Other Contact Methods
-
-- **WeChat**: godLei6
-- **Feedback**: [GitHub Issues](https://github.com/unitedrhino/things/issues)
-
-## 📄 License
-
-This project is licensed under the [Apache License 2.0](LICENSE).
-
----
-
-If this project helps you, please give us a ⭐ Star
-
-[⭐ Star on GitHub](https://github.com/unitedrhino/things) | [⭐ Star on Gitee](https://gitee.com/unitedrhino/things)
-
-*Made with ❤️ by the UnitedRhino Team*
+| Community group | 云物通科技 WeChat official account |
+|---|---|
+| ![Community contact QR code](./doc/assets/企业微信二维码.png) | ![WeChat official account QR code](./doc/assets/公众号.jpg) |
+| Scan to contact us for the community group entry | Follow product updates, practices and technical articles |
